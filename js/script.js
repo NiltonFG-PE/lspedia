@@ -19,19 +19,16 @@ const CLAVE_HISTORIAL = "lspedia_historial";
 
 // --- EVENTOS DEL MENÚ SUPERIOR ---
 
-// Botón Inicio: Anima la flecha y recarga
 const btnInicio = document.getElementById("btnInicio");
 if(btnInicio) {
     btnInicio.addEventListener("click", (e) => {
         e.preventDefault();
         const icono = document.getElementById("iconoInicio");
         if(icono) icono.classList.add("spin-anim");
-        // Espera medio segundo a que termine de girar para recargar
         setTimeout(() => window.location.reload(), 500); 
     });
 }
 
-// Botón Categorías: Muestra, baja la pantalla y resalta
 document.getElementById("btnCategorias").addEventListener("click", (e) => {
     e.preventDefault();
     mostrarCategorias();
@@ -41,7 +38,6 @@ document.getElementById("btnCategorias").addEventListener("click", (e) => {
     setTimeout(() => panelCategorias.classList.remove("highlight-anim"), 2000);
 });
 
-// Botón Favoritos: Baja la pantalla y resalta la sección
 document.getElementById("btnNavFavoritos").addEventListener("click", (e) => {
     e.preventDefault();
     const seccionFav = document.getElementById("seccionFavoritos");
@@ -51,11 +47,19 @@ document.getElementById("btnNavFavoritos").addEventListener("click", (e) => {
     setTimeout(() => seccionFav.classList.remove("highlight-anim"), 2000);
 });
 
-// Botón Historial: Muestra la sección de historial, baja y resalta
 document.getElementById("btnHistorial").addEventListener("click", (e) => {
     e.preventDefault();
     mostrarPantallaHistorial();
 });
+
+// NUEVO: Botón Misión
+const btnMision = document.getElementById("btnMision");
+if(btnMision) {
+    btnMision.addEventListener("click", (e) => {
+        e.preventDefault();
+        mostrarMision();
+    });
+}
 
 // --- CARGA DE DATOS ---
 fetch("data/palabras.json")
@@ -83,7 +87,7 @@ function buscarPalabras(){
     resultado.innerHTML = "";
     ultimasPalabras.innerHTML = ""; 
     panelCategorias.innerHTML = "";
-    seccionHistorial.classList.add("d-none"); // Oculta historial al buscar
+    seccionHistorial.classList.add("d-none"); 
 
     if(texto === "") return;
 
@@ -115,7 +119,7 @@ function mostrarPalabra(p){
     panelCategorias.innerHTML = ""; 
     seccionHistorial.classList.add("d-none");
 
-    agregarAHistorial(p.palabra); // Guarda en el historial automático
+    agregarAHistorial(p.palabra); 
 
     const enFavoritos = esFavorito(p.palabra);
     const textoBoton = enFavoritos ? "★ En favoritos" : "⭐ Agregar a favoritos";
@@ -277,11 +281,9 @@ function mostrarPalabraPorNombre(nombre){
 
 function mostrarSugerenciasRelacionadas(palabraActual){
     if(!ultimasPalabras) return;
-    
     ultimasPalabras.innerHTML = "";
     
     const relacionadas = palabras.filter(p => p.categoria.trim() === palabraActual.categoria.trim() && p.palabra !== palabraActual.palabra);
-
     if (relacionadas.length === 0) return;
 
     ultimasPalabras.innerHTML = `
@@ -297,7 +299,6 @@ function mostrarSugerenciasRelacionadas(palabraActual){
     lista.forEach(p => {
         const col = document.createElement("div");
         col.className = "col-12 col-md-6 mb-2 animate-fade-in"; 
-        
         const rutaImagen = p.imagen ? p.imagen : "https://via.placeholder.com/150";
 
         col.innerHTML = `
@@ -392,10 +393,8 @@ function obtenerHistorial(){
 
 function agregarAHistorial(nombre){
     let historial = obtenerHistorial();
-    // Elimina la palabra si ya estaba para ponerla al principio (más reciente)
     historial = historial.filter(h => h !== nombre);
     historial.unshift(nombre); 
-    // Limitar el historial a las últimas 12 palabras
     if(historial.length > 12) historial.pop(); 
     localStorage.setItem(CLAVE_HISTORIAL, JSON.stringify(historial));
 }
@@ -410,7 +409,6 @@ function mostrarPantallaHistorial(){
     seccionHistorial.classList.remove("d-none");
     seccionHistorial.scrollIntoView({ behavior: 'smooth', block: 'center' });
     
-    // Animación de resaltado
     seccionHistorial.classList.add("highlight-anim");
     setTimeout(() => seccionHistorial.classList.remove("highlight-anim"), 2000);
 
@@ -445,4 +443,30 @@ function mostrarPantallaHistorial(){
         col.appendChild(card);
         listaHistorial.appendChild(col);
     });
+}
+
+// --- SECCIÓN MISIÓN ---
+function mostrarMision(){
+    buscar.value = "";
+    sugerencias.innerHTML = "";
+    panelCategorias.innerHTML = "";
+    ultimasPalabras.innerHTML = "";
+    seccionHistorial.classList.add("d-none"); 
+
+    resultado.innerHTML = `
+    <div class="card shadow-sm mb-4 animate-fade-in border-0" style="background-color: #f8f9fa;">
+        <div class="card-body p-4 p-md-5">
+            <h3 class="fw-bold mb-4 text-primary text-center">Nuestra Visión</h3>
+            <div class="text-muted" style="line-height: 1.8; font-size: 16px; text-align: justify;">
+                <p>En <strong>LSPedia</strong> creemos que el acceso al conocimiento debe estar al alcance de todas las personas. Nuestra visión es convertirnos en el principal diccionario digital de español para la comunidad sorda, ofreciendo una herramienta moderna, accesible y confiable que facilite la comprensión del significado de las palabras mediante definiciones claras, ejemplos sencillos y recursos en Lengua de Señas Peruana (LSP).</p>
+                <p>Buscamos reducir las barreras de comunicación y comprensión del español, permitiendo que las personas sordas encuentren en un solo lugar el significado de las palabras que leen o escuchan en su vida diaria. Cada entrada del diccionario está pensada para brindar una explicación comprensible y acompañarse de un video en Lengua de Señas Peruana, favoreciendo un aprendizaje más visual, natural y significativo.</p>
+                <p>Aspiramos a que LSPedia sea una herramienta de consulta utilizada por estudiantes, familias, docentes, intérpretes, instituciones educativas y cualquier persona interesada en promover una educación más inclusiva. Nuestro compromiso es desarrollar un recurso que crezca constantemente, incorporando nuevas palabras, categorías y funciones que respondan a las necesidades reales de la comunidad sorda.</p>
+                <p class="mb-0">Más que un simple diccionario, queremos construir un puente entre el español y la Lengua de Señas Peruana, contribuyendo al acceso a la información, fortaleciendo la comprensión lectora y apoyando el desarrollo educativo, personal y profesional de miles de personas. Nuestra visión es que LSPedia se convierta en un referente nacional y, en el futuro, pueda extender su impacto a otros países de habla hispana, demostrando que la tecnología puede ser una poderosa herramienta para la inclusión, la igualdad de oportunidades y el acceso al conocimiento.</p>
+            </div>
+        </div>
+    </div>
+    `;
+    
+    // Hace un scroll suave hacia el texto
+    resultado.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
