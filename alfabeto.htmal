@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alfabeto Interactivo</title>
+  <style>
+    /* Estilos para centrar la caja en la pantalla */
+    body {
+      background-color: #f4f7f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    /* Caja blanca que contiene las letras (similar a tu imagen) */
+    .contenedor-alfabeto {
+      background-color: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px; /* Espacio uniforme entre cada letra */
+      max-width: 650px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Estilo normal de las letras */
+    .contenedor-alfabeto span {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 18px;           /* Tamaño base cómodo */
+      color: #4a75a0;            /* Color azulino similar al de tu imagen */
+      cursor: pointer;           /* Cambia el cursor a una manito */
+      transition: transform 0.2s ease, font-weight 0.2s ease; /* Hace la transición suave */
+      display: inline-block;
+      width: 20px;               /* Ancho fijo para que estén alineadas en columnas */
+      text-align: center;
+    }
+
+    /* EFECTO HOVER: Cuando pasas el puntero del mouse */
+    .contenedor-alfabeto span:hover {
+      font-weight: bold;         /* Se hace negrita */
+      transform: scale(1.35);    /* Crece un poco más de tamaño sin mover a las demás */
+      color: #1e3a61;            /* Se vuelve un azul un poco más oscuro al resaltar */
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Contenedor con todas las letras del abecedario envueltas en spans -->
+  <div class="contenedor-alfabeto">
+    <span>A</span> <span>B</span> <span>C</span> <span>D</span> <span>E</span> 
+    <span>F</span> <span>G</span> <span>H</span> <span>I</span> <span>J</span> 
+    <span>K</span> <span>L</span> <span>M</span> <span>N</span> <span>O</span> 
+    <span>P</span> <span>Q</span> <span>R</span> <span>S</span> <span>T</span> 
+    <span>U</span> <span>V</span> <span>W</span> <span>X</span> <span>Y</span> 
+    <span>Z</span>
+  </div>
+
+</body>
+</html>
