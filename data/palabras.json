@@ -3,18 +3,21 @@
     "palabra": "Casa",
     "definicion": "Lugar donde vive una persona.",
     "categoria": "Vivienda",
-    "video": "dQw4w9WgXcQ"
+    "video": "dQw4w9WgXcQ",
+    "imagen": "https://img.freepik.com/vector-premium/lindo-estilo-dibujos-animados-casa_11460-7548.jpg"
   },
   {
     "palabra": "Agua",
     "definicion": "Líquido indispensable para la vida.",
     "categoria": "Alimentos",
-    "video": "dQw4w9WgXcQ"
+    "video": "dQw4w9WgXcQ",
+    "imagen": "https://img.freepik.com/vector-premium/gota-agua-dibujos-animados-ilustracion-vectorial-aislada_11460-5629.jpg"
   },
   {
     "palabra": "Familia",
     "definicion": "Grupo de personas unidas por parentesco.",
     "categoria": "Familia",
-    "video": "dQw4w9WgXcQ"
+    "video": "dQw4w9WgXcQ",
+    "imagen": "https://img.freepik.com/vector-premium/retrato-familia-feliz-dibujos-animados_11460-3948.jpg"
   }
 ]
