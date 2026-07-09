@@ -8,8 +8,8 @@
     --text-main: #1e293b;
     --text-muted: #64748b;
     --border-color: #e2e8f0;
-    --radius-lg: 16px;
-    --radius-sm: 8px;
+    --radius-lg: 12px;
+    --radius-sm: 6px;
     --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
     --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
 }
@@ -31,13 +31,19 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 700;
 }
 
+/* Reducción general de fuentes para hacerlo más compacto */
+h1.display-5 { font-size: 1.6rem; }
+h5 { font-size: 1.1rem; }
+h6 { font-size: 0.9rem; }
+.small, small { font-size: 0.8rem; }
+
 /* ==========================================
-   2. SECCIÓN DEL BUSCADOR
+   2. SECCIÓN DEL BUSCADOR COMPACTO
 ========================================== */
 #buscar {
-    border-radius: 30px;
-    padding: 14px 24px;
-    font-size: 18px;
+    border-radius: 20px;
+    padding: 10px 18px;
+    font-size: 15px;
     border: 2px solid var(--border-color);
     background-color: var(--card-bg);
     box-shadow: var(--shadow-sm);
@@ -66,8 +72,9 @@ h1, h2, h3, h4, h5, h6 {
 .list-group-item {
     border: none;
     background-color: var(--card-bg);
-    padding: 12px 20px;
+    padding: 10px 16px;
     transition: background-color 0.2s ease;
+    cursor: pointer;
 }
 
 .list-group-item:hover {
@@ -75,7 +82,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ==========================================
-   4. COMPONENTES DE TARJETAS (CARDS)
+   4. COMPONENTES DE TARJETAS (CARDS) COMPACTAS
 ========================================== */
 .card {
     background-color: var(--card-bg);
@@ -85,31 +92,35 @@ h1, h2, h3, h4, h5, h6 {
     transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
+.card-body {
+    padding: 12px !important;
+}
+
 .card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-3px);
     box-shadow: var(--shadow-md);
 }
 
-/* Estadísticas */
+/* Fichas estadísticas horizontales y discretas */
 .estadistica {
-    border-left: 4px solid var(--primary-color);
+    border-left: 3px solid var(--primary-color);
 }
+.estadistica h6 { font-size: 0.85rem; }
+.estadistica p { font-size: 1.1rem !important; }
 
-.estadistica h1 {
-    font-size: 2.5rem;
-    margin-bottom: 8px;
-}
-
-.estadistica p {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--primary-color);
-    margin: 0;
-}
-
-/* Categorías */
+/* Tarjetas de categorías compactas */
 .categoria-card {
     cursor: pointer;
+}
+
+.categoria-card h5 {
+    font-size: 0.95rem;
+    margin-bottom: 2px;
+}
+
+.categoria-card p {
+    font-size: 0.75rem;
+    color: var(--text-muted);
 }
 
 .categoria-card:hover {
@@ -119,6 +130,10 @@ h1, h2, h3, h4, h5, h6 {
 .categoria-card:hover h5, 
 .categoria-card:hover p {
     color: #ffffff !important;
+}
+
+.palabra-card button {
+    border-radius: 20px;
 }
 
 /* ==========================================
@@ -135,10 +150,10 @@ iframe {
     box-shadow: var(--shadow-sm);
 }
 
-/* Ajustes de centrado para la imagen de la seña */
+/* Ajustes de centrado y escala menor para la imagen de la seña */
 #resultado img {
     max-width: 100%;
-    height: auto;
+    max-height: 180px;
     border-radius: var(--radius-sm);
     object-fit: contain;
     transition: transform 0.3s ease;
@@ -148,21 +163,22 @@ iframe {
     transform: scale(1.02);
 }
 
+/* Últimas palabras */
+#ultimasPalabras .card {
+    cursor: pointer;
+}
+
 /* ==========================================
    6. RESPONSIVE / ADAPTABILIDAD
 ========================================== */
 @media (max-width: 768px) {
-    .display-4 {
-        font-size: 2rem;
-    }
-    
     #buscar {
-        font-size: 16px;
-        padding: 12px 20px;
+        font-size: 14px;
+        padding: 8px 16px;
     }
     
     /* En móviles, añade espacio entre el video y la imagen */
     #resultado .row > div:last-child {
-        margin-top: 1.5rem;
+        margin-top: 1rem;
     }
 }
