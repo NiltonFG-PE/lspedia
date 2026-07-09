@@ -220,17 +220,43 @@ function mostrarPalabraPorNombre(nombre){
 
 function mostrarUltimasPalabras(){
     if(!ultimasPalabras) return;
-    ultimasPalabras.innerHTML="";
-    const lista=[...palabras].slice(-4).reverse();
+    
+    // Limpiamos el contenedor
+    ultimasPalabras.innerHTML = "";
+    
+    // 1. Agregamos el título claro con una línea separadora
+    ultimasPalabras.innerHTML = `
+        <div class="col-12 mt-2 mb-2">
+            <h5 class="fw-bold" style="color: #2c3e50; border-bottom: 1px solid #ddd; padding-bottom: 8px;">
+                Puede que también te interese
+            </h5>
+        </div>
+    `;
 
-    lista.forEach(p=>{
+    // 2. Tomamos las últimas 4 palabras agregadas
+    const lista = [...palabras].slice(-4).reverse();
+
+    // 3. Creamos el diseño tipo "lista" inspirado en tu referencia
+    lista.forEach(p => {
         const col = document.createElement("div");
-        col.className = "col-6 col-md-3";
-        col.innerHTML=`
-        <div class="card h-100 shadow-sm" style="cursor:pointer">
-            <div class="card-body text-center py-2">
-                <h6 class="mb-0 fw-bold small">${p.palabra}</h6>
-                <small class="text-muted" style="font-size: 11px;">${p.categoria}</small>
+        col.className = "col-12 col-md-6 mb-2"; // 1 columna en celular, 2 en computadora
+        
+        // Si la palabra no tiene imagen, pone un cuadro gris por defecto
+        const rutaImagen = p.imagen ? p.imagen : "https://via.placeholder.com/150";
+
+        col.innerHTML = `
+        <div class="card h-100 border-0 shadow-sm" style="cursor:pointer; background-color: #f8f9fa;">
+            <div class="row g-0 align-items-center h-100">
+                <div class="col-3 col-sm-2 p-2 text-center">
+                    <img src="${rutaImagen}" class="img-fluid rounded" alt="${p.palabra}" style="object-fit: cover; height: 70px; width: 70px;">
+                </div>
+                <div class="col-9 col-sm-10">
+                    <div class="card-body py-2 px-2 text-start">
+                        <small class="text-uppercase text-muted" style="font-size: 10px; letter-spacing: 0.5px;">${p.categoria.trim()}</small>
+                        <h6 class="mb-0 fw-bold" style="color: #0d6efd; font-size: 16px;">${p.palabra}</h6>
+                        <p class="mb-0 text-muted small text-truncate" style="font-size: 12px;">${p.definicion}</p>
+                    </div>
+                </div>
             </div>
         </div>
         `;
