@@ -17,17 +17,17 @@ const CLAVE_FAVORITOS = "lspedia_favoritos";
 fetch("data/palabras.json")
 .then(res => res.json())
 .then(data => {
-    palabras = data;
+    palabras = data.filter(p => p.palabra && p.categoria);
     actualizarEstadisticas();
-    mostrarUltimasPalabras();
+    // Ya no cargamos las sugerencias al inicio de la página
     mostrarFavoritos();
 });
 
 function actualizarEstadisticas(){
     totalPalabras.textContent = palabras.length;
     totalVideos.textContent = palabras.length * 2; 
-    const categories = [...new Set(palabras.map(p => p.categoria))];
-    totalCategorias.textContent = categories.length;
+    const categoriasUnicas = [...new Set(palabras.map(p => p.categoria.trim()))];
+    totalCategorias.textContent = categoriasUnicas.length;
 }
 
 buscar.addEventListener("input", buscarPalabras);
@@ -37,6 +37,8 @@ function buscarPalabras(){
 
     sugerencias.innerHTML = "";
     resultado.innerHTML = "";
+    ultimasPalabras.innerHTML = ""; // Oculta sugerencias al buscar
+    panelCategorias.innerHTML = "";
 
     if(texto === "") return;
 
@@ -54,7 +56,7 @@ function buscarPalabras(){
         boton.className="list-group-item list-group-item-action text-start";
         boton.innerHTML=`
             <strong>${p.palabra}</strong>
-            <span class="badge bg-light text-dark float-end" style="font-size: 10px;">${p.categoria}</span>
+            <span class="badge bg-light text-dark float-end" style="font-size: 10px;">${p.categoria.trim()}</span>
         `;
         boton.onclick=()=>mostrarPalabra(p);
         sugerencias.appendChild(boton);
@@ -69,14 +71,13 @@ function mostrarPalabra(p){
     const enFavoritos = esFavorito(p.palabra);
     const textoBoton = enFavoritos ? "★ En favoritos" : "⭐ Agregar a favoritos";
     const rutaImagen = p.imagen ? p.imagen : "https://via.placeholder.com/150";
-
     const videoEjemploId = p.videoEjemplo ? p.videoEjemplo : p.video;
 
     resultado.innerHTML=`
     <div class="card shadow-sm mb-4 animate-fade-in">
         <div class="card-body p-4">
             <span class="badge bg-primary mb-2" style="font-size: 11px;">
-                ${p.categoria}
+                ${p.categoria.trim()}
             </span>
             <h3 class="fw-bold mb-1">${p.palabra}</h3>
             <p class="text-muted small mb-3">${p.definicion}</p>
@@ -86,7 +87,6 @@ function mostrarPalabra(p){
             </button>
 
             <div class="row g-4 justify-content-center">
-                <!-- Columna Izquierda: Los dos videos con las etiquetas actualizadas -->
                 <div class="col-md-7">
                     <div class="mb-4">
                         <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider">🎥 TRADUCCIÓN:</span>
@@ -103,7 +103,6 @@ function mostrarPalabra(p){
                     </div>
                 </div>
                 
-                <!-- Columna Derecha: Apoyo Visual -->
                 <div class="col-md-4 text-center d-flex flex-column align-items-center justify-content-start pt-4">
                     <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider">📸 Apoyo Visual:</span>
                     <img src="${rutaImagen}" alt="Seña para ${p.palabra}" class="img-fluid rounded border p-2 bg-light shadow-sm">
@@ -118,6 +117,9 @@ function mostrarPalabra(p){
         document.getElementById("btnFavorito").textContent = ahoraEnFavoritos ? "★ En favoritos" : "⭐ Agregar a favoritos";
         mostrarFavoritos();
     });
+
+    // Llamamos a la sección relacionada SOLO después de mostrar el video
+    mostrarUltimasPalabras(p.palabra);
 }
 
 function filtrarPorLetra(letra) {
@@ -125,6 +127,7 @@ function filtrarPorLetra(letra) {
     sugerencias.innerHTML = "";
     resultado.innerHTML = "";
     panelCategorias.innerHTML = "";
+    ultimasPalabras.innerHTML = ""; // Oculta sugerencias al usar el abecedario
 
     const filtradas = palabras.filter(p => p.palabra.toUpperCase().startsWith(letra.toUpperCase()));
 
@@ -145,7 +148,7 @@ function filtrarPorLetra(letra) {
             <div class="card-body p-2 d-flex justify-content-between align-items-center">
                 <div class="ms-2">
                     <h6 class="mb-0 fw-bold">${p.palabra}</h6>
-                    <small class="text-muted" style="font-size: 11px;">${p.categoria}</small>
+                    <small class="text-muted" style="font-size: 11px;">${p.categoria.trim()}</small>
                 </div>
                 <button class="btn btn-sm btn-primary py-1 px-3" style="border-radius: 6px; font-size: 13px;" onclick="mostrarPalabraPorNombre('${p.palabra}')">
                     Ver Seña
@@ -167,15 +170,17 @@ document.getElementById("btnCategorias").addEventListener("click", mostrarCatego
 function mostrarCategorias(){
     resultado.innerHTML="";
     panelCategorias.innerHTML="";
-    const categories=[...new Set(palabras.map(p=>p.categoria))];
+    ultimasPalabras.innerHTML = ""; // Oculta sugerencias al ver categorías
+    
+    const categories = [...new Set(palabras.map(p => p.categoria.trim()))];
     categories.sort();
 
     categories.forEach(nombre=>{
-        const cantidad=palabras.filter(p=>p.categoria===nombre).length;
-        const card=document.createElement("div");
-        card.className="col-6 col-md-3";
+        const cantidad = palabras.filter(p => p.categoria.trim() === nombre).length;
+        const card = document.createElement("div");
+        card.className = "col-6 col-md-3";
 
-        card.innerHTML=`
+        card.innerHTML = `
         <div class="card h-100 shadow-sm categoria-card">
             <div class="card-body text-center py-3">
                 <h6 class="mb-1 text-truncate">${nombre}</h6>
@@ -183,14 +188,15 @@ function mostrarCategorias(){
             </div>
         </div>
         `;
-        card.onclick=()=>mostrarCategoria(nombre);
+        card.onclick = () => mostrarCategoria(nombre);
         panelCategorias.appendChild(card);
     });
 }
 
 function mostrarCategoria(nombre){
     resultado.innerHTML="";
-    const lista=palabras.filter(p=>p.categoria===nombre);
+    ultimasPalabras.innerHTML = ""; // Oculta sugerencias al listar categoría
+    const lista = palabras.filter(p => p.categoria.trim() === nombre);
 
     resultado.innerHTML = `<h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">Categoría: ${nombre}</h6>`;
 
@@ -218,30 +224,32 @@ function mostrarPalabraPorNombre(nombre){
     }
 }
 
-function mostrarUltimasPalabras(){
+// Modificado para recibir la palabra actual y no repetirla
+function mostrarUltimasPalabras(palabraActual = null){
     if(!ultimasPalabras) return;
     
-    // Limpiamos el contenedor
     ultimasPalabras.innerHTML = "";
     
-    // 1. Agregamos el título claro con una línea separadora
     ultimasPalabras.innerHTML = `
-        <div class="col-12 mt-2 mb-2">
+        <div class="col-12 mt-4 mb-2 animate-fade-in">
             <h5 class="fw-bold" style="color: #2c3e50; border-bottom: 1px solid #ddd; padding-bottom: 8px;">
                 Puede que también te interese
             </h5>
         </div>
     `;
 
-    // 2. Tomamos las últimas 4 palabras agregadas
-    const lista = [...palabras].slice(-4).reverse();
+    // Filtramos para que no recomiende la misma palabra que estás viendo
+    let listaFiltrada = palabras;
+    if (palabraActual) {
+        listaFiltrada = palabras.filter(p => p.palabra !== palabraActual);
+    }
 
-    // 3. Creamos el diseño tipo "lista" inspirado en tu referencia
+    const lista = [...listaFiltrada].slice(-4).reverse();
+
     lista.forEach(p => {
         const col = document.createElement("div");
-        col.className = "col-12 col-md-6 mb-2"; // 1 columna en celular, 2 en computadora
+        col.className = "col-12 col-md-6 mb-2 animate-fade-in"; 
         
-        // Si la palabra no tiene imagen, pone un cuadro gris por defecto
         const rutaImagen = p.imagen ? p.imagen : "https://via.placeholder.com/150";
 
         col.innerHTML = `
@@ -260,7 +268,10 @@ function mostrarUltimasPalabras(){
             </div>
         </div>
         `;
-        col.onclick = () => mostrarPalabra(p);
+        col.onclick = () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            mostrarPalabra(p);
+        };
         ultimasPalabras.appendChild(col);
     });
 }
@@ -299,7 +310,7 @@ function mostrarFavoritos(){
     listaFavoritos.innerHTML = "";
 
     obtenerFavoritos().forEach(nombre => {
-        const p = palabras.find(item => item.fail === nombre || item.palabra === nombre);
+        const p = palabras.find(item => item.palabra === nombre);
         if(!p) return;
 
         const col = document.createElement("div");
@@ -311,7 +322,7 @@ function mostrarFavoritos(){
         card.innerHTML = `
             <div class="card-body text-center py-2">
                 <h6 class="mb-0 fw-bold small">${p.palabra}</h6>
-                <small class="text-muted" style="font-size: 11px;">${p.categoria}</small>
+                <small class="text-muted" style="font-size: 11px;">${p.categoria.trim()}</small>
             </div>
         `;
         card.onclick = () => mostrarPalabra(p);
