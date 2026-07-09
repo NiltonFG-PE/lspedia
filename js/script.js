@@ -25,10 +25,9 @@ fetch("data/palabras.json")
 
 function actualizarEstadisticas(){
     totalPalabras.textContent = palabras.length;
-    // Ahora multiplicamos por 2 ya que cada palabra tiene dos videos (Seña + Ejemplo)
     totalVideos.textContent = palabras.length * 2; 
-    const categorias = [...new Set(palabras.map(p => p.categoria))];
-    totalCategorias.textContent = categorias.length;
+    const categories = [...new Set(palabras.map(p => p.categoria))];
+    totalCategorias.textContent = categories.length;
 }
 
 buscar.addEventListener("input", buscarPalabras);
@@ -71,7 +70,6 @@ function mostrarPalabra(p){
     const textoBoton = enFavoritos ? "★ En favoritos" : "⭐ Agregar a favoritos";
     const rutaImagen = p.imagen ? p.imagen : "https://via.placeholder.com/150";
 
-    // Si por algún motivo no hay video de ejemplo en el JSON, ponemos el mismo de la seña por seguridad
     const videoEjemploId = p.videoEjemplo ? p.videoEjemplo : p.video;
 
     resultado.innerHTML=`
@@ -88,10 +86,10 @@ function mostrarPalabra(p){
             </button>
 
             <div class="row g-4 justify-content-center">
-                <!-- Columna Izquierda: Los dos videos (Seña y Ejemplo) -->
+                <!-- Columna Izquierda: Los dos videos con las etiquetas actualizadas -->
                 <div class="col-md-7">
                     <div class="mb-4">
-                        <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider">🎥 Seña de la palabra:</span>
+                        <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider">🎥 TRADUCCIÓN:</span>
                         <div class="ratio ratio-16x9 shadow-sm">
                             <iframe src="https://www.youtube.com/embed/${p.video}" allowfullscreen></iframe>
                         </div>
@@ -105,7 +103,7 @@ function mostrarPalabra(p){
                     </div>
                 </div>
                 
-                <!-- Columna Derecha: Imagen de apoyo visual -->
+                <!-- Columna Derecha: Apoyo Visual -->
                 <div class="col-md-4 text-center d-flex flex-column align-items-center justify-content-start pt-4">
                     <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider">📸 Apoyo Visual:</span>
                     <img src="${rutaImagen}" alt="Seña para ${p.palabra}" class="img-fluid rounded border p-2 bg-light shadow-sm">
@@ -275,7 +273,7 @@ function mostrarFavoritos(){
     listaFavoritos.innerHTML = "";
 
     obtenerFavoritos().forEach(nombre => {
-        const p = palabras.find(item => item.palabra === nombre);
+        const p = palabras.find(item => item.fail === nombre || item.palabra === nombre);
         if(!p) return;
 
         const col = document.createElement("div");
