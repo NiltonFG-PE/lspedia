@@ -10,16 +10,59 @@ const totalVideos = document.getElementById("totalVideos");
 
 const panelCategorias = document.getElementById("panelCategorias");
 const ultimasPalabras = document.getElementById("ultimasPalabras");
+const seccionHistorial = document.getElementById("seccionHistorial");
+const listaHistorial = document.getElementById("listaHistorial");
 const listaFavoritos = document.getElementById("listaFavoritos");
 
 const CLAVE_FAVORITOS = "lspedia_favoritos";
+const CLAVE_HISTORIAL = "lspedia_historial";
 
+// --- EVENTOS DEL MENÚ SUPERIOR ---
+
+// Botón Inicio: Anima la flecha y recarga
+const btnInicio = document.getElementById("btnInicio");
+if(btnInicio) {
+    btnInicio.addEventListener("click", (e) => {
+        e.preventDefault();
+        const icono = document.getElementById("iconoInicio");
+        if(icono) icono.classList.add("spin-anim");
+        // Espera medio segundo a que termine de girar para recargar
+        setTimeout(() => window.location.reload(), 500); 
+    });
+}
+
+// Botón Categorías: Muestra, baja la pantalla y resalta
+document.getElementById("btnCategorias").addEventListener("click", (e) => {
+    e.preventDefault();
+    mostrarCategorias();
+    panelCategorias.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    
+    panelCategorias.classList.add("highlight-anim");
+    setTimeout(() => panelCategorias.classList.remove("highlight-anim"), 2000);
+});
+
+// Botón Favoritos: Baja la pantalla y resalta la sección
+document.getElementById("btnNavFavoritos").addEventListener("click", (e) => {
+    e.preventDefault();
+    const seccionFav = document.getElementById("seccionFavoritos");
+    seccionFav.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    
+    seccionFav.classList.add("highlight-anim");
+    setTimeout(() => seccionFav.classList.remove("highlight-anim"), 2000);
+});
+
+// Botón Historial: Muestra la sección de historial, baja y resalta
+document.getElementById("btnHistorial").addEventListener("click", (e) => {
+    e.preventDefault();
+    mostrarPantallaHistorial();
+});
+
+// --- CARGA DE DATOS ---
 fetch("data/palabras.json")
 .then(res => res.json())
 .then(data => {
     palabras = data.filter(p => p.palabra && p.categoria);
     actualizarEstadisticas();
-    // Ya no cargamos las sugerencias al inicio de la página
     mostrarFavoritos();
 });
 
@@ -30,6 +73,7 @@ function actualizarEstadisticas(){
     totalCategorias.textContent = categoriasUnicas.length;
 }
 
+// --- BUSCADOR ---
 buscar.addEventListener("input", buscarPalabras);
 
 function buscarPalabras(){
@@ -37,8 +81,9 @@ function buscarPalabras(){
 
     sugerencias.innerHTML = "";
     resultado.innerHTML = "";
-    ultimasPalabras.innerHTML = ""; // Oculta sugerencias al buscar
+    ultimasPalabras.innerHTML = ""; 
     panelCategorias.innerHTML = "";
+    seccionHistorial.classList.add("d-none"); // Oculta historial al buscar
 
     if(texto === "") return;
 
@@ -63,10 +108,14 @@ function buscarPalabras(){
     });
 }
 
+// --- MOSTRAR PALABRA Y VIDEOS ---
 function mostrarPalabra(p){
     buscar.value = p.palabra;
     sugerencias.innerHTML="";
     panelCategorias.innerHTML = ""; 
+    seccionHistorial.classList.add("d-none");
+
+    agregarAHistorial(p.palabra); // Guarda en el historial automático
 
     const enFavoritos = esFavorito(p.palabra);
     const textoBoton = enFavoritos ? "★ En favoritos" : "⭐ Agregar a favoritos";
@@ -118,16 +167,17 @@ function mostrarPalabra(p){
         mostrarFavoritos();
     });
 
-    // Llamamos a la sección relacionada SOLO después de mostrar el video
-    mostrarUltimasPalabras(p.palabra);
+    mostrarSugerenciasRelacionadas(p);
 }
 
+// --- FILTRO ABC ---
 function filtrarPorLetra(letra) {
     buscar.value = ""; 
     sugerencias.innerHTML = "";
     resultado.innerHTML = "";
     panelCategorias.innerHTML = "";
-    ultimasPalabras.innerHTML = ""; // Oculta sugerencias al usar el abecedario
+    ultimasPalabras.innerHTML = ""; 
+    seccionHistorial.classList.add("d-none");
 
     const filtradas = palabras.filter(p => p.palabra.toUpperCase().startsWith(letra.toUpperCase()));
 
@@ -165,12 +215,12 @@ document.addEventListener("click",(e)=>{
     }
 });
 
-document.getElementById("btnCategorias").addEventListener("click", mostrarCategorias);
-
+// --- CATEGORÍAS ---
 function mostrarCategorias(){
     resultado.innerHTML="";
     panelCategorias.innerHTML="";
-    ultimasPalabras.innerHTML = ""; // Oculta sugerencias al ver categorías
+    ultimasPalabras.innerHTML = ""; 
+    seccionHistorial.classList.add("d-none");
     
     const categories = [...new Set(palabras.map(p => p.categoria.trim()))];
     categories.sort();
@@ -178,7 +228,7 @@ function mostrarCategorias(){
     categories.forEach(nombre=>{
         const cantidad = palabras.filter(p => p.categoria.trim() === nombre).length;
         const card = document.createElement("div");
-        card.className = "col-6 col-md-3";
+        card.className = "col-6 col-md-3 animate-fade-in";
 
         card.innerHTML = `
         <div class="card h-100 shadow-sm categoria-card">
@@ -195,14 +245,14 @@ function mostrarCategorias(){
 
 function mostrarCategoria(nombre){
     resultado.innerHTML="";
-    ultimasPalabras.innerHTML = ""; // Oculta sugerencias al listar categoría
+    ultimasPalabras.innerHTML = ""; 
     const lista = palabras.filter(p => p.categoria.trim() === nombre);
 
     resultado.innerHTML = `<h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">Categoría: ${nombre}</h6>`;
 
     lista.forEach(p=>{
         resultado.innerHTML+=`
-        <div class="card mb-2 palabra-card shadow-sm">
+        <div class="card mb-2 palabra-card shadow-sm animate-fade-in">
             <div class="card-body p-2 d-flex justify-content-between align-items-center">
                 <div class="ms-2">
                     <h6 class="mb-0 fw-bold">${p.palabra}</h6>
@@ -220,16 +270,20 @@ function mostrarCategoria(nombre){
 function mostrarPalabraPorNombre(nombre){
     const palabra=palabras.find(p=>p.palabra===nombre);
     if(palabra){
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         mostrarPalabra(palabra);
     }
 }
 
-// Modificado para recibir la palabra actual y no repetirla
-function mostrarUltimasPalabras(palabraActual = null){
+function mostrarSugerenciasRelacionadas(palabraActual){
     if(!ultimasPalabras) return;
     
     ultimasPalabras.innerHTML = "";
     
+    const relacionadas = palabras.filter(p => p.categoria.trim() === palabraActual.categoria.trim() && p.palabra !== palabraActual.palabra);
+
+    if (relacionadas.length === 0) return;
+
     ultimasPalabras.innerHTML = `
         <div class="col-12 mt-4 mb-2 animate-fade-in">
             <h5 class="fw-bold" style="color: #2c3e50; border-bottom: 1px solid #ddd; padding-bottom: 8px;">
@@ -238,13 +292,7 @@ function mostrarUltimasPalabras(palabraActual = null){
         </div>
     `;
 
-    // Filtramos para que no recomiende la misma palabra que estás viendo
-    let listaFiltrada = palabras;
-    if (palabraActual) {
-        listaFiltrada = palabras.filter(p => p.palabra !== palabraActual);
-    }
-
-    const lista = [...listaFiltrada].slice(-4).reverse();
+    const lista = relacionadas.slice(-4).reverse();
 
     lista.forEach(p => {
         const col = document.createElement("div");
@@ -276,14 +324,10 @@ function mostrarUltimasPalabras(palabraActual = null){
     });
 }
 
+// --- FAVORITOS ---
 function obtenerFavoritos(){
     const datos = localStorage.getItem(CLAVE_FAVORITOS);
-    if(datos === null) return [];
-    try{
-        return JSON.parse(datos);
-    }catch(error){
-        return [];
-    }
+    return datos ? JSON.parse(datos) : [];
 }
 
 function guardarFavoritos(lista){
@@ -308,13 +352,82 @@ function alternarFavorito(nombre){
 function mostrarFavoritos(){
     if(!listaFavoritos) return;
     listaFavoritos.innerHTML = "";
+    
+    const favs = obtenerFavoritos();
+    if(favs.length === 0){
+        listaFavoritos.innerHTML = '<p class="text-muted small">Aún no tienes palabras en favoritos.</p>';
+        return;
+    }
 
-    obtenerFavoritos().forEach(nombre => {
+    favs.forEach(nombre => {
         const p = palabras.find(item => item.palabra === nombre);
         if(!p) return;
 
         const col = document.createElement("div");
         col.className = "col-6 col-md-3";
+
+        const card = document.createElement("div");
+        card.className = "card h-100 shadow-sm border-0";
+        card.style.cursor = "pointer";
+        card.innerHTML = `
+            <div class="card-body text-center py-2 bg-white rounded">
+                <h6 class="mb-0 fw-bold small">${p.palabra}</h6>
+                <small class="text-muted" style="font-size: 11px;">${p.categoria.trim()}</small>
+            </div>
+        `;
+        card.onclick = () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            mostrarPalabra(p);
+        };
+        col.appendChild(card);
+        listaFavoritos.appendChild(col);
+    });
+}
+
+// --- HISTORIAL ---
+function obtenerHistorial(){
+    const datos = localStorage.getItem(CLAVE_HISTORIAL);
+    return datos ? JSON.parse(datos) : [];
+}
+
+function agregarAHistorial(nombre){
+    let historial = obtenerHistorial();
+    // Elimina la palabra si ya estaba para ponerla al principio (más reciente)
+    historial = historial.filter(h => h !== nombre);
+    historial.unshift(nombre); 
+    // Limitar el historial a las últimas 12 palabras
+    if(historial.length > 12) historial.pop(); 
+    localStorage.setItem(CLAVE_HISTORIAL, JSON.stringify(historial));
+}
+
+function mostrarPantallaHistorial(){
+    resultado.innerHTML = "";
+    panelCategorias.innerHTML = "";
+    ultimasPalabras.innerHTML = "";
+    buscar.value = "";
+    sugerencias.innerHTML = "";
+    
+    seccionHistorial.classList.remove("d-none");
+    seccionHistorial.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    
+    // Animación de resaltado
+    seccionHistorial.classList.add("highlight-anim");
+    setTimeout(() => seccionHistorial.classList.remove("highlight-anim"), 2000);
+
+    listaHistorial.innerHTML = "";
+    const hist = obtenerHistorial();
+
+    if(hist.length === 0){
+        listaHistorial.innerHTML = '<p class="text-muted small">Tu historial está vacío. ¡Busca algunas palabras!</p>';
+        return;
+    }
+
+    hist.forEach(nombre => {
+        const p = palabras.find(item => item.palabra === nombre);
+        if(!p) return;
+
+        const col = document.createElement("div");
+        col.className = "col-6 col-md-3 animate-fade-in";
 
         const card = document.createElement("div");
         card.className = "card h-100 shadow-sm";
@@ -325,8 +438,11 @@ function mostrarFavoritos(){
                 <small class="text-muted" style="font-size: 11px;">${p.categoria.trim()}</small>
             </div>
         `;
-        card.onclick = () => mostrarPalabra(p);
+        card.onclick = () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            mostrarPalabra(p);
+        };
         col.appendChild(card);
-        listaFavoritos.appendChild(col);
+        listaHistorial.appendChild(col);
     });
 }
