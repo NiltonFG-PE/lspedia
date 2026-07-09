@@ -3,142 +3,177 @@
 
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>LSPedia</title>
+    <title>LSPedia</title>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="css/estilos.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/estilos.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="img/favicon.png">
 
 </head>
 
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
 
-<div class="container">
+        <div class="container">
 
-<a class="navbar-brand fw-bold" href="#">
-🤟 LSPedia
-</a>
+            <a class="navbar-brand fw-bold" href="#">
+                🤟 LSPedia
+            </a>
 
-<ul class="navbar-nav ms-auto">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-<li class="nav-item">
-<a class="nav-link active" href="#">Inicio</a>
-</li>
+            <div class="collapse navbar-collapse" id="menuPrincipal">
 
-<li class="nav-item">
-<a class="nav-link" href="#">Categorías</a>
-</li>
+                <ul class="navbar-nav ms-auto">
 
-<li class="nav-item">
-<a class="nav-link" href="#">Favoritos</a>
-</li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Inicio</a>
+                    </li>
 
-<li class="nav-item">
-<a class="nav-link" href="#">Historial</a>
-</li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="btnCategorias">
+                            Categorías
+                        </a>
+                    </li>
 
-</ul>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            Favoritos
+                        </a>
+                    </li>
 
-</div>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            Historial
+                        </a>
+                    </li>
 
-</nav>
+                </ul>
 
-<div class="container py-5">
+            </div>
 
-<div class="text-center mb-5">
+        </div>
 
-<h1 class="display-4 fw-bold">
-Diccionario de Lengua de Señas Peruana
-</h1>
+    </nav>
 
-<p class="text-secondary">
-Aprende una palabra mediante video.
-</p>
+    <div class="container py-5">
 
-</div>
+        <div class="text-center mb-5">
 
-<div class="row justify-content-center">
+            <h1 class="display-4 fw-bold">
+                Diccionario de Lengua de Señas Peruana
+            </h1>
 
-<div class="col-lg-8 position-relative">
+            <p class="text-secondary">
+                Aprende una palabra mediante video.
+            </p>
 
-<input
-id="buscar"
-class="form-control form-control-lg"
-placeholder="🔎 Buscar palabra...">
+        </div>
 
-<div id="sugerencias" class="list-group mt-2"></div>
+        <div class="row justify-content-center">
 
-</div>
+            <div class="col-lg-8 position-relative">
 
-</div>
+                <input
+                    id="buscar"
+                    class="form-control form-control-lg"
+                    placeholder="🔎 Buscar palabra...">
 
-<div class="row mt-5 g-4">
+                <div id="sugerencias" class="list-group mt-2"></div>
 
-<div class="col-md-4">
+            </div>
 
-<div class="card estadistica">
+        </div>
 
-<div class="card-body text-center">
+        <div class="row mt-5 g-4">
 
-<h1>📚</h1>
+            <div class="col-md-4">
 
-<h5>Palabras</h5>
+                <div class="card estadistica">
 
-<p id="totalPalabras">0</p>
+                    <div class="card-body text-center">
 
-</div>
+                        <h1>📚</h1>
 
-</div>
+                        <h5>Palabras</h5>
 
-</div>
+                        <p id="totalPalabras">0</p>
 
-<div class="col-md-4">
+                    </div>
 
-<div class="card estadistica">
+                </div>
 
-<div class="card-body text-center">
+            </div>
 
-<h1>📂</h1>
+            <div class="col-md-4">
 
-<h5>Categorías</h5>
+                <div class="card estadistica">
 
-<p id="totalCategorias">0</p>
+                    <div class="card-body text-center">
 
-</div>
+                        <h1>📂</h1>
 
-</div>
+                        <h5>Categorías</h5>
 
-</div>
+                        <p id="totalCategorias">0</p>
 
-<div class="col-md-4">
+                    </div>
 
-<div class="card estadistica">
+                </div>
 
-<div class="card-body text-center">
+            </div>
 
-<h1>🎥</h1>
+            <div class="col-md-4">
 
-<h5>Videos</h5>
+                <div class="card estadistica">
 
-<p id="totalVideos">0</p>
+                    <div class="card-body text-center">
 
-</div>
+                        <h1>🎥</h1>
 
-</div>
+                        <h5>Videos</h5>
 
-</div>
+                        <p id="totalVideos">0</p>
 
-</div>
+                    </div>
 
-<div id="resultado" class="mt-5"></div>
+                </div>
 
-</div>
+            </div>
 
-<script src="js/script.js"></script>
+        </div>
+
+        <div id="ultimasPalabras" class="row mt-5 g-4"></div>
+
+        <div id="panelCategorias" class="row mt-5 g-4"></div>
+
+        <div id="resultado" class="mt-5"></div>
+
+        <section id="seccionFavoritos" class="mt-5">
+
+            <h3 class="mb-4">
+                ⭐ Mis Favoritos
+            </h3>
+
+            <div id="listaFavoritos" class="row g-4"></div>
+
+        </section>
+
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- LSPedia -->
+    <script src="js/script.js"></script>
 
 </body>
 
