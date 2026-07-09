@@ -9,7 +9,39 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/estilos.css">
 
+    <!-- Favicon -->
     <link class="icon" type="image/png" href="img/favicon.png">
+
+    <!-- Estilos de Animación Personalizados -->
+    <style>
+        /* Animación de giro para el botón de inicio */
+        .spin-anim {
+            animation: girar 0.5s ease-in-out;
+        }
+        @keyframes girar {
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Animación de resaltado amarillo/azul temporal */
+        .highlight-anim {
+            animation: resalte 2s ease-out;
+            border-radius: 10px;
+        }
+        @keyframes resalte {
+            0% { box-shadow: 0 0 20px rgba(13, 110, 253, 0.6); background-color: rgba(13, 110, 253, 0.1); }
+            100% { box-shadow: none; background-color: inherit; }
+        }
+
+        /* NUEVO: Efecto Hover para los botones de Categorías */
+        .categoria-card {
+            transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+        }
+        .categoria-card:hover {
+            background-color: #dceefc !important; /* Azul clarito al pasar el mouse */
+            transform: scale(1.03); /* Se agranda un 3% sutilmente */
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
@@ -24,10 +56,15 @@
             </button>
             <div class="collapse navbar-collapse" id="menuPrincipal">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link active" href="#" id="btnInicio">Inicio</a></li>
+                    <!-- Icono de flecha circular integrado en Inicio -->
+                    <li class="nav-item">
+                        <a class="nav-link active d-flex align-items-center" href="#" id="btnInicio">
+                            <span id="iconoInicio" style="display:inline-block; margin-right: 5px; font-size: 18px;">↻</span> Inicio
+                        </a>
+                    </li>
                     <li class="nav-item"><a class="nav-link" href="#" id="btnCategorias">Categorías</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Favoritos</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Historial</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" id="btnNavFavoritos">Favoritos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" id="btnHistorial">Historial</a></li>
                 </ul>
             </div>
         </div>
@@ -106,18 +143,28 @@
 
         <div id="resultado" class="mb-4 animate-fade-in"></div>
         <div id="ultimasPalabras" class="row g-2 mb-4"></div>
-        <div id="panelCategorias" class="row g-2 mb-4"></div>
+        <div id="panelCategorias" class="row g-2 mb-4 p-2"></div>
 
-        <section id="seccionFavoritos" class="mb-5">
+        <!-- SECCIÓN HISTORIAL -->
+        <section id="seccionHistorial" class="mb-5 d-none p-3">
+            <h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">🕒 Mi Historial de Búsqueda</h6>
+            <div id="listaHistorial" class="row g-2"></div>
+        </section>
+
+        <!-- SECCIÓN FAVORITOS -->
+        <section id="seccionFavoritos" class="mb-5 p-3" style="background-color: #f0f8ff; border-radius: 12px; border: 1px solid #dceefc;">
             <h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">⭐ Mis Favoritos</h6>
             <div id="listaFavoritos" class="row g-2"></div>
         </section>
 
+        <!-- SECCIÓN SUGERENCIAS (Fondo azul principal, letras blancas, texto negrita) -->
         <section id="seccionSugerencias" class="mt-5 pt-4 border-top text-center">
-            <div class="p-3 bg-light rounded border d-inline-block max-w-xl mx-auto shadow-sm">
-                <h6 class="fw-bold mb-1">¿Falta alguna palabra en el diccionario?</h6>
-                <p class="text-muted small mb-2">Ayúdanos sugiriendo términos para expandir la plataforma.</p>
-                <button class="btn btn-outline-primary btn-sm px-4 rounded-pill fw-bold" data-bs-toggle="modal" data-bs-target="#modalSugerencia">
+            <!-- bg-primary copia exactamente el color azul del menú de arriba -->
+            <div class="p-4 rounded border-0 d-inline-block max-w-xl mx-auto shadow-sm bg-primary text-white">
+                <h6 class="fw-bold mb-2 text-white">¿Falta alguna palabra en el diccionario?</h6>
+                <p class="small mb-3 fw-bold text-white">Ayúdanos sugiriendo términos para expandir la plataforma.</p>
+                <!-- Botón blanco con letras azules para resaltar -->
+                <button class="btn btn-light text-primary btn-sm px-4 rounded-pill fw-bold" data-bs-toggle="modal" data-bs-target="#modalSugerencia">
                     Sugerir Palabra
                 </button>
             </div>
@@ -125,6 +172,7 @@
 
     </div>
 
+    <!-- MODAL flotante del Google Form -->
     <div class="modal fade" id="modalSugerencia" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg">
