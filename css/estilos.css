@@ -1,183 +1,202 @@
 /* ==========================================
-   1. VARIABLES Y ESTILOS GENERALES
+   1. CONFIGURACIÓN PREMIUM Y COLORES (Inspiración PUCP / Minimalista)
 ========================================== */
 :root {
-    --primary-color: #0056b3;
-    --background-color: #f8fafc;
+    --primary-color: #0f172a;       /* Slate oscuro profesional */
+    --accent-color: #0284c7;        /* Azul brillante académico */
+    --background-color: #f8fafc;    /* Fondo limpio y descansado */
     --card-bg: #ffffff;
-    --text-main: #1e293b;
+    --text-main: #0f172a;
     --text-muted: #64748b;
-    --border-color: #e2e8f0;
-    --radius-lg: 12px;
-    --radius-sm: 6px;
-    --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-    --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+    --border-color: #cbd5e1;
+    --radius-main: 8px;
 }
 
 body {
     background-color: var(--background-color);
     color: var(--text-main);
-    font-family: 'Segoe UI', Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
 }
 
 .navbar {
     background-color: var(--primary-color) !important;
-    box-shadow: 0 4px 12px rgba(0, 86, 179, 0.15);
+}
+.navbar-brand {
+    font-size: 1.1rem;
+    letter-spacing: -0.5px;
 }
 
 h1, h2, h3, h4, h5, h6 {
     color: var(--text-main);
-    font-weight: 700;
+    letter-spacing: -0.3px;
 }
 
-/* Reducción general de fuentes para hacerlo más compacto */
-h1.display-5 { font-size: 1.6rem; }
-h5 { font-size: 1.1rem; }
-h6 { font-size: 0.9rem; }
-.small, small { font-size: 0.8rem; }
+.header-minimal h1 {
+    font-size: 1.5rem;
+    color: #1e293b;
+}
+
+.uppercase {
+    text-transform: uppercase;
+}
+.tracking-wider {
+    letter-spacing: 0.05em;
+}
 
 /* ==========================================
-   2. SECCIÓN DEL BUSCADOR COMPACTO
+   2. EL BUSCADOR E ÍNDICE ALFABÉTICO (A-Z)
 ========================================== */
+.search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
 #buscar {
-    border-radius: 20px;
-    padding: 10px 18px;
+    border-radius: var(--radius-main);
+    padding: 12px 16px;
+    padding-right: 40px;
     font-size: 15px;
-    border: 2px solid var(--border-color);
-    background-color: var(--card-bg);
-    box-shadow: var(--shadow-sm);
-    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    transition: all 0.2s ease;
 }
 
 #buscar:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 4px rgba(0, 86, 179, 0.15);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
     outline: none;
 }
 
-/* ==========================================
-   3. PANEL DE SUGERENCIAS
-========================================== */
+.search-icon-inside {
+    position: absolute;
+    right: 15px;
+    color: var(--text-muted);
+    font-size: 14px;
+    pointer-events: none;
+}
+
+/* Barra A-Z */
+.indice-alfabetico {
+    background: #ffffff;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+.btn-abc {
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 13px;
+    text-decoration: none;
+    min-width: 24px;
+    transition: color 0.2s;
+}
+.btn-abc:hover {
+    color: var(--accent-color);
+}
+
+/* Panel de sugerencias desplegables */
 #sugerencias {
     position: absolute;
     width: 100%;
-    z-index: 1050;
-    border-radius: var(--radius-lg);
+    z-index: 1060;
+    border-radius: var(--radius-main);
     overflow: hidden;
-    box-shadow: var(--shadow-md);
     border: 1px solid var(--border-color);
 }
-
 .list-group-item {
     border: none;
-    background-color: var(--card-bg);
-    padding: 10px 16px;
-    transition: background-color 0.2s ease;
-    cursor: pointer;
-}
-
-.list-group-item:hover {
-    background-color: #f1f5f9;
+    padding: 10px 14px;
+    font-size: 14px;
 }
 
 /* ==========================================
-   4. COMPONENTES DE TARJETAS (CARDS) COMPACTAS
+   3. BLOQUES DE ESTADÍSTICAS DELGADAS
+========================================== */
+.stat-box {
+    background: transparent;
+    border-right: 1px solid var(--border-color);
+    padding: 2px 5px;
+}
+.stats-container div:last-child .stat-box {
+    border-right: none;
+}
+.stat-number {
+    display: block;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    line-height: 1;
+}
+.stat-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+/* ==========================================
+   4. TARJETAS COMPACTAS (Estilo Académico)
 ========================================== */
 .card {
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    background: var(--card-bg);
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-main);
+    transition: all 0.2s ease;
 }
-
 .card-body {
-    padding: 12px !important;
+    padding: 10px !important;
 }
-
 .card:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-md);
+    border-color: var(--border-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
-/* Fichas estadísticas horizontales y discretas */
-.estadistica {
-    border-left: 3px solid var(--primary-color);
-}
-.estadistica h6 { font-size: 0.85rem; }
-.estadistica p { font-size: 1.1rem !important; }
-
-/* Tarjetas de categorías compactas */
-.categoria-card {
-    cursor: pointer;
-}
-
-.categoria-card h5 {
-    font-size: 0.95rem;
-    margin-bottom: 2px;
-}
-
-.categoria-card p {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-}
-
-.categoria-card:hover {
-    background-color: var(--primary-color);
-}
-
-.categoria-card:hover h5, 
-.categoria-card:hover p {
-    color: #ffffff !important;
-}
-
-.palabra-card button {
-    border-radius: 20px;
-}
+/* Categorías */
+.categoria-card { cursor: pointer; }
+.categoria-card h6 { font-size: 0.9rem; margin: 0; font-weight: 600; }
+.categoria-card p { font-size: 11px; margin: 0; color: var(--text-muted); }
+.categoria-card:hover { background: #f1f5f9; }
 
 /* ==========================================
-   5. CONTENEDOR MULTIMEDIA (RESULTADO)
+   5. ENTORNO DE RESULTADOS CINE (Foco en Video/Seña)
 ========================================== */
 #resultado .card {
-    border-radius: var(--radius-lg);
-    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
 }
-
+#resultado h4 {
+    font-size: 1.4rem;
+    color: var(--primary-color);
+}
 iframe {
-    border: none;
-    border-radius: var(--radius-sm);
-    box-shadow: var(--shadow-sm);
+    border-radius: var(--radius-main);
+    border: 1px solid rgba(0,0,0,0.05);
 }
-
-/* Ajustes de centrado y escala menor para la imagen de la seña */
 #resultado img {
     max-width: 100%;
-    max-height: 180px;
-    border-radius: var(--radius-sm);
+    max-height: 160px;
     object-fit: contain;
-    transition: transform 0.3s ease;
 }
 
-#resultado img:hover {
-    transform: scale(1.02);
+/* Animación simple de aparición */
+.animate-fade-in {
+    animation: fadeIn 0.3s ease-in-out;
 }
-
-/* Últimas palabras */
-#ultimasPalabras .card {
-    cursor: pointer;
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 /* ==========================================
-   6. RESPONSIVE / ADAPTABILIDAD
+   6. OPTIMIZACIÓN DISPOSITIVOS MÓVILES
 ========================================== */
 @media (max-width: 768px) {
-    #buscar {
-        font-size: 14px;
-        padding: 8px 16px;
+    .header-minimal h1 { font-size: 1.3rem; }
+    .indice-alfabetico {
+        justify-content: flex-start !important;
+        padding-bottom: 5px !important;
     }
-    
-    /* En móviles, añade espacio entre el video y la imagen */
     #resultado .row > div:last-child {
         margin-top: 1rem;
     }

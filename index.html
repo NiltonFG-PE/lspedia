@@ -2,138 +2,142 @@
 <html lang="es">
 
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>LSPedia</title>
+    <title>LSPedia - Diccionario de LSP</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/estilos.css">
 
-    <link rel="icon" type="image/png" href="img/favicon.png">
-
+    <!-- Favicon -->
+    <link class="icon" type="image/png" href="img/favicon.png">
 </head>
 
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
-
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
         <div class="container">
-
-            <a class="navbar-brand fw-bold" href="#">
-                🤟 LSPedia
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="#">
+                <span class="me-2">🤟</span> LSPedia
             </a>
-
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal">
                 <span class="navbar-toggler-icon"></span>
             </button>
-
             <div class="collapse navbar-collapse" id="menuPrincipal">
-
                 <ul class="navbar-nav ms-auto">
-
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">Inicio</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" id="btnCategorias">
-                            Categorías
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            Favoritos
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            Historial
-                        </a>
-                    </li>
-
+                    <li class="nav-item"><a class="nav-link active" href="#">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" id="btnCategorias">Categorías</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Favoritos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Historial</a></li>
                 </ul>
-
             </div>
-
         </div>
-
     </nav>
 
     <div class="container py-4">
 
-        <div class="text-center mb-4">
-            <h1 class="display-5 fw-bold">
-                Diccionario de Lengua de Señas Peruana
-            </h1>
-            <p class="text-secondary small">
-                Aprende una palabra mediante video e imagen.
-            </p>
+        <!-- Cabecera Inspirada en Diccionarios Académicos -->
+        <div class="text-center mb-4 header-minimal">
+            <h1 class="fw-bold tracking-tight">Diccionario de Lengua de Señas Peruana</h1>
+            <p class="text-muted small">Plataforma visual de aprendizaje interactivo en LSP</p>
         </div>
 
-        <div class="row justify-content-center mb-4">
-            <div class="col-lg-7 position-relative">
-                <input
-                    id="buscar"
-                    class="form-control form-control-md"
-                    placeholder="🔎 Buscar palabra...">
+        <!-- Zona del Buscador Centralizado -->
+        <div class="row justify-content-center mb-3">
+            <div class="col-lg-8 position-relative">
+                <div class="search-wrapper">
+                    <input id="buscar" class="form-control" placeholder="Escribe la palabra que buscas aquí...">
+                    <span class="search-icon-inside">🔍</span>
+                </div>
                 <div id="sugerencias" class="list-group mt-1 shadow-sm"></div>
             </div>
         </div>
 
-        <div class="row g-3 justify-content-center mb-4">
-            <div class="col-6 col-md-3">
-                <div class="card estadistica py-2 px-3 text-center">
-                    <h6 class="text-muted mb-1">📚 Palabras</h6>
-                    <p id="totalPalabras" class="h5 mb-0 fw-bold">0</p>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="card estadistica py-2 px-3 text-center">
-                    <h6 class="text-muted mb-1">📂 Categorías</h6>
-                    <p id="totalCategorias" class="h5 mb-0 fw-bold">0</p>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="card estadistica py-2 px-3 text-center">
-                    <h6 class="text-muted mb-1">🎥 Videos</h6>
-                    <p id="totalVideos" class="h5 mb-0 fw-bold">0</p>
+        <!-- NUEVO: Índice Alfabético A-Z Integrado (Inspirado en la PUCP) -->
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-8">
+                <div class="indice-alfabetico d-flex justify-content-between flex-wrap gap-1 p-2 bg-white rounded shadow-sm border">
+                    <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLetra('A')">A</button>
+                    <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLetra('B')">B</button>
+                    <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLetra('C')">C</button>
+                    <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLetra('D')">D</button>
+                    <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLetra('E')">E</button>
+                    <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLetra('F')">F</button>
+                    <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLetra('G')">G</button>
+                    <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLetra('H')">H</button>
+                    <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLetra('I')">I</button>
+                    <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLetra('J')">J</button>
+                    <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLetra('K')">K</button>
+                    <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLetra('L')">L</button>
+                    <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLetra('M')">M</button>
+                    <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLetra('N')">N</button>
+                    <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLetra('O')">O</button>
+                    <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLetra('P')">P</button>
+                    <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLetra('Q')">Q</button>
+                    <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLetra('R')">R</button>
+                    <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLetra('S')">S</button>
+                    <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLetra('T')">T</button>
+                    <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLetra('U')">U</button>
+                    <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLetra('V')">V</button>
+                    <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLetra('W')">W</button>
+                    <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLetra('X')">X</button>
+                    <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLetra('Y')">Y</button>
+                    <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLetra('Z')">Z</button>
                 </div>
             </div>
         </div>
 
-        <div id="resultado" class="mb-4"></div>
+        <!-- Estadísticas Horizontales Estilizadas -->
+        <div class="row g-2 justify-content-center mb-4 stats-container">
+            <div class="col-4 col-md-2">
+                <div class="stat-box text-center">
+                    <span class="stat-number" id="totalPalabras">0</span>
+                    <span class="stat-label">Palabras</span>
+                </div>
+            </div>
+            <div class="col-4 col-md-2">
+                <div class="stat-box text-center">
+                    <span class="stat-number" id="totalCategorias">0</span>
+                    <span class="stat-label">Categorías</span>
+                </div>
+            </div>
+            <div class="col-4 col-md-2">
+                <div class="stat-box text-center">
+                    <span class="stat-number" id="totalVideos">0</span>
+                    <span class="stat-label">Videos</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Secciones Dinámicas Principales -->
+        <div id="resultado" class="mb-4 animate-fade-in"></div>
         <div id="ultimasPalabras" class="row g-2 mb-4"></div>
         <div id="panelCategorias" class="row g-2 mb-4"></div>
 
+        <!-- Sección Favoritos Discreta -->
         <section id="seccionFavoritos" class="mb-5">
-            <h5 class="mb-3">⭐ Mis Favoritos</h5>
+            <h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">⭐ Mis Favoritos</h6>
             <div id="listaFavoritos" class="row g-2"></div>
         </section>
 
-        <section id="seccionSugerencias" class="mt-5 pt-4 border-top">
-            <div class="row justify-content-center">
-                <div class="col-md-8 text-center">
-                    <h5 class="fw-bold mb-2">🤟 ¿No encuentras una palabra?</h5>
-                    <p class="text-muted small mb-3">
-                        Ayúdanos a expandir LSPedia. Sugiérenos qué palabra te gustaría que incluyamos en el próximo video.
-                    </p>
-                    <button class="btn btn-primary btn-sm px-4 rounded-pill" data-bs-toggle="modal" data-bs-target="#modalSugerencia">
-                        Sugerir una palabra
-                    </button>
-                </div>
+        <!-- Botón de Colaboración / Sugerencias -->
+        <section id="seccionSugerencias" class="mt-5 pt-4 border-top text-center">
+            <div class="p-3 bg-light rounded border d-inline-block max-w-xl mx-auto shadow-sm">
+                <h6 class="fw-bold mb-1">¿Falta alguna palabra en el diccionario?</h6>
+                <p class="text-muted small mb-2">Ayúdanos sugiriendo términos para expandir la plataforma.</p>
+                <button class="btn btn-outline-primary btn-sm px-4 rounded-pill fw-bold" data-bs-toggle="modal" data-bs-target="#modalSugerencia">
+                    Sugerir Palabra
+                </button>
             </div>
         </section>
 
     </div>
 
+    <!-- MODAL flotante del Google Form -->
     <div class="modal fade" id="modalSugerencia" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow">
-                <div class="modal-header bg-primary text-white py-2">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-dark text-white py-2">
                     <h6 class="modal-title fw-bold">Sugerir nueva palabra en LSP</h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -144,10 +148,10 @@
         </div>
     </div>
 
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
-
+    <!-- LSPedia Script -->
     <script src="js/script.js"></script>
 
 </body>
-
 </html>
