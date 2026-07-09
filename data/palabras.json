@@ -1,23 +1,178 @@
 [
   {
-    "palabra": "Casa",
-    "definicion": "Lugar donde vive una persona.",
-    "categoria": "Vivienda",
-    "video": "dQw4w9WgXcQ",
-    "imagen": "https://img.freepik.com/vector-premium/lindo-estilo-dibujos-animados-casa_11460-7548.jpg"
+    "Palabra": "Hola",
+    "Definición": "Es la palabra mágica que usamos para saludar a alguien cuando lo vemos o empezamos a hablar con él. No importa la hora que sea.",
+    "Categoría": "Saludos",
+    "Video": "dQw4w9WgXcQ",
+    "videoEjemplo": "dQw4w9WgXcR",
+    "Imagen": "https://www.magnific.com/es/fotos-premium/joven-mujer-bastante-casual-sonriendo-feliz-alegremente-saludando-mano-dandote-bienvenida-saludandote-o-diciendote-adios_17530140.htm#fromView=search&page=1&position=17&uuid=a93f0315-6b3b-4c6b-aba7-0c07c9783cbc&query=hola+se%C3%B1a"
   },
   {
-    "palabra": "Agua",
-    "definicion": "Líquido indispensable para la vida.",
-    "categoria": "Alimentos",
-    "video": "dQw4w9WgXcQ",
-    "imagen": "https://img.freepik.com/vector-premium/gota-agua-dibujos-animados-ilustracion-vectorial-aislada_11460-5629.jpg"
+    "Palabra": "Buenos días",
+    "Definición": "Es la forma de decir \"hola\" y desearle un lindo día a alguien, pero solo desde que amanece hasta el mediodía (la hora de comer).",
+    "Categoría": "Saludos",
+    "Video": "dQw4w9WgXcQ",
+    "videoEjemplo": "dQw4w9WgXcR",
+    "Imagen": "https://www.magnific.com/es/foto-gratis/retrato-linda-joven-cubre-camara-riendo-coqueteando-tomando-cafe_78046690.htm#fromView=search&page=1&position=5&uuid=c6a73656-8d2e-49ad-9373-dce6c31d52f9&query=Buenos+d%C3%ADas+saludo+a+la+c%C3%A1mara"
   },
   {
-    "palabra": "Familia",
-    "definicion": "Grupo de personas unidas por parentesco.",
-    "categoria": "Familia",
-    "video": "dQw4w9WgXcQ",
-    "imagen": "https://img.freepik.com/vector-premium/retrato-familia-feliz-dibujos-animados_11460-3948.jpg"
+    "Palabra": "Buenas tardes",
+    "Definición": "Es el saludo que usamos desde el mediodía hasta que se oculta el sol (cuando empieza a oscurecer).",
+    "Categoría": "Saludos",
+    "Video": "dQw4w9WgXcQ",
+    "videoEjemplo": "dQw4w9WgXcR",
+    "Imagen": ""
+  },
+  {
+    "Palabra": "Buenas noches",
+    "Definición": "Es el saludo que usamos cuando ya está oscuro (de noche). También sirve para despedirte de alguien antes de irte a dormir.",
+    "Categoría": "Saludos",
+    "Video": "dQw4w9WgXcQ",
+    "videoEjemplo": "dQw4w9WgXcR",
+    "Imagen": ""
+  },
+  {
+    "Palabra": "",
+    "Definición": "",
+    "Categoría": "",
+    "Video": "dQw4w9WgXcQ",
+    "videoEjemplo": "dQw4w9WgXcR",
+    "Imagen": ""
+  },
+  {
+    "Palabra": "Gracias",
+    "Definición": "Es la palabra que dices para demostrar que estás contento y agradecido cuando alguien hace algo amable por ti o te da un regalo.",
+    "Categoría": "Cortesía",
+    "Video": "dQw4w9WgXcQ",
+    "videoEjemplo": "dQw4w9WgXcR",
+    "Imagen": "https://www.wikihow.com/Sign-Thank-You#/Image:Sign-Thank-You-Step-1.jpg"
+  },
+  {
+    "Palabra": "Por favor",
+    "Definición": "Es la frase que usas cuando necesitas que alguien te ayude o te dé algo. Se hace para pedir las cosas con respeto y no sonar como una orden.",
+    "Categoría": "Cortesía",
+    "Video": "dQw4w9WgXcQ",
+    "videoEjemplo": "dQw4w9WgXcR",
+    "Imagen": ""
+  },
+  {
+    "Palabra": "Perdón",
+    "Definición": "Es la palabra que usas cuando cometes un error, te equivocas, o haces sentir mal a alguien sin querer, y quieres arreglar las cosas.",
+    "Categoría": "Cortesía",
+    "Video": "dQw4w9WgXcQ",
+    "videoEjemplo": "dQw4w9WgXcR",
+    "Imagen": ""
+  },
+  {
+    "Palabra": "",
+    "Definición": "",
+    "Categoría": "",
+    "Video": "dQw4w9WgXcQ",
+    "videoEjemplo": "dQw4w9WgXcR",
+    "Imagen": ""
+  },
+  {
+    "Palabra": "Mamá",
+    "Definición": "Es la mujer que te da la vida, te cuida, te protege y te da su amor desde que naces. Es el pilar del hogar.",
+    "Categoría": "Familia",
+    "Video": "dQw4w9WgXcQ",
+    "videoEjemplo": "dQw4w9WgXcR",
+    "Imagen": ""
+  },
+  {
+    "Palabra": "Papá",
+    "Definición": "Es el hombre que te da la vida, te guía, te cuida y te acompaña mientras vas creciendo.",
+    "Categoría": "Familia",
+    "Video": "dQw4w9WgXcQ",
+    "videoEjemplo": "dQw4w9WgXcR",
+    "Imagen": ""
+  },
+  {
+    "Palabra": "Hermano",
+    "Definición": "Es otro hijo de tus mismos padres. Es un compañero de vida con el que compartes juegos, risas y creces en casa.",
+    "Categoría": "Familia",
+    "Video": "dQw4w9WgXcQ",
+    "videoEjemplo": "dQw4w9WgXcR",
+    "Imagen": ""
+  },
+  {
+    "Palabra": "Hermana",
+    "Definición": "Es otra hija de tus mismos padres. Al igual que el hermano, es una compañera de familia con la que compartes tu vida y tus días.",
+    "Categoría": "Familia",
+    "Video": "dQw4w9WgXcQ",
+    "videoEjemplo": "dQw4w9WgXcR",
+    "Imagen": ""
+  },
+  {
+    "Palabra": "Abuelo",
+    "Definición": "Es el papá de tu mamá o de tu papá. Es como un papá doble, lleno de sabiduría, historias y mucho cariño para consentir.",
+    "Categoría": "Familia",
+    "Video": "dQw4w9WgXcQ",
+    "videoEjemplo": "dQw4w9WgXcR",
+    "Imagen": ""
+  },
+  {
+    "Palabra": "Abuela",
+    "Definición": "Es la mamá de tu mamá o de tu papá. Es una mamá doble que suele dar los abrazos más cálidos, buenos consejos y muchísimo amor.",
+    "Categoría": "Familia",
+    "Video": "dQw4w9WgXcQ",
+    "videoEjemplo": "dQw4w9WgXcR",
+    "Imagen": ""
+  },
+  {
+    "Palabra": "",
+    "Definición": "",
+    "Categoría": "",
+    "Video": "dQw4w9WgXcQ",
+    "videoEjemplo": "dQw4w9WgXcR",
+    "Imagen": ""
+  },
+  {
+    "Palabra": "Profesor",
+    "Definición": "Es la persona que tiene el superpoder de enseñar. Su trabajo es ayudarte a aprender cosas nuevas, explicarte lo que no entiendes y guiarte en tus estudios.",
+    "Categoría": "Escuela",
+    "Video": "dQw4w9WgXcQ",
+    "videoEjemplo": "dQw4w9WgXcR",
+    "Imagen": ""
+  },
+  {
+    "Palabra": "Alumno",
+    "Definición": "Es la persona que asiste a clases para aprender. Es quien escucha al profesor, hace preguntas y descubre cosas nuevas cada día.",
+    "Categoría": "Escuela",
+    "Video": "dQw4w9WgXcQ",
+    "videoEjemplo": "dQw4w9WgXcR",
+    "Imagen": ""
+  },
+  {
+    "Palabra": "Libro",
+    "Definición": "Es un conjunto de hojas unidas que contienen historias, dibujos o información sobre cualquier tema. Sirve para viajar con la imaginación o para estudiar.",
+    "Categoría": "Escuela",
+    "Video": "dQw4w9WgXcQ",
+    "videoEjemplo": "dQw4w9WgXcR",
+    "Imagen": ""
+  },
+  {
+    "Palabra": "Cuaderno",
+    "Definición": "Es un libro de hojas blancas o rayadas que está completamente vacío al principio. Sirve para que tú mismo anotes tus tareas, apuntes o dibujos.",
+    "Categoría": "Escuela",
+    "Video": "dQw4w9WgXcQ",
+    "videoEjemplo": "dQw4w9WgXcR",
+    "Imagen": ""
+  },
+  {
+    "Palabra": "Escribir",
+    "Definición": "Es la acción de plasmar letras, palabras o números sobre un papel (o una pantalla) usando un lápiz o lapicero para decir lo que piensas o recordar algo.",
+    "Categoría": "Escuela",
+    "Video": "dQw4w9WgXcQ",
+    "videoEjemplo": "dQw4w9WgXcR",
+    "Imagen": ""
+  },
+  {
+    "Palabra": "Leer",
+    "Definición": "Es la acción de mirar las letras y palabras escritas para entender lo que significan. Es escuchar la voz de alguien a través de los ojos.",
+    "Categoría": "Escuela",
+    "Video": "dQw4w9WgXcQ",
+    "videoEjemplo": "dQw4w9WgXcR",
+    "Imagen": ""
   }
 ]
