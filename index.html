@@ -9,7 +9,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/estilos.css">
 
-    <!-- Favicon -->
     <link class="icon" type="image/png" href="img/favicon.png">
 </head>
 
@@ -36,13 +35,11 @@
 
     <div class="container py-4">
 
-        <!-- Cabecera Actualizada con el Enfoque del Proyecto -->
         <div class="text-center mb-4 header-minimal">
             <h1 class="fw-bold tracking-tight">DICCIONARIO DE ESPAÑOL PARA SORDOS</h1>
             <p class="text-muted small">Aprende el significado de las palabras con el apoyo de videos en señas.</p>
         </div>
 
-        <!-- Zona del Buscador Centralizado -->
         <div class="row justify-content-center mb-3">
             <div class="col-lg-8 position-relative">
                 <div class="search-wrapper">
@@ -53,7 +50,6 @@
             </div>
         </div>
 
-        <!-- Índice Alfabético A-Z Integrado -->
         <div class="row justify-content-center mb-4">
             <div class="col-lg-8">
                 <div class="indice-alfabetico d-flex justify-content-between flex-wrap gap-1 p-2 bg-white rounded shadow-sm border">
@@ -77,7 +73,7 @@
                     <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLetra('R')">R</button>
                     <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLetra('S')">S</button>
                     <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLetra('T')">T</button>
-                    <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLu('U')">U</button>
+                    <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLetra('U')">U</button>
                     <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLetra('V')">V</button>
                     <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLetra('W')">W</button>
                     <button class="btn btn-link btn-abc p-1" onclick="filtrarPorLetra('X')">X</button>
@@ -87,7 +83,6 @@
             </div>
         </div>
 
-        <!-- Estadísticas Horizontales -->
         <div class="row g-2 justify-content-center mb-4 stats-container">
             <div class="col-4 col-md-2">
                 <div class="stat-box text-center">
@@ -109,18 +104,15 @@
             </div>
         </div>
 
-        <!-- Secciones Dinámicas Principales -->
         <div id="resultado" class="mb-4 animate-fade-in"></div>
         <div id="ultimasPalabras" class="row g-2 mb-4"></div>
         <div id="panelCategorias" class="row g-2 mb-4"></div>
 
-        <!-- Sección Favoritos Discreta -->
         <section id="seccionFavoritos" class="mb-5">
             <h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">⭐ Mis Favoritos</h6>
             <div id="listaFavoritos" class="row g-2"></div>
         </section>
 
-        <!-- Botón de Colaboración / Sugerencias -->
         <section id="seccionSugerencias" class="mt-5 pt-4 border-top text-center">
             <div class="p-3 bg-light rounded border d-inline-block max-w-xl mx-auto shadow-sm">
                 <h6 class="fw-bold mb-1">¿Falta alguna palabra en el diccionario?</h6>
@@ -133,7 +125,6 @@
 
     </div>
 
-    <!-- MODAL flotante del Google Form -->
     <div class="modal fade" id="modalSugerencia" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg">
@@ -148,9 +139,7 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- LSPedia Script -->
     <script src="js/script.js"></script>
 
 </body>
