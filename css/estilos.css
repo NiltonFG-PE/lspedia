@@ -1,180 +1,168 @@
-/* ===========================
-   ESTILOS GENERALES
-=========================== */
-
-body{
-    background:#f4f7fb;
-    font-family:Arial, Helvetica, sans-serif;
+/* ==========================================
+   1. VARIABLES Y ESTILOS GENERALES
+========================================== */
+:root {
+    --primary-color: #0056b3;
+    --background-color: #f8fafc;
+    --card-bg: #ffffff;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --radius-lg: 16px;
+    --radius-sm: 8px;
+    --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
 }
 
-.navbar{
-    box-shadow:0 4px 15px rgba(0,0,0,.15);
+body {
+    background-color: var(--background-color);
+    color: var(--text-main);
+    font-family: 'Segoe UI', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
 }
 
-h1,h2,h3,h4,h5{
-    font-weight:700;
+.navbar {
+    background-color: var(--primary-color) !important;
+    box-shadow: 0 4px 12px rgba(0, 86, 179, 0.15);
 }
 
-/* ===========================
-   BUSCADOR
-=========================== */
-
-#buscar{
-
-    border-radius:50px;
-    padding:18px 25px;
-    font-size:20px;
-
-    border:2px solid #dbe4f0;
-
-    transition:.3s;
-
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-main);
+    font-weight: 700;
 }
 
-#buscar:focus{
-
-    border-color:#0d6efd;
-
-    box-shadow:0 0 0 .25rem rgba(13,110,253,.15);
-
+/* ==========================================
+   2. SECCIÓN DEL BUSCADOR
+========================================== */
+#buscar {
+    border-radius: 30px;
+    padding: 14px 24px;
+    font-size: 18px;
+    border: 2px solid var(--border-color);
+    background-color: var(--card-bg);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
 }
 
-/* ===========================
-   SUGERENCIAS
-=========================== */
-
-#sugerencias{
-
-    position:absolute;
-
-    width:100%;
-
-    z-index:1000;
-
+#buscar:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(0, 86, 179, 0.15);
+    outline: none;
 }
 
-.list-group-item{
-
-    cursor:pointer;
-
-    transition:.25s;
-
+/* ==========================================
+   3. PANEL DE SUGERENCIAS
+========================================== */
+#sugerencias {
+    position: absolute;
+    width: 100%;
+    z-index: 1050;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
 }
 
-.list-group-item:hover{
-
-    background:#f1f6ff;
-
+.list-group-item {
+    border: none;
+    background-color: var(--card-bg);
+    padding: 12px 20px;
+    transition: background-color 0.2s ease;
 }
 
-/* ===========================
-   TARJETAS
-=========================== */
-
-.card{
-
-    border:none;
-
-    border-radius:20px;
-
-    box-shadow:0 8px 20px rgba(0,0,0,.08);
-
-    transition:.25s;
-
+.list-group-item:hover {
+    background-color: #f1f5f9;
 }
 
-.card:hover{
-
-    transform:translateY(-4px);
-
-    box-shadow:0 14px 30px rgba(0,0,0,.12);
-
+/* ==========================================
+   4. COMPONENTES DE TARJETAS (CARDS)
+========================================== */
+.card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-/* ===========================
-   ESTADÍSTICAS
-=========================== */
-
-.card h2{
-
-    font-size:42px;
-
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
 }
 
-.card p{
-
-    margin-bottom:0;
-
+/* Estadísticas */
+.estadistica {
+    border-left: 4px solid var(--primary-color);
 }
 
-/* ===========================
-   CATEGORÍAS
-=========================== */
-
-.categoria-card{
-
-    cursor:pointer;
-
-    background:white;
-
+.estadistica h1 {
+    font-size: 2.5rem;
+    margin-bottom: 8px;
 }
 
-.categoria-card:hover{
-
-    background:#0d6efd;
-
-    color:white;
-
+.estadistica p {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin: 0;
 }
 
-/* ===========================
-   PALABRAS
-=========================== */
-
-.palabra-card button{
-
-    border-radius:30px;
-
+/* Categorías */
+.categoria-card {
+    cursor: pointer;
 }
 
-/* ===========================
-   VIDEO
-=========================== */
-
-iframe{
-
-    border:none;
-
-    border-radius:15px;
-
+.categoria-card:hover {
+    background-color: var(--primary-color);
 }
 
-/* ===========================
-   ÚLTIMAS PALABRAS
-=========================== */
-
-#ultimasPalabras .card{
-
-    cursor:pointer;
-
+.categoria-card:hover h5, 
+.categoria-card:hover p {
+    color: #ffffff !important;
 }
 
-/* ===========================
-   RESPONSIVE
-=========================== */
+/* ==========================================
+   5. CONTENEDOR MULTIMEDIA (RESULTADO)
+========================================== */
+#resultado .card {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
 
-@media(max-width:768px){
+iframe {
+    border: none;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+}
 
-    h1{
+/* Ajustes de centrado para la imagen de la seña */
+#resultado img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius-sm);
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
 
-        font-size:30px;
+#resultado img:hover {
+    transform: scale(1.02);
+}
 
+/* ==========================================
+   6. RESPONSIVE / ADAPTABILIDAD
+========================================== */
+@media (max-width: 768px) {
+    .display-4 {
+        font-size: 2rem;
     }
-
-    #buscar{
-
-        font-size:18px;
-
+    
+    #buscar {
+        font-size: 16px;
+        padding: 12px 20px;
     }
-
+    
+    /* En móviles, añade espacio entre el video y la imagen */
+    #resultado .row > div:last-child {
+        margin-top: 1.5rem;
+    }
 }
