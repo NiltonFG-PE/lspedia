@@ -18,7 +18,6 @@ const CLAVE_FAVORITOS = "lspedia_favoritos";
 const CLAVE_HISTORIAL = "lspedia_historial";
 
 // --- EVENTOS DEL MENÚ SUPERIOR ---
-
 const btnInicio = document.getElementById("btnInicio");
 if(btnInicio) {
     btnInicio.addEventListener("click", (e) => {
@@ -33,7 +32,6 @@ document.getElementById("btnCategorias").addEventListener("click", (e) => {
     e.preventDefault();
     mostrarCategorias();
     panelCategorias.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    
     panelCategorias.classList.add("highlight-anim");
     setTimeout(() => panelCategorias.classList.remove("highlight-anim"), 2000);
 });
@@ -42,7 +40,6 @@ document.getElementById("btnNavFavoritos").addEventListener("click", (e) => {
     e.preventDefault();
     const seccionFav = document.getElementById("seccionFavoritos");
     seccionFav.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    
     seccionFav.classList.add("highlight-anim");
     setTimeout(() => seccionFav.classList.remove("highlight-anim"), 2000);
 });
@@ -51,15 +48,6 @@ document.getElementById("btnHistorial").addEventListener("click", (e) => {
     e.preventDefault();
     mostrarPantallaHistorial();
 });
-
-// NUEVO: Botón Misión
-const btnMision = document.getElementById("btnMision");
-if(btnMision) {
-    btnMision.addEventListener("click", (e) => {
-        e.preventDefault();
-        mostrarMision();
-    });
-}
 
 // --- CARGA DE DATOS ---
 fetch("data/palabras.json")
@@ -72,12 +60,12 @@ fetch("data/palabras.json")
 
 function actualizarEstadisticas(){
     totalPalabras.textContent = palabras.length;
-    totalVideos.textContent = palabras.length * 2; 
+    totalVideos.textContent = palabras.length; 
     const categoriasUnicas = [...new Set(palabras.map(p => p.categoria.trim()))];
     totalCategorias.textContent = categoriasUnicas.length;
 }
 
-// --- BUSCADOR ---
+// --- BUSCADOR INTELIGENTE ---
 buscar.addEventListener("input", buscarPalabras);
 
 function buscarPalabras(){
@@ -92,7 +80,11 @@ function buscarPalabras(){
     if(texto === "") return;
 
     const encontrados = palabras
-    .filter(p => p.palabra.toLowerCase().includes(texto))
+    .filter(p => {
+        const matchPrincipal = p.palabra.toLowerCase().includes(texto);
+        const matchVariantes = p.variantes ? p.variantes.toLowerCase().includes(texto) : false;
+        return matchPrincipal || matchVariantes;
+    })
     .slice(0,10);
 
     if(encontrados.length===0){
@@ -103,8 +95,14 @@ function buscarPalabras(){
     encontrados.forEach(p=>{
         const boton=document.createElement("button");
         boton.className="list-group-item list-group-item-action text-start";
+        
+        let textoMatch = `<strong>${p.palabra}</strong>`;
+        if(p.variantes && p.variantes.toLowerCase().includes(texto) && !p.palabra.toLowerCase().includes(texto)){
+            textoMatch += ` <small class="text-primary ms-2 fw-bold" style="font-size: 11px;">(Variante: ${texto})</small>`;
+        }
+
         boton.innerHTML=`
-            <strong>${p.palabra}</strong>
+            ${textoMatch}
             <span class="badge bg-light text-dark float-end" style="font-size: 10px;">${p.categoria.trim()}</span>
         `;
         boton.onclick=()=>mostrarPalabra(p);
@@ -112,7 +110,7 @@ function buscarPalabras(){
     });
 }
 
-// --- MOSTRAR PALABRA Y VIDEOS ---
+// --- MOSTRAR PALABRA Y UN SOLO VIDEO ---
 function mostrarPalabra(p){
     buscar.value = p.palabra;
     sugerencias.innerHTML="";
@@ -124,7 +122,17 @@ function mostrarPalabra(p){
     const enFavoritos = esFavorito(p.palabra);
     const textoBoton = enFavoritos ? "★ En favoritos" : "⭐ Agregar a favoritos";
     const rutaImagen = p.imagen ? p.imagen : "https://via.placeholder.com/150";
-    const videoEjemploId = p.videoEjemplo ? p.videoEjemplo : p.video;
+
+    // NUEVO: Bloque dinámico para las variantes
+    let bloqueVariantes = "";
+    if (p.variantes && p.variantes.trim() !== "") {
+        bloqueVariantes = `
+        <div class="mb-3 p-2 bg-light rounded border">
+            <span class="d-block fw-bold text-secondary mb-1" style="font-size: 10px; letter-spacing: 0.5px;">🔄 CONJUGACIONES O VARIANTES:</span>
+            <span class="text-muted small fst-italic">${p.variantes}</span>
+        </div>
+        `;
+    }
 
     resultado.innerHTML=`
     <div class="card shadow-sm mb-4 animate-fade-in">
@@ -135,30 +143,25 @@ function mostrarPalabra(p){
             <h3 class="fw-bold mb-1">${p.palabra}</h3>
             <p class="text-muted small mb-3">${p.definicion}</p>
 
+            ${bloqueVariantes}
+
             <button id="btnFavorito" class="btn btn-sm btn-outline-primary mb-4 py-1 px-3" style="border-radius: 15px; font-size: 12px;">
                 ${textoBoton}
             </button>
 
             <div class="row g-4 justify-content-center">
-                <div class="col-md-7">
-                    <div class="mb-4">
-                        <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider">🎥 TRADUCCIÓN:</span>
-                        <div class="ratio ratio-16x9 shadow-sm">
+                <div class="col-md-8">
+                    <div class="mb-2">
+                        <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider">🎥 SEÑA Y EJEMPLO:</span>
+                        <div class="ratio ratio-16x9 shadow-sm rounded overflow-hidden border">
                             <iframe src="https://www.youtube.com/embed/${p.video}" allowfullscreen></iframe>
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider">🎬 Ejemplo en oración:</span>
-                        <div class="ratio ratio-16x9 shadow-sm">
-                            <iframe src="https://www.youtube.com/embed/${videoEjemploId}" allowfullscreen></iframe>
                         </div>
                     </div>
                 </div>
                 
-                <div class="col-md-4 text-center d-flex flex-column align-items-center justify-content-start pt-4">
+                <div class="col-md-4 text-center d-flex flex-column align-items-center justify-content-start">
                     <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider">📸 Apoyo Visual:</span>
-                    <img src="${rutaImagen}" alt="Seña para ${p.palabra}" class="img-fluid rounded border p-2 bg-light shadow-sm">
+                    <img src="${rutaImagen}" alt="Seña para ${p.palabra}" class="img-fluid rounded border p-2 bg-light shadow-sm" style="max-height: 250px; object-fit: contain;">
                 </div>
             </div>
         </div>
@@ -282,7 +285,6 @@ function mostrarPalabraPorNombre(nombre){
 function mostrarSugerenciasRelacionadas(palabraActual){
     if(!ultimasPalabras) return;
     ultimasPalabras.innerHTML = "";
-    
     const relacionadas = palabras.filter(p => p.categoria.trim() === palabraActual.categoria.trim() && p.palabra !== palabraActual.palabra);
     if (relacionadas.length === 0) return;
 
@@ -295,7 +297,6 @@ function mostrarSugerenciasRelacionadas(palabraActual){
     `;
 
     const lista = relacionadas.slice(-4).reverse();
-
     lista.forEach(p => {
         const col = document.createElement("div");
         col.className = "col-12 col-md-6 mb-2 animate-fade-in"; 
@@ -443,30 +444,4 @@ function mostrarPantallaHistorial(){
         col.appendChild(card);
         listaHistorial.appendChild(col);
     });
-}
-
-// --- SECCIÓN MISIÓN ---
-function mostrarMision(){
-    buscar.value = "";
-    sugerencias.innerHTML = "";
-    panelCategorias.innerHTML = "";
-    ultimasPalabras.innerHTML = "";
-    seccionHistorial.classList.add("d-none"); 
-
-    resultado.innerHTML = `
-    <div class="card shadow-sm mb-4 animate-fade-in border-0" style="background-color: #f8f9fa;">
-        <div class="card-body p-4 p-md-5">
-            <h3 class="fw-bold mb-4 text-primary text-center">Nuestra Visión</h3>
-            <div class="text-muted" style="line-height: 1.8; font-size: 16px; text-align: justify;">
-                <p>En <strong>LSPedia</strong> creemos que el acceso al conocimiento debe estar al alcance de todas las personas. Nuestra visión es convertirnos en el principal diccionario digital de español para la comunidad sorda, ofreciendo una herramienta moderna, accesible y confiable que facilite la comprensión del significado de las palabras mediante definiciones claras, ejemplos sencillos y recursos en Lengua de Señas Peruana (LSP).</p>
-                <p>Buscamos reducir las barreras de comunicación y comprensión del español, permitiendo que las personas sordas encuentren en un solo lugar el significado de las palabras que leen o escuchan en su vida diaria. Cada entrada del diccionario está pensada para brindar una explicación comprensible y acompañarse de un video en Lengua de Señas Peruana, favoreciendo un aprendizaje más visual, natural y significativo.</p>
-                <p>Aspiramos a que LSPedia sea una herramienta de consulta utilizada por estudiantes, familias, docentes, intérpretes, instituciones educativas y cualquier persona interesada en promover una educación más inclusiva. Nuestro compromiso es desarrollar un recurso que crezca constantemente, incorporando nuevas palabras, categorías y funciones que respondan a las necesidades reales de la comunidad sorda.</p>
-                <p class="mb-0">Más que un simple diccionario, queremos construir un puente entre el español y la Lengua de Señas Peruana, contribuyendo al acceso a la información, fortaleciendo la comprensión lectora y apoyando el desarrollo educativo, personal y profesional de miles de personas. Nuestra visión es que LSPedia se convierta en un referente nacional y, en el futuro, pueda extender su impacto a otros países de habla hispana, demostrando que la tecnología puede ser una poderosa herramienta para la inclusión, la igualdad de oportunidades y el acceso al conocimiento.</p>
-            </div>
-        </div>
-    </div>
-    `;
-    
-    // Hace un scroll suave hacia el texto
-    resultado.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
