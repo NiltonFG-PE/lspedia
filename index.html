@@ -58,21 +58,37 @@
             text-shadow: 0 0 10px rgba(255, 193, 7, 0.7); 
         }
 
-        /* Letras A-Z interactivas FLUIDAS y SIN NEGRITA */
-        .btn-abc {
-            width: 32px; 
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: normal !important; 
-            transition: transform 0.2s ease, color 0.2s ease; 
+        /* ABECEDARIO: Estilo oscuro moderno */
+        .indice-alfabetico {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            justify-content: center !important;
+            padding: 10px !important;
+            gap: 2px !important;
+            background-color: #1e293b !important; /* Fondo oscuro */
+            border-radius: 8px !important;
+            border: none !important;
         }
+
+        .btn-abc {
+            width: 35px !important; 
+            height: 35px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-weight: 600 !important; 
+            font-size: 15px !important;
+            color: #ffffff !important; /* Letras blancas */
+            transition: background-color 0.2s ease !important; 
+            padding: 0 !important;
+            border-radius: 4px !important;
+        }
+
         .btn-abc:hover {
-            transform: scale(1.5); 
-            color: #0d6efd !important;
-            font-weight: normal !important; 
-            text-shadow: 0px 4px 8px rgba(13, 110, 253, 0.2);
+            background-color: #475569 !important; /* Plomo claro al pasar el puntero */
+            color: #ffffff !important;
+            cursor: pointer;
         }
 
         /* Cuadro de Sugerencias en Plomo Oscuro */
