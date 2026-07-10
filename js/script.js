@@ -1,6 +1,7 @@
 let palabras = [];
 
 const buscar = document.getElementById("buscar");
+const btnBuscar = document.getElementById("btnBuscar");
 const sugerencias = document.getElementById("sugerencias");
 const resultado = document.getElementById("resultado");
 
@@ -18,8 +19,6 @@ const CLAVE_FAVORITOS = "lspedia_favoritos";
 const CLAVE_HISTORIAL = "lspedia_historial";
 
 // --- EVENTOS DEL MENÚ SUPERIOR ---
-
-// Botón Logo: Limpia la URL y recarga instantáneamente
 const btnLogo = document.getElementById("btnLogo");
 if(btnLogo) {
     btnLogo.addEventListener("click", (e) => {
@@ -28,14 +27,12 @@ if(btnLogo) {
     });
 }
 
-// Botón Inicio: Anima, limpia la URL y recarga
 const btnInicio = document.getElementById("btnInicio");
 if(btnInicio) {
     btnInicio.addEventListener("click", (e) => {
         e.preventDefault();
         const icono = document.getElementById("iconoInicio");
         if(icono) icono.classList.add("spin-anim");
-        // pathname limpia cualquier parámetro extra como ?p=palabra
         setTimeout(() => window.location.href = window.location.pathname, 500); 
     });
 }
@@ -61,7 +58,7 @@ document.getElementById("btnHistorial").addEventListener("click", (e) => {
     mostrarPantallaHistorial();
 });
 
-// --- CARGA DE DATOS E INICIO INTELIGENTE ---
+// --- CARGA DE DATOS ---
 fetch("data/palabras.json")
 .then(res => res.json())
 .then(data => {
@@ -69,7 +66,6 @@ fetch("data/palabras.json")
     actualizarEstadisticas();
     mostrarFavoritos();
 
-    // NUEVO: Lee la URL al cargar la página para ver si hay una búsqueda activa
     const urlParams = new URLSearchParams(window.location.search);
     const palabraEnUrl = urlParams.get("p");
     
@@ -85,7 +81,7 @@ function actualizarEstadisticas(){
     totalCategorias.textContent = categoriasUnicas.length;
 }
 
-// --- BUSCADOR INTELIGENTE ---
+// --- BUSCADOR INTELIGENTE (SUGERENCIAS EN VIVO) ---
 buscar.addEventListener("input", buscarPalabras);
 
 function buscarPalabras(){
@@ -97,7 +93,10 @@ function buscarPalabras(){
     panelCategorias.innerHTML = "";
     seccionHistorial.classList.add("d-none"); 
 
-    if(texto === "") return;
+    if(texto === "") {
+        sugerencias.style.display = "none";
+        return;
+    }
 
     const encontrados = palabras
     .filter(p => {
@@ -107,8 +106,17 @@ function buscarPalabras(){
     })
     .slice(0,10);
 
+    sugerencias.style.display = "block";
+
+    // NUEVO: Menú desplegable con botón amarillo si no encuentra la palabra
     if(encontrados.length===0){
-        sugerencias.innerHTML = '<div class="list-group-item text-muted small">Sin resultados</div>';
+        sugerencias.innerHTML = `
+            <div class="list-group-item text-center py-3" style="background-color: #343a40; border: none;">
+                <span class="text-white d-block mb-2 small">No hay resultados para "${texto}"</span>
+                <button class="btn btn-sm btn-warning w-100 fw-bold text-dark" data-bs-toggle="modal" data-bs-target="#modalSugerencia" onclick="document.getElementById('sugerencias').style.display='none'">
+                    Sugerir esta palabra
+                </button>
+            </div>`;
         return;
     }
 
@@ -123,21 +131,78 @@ function buscarPalabras(){
 
         boton.innerHTML=`
             ${textoMatch}
-            <span class="badge bg-light text-dark float-end" style="font-size: 10px;">${p.categoria.trim()}</span>
+            <span class="badge float-end" style="font-size: 10px;">${p.categoria.trim()}</span>
         `;
         boton.onclick=()=>mostrarPalabra(p);
         sugerencias.appendChild(boton);
     });
 }
 
-// --- MOSTRAR PALABRA ---
+// --- FUNCIÓN PARA EL BOTÓN LUPA Y TECLA ENTER ---
+if(btnBuscar) {
+    btnBuscar.addEventListener("click", () => {
+        ejecutarBusquedaDirecta();
+    });
+}
+
+buscar.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+        e.preventDefault(); 
+        ejecutarBusquedaDirecta();
+    }
+});
+
+function ejecutarBusquedaDirecta() {
+    const texto = buscar.value.trim().toLowerCase();
+    if(texto === "") return;
+    
+    sugerencias.innerHTML = "";
+    sugerencias.style.display = "none";
+    
+    const encontrados = palabras.filter(p => {
+        const matchPrincipal = p.palabra.toLowerCase() === texto;
+        const matchVariantes = p.variantes ? p.variantes.toLowerCase().split(',').map(v=>v.trim()).includes(texto) : false;
+        return matchPrincipal || matchVariantes;
+    });
+    
+    if(encontrados.length > 0) {
+        mostrarPalabra(encontrados[0]);
+    } else {
+        const parciales = palabras.filter(p => {
+            return p.palabra.toLowerCase().includes(texto) || (p.variantes && p.variantes.toLowerCase().includes(texto));
+        });
+        if(parciales.length > 0) {
+            mostrarPalabra(parciales[0]);
+        } else {
+            // SI DA ENTER O CLIC EN LUPA Y NO EXISTE: Pantalla grande central
+            panelCategorias.innerHTML = "";
+            ultimasPalabras.innerHTML = "";
+            seccionHistorial.classList.add("d-none");
+            
+            resultado.innerHTML = `
+            <div class="card shadow-sm mb-4 border-0 animate-fade-in" style="border-radius: 15px; background-color: #f8f9fa;">
+                <div class="card-body p-5 text-center">
+                    <div style="font-size: 3rem; margin-bottom: 15px;">🔍🤷‍♂️</div>
+                    <h4 class="fw-bold mb-3 text-primary">No encontramos "${buscar.value}"</h4>
+                    <p class="text-muted mb-4">Aún no tenemos esta palabra en nuestro diccionario de Lengua de Señas Peruana, ¡pero nos encantaría agregarla con tu ayuda!</p>
+                    <button class="btn btn-warning px-4 py-2 rounded-pill fw-bold text-dark" data-bs-toggle="modal" data-bs-target="#modalSugerencia">
+                        Sugerir esta palabra
+                    </button>
+                </div>
+            </div>
+            `;
+        }
+    }
+}
+
+// --- MOSTRAR PALABRA Y UN SOLO VIDEO ---
 function mostrarPalabra(p){
     buscar.value = p.palabra;
     sugerencias.innerHTML="";
+    sugerencias.style.display = "none";
     panelCategorias.innerHTML = ""; 
     seccionHistorial.classList.add("d-none");
 
-    // NUEVO: Actualiza la URL silenciosamente sin recargar la página
     const nuevaUrl = window.location.pathname + "?p=" + encodeURIComponent(p.palabra);
     window.history.pushState({path: nuevaUrl}, '', nuevaUrl);
 
@@ -158,17 +223,17 @@ function mostrarPalabra(p){
     }
 
     resultado.innerHTML=`
-    <div class="card shadow-sm mb-4 animate-fade-in">
+    <div class="card shadow-sm mb-4 animate-fade-in" style="border-radius: 15px; border-color: #dceefc;">
         <div class="card-body p-4">
             <span class="badge bg-primary mb-2" style="font-size: 11px;">
                 ${p.categoria.trim()}
             </span>
-            <h3 class="fw-bold mb-1">${p.palabra}</h3>
+            <h3 class="fw-bold mb-1" style="color: #0d6efd;">${p.palabra}</h3>
             <p class="text-muted small mb-3">${p.definicion}</p>
 
             ${bloqueVariantes}
 
-            <button id="btnFavorito" class="btn btn-sm btn-outline-primary mb-4 py-1 px-3" style="border-radius: 15px; font-size: 12px;">
+            <button id="btnFavorito" class="btn btn-sm btn-outline-primary mb-4 py-1 px-3" style="border-radius: 15px; font-size: 12px; font-weight: bold;">
                 ${textoBoton}
             </button>
 
@@ -204,19 +269,19 @@ function mostrarPalabra(p){
 function filtrarPorLetra(letra) {
     buscar.value = ""; 
     sugerencias.innerHTML = "";
+    sugerencias.style.display = "none";
     resultado.innerHTML = "";
     panelCategorias.innerHTML = "";
     ultimasPalabras.innerHTML = ""; 
     seccionHistorial.classList.add("d-none");
     
-    // Limpia la URL al usar el abecedario
     window.history.pushState({}, '', window.location.pathname);
 
     const filtradas = palabras.filter(p => p.palabra.toUpperCase().startsWith(letra.toUpperCase()));
 
     if (filtradas.length === 0) {
         resultado.innerHTML = `
-            <div class="alert alert-light border text-center text-muted small py-3">
+            <div class="alert alert-light border text-center text-muted small py-3" style="border-radius: 12px;">
                 No hay palabras registradas que comiencen con la letra <strong>${letra}</strong> todavía.
             </div>
         `;
@@ -227,13 +292,13 @@ function filtrarPorLetra(letra) {
     
     filtradas.forEach(p => {
         resultado.innerHTML += `
-        <div class="card mb-2 palabra-card shadow-sm animate-fade-in">
+        <div class="card mb-2 palabra-card shadow-sm animate-fade-in" style="border-radius: 10px;">
             <div class="card-body p-2 d-flex justify-content-between align-items-center">
                 <div class="ms-2">
-                    <h6 class="mb-0 fw-bold">${p.palabra}</h6>
+                    <h6 class="mb-0 fw-bold text-primary">${p.palabra}</h6>
                     <small class="text-muted" style="font-size: 11px;">${p.categoria.trim()}</small>
                 </div>
-                <button class="btn btn-sm btn-primary py-1 px-3" style="border-radius: 6px; font-size: 13px;" onclick="mostrarPalabraPorNombre('${p.palabra}')">
+                <button class="btn btn-sm btn-primary py-1 px-3 fw-bold" style="border-radius: 6px; font-size: 13px;" onclick="mostrarPalabraPorNombre('${p.palabra}')">
                     Ver Seña
                 </button>
             </div>
@@ -245,6 +310,7 @@ function filtrarPorLetra(letra) {
 document.addEventListener("click",(e)=>{
     if(!buscar.contains(e.target) && !sugerencias.contains(e.target)){
         sugerencias.innerHTML="";
+        sugerencias.style.display = "none";
     }
 });
 
@@ -254,7 +320,7 @@ function mostrarCategorias(){
     panelCategorias.innerHTML="";
     ultimasPalabras.innerHTML = ""; 
     seccionHistorial.classList.add("d-none");
-    window.history.pushState({}, '', window.location.pathname); // Limpia la URL al ver categorías
+    window.history.pushState({}, '', window.location.pathname); 
     
     const categories = [...new Set(palabras.map(p => p.categoria.trim()))];
     categories.sort();
@@ -265,10 +331,10 @@ function mostrarCategorias(){
         card.className = "col-6 col-md-3 animate-fade-in";
 
         card.innerHTML = `
-        <div class="card h-100 shadow-sm categoria-card">
+        <div class="card h-100 shadow-sm categoria-card" style="border-radius: 12px; border: 1px solid #dceefc;">
             <div class="card-body text-center py-3">
-                <h6 class="mb-1 text-truncate">${nombre}</h6>
-                <p class="mb-0 small">${cantidad} palabras</p>
+                <h6 class="mb-1 text-truncate fw-bold text-primary">${nombre}</h6>
+                <p class="mb-0 small text-muted">${cantidad} palabras</p>
             </div>
         </div>
         `;
@@ -286,13 +352,13 @@ function mostrarCategoria(nombre){
 
     lista.forEach(p=>{
         resultado.innerHTML+=`
-        <div class="card mb-2 palabra-card shadow-sm animate-fade-in">
+        <div class="card mb-2 palabra-card shadow-sm animate-fade-in" style="border-radius: 10px;">
             <div class="card-body p-2 d-flex justify-content-between align-items-center">
                 <div class="ms-2">
-                    <h6 class="mb-0 fw-bold">${p.palabra}</h6>
+                    <h6 class="mb-0 fw-bold text-primary">${p.palabra}</h6>
                     <small class="text-muted" style="font-size: 11px;">${p.definicion}</small>
                 </div>
-                <button class="btn btn-sm btn-primary py-1 px-3" style="border-radius: 6px; font-size: 13px;" onclick="mostrarPalabraPorNombre('${p.palabra}')">
+                <button class="btn btn-sm btn-primary py-1 px-3 fw-bold" style="border-radius: 6px; font-size: 13px;" onclick="mostrarPalabraPorNombre('${p.palabra}')">
                     Ver Seña
                 </button>
             </div>
@@ -317,7 +383,7 @@ function mostrarSugerenciasRelacionadas(palabraActual){
 
     ultimasPalabras.innerHTML = `
         <div class="col-12 mt-4 mb-2 animate-fade-in">
-            <h5 class="fw-bold" style="color: #2c3e50; border-bottom: 1px solid #ddd; padding-bottom: 8px;">
+            <h5 class="fw-bold" style="color: #2c3e50; border-bottom: 2px solid #e9ecef; padding-bottom: 8px;">
                 Puede que también te interese
             </h5>
         </div>
@@ -330,15 +396,15 @@ function mostrarSugerenciasRelacionadas(palabraActual){
         const rutaImagen = p.imagen ? p.imagen : "https://via.placeholder.com/150";
 
         col.innerHTML = `
-        <div class="card h-100 border-0 shadow-sm" style="cursor:pointer; background-color: #f8f9fa;">
+        <div class="card h-100 border-0 shadow-sm categoria-card" style="border-radius: 12px; background-color: #f8f9fa;">
             <div class="row g-0 align-items-center h-100">
                 <div class="col-3 col-sm-2 p-2 text-center">
                     <img src="${rutaImagen}" class="img-fluid rounded" alt="${p.palabra}" style="object-fit: cover; height: 70px; width: 70px;">
                 </div>
                 <div class="col-9 col-sm-10">
                     <div class="card-body py-2 px-2 text-start">
-                        <small class="text-uppercase text-muted" style="font-size: 10px; letter-spacing: 0.5px;">${p.categoria.trim()}</small>
-                        <h6 class="mb-0 fw-bold" style="color: #0d6efd; font-size: 16px;">${p.palabra}</h6>
+                        <small class="text-uppercase text-muted fw-bold" style="font-size: 10px; letter-spacing: 0.5px;">${p.categoria.trim()}</small>
+                        <h6 class="mb-0 fw-bold text-primary" style="font-size: 16px;">${p.palabra}</h6>
                         <p class="mb-0 text-muted small text-truncate" style="font-size: 12px;">${p.definicion}</p>
                     </div>
                 </div>
@@ -396,11 +462,11 @@ function mostrarFavoritos(){
         col.className = "col-6 col-md-3";
 
         const card = document.createElement("div");
-        card.className = "card h-100 shadow-sm border-0";
-        card.style.cursor = "pointer";
+        card.className = "card h-100 shadow-sm border-0 categoria-card";
+        card.style.borderRadius = "12px";
         card.innerHTML = `
-            <div class="card-body text-center py-2 bg-white rounded">
-                <h6 class="mb-0 fw-bold small">${p.palabra}</h6>
+            <div class="card-body text-center py-2 bg-white" style="border-radius: 12px;">
+                <h6 class="mb-0 fw-bold small text-primary">${p.palabra}</h6>
                 <small class="text-muted" style="font-size: 11px;">${p.categoria.trim()}</small>
             </div>
         `;
@@ -433,8 +499,9 @@ function mostrarPantallaHistorial(){
     ultimasPalabras.innerHTML = "";
     buscar.value = "";
     sugerencias.innerHTML = "";
+    sugerencias.style.display = "none";
     
-    window.history.pushState({}, '', window.location.pathname); // Limpia la URL al ver historial
+    window.history.pushState({}, '', window.location.pathname);
 
     seccionHistorial.classList.remove("d-none");
     seccionHistorial.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -458,11 +525,11 @@ function mostrarPantallaHistorial(){
         col.className = "col-6 col-md-3 animate-fade-in";
 
         const card = document.createElement("div");
-        card.className = "card h-100 shadow-sm";
-        card.style.cursor = "pointer";
+        card.className = "card h-100 shadow-sm categoria-card";
+        card.style.borderRadius = "12px";
         card.innerHTML = `
             <div class="card-body text-center py-2">
-                <h6 class="mb-0 fw-bold small">${p.palabra}</h6>
+                <h6 class="mb-0 fw-bold small text-primary">${p.palabra}</h6>
                 <small class="text-muted" style="font-size: 11px;">${p.categoria.trim()}</small>
             </div>
         `;

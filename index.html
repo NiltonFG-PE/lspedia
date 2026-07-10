@@ -9,10 +9,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/estilos.css">
 
+    <!-- Favicon -->
     <link class="icon" type="image/png" href="img/favicon.png">
 
+    <!-- Estilos de Animación Personalizados -->
     <style>
-        /* Animación de giro para el botón de inicio */
         .spin-anim {
             animation: girar 0.5s ease-in-out;
         }
@@ -20,7 +21,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Animación de resaltado amarillo/azul temporal */
         .highlight-anim {
             animation: resalte 2s ease-out;
             border-radius: 10px;
@@ -30,7 +30,6 @@
             100% { box-shadow: none; background-color: inherit; }
         }
 
-        /* Efecto Hover para los botones de Categorías */
         .categoria-card {
             transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
         }
@@ -40,46 +39,88 @@
             cursor: pointer;
         }
 
-        /* NUEVO: Efecto Hover para el Menú de Navegación */
-        .nav-hover-effect {
-            transition: color 0.2s ease-in-out;
+        /* MENÚ SUPERIOR */
+        .navbar-nav .nav-link {
+            font-weight: 800 !important; 
+            text-transform: uppercase !important; 
+            letter-spacing: 0.5px; 
+            font-size: 14px;
+            transition: all 0.3s ease; 
+            display: flex; 
+            align-items: center;
+            gap: 6px; 
+            padding: 0.5rem 1rem !important;
         }
-        .nav-hover-effect:hover {
-            color: #ffc107 !important; /* Color dorado/amarillo al pasar el ratón */
+        
+        .navbar-nav .nav-link:hover {
+            color: #ffc107 !important; 
+            transform: translateY(-2px); 
+            text-shadow: 0 0 10px rgba(255, 193, 7, 0.7); 
         }
 
-        /* INTEGRACIÓN: Efecto interactivo para el abecedario de LSPedia */
+        /* Letras A-Z interactivas FLUIDAS y SIN NEGRITA */
         .btn-abc {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 16px;
-            font-weight: 500;
-            color: #4a75a0 !important; /* Color azul neutro original */
-            text-decoration: none !important;
-            transition: transform 0.2s ease, font-weight 0.2s ease, color 0.2s ease;
-            display: inline-block;
-            width: 24px;
-            text-align: center;
-            border: none;
-            background: none;
+            width: 32px; 
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: normal !important; 
+            transition: transform 0.2s ease, color 0.2s ease; 
+        }
+        .btn-abc:hover {
+            transform: scale(1.5); 
+            color: #0d6efd !important;
+            font-weight: normal !important; 
+            text-shadow: 0px 4px 8px rgba(13, 110, 253, 0.2);
         }
 
-        /* Al pasar el puntero por la letra seleccionada */
-        .btn-abc:hover {
-            font-weight: bold !important;
-            transform: scale(1.4); /* Crece un 40% flotando sin mover los demás botones */
-            color: #1e3a61 !important; /* Azul más oscuro para accesibilidad */
+        /* Cuadro de Sugerencias en Plomo Oscuro */
+        #sugerencias .list-group-item {
+            background-color: #343a40 !important; 
+            color: #ffffff !important;
+            border-bottom: 1px solid #495057 !important;
+            transition: background-color 0.2s ease;
         }
+        #sugerencias .list-group-item:hover {
+            background-color: #495057 !important; 
+        }
+        #sugerencias .badge {
+            background-color: #6c757d !important; 
+            color: #fff !important;
+        }
+        #sugerencias .text-primary {
+            color: #8bb9fe !important; 
+        }
+        
+        /* Efecto hover para el botón de la lupa AMARILLO */
+        #btnBuscar {
+            background-color: #ffc107 !important; 
+            border: none !important;
+            color: #000 !important; 
+            transition: all 0.2s ease;
+        }
+        #btnBuscar:hover {
+            background-color: #ffca2c !important; 
+            transform: scale(1.05); 
+        }/* Efecto de resaltado al pasar el puntero */
+.navbar-nav .nav-item {
+    transition: background-color 0.3s ease; /* Hace que el cambio sea suave */
+    border-radius: 4px; /* Un toque moderno en las esquinas */
+}
+
+.navbar-nav .nav-item:hover {
+    background-color: #212529; /* Un tono gris muy oscuro, casi negro, como en tu referencia */
+}
     </style>
 </head>
 
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm py-2">
         <div class="container">
-            <!-- AQUÍ AGREGAMOS EL ID btnLogo -->
             <a class="navbar-brand fw-bold d-flex align-items-center" href="#" id="btnLogo">
-                <img src="img/lspedia.png" alt="Logo LSPedia" height="40" style="object-fit: contain;">
-            </a>
+                <img src="img/lspedia.png" alt="Logo LSPedia" height="85" style="object-fit: contain;">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal">
                 <span class="navbar-toggler-icon"></span>
@@ -87,13 +128,14 @@
             <div class="collapse navbar-collapse" id="menuPrincipal">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active d-flex align-items-center" href="#" id="btnInicio">
-                            <span id="iconoInicio" style="display:inline-block; margin-right: 5px; font-size: 18px;">↻</span> Inicio
+                        <a class="nav-link active" href="#" id="btnInicio">
+                            <span id="iconoInicio" style="font-size: 18px; line-height: 1;">↻</span> Inicio
                         </a>
                     </li>
                     <li class="nav-item"><a class="nav-link" href="#" id="btnCategorias">Categorías</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" id="btnNavFavoritos">Favoritos</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" id="btnHistorial">Historial</a></li>
+                    <li class="nav-item"><a class="nav-link text-warning" href="#" data-bs-toggle="modal" data-bs-target="#modalSobreNosotros">Sobre Nosotros</a></li>
                 </ul>
             </div>
         </div>
@@ -108,43 +150,45 @@
 
         <div class="row justify-content-center mb-3">
             <div class="col-lg-8 position-relative">
-                <div class="search-wrapper">
-                    <input id="buscar" class="form-control" placeholder="Escribe la palabra que buscas aquí...">
-                    <span class="search-icon-inside">🔍</span>
+                <div class="input-group input-group-lg shadow-sm" style="border-radius: 50px; border: 2px solid #ffc107; overflow: hidden; background-color: #fff;">
+                    <input id="buscar" type="text" class="form-control border-0 px-4 shadow-none text-secondary" placeholder="Escribe la palabra que buscas aquí..." style="font-size: 1.1rem; background: transparent;">
+                    <button class="btn px-4 d-flex align-items-center justify-content-center" type="button" id="btnBuscar">
+                        <span style="font-size: 1.3rem;">🔍</span>
+                    </button>
                 </div>
-                <div id="sugerencias" class="list-group mt-1 shadow-sm"></div>
+                <div id="sugerencias" class="list-group mt-2 shadow-sm position-absolute w-100 z-3" style="border-radius: 15px; overflow: hidden;"></div>
             </div>
         </div>
 
-        <div class="row justify-content-center mb-4">
+        <div class="row justify-content-center mb-4 mt-4">
             <div class="col-lg-8">
-                <div class="indice-alfabetico d-flex justify-content-between flex-wrap gap-1 p-2 bg-white rounded shadow-sm border align-items-center">
-                    <button class="btn-abc" onclick="filtrarPorLetra('A')">A</button>
-                    <button class="btn-abc" onclick="filtrarPorLetra('B')">B</button>
-                    <button class="btn-abc" onclick="filtrarPorLetra('C')">C</button>
-                    <button class="btn-abc" onclick="filtrarPorLetra('D')">D</button>
-                    <button class="btn-abc" onclick="filtrarPorLetra('E')">E</button>
-                    <button class="btn-abc" onclick="filtrarPorLetra('F')">F</button>
-                    <button class="btn-abc" onclick="filtrarPorLetra('G')">G</button>
-                    <button class="btn-abc" onclick="filtrarPorLetra('H')">H</button>
-                    <button class="btn-abc" onclick="filtrarPorLetra('I')">I</button>
-                    <button class="btn-abc" onclick="filtrarPorLetra('J')">J</button>
-                    <button class="btn-abc" onclick="filtrarPorLetra('K')">K</button>
-                    <button class="btn-abc" onclick="filtrarPorLetra('L')">L</button>
-                    <button class="btn-abc" onclick="filtrarPorLetra('M')">M</button>
-                    <button class="btn-abc" onclick="filtrarPorLetra('N')">N</button>
-                    <button class="btn-abc" onclick="filtrarPorLetra('O')">O</button>
-                    <button class="btn-abc" onclick="filtrarPorLetra('P')">P</button>
-                    <button class="btn-abc" onclick="filtrarPorLetra('Q')">Q</button>
-                    <button class="btn-abc" onclick="filtrarPorLetra('R')">R</button>
-                    <button class="btn-abc" onclick="filtrarPorLetra('S')">S</button>
-                    <button class="btn-abc" onclick="filtrarPorLetra('T')">T</button>
-                    <button class="btn-abc" onclick="filtrarPorLetra('U')">U</button>
-                    <button class="btn-abc" onclick="filtrarPorLetra('V')">V</button>
-                    <button class="btn-abc" onclick="filtrarPorLetra('W')">W</button>
-                    <button class="btn-abc" onclick="filtrarPorLetra('X')">X</button>
-                    <button class="btn-abc" onclick="filtrarPorLetra('Y')">Y</button>
-                    <button class="btn-abc" onclick="filtrarPorLetra('Z')">Z</button>
+                <div class="indice-alfabetico d-flex justify-content-between flex-wrap gap-1 p-2 bg-white rounded shadow-sm border">
+                    <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('A')">A</button>
+                    <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('B')">B</button>
+                    <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('C')">C</button>
+                    <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('D')">D</button>
+                    <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('E')">E</button>
+                    <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('F')">F</button>
+                    <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('G')">G</button>
+                    <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('H')">H</button>
+                    <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('I')">I</button>
+                    <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('J')">J</button>
+                    <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('K')">K</button>
+                    <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('L')">L</button>
+                    <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('M')">M</button>
+                    <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('N')">N</button>
+                    <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('O')">O</button>
+                    <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('P')">P</button>
+                    <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('Q')">Q</button>
+                    <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('R')">R</button>
+                    <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('S')">S</button>
+                    <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('T')">T</button>
+                    <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('U')">U</button>
+                    <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('V')">V</button>
+                    <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('W')">W</button>
+                    <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('X')">X</button>
+                    <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('Y')">Y</button>
+                    <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('Z')">Z</button>
                 </div>
             </div>
         </div>
@@ -184,11 +228,12 @@
             <div id="listaFavoritos" class="row g-2"></div>
         </section>
 
+        <!-- RECUADRO CON NUEVO COLOR AZUL OSCURO Y BOTÓN AMARILLO -->
         <section id="seccionSugerencias" class="mt-5 pt-4 border-top text-center">
-            <div class="p-4 rounded border-0 d-inline-block max-w-xl mx-auto shadow-sm text-white" style="background-color: #343a40;">
+            <div class="p-4 rounded border-0 d-inline-block max-w-xl mx-auto shadow-sm text-white" style="background-color: #0f172a;">
                 <h6 class="fw-bold mb-2 text-white">¿Falta alguna palabra en el diccionario?</h6>
-                <p class="small mb-3 fw-bold text-white">Ayúdanos sugiriendo términos para expandir la plataforma.</p>
-                <button class="btn btn-light text-dark btn-sm px-4 rounded-pill fw-bold" data-bs-toggle="modal" data-bs-target="#modalSugerencia">
+                <p class="small mb-3 text-light">Ayúdanos sugiriendo términos para expandir la plataforma.</p>
+                <button class="btn btn-warning px-4 rounded-pill fw-bold text-dark" data-bs-toggle="modal" data-bs-target="#modalSugerencia">
                     Sugerir Palabra
                 </button>
             </div>
@@ -196,15 +241,41 @@
 
     </div>
 
+    <!-- MODAL SUGERENCIAS DE PALABRAS -->
     <div class="modal fade" id="modalSugerencia" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg">
-                <div class="modal-header bg-dark py-2" style="border-bottom: 0px transparent !important; box-shadow: none !important;">
-                    <h6 class="modal-title fw-bold text-white mb-0">Sugerir nueva palabra en LSP</h6>
+                <div class="modal-header py-3" style="background-color: #343a40 !important;">
+                    <h6 class="modal-title fw-bold" style="color: #ffffff !important; font-size: 16px;">Sugerir nueva palabra en LSP</h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-0">
-                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfTXQ9r5pzkDgPmoIq-mY8vHSNBaU4zeJWyjYxrqltvvuI4KQ/viewform?embedded=true" width="100%" height="450" style="border: none !important; outline: none !important;" frameborder="0" marginheight="0" marginwidth="0">Cargando…</iframe>
+                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfTXQ9r5pzkDgPmoIq-mY8vHSNBaU4zeJWyjYxrqltvvuI4KQ/viewform?embedded=true" width="100%" height="450" frameborder="0" marginheight="0" marginwidth="0">Cargando…</iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL SOBRE NOSOTROS -->
+    <div class="modal fade" id="modalSobreNosotros" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-primary text-white py-3">
+                    <h5 class="modal-title fw-bold d-flex align-items-center"><span class="me-2">🤟</span> Nuestra Filosofía</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4 text-secondary" style="font-size: 0.95rem; line-height: 1.6;">
+                    <h6 class="fw-bold text-dark mb-2">¿Qué es LSPedia?</h6>
+                    <p class="mb-4">LSPedia nace como un puente de comunicación. Es un diccionario digital gratuito diseñado para facilitar el acceso a la información, ayudando a las personas sordas a comprender términos en español a través de su idioma natural, y ofreciendo a los oyentes una herramienta para fomentar la inclusión en su día a día.</p>
+                    
+                    <h6 class="fw-bold text-dark mb-2">Nuestro Respeto por la Comunidad Sorda</h6>
+                    <p class="mb-4">Reconocemos y respetamos profundamente que la Lengua de Señas Peruana (LSP) es patrimonio cultural y lingüístico de la comunidad sorda. Este proyecto no busca apropiarse de la enseñanza del idioma, sino actuar como un facilitador e intérprete. Nuestro objetivo es democratizar el acceso a la información y apoyar el aprendizaje mutuo.</p>
+                    
+                    <h6 class="fw-bold text-dark mb-2">Un Proyecto Colaborativo</h6>
+                    <p class="mb-0">Sabemos que los verdaderos dueños de la LSP son las personas sordas. Por ello, LSPedia es una plataforma viva y abierta. Invitamos activamente a la comunidad sorda, asociaciones e intérpretes a colaborar, darnos retroalimentación y sugerir mejoras para asegurar que nuestra plataforma represente el uso real de la lengua en el país.</p>
+                </div>
+                <div class="modal-footer bg-light border-0 justify-content-center py-3">
+                    <button type="button" class="btn btn-outline-primary px-4 rounded-pill fw-bold" data-bs-dismiss="modal">Entendido</button>
                 </div>
             </div>
         </div>
