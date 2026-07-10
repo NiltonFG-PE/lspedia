@@ -24,6 +24,9 @@ if(btnInicio) {
         e.preventDefault();
         const icono = document.getElementById("iconoInicio");
         if(icono) icono.classList.add("spin-anim");
+        
+        // Limpiamos el # de la URL para que recargue desde cero
+        window.history.replaceState(null, null, window.location.pathname);
         setTimeout(() => window.location.reload(), 500); 
     });
 }
@@ -49,14 +52,29 @@ document.getElementById("btnHistorial").addEventListener("click", (e) => {
     mostrarPantallaHistorial();
 });
 
-// --- CARGA DE DATOS ---
+// --- CARGA DE DATOS Y LECTURA DE URL ---
 fetch("data/palabras.json")
 .then(res => res.json())
 .then(data => {
     palabras = data.filter(p => p.palabra && p.categoria);
     actualizarEstadisticas();
     mostrarFavoritos();
+    
+    // NUEVO: Al cargar los datos, revisamos si la URL tiene una palabra guardada
+    revisarURL();
 });
+
+function revisarURL() {
+    // Si la URL tiene un hash (ejemplo: #Mamá), lo decodificamos y mostramos la palabra
+    const hash = window.location.hash.substring(1);
+    if (hash) {
+        const palabraBuscada = decodeURIComponent(hash);
+        const p = palabras.find(item => item.palabra === palabraBuscada);
+        if (p) {
+            mostrarPalabra(p);
+        }
+    }
+}
 
 function actualizarEstadisticas(){
     totalPalabras.textContent = palabras.length;
@@ -117,13 +135,15 @@ function mostrarPalabra(p){
     panelCategorias.innerHTML = ""; 
     seccionHistorial.classList.add("d-none");
 
+    // NUEVO: Guardamos la palabra en la URL (ejemplo: #Comprar)
+    window.location.hash = encodeURIComponent(p.palabra);
+
     agregarAHistorial(p.palabra); 
 
     const enFavoritos = esFavorito(p.palabra);
     const textoBoton = enFavoritos ? "★ En favoritos" : "⭐ Agregar a favoritos";
     const rutaImagen = p.imagen ? p.imagen : "https://via.placeholder.com/150";
 
-    // NUEVO: Bloque dinámico para las variantes
     let bloqueVariantes = "";
     if (p.variantes && p.variantes.trim() !== "") {
         bloqueVariantes = `
@@ -152,7 +172,7 @@ function mostrarPalabra(p){
             <div class="row g-4 justify-content-center">
                 <div class="col-md-8">
                     <div class="mb-2">
-                        <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider">🎥 SEÑA Y EJEMPLO:</span>
+                        <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider">🎥 DEFINICIÓN Y EJEMPLO:</span>
                         <div class="ratio ratio-16x9 shadow-sm rounded overflow-hidden border">
                             <iframe src="https://www.youtube.com/embed/${p.video}" allowfullscreen></iframe>
                         </div>
@@ -179,6 +199,7 @@ function mostrarPalabra(p){
 
 // --- FILTRO ABC ---
 function filtrarPorLetra(letra) {
+    window.history.replaceState(null, null, window.location.pathname); // Limpiamos URL
     buscar.value = ""; 
     sugerencias.innerHTML = "";
     resultado.innerHTML = "";
@@ -224,6 +245,7 @@ document.addEventListener("click",(e)=>{
 
 // --- CATEGORÍAS ---
 function mostrarCategorias(){
+    window.history.replaceState(null, null, window.location.pathname); // Limpiamos URL
     resultado.innerHTML="";
     panelCategorias.innerHTML="";
     ultimasPalabras.innerHTML = ""; 
@@ -251,6 +273,7 @@ function mostrarCategorias(){
 }
 
 function mostrarCategoria(nombre){
+    window.history.replaceState(null, null, window.location.pathname); // Limpiamos URL
     resultado.innerHTML="";
     ultimasPalabras.innerHTML = ""; 
     const lista = palabras.filter(p => p.categoria.trim() === nombre);
@@ -401,6 +424,7 @@ function agregarAHistorial(nombre){
 }
 
 function mostrarPantallaHistorial(){
+    window.history.replaceState(null, null, window.location.pathname); // Limpiamos URL
     resultado.innerHTML = "";
     panelCategorias.innerHTML = "";
     ultimasPalabras.innerHTML = "";
