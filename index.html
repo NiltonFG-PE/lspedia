@@ -76,23 +76,24 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="#" onclick="window.location.reload(); return false;">
-    <img src="img/lspedia.png" alt="Logo LSPedia" style="height: 50px; width: auto; margin-right: 10px;">
-</a>
+            <!-- AQUÍ AGREGAMOS EL ID btnLogo -->
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="#" id="btnLogo">
+                <img src="img/lspedia.png" alt="Logo LSPedia" height="40" style="object-fit: contain;">
+            </a>
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="menuPrincipal">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active text-uppercase fw-bold nav-hover-effect d-flex align-items-center" href="#" id="btnInicio">
-                            <span id="iconoInicio" style="display:inline-block; margin-right: 5px; font-size: 18px;">↻</span> INICIO
+                        <a class="nav-link active d-flex align-items-center" href="#" id="btnInicio">
+                            <span id="iconoInicio" style="display:inline-block; margin-right: 5px; font-size: 18px;">↻</span> Inicio
                         </a>
                     </li>
-                    <li class="nav-item"><a class="nav-link text-uppercase fw-bold nav-hover-effect" href="#" id="btnCategorias">CATEGORÍAS</a></li>
-                    <li class="nav-item"><a class="nav-link text-uppercase fw-bold nav-hover-effect" href="#" id="btnNavFavoritos">FAVORITOS</a></li>
-                    <li class="nav-item"><a class="nav-link text-uppercase fw-bold nav-hover-effect" href="#" id="btnHistorial">HISTORIAL</a></li>
-                    <li class="nav-item"><a class="nav-link text-uppercase fw-bold nav-hover-effect" href="#" id="btnMision">MISIÓN</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" id="btnCategorias">Categorías</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" id="btnNavFavoritos">Favoritos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" id="btnHistorial">Historial</a></li>
                 </ul>
             </div>
         </div>

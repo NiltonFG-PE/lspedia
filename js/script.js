@@ -18,16 +18,25 @@ const CLAVE_FAVORITOS = "lspedia_favoritos";
 const CLAVE_HISTORIAL = "lspedia_historial";
 
 // --- EVENTOS DEL MENÚ SUPERIOR ---
+
+// Botón Logo: Limpia la URL y recarga instantáneamente
+const btnLogo = document.getElementById("btnLogo");
+if(btnLogo) {
+    btnLogo.addEventListener("click", (e) => {
+        e.preventDefault();
+        window.location.href = window.location.pathname; 
+    });
+}
+
+// Botón Inicio: Anima, limpia la URL y recarga
 const btnInicio = document.getElementById("btnInicio");
 if(btnInicio) {
     btnInicio.addEventListener("click", (e) => {
         e.preventDefault();
         const icono = document.getElementById("iconoInicio");
         if(icono) icono.classList.add("spin-anim");
-        
-        // Limpiamos el # de la URL para que recargue desde cero
-        window.history.replaceState(null, null, window.location.pathname);
-        setTimeout(() => window.location.reload(), 500); 
+        // pathname limpia cualquier parámetro extra como ?p=palabra
+        setTimeout(() => window.location.href = window.location.pathname, 500); 
     });
 }
 
@@ -52,29 +61,22 @@ document.getElementById("btnHistorial").addEventListener("click", (e) => {
     mostrarPantallaHistorial();
 });
 
-// --- CARGA DE DATOS Y LECTURA DE URL ---
+// --- CARGA DE DATOS E INICIO INTELIGENTE ---
 fetch("data/palabras.json")
 .then(res => res.json())
 .then(data => {
     palabras = data.filter(p => p.palabra && p.categoria);
     actualizarEstadisticas();
     mostrarFavoritos();
-    
-    // NUEVO: Al cargar los datos, revisamos si la URL tiene una palabra guardada
-    revisarURL();
-});
 
-function revisarURL() {
-    // Si la URL tiene un hash (ejemplo: #Mamá), lo decodificamos y mostramos la palabra
-    const hash = window.location.hash.substring(1);
-    if (hash) {
-        const palabraBuscada = decodeURIComponent(hash);
-        const p = palabras.find(item => item.palabra === palabraBuscada);
-        if (p) {
-            mostrarPalabra(p);
-        }
+    // NUEVO: Lee la URL al cargar la página para ver si hay una búsqueda activa
+    const urlParams = new URLSearchParams(window.location.search);
+    const palabraEnUrl = urlParams.get("p");
+    
+    if (palabraEnUrl) {
+        mostrarPalabraPorNombre(palabraEnUrl);
     }
-}
+});
 
 function actualizarEstadisticas(){
     totalPalabras.textContent = palabras.length;
@@ -128,15 +130,16 @@ function buscarPalabras(){
     });
 }
 
-// --- MOSTRAR PALABRA Y UN SOLO VIDEO ---
+// --- MOSTRAR PALABRA ---
 function mostrarPalabra(p){
     buscar.value = p.palabra;
     sugerencias.innerHTML="";
     panelCategorias.innerHTML = ""; 
     seccionHistorial.classList.add("d-none");
 
-    // NUEVO: Guardamos la palabra en la URL (ejemplo: #Comprar)
-    window.location.hash = encodeURIComponent(p.palabra);
+    // NUEVO: Actualiza la URL silenciosamente sin recargar la página
+    const nuevaUrl = window.location.pathname + "?p=" + encodeURIComponent(p.palabra);
+    window.history.pushState({path: nuevaUrl}, '', nuevaUrl);
 
     agregarAHistorial(p.palabra); 
 
@@ -199,13 +202,15 @@ function mostrarPalabra(p){
 
 // --- FILTRO ABC ---
 function filtrarPorLetra(letra) {
-    window.history.replaceState(null, null, window.location.pathname); // Limpiamos URL
     buscar.value = ""; 
     sugerencias.innerHTML = "";
     resultado.innerHTML = "";
     panelCategorias.innerHTML = "";
     ultimasPalabras.innerHTML = ""; 
     seccionHistorial.classList.add("d-none");
+    
+    // Limpia la URL al usar el abecedario
+    window.history.pushState({}, '', window.location.pathname);
 
     const filtradas = palabras.filter(p => p.palabra.toUpperCase().startsWith(letra.toUpperCase()));
 
@@ -245,11 +250,11 @@ document.addEventListener("click",(e)=>{
 
 // --- CATEGORÍAS ---
 function mostrarCategorias(){
-    window.history.replaceState(null, null, window.location.pathname); // Limpiamos URL
     resultado.innerHTML="";
     panelCategorias.innerHTML="";
     ultimasPalabras.innerHTML = ""; 
     seccionHistorial.classList.add("d-none");
+    window.history.pushState({}, '', window.location.pathname); // Limpia la URL al ver categorías
     
     const categories = [...new Set(palabras.map(p => p.categoria.trim()))];
     categories.sort();
@@ -273,7 +278,6 @@ function mostrarCategorias(){
 }
 
 function mostrarCategoria(nombre){
-    window.history.replaceState(null, null, window.location.pathname); // Limpiamos URL
     resultado.innerHTML="";
     ultimasPalabras.innerHTML = ""; 
     const lista = palabras.filter(p => p.categoria.trim() === nombre);
@@ -298,7 +302,7 @@ function mostrarCategoria(nombre){
 }
 
 function mostrarPalabraPorNombre(nombre){
-    const palabra=palabras.find(p=>p.palabra===nombre);
+    const palabra = palabras.find(p => p.palabra.toLowerCase() === nombre.toLowerCase());
     if(palabra){
         window.scrollTo({ top: 0, behavior: 'smooth' });
         mostrarPalabra(palabra);
@@ -424,13 +428,14 @@ function agregarAHistorial(nombre){
 }
 
 function mostrarPantallaHistorial(){
-    window.history.replaceState(null, null, window.location.pathname); // Limpiamos URL
     resultado.innerHTML = "";
     panelCategorias.innerHTML = "";
     ultimasPalabras.innerHTML = "";
     buscar.value = "";
     sugerencias.innerHTML = "";
     
+    window.history.pushState({}, '', window.location.pathname); // Limpia la URL al ver historial
+
     seccionHistorial.classList.remove("d-none");
     seccionHistorial.scrollIntoView({ behavior: 'smooth', block: 'center' });
     
