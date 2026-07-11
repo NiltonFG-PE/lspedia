@@ -59,31 +59,29 @@
         }
 
         /* ABECEDARIO: Estilo oscuro moderno */
-        .indice-alfabetico {
-            display: flex !important;
-            flex-direction: row !important;
-            flex-wrap: nowrap !important;
-            justify-content: center !important;
-            padding: 10px !important;
-            gap: 2px !important;
-            background-color: #1e293b !important; /* Fondo oscuro */
-            border-radius: 8px !important;
-            border: none !important;
+        .indice-alfabetico{
+    display:flex;
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    overflow-y:hidden;
+    white-space:nowrap;
+    gap:4px;
+    padding:10px;
+    scrollbar-width:none;
+    -ms-overflow-style:none;
+}
+
+.indice-alfabetico::-webkit-scrollbar{
+    display:none;
+}
         }
 
-        .btn-abc {
-            width: 35px !important; 
-            height: 35px !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            font-weight: 600 !important; 
-            font-size: 15px !important;
-            color: #ffffff !important; /* Letras blancas */
-            transition: background-color 0.2s ease !important; 
-            padding: 0 !important;
-            border-radius: 4px !important;
-        }
+       .btn-abc{
+    flex:0 0 auto;
+    width:36px;
+    height:36px;
+    border-radius:8px;
+}
 
         .btn-abc:hover {
             background-color: #475569 !important; /* Plomo claro al pasar el puntero */
