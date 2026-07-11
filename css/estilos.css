@@ -191,35 +191,36 @@ iframe {
 /* ==========================================
    6. OPTIMIZACIÓN DISPOSITIVOS MÓVILES
 ========================================== */
-@media (max-width:768px){
-
-    .header-minimal h1{
-        font-size:1.3rem;
+@media (max-width: 768px) {
+    .header-minimal h1 {
+        font-size: 1.3rem;
     }
 
-    .indice-alfabetico{
-        display:grid !important;
-        grid-template-columns:repeat(13,1fr);
-        gap:6px;
-        padding:12px;
-        overflow:visible;
-        white-space:normal;
-        justify-items:center;
+    /* Mejora del Abecedario: distribución en filas flexibles */
+    .indice-alfabetico {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 5px !important;
+        padding: 10px !important;
+        justify-content: center !important;
+        overflow: visible !important;
     }
 
-    .btn-abc{
-        width:100%;
-        min-width:30px;
-        height:36px;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        border-radius:8px;
-        font-size:15px;
+    .btn-abc {
+        /* Se divide el espacio para tener aproximadamente 7 letras por fila */
+        flex: 0 0 calc(100% / 8 - 5px); 
+        min-width: 35px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        font-size: 16px;
+        background-color: #f8f9fa; /* Fondo suave para mejor contraste */
+        border: 1px solid #dee2e6;
     }
 
-    #resultado .row > div:last-child{
-        margin-top:1rem;
+    #resultado .row > div:last-child {
+        margin-top: 1rem;
     }
-
 }
