@@ -159,7 +159,11 @@
                     <div class="card-body p-4 text-white d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
                         <div>
                             <span class="badge mb-2" style="background-color: #ffc107; color:#000;" id="categoriaDelDia"></span>
-                            <span class="d-block text-uppercase small fw-bold mb-1" style="letter-spacing: 0.05em; color:#94a3b8;">✨ Seña del día</span>
+                            <div class="d-flex align-items-center mb-1">
+                                <button type="button" class="btn btn-sm p-0 me-2 text-white border-0 bg-transparent" id="btnSenalAnterior" title="Ver seña de ayer" aria-label="Ver seña del día anterior" style="font-size:14px; opacity:0.8;">◀</button>
+                                <span class="text-uppercase small fw-bold" style="letter-spacing: 0.05em; color:#94a3b8;" id="labelSenalDelDia">✨ Seña del día</span>
+                                <button type="button" class="btn btn-sm p-0 ms-2 text-white border-0 bg-transparent d-none" id="btnSenalSiguiente" title="Volver a hoy" aria-label="Volver a la seña de hoy" style="font-size:14px; opacity:0.8;">▶</button>
+                            </div>
                             <h4 class="fw-bold mb-2 text-white" id="tituloDelDia"></h4>
                             <p class="small mb-0 text-white" id="descripcionDelDia"></p>
                         </div>
