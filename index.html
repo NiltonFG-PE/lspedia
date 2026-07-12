@@ -152,6 +152,25 @@
 
     <div class="container py-4">
 
+        <div class="row justify-content-center mb-4" id="senalDelDia">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm animate-fade-in position-relative" style="border-radius: 15px; background-color: #0f172a;">
+                    <button type="button" class="btn-close btn-close-white position-absolute" style="top: 14px; right: 14px;" id="btnCerrarDelDia" aria-label="Cerrar"></button>
+                    <div class="card-body p-4 text-white d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+                        <div>
+                            <span class="badge mb-2" style="background-color: #ffc107; color:#000;" id="categoriaDelDia"></span>
+                            <span class="d-block text-uppercase small fw-bold mb-1" style="letter-spacing: 0.05em; color:#94a3b8;">✨ Seña del día</span>
+                            <h4 class="fw-bold mb-2 text-white" id="tituloDelDia"></h4>
+                            <p class="small mb-0 text-white" id="descripcionDelDia"></p>
+                        </div>
+                        <button class="btn btn-warning px-4 py-2 rounded-pill fw-bold text-dark flex-shrink-0" id="btnVerDelDia">
+                            Ver Seña
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="text-center mb-4 header-minimal">
             <h1 class="fw-bold tracking-tight">DICCIONARIO DE LENGUA SEÑAS Y ESPAÑOL</h1>
             <p class="text-muted small">Aprende el significado de las palabras con el apoyo de videos en señas.</p>
@@ -198,24 +217,6 @@
                     <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('X')">X</button>
                     <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('Y')">Y</button>
                     <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('Z')">Z</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="row justify-content-center mb-4" id="senalDelDia">
-            <div class="col-lg-8">
-                <div class="card border-0 shadow-sm animate-fade-in" style="border-radius: 15px; background-color: #0f172a;">
-                    <div class="card-body p-4 text-white d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
-                        <div>
-                            <span class="badge mb-2" style="background-color: #ffc107; color:#000;" id="categoriaDelDia"></span>
-                            <span class="d-block text-uppercase small fw-bold mb-1" style="letter-spacing: 0.05em; color:#94a3b8;">✨ Seña del día</span>
-                            <h4 class="fw-bold mb-2" id="tituloDelDia"></h4>
-                            <p class="small mb-0" style="color:#cbd5e1;" id="descripcionDelDia"></p>
-                        </div>
-                        <button class="btn btn-warning px-4 py-2 rounded-pill fw-bold text-dark flex-shrink-0" id="btnVerDelDia">
-                            Ver Seña
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
