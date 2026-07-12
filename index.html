@@ -143,6 +143,7 @@
                     <li class="nav-item"><a class="nav-link" href="#" id="btnCategorias">Categorías</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" id="btnNavFavoritos">Favoritos</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" id="btnHistorial">Historial</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" id="btnQuiz">Quiz</a></li>
                     <li class="nav-item"><a class="nav-link text-warning" href="#" data-bs-toggle="modal" data-bs-target="#modalSobreNosotros">Sobre Nosotros</a></li>
                 </ul>
             </div>
@@ -219,23 +220,29 @@
             </div>
         </div>
 
-        <div class="row g-2 justify-content-center mb-4 stats-container">
-            <div class="col-4 col-md-2">
-                <div class="stat-box text-center">
-                    <span class="stat-number" id="totalPalabras">0</span>
-                    <span class="stat-label">Palabras</span>
+        <div class="row g-3 justify-content-center mb-4">
+            <div class="col-4 col-md-3">
+                <div class="card border-0 shadow-sm h-100 text-center py-4 px-2" style="border-radius: 16px;">
+                    <div class="fs-1 mb-2">📚</div>
+                    <div class="text-uppercase small fw-bold mb-1" style="letter-spacing:0.05em; color:#94a3b8;">Palabras</div>
+                    <div class="fs-2 fw-bold" id="totalPalabras" style="color: var(--text-main);">0</div>
+                    <div class="small fw-semibold mt-1" style="color:#16a34a;">100% Completo</div>
                 </div>
             </div>
-            <div class="col-4 col-md-2">
-                <div class="stat-box text-center">
-                    <span class="stat-number" id="totalCategorias">0</span>
-                    <span class="stat-label">Categorías</span>
+            <div class="col-4 col-md-3">
+                <div class="card border-0 shadow-sm h-100 text-center py-4 px-2" style="border-radius: 16px;">
+                    <div class="fs-1 mb-2">📁</div>
+                    <div class="text-uppercase small fw-bold mb-1" style="letter-spacing:0.05em; color:#94a3b8;">Categorías</div>
+                    <div class="fs-2 fw-bold" id="totalCategorias" style="color: var(--text-main);">0</div>
+                    <div class="small fw-semibold mt-1" style="color:#0284c7;">Ubicadas</div>
                 </div>
             </div>
-            <div class="col-4 col-md-2">
-                <div class="stat-box text-center">
-                    <span class="stat-number" id="totalVideos">0</span>
-                    <span class="stat-label">Videos</span>
+            <div class="col-4 col-md-3">
+                <div class="card border-0 shadow-sm h-100 text-center py-4 px-2" style="border-radius: 16px;">
+                    <div class="fs-1 mb-2">🎥</div>
+                    <div class="text-uppercase small fw-bold mb-1" style="letter-spacing:0.05em; color:#94a3b8;">Videos</div>
+                    <div class="fs-2 fw-bold" id="totalVideos" style="color: var(--text-main);">0</div>
+                    <div class="small fw-semibold mt-1" style="color:#7c3aed;">HD de YouTube</div>
                 </div>
             </div>
         </div>
@@ -252,6 +259,59 @@
         <section id="seccionFavoritos" class="mb-5 p-3" style="background-color: #f0f8ff; border-radius: 12px; border: 1px solid #dceefc;">
             <h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">⭐ Mis Favoritos</h6>
             <div id="listaFavoritos" class="row g-2"></div>
+        </section>
+
+        <section id="seccionQuiz" class="mb-5 d-none">
+
+            <!-- INTRO DEL QUIZ -->
+            <div id="quizIntro" class="row justify-content-center">
+                <div class="col-lg-7">
+                    <div class="card border-0 shadow-sm text-center p-4 animate-fade-in" style="border-radius: 16px;">
+                        <div class="mx-auto mb-3 d-flex align-items-center justify-content-center" style="width:70px; height:70px; border-radius:18px; background-color:#e0f2fe; font-size:2rem;">🎮</div>
+                        <h4 class="fw-bold mb-2">Aprende Jugando (Quiz)</h4>
+                        <p class="text-muted small mb-4">Pon a prueba tus conocimientos de Lengua de Señas Peruana. Te mostraremos un video haciendo una seña, ¡y tú tendrás que adivinar qué palabra representa!</p>
+                        <div class="text-start p-3 mb-4" style="background-color:#f8fafc; border-radius:12px; border:1px solid #e2e8f0;">
+                            <p class="text-uppercase small fw-bold mb-2" style="color:#64748b; letter-spacing:0.05em;">Detalles de la práctica:</p>
+                            <p class="small mb-2 mb-2">📋 5 preguntas por ronda.</p>
+                            <p class="small mb-2">🤟 Videos reales en Lengua de Señas Peruana.</p>
+                            <p class="small mb-0" id="quizAvisoPocasPalabras"></p>
+                        </div>
+                        <button id="btnEmpezarQuiz" class="btn btn-warning fw-bold py-2 rounded-pill">▶ Empezar Práctica</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PREGUNTA ACTIVA -->
+            <div id="quizActivo" class="row justify-content-center d-none">
+                <div class="col-lg-7">
+                    <div class="card border-0 shadow-sm p-4 animate-fade-in" style="border-radius:16px;">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="badge bg-primary" id="quizProgreso">Pregunta 1 de 5</span>
+                            <span class="fw-bold small text-muted" id="quizPuntaje">Aciertos: 0</span>
+                        </div>
+                        <div class="ratio ratio-16x9 rounded overflow-hidden border mb-3">
+                            <iframe id="quizVideo" src="" allowfullscreen title="Video en Lengua de Señas Peruana"></iframe>
+                        </div>
+                        <p class="text-center fw-bold mb-3">¿Qué palabra representa esta seña?</p>
+                        <div class="row g-2" id="quizOpciones"></div>
+                        <div id="quizFeedback" class="text-center small fw-bold mt-3"></div>
+                        <button id="btnSiguientePregunta" class="btn btn-primary rounded-pill fw-bold mt-3 d-none">Siguiente →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RESULTADOS -->
+            <div id="quizResultados" class="row justify-content-center d-none">
+                <div class="col-lg-7">
+                    <div class="card border-0 shadow-sm text-center p-4 animate-fade-in" style="border-radius:16px;">
+                        <div class="fs-1 mb-2">🏆</div>
+                        <h4 class="fw-bold mb-2">¡Ronda completada!</h4>
+                        <p class="mb-4" id="quizResultadoTexto"></p>
+                        <button id="btnReiniciarQuiz" class="btn btn-warning fw-bold py-2 rounded-pill">Jugar de nuevo</button>
+                    </div>
+                </div>
+            </div>
+
         </section>
 
         <!-- RECUADRO CON NUEVO COLOR AZUL OSCURO Y BOTÓN AMARILLO -->
