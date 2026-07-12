@@ -234,6 +234,13 @@ function mostrarPalabra(p){
     const enFavoritos = esFavorito(p.palabra);
     const textoBoton = enFavoritos ? "★ En favoritos" : "⭐ Agregar a favoritos";
     const rutaImagen = p.imagen ? p.imagen : "https://via.placeholder.com/150";
+    const bloqueVideo = p.video && p.video.trim() !== ""
+        ? `<iframe src="https://www.youtube.com/embed/${p.video}?rel=0&modestbranding=1" allowfullscreen title="Video en Lengua de Señas Peruana: ${p.palabra}"></iframe>`
+        : `<div class="d-flex flex-column align-items-center justify-content-center h-100 bg-light text-muted text-center p-3">
+                <span class="fs-1 mb-2">🤟</span>
+                <span class="small fw-bold">Video próximamente</span>
+                <span class="small">Todavía no hemos grabado la seña de esta palabra.</span>
+           </div>`;
     let bloqueVariantes = p.variantes && p.variantes.trim() !== "" ? `<div class="mb-3 p-2 bg-light rounded border"><span class="d-block fw-bold text-secondary mb-1" style="font-size: 10px; letter-spacing: 0.5px;">🔄 CONJUGACIONES O VARIANTES:</span><span class="text-muted small fst-italic">${p.variantes}</span></div>` : "";
     resultado.innerHTML=`
     <div class="card shadow-sm mb-4 animate-fade-in" style="border-radius: 15px; border-color: #dceefc;">
@@ -246,7 +253,7 @@ function mostrarPalabra(p){
             <div class="row g-4 justify-content-center">
                 <div class="col-md-8">
                     <div class="ratio ratio-16x9 shadow-sm rounded overflow-hidden border">
-                        <iframe src="https://www.youtube.com/embed/${p.video}?rel=0&modestbranding=1" allowfullscreen></iframe>
+                        ${bloqueVideo}
                     </div>
                 </div>
                 <div class="col-md-4 text-center d-flex flex-column align-items-center justify-content-start">
