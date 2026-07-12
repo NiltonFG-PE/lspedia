@@ -122,7 +122,7 @@ buscar.addEventListener("input", buscarPalabras);
 function buscarPalabras(){
     const texto = buscar.value.trim().toLowerCase();
     ocultarQuiz();
-    //sugerencias.innerHTML = "";
+    sugerencias.innerHTML = "";
     //resultado.innerHTML = "";
     //ultimasPalabras.innerHTML = ""; 
     //panelCategorias.innerHTML = "";
