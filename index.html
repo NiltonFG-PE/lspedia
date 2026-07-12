@@ -11,14 +11,14 @@
     <meta property="og:type" content="website">
     <meta property="og:title" content="LSPedia - Diccionario de Lengua de Señas Peruana">
     <meta property="og:description" content="Diccionario digital gratuito para aprender el significado de palabras en español con el apoyo de videos en Lengua de Señas Peruana (LSP).">
-    <meta property="og:image" content="img/lspedia.png">
+    <meta property="og:image" content="https://niltonfg-pe.github.io/lspedia/img/lspedia.png">
     <meta property="og:locale" content="es_PE">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/estilos.css">
 
     <!-- Favicon -->
-    <link class="icon" type="image/png" href="img/favicon.png">
+    <link rel="icon" type="image/png" href="img/favicon.png">
 
     <!-- Estilos de Animación Personalizados -->
     <style>
@@ -188,8 +188,17 @@
             </div>
         </div>
 
-        <div class="row justify-content-center mb-4 mt-4">
+        <div class="row justify-content-center mb-2 mt-4">
+            <div class="col-lg-8 text-center">
+                <button class="btn btn-link text-decoration-none fw-bold text-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#indiceAlfabetico" aria-expanded="false" aria-controls="indiceAlfabetico" id="btnToggleAbc">
+                    <span id="flechaAbc" style="display:inline-block; transition: transform 0.2s;" aria-hidden="true">▼</span> Índice alfabético
+                </button>
+            </div>
+        </div>
+
+        <div class="row justify-content-center mb-4">
             <div class="col-lg-8">
+                <div class="collapse" id="indiceAlfabetico">
                 <div class="indice-alfabetico d-flex justify-content-between flex-wrap gap-1 p-2 bg-white rounded shadow-sm border">
                     <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('A')">A</button>
                     <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('B')">B</button>
@@ -217,6 +226,7 @@
                     <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('X')">X</button>
                     <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('Y')">Y</button>
                     <button class="btn btn-link btn-abc text-decoration-none text-dark" onclick="filtrarPorLetra('Z')">Z</button>
+                </div>
                 </div>
             </div>
         </div>
@@ -273,7 +283,7 @@
                         <p class="text-muted small mb-4">Pon a prueba tus conocimientos de Lengua de Señas Peruana. Te mostraremos un video haciendo una seña, ¡y tú tendrás que adivinar qué palabra representa!</p>
                         <div class="text-start p-3 mb-4" style="background-color:#f8fafc; border-radius:12px; border:1px solid #e2e8f0;">
                             <p class="text-uppercase small fw-bold mb-2" style="color:#64748b; letter-spacing:0.05em;">Detalles de la práctica:</p>
-                            <p class="small mb-2 mb-2">📋 5 preguntas por ronda.</p>
+                            <p class="small mb-2">📋 5 preguntas por ronda.</p>
                             <p class="small mb-2">🤟 Videos reales en Lengua de Señas Peruana.</p>
                             <p class="small mb-0" id="quizAvisoPocasPalabras"></p>
                         </div>
@@ -337,7 +347,7 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-0">
-                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfTXQ9r5pzkDgPmoIq-mY8vHSNBaU4zeJWyjYxrqltvvuI4KQ/viewform?embedded=true" width="100%" height="450" frameborder="0" marginheight="0" marginwidth="0">Cargando…</iframe>
+                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfTXQ9r5pzkDgPmoIq-mY8vHSNBaU4zeJWyjYxrqltvvuI4KQ/viewform?embedded=true" width="100%" height="450" frameborder="0" marginheight="0" marginwidth="0" title="Formulario para sugerir una nueva palabra">Cargando…</iframe>
                 </div>
             </div>
         </div>
