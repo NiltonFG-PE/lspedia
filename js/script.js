@@ -116,13 +116,25 @@ document.addEventListener("DOMContentLoaded", () => {
     App.iniciar();
 });
 
+const indiceAlfabetico = document.getElementById("indiceAlfabetico");
+if(indiceAlfabetico){
+    indiceAlfabetico.addEventListener("show.bs.collapse", () => {
+        const flecha = document.getElementById("flechaAbc");
+        if(flecha) flecha.style.transform = "rotate(180deg)";
+    });
+    indiceAlfabetico.addEventListener("hide.bs.collapse", () => {
+        const flecha = document.getElementById("flechaAbc");
+        if(flecha) flecha.style.transform = "rotate(0deg)";
+    });
+}
+
 // --- BUSCADOR INTELIGENTE ---
 buscar.addEventListener("input", buscarPalabras);
 
 function buscarPalabras(){
     const texto = buscar.value.trim().toLowerCase();
     ocultarQuiz();
-    //sugerencias.innerHTML = "";
+    sugerencias.innerHTML = "";
     //resultado.innerHTML = "";
     //ultimasPalabras.innerHTML = ""; 
     //panelCategorias.innerHTML = "";
@@ -190,6 +202,7 @@ function ejecutarBusquedaDirecta() {
         if(parciales.length > 0) {
             mostrarPalabra(parciales[0]);
         } else {
+            buscar.blur();
             panelCategorias.innerHTML = "";
             ultimasPalabras.innerHTML = "";
             seccionHistorial.classList.add("d-none");
@@ -201,6 +214,7 @@ function ejecutarBusquedaDirecta() {
                     <button class="btn btn-warning px-4 py-2 rounded-pill fw-bold text-dark" data-bs-toggle="modal" data-bs-target="#modalSugerencia">Sugerir esta palabra</button>
                 </div>
             </div>`;
+            setTimeout(() => resultado.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
         }
     }
 }
@@ -209,6 +223,7 @@ function ejecutarBusquedaDirecta() {
 function mostrarPalabra(p){
     ocultarQuiz();
     buscar.value = p.palabra;
+    buscar.blur();
     sugerencias.innerHTML="";
     sugerencias.style.display = "none";
     panelCategorias.innerHTML = ""; 
@@ -247,6 +262,7 @@ function mostrarPalabra(p){
         mostrarFavoritos();
     });
     mostrarSugerenciasRelacionadas(p);
+    setTimeout(() => resultado.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
 }
 
 // --- ESTADÍSTICAS ---
@@ -352,8 +368,13 @@ function mostrarSenalDelDia(){
 
     const hoy = new Date();
 
+    // Perú está en UTC-5 todo el año (sin horario de verano).
+    // Restamos ese desfase antes de calcular el día, para que el cambio
+    // ocurra a la medianoche de Perú y no a la medianoche UTC.
+    const desfasePeruMs = 5 * 60 * 60 * 1000;
+
     const numeroDia =
-        Math.floor(hoy.getTime()/86400000);
+        Math.floor((hoy.getTime() - desfasePeruMs) / 86400000);
 
     const indice =
         numeroDia % App.datos.length;
