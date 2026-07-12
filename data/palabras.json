@@ -1,19 +1,21 @@
 [
   {
     "palabra": "Hola",
-    "definicion": "Es la palabra que usamos para saludar a alguien cuando lo vemos o empezamos a hablar con él. No importa la hora que sea.",
+    "definicion": "EEs la palabra que usamos para saludar a alguien cuando lo vemos o empezamos a hablar con él. No importa la hora que sea.",
     "categoria": "Saludos",
     "video": "dQw4w9WgXcQ",
     "imagen": "https://img.magnific.com/foto-gratis/retrato-linda-joven-cubre-camara-riendo-coqueteando-tomando-cafe_1258-193590.jpg?t=st=1783618736~exp=1783622336~hmac=c274be37fc34a9e51ac195706606d5121d53551804d997df3b37c4690b2e4389&w=1480",
-    "variantes": "Holi, Holis, Holiwi, Ola, Olas, Hi, Oli, Olis"
+    "variantes": "Holi, Holis, Holiwi, Ola, Olas, Hi, Oli, Olis",
+    "": ""
   },
   {
     "palabra": "Buenos días",
-    "definicion": "s la fórmula de cortesía más común para saludar a alguien en la mañana, pero solo desde que amanece hasta el mediodía (la hora de comer).",
+    "definicion": "Es la fórmula de cortesía más común para saludar a alguien en la mañana, pero solo desde que amanece hasta el mediodía (la hora de comer).",
     "categoria": "Saludos",
     "video": "dQw4w9WgXcQ",
     "imagen": "https://img.magnific.com/foto-gratis/retrato-linda-joven-cubre-camara-riendo-coqueteando-tomando-cafe_1258-193590.jpg?t=st=1783618736~exp=1783622336~hmac=c274be37fc34a9e51ac195706606d5121d53551804d997df3b37c4690b2e4389&w=1480",
-    "variantes": "Buen día, Buenas, Bnas"
+    "variantes": "Buen día, Buenas, Bnas",
+    "": ""
   },
   {
     "palabra": "Buenas tardes",
@@ -21,7 +23,8 @@
     "categoria": "Saludos",
     "video": "dQw4w9WgXcQ",
     "imagen": "https://img.magnific.com/foto-gratis/retrato-linda-joven-cubre-camara-riendo-coqueteando-tomando-cafe_1258-193590.jpg?t=st=1783618736~exp=1783622336~hmac=c274be37fc34a9e51ac195706606d5121d53551804d997df3b37c4690b2e4389&w=1480",
-    "variantes": "Buena tarde, Bnas, Bnas tardes "
+    "variantes": "Buena tarde, Bnas, Bnas tardes ",
+    "": ""
   },
   {
     "palabra": "Buenas noches",
@@ -29,7 +32,8 @@
     "categoria": "Saludos",
     "video": "dQw4w9WgXcQ",
     "imagen": "https://img.magnific.com/foto-gratis/retrato-linda-joven-cubre-camara-riendo-coqueteando-tomando-cafe_1258-193590.jpg?t=st=1783618736~exp=1783622336~hmac=c274be37fc34a9e51ac195706606d5121d53551804d997df3b37c4690b2e4389&w=1480",
-    "variantes": "Buenas noches, Bnas, Bnas noches"
+    "variantes": "Buenas noches, Bnas, Bnas noches",
+    "": ""
   },
   {
     "palabra": "Bienvenido",
@@ -37,7 +41,8 @@
     "categoria": "Saludos",
     "video": "",
     "imagen": "",
-    "variantes": "Bienvenida, Bienvenidos,Bienvenidas,  Bienvenid@s"
+    "variantes": "Bienvenida, Bienvenidos,Bienvenidas,  Bienvenid@s",
+    "": ""
   },
   {
     "palabra": "Gracias",
@@ -45,7 +50,8 @@
     "categoria": "Cortesía",
     "video": "dQw4w9WgXcQ",
     "imagen": "https://img.magnific.com/foto-gratis/retrato-linda-joven-cubre-camara-riendo-coqueteando-tomando-cafe_1258-193590.jpg?t=st=1783618736~exp=1783622336~hmac=c274be37fc34a9e51ac195706606d5121d53551804d997df3b37c4690b2e4389&w=1480",
-    "variantes": "Muchas gracias, Muchísimas gracias, Mil gracias, Gracias totales, Grax, Grx, Muxas grax, Se agradece, "
+    "variantes": "Muchas gracias, Muchísimas gracias, Mil gracias, Gracias totales, Grax, Grx, Muxas grax, Se agradece, ",
+    "": ""
   },
   {
     "palabra": "Por favor",
@@ -53,7 +59,8 @@
     "categoria": "Cortesía",
     "video": "dQw4w9WgXcQ",
     "imagen": "https://img.magnific.com/foto-gratis/retrato-linda-joven-cubre-camara-riendo-coqueteando-tomando-cafe_1258-193590.jpg?t=st=1783618736~exp=1783622336~hmac=c274be37fc34a9e51ac195706606d5121d53551804d997df3b37c4690b2e4389&w=1480",
-    "variantes": "Porfa, Porfis, Por favorcito,Plis, Xfa,  Xfis, Pls, "
+    "variantes": "Porfa, Porfis, Por favorcito,Plis, Xfa,  Xfis, Pls, ",
+    "": ""
   },
   {
     "palabra": "Disculpar",
@@ -61,7 +68,8 @@
     "categoria": "Cortesía",
     "video": "dQw4w9WgXcQ",
     "imagen": "https://img.magnific.com/foto-gratis/retrato-linda-joven-cubre-camara-riendo-coqueteando-tomando-cafe_1258-193590.jpg?t=st=1783618736~exp=1783622336~hmac=c274be37fc34a9e51ac195706606d5121d53551804d997df3b37c4690b2e4389&w=1480",
-    "variantes": "Disculpa, Disculpe, Disculpen, disculpas,  disculpaste, disculparás, Sorry, Perdón, Perdóname, Lo siento"
+    "variantes": "Disculpa, Disculpe, Disculpen, disculpas,  disculpaste, disculparás, Sorry, Perdón, Perdóname, Lo siento",
+    "": ""
   },
   {
     "palabra": "De nada",
@@ -69,7 +77,8 @@
     "categoria": "Cortesía",
     "video": "",
     "imagen": "",
-    "variantes": ""
+    "variantes": "",
+    "": ""
   },
   {
     "palabra": "Con gusto",
@@ -77,7 +86,8 @@
     "categoria": "Cortesía",
     "video": "",
     "imagen": "",
-    "variantes": ""
+    "variantes": "",
+    "": ""
   },
   {
     "palabra": "Salud",
@@ -85,7 +95,8 @@
     "categoria": "Cortesía",
     "video": "",
     "imagen": "",
-    "variantes": ""
+    "variantes": "",
+    "": ""
   },
   {
     "palabra": "Provecho",
@@ -93,7 +104,8 @@
     "categoria": "Cortesía",
     "video": "",
     "imagen": "",
-    "variantes": ""
+    "variantes": "",
+    "": ""
   },
   {
     "palabra": "Felicidades",
@@ -101,7 +113,8 @@
     "categoria": "Cortesía",
     "video": "",
     "imagen": "",
-    "variantes": ""
+    "variantes": "",
+    "": ""
   },
   {
     "palabra": "Mamá",
@@ -109,7 +122,8 @@
     "categoria": "Familia",
     "video": "dQw4w9WgXcQ",
     "imagen": "https://img.magnific.com/foto-gratis/retrato-linda-joven-cubre-camara-riendo-coqueteando-tomando-cafe_1258-193590.jpg?t=st=1783618736~exp=1783622336~hmac=c274be37fc34a9e51ac195706606d5121d53551804d997df3b37c4690b2e4389&w=1480",
-    "variantes": ""
+    "variantes": "",
+    "": ""
   },
   {
     "palabra": "Papá",
@@ -117,7 +131,8 @@
     "categoria": "Familia",
     "video": "dQw4w9WgXcQ",
     "imagen": "https://www.wikihow.com/images/thumb/d/d4/Sign-Thank-You-Step-1.jpg/v4-728px-Sign-Thank-You-Step-1.jpg.webp",
-    "variantes": ""
+    "variantes": "",
+    "": ""
   },
   {
     "palabra": "Hermano",
@@ -125,7 +140,8 @@
     "categoria": "Familia",
     "video": "dQw4w9WgXcQ",
     "imagen": "https://www.wikihow.com/images/thumb/d/d4/Sign-Thank-You-Step-1.jpg/v4-728px-Sign-Thank-You-Step-1.jpg.webp",
-    "variantes": ""
+    "variantes": "",
+    "": ""
   },
   {
     "palabra": "Hermana",
@@ -133,7 +149,8 @@
     "categoria": "Familia",
     "video": "dQw4w9WgXcQ",
     "imagen": "https://www.wikihow.com/images/thumb/d/d4/Sign-Thank-You-Step-1.jpg/v4-728px-Sign-Thank-You-Step-1.jpg.webp",
-    "variantes": ""
+    "variantes": "",
+    "": ""
   },
   {
     "palabra": "Abuelo",
@@ -141,7 +158,8 @@
     "categoria": "Familia",
     "video": "dQw4w9WgXcQ",
     "imagen": "https://www.wikihow.com/images/thumb/d/d4/Sign-Thank-You-Step-1.jpg/v4-728px-Sign-Thank-You-Step-1.jpg.webp",
-    "variantes": ""
+    "variantes": "",
+    "": ""
   },
   {
     "palabra": "Abuela",
@@ -149,7 +167,8 @@
     "categoria": "Familia",
     "video": "dQw4w9WgXcQ",
     "imagen": "https://www.wikihow.com/images/thumb/d/d4/Sign-Thank-You-Step-1.jpg/v4-728px-Sign-Thank-You-Step-1.jpg.webp",
-    "variantes": ""
+    "variantes": "",
+    "": ""
   },
   {
     "palabra": "Profesor",
@@ -157,7 +176,8 @@
     "categoria": "Escuela",
     "video": "dQw4w9WgXcQ",
     "imagen": "https://www.wikihow.com/images/thumb/d/d4/Sign-Thank-You-Step-1.jpg/v4-728px-Sign-Thank-You-Step-1.jpg.webp",
-    "variantes": ""
+    "variantes": "",
+    "": ""
   },
   {
     "palabra": "Alumno",
@@ -165,7 +185,8 @@
     "categoria": "Escuela",
     "video": "dQw4w9WgXcQ",
     "imagen": "https://www.wikihow.com/images/thumb/d/d4/Sign-Thank-You-Step-1.jpg/v4-728px-Sign-Thank-You-Step-1.jpg.webp",
-    "variantes": ""
+    "variantes": "",
+    "": ""
   },
   {
     "palabra": "Libro",
@@ -173,7 +194,8 @@
     "categoria": "Escuela",
     "video": "dQw4w9WgXcQ",
     "imagen": "https://www.wikihow.com/images/thumb/d/d4/Sign-Thank-You-Step-1.jpg/v4-728px-Sign-Thank-You-Step-1.jpg.webp",
-    "variantes": ""
+    "variantes": "",
+    "": ""
   },
   {
     "palabra": "Cuaderno",
@@ -181,7 +203,8 @@
     "categoria": "Escuela",
     "video": "dQw4w9WgXcQ",
     "imagen": "https://www.wikihow.com/images/thumb/d/d4/Sign-Thank-You-Step-1.jpg/v4-728px-Sign-Thank-You-Step-1.jpg.webp",
-    "variantes": ""
+    "variantes": "",
+    "": ""
   },
   {
     "palabra": "Escribir",
@@ -189,7 +212,8 @@
     "categoria": "Escuela",
     "video": "dQw4w9WgXcQ",
     "imagen": "https://www.wikihow.com/images/thumb/d/d4/Sign-Thank-You-Step-1.jpg/v4-728px-Sign-Thank-You-Step-1.jpg.webp",
-    "variantes": ""
+    "variantes": "",
+    "": "git add ."
   },
   {
     "palabra": "Leer",
@@ -197,6 +221,7 @@
     "categoria": "Escuela",
     "video": "dQw4w9WgXcQ",
     "imagen": "https://www.wikihow.com/images/thumb/d/d4/Sign-Thank-You-Step-1.jpg/v4-728px-Sign-Thank-You-Step-1.jpg.webp",
-    "variantes": ""
+    "variantes": "",
+    "": ""
   }
 ]
