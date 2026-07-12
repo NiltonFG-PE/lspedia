@@ -233,7 +233,12 @@ function mostrarPalabra(p){
     agregarAHistorial(p.palabra); 
     const enFavoritos = esFavorito(p.palabra);
     const textoBoton = enFavoritos ? "★ En favoritos" : "⭐ Agregar a favoritos";
-    const rutaImagen = p.imagen ? p.imagen : "https://via.placeholder.com/150";
+    const bloqueImagen = p.imagen && p.imagen.trim() !== ""
+        ? `<img src="${p.imagen}" class="img-fluid rounded border p-2 bg-light shadow-sm" style="max-height: 250px; object-fit: contain;" alt="Imagen de apoyo visual para ${p.palabra}">`
+        : `<div class="d-flex flex-column align-items-center justify-content-center bg-light text-muted text-center p-3 rounded border w-100" style="min-height:200px;">
+                <span class="fs-1 mb-2">🖼️</span>
+                <span class="small fw-bold">Imagen próximamente</span>
+           </div>`;
     const bloqueVideo = p.video && p.video.trim() !== ""
         ? `<iframe src="https://www.youtube.com/embed/${p.video}?rel=0&modestbranding=1" allowfullscreen title="Video en Lengua de Señas Peruana: ${p.palabra}"></iframe>`
         : `<div class="d-flex flex-column align-items-center justify-content-center h-100 bg-light text-muted text-center p-3">
@@ -258,7 +263,7 @@ function mostrarPalabra(p){
                 </div>
                 <div class="col-md-4 text-center d-flex flex-column align-items-center justify-content-start">
                     <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider">📸 Apoyo Visual:</span>
-                    <img src="${rutaImagen}" class="img-fluid rounded border p-2 bg-light shadow-sm" style="max-height: 250px; object-fit: contain;">
+                    ${bloqueImagen}
                 </div>
             </div>
         </div>
