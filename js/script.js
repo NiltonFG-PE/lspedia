@@ -362,9 +362,13 @@ function mostrarPantallaHistorial(){
     });
 }
 document.addEventListener("click",(e)=>{ if(!buscar.contains(e.target) && !sugerencias.contains(e.target)) sugerencias.style.display="none"; });  
-function mostrarSenalDelDia(){
+let offsetSenalDelDia = 0;
+
+function mostrarSenalDelDia(offset = offsetSenalDelDia){
 
     if(App.datos.length===0) return;
+
+    offsetSenalDelDia = offset;
 
     const hoy = new Date();
 
@@ -374,10 +378,10 @@ function mostrarSenalDelDia(){
     const desfasePeruMs = 5 * 60 * 60 * 1000;
 
     const numeroDia =
-        Math.floor((hoy.getTime() - desfasePeruMs) / 86400000);
+        Math.floor((hoy.getTime() - desfasePeruMs) / 86400000) - offset;
 
     const indice =
-        numeroDia % App.datos.length;
+        ((numeroDia % App.datos.length) + App.datos.length) % App.datos.length;
 
     const palabra = App.datos[indice];
 
@@ -385,10 +389,31 @@ function mostrarSenalDelDia(){
         `"${palabra.palabra}"`;
 
     document.getElementById("descripcionDelDia").textContent =
-        palabra.definicion.substring(0,160)+"...";
+        palabra.definicion.length > 160
+            ? palabra.definicion.substring(0,160)+"..."
+            : palabra.definicion;
 
     document.getElementById("categoriaDelDia").textContent =
         palabra.categoria;
+
+    const labelSenalDelDia = document.getElementById("labelSenalDelDia");
+    if(labelSenalDelDia){
+        if(offset === 0) labelSenalDelDia.textContent = "✨ Seña del día";
+        else if(offset === 1) labelSenalDelDia.textContent = "✨ Seña de ayer";
+        else labelSenalDelDia.textContent = `✨ Seña de hace ${offset} días`;
+    }
+
+    const btnSenalSiguiente = document.getElementById("btnSenalSiguiente");
+    if(btnSenalSiguiente){
+        btnSenalSiguiente.classList.toggle("d-none", offset === 0);
+        btnSenalSiguiente.onclick = () => mostrarSenalDelDia(Math.max(0, offsetSenalDelDia - 1));
+    }
+
+    const btnSenalAnterior = document.getElementById("btnSenalAnterior");
+    if(btnSenalAnterior){
+        btnSenalAnterior.classList.toggle("d-none", offset >= 1);
+        btnSenalAnterior.onclick = () => mostrarSenalDelDia(Math.min(1, offsetSenalDelDia + 1));
+    }
 
     document
         .getElementById("btnVerDelDia")
