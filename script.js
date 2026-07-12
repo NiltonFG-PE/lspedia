@@ -116,6 +116,18 @@ document.addEventListener("DOMContentLoaded", () => {
     App.iniciar();
 });
 
+const indiceAlfabetico = document.getElementById("indiceAlfabetico");
+if(indiceAlfabetico){
+    indiceAlfabetico.addEventListener("show.bs.collapse", () => {
+        const flecha = document.getElementById("flechaAbc");
+        if(flecha) flecha.style.transform = "rotate(180deg)";
+    });
+    indiceAlfabetico.addEventListener("hide.bs.collapse", () => {
+        const flecha = document.getElementById("flechaAbc");
+        if(flecha) flecha.style.transform = "rotate(0deg)";
+    });
+}
+
 // --- BUSCADOR INTELIGENTE ---
 buscar.addEventListener("input", buscarPalabras);
 
@@ -190,6 +202,7 @@ function ejecutarBusquedaDirecta() {
         if(parciales.length > 0) {
             mostrarPalabra(parciales[0]);
         } else {
+            buscar.blur();
             panelCategorias.innerHTML = "";
             ultimasPalabras.innerHTML = "";
             seccionHistorial.classList.add("d-none");
@@ -201,7 +214,7 @@ function ejecutarBusquedaDirecta() {
                     <button class="btn btn-warning px-4 py-2 rounded-pill fw-bold text-dark" data-bs-toggle="modal" data-bs-target="#modalSugerencia">Sugerir esta palabra</button>
                 </div>
             </div>`;
-            resultado.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            setTimeout(() => resultado.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
         }
     }
 }
@@ -210,6 +223,7 @@ function ejecutarBusquedaDirecta() {
 function mostrarPalabra(p){
     ocultarQuiz();
     buscar.value = p.palabra;
+    buscar.blur();
     sugerencias.innerHTML="";
     sugerencias.style.display = "none";
     panelCategorias.innerHTML = ""; 
@@ -248,7 +262,7 @@ function mostrarPalabra(p){
         mostrarFavoritos();
     });
     mostrarSugerenciasRelacionadas(p);
-    resultado.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setTimeout(() => resultado.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
 }
 
 // --- ESTADÍSTICAS ---
