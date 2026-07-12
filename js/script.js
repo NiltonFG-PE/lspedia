@@ -57,6 +57,9 @@ document.getElementById("btnHistorial").addEventListener("click", (e) => {
     e.preventDefault();
     ocultarQuiz();
     mostrarPantallaHistorial();
+    seccionHistorial.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    seccionHistorial.classList.add("highlight-anim");
+    setTimeout(() => seccionHistorial.classList.remove("highlight-anim"), 2000);
 });
 
 const seccionQuiz = document.getElementById("seccionQuiz");
@@ -379,6 +382,13 @@ function mostrarSenalDelDia(){
             mostrarPalabra(palabra);
 
         };
+
+    const btnCerrarDelDia = document.getElementById("btnCerrarDelDia");
+    if(btnCerrarDelDia){
+        btnCerrarDelDia.onclick = () => {
+            document.getElementById("senalDelDia").style.display = "none";
+        };
+    }
 
 }
 
