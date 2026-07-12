@@ -201,6 +201,7 @@ function ejecutarBusquedaDirecta() {
                     <button class="btn btn-warning px-4 py-2 rounded-pill fw-bold text-dark" data-bs-toggle="modal" data-bs-target="#modalSugerencia">Sugerir esta palabra</button>
                 </div>
             </div>`;
+            resultado.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     }
 }
@@ -247,6 +248,7 @@ function mostrarPalabra(p){
         mostrarFavoritos();
     });
     mostrarSugerenciasRelacionadas(p);
+    resultado.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // --- ESTADÍSTICAS ---
