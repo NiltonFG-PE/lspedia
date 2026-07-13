@@ -223,5 +223,14 @@
     "imagen": "",
     "variantes": "",
     "": ""
+  },
+  {
+    "palabra": "Hipótesis",
+    "definicion": "Suposición hecha a partir de unos datos que sirve de base para iniciar una investigación o una argumentación.",
+    "categoria": "Educación",
+    "video": "",
+    "imagen": "",
+    "variantes": "",
+    "": "git commit -m \"borrar botón oraciones\""
   }
 ]
