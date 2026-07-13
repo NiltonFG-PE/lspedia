@@ -244,13 +244,29 @@ function mostrarPalabra(p){
                 <span class="fs-1 mb-2">🖼️</span>
                 <span class="small fw-bold">Imagen próximamente</span>
            </div>`;
-    const bloqueVideo = p.video && p.video.trim() !== ""
-        ? `<iframe src="https://www.youtube.com/embed/${p.video}?rel=0&modestbranding=1" allowfullscreen title="Video en Lengua de Señas Peruana: ${p.palabra}"></iframe>`
+    const hayVideo = p.video && p.video.trim() !== "";
+    const bloqueVideo = hayVideo
+        ? `<div id="reproductorPalabra"></div>`
         : `<div class="d-flex flex-column align-items-center justify-content-center h-100 bg-light text-muted text-center p-3">
                 <span class="fs-1 mb-2">🤟</span>
                 <span class="small fw-bold">Video próximamente</span>
                 <span class="small">Todavía no hemos grabado la seña de esta palabra.</span>
            </div>`;
+    const bloqueControlesVideo = hayVideo
+        ? `<div class="controles-video d-flex align-items-center justify-content-center gap-2 mt-2 flex-wrap">
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnRetroceder10" title="Retroceder 10 segundos" aria-label="Retroceder 10 segundos">⏪ 10s</button>
+                <button type="button" class="btn btn-sm btn-primary" id="btnPlayPause" title="Reproducir o pausar" aria-label="Reproducir o pausar">▶️ Reproducir</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAvanzar10" title="Avanzar 10 segundos" aria-label="Avanzar 10 segundos">10s ⏩</button>
+                <select class="form-select form-select-sm" id="selectVelocidad" title="Velocidad de reproducción" aria-label="Velocidad de reproducción">
+                    <option value="0.5">0.5x</option>
+                    <option value="0.75">0.75x</option>
+                    <option value="1" selected>1x (normal)</option>
+                    <option value="1.25">1.25x</option>
+                    <option value="1.5">1.5x</option>
+                    <option value="2">2x</option>
+                </select>
+           </div>`
+        : "";
     let bloqueVariantes = p.variantes && p.variantes.trim() !== "" ? `<div class="mb-3 p-2 bg-light rounded border"><span class="d-block fw-bold text-secondary mb-1" style="font-size: 10px; letter-spacing: 0.5px;">🔄 CONJUGACIONES O VARIANTES:</span><span class="text-muted small fst-italic">${p.variantes}</span></div>` : "";
     resultado.innerHTML=`
     <div class="card shadow-sm mb-4 animate-fade-in" style="border-radius: 15px; border-color: #dceefc;">
@@ -263,9 +279,10 @@ function mostrarPalabra(p){
             <div class="row g-4 justify-content-center align-items-stretch">
                 <div class="col-md-8 d-flex flex-column">
                     <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider text-md-start">🤟 Video en LSP:</span>
-                    <div class="ratio ratio-16x9 shadow-sm rounded overflow-hidden border flex-grow-1">
+                    <div class="ratio ratio-16x9 shadow-sm rounded overflow-hidden border">
                         ${bloqueVideo}
                     </div>
+                    ${bloqueControlesVideo}
                 </div>
                 <div class="col-md-4 d-flex flex-column">
                     <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider">📸 Apoyo Visual:</span>
@@ -282,7 +299,90 @@ function mostrarPalabra(p){
         mostrarFavoritos();
     });
     mostrarSugerenciasRelacionadas(p);
+    if (hayVideo) {
+        inicializarReproductorPalabra(p.video);
+    } else {
+        ytPlayerPalabra = null;
+    }
     setTimeout(() => resultado.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+}
+
+// --- REPRODUCTOR DE VIDEO CONTROLABLE (YouTube IFrame API) ---
+let ytPlayerPalabra = null;
+let ytApiListo = false;
+let ytVideoIdPendiente = null;
+
+// Esta función la llama automáticamente el script de YouTube (iframe_api) cuando está lista.
+function onYouTubeIframeAPIReady() {
+    ytApiListo = true;
+    if (ytVideoIdPendiente) {
+        crearReproductorPalabra(ytVideoIdPendiente);
+        ytVideoIdPendiente = null;
+    }
+}
+window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+
+function inicializarReproductorPalabra(videoId) {
+    if (ytApiListo) {
+        crearReproductorPalabra(videoId);
+    } else {
+        // La API todavía no cargó: guardamos el video y se crea en cuanto esté lista.
+        ytVideoIdPendiente = videoId;
+    }
+}
+
+function crearReproductorPalabra(videoId) {
+    const contenedor = document.getElementById("reproductorPalabra");
+    if (!contenedor) return;
+    if (ytPlayerPalabra && typeof ytPlayerPalabra.destroy === "function") {
+        ytPlayerPalabra.destroy();
+    }
+    ytPlayerPalabra = new YT.Player("reproductorPalabra", {
+        videoId: videoId,
+        playerVars: { rel: 0, modestbranding: 1 },
+        events: {
+            onReady: configurarControlesVideo,
+            onStateChange: actualizarBotonPlayPause
+        }
+    });
+}
+
+function configurarControlesVideo() {
+    const btnRetroceder = document.getElementById("btnRetroceder10");
+    const btnAvanzar = document.getElementById("btnAvanzar10");
+    const btnPlayPause = document.getElementById("btnPlayPause");
+    const selectVelocidad = document.getElementById("selectVelocidad");
+    if (!btnRetroceder || !btnAvanzar || !btnPlayPause || !selectVelocidad || !ytPlayerPalabra) return;
+
+    btnRetroceder.addEventListener("click", () => {
+        const tiempoActual = ytPlayerPalabra.getCurrentTime();
+        ytPlayerPalabra.seekTo(Math.max(0, tiempoActual - 10), true);
+    });
+
+    btnAvanzar.addEventListener("click", () => {
+        const tiempoActual = ytPlayerPalabra.getCurrentTime();
+        const duracion = ytPlayerPalabra.getDuration();
+        ytPlayerPalabra.seekTo(Math.min(duracion, tiempoActual + 10), true);
+    });
+
+    btnPlayPause.addEventListener("click", () => {
+        const estado = ytPlayerPalabra.getPlayerState();
+        if (estado === YT.PlayerState.PLAYING) {
+            ytPlayerPalabra.pauseVideo();
+        } else {
+            ytPlayerPalabra.playVideo();
+        }
+    });
+
+    selectVelocidad.addEventListener("change", () => {
+        ytPlayerPalabra.setPlaybackRate(parseFloat(selectVelocidad.value));
+    });
+}
+
+function actualizarBotonPlayPause(evento) {
+    const btnPlayPause = document.getElementById("btnPlayPause");
+    if (!btnPlayPause) return;
+    btnPlayPause.textContent = evento.data === YT.PlayerState.PLAYING ? "⏸ Pausar" : "▶️ Reproducir";
 }
 
 // --- AMPLIAR IMAGEN DE APOYO VISUAL ---
