@@ -234,8 +234,13 @@ function mostrarPalabra(p){
     const enFavoritos = esFavorito(p.palabra);
     const textoBoton = enFavoritos ? "★ En favoritos" : "⭐ Agregar a favoritos";
     const bloqueImagen = p.imagen && p.imagen.trim() !== ""
-        ? `<img src="${p.imagen}" class="img-fluid rounded border p-2 bg-light shadow-sm" style="max-height: 250px; object-fit: contain;" alt="Imagen de apoyo visual para ${p.palabra}">`
-        : `<div class="d-flex flex-column align-items-center justify-content-center bg-light text-muted text-center p-3 rounded border w-100" style="min-height:200px;">
+        ? `<div class="apoyo-visual-caja h-100 w-100" role="button" tabindex="0"
+                onclick="abrirImagenAmpliada('${p.imagen}', '${p.palabra.replace(/'/g, "\\'")}')"
+                onkeypress="if(event.key==='Enter') abrirImagenAmpliada('${p.imagen}', '${p.palabra.replace(/'/g, "\\'")}')">
+                <img src="${p.imagen}" class="apoyo-visual-img" alt="Imagen de apoyo visual para ${p.palabra}">
+                <span class="apoyo-visual-lupa">🔍 Ampliar</span>
+           </div>`
+        : `<div class="d-flex flex-column align-items-center justify-content-center bg-light text-muted text-center p-3 rounded border w-100 h-100" style="min-height:200px;">
                 <span class="fs-1 mb-2">🖼️</span>
                 <span class="small fw-bold">Imagen próximamente</span>
            </div>`;
@@ -255,15 +260,18 @@ function mostrarPalabra(p){
             <p class="text-muted small mb-3">${p.definicion}</p>
             ${bloqueVariantes}
             <button id="btnFavorito" class="btn btn-sm btn-outline-primary mb-4 py-1 px-3" style="border-radius: 15px; font-size: 12px; font-weight: bold;">${textoBoton}</button>
-            <div class="row g-4 justify-content-center">
-                <div class="col-md-8">
-                    <div class="ratio ratio-16x9 shadow-sm rounded overflow-hidden border">
+            <div class="row g-4 justify-content-center align-items-stretch">
+                <div class="col-md-8 d-flex flex-column">
+                    <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider text-md-start">🤟 Video en LSP:</span>
+                    <div class="ratio ratio-16x9 shadow-sm rounded overflow-hidden border flex-grow-1">
                         ${bloqueVideo}
                     </div>
                 </div>
-                <div class="col-md-4 text-center d-flex flex-column align-items-center justify-content-start">
+                <div class="col-md-4 d-flex flex-column">
                     <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider">📸 Apoyo Visual:</span>
-                    ${bloqueImagen}
+                    <div class="shadow-sm rounded overflow-hidden border bg-light flex-grow-1">
+                        ${bloqueImagen}
+                    </div>
                 </div>
             </div>
         </div>
@@ -275,6 +283,19 @@ function mostrarPalabra(p){
     });
     mostrarSugerenciasRelacionadas(p);
     setTimeout(() => resultado.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+}
+
+// --- AMPLIAR IMAGEN DE APOYO VISUAL ---
+function abrirImagenAmpliada(url, palabra){
+    const imgAmpliada = document.getElementById("imgAmpliadaContenido");
+    const tituloAmpliada = document.getElementById("tituloImagenAmpliada");
+    if(!imgAmpliada) return;
+    imgAmpliada.src = url;
+    imgAmpliada.alt = `Imagen de apoyo visual para ${palabra}`;
+    if(tituloAmpliada) tituloAmpliada.textContent = palabra;
+    const modalEl = document.getElementById("modalImagenAmpliada");
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    modal.show();
 }
 
 // --- ESTADÍSTICAS ---
