@@ -144,6 +144,7 @@
                     <li class="nav-item"><a class="nav-link" href="#" id="btnNavFavoritos"><span aria-hidden="true">⭐</span> Favoritos</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" id="btnHistorial"><span aria-hidden="true">🕒</span> Historial</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" id="btnQuiz"><span aria-hidden="true">🎮</span> Quiz</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" id="btnOraciones"><span aria-hidden="true">🧩</span> Oraciones</a></li>
                     <li class="nav-item"><a class="nav-link text-warning" href="#" data-bs-toggle="modal" data-bs-target="#modalSobreNosotros"><span aria-hidden="true">🤟</span> Sobre Nosotros</a></li>
                 </ul>
             </div>
@@ -176,7 +177,7 @@
         </div>
 
         <div class="text-center mb-4 header-minimal">
-            <h1 class="fw-bold tracking-tight">DICCIONARIO DE LENGUA SEÑAS Y ESPAÑOL</h1>
+            <h1 class="fw-bold tracking-tight">Diccionario de Lengua de Señas Peruana (LSP) y Español</h1>
             <p class="text-muted small">Aprende el significado de las palabras con el apoyo de videos en señas.</p>
         </div>
 
@@ -323,6 +324,64 @@
                         <h4 class="fw-bold mb-2">¡Ronda completada!</h4>
                         <p class="mb-4" id="quizResultadoTexto"></p>
                         <button id="btnReiniciarQuiz" class="btn btn-warning fw-bold py-2 rounded-pill">Jugar de nuevo</button>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <section id="seccionOraciones" class="mb-5 d-none">
+
+            <!-- INTRO -->
+            <div id="oracionesIntro" class="row justify-content-center">
+                <div class="col-lg-7">
+                    <div class="card border-0 shadow-sm text-center p-4 animate-fade-in" style="border-radius: 16px;">
+                        <div class="mx-auto mb-3 d-flex align-items-center justify-content-center" style="width:70px; height:70px; border-radius:18px; background-color:#e0f2fe; font-size:2rem;">🧩</div>
+                        <h4 class="fw-bold mb-2">Formar Oraciones</h4>
+                        <p class="text-muted small mb-4">Te vamos a mostrar las palabras de una oración desordenadas. Tócalas en el orden correcto para armar la frase completa, usando palabras que ya viste en el diccionario.</p>
+                        <div class="text-start p-3 mb-4" style="background-color:#f8fafc; border-radius:12px; border:1px solid #e2e8f0;">
+                            <p class="text-uppercase small fw-bold mb-2" style="color:#64748b; letter-spacing:0.05em;">Detalles de la práctica:</p>
+                            <p class="small mb-2">📋 5 oraciones por ronda.</p>
+                            <p class="small mb-0">🧠 Toca las palabras en el orden correcto para formar la frase.</p>
+                        </div>
+                        <button id="btnEmpezarOraciones" class="btn btn-warning fw-bold py-2 rounded-pill">▶ Empezar Práctica</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RONDA ACTIVA -->
+            <div id="oracionesActivo" class="row justify-content-center d-none">
+                <div class="col-lg-7">
+                    <div class="card border-0 shadow-sm p-4 animate-fade-in" style="border-radius:16px;">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="badge bg-primary" id="oracionesProgreso">Oración 1 de 5</span>
+                            <span class="fw-bold small text-muted" id="oracionesPuntaje">Aciertos: 0</span>
+                        </div>
+
+                        <p class="text-center fw-bold mb-2">Toca las palabras en orden para formar la oración:</p>
+
+                        <div id="oracionArmada" class="d-flex flex-wrap gap-2 justify-content-center p-3 mb-3" style="min-height: 60px; background-color:#f8fafc; border-radius:10px; border:1px dashed #cbd5e1;"></div>
+
+                        <div id="oracionesFichas" class="d-flex flex-wrap gap-2 justify-content-center mb-3"></div>
+
+                        <div class="d-flex justify-content-center gap-2 mb-2">
+                            <button id="btnReiniciarFicha" class="btn btn-sm btn-outline-secondary rounded-pill">↺ Reiniciar intento</button>
+                        </div>
+
+                        <div id="oracionesFeedback" class="text-center small fw-bold mt-2"></div>
+                        <button id="btnSiguienteOracion" class="btn btn-primary rounded-pill fw-bold mt-3 d-none">Siguiente →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RESULTADOS -->
+            <div id="oracionesResultados" class="row justify-content-center d-none">
+                <div class="col-lg-7">
+                    <div class="card border-0 shadow-sm text-center p-4 animate-fade-in" style="border-radius:16px;">
+                        <div class="fs-1 mb-2">🏆</div>
+                        <h4 class="fw-bold mb-2">¡Ronda completada!</h4>
+                        <p class="mb-4" id="oracionesResultadoTexto"></p>
+                        <button id="btnReiniciarOraciones" class="btn btn-warning fw-bold py-2 rounded-pill">Jugar de nuevo</button>
                     </div>
                 </div>
             </div>
