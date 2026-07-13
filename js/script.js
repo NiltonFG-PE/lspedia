@@ -561,3 +561,4 @@ function mostrarResultadosQuiz(){
     const total = QuizState.preguntas.length;
     document.getElementById("quizResultadoTexto").innerHTML = `Acertaste <strong>${QuizState.aciertos}</strong> de <strong>${total}</strong> preguntas.`;
 }
+
