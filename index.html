@@ -120,6 +120,43 @@
 .navbar-nav .nav-item:hover {
     background-color: #212529; /* Un tono gris muy oscuro, casi negro, como en tu referencia */
 }
+
+/* Caja de la imagen de Apoyo Visual: mismo alto que el video y clicable para ampliar */
+.apoyo-visual-caja {
+    position: relative;
+    min-height: 180px;
+    cursor: zoom-in;
+    background-color: #f8f9fa;
+    overflow: hidden;
+}
+.apoyo-visual-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    transition: transform 0.25s ease;
+}
+.apoyo-visual-caja:hover .apoyo-visual-img {
+    transform: scale(1.04);
+}
+.apoyo-visual-lupa {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    background-color: rgba(0,0,0,0.65);
+    color: #fff;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 3px 10px;
+    border-radius: 20px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+}
+.apoyo-visual-caja:hover .apoyo-visual-lupa,
+.apoyo-visual-caja:focus .apoyo-visual-lupa {
+    opacity: 1;
+}
     </style>
 </head>
 
@@ -352,6 +389,23 @@
                 </div>
                 <div class="modal-body p-0">
                     <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfTXQ9r5pzkDgPmoIq-mY8vHSNBaU4zeJWyjYxrqltvvuI4KQ/viewform?embedded=true" width="100%" height="450" frameborder="0" marginheight="0" marginwidth="0" title="Formulario para sugerir una nueva palabra">Cargando…</iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL IMAGEN AMPLIADA (Apoyo Visual) -->
+    <div class="modal fade" id="modalImagenAmpliada" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header py-2" style="background-color: #343a40 !important;">
+                    <h6 class="modal-title fw-bold mb-0" style="color:#ffffff !important; font-size:14px;">
+                        📸 Apoyo visual: <span id="tituloImagenAmpliada"></span>
+                    </h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0 text-center bg-dark">
+                    <img id="imgAmpliadaContenido" src="" alt="" class="img-fluid" style="max-height: 80vh;">
                 </div>
             </div>
         </div>
