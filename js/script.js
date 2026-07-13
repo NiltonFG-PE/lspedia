@@ -57,6 +57,9 @@ document.getElementById("btnHistorial").addEventListener("click", (e) => {
     e.preventDefault();
     ocultarQuiz();
     mostrarPantallaHistorial();
+    seccionHistorial.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    seccionHistorial.classList.add("highlight-anim");
+    setTimeout(() => seccionHistorial.classList.remove("highlight-anim"), 2000);
 });
 
 const seccionQuiz = document.getElementById("seccionQuiz");
@@ -113,13 +116,25 @@ document.addEventListener("DOMContentLoaded", () => {
     App.iniciar();
 });
 
+const indiceAlfabetico = document.getElementById("indiceAlfabetico");
+if(indiceAlfabetico){
+    indiceAlfabetico.addEventListener("show.bs.collapse", () => {
+        const flecha = document.getElementById("flechaAbc");
+        if(flecha) flecha.style.transform = "rotate(180deg)";
+    });
+    indiceAlfabetico.addEventListener("hide.bs.collapse", () => {
+        const flecha = document.getElementById("flechaAbc");
+        if(flecha) flecha.style.transform = "rotate(0deg)";
+    });
+}
+
 // --- BUSCADOR INTELIGENTE ---
 buscar.addEventListener("input", buscarPalabras);
 
 function buscarPalabras(){
     const texto = buscar.value.trim().toLowerCase();
     ocultarQuiz();
-    //sugerencias.innerHTML = "";
+    sugerencias.innerHTML = "";
     //resultado.innerHTML = "";
     //ultimasPalabras.innerHTML = ""; 
     //panelCategorias.innerHTML = "";
@@ -187,6 +202,7 @@ function ejecutarBusquedaDirecta() {
         if(parciales.length > 0) {
             mostrarPalabra(parciales[0]);
         } else {
+            buscar.blur();
             panelCategorias.innerHTML = "";
             ultimasPalabras.innerHTML = "";
             seccionHistorial.classList.add("d-none");
@@ -198,6 +214,7 @@ function ejecutarBusquedaDirecta() {
                     <button class="btn btn-warning px-4 py-2 rounded-pill fw-bold text-dark" data-bs-toggle="modal" data-bs-target="#modalSugerencia">Sugerir esta palabra</button>
                 </div>
             </div>`;
+            setTimeout(() => resultado.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
         }
     }
 }
@@ -206,6 +223,7 @@ function ejecutarBusquedaDirecta() {
 function mostrarPalabra(p){
     ocultarQuiz();
     buscar.value = p.palabra;
+    buscar.blur();
     sugerencias.innerHTML="";
     sugerencias.style.display = "none";
     panelCategorias.innerHTML = ""; 
@@ -215,7 +233,19 @@ function mostrarPalabra(p){
     agregarAHistorial(p.palabra); 
     const enFavoritos = esFavorito(p.palabra);
     const textoBoton = enFavoritos ? "★ En favoritos" : "⭐ Agregar a favoritos";
-    const rutaImagen = p.imagen ? p.imagen : "https://via.placeholder.com/150";
+    const bloqueImagen = p.imagen && p.imagen.trim() !== ""
+        ? `<img src="${p.imagen}" class="img-fluid rounded border p-2 bg-light shadow-sm" style="max-height: 250px; object-fit: contain;" alt="Imagen de apoyo visual para ${p.palabra}">`
+        : `<div class="d-flex flex-column align-items-center justify-content-center bg-light text-muted text-center p-3 rounded border w-100" style="min-height:200px;">
+                <span class="fs-1 mb-2">🖼️</span>
+                <span class="small fw-bold">Imagen próximamente</span>
+           </div>`;
+    const bloqueVideo = p.video && p.video.trim() !== ""
+        ? `<iframe src="https://www.youtube.com/embed/${p.video}?rel=0&modestbranding=1" allowfullscreen title="Video en Lengua de Señas Peruana: ${p.palabra}"></iframe>`
+        : `<div class="d-flex flex-column align-items-center justify-content-center h-100 bg-light text-muted text-center p-3">
+                <span class="fs-1 mb-2">🤟</span>
+                <span class="small fw-bold">Video próximamente</span>
+                <span class="small">Todavía no hemos grabado la seña de esta palabra.</span>
+           </div>`;
     let bloqueVariantes = p.variantes && p.variantes.trim() !== "" ? `<div class="mb-3 p-2 bg-light rounded border"><span class="d-block fw-bold text-secondary mb-1" style="font-size: 10px; letter-spacing: 0.5px;">🔄 CONJUGACIONES O VARIANTES:</span><span class="text-muted small fst-italic">${p.variantes}</span></div>` : "";
     resultado.innerHTML=`
     <div class="card shadow-sm mb-4 animate-fade-in" style="border-radius: 15px; border-color: #dceefc;">
@@ -228,12 +258,12 @@ function mostrarPalabra(p){
             <div class="row g-4 justify-content-center">
                 <div class="col-md-8">
                     <div class="ratio ratio-16x9 shadow-sm rounded overflow-hidden border">
-                        <iframe src="https://www.youtube.com/embed/${p.video}?rel=0&modestbranding=1" allowfullscreen></iframe>
+                        ${bloqueVideo}
                     </div>
                 </div>
                 <div class="col-md-4 text-center d-flex flex-column align-items-center justify-content-start">
                     <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider">📸 Apoyo Visual:</span>
-                    <img src="${rutaImagen}" class="img-fluid rounded border p-2 bg-light shadow-sm" style="max-height: 250px; object-fit: contain;">
+                    ${bloqueImagen}
                 </div>
             </div>
         </div>
@@ -244,6 +274,7 @@ function mostrarPalabra(p){
         mostrarFavoritos();
     });
     mostrarSugerenciasRelacionadas(p);
+    setTimeout(() => resultado.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
 }
 
 // --- ESTADÍSTICAS ---
@@ -343,17 +374,26 @@ function mostrarPantallaHistorial(){
     });
 }
 document.addEventListener("click",(e)=>{ if(!buscar.contains(e.target) && !sugerencias.contains(e.target)) sugerencias.style.display="none"; });  
-function mostrarSenalDelDia(){
+let offsetSenalDelDia = 0;
+
+function mostrarSenalDelDia(offset = offsetSenalDelDia){
 
     if(App.datos.length===0) return;
 
+    offsetSenalDelDia = offset;
+
     const hoy = new Date();
 
+    // Perú está en UTC-5 todo el año (sin horario de verano).
+    // Restamos ese desfase antes de calcular el día, para que el cambio
+    // ocurra a la medianoche de Perú y no a la medianoche UTC.
+    const desfasePeruMs = 5 * 60 * 60 * 1000;
+
     const numeroDia =
-        Math.floor(hoy.getTime()/86400000);
+        Math.floor((hoy.getTime() - desfasePeruMs) / 86400000) - offset;
 
     const indice =
-        numeroDia % App.datos.length;
+        ((numeroDia % App.datos.length) + App.datos.length) % App.datos.length;
 
     const palabra = App.datos[indice];
 
@@ -361,10 +401,31 @@ function mostrarSenalDelDia(){
         `"${palabra.palabra}"`;
 
     document.getElementById("descripcionDelDia").textContent =
-        palabra.definicion.substring(0,160)+"...";
+        palabra.definicion.length > 160
+            ? palabra.definicion.substring(0,160)+"..."
+            : palabra.definicion;
 
     document.getElementById("categoriaDelDia").textContent =
         palabra.categoria;
+
+    const labelSenalDelDia = document.getElementById("labelSenalDelDia");
+    if(labelSenalDelDia){
+        if(offset === 0) labelSenalDelDia.textContent = "✨ Seña del día";
+        else if(offset === 1) labelSenalDelDia.textContent = "✨ Seña de ayer";
+        else labelSenalDelDia.textContent = `✨ Seña de hace ${offset} días`;
+    }
+
+    const btnSenalSiguiente = document.getElementById("btnSenalSiguiente");
+    if(btnSenalSiguiente){
+        btnSenalSiguiente.classList.toggle("d-none", offset === 0);
+        btnSenalSiguiente.onclick = () => mostrarSenalDelDia(Math.max(0, offsetSenalDelDia - 1));
+    }
+
+    const btnSenalAnterior = document.getElementById("btnSenalAnterior");
+    if(btnSenalAnterior){
+        btnSenalAnterior.classList.toggle("d-none", offset >= 1);
+        btnSenalAnterior.onclick = () => mostrarSenalDelDia(Math.min(1, offsetSenalDelDia + 1));
+    }
 
     document
         .getElementById("btnVerDelDia")
@@ -379,6 +440,13 @@ function mostrarSenalDelDia(){
             mostrarPalabra(palabra);
 
         };
+
+    const btnCerrarDelDia = document.getElementById("btnCerrarDelDia");
+    if(btnCerrarDelDia){
+        btnCerrarDelDia.onclick = () => {
+            document.getElementById("senalDelDia").style.display = "none";
+        };
+    }
 
 }
 
