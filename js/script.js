@@ -38,7 +38,6 @@ if(btnInicio) {
 document.getElementById("btnCategorias").addEventListener("click", (e) => {
     e.preventDefault();
     ocultarQuiz();
-    ocultarOraciones();
     mostrarCategorias();
     panelCategorias.scrollIntoView({ behavior: 'smooth', block: 'center' });
     panelCategorias.classList.add("highlight-anim");
@@ -48,7 +47,6 @@ document.getElementById("btnCategorias").addEventListener("click", (e) => {
 document.getElementById("btnNavFavoritos").addEventListener("click", (e) => {
     e.preventDefault();
     ocultarQuiz();
-    ocultarOraciones();
     const seccionFav = document.getElementById("seccionFavoritos");
     seccionFav.scrollIntoView({ behavior: 'smooth', block: 'center' });
     seccionFav.classList.add("highlight-anim");
@@ -58,7 +56,6 @@ document.getElementById("btnNavFavoritos").addEventListener("click", (e) => {
 document.getElementById("btnHistorial").addEventListener("click", (e) => {
     e.preventDefault();
     ocultarQuiz();
-    ocultarOraciones();
     mostrarPantallaHistorial();
     seccionHistorial.scrollIntoView({ behavior: 'smooth', block: 'center' });
     seccionHistorial.classList.add("highlight-anim");
@@ -83,7 +80,6 @@ function mostrarSeccionQuiz(){
     panelCategorias.innerHTML = "";
     ultimasPalabras.innerHTML = "";
     seccionHistorial.classList.add("d-none");
-    ocultarOraciones();
     seccionQuiz.classList.remove("d-none");
     document.getElementById("quizIntro").classList.remove("d-none");
     document.getElementById("quizActivo").classList.add("d-none");
@@ -92,32 +88,6 @@ function mostrarSeccionQuiz(){
     const aviso = document.getElementById("quizAvisoPocasPalabras");
     if(aviso) aviso.textContent = `✅ Preguntas generadas a partir de ${jugables.length} palabras con video disponible.`;
     seccionQuiz.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-const seccionOraciones = document.getElementById("seccionOraciones");
-const btnOraciones = document.getElementById("btnOraciones");
-if(btnOraciones){
-    btnOraciones.addEventListener("click", (e) => {
-        e.preventDefault();
-        mostrarSeccionOraciones();
-    });
-}
-
-function ocultarOraciones(){
-    if(seccionOraciones) seccionOraciones.classList.add("d-none");
-}
-
-function mostrarSeccionOraciones(){
-    resultado.innerHTML = "";
-    panelCategorias.innerHTML = "";
-    ultimasPalabras.innerHTML = "";
-    seccionHistorial.classList.add("d-none");
-    ocultarQuiz();
-    seccionOraciones.classList.remove("d-none");
-    document.getElementById("oracionesIntro").classList.remove("d-none");
-    document.getElementById("oracionesActivo").classList.add("d-none");
-    document.getElementById("oracionesResultados").classList.add("d-none");
-    seccionOraciones.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // --- CARGA DE DATOS CENTRALIZADA ---
@@ -164,7 +134,6 @@ buscar.addEventListener("input", buscarPalabras);
 function buscarPalabras(){
     const texto = buscar.value.trim().toLowerCase();
     ocultarQuiz();
-    ocultarOraciones();
     sugerencias.innerHTML = "";
     //resultado.innerHTML = "";
     //ultimasPalabras.innerHTML = ""; 
@@ -253,7 +222,6 @@ function ejecutarBusquedaDirecta() {
 // --- MOSTRAR PALABRA ---
 function mostrarPalabra(p){
     ocultarQuiz();
-    ocultarOraciones();
     buscar.value = p.palabra;
     buscar.blur();
     sugerencias.innerHTML="";
@@ -319,7 +287,6 @@ function actualizarEstadisticas(){
 // --- FILTRO ABC ---
 function filtrarPorLetra(letra) {
     ocultarQuiz();
-    ocultarOraciones();
     buscar.value = ""; 
     sugerencias.innerHTML = "";
     sugerencias.style.display = "none";
@@ -593,138 +560,4 @@ function mostrarResultadosQuiz(){
     document.getElementById("quizResultados").classList.remove("d-none");
     const total = QuizState.preguntas.length;
     document.getElementById("quizResultadoTexto").innerHTML = `Acertaste <strong>${QuizState.aciertos}</strong> de <strong>${total}</strong> preguntas.`;
-}
-
-// --- FORMAR ORACIONES ---
-// Oraciones de ejemplo armadas con vocabulario del diccionario (LSPedia).
-// Puedes agregar más aquí — cada una es una lista de palabras en el orden correcto.
-const OracionesEjemplo = [
-    ["Mamá", "lee", "un", "libro"],
-    ["El", "profesor", "escribe", "en", "el", "cuaderno"],
-    ["Gracias", "por", "el", "libro"],
-    ["Buenos", "días", "profesor"],
-    ["Papá", "lee", "el", "cuaderno"],
-    ["El", "alumno", "lee", "el", "libro"],
-    ["Hola", "abuela"],
-    ["Buenas", "noches", "mamá"],
-    ["Por", "favor", "lee", "el", "libro"],
-    ["El", "hermano", "lee", "el", "cuaderno"]
-];
-
-const OracionState = {
-    rondas: [],
-    indice: 0,
-    aciertos: 0,
-    seleccion: [],
-    fichasDisponibles: []
-};
-
-const btnEmpezarOraciones = document.getElementById("btnEmpezarOraciones");
-if(btnEmpezarOraciones) btnEmpezarOraciones.addEventListener("click", iniciarOraciones);
-
-const btnReiniciarOraciones = document.getElementById("btnReiniciarOraciones");
-if(btnReiniciarOraciones) btnReiniciarOraciones.addEventListener("click", () => {
-    document.getElementById("oracionesResultados").classList.add("d-none");
-    document.getElementById("oracionesIntro").classList.remove("d-none");
-});
-
-const btnSiguienteOracion = document.getElementById("btnSiguienteOracion");
-if(btnSiguienteOracion) btnSiguienteOracion.addEventListener("click", () => {
-    OracionState.indice++;
-    mostrarRondaOracion();
-});
-
-const btnReiniciarFicha = document.getElementById("btnReiniciarFicha");
-if(btnReiniciarFicha) btnReiniciarFicha.addEventListener("click", () => {
-    if(document.getElementById("btnSiguienteOracion").classList.contains("d-none")){
-        mostrarRondaOracion();
-    }
-});
-
-function iniciarOraciones(){
-    const totalRondas = Math.min(5, OracionesEjemplo.length);
-    OracionState.rondas = mezclarArray(OracionesEjemplo).slice(0, totalRondas);
-    OracionState.indice = 0;
-    OracionState.aciertos = 0;
-
-    document.getElementById("oracionesIntro").classList.add("d-none");
-    document.getElementById("oracionesResultados").classList.add("d-none");
-    document.getElementById("oracionesActivo").classList.remove("d-none");
-    mostrarRondaOracion();
-}
-
-function mostrarRondaOracion(){
-    if(OracionState.indice >= OracionState.rondas.length){
-        mostrarResultadosOraciones();
-        return;
-    }
-
-    const oracion = OracionState.rondas[OracionState.indice];
-    OracionState.seleccion = [];
-    OracionState.fichasDisponibles = mezclarArray(oracion.map((palabra, i) => ({ palabra, id: i })));
-
-    document.getElementById("oracionesProgreso").textContent = `Oración ${OracionState.indice + 1} de ${OracionState.rondas.length}`;
-    document.getElementById("oracionesPuntaje").textContent = `Aciertos: ${OracionState.aciertos}`;
-    document.getElementById("oracionesFeedback").textContent = "";
-    document.getElementById("btnSiguienteOracion").classList.add("d-none");
-
-    renderizarFichasOraciones();
-    renderizarOracionArmada();
-}
-
-function renderizarFichasOraciones(){
-    const contenedor = document.getElementById("oracionesFichas");
-    contenedor.innerHTML = "";
-    OracionState.fichasDisponibles.forEach(ficha => {
-        const boton = document.createElement("button");
-        boton.className = "btn btn-outline-primary fw-bold";
-        boton.style.borderRadius = "10px";
-        boton.textContent = ficha.palabra;
-        boton.onclick = () => {
-            OracionState.seleccion.push(ficha);
-            OracionState.fichasDisponibles = OracionState.fichasDisponibles.filter(f => f.id !== ficha.id);
-            renderizarFichasOraciones();
-            renderizarOracionArmada();
-            if(OracionState.seleccion.length === OracionState.rondas[OracionState.indice].length){
-                verificarOracion();
-            }
-        };
-        contenedor.appendChild(boton);
-    });
-}
-
-function renderizarOracionArmada(){
-    const contenedor = document.getElementById("oracionArmada");
-    if(OracionState.seleccion.length === 0){
-        contenedor.innerHTML = `<span class="text-muted small">Toca las palabras de abajo para empezar...</span>`;
-        return;
-    }
-    contenedor.innerHTML = OracionState.seleccion.map(f =>
-        `<span class="badge bg-primary" style="font-size: 14px;">${f.palabra}</span>`
-    ).join(" ");
-}
-
-function verificarOracion(){
-    const oracionCorrecta = OracionState.rondas[OracionState.indice];
-    const oracionElegida = OracionState.seleccion.map(f => f.palabra);
-    const esCorrecta = oracionElegida.join(" ") === oracionCorrecta.join(" ");
-
-    const feedback = document.getElementById("oracionesFeedback");
-    if(esCorrecta){
-        OracionState.aciertos++;
-        feedback.textContent = "✅ ¡Correcto!";
-        feedback.style.color = "#16a34a";
-    } else {
-        feedback.textContent = `❌ El orden correcto era: "${oracionCorrecta.join(" ")}".`;
-        feedback.style.color = "#dc2626";
-    }
-    document.getElementById("oracionesPuntaje").textContent = `Aciertos: ${OracionState.aciertos}`;
-    document.getElementById("btnSiguienteOracion").classList.remove("d-none");
-}
-
-function mostrarResultadosOraciones(){
-    document.getElementById("oracionesActivo").classList.add("d-none");
-    document.getElementById("oracionesResultados").classList.remove("d-none");
-    const total = OracionState.rondas.length;
-    document.getElementById("oracionesResultadoTexto").innerHTML = `Formaste correctamente <strong>${OracionState.aciertos}</strong> de <strong>${total}</strong> oraciones.`;
 }
