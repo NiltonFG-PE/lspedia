@@ -253,16 +253,17 @@ function mostrarPalabra(p){
                 <span class="small">Todavía no hemos grabado la seña de esta palabra.</span>
            </div>`;
     const bloqueControlesVideo = hayVideo
-        ? `<div class="controles-video d-flex align-items-center justify-content-center gap-2 mt-2 flex-wrap">
-                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnRetroceder10" title="Retroceder 10 segundos" aria-label="Retroceder 10 segundos">⏪ 10s</button>
+            ? `<div class="controles-video d-flex align-items-center justify-content-center gap-2 mt-2 flex-wrap">
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnRetroceder10" title="Retroceder 5 segundos" aria-label="Retroceder 5 segundos">⏪ 5s</button>
                 <button type="button" class="btn btn-sm btn-primary" id="btnPlayPause" title="Reproducir o pausar" aria-label="Reproducir o pausar">▶️ Reproducir</button>
                 <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAvanzar10" title="Avanzar 10 segundos" aria-label="Avanzar 10 segundos">10s ⏩</button>
                 <select class="form-select form-select-sm" id="selectVelocidad" title="Velocidad de reproducción" aria-label="Velocidad de reproducción">
-                    <option value="0.5">0.5x</option>
-                    <option value="0.75">0.75x</option>
-                    <option value="1" selected>1x (normal)</option>
-                    <option value="1.25">1.25x</option>
-                    <option value="1.5">1.5x</option>
+                    <option value="0.6">0.6x</option>
+                    <option value="0.8">0.8x</option>
+                    <option value="0.9">0.9x</option>
+                    <option value="1" selected>1x</option>
+                    <option value="1.2">1.2x</option>
+                    <option value="1.6">1.6x</option>
                     <option value="2">2x</option>
                 </select>
            </div>`
@@ -356,7 +357,7 @@ function configurarControlesVideo() {
 
     btnRetroceder.addEventListener("click", () => {
         const tiempoActual = ytPlayerPalabra.getCurrentTime();
-        ytPlayerPalabra.seekTo(Math.max(0, tiempoActual - 10), true);
+        ytPlayerPalabra.seekTo(Math.max(0, tiempoActual - 5), true);
     });
 
     btnAvanzar.addEventListener("click", () => {
