@@ -70,29 +70,65 @@ const QuizV2 = (function () {
             if (!silencioso) mostrarError("El Quiz aún no está conectado a Google Sheets. Falta pegar la URL de Apps Script en js/quiz.js.");
             return;
         }
-        fetch(CONFIG.APPS_SCRIPT_URL)
-            .then((res) => {
-                if (!res.ok) throw new Error("HTTP " + res.status);
-                return res.json();
-            })
-            .then((data) => {
+
+        // Usamos JSONP (una etiqueta <script>) en vez de fetch() porque
+        // Apps Script + GitHub Pages suele bloquear la lectura de la
+        // respuesta por CORS ("Failed to fetch"), aunque la URL sí
+        // funcione al abrirla directo en el navegador.
+        const nombreCallback = "quizV2Callback_" + Date.now();
+        let resuelto = false;
+
+        const limpiar = () => {
+            delete window[nombreCallback];
+            const s = document.getElementById(nombreCallback);
+            if (s) s.remove();
+        };
+
+        window[nombreCallback] = function (data) {
+            resuelto = true;
+            limpiar();
+            try {
                 if (!data.ok) throw new Error(data.error || "Respuesta inválida del servidor.");
                 estado.banco = data.preguntas.filter((p) => p.palabra && p.video);
                 guardarCache(estado.banco);
                 if (!silencioso) mostrarIntro();
-            })
-            .catch((err) => {
-                console.error("Error cargando el Quiz desde Google Sheets:", err);
-                if (!silencioso) {
-                    const cache = leerCache(true); // ignora expiración como último recurso
-                    if (cache && cache.length) {
-                        estado.banco = cache;
-                        mostrarIntro();
-                    } else {
-                        mostrarError("No se pudo cargar el Quiz. Detalle técnico: " + (err && err.message ? err.message : err));
-                    }
-                }
-            });
+            } catch (err) {
+                manejarErrorCarga(err, silencioso);
+            }
+        };
+
+        const separador = CONFIG.APPS_SCRIPT_URL.indexOf("?") > -1 ? "&" : "?";
+        const script = document.createElement("script");
+        script.id = nombreCallback;
+        script.src = CONFIG.APPS_SCRIPT_URL + separador + "callback=" + nombreCallback;
+        script.onerror = () => {
+            if (!resuelto) {
+                limpiar();
+                manejarErrorCarga(new Error("No se pudo conectar con Google Apps Script (revisa la URL o el despliegue)."), silencioso);
+            }
+        };
+        document.body.appendChild(script);
+
+        // Si en 10s no hay respuesta, mostramos error en vez de dejarlo cargando para siempre.
+        setTimeout(() => {
+            if (!resuelto) {
+                limpiar();
+                manejarErrorCarga(new Error("Tiempo de espera agotado al conectar con Google Sheets."), silencioso);
+            }
+        }, 10000);
+    }
+
+    function manejarErrorCarga(err, silencioso) {
+        console.error("Error cargando el Quiz desde Google Sheets:", err);
+        if (!silencioso) {
+            const cache = leerCache(true); // ignora expiración como último recurso
+            if (cache && cache.length) {
+                estado.banco = cache;
+                mostrarIntro();
+            } else {
+                mostrarError("No se pudo cargar el Quiz. Detalle técnico: " + (err && err.message ? err.message : err));
+            }
+        }
     }
 
     function guardarCache(banco) {
