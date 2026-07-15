@@ -958,6 +958,23 @@ const QuizV2 = (function () {
     }
 
     // ---------------------------------------------------------
+    // VOLVER AL MENÚ (sin salir de la sección Quiz)
+    // Se usa desde la pregunta activa o el modo memoria para elegir
+    // otro nivel/modo sin tener que "Salir" del todo.
+    // ---------------------------------------------------------
+    function volverAlMenu() {
+        const rondaEnCurso = estado.ronda.preguntas.length > 0 && estado.ronda.indice < estado.ronda.preguntas.length;
+        const memoriaEnCurso = estado.memoria.cartas.length > 0 && estado.memoria.aciertos < estado.memoria.cartas.length / 2;
+        if ((rondaEnCurso || memoriaEnCurso) && !window.confirm("¿Volver al menú? Perderás el progreso de esta partida.")) {
+            return;
+        }
+        detenerTemporizador();
+        detenerCronoMemoria();
+        destruirReproductorQuizVideo();
+        mostrarIntro();
+    }
+
+    // ---------------------------------------------------------
     // SALIR / REINICIAR
     // ---------------------------------------------------------
     function salir() {
@@ -983,6 +1000,12 @@ const QuizV2 = (function () {
 
         const btnReiniciar = el("btnReiniciarQuiz");
         if (btnReiniciar) btnReiniciar.addEventListener("click", reiniciar);
+
+        const btnMenuActivo = el("btnQuizMenuActivo");
+        if (btnMenuActivo) btnMenuActivo.addEventListener("click", volverAlMenu);
+
+        const btnMenuMemoria = el("btnQuizMenuMemoria");
+        if (btnMenuMemoria) btnMenuMemoria.addEventListener("click", volverAlMenu);
 
         const btnSalir = el("btnQuizSalir");
         if (btnSalir) btnSalir.addEventListener("click", () => {
@@ -1030,7 +1053,16 @@ const QuizV2 = (function () {
 window.QuizV2 = QuizV2;
 
 document.addEventListener("DOMContentLoaded", () => {
-    // No cargamos nada aquí todavía: los datos se piden recién
-    // cuando el usuario entra a la sección Quiz (ver iniciar()),
-    // para no gastar cuota de Apps Script innecesariamente.
+    // Precargamos las preguntas en segundo plano (modo silencioso, sin
+    // tocar la interfaz) apenas el navegador tiene un momento libre,
+    // para que cuando el usuario pulse "Jugar" los datos ya estén
+    // en caché y la sección abra al instante. Si falla, no pasa nada:
+    // cargarBanco() hará el intento normal (con pantalla de carga) al
+    // entrar a la sección.
+    const precargarEnSegundoPlano = () => fetchRemoto(true);
+    if ("requestIdleCallback" in window) {
+        requestIdleCallback(precargarEnSegundoPlano, { timeout: 4000 });
+    } else {
+        setTimeout(precargarEnSegundoPlano, 2000);
+    }
 });

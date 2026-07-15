@@ -18,6 +18,10 @@
     <link rel="stylesheet" href="css/estilos.css">
     <link rel="stylesheet" href="css/quiz.css">
 
+    <!-- Preconnect: adelanta la conexión a Google para que el Quiz cargue más rápido -->
+    <link rel="preconnect" href="https://script.google.com">
+    <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
+
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="img/favicon.png">
 
@@ -384,6 +388,7 @@
                             <span class="badge bg-primary" id="quizProgreso">Pregunta 1</span>
                             <span class="badge badge-nivel-facil" id="quizNivelBadge">Fácil</span>
                             <span class="fw-bold small text-muted" id="quizPuntaje">⭐ 0</span>
+                            <button id="btnQuizMenuActivo" class="btn btn-outline-secondary btn-sm rounded-pill ms-auto" title="Volver al menú del juego">↩ Menú</button>
                         </div>
                         <div class="quiz-progreso-wrap mb-2"><div class="quiz-progreso-barra" id="quizBarraProgreso" style="width:0%"></div></div>
                         <div class="quiz-timer-wrap"><div class="quiz-timer-barra" id="quizBarraTiempo" style="width:100%"></div></div>
@@ -405,6 +410,7 @@
                         <div class="d-flex justify-content-between mb-3 flex-wrap gap-2">
                             <span class="small fw-bold text-muted" id="quizMemoriaIntentos">Intentos: 0</span>
                             <span class="small fw-bold text-muted" id="quizMemoriaTiempo">⏱ 00:00</span>
+                            <button id="btnQuizMenuMemoria" class="btn btn-outline-secondary btn-sm rounded-pill" title="Volver al menú del juego">↩ Menú</button>
                         </div>
                         <div class="quiz-memoria-grid" id="quizMemoriaGrid"></div>
                     </div>
