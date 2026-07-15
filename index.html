@@ -197,15 +197,19 @@
                             <span id="iconoInicio" aria-hidden="true" style="font-size: 18px; line-height: 1;">🏠</span> Inicio
                         </a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="#" id="btnCategorias"><span aria-hidden="true">📁</span> Categorías</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" id="btnCategorias"><span aria-hidden="true">📁</span> Temas orden</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" id="btnNavFavoritos"><span aria-hidden="true">⭐</span> Favoritos</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" id="btnHistorial"><span aria-hidden="true">🕒</span> Historial</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" id="btnQuiz"><span aria-hidden="true">🎮</span> Quiz</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" id="btnQuiz"><span aria-hidden="true">🎮</span> Jugar</a></li>
                     <li class="nav-item"><a class="nav-link text-warning" href="#" data-bs-toggle="modal" data-bs-target="#modalSobreNosotros"><span aria-hidden="true">🤟</span> Sobre Nosotros</a></li>
                 </ul>
             </div>
         </div>
     </nav>
+
+    <button type="button" id="btnAccesoJugar" class="btn-acceso-jugar" title="Ir a Jugar" aria-label="Acceso directo a Jugar">
+        <span aria-hidden="true">🎮</span>
+    </button>
 
     <div class="container py-4">
 
@@ -336,7 +340,7 @@
         <section id="seccionQuiz" class="mb-5 d-none">
 
             <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-                <h4 class="fw-bold mb-0">🎮 Quiz LSPedia</h4>
+                <h4 class="fw-bold mb-0">🎮 Jugar - LSPedia</h4>
                 <div class="d-flex gap-2">
                     <button id="btnQuizFullscreen" class="btn btn-outline-secondary quiz-btn-fullscreen" title="Pantalla completa" aria-label="Pantalla completa">⛶</button>
                     <button id="btnQuizSalir" class="btn btn-outline-danger btn-sm rounded-pill">Salir</button>
@@ -346,7 +350,7 @@
             <!-- CARGANDO PREGUNTAS DESDE GOOGLE SHEETS -->
             <div id="quizCargando" class="text-center py-5">
                 <div class="spinner-border text-primary" role="status"></div>
-                <p class="text-muted small mt-3 mb-0">Cargando preguntas del Quiz...</p>
+                <p class="text-muted small mt-3 mb-0">Cargando preguntas...</p>
             </div>
 
             <!-- ERROR DE CARGA -->

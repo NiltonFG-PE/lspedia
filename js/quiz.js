@@ -92,7 +92,7 @@ const QuizV2 = (function () {
 
     function fetchRemoto(silencioso) {
         if (!CONFIG.APPS_SCRIPT_URL || CONFIG.APPS_SCRIPT_URL.indexOf("PEGA_AQUI") > -1) {
-            if (!silencioso) mostrarError("El Quiz aún no está conectado a Google Sheets. Falta pegar la URL de Apps Script en js/quiz.js.");
+            if (!silencioso) mostrarError("El juego aún no está conectado a Google Sheets. Falta pegar la URL de Apps Script en js/quiz.js.");
             return;
         }
 
@@ -151,7 +151,7 @@ const QuizV2 = (function () {
                 estado.banco = cache;
                 mostrarIntro();
             } else {
-                mostrarError("No se pudo cargar el Quiz. Detalle técnico: " + (err && err.message ? err.message : err));
+                mostrarError("No se pudo cargar el juego. Detalle técnico: " + (err && err.message ? err.message : err));
             }
         }
     }

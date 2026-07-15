@@ -71,6 +71,14 @@ if(btnQuiz){
     });
 }
 
+const btnAccesoJugar = document.getElementById("btnAccesoJugar");
+if(btnAccesoJugar){
+    btnAccesoJugar.addEventListener("click", (e) => {
+        e.preventDefault();
+        mostrarSeccionQuiz();
+    });
+}
+
 function ocultarQuiz(){
     if(seccionQuiz) seccionQuiz.classList.add("d-none");
     // El Quiz ahora es independiente (QuizV2) y tiene sus propios datos desde Google Sheets.

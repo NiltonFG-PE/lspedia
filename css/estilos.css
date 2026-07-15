@@ -189,6 +189,51 @@ iframe {
 }
 
 /* ==========================================
+   Botón flotante: acceso directo a "Jugar" (Quiz)
+========================================== */
+.btn-acceso-jugar {
+    position: fixed;
+    right: 18px;
+    bottom: 22px;
+    z-index: 1040;
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    border: none;
+    background-color: #ffc107;
+    color: #0f172a;
+    font-size: 1.6rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.35);
+    cursor: pointer;
+    animation: jugarPulso 2.2s ease-in-out infinite;
+    transition: transform 0.15s ease;
+}
+.btn-acceso-jugar:hover,
+.btn-acceso-jugar:focus {
+    transform: scale(1.08);
+}
+.btn-acceso-jugar:active {
+    transform: scale(0.96);
+}
+@keyframes jugarPulso {
+    0%, 100% { box-shadow: 0 6px 18px rgba(15, 23, 42, 0.35), 0 0 0 0 rgba(255, 193, 7, 0.5); }
+    50% { box-shadow: 0 6px 18px rgba(15, 23, 42, 0.35), 0 0 0 10px rgba(255, 193, 7, 0); }
+}
+@media (max-width: 576px) {
+    .btn-acceso-jugar {
+        width: 52px;
+        height: 52px;
+        font-size: 1.4rem;
+        right: 14px;
+        bottom: 18px;
+    }
+}
+
+/* ==========================================
    6. OPTIMIZACIÓN DISPOSITIVOS MÓVILES
 ========================================== */
 @media (max-width: 768px) {
