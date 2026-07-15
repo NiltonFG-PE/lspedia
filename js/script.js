@@ -73,6 +73,8 @@ if(btnQuiz){
 
 function ocultarQuiz(){
     if(seccionQuiz) seccionQuiz.classList.add("d-none");
+    // El Quiz ahora es independiente (QuizV2) y tiene sus propios datos desde Google Sheets.
+    if(window.QuizV2 && typeof QuizV2.salir === "function") QuizV2.salir();
 }
 
 function mostrarSeccionQuiz(){
@@ -81,12 +83,8 @@ function mostrarSeccionQuiz(){
     ultimasPalabras.innerHTML = "";
     seccionHistorial.classList.add("d-none");
     seccionQuiz.classList.remove("d-none");
-    document.getElementById("quizIntro").classList.remove("d-none");
-    document.getElementById("quizActivo").classList.add("d-none");
-    document.getElementById("quizResultados").classList.add("d-none");
-    const jugables = App.datos.filter(p => p.video && p.video.trim() !== "");
-    const aviso = document.getElementById("quizAvisoPocasPalabras");
-    if(aviso) aviso.textContent = `✅ Preguntas generadas a partir de ${jugables.length} palabras con video disponible.`;
+    // QuizV2 (js/quiz.js) carga sus propias preguntas desde la Hoja 2 de Google Sheets.
+    if(window.QuizV2 && typeof QuizV2.iniciar === "function") QuizV2.iniciar();
     seccionQuiz.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
@@ -572,115 +570,6 @@ function mostrarSenalDelDia(offset = offsetSenalDelDia){
 
 }
 
-// --- QUIZ (Aprende Jugando) ---
-const QuizState = {
-    preguntas: [],
-    indice: 0,
-    aciertos: 0
-};
-
-const btnEmpezarQuiz = document.getElementById("btnEmpezarQuiz");
-if(btnEmpezarQuiz) btnEmpezarQuiz.addEventListener("click", iniciarQuiz);
-
-const btnReiniciarQuiz = document.getElementById("btnReiniciarQuiz");
-if(btnReiniciarQuiz) btnReiniciarQuiz.addEventListener("click", () => {
-    document.getElementById("quizResultados").classList.add("d-none");
-    document.getElementById("quizIntro").classList.remove("d-none");
-});
-
-const btnSiguientePregunta = document.getElementById("btnSiguientePregunta");
-if(btnSiguientePregunta) btnSiguientePregunta.addEventListener("click", () => {
-    QuizState.indice++;
-    mostrarPreguntaQuiz();
-});
-
-function mezclarArray(array){
-    const copia = [...array];
-    for(let i = copia.length - 1; i > 0; i--){
-        const j = Math.floor(Math.random() * (i + 1));
-        [copia[i], copia[j]] = [copia[j], copia[i]];
-    }
-    return copia;
-}
-
-function palabrasJugables(){
-    return App.datos.filter(p => p.video && p.video.trim() !== "");
-}
-
-function iniciarQuiz(){
-    const jugables = palabrasJugables();
-    if(jugables.length < 4){
-        alert("Todavía no hay suficientes palabras con video para jugar el quiz.");
-        return;
-    }
-    const totalPreguntas = Math.min(5, jugables.length);
-    QuizState.preguntas = mezclarArray(jugables).slice(0, totalPreguntas);
-    QuizState.indice = 0;
-    QuizState.aciertos = 0;
-
-    document.getElementById("quizIntro").classList.add("d-none");
-    document.getElementById("quizResultados").classList.add("d-none");
-    document.getElementById("quizActivo").classList.remove("d-none");
-    mostrarPreguntaQuiz();
-}
-
-function mostrarPreguntaQuiz(){
-    if(QuizState.indice >= QuizState.preguntas.length){
-        mostrarResultadosQuiz();
-        return;
-    }
-    const pregunta = QuizState.preguntas[QuizState.indice];
-
-    document.getElementById("quizProgreso").textContent = `Pregunta ${QuizState.indice + 1} de ${QuizState.preguntas.length}`;
-    document.getElementById("quizPuntaje").textContent = `Aciertos: ${QuizState.aciertos}`;
-    document.getElementById("quizVideo").src = `https://www.youtube.com/embed/${pregunta.video}?rel=0&modestbranding=1`;
-    document.getElementById("quizFeedback").textContent = "";
-    document.getElementById("btnSiguientePregunta").classList.add("d-none");
-
-    const jugables = palabrasJugables();
-    const distractores = mezclarArray(jugables.filter(p => p.palabra !== pregunta.palabra)).slice(0, 3);
-    const opciones = mezclarArray([pregunta, ...distractores]);
-
-    const contenedorOpciones = document.getElementById("quizOpciones");
-    contenedorOpciones.innerHTML = "";
-    opciones.forEach(op => {
-        const col = document.createElement("div");
-        col.className = "col-6";
-        const boton = document.createElement("button");
-        boton.className = "btn btn-outline-primary w-100 fw-bold";
-        boton.style.borderRadius = "10px";
-        boton.textContent = op.palabra;
-        boton.onclick = () => responderQuiz(boton, op.palabra === pregunta.palabra, pregunta.palabra);
-        col.appendChild(boton);
-        contenedorOpciones.appendChild(col);
-    });
-}
-
-function responderQuiz(botonElegido, esCorrecta, palabraCorrecta){
-    const botones = document.querySelectorAll("#quizOpciones button");
-    botones.forEach(b => {
-        b.disabled = true;
-        if(b.textContent === palabraCorrecta) b.classList.replace("btn-outline-primary", "btn-success");
-    });
-
-    const feedback = document.getElementById("quizFeedback");
-    if(esCorrecta){
-        QuizState.aciertos++;
-        feedback.textContent = "✅ ¡Correcto!";
-        feedback.style.color = "#16a34a";
-    } else {
-        botonElegido.classList.replace("btn-outline-primary", "btn-danger");
-        feedback.textContent = `❌ La respuesta correcta era "${palabraCorrecta}".`;
-        feedback.style.color = "#dc2626";
-    }
-    document.getElementById("quizPuntaje").textContent = `Aciertos: ${QuizState.aciertos}`;
-    document.getElementById("btnSiguientePregunta").classList.remove("d-none");
-}
-
-function mostrarResultadosQuiz(){
-    document.getElementById("quizActivo").classList.add("d-none");
-    document.getElementById("quizResultados").classList.remove("d-none");
-    const total = QuizState.preguntas.length;
-    document.getElementById("quizResultadoTexto").innerHTML = `Acertaste <strong>${QuizState.aciertos}</strong> de <strong>${total}</strong> preguntas.`;
-}
-
+// El motor del Quiz (niveles, modos, temporizador, sonidos, etc.)
+// vive ahora en js/quiz.js como el módulo independiente QuizV2,
+// que lee sus preguntas desde la Hoja 2 de Google Sheets.
