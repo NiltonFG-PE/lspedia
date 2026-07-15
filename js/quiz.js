@@ -737,6 +737,11 @@ const QuizV2 = (function () {
     return { iniciar, salir };
 })();
 
+// Se expone explícitamente en window: una declaración "const" de nivel
+// superior NO se agrega automáticamente a window, así que sin esta línea
+// script.js nunca puede ver ni llamar a QuizV2 (causaba el bloqueo infinito).
+window.QuizV2 = QuizV2;
+
 document.addEventListener("DOMContentLoaded", () => {
     // No cargamos nada aquí todavía: los datos se piden recién
     // cuando el usuario entra a la sección Quiz (ver iniciar()),
