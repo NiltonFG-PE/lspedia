@@ -71,7 +71,10 @@ const QuizV2 = (function () {
             return;
         }
         fetch(CONFIG.APPS_SCRIPT_URL)
-            .then((res) => res.json())
+            .then((res) => {
+                if (!res.ok) throw new Error("HTTP " + res.status);
+                return res.json();
+            })
             .then((data) => {
                 if (!data.ok) throw new Error(data.error || "Respuesta inválida del servidor.");
                 estado.banco = data.preguntas.filter((p) => p.palabra && p.video);
@@ -86,7 +89,7 @@ const QuizV2 = (function () {
                         estado.banco = cache;
                         mostrarIntro();
                     } else {
-                        mostrarError("No se pudo cargar el Quiz. Verifica tu conexión o la configuración de Google Sheets.");
+                        mostrarError("No se pudo cargar el Quiz. Detalle técnico: " + (err && err.message ? err.message : err));
                     }
                 }
             });
