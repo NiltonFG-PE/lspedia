@@ -16,6 +16,7 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/quiz.css">
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="img/favicon.png">
@@ -334,51 +335,101 @@
 
         <section id="seccionQuiz" class="mb-5 d-none">
 
-            <!-- INTRO DEL QUIZ -->
-            <div id="quizIntro" class="row justify-content-center">
-                <div class="col-lg-7">
-                    <div class="card border-0 shadow-sm text-center p-4 animate-fade-in" style="border-radius: 16px;">
-                        <div class="mx-auto mb-3 d-flex align-items-center justify-content-center" style="width:70px; height:70px; border-radius:18px; background-color:#e0f2fe; font-size:2rem;">🎮</div>
-                        <h4 class="fw-bold mb-2">Aprende Jugando (Quiz)</h4>
-                        <p class="text-muted small mb-4">Pon a prueba tus conocimientos de Lengua de Señas Peruana. Te mostraremos un video haciendo una seña, ¡y tú tendrás que adivinar qué palabra representa!</p>
-                        <div class="text-start p-3 mb-4" style="background-color:#f8fafc; border-radius:12px; border:1px solid #e2e8f0;">
-                            <p class="text-uppercase small fw-bold mb-2" style="color:#64748b; letter-spacing:0.05em;">Detalles de la práctica:</p>
-                            <p class="small mb-2">📋 5 preguntas por ronda.</p>
-                            <p class="small mb-2">🤟 Videos reales en Lengua de Señas Peruana.</p>
-                            <p class="small mb-0" id="quizAvisoPocasPalabras"></p>
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <h4 class="fw-bold mb-0">🎮 Quiz LSPedia</h4>
+                <div class="d-flex gap-2">
+                    <button id="btnQuizFullscreen" class="btn btn-outline-secondary quiz-btn-fullscreen" title="Pantalla completa" aria-label="Pantalla completa">⛶</button>
+                    <button id="btnQuizSalir" class="btn btn-outline-danger btn-sm rounded-pill">Salir</button>
+                </div>
+            </div>
+
+            <!-- CARGANDO PREGUNTAS DESDE GOOGLE SHEETS -->
+            <div id="quizCargando" class="text-center py-5">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p class="text-muted small mt-3 mb-0">Cargando preguntas del Quiz...</p>
+            </div>
+
+            <!-- ERROR DE CARGA -->
+            <div id="quizError" class="alert alert-danger d-none"></div>
+
+            <!-- INTRO: SELECCIÓN DE NIVEL Y MODO -->
+            <div id="quizIntro" class="row justify-content-center d-none">
+                <div class="col-lg-8">
+                    <div class="card quiz-card border-0 shadow-sm p-4">
+                        <p class="text-muted small text-center mb-4">Elige el nivel y el modo de juego para tu ronda de práctica.</p>
+
+                        <p class="text-uppercase small fw-bold mb-2" style="color:#64748b; letter-spacing:0.05em;">Nivel</p>
+                        <div class="row g-2 mb-4" id="quizSelectorNivel"></div>
+
+                        <p class="text-uppercase small fw-bold mb-2" style="color:#64748b; letter-spacing:0.05em;">Modo de juego</p>
+                        <div class="row g-2 mb-4" id="quizSelectorModo"></div>
+
+                        <p class="text-center small mb-3" id="quizTotalDisponibles"></p>
+                        <div class="text-center">
+                            <button id="btnEmpezarQuiz" class="btn btn-warning fw-bold py-2 px-4 rounded-pill">▶ Empezar</button>
                         </div>
-                        <button id="btnEmpezarQuiz" class="btn btn-warning fw-bold py-2 rounded-pill">▶ Empezar Práctica</button>
                     </div>
                 </div>
             </div>
 
-            <!-- PREGUNTA ACTIVA -->
+            <!-- PREGUNTA ACTIVA (modos Video→Palabra, Palabra→Video, V/F, Aleatorio) -->
             <div id="quizActivo" class="row justify-content-center d-none">
-                <div class="col-lg-7">
-                    <div class="card border-0 shadow-sm p-4 animate-fade-in" style="border-radius:16px;">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="badge bg-primary" id="quizProgreso">Pregunta 1 de 5</span>
-                            <span class="fw-bold small text-muted" id="quizPuntaje">Aciertos: 0</span>
+                <div class="col-lg-8">
+                    <div class="card quiz-card border-0 shadow-sm p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                            <span class="badge bg-primary" id="quizProgreso">Pregunta 1</span>
+                            <span class="badge badge-nivel-facil" id="quizNivelBadge">Fácil</span>
+                            <span class="fw-bold small text-muted" id="quizPuntaje">⭐ 0</span>
                         </div>
-                        <div class="ratio ratio-16x9 rounded overflow-hidden border mb-3">
-                            <iframe id="quizVideo" src="" allowfullscreen title="Video en Lengua de Señas Peruana"></iframe>
-                        </div>
-                        <p class="text-center fw-bold mb-3">¿Qué palabra representa esta seña?</p>
-                        <div class="row g-2" id="quizOpciones"></div>
+                        <div class="quiz-progreso-wrap mb-2"><div class="quiz-progreso-barra" id="quizBarraProgreso" style="width:0%"></div></div>
+                        <div class="quiz-timer-wrap"><div class="quiz-timer-barra" id="quizBarraTiempo" style="width:100%"></div></div>
+
+                        <div id="quizContenidoPregunta"></div>
+
                         <div id="quizFeedback" class="text-center small fw-bold mt-3"></div>
-                        <button id="btnSiguientePregunta" class="btn btn-primary rounded-pill fw-bold mt-3 d-none">Siguiente →</button>
+                        <div class="d-flex justify-content-center gap-2 mt-3">
+                            <button id="btnSiguientePregunta" class="btn btn-primary rounded-pill fw-bold d-none">Siguiente →</button>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- RESULTADOS -->
+            <!-- MODO MEMORIA -->
+            <div id="quizMemoria" class="row justify-content-center d-none">
+                <div class="col-lg-9">
+                    <div class="card quiz-card border-0 shadow-sm p-4">
+                        <div class="d-flex justify-content-between mb-3 flex-wrap gap-2">
+                            <span class="small fw-bold text-muted" id="quizMemoriaIntentos">Intentos: 0</span>
+                            <span class="small fw-bold text-muted" id="quizMemoriaTiempo">⏱ 00:00</span>
+                        </div>
+                        <div class="quiz-memoria-grid" id="quizMemoriaGrid"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RESULTADOS FINALES -->
             <div id="quizResultados" class="row justify-content-center d-none">
-                <div class="col-lg-7">
-                    <div class="card border-0 shadow-sm text-center p-4 animate-fade-in" style="border-radius:16px;">
-                        <div class="fs-1 mb-2">🏆</div>
-                        <h4 class="fw-bold mb-2">¡Ronda completada!</h4>
-                        <p class="mb-4" id="quizResultadoTexto"></p>
-                        <button id="btnReiniciarQuiz" class="btn btn-warning fw-bold py-2 rounded-pill">Jugar de nuevo</button>
+                <div class="col-lg-8">
+                    <div class="card quiz-card border-0 shadow-sm text-center p-4">
+                        <div class="fs-1 mb-2" id="quizResultadoIcono">🏆</div>
+                        <h4 class="fw-bold mb-1" id="quizResultadoTitulo">¡Ronda completada!</h4>
+                        <p class="mb-3" id="quizResultadoTexto"></p>
+
+                        <div class="row g-2 mb-4">
+                            <div class="col-4"><div class="quiz-stat-box"><div class="valor text-success" id="statCorrectas">0</div><div class="small text-muted">Correctas</div></div></div>
+                            <div class="col-4"><div class="quiz-stat-box"><div class="valor text-danger" id="statIncorrectas">0</div><div class="small text-muted">Incorrectas</div></div></div>
+                            <div class="col-4"><div class="quiz-stat-box"><div class="valor text-primary" id="statPorcentaje">0%</div><div class="small text-muted">Precisión</div></div></div>
+                        </div>
+
+                        <div class="text-start mb-3">
+                            <p class="text-uppercase small fw-bold text-muted mb-2">Revisión de respuestas</p>
+                            <div id="quizRevisionLista"></div>
+                        </div>
+
+                        <div class="d-flex justify-content-center gap-2 flex-wrap">
+                            <button id="btnReiniciarQuiz" class="btn btn-warning fw-bold py-2 px-4 rounded-pill">🔁 Jugar de nuevo</button>
+                            <button id="btnQuizSalirResultados" class="btn btn-outline-secondary fw-bold py-2 px-4 rounded-pill">Salir</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -472,6 +523,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
     <script src="js/script.js"></script>
+    <script src="js/quiz.js"></script>
 
     <!-- Pie de página LSPedia -->
 <footer class="mt-5 py-4 border-top text-center">
