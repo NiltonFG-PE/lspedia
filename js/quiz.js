@@ -43,6 +43,31 @@ const QuizV2 = (function () {
     };
 
     // ---------------------------------------------------------
+    // ESTADO DEL REPRODUCTOR DE VIDEO (Modo 1: Video → Palabra)
+    // ---------------------------------------------------------
+    const estadoVideo = {
+        player: null,
+        apiListo: false,
+        videoIdPendiente: null,
+        velocidades: [0.25, 0.5, 0.75, 1, 1.25, 1.5, 2],
+        velocidadIndex: 3 // 1x
+    };
+
+    // Encadenamos con el callback global que ya usa script.js para el
+    // reproductor del diccionario, sin pisarlo (ambos deben ejecutarse).
+    const _onYouTubeIframeAPIReadyPrevio = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = function () {
+        if (typeof _onYouTubeIframeAPIReadyPrevio === "function") {
+            try { _onYouTubeIframeAPIReadyPrevio(); } catch (e) { /* no interrumpe el quiz */ }
+        }
+        estadoVideo.apiListo = true;
+        if (estadoVideo.videoIdPendiente) {
+            crearReproductorQuizVideo(estadoVideo.videoIdPendiente);
+            estadoVideo.videoIdPendiente = null;
+        }
+    };
+
+    // ---------------------------------------------------------
     // REFERENCIAS AL DOM (se resuelven de forma perezosa)
     // ---------------------------------------------------------
     const el = (id) => document.getElementById(id);
@@ -294,6 +319,8 @@ const QuizV2 = (function () {
             mostrarResultados();
             return;
         }
+        destruirReproductorQuizVideo();
+
         const pregunta = estado.ronda.preguntas[estado.ronda.indice];
         const total = estado.ronda.preguntas.length;
 
@@ -329,8 +356,17 @@ const QuizV2 = (function () {
         const opciones = mezclar([pregunta, ...distractores]);
 
         contenedor.innerHTML = `
-            <div class="ratio ratio-16x9 rounded overflow-hidden border mb-3">
-                <iframe src="https://www.youtube.com/embed/${pregunta.video}?rel=0&modestbranding=1&autoplay=0" allowfullscreen title="Video en LSP"></iframe>
+            <div class="quiz-video-wrap mb-2" id="quizVideoWrap">
+                <div id="quizReproductorVideo"></div>
+            </div>
+            <div class="quiz-video-controles d-flex align-items-center justify-content-center flex-wrap gap-2 mb-3">
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle quiz-video-btn" id="quizBtnRetroceder" title="Retroceder 1 segundo" aria-label="Retroceder 1 segundo">⏪</button>
+                <button type="button" class="btn btn-sm btn-primary rounded-circle quiz-video-btn" id="quizBtnPlayPause" title="Pausar / Repetir" aria-label="Pausar o repetir el video">⏸</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle quiz-video-btn" id="quizBtnAvanzar" title="Adelantar 2 segundos" aria-label="Adelantar 2 segundos">⏩</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary quiz-video-btn-velocidad" id="quizBtnLento" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
+                <span class="small fw-bold text-muted" id="quizVelocidadLabel">1x</span>
+                <button type="button" class="btn btn-sm btn-outline-secondary quiz-video-btn-velocidad" id="quizBtnRapido" title="Aumentar velocidad" aria-label="Aumentar velocidad">🐇</button>
+                <button type="button" class="btn btn-sm btn-outline-danger rounded-circle quiz-video-btn" id="quizBtnMeGusta" title="Me gusta" aria-label="Me gusta">🤍</button>
             </div>
             <p class="text-center fw-bold mb-3">¿Qué palabra representa esta seña?</p>
             <div class="row g-2" id="quizOpcionesDinamicas"></div>
@@ -346,6 +382,163 @@ const QuizV2 = (function () {
             col.appendChild(boton);
             cont.appendChild(col);
         });
+
+        prepararVideoQuiz(pregunta.video);
+    }
+
+    // ---------------------------------------------------------
+    // REPRODUCTOR DE VIDEO CONTROLABLE (YouTube IFrame API)
+    // Se usa en el Modo 1 (Video → Palabra) para poder ofrecer
+    // controles propios (retroceder, adelantar, velocidad, etc.)
+    // y para ajustar el tamaño de la ventana al video real.
+    // ---------------------------------------------------------
+    function prepararVideoQuiz(videoId) {
+        estadoVideo.velocidadIndex = estadoVideo.velocidades.indexOf(1);
+        ajustarAspectoVideo(videoId);
+        if (window.YT && window.YT.Player) {
+            crearReproductorQuizVideo(videoId);
+        } else {
+            estadoVideo.videoIdPendiente = videoId;
+        }
+    }
+
+    // Consulta el oEmbed público de YouTube para conocer el ancho/alto
+    // reales del video (muchos videos de señas son verticales) y así
+    // ajustar la ventana del reproductor a su tamaño real, sin bandas
+    // negras ni recortes.
+    function ajustarAspectoVideo(videoId) {
+        const wrap = el("quizVideoWrap");
+        if (!wrap) return;
+        wrap.style.aspectRatio = "9 / 16"; // valor razonable mientras se confirma el real
+
+        fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent("https://www.youtube.com/watch?v=" + videoId)}&format=json`)
+            .then((res) => (res.ok ? res.json() : null))
+            .then((data) => {
+                const wrapActual = el("quizVideoWrap");
+                if (!data || !wrapActual || !data.width || !data.height) return;
+                wrapActual.style.aspectRatio = `${data.width} / ${data.height}`;
+            })
+            .catch(() => { /* si falla la red, se mantiene el valor por defecto */ });
+    }
+
+    function crearReproductorQuizVideo(videoId) {
+        const contenedor = el("quizReproductorVideo");
+        if (!contenedor) return;
+        destruirReproductorQuizVideo();
+        estadoVideo.player = new YT.Player("quizReproductorVideo", {
+            videoId: videoId,
+            playerVars: { rel: 0, modestbranding: 1, playsinline: 1 },
+            events: {
+                onReady: () => {
+                    if (!estadoVideo.player) return;
+                    estadoVideo.player.setPlaybackRate(estadoVideo.velocidades[estadoVideo.velocidadIndex]);
+                    actualizarEtiquetaVelocidad();
+                    enlazarControlesVideoQuiz();
+                },
+                onStateChange: actualizarBotonPlayPauseQuiz
+            }
+        });
+    }
+
+    function destruirReproductorQuizVideo() {
+        if (estadoVideo.player && typeof estadoVideo.player.destroy === "function") {
+            try { estadoVideo.player.destroy(); } catch (e) { /* ya estaba destruido */ }
+        }
+        estadoVideo.player = null;
+    }
+
+    function enlazarControlesVideoQuiz() {
+        if (!estadoVideo.player) return;
+        const btnRetroceder = el("quizBtnRetroceder");
+        const btnAvanzar = el("quizBtnAvanzar");
+        const btnPlayPause = el("quizBtnPlayPause");
+        const btnLento = el("quizBtnLento");
+        const btnRapido = el("quizBtnRapido");
+        const btnMeGusta = el("quizBtnMeGusta");
+
+        if (btnRetroceder) btnRetroceder.onclick = () => {
+            if (!estadoVideo.player) return;
+            const t = estadoVideo.player.getCurrentTime();
+            estadoVideo.player.seekTo(Math.max(0, t - 1), true);
+        };
+
+        if (btnAvanzar) btnAvanzar.onclick = () => {
+            if (!estadoVideo.player) return;
+            const t = estadoVideo.player.getCurrentTime();
+            const dur = estadoVideo.player.getDuration();
+            estadoVideo.player.seekTo(Math.min(dur, t + 2), true);
+        };
+
+        if (btnPlayPause) btnPlayPause.onclick = () => {
+            if (!estadoVideo.player) return;
+            const estadoReproductor = estadoVideo.player.getPlayerState();
+            if (estadoReproductor === YT.PlayerState.ENDED) {
+                estadoVideo.player.seekTo(0, true);
+                estadoVideo.player.playVideo();
+            } else if (estadoReproductor === YT.PlayerState.PLAYING) {
+                estadoVideo.player.pauseVideo();
+            } else {
+                estadoVideo.player.playVideo();
+            }
+        };
+
+        if (btnLento) btnLento.onclick = () => cambiarVelocidadVideo(-1);
+        if (btnRapido) btnRapido.onclick = () => cambiarVelocidadVideo(1);
+
+        if (btnMeGusta) {
+            actualizarBotonMeGusta();
+            btnMeGusta.onclick = alternarMeGustaVideo;
+        }
+    }
+
+    function cambiarVelocidadVideo(direccion) {
+        const nuevoIndex = estadoVideo.velocidadIndex + direccion;
+        if (nuevoIndex < 0 || nuevoIndex >= estadoVideo.velocidades.length) return;
+        estadoVideo.velocidadIndex = nuevoIndex;
+        if (estadoVideo.player) estadoVideo.player.setPlaybackRate(estadoVideo.velocidades[nuevoIndex]);
+        actualizarEtiquetaVelocidad();
+    }
+
+    function actualizarEtiquetaVelocidad() {
+        const label = el("quizVelocidadLabel");
+        if (label) label.textContent = estadoVideo.velocidades[estadoVideo.velocidadIndex] + "x";
+    }
+
+    function actualizarBotonPlayPauseQuiz(evento) {
+        const btn = el("quizBtnPlayPause");
+        if (!btn || !estadoVideo.player) return;
+        const estadoActual = evento ? evento.data : estadoVideo.player.getPlayerState();
+        btn.textContent = estadoActual === YT.PlayerState.ENDED ? "🔁" : (estadoActual === YT.PlayerState.PLAYING ? "⏸" : "▶️");
+    }
+
+    // "Me gusta" por video, guardado localmente en el navegador
+    function obtenerMeGustaGuardados() {
+        try {
+            return JSON.parse(localStorage.getItem("lspedia_quiz_me_gusta") || "[]");
+        } catch (e) { return []; }
+    }
+
+    function guardarMeGustaGuardados(lista) {
+        try { localStorage.setItem("lspedia_quiz_me_gusta", JSON.stringify(lista)); } catch (e) { /* almacenamiento no disponible */ }
+    }
+
+    function alternarMeGustaVideo() {
+        const pregunta = estado.ronda.preguntas[estado.ronda.indice];
+        if (!pregunta) return;
+        const lista = obtenerMeGustaGuardados();
+        const idx = lista.indexOf(pregunta.video);
+        if (idx > -1) lista.splice(idx, 1); else lista.push(pregunta.video);
+        guardarMeGustaGuardados(lista);
+        actualizarBotonMeGusta();
+    }
+
+    function actualizarBotonMeGusta() {
+        const btn = el("quizBtnMeGusta");
+        const pregunta = estado.ronda.preguntas[estado.ronda.indice];
+        if (!btn || !pregunta) return;
+        const activo = obtenerMeGustaGuardados().indexOf(pregunta.video) > -1;
+        btn.textContent = activo ? "❤️" : "🤍";
+        btn.classList.toggle("activo", activo);
     }
 
     // ---------------------------------------------------------
@@ -707,13 +900,61 @@ const QuizV2 = (function () {
     // ---------------------------------------------------------
     // PANTALLA COMPLETA (pseudo-fullscreen compatible con móviles)
     // ---------------------------------------------------------
+    function elementoPantallaCompletaActivo() {
+        return document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement || null;
+    }
+
     function alternarPantallaCompleta() {
         const seccion = el("seccionQuiz");
-        estado.pantallaCompleta = !estado.pantallaCompleta;
-        seccion.classList.toggle("quiz-fullscreen", estado.pantallaCompleta);
+        if (!seccion) return;
+
+        // Si ya estamos en pantalla completa (real o simulada), salimos.
+        if (elementoPantallaCompletaActivo() || estado.pantallaCompleta) {
+            const salirFn = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+            if (elementoPantallaCompletaActivo() && salirFn) {
+                salirFn.call(document);
+            } else {
+                estado.pantallaCompleta = false;
+                seccion.classList.remove("quiz-fullscreen");
+                actualizarIconoPantallaCompleta();
+            }
+            return;
+        }
+
+        // Intentamos la API real de pantalla completa del navegador.
+        const solicitarFn = seccion.requestFullscreen || seccion.webkitRequestFullscreen || seccion.msRequestFullscreen;
+        if (solicitarFn) {
+            Promise.resolve(solicitarFn.call(seccion)).catch(activarPantallaCompletaSimulada);
+        } else {
+            activarPantallaCompletaSimulada();
+        }
+    }
+
+    // Alternativa para navegadores que no soportan pantalla completa en
+    // este elemento (por ejemplo, Safari en iOS): simulamos el efecto
+    // con estilos a pantalla completa dentro de la propia página.
+    function activarPantallaCompletaSimulada() {
+        const seccion = el("seccionQuiz");
+        if (!seccion) return;
+        estado.pantallaCompleta = true;
+        seccion.classList.add("quiz-fullscreen");
+        actualizarIconoPantallaCompleta();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function actualizarIconoPantallaCompleta() {
         const btn = el("btnQuizFullscreen");
         if (btn) btn.textContent = estado.pantallaCompleta ? "⤢" : "⛶";
-        if (estado.pantallaCompleta) window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    // Mantiene el ícono y el estado sincronizados si el usuario sale de
+    // pantalla completa con Esc, el gesto del navegador, etc.
+    function manejarCambioPantallaCompleta() {
+        const seccion = el("seccionQuiz");
+        const activo = !!elementoPantallaCompletaActivo();
+        estado.pantallaCompleta = activo;
+        if (seccion) seccion.classList.toggle("quiz-fullscreen", activo);
+        actualizarIconoPantallaCompleta();
     }
 
     // ---------------------------------------------------------
@@ -722,7 +963,8 @@ const QuizV2 = (function () {
     function salir() {
         detenerTemporizador();
         detenerCronoMemoria();
-        if (estado.pantallaCompleta) alternarPantallaCompleta();
+        destruirReproductorQuizVideo();
+        if (estado.pantallaCompleta || elementoPantallaCompletaActivo()) alternarPantallaCompleta();
     }
 
     function reiniciar() {
@@ -758,6 +1000,15 @@ const QuizV2 = (function () {
 
         const btnFullscreen = el("btnQuizFullscreen");
         if (btnFullscreen) btnFullscreen.addEventListener("click", alternarPantallaCompleta);
+
+        // iniciar() se llama cada vez que se abre la sección Quiz: nos
+        // aseguramos de registrar estos listeners globales una sola vez.
+        if (!estado._listenersFullscreenListos) {
+            ["fullscreenchange", "webkitfullscreenchange", "MSFullscreenChange"].forEach((evt) => {
+                document.addEventListener(evt, manejarCambioPantallaCompleta);
+            });
+            estado._listenersFullscreenListos = true;
+        }
     }
 
     // ---------------------------------------------------------
