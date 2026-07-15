@@ -1,0 +1,236 @@
+/* ============================================================
+   LSPedia - Estilos del Quiz v2
+   Archivo independiente. No modifica estilos.css.
+   ============================================================ */
+
+/* --- Contenedor general en modo pantalla completa --- */
+#seccionQuiz.quiz-fullscreen {
+    background-color: #0f172a;
+    padding: 24px 12px;
+    min-height: 100vh;
+    overflow-y: auto;
+}
+#seccionQuiz.quiz-fullscreen .quiz-card {
+    background-color: #ffffff;
+}
+
+/* --- Tarjeta base de cada pantalla del quiz --- */
+.quiz-card {
+    border-radius: 18px;
+    border: none;
+}
+
+/* --- Barra de progreso de preguntas (1 de 5, 2 de 5...) --- */
+.quiz-progreso-wrap {
+    height: 8px;
+    border-radius: 20px;
+    background-color: #e2e8f0;
+    overflow: hidden;
+}
+.quiz-progreso-barra {
+    height: 100%;
+    background: linear-gradient(90deg, #0d6efd, #0dcaf0);
+    border-radius: 20px;
+    transition: width 0.35s ease;
+}
+
+/* --- Barra de temporizador (cuenta regresiva por pregunta) --- */
+.quiz-timer-wrap {
+    height: 6px;
+    border-radius: 20px;
+    background-color: #e2e8f0;
+    overflow: hidden;
+    margin-bottom: 14px;
+}
+.quiz-timer-barra {
+    height: 100%;
+    width: 100%;
+    background-color: #16a34a;
+    transition: width 1s linear, background-color 0.3s ease;
+}
+.quiz-timer-barra.tiempo-medio { background-color: #f59e0b; }
+.quiz-timer-barra.tiempo-critico { background-color: #dc2626; }
+
+/* --- Insignias de nivel --- */
+.badge-nivel-facil { background-color: #16a34a !important; }
+.badge-nivel-medio { background-color: #f59e0b !important; color:#000; }
+.badge-nivel-dificil { background-color: #dc2626 !important; }
+
+/* --- Selector de nivel / modo en la intro --- */
+.quiz-selector-btn {
+    border-radius: 14px;
+    border: 2px solid #e2e8f0;
+    background-color: #fff;
+    padding: 14px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    height: 100%;
+}
+.quiz-selector-btn:hover {
+    border-color: #0d6efd;
+    transform: translateY(-3px);
+}
+.quiz-selector-btn.activo {
+    border-color: #0d6efd;
+    background-color: #eaf2ff;
+    box-shadow: 0 0 0 3px rgba(13,110,253,0.15);
+}
+.quiz-selector-btn .icono {
+    font-size: 1.6rem;
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* --- Opciones de respuesta --- */
+.quiz-opcion-btn {
+    border-radius: 12px;
+    font-weight: bold;
+    min-height: 56px;
+    transition: transform 0.15s ease, background-color 0.2s ease;
+}
+.quiz-opcion-btn:not(:disabled):hover {
+    transform: scale(1.02);
+}
+.quiz-opcion-btn.correcta {
+    animation: quizPulso 0.5s ease;
+}
+.quiz-opcion-btn.incorrecta {
+    animation: quizTiemble 0.4s ease;
+}
+
+@keyframes quizPulso {
+    0% { box-shadow: 0 0 0 0 rgba(22,163,74,0.5); }
+    100% { box-shadow: 0 0 0 14px rgba(22,163,74,0); }
+}
+@keyframes quizTiemble {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+}
+
+/* --- Miniaturas de video (Modo 2: palabra -> video) --- */
+.quiz-video-opcion {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 3px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.quiz-video-opcion img {
+    width: 100%;
+    display: block;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+}
+.quiz-video-opcion:hover { transform: scale(1.02); }
+.quiz-video-opcion.seleccionada { border-color: #0d6efd; }
+.quiz-video-opcion.correcta { border-color: #16a34a; }
+.quiz-video-opcion.incorrecta { border-color: #dc2626; }
+.quiz-video-opcion .play-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.15);
+    font-size: 1.8rem;
+    color: #fff;
+    pointer-events: none;
+}
+
+/* --- Modo memoria --- */
+.quiz-memoria-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+@media (max-width: 576px) {
+    .quiz-memoria-grid { grid-template-columns: repeat(2, 1fr); }
+}
+.quiz-memoria-carta {
+    aspect-ratio: 1/1;
+    border-radius: 12px;
+    background-color: #0d6efd;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    padding: 6px;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.25s ease, background-color 0.2s ease;
+    overflow: hidden;
+}
+.quiz-memoria-carta.volteada {
+    background-color: #fff;
+    color: #0f172a;
+    border: 2px solid #0d6efd;
+}
+.quiz-memoria-carta img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+.quiz-memoria-carta.acertada {
+    background-color: #dcfce7;
+    border-color: #16a34a;
+    color: #166534;
+    cursor: default;
+    opacity: 0.85;
+}
+.quiz-memoria-carta.error-temp {
+    animation: quizTiemble 0.4s ease;
+}
+
+/* --- Fade genérico reutilizado por el quiz --- */
+.quiz-fade-in {
+    animation: quizFadeIn 0.35s ease-out;
+}
+@keyframes quizFadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Panel de estadísticas finales --- */
+.quiz-stat-box {
+    border-radius: 14px;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 14px;
+    text-align: center;
+}
+.quiz-stat-box .valor {
+    font-size: 1.6rem;
+    font-weight: bold;
+}
+
+/* --- Fila de revisión de respuestas (correctas/incorrectas) --- */
+.quiz-revision-item {
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    font-size: 0.85rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+.quiz-revision-item.ok { background-color: #f0fdf4; border: 1px solid #bbf7d0; }
+.quiz-revision-item.fail { background-color: #fef2f2; border: 1px solid #fecaca; }
+
+/* --- Botón de pantalla completa --- */
+.quiz-btn-fullscreen {
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
