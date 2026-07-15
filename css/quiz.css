@@ -234,3 +234,48 @@
     align-items: center;
     justify-content: center;
 }
+
+/* --- Reproductor de video (Modo 1: Video → Palabra) ---
+   El tamaño de la ventana se ajusta al video real vía JS
+   (aspect-ratio se calcula con el oEmbed de YouTube), en vez de
+   forzar siempre un recuadro 16:9 con bandas negras. --- */
+.quiz-video-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    max-height: 70vh;
+    margin: 0 auto;
+    border-radius: 14px;
+    overflow: hidden;
+    background-color: #000;
+    aspect-ratio: 9 / 16;
+}
+.quiz-video-wrap iframe,
+.quiz-video-wrap > div {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+/* --- Controles propios del reproductor del Quiz --- */
+.quiz-video-btn {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+.quiz-video-btn-velocidad {
+    border-radius: 20px;
+    font-size: 0.95rem;
+    padding: 6px 12px;
+}
+#quizBtnMeGusta.activo {
+    background-color: #dc2626;
+    border-color: #dc2626;
+    color: #fff;
+}
