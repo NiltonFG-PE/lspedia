@@ -122,6 +122,33 @@ document.addEventListener("DOMContentLoaded", () => {
     App.iniciar();
 });
 
+// --- TARJETAS DE ESTADÍSTICAS CLICABLES ---
+const statCardPalabras = document.getElementById("statCardPalabras");
+if (statCardPalabras) {
+    statCardPalabras.addEventListener("click", () => {
+        const indice = document.getElementById("indiceAlfabetico");
+        const yaAbierto = indice.classList.contains("show");
+        if (!yaAbierto) {
+            document.getElementById("btnToggleAbc").click();
+        }
+        indice.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+}
+
+const statCardCategorias = document.getElementById("statCardCategorias");
+if (statCardCategorias) {
+    statCardCategorias.addEventListener("click", () => {
+        document.getElementById("btnCategorias").click();
+    });
+}
+
+const statCardVideos = document.getElementById("statCardVideos");
+if (statCardVideos) {
+    statCardVideos.addEventListener("click", () => {
+        window.open("https://www.youtube.com/@LSPedia-sign/playlists", "_blank", "noopener");
+    });
+}
+
 const indiceAlfabetico = document.getElementById("indiceAlfabetico");
 if(indiceAlfabetico){
     indiceAlfabetico.addEventListener("show.bs.collapse", () => {

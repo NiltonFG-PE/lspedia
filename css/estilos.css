@@ -23,7 +23,9 @@ body {
     background-color: var(--primary-color) !important;
 }
 .navbar-brand {
-    font-size: 1.1rem;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
     letter-spacing: -0.5px;
 }
 
@@ -95,6 +97,41 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--accent-color);
 }
 
+/* Botón rectangular del Índice alfabético (icono A-Z + flecha) */
+.btn-abc-toggle {
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-main);
+    color: var(--text-main);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.3px;
+    padding: 10px 20px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    transition: all 0.2s ease;
+}
+.btn-abc-toggle:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+    background-color: #f0f9ff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(2, 132, 199, 0.12);
+}
+.btn-abc-toggle .abc-toggle-label {
+    font-weight: 800;
+    color: var(--accent-color);
+    border-right: 1px solid var(--border-color);
+    padding-right: 10px;
+}
+.btn-abc-toggle:hover .abc-toggle-label {
+    border-color: var(--accent-color);
+}
+.flecha-abc-toggle {
+    display: inline-block;
+    transition: transform 0.2s ease;
+    font-size: 12px;
+}
+
 /* Panel de sugerencias desplegables */
 #sugerencias {
     position: absolute;
@@ -157,6 +194,25 @@ h1, h2, h3, h4, h5, h6 {
 .categoria-card h6 { font-size: 0.9rem; margin: 0; font-weight: 600; }
 .categoria-card p { font-size: 11px; margin: 0; color: var(--text-muted); }
 .categoria-card:hover { background: #f1f5f9; }
+
+/* Tarjetas de estadísticas clicables (Palabras / Categorías / Videos) */
+.stat-card-clicable {
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.stat-card-clicable:hover {
+    transform: translateY(-6px) scale(1.03);
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12) !important;
+}
+.stat-card-clicable:active {
+    transform: translateY(-2px) scale(1.01);
+}
+.stat-card-clicable .fs-1 {
+    transition: transform 0.25s ease;
+}
+.stat-card-clicable:hover .fs-1 {
+    transform: scale(1.15) rotate(-5deg);
+}
 
 /* ==========================================
    5. ENTORNO DE RESULTADOS CINE (Foco en Video/Seña)
