@@ -1,0 +1,349 @@
+{
+  "ok": true,
+  "alfabeto": [
+    {
+      "tipo": "letra",
+      "caracter": "A",
+      "imagenBoca": "img/alfabetizacion/boca/A.png",
+      "trazoVideo": "img/alfabetizacion/grafias/A-mayuscula.mp4"
+    },
+    {
+      "tipo": "letra",
+      "caracter": "B",
+      "imagenBoca": "img/alfabetizacion/boca/B.png",
+      "trazoVideo": "img/alfabetizacion/grafias/B-mayuscula.mp4"
+    },
+    {
+      "tipo": "letra",
+      "caracter": "C",
+      "imagenBoca": "img/alfabetizacion/boca/C.png",
+      "trazoVideo": "img/alfabetizacion/grafias/C-mayuscula.mp4"
+    },
+    {
+      "tipo": "letra",
+      "caracter": "D",
+      "imagenBoca": "img/alfabetizacion/boca/D.png",
+      "trazoVideo": "img/alfabetizacion/grafias/D-mayuscula.mp4"
+    },
+    {
+      "tipo": "letra",
+      "caracter": "E",
+      "imagenBoca": "img/alfabetizacion/boca/E.png",
+      "trazoVideo": "img/alfabetizacion/grafias/E-mayuscula.mp4"
+    },
+    {
+      "tipo": "letra",
+      "caracter": "F",
+      "imagenBoca": "img/alfabetizacion/boca/F.png",
+      "trazoVideo": "img/alfabetizacion/grafias/F-mayuscula.mp4"
+    },
+    {
+      "tipo": "letra",
+      "caracter": "G",
+      "imagenBoca": "img/alfabetizacion/boca/G.png",
+      "trazoVideo": "img/alfabetizacion/grafias/G-mayuscula.mp4"
+    },
+    {
+      "tipo": "letra",
+      "caracter": "H",
+      "imagenBoca": "img/alfabetizacion/boca/H.png",
+      "trazoVideo": "img/alfabetizacion/grafias/H-mayuscula.mp4"
+    },
+    {
+      "tipo": "letra",
+      "caracter": "I",
+      "imagenBoca": "img/alfabetizacion/boca/I.png",
+      "trazoVideo": "img/alfabetizacion/grafias/I-mayuscula.mp4"
+    },
+    {
+      "tipo": "letra",
+      "caracter": "J",
+      "imagenBoca": "img/alfabetizacion/boca/J.png",
+      "trazoVideo": "img/alfabetizacion/grafias/J-mayuscula.mp4"
+    },
+    {
+      "tipo": "letra",
+      "caracter": "K",
+      "imagenBoca": "img/alfabetizacion/boca/K.png",
+      "trazoVideo": "img/alfabetizacion/grafias/K-mayuscula.mp4"
+    },
+    {
+      "tipo": "letra",
+      "caracter": "L",
+      "imagenBoca": "img/alfabetizacion/boca/L.png",
+      "trazoVideo": "img/alfabetizacion/grafias/L-mayuscula.mp4"
+    },
+    {
+      "tipo": "letra",
+      "caracter": "M",
+      "imagenBoca": "img/alfabetizacion/boca/M.png",
+      "trazoVideo": "img/alfabetizacion/grafias/M-mayuscula.mp4"
+    },
+    {
+      "tipo": "letra",
+      "caracter": "N",
+      "imagenBoca": "img/alfabetizacion/boca/N.png",
+      "trazoVideo": "img/alfabetizacion/grafias/N-mayuscula.mp4"
+    },
+    {
+      "tipo": "letra",
+      "caracter": "Ñ",
+      "imagenBoca": "img/alfabetizacion/boca/Ñ.png",
+      "trazoVideo": "img/alfabetizacion/grafias/Ñ-mayuscula.mp4"
+    },
+    {
+      "tipo": "letra",
+      "caracter": "O",
+      "imagenBoca": "img/alfabetizacion/boca/O.png",
+      "trazoVideo": "img/alfabetizacion/grafias/O-mayuscula.mp4"
+    },
+    {
+      "tipo": "letra",
+      "caracter": "P",
+      "imagenBoca": "img/alfabetizacion/boca/P.png",
+      "trazoVideo": "img/alfabetizacion/grafias/P-mayuscula.mp4"
+    },
+    {
+      "tipo": "letra",
+      "caracter": "Q",
+      "imagenBoca": "img/alfabetizacion/boca/Q.png",
+      "trazoVideo": "img/alfabetizacion/grafias/Q-mayuscula.mp4"
+    },
+    {
+      "tipo": "letra",
+      "caracter": "R",
+      "imagenBoca": "img/alfabetizacion/boca/R.png",
+      "trazoVideo": "img/alfabetizacion/grafias/R-mayuscula.mp4"
+    },
+    {
+      "tipo": "letra",
+      "caracter": "S",
+      "imagenBoca": "img/alfabetizacion/boca/S.png",
+      "trazoVideo": "img/alfabetizacion/grafias/S-mayuscula.mp4"
+    },
+    {
+      "tipo": "letra",
+      "caracter": "T",
+      "imagenBoca": "img/alfabetizacion/boca/T.png",
+      "trazoVideo": "img/alfabetizacion/grafias/T-mayuscula.mp4"
+    },
+    {
+      "tipo": "letra",
+      "caracter": "U",
+      "imagenBoca": "img/alfabetizacion/boca/U.png",
+      "trazoVideo": "img/alfabetizacion/grafias/U-mayuscula.mp4"
+    },
+    {
+      "tipo": "letra",
+      "caracter": "V",
+      "imagenBoca": "img/alfabetizacion/boca/V.png",
+      "trazoVideo": "img/alfabetizacion/grafias/V-mayuscula.mp4"
+    },
+    {
+      "tipo": "letra",
+      "caracter": "W",
+      "imagenBoca": "img/alfabetizacion/boca/W.png",
+      "trazoVideo": "img/alfabetizacion/grafias/W-mayuscula.mp4"
+    },
+    {
+      "tipo": "letra",
+      "caracter": "X",
+      "imagenBoca": "img/alfabetizacion/boca/X.png",
+      "trazoVideo": "img/alfabetizacion/grafias/X-mayuscula.mp4"
+    },
+    {
+      "tipo": "letra",
+      "caracter": "Y",
+      "imagenBoca": "img/alfabetizacion/boca/Y.png",
+      "trazoVideo": "img/alfabetizacion/grafias/Y-mayuscula.mp4"
+    },
+    {
+      "tipo": "letra",
+      "caracter": "Z",
+      "imagenBoca": "img/alfabetizacion/boca/Z.png",
+      "trazoVideo": "img/alfabetizacion/grafias/Z-mayuscula.mp4"
+    },
+    {
+      "tipo": "numero",
+      "caracter": "1",
+      "imagenBoca": "img/alfabetizacion/boca/1.png",
+      "trazoVideo": "img/alfabetizacion/grafias/1-mayuscula.mp4"
+    },
+    {
+      "tipo": "numero",
+      "caracter": "2",
+      "imagenBoca": "img/alfabetizacion/boca/2.png",
+      "trazoVideo": "img/alfabetizacion/grafias/2-mayuscula.mp4"
+    },
+    {
+      "tipo": "numero",
+      "caracter": "3",
+      "imagenBoca": "img/alfabetizacion/boca/3.png",
+      "trazoVideo": "img/alfabetizacion/grafias/3-mayuscula.mp4"
+    }
+  ],
+  "ejemplos": [
+    {
+      "caracter": "A",
+      "palabra": "Árbol",
+      "imagen": "img/alfabetizacion/ejemplos/arbol.jpg",
+      "orden": 1
+    },
+    {
+      "caracter": "B",
+      "palabra": "Barco",
+      "imagen": "img/alfabetizacion/ejemplos/barco.jpg",
+      "orden": 1
+    },
+    {
+      "caracter": "C",
+      "palabra": "Casa",
+      "imagen": "img/alfabetizacion/ejemplos/casa.jpg",
+      "orden": 1
+    },
+    {
+      "caracter": "D",
+      "palabra": "Delfín",
+      "imagen": "img/alfabetizacion/ejemplos/delfin.jpg",
+      "orden": 1
+    },
+    {
+      "caracter": "E",
+      "palabra": "Elefante",
+      "imagen": "img/alfabetizacion/ejemplos/elefante.jpg",
+      "orden": 1
+    },
+    {
+      "caracter": "F",
+      "palabra": "Fuego",
+      "imagen": "img/alfabetizacion/ejemplos/fuego.jpg",
+      "orden": 1
+    },
+    {
+      "caracter": "G",
+      "palabra": "Gato",
+      "imagen": "img/alfabetizacion/ejemplos/gato.jpg",
+      "orden": 1
+    },
+    {
+      "caracter": "H",
+      "palabra": "Helado",
+      "imagen": "img/alfabetizacion/ejemplos/helado.jpg",
+      "orden": 1
+    },
+    {
+      "caracter": "I",
+      "palabra": "Imán",
+      "imagen": "img/alfabetizacion/ejemplos/iman.jpg",
+      "orden": 1
+    },
+    {
+      "caracter": "J",
+      "palabra": "Jarra",
+      "imagen": "img/alfabetizacion/ejemplos/jarra.jpg",
+      "orden": 1
+    },
+    {
+      "caracter": "K",
+      "palabra": "Ketchup",
+      "imagen": "img/alfabetizacion/ejemplos/ketchup.jpg",
+      "orden": 1
+    },
+    {
+      "caracter": "L",
+      "palabra": "Lupa",
+      "imagen": "img/alfabetizacion/ejemplos/lupa.jpg",
+      "orden": 1
+    },
+    {
+      "caracter": "M",
+      "palabra": "Maleta",
+      "imagen": "img/alfabetizacion/ejemplos/maleta.jpg",
+      "orden": 1
+    },
+    {
+      "caracter": "N",
+      "palabra": "Nube",
+      "imagen": "img/alfabetizacion/ejemplos/nube.jpg",
+      "orden": 1
+    },
+    {
+      "caracter": "Ñ",
+      "palabra": "Ñandu",
+      "imagen": "img/alfabetizacion/ejemplos/ñandu.jpg",
+      "orden": 1
+    },
+    {
+      "caracter": "O",
+      "palabra": "Oreja",
+      "imagen": "img/alfabetizacion/ejemplos/oreja.jpg",
+      "orden": 1
+    },
+    {
+      "caracter": "P",
+      "palabra": "Pulpo",
+      "imagen": "img/alfabetizacion/ejemplos/pulpo.jpg",
+      "orden": 1
+    },
+    {
+      "caracter": "Q",
+      "palabra": "Quena",
+      "imagen": "img/alfabetizacion/ejemplos/quena.jpg",
+      "orden": 1
+    },
+    {
+      "caracter": "R",
+      "palabra": "Rosa",
+      "imagen": "img/alfabetizacion/ejemplos/rosa.jpg",
+      "orden": 1
+    },
+    {
+      "caracter": "S",
+      "palabra": "Silla",
+      "imagen": "img/alfabetizacion/ejemplos/silla.jpg",
+      "orden": 1
+    },
+    {
+      "caracter": "T",
+      "palabra": "Tiburón",
+      "imagen": "img/alfabetizacion/ejemplos/tiburon.jpg",
+      "orden": 1
+    },
+    {
+      "caracter": "U",
+      "palabra": "Uvas",
+      "imagen": "img/alfabetizacion/ejemplos/uvas.jpg",
+      "orden": 1
+    },
+    {
+      "caracter": "V",
+      "palabra": "Vela",
+      "imagen": "img/alfabetizacion/ejemplos/vela.jpg",
+      "orden": 1
+    },
+    {
+      "caracter": "W",
+      "palabra": "Wifi",
+      "imagen": "img/alfabetizacion/ejemplos/wifi.jpg",
+      "orden": 1
+    },
+    {
+      "caracter": "X",
+      "palabra": "Xilófono",
+      "imagen": "img/alfabetizacion/ejemplos/xilofono.jpg",
+      "orden": 1
+    },
+    {
+      "caracter": "Y",
+      "palabra": "Yate",
+      "imagen": "img/alfabetizacion/ejemplos/yate.jpg",
+      "orden": 1
+    },
+    {
+      "caracter": "Z",
+      "palabra": "Zorro",
+      "imagen": "img/alfabetizacion/ejemplos/zorro.jpg",
+      "orden": 1
+    }
+  ]
+}

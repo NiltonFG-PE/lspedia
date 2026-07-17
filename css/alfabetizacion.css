@@ -1,0 +1,81 @@
+/* ============================================================
+   AGREGAR a css/alfabetizacion.css (no reemplaza lo que ya tenías,
+   solo se necesitan estos bloques nuevos/actualizados)
+   ============================================================ */
+
+/* ============================================================
+   Chips flotantes de las 4 variantes tipográficas (reemplazan las
+   4 cajas estáticas de imagen). Uno activo a la vez; al hacer clic
+   cambia el video de grafía de abajo a esa variante.
+   Colores calcados de la referencia visual del usuario.
+   ============================================================ */
+.alfab-chips-tipograficos {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin-bottom: 1.75rem;
+    flex-wrap: wrap;
+}
+.alfab-chip-tipo {
+    width: 68px;
+    height: 68px;
+    border-radius: 14px;
+    background: #ffffff;
+    border: 2px solid var(--border-color, #cbd5e1);
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.alfab-chip-tipo:hover {
+    transform: translateY(-2px);
+}
+.alfab-chip-tipo:active {
+    transform: translateY(0) scale(0.96);
+}
+
+/* Imagen tipográfica dentro del chip: una por variante, del carácter
+   actual (ver rutaImagenGrafia() en alfabetizacion.js). */
+.alfab-chip-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none; /* el clic siempre debe caer sobre el <button> */
+}
+
+/* Colores por variante, igual que la referencia */
+.alfab-chip-mayuscula { border-color: #38bdf8; }
+.alfab-chip-mayuscula.active { background: #e0f2fe; border-color: #0284c7; box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.18); }
+
+.alfab-chip-minuscula { border-color: #4ade80; }
+.alfab-chip-minuscula.active { background: #dcfce7; border-color: #16a34a; box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.18); }
+
+.alfab-chip-cursiva-mayuscula { border-color: #fb923c; }
+.alfab-chip-cursiva-mayuscula.active { background: #ffedd5; border-color: #ea580c; box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.18); }
+
+.alfab-chip-cursiva-minuscula { border-color: #c084fc; }
+.alfab-chip-cursiva-minuscula.active { background: #f3e8ff; border-color: #9333ea; box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.18); }
+
+/* Caja de grafía: la letra/video se muestra grande, similar a la referencia */
+.alfab-grafia-caja {
+    background: #f8fafc;
+}
+
+/* Las 4 cajas de imagen estática (.alfab-tipo-img/.alfab-tipo-box) ya no
+   se usan tras este cambio — se pueden retirar si no aparecen en ningún
+   otro lugar del sitio. */
+
+/* Letra/número inicial resaltado dentro de la palabra de ejemplo */
+.alfab-ejemplo-letra-inicial {
+    font-weight: 800;
+    font-size: 1.35em;
+    color: var(--accent-color, #0284c7);
+}
+
+/* El video de grafía reutiliza .apoyo-visual-caja / .apoyo-visual-img
+   ya existentes; si esas clases fijaban object-fit o dimensiones
+   pensadas para <img>, confirma que también apliquen bien a <video>
+   (mismas reglas box-sizing/width/height suelen funcionar igual). */

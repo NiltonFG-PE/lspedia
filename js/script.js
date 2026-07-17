@@ -16,6 +16,11 @@ const listaFavoritos = document.getElementById("listaFavoritos");
 const CLAVE_FAVORITOS = "lspedia_favoritos";
 const CLAVE_HISTORIAL = "lspedia_historial";
 
+// Mismas 7 velocidades que tenía el selector anterior, ahora con
+// control tortuga 🐢 / conejo 🐇 igual que en el módulo Alfabetización.
+const VELOCIDADES_PALABRA = [0.6, 0.8, 0.9, 1, 1.2, 1.6, 2];
+let palabraVelocidadIndex = 3; // 1x
+
 // --- EVENTOS DEL MENÚ SUPERIOR ---
 const btnLogo = document.getElementById("btnLogo");
 if(btnLogo) {
@@ -38,6 +43,7 @@ if(btnInicio) {
 document.getElementById("btnCategorias").addEventListener("click", (e) => {
     e.preventDefault();
     ocultarQuiz();
+    ocultarAlfabetizacion();
     mostrarCategorias();
     panelCategorias.scrollIntoView({ behavior: 'smooth', block: 'center' });
     panelCategorias.classList.add("highlight-anim");
@@ -47,6 +53,7 @@ document.getElementById("btnCategorias").addEventListener("click", (e) => {
 document.getElementById("btnNavFavoritos").addEventListener("click", (e) => {
     e.preventDefault();
     ocultarQuiz();
+    ocultarAlfabetizacion();
     const seccionFav = document.getElementById("seccionFavoritos");
     seccionFav.scrollIntoView({ behavior: 'smooth', block: 'center' });
     seccionFav.classList.add("highlight-anim");
@@ -56,6 +63,7 @@ document.getElementById("btnNavFavoritos").addEventListener("click", (e) => {
 document.getElementById("btnHistorial").addEventListener("click", (e) => {
     e.preventDefault();
     ocultarQuiz();
+    ocultarAlfabetizacion();
     mostrarPantallaHistorial();
     seccionHistorial.scrollIntoView({ behavior: 'smooth', block: 'center' });
     seccionHistorial.classList.add("highlight-anim");
@@ -90,10 +98,43 @@ function mostrarSeccionQuiz(){
     panelCategorias.innerHTML = "";
     ultimasPalabras.innerHTML = "";
     seccionHistorial.classList.add("d-none");
+    ocultarAlfabetizacion();
     seccionQuiz.classList.remove("d-none");
     // QuizV2 (js/quiz.js) carga sus propias preguntas desde la Hoja 2 de Google Sheets.
     if(window.QuizV2 && typeof QuizV2.iniciar === "function") QuizV2.iniciar();
     seccionQuiz.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// --- SECCIÓN ALFABETIZACIÓN (independiente del Quiz: Memoria y Dictado LSA no se tocan) ---
+const seccionAlfabetizacion = document.getElementById("seccionAlfabetizacion");
+const btnAlfabetizacion = document.getElementById("btnAlfabetizacion");
+if(btnAlfabetizacion){
+    btnAlfabetizacion.addEventListener("click", (e) => {
+        e.preventDefault();
+        mostrarSeccionAlfabetizacion();
+    });
+}
+
+function ocultarAlfabetizacion(){
+    if(seccionAlfabetizacion) seccionAlfabetizacion.classList.add("d-none");
+    // js/alfabetizacion.js (namespace AlfabetizacionV2) tiene sus propios datos desde Google Sheets.
+    if(window.AlfabetizacionV2 && typeof AlfabetizacionV2.salir === "function") AlfabetizacionV2.salir();
+}
+
+function mostrarSeccionAlfabetizacion(){
+    resultado.innerHTML = "";
+    panelCategorias.innerHTML = "";
+    ultimasPalabras.innerHTML = "";
+    seccionHistorial.classList.add("d-none");
+    ocultarQuiz();
+    seccionAlfabetizacion.classList.remove("d-none");
+    // AlfabetizacionV2 (js/alfabetizacion.js) carga sus datos desde Google Sheets (aún pendiente de crear).
+    if(window.AlfabetizacionV2 && typeof AlfabetizacionV2.iniciar === "function"){
+        AlfabetizacionV2.iniciar();
+    } else {
+        console.warn("AlfabetizacionV2 aún no está definido: falta crear/cargar js/alfabetizacion.js.");
+    }
+    seccionAlfabetizacion.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // --- CARGA DE DATOS CENTRALIZADA ---
@@ -167,6 +208,7 @@ buscar.addEventListener("input", buscarPalabras);
 function buscarPalabras(){
     const texto = buscar.value.trim().toLowerCase();
     ocultarQuiz();
+    ocultarAlfabetizacion();
     sugerencias.innerHTML = "";
     //resultado.innerHTML = "";
     //ultimasPalabras.innerHTML = ""; 
@@ -255,6 +297,7 @@ function ejecutarBusquedaDirecta() {
 // --- MOSTRAR PALABRA ---
 function mostrarPalabra(p){
     ocultarQuiz();
+    ocultarAlfabetizacion();
     buscar.value = p.palabra;
     buscar.blur();
     sugerencias.innerHTML="";
@@ -290,15 +333,9 @@ function mostrarPalabra(p){
                 <button type="button" class="btn btn-sm btn-outline-secondary" id="btnRetroceder10" title="Retroceder 5 segundos" aria-label="Retroceder 5 segundos">⏪ 5s</button>
                 <button type="button" class="btn btn-sm btn-primary" id="btnPlayPause" title="Reproducir o pausar" aria-label="Reproducir o pausar">▶️ Reproducir</button>
                 <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAvanzar10" title="Avanzar 10 segundos" aria-label="Avanzar 10 segundos">10s ⏩</button>
-                <select class="form-select form-select-sm" id="selectVelocidad" title="Velocidad de reproducción" aria-label="Velocidad de reproducción">
-                    <option value="0.6">0.6x</option>
-                    <option value="0.8">0.8x</option>
-                    <option value="0.9">0.9x</option>
-                    <option value="1" selected>1x</option>
-                    <option value="1.2">1.2x</option>
-                    <option value="1.6">1.6x</option>
-                    <option value="2">2x</option>
-                </select>
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnPalabraVelocidadLenta" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
+                <span class="small fw-bold text-muted" id="palabraVelocidadLabel">1x</span>
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnPalabraVelocidadRapida" title="Aumentar velocidad" aria-label="Aumentar velocidad">🐇</button>
            </div>`
         : "";
     let bloqueVariantes = p.variantes && p.variantes.trim() !== "" ? `<div class="mb-3 p-2 bg-light rounded border"><span class="d-block fw-bold text-secondary mb-1" style="font-size: 10px; letter-spacing: 0.5px;">🔄 CONJUGACIONES O VARIANTES:</span><span class="text-muted small fst-italic">${p.variantes}</span></div>` : "";
@@ -385,8 +422,9 @@ function configurarControlesVideo() {
     const btnRetroceder = document.getElementById("btnRetroceder10");
     const btnAvanzar = document.getElementById("btnAvanzar10");
     const btnPlayPause = document.getElementById("btnPlayPause");
-    const selectVelocidad = document.getElementById("selectVelocidad");
-    if (!btnRetroceder || !btnAvanzar || !btnPlayPause || !selectVelocidad || !ytPlayerPalabra) return;
+    const btnVelocidadLenta = document.getElementById("btnPalabraVelocidadLenta");
+    const btnVelocidadRapida = document.getElementById("btnPalabraVelocidadRapida");
+    if (!btnRetroceder || !btnAvanzar || !btnPlayPause || !btnVelocidadLenta || !btnVelocidadRapida || !ytPlayerPalabra) return;
 
     btnRetroceder.addEventListener("click", () => {
         const tiempoActual = ytPlayerPalabra.getCurrentTime();
@@ -408,9 +446,26 @@ function configurarControlesVideo() {
         }
     });
 
-    selectVelocidad.addEventListener("change", () => {
-        ytPlayerPalabra.setPlaybackRate(parseFloat(selectVelocidad.value));
-    });
+    // Cada video nuevo arranca en 1x, igual que antes con el <select selected>.
+    palabraVelocidadIndex = VELOCIDADES_PALABRA.indexOf(1);
+    ytPlayerPalabra.setPlaybackRate(1);
+    actualizarLabelVelocidadPalabra();
+
+    btnVelocidadLenta.addEventListener("click", () => cambiarVelocidadPalabra(-1));
+    btnVelocidadRapida.addEventListener("click", () => cambiarVelocidadPalabra(1));
+}
+
+function cambiarVelocidadPalabra(delta) {
+    if (!ytPlayerPalabra) return;
+    const max = VELOCIDADES_PALABRA.length - 1;
+    palabraVelocidadIndex = Math.min(max, Math.max(0, palabraVelocidadIndex + delta));
+    ytPlayerPalabra.setPlaybackRate(VELOCIDADES_PALABRA[palabraVelocidadIndex]);
+    actualizarLabelVelocidadPalabra();
+}
+
+function actualizarLabelVelocidadPalabra() {
+    const label = document.getElementById("palabraVelocidadLabel");
+    if (label) label.textContent = VELOCIDADES_PALABRA[palabraVelocidadIndex] + "x";
 }
 
 function actualizarBotonPlayPause(evento) {
@@ -442,6 +497,7 @@ function actualizarEstadisticas(){
 // --- FILTRO ABC ---
 function filtrarPorLetra(letra) {
     ocultarQuiz();
+    ocultarAlfabetizacion();
     buscar.value = ""; 
     sugerencias.innerHTML = "";
     sugerencias.style.display = "none";

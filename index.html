@@ -21,6 +21,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/estilos.css">
     <link rel="stylesheet" href="css/quiz.css">
+    <link rel="stylesheet" href="css/alfabetizacion.css">
 
     <!-- Preconnect: adelanta la conexión a Google para que el Quiz cargue más rápido -->
     <link rel="preconnect" href="https://script.google.com">
@@ -219,6 +220,7 @@
                     </li>
                     <li class="nav-item"><a class="nav-link" href="#" id="btnCategorias"><span aria-hidden="true">📁</span> Temas orden</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" id="btnQuiz"><span aria-hidden="true">🎮</span> Jugar</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" id="btnAlfabetizacion"><span aria-hidden="true">🔤</span> Alfabetización</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" id="btnNavFavoritos"><span aria-hidden="true">⭐</span> Favoritos</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" id="btnHistorial"><span aria-hidden="true">🕒</span> Historial</a></li>
                     <li class="nav-item"><a class="nav-link text-warning" href="#" data-bs-toggle="modal" data-bs-target="#modalSobreNosotros"><span aria-hidden="true">🤟</span> Sobre Nosotros</a></li>
@@ -318,6 +320,8 @@
             </div>
         </div>
 
+        <div id="resultado" class="mb-4 animate-fade-in"></div>
+
         <div class="row g-3 justify-content-center mb-4">
             <div class="col-4 col-md-3">
                 <div class="card stat-card-clicable border-0 shadow-sm h-100 text-center py-4 px-2" id="statCardPalabras" role="button" tabindex="0" style="border-radius: 16px;">
@@ -345,7 +349,6 @@
             </div>
         </div>
 
-        <div id="resultado" class="mb-4 animate-fade-in"></div>
         <div id="ultimasPalabras" class="row g-2 mb-4"></div>
         <div id="panelCategorias" class="row g-2 mb-4 p-2"></div>
 
@@ -464,6 +467,248 @@
 
         </section>
 
+        <!-- ================================================================
+             SECCIÓN ALFABETIZACIÓN (independiente del Quiz: Memoria y
+             Dictado LSA no se tocan). Módulo por módulo:
+               1) alfabAprender      -> Abecedario A-Z y números 0-9
+               2) alfabCompletar     -> Juego "Completar la palabra"
+               3) alfabUnir          -> Juego "Unir con flechas"
+             Toda la lógica vivirá en js/alfabetizacion.js (namespace
+             AlfabetizacionV2, siguiendo el mismo patrón que QuizV2).
+             ================================================================ -->
+        <section id="seccionAlfabetizacion" class="mb-5 d-none">
+
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <h4 class="fw-bold mb-0">🔤 Alfabetización - LSPedia</h4>
+                <div class="d-flex gap-2">
+                    <button id="btnAlfabFullscreen" class="btn btn-outline-secondary quiz-btn-fullscreen" title="Pantalla completa" aria-label="Pantalla completa">⛶</button>
+                    <button id="btnAlfabSalir" class="btn btn-outline-danger btn-sm rounded-pill">Salir</button>
+                </div>
+            </div>
+
+            <!-- SUB-NAVEGACIÓN ENTRE LOS 3 MÓDULOS -->
+            <div class="d-flex justify-content-center mb-4">
+                <div class="btn-group alfab-submenu flex-wrap" role="group" aria-label="Módulos de Alfabetización">
+                    <button type="button" class="btn btn-outline-primary active" data-alfab-modulo="aprender" id="btnAlfabModoAprender">🔤 Aprender</button>
+                    <button type="button" class="btn btn-outline-primary" data-alfab-modulo="completar" id="btnAlfabModoCompletar">🧩 Completar la palabra</button>
+                    <button type="button" class="btn btn-outline-primary" data-alfab-modulo="unir" id="btnAlfabModoUnir">🔗 Unir con flechas</button>
+                </div>
+            </div>
+
+            <!-- CARGANDO DATOS DESDE GOOGLE SHEETS (Hoja "Alfabetización" / "AlfabetizacionEjemplos" / Hoja2) -->
+            <div id="alfabCargando" class="text-center py-5 d-none">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p class="text-muted small mt-3 mb-0">Cargando contenido de Alfabetización...</p>
+            </div>
+
+            <!-- ERROR DE CARGA -->
+            <div id="alfabError" class="alert alert-danger d-none"></div>
+
+            <!-- ============================================================ -->
+            <!-- MÓDULO 1: APRENDER — abecedario A-Z y números 0-9 -->
+            <!-- ============================================================ -->
+            <div id="alfabAprender" class="row justify-content-center">
+                <div class="col-lg-9">
+
+                    <!-- Selector Abecedario / Números -->
+                    <div class="d-flex justify-content-center mb-3">
+                        <div class="btn-group" role="group" aria-label="Tipo de contenido">
+                            <button type="button" class="btn btn-sm btn-outline-secondary active" data-alfab-tipo="letra" id="btnAlfabTipoLetras">Abecedario A-Z</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" data-alfab-tipo="numero" id="btnAlfabTipoNumeros">Números 0-9</button>
+                        </div>
+                    </div>
+
+                    <!-- Navegación rápida de caracteres: mismo estilo .btn-abc del índice alfabético del diccionario -->
+                    <div class="indice-alfabetico d-flex justify-content-between flex-wrap gap-1 p-2 bg-white rounded shadow-sm border mb-4" id="alfabIndiceCaracteres">
+                        <!-- JS (alfabetizacion.js) genera aquí: <button class="btn btn-link btn-abc text-decoration-none text-dark" data-caracter="A">A</button> -->
+                    </div>
+
+                    <div class="card quiz-card border-0 shadow-sm p-4">
+
+                        <!-- Navegación entre caracteres: anterior / actual / siguiente -->
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <button type="button" class="btn btn-outline-secondary rounded-circle" id="btnAlfabCaracterAnterior" title="Anterior" aria-label="Carácter anterior">◀</button>
+                            <h2 class="fw-bold mb-0" id="alfabCaracterActual">A</h2>
+                            <button type="button" class="btn btn-outline-secondary rounded-circle" id="btnAlfabCaracterSiguiente" title="Siguiente" aria-label="Carácter siguiente">▶</button>
+                        </div>
+
+                        <!-- Los 4 estilos tipográficos: ahora son chips flotantes seleccionables.
+                             Al hacer clic en uno, el video de grafía de abajo cambia a la
+                             variante correspondiente (mayúscula/minúscula/cursiva may./cursiva min.) -->
+                        <div class="alfab-chips-tipograficos" id="alfabEstilosTipograficos">
+                            <button type="button" class="alfab-chip-tipo alfab-chip-mayuscula active" data-alfab-variante="mayuscula" aria-label="Ver grafía en mayúscula">
+                                <img class="alfab-chip-img" data-alfab-chip-img="mayuscula" src="" alt="">
+                            </button>
+                            <button type="button" class="alfab-chip-tipo alfab-chip-minuscula" data-alfab-variante="minuscula" aria-label="Ver grafía en minúscula">
+                                <img class="alfab-chip-img" data-alfab-chip-img="minuscula" src="" alt="">
+                            </button>
+                            <button type="button" class="alfab-chip-tipo alfab-chip-cursiva-mayuscula" data-alfab-variante="cursiva-mayuscula" aria-label="Ver grafía en cursiva mayúscula">
+                                <img class="alfab-chip-img" data-alfab-chip-img="cursiva-mayuscula" src="" alt="">
+                            </button>
+                            <button type="button" class="alfab-chip-tipo alfab-chip-cursiva-minuscula" data-alfab-variante="cursiva-minuscula" aria-label="Ver grafía en cursiva minúscula">
+                                <img class="alfab-chip-img" data-alfab-chip-img="cursiva-minuscula" src="" alt="">
+                            </button>
+                        </div>
+
+                        <div class="row g-4 mb-4">
+                            <!-- Imagen de fonética (boca): reutiliza .apoyo-visual-caja del diccionario -->
+                            <div class="col-md-6">
+                                <p class="text-uppercase small fw-bold mb-2" style="color:#64748b; letter-spacing:0.05em;">🔊👄 Fonética</p>
+                                <div class="apoyo-visual-caja rounded border" id="alfabBocaCaja">
+                                    <img id="alfabBocaImg" src="" alt="Imagen de fonética" class="apoyo-visual-img">
+                                    <span class="apoyo-visual-lupa">Ampliar 🔍</span>
+                                </div>
+                            </div>
+
+                            <!-- Video de grafía: cambia según el chip tipográfico activo (mayúscula
+                                 por defecto), con control de velocidad real vía playbackRate -->
+                            <div class="col-md-6">
+                                <p class="text-uppercase small fw-bold mb-2" style="color:#64748b; letter-spacing:0.05em;">✏️ Grafía</p>
+                                <div class="apoyo-visual-caja alfab-grafia-caja rounded border mb-2" id="alfabTrazoCaja">
+                                    <video id="alfabTrazoVideo" class="apoyo-visual-img" muted loop playsinline preload="auto"></video>
+                                </div>
+                                <div class="controles-video d-flex align-items-center justify-content-center gap-2">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAlfabTrazoLento" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
+                                    <span class="small fw-bold text-muted" id="alfabTrazoVelocidadLabel">1x</span>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAlfabTrazoRapido" title="Aumentar velocidad" aria-label="Aumentar velocidad">🐇</button>
+                                    <button type="button" class="btn btn-sm btn-warning ms-2" id="btnAlfabTrazoReiniciar" title="Repetir animación" aria-label="Repetir animación">🔁</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Ejemplos de palabras navegables con flechas -->
+                        <div>
+                            <p class="text-uppercase small fw-bold mb-2" style="color:#64748b; letter-spacing:0.05em;">📚 Ejemplos de palabras</p>
+                            <div class="card border-0 bg-light">
+                                <div class="d-flex align-items-center justify-content-between p-3">
+                                    <button type="button" class="btn btn-outline-secondary rounded-circle flex-shrink-0" id="btnAlfabEjemploAnterior" title="Ejemplo anterior" aria-label="Ejemplo anterior">◀</button>
+                                    <div class="text-center flex-grow-1 px-3">
+                                        <div class="apoyo-visual-caja rounded border mx-auto mb-2" style="max-width: 220px;" id="alfabEjemploImagenCaja">
+                                            <img id="alfabEjemploImagen" src="" alt="" class="apoyo-visual-img">
+                                        </div>
+                                        <div class="fw-bold" id="alfabEjemploPalabra">—</div>
+                                        <div class="small text-muted" id="alfabEjemploContador">1 / 1</div>
+                                    </div>
+                                    <button type="button" class="btn btn-outline-secondary rounded-circle flex-shrink-0" id="btnAlfabEjemploSiguiente" title="Ejemplo siguiente" aria-label="Ejemplo siguiente">▶</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================ -->
+            <!-- MÓDULO 2: JUEGO "COMPLETAR LA PALABRA" -->
+            <!-- ============================================================ -->
+            <div id="alfabCompletar" class="row justify-content-center d-none">
+                <div class="col-lg-8">
+
+                    <!-- INTRO: selección de nivel (mismo patrón que quizIntro / quiz-selector-btn) -->
+                    <div id="alfabCompletarIntro" class="card quiz-card border-0 shadow-sm p-4">
+                        <p class="text-muted small text-center mb-4">Elige el nivel para practicar completando palabras con la letra que falta.</p>
+                        <p class="text-uppercase small fw-bold mb-2" style="color:#64748b; letter-spacing:0.05em;">Nivel</p>
+                        <div class="row g-2 mb-4" id="alfabCompletarSelectorNivel"></div>
+                        <p class="text-center small mb-3" id="alfabCompletarTotalDisponibles"></p>
+                        <div class="text-center">
+                            <button id="btnAlfabCompletarEmpezar" class="btn btn-warning fw-bold py-2 px-4 rounded-pill">▶ Empezar</button>
+                        </div>
+                    </div>
+
+                    <!-- JUEGO ACTIVO -->
+                    <div id="alfabCompletarActivo" class="card quiz-card border-0 shadow-sm p-4 d-none">
+                        <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                            <span class="badge bg-primary" id="alfabCompletarProgreso">Palabra 1</span>
+                            <span class="badge badge-nivel-facil" id="alfabCompletarNivelBadge">Fácil</span>
+                            <span class="fw-bold small text-muted" id="alfabCompletarPuntaje">⭐ 0</span>
+                            <button id="btnAlfabCompletarMenu" class="btn btn-outline-secondary btn-sm rounded-pill ms-auto" title="Volver al menú del juego">↩ Menú</button>
+                        </div>
+                        <div class="quiz-progreso-wrap mb-2"><div class="quiz-progreso-barra" id="alfabCompletarBarraProgreso" style="width:0%"></div></div>
+                        <div class="quiz-timer-wrap"><div class="quiz-timer-barra" id="alfabCompletarBarraTiempo" style="width:100%"></div></div>
+
+                        <!-- JS: imagen + palabra con letra faltante + opciones de letra -->
+                        <div id="alfabCompletarContenido" class="text-center py-3"></div>
+
+                        <div id="alfabCompletarFeedback" class="text-center small fw-bold mt-3"></div>
+                        <div class="d-flex justify-content-center gap-2 mt-3">
+                            <button id="btnAlfabCompletarSiguiente" class="btn btn-primary rounded-pill fw-bold d-none">Siguiente →</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ============================================================ -->
+            <!-- MÓDULO 3: JUEGO "UNIR CON FLECHAS" -->
+            <!-- ============================================================ -->
+            <div id="alfabUnir" class="row justify-content-center d-none">
+                <div class="col-lg-9">
+
+                    <!-- INTRO: selección de nivel -->
+                    <div id="alfabUnirIntro" class="card quiz-card border-0 shadow-sm p-4">
+                        <p class="text-muted small text-center mb-4">Elige el nivel para practicar uniendo cada imagen con su palabra.</p>
+                        <p class="text-uppercase small fw-bold mb-2" style="color:#64748b; letter-spacing:0.05em;">Nivel</p>
+                        <div class="row g-2 mb-4" id="alfabUnirSelectorNivel"></div>
+                        <p class="text-center small mb-3" id="alfabUnirTotalDisponibles"></p>
+                        <div class="text-center">
+                            <button id="btnAlfabUnirEmpezar" class="btn btn-warning fw-bold py-2 px-4 rounded-pill">▶ Empezar</button>
+                        </div>
+                    </div>
+
+                    <!-- JUEGO ACTIVO -->
+                    <div id="alfabUnirActivo" class="card quiz-card border-0 shadow-sm p-4 d-none">
+                        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                            <span class="badge bg-primary" id="alfabUnirProgreso">Ronda 1</span>
+                            <span class="badge badge-nivel-facil" id="alfabUnirNivelBadge">Fácil</span>
+                            <span class="fw-bold small text-muted" id="alfabUnirPuntaje">⭐ 0</span>
+                            <button id="btnAlfabUnirComprobar" class="btn btn-success btn-sm rounded-pill">✔ Comprobar</button>
+                            <button id="btnAlfabUnirMenu" class="btn btn-outline-secondary btn-sm rounded-pill" title="Volver al menú del juego">↩ Menú</button>
+                        </div>
+
+                        <!-- JS: columna de imágenes vs columna de palabras + SVG superpuesto para trazar líneas (mouse y touch) -->
+                        <div class="alfab-unir-tablero position-relative" id="alfabUnirTablero">
+                            <div class="row">
+                                <div class="col-6" id="alfabUnirColumnaImagenes"></div>
+                                <div class="col-6" id="alfabUnirColumnaPalabras"></div>
+                            </div>
+                            <svg id="alfabUnirLineas" class="alfab-unir-lineas-svg"></svg>
+                        </div>
+
+                        <div id="alfabUnirFeedback" class="text-center small fw-bold mt-3"></div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- RESULTADOS FINALES: compartido por los 2 juegos de Alfabetización (no reutiliza #quizResultados) -->
+            <div id="alfabResultados" class="row justify-content-center d-none">
+                <div class="col-lg-8">
+                    <div class="card quiz-card border-0 shadow-sm text-center p-4">
+                        <div class="fs-1 mb-2" id="alfabResultadoIcono">🏆</div>
+                        <h4 class="fw-bold mb-1" id="alfabResultadoTitulo">¡Ronda completada!</h4>
+                        <p class="mb-3" id="alfabResultadoTexto"></p>
+
+                        <div class="row g-2 mb-4">
+                            <div class="col-4"><div class="quiz-stat-box"><div class="valor text-success" id="alfabStatCorrectas">0</div><div class="small text-muted">Correctas</div></div></div>
+                            <div class="col-4"><div class="quiz-stat-box"><div class="valor text-danger" id="alfabStatIncorrectas">0</div><div class="small text-muted">Incorrectas</div></div></div>
+                            <div class="col-4"><div class="quiz-stat-box"><div class="valor text-primary" id="alfabStatPorcentaje">0%</div><div class="small text-muted">Precisión</div></div></div>
+                        </div>
+
+                        <div class="text-start mb-3">
+                            <p class="text-uppercase small fw-bold text-muted mb-2">Revisión de respuestas</p>
+                            <div id="alfabRevisionLista"></div>
+                        </div>
+
+                        <div class="d-flex justify-content-center gap-2 flex-wrap">
+                            <button id="btnAlfabReiniciar" class="btn btn-warning fw-bold py-2 px-4 rounded-pill">🔁 Jugar de nuevo</button>
+                            <button id="btnAlfabSalirResultados" class="btn btn-outline-secondary fw-bold py-2 px-4 rounded-pill">Salir</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
         <!-- RECUADRO CON NUEVO COLOR AZUL OSCURO Y BOTÓN AMARILLO -->
         <section id="seccionSugerencias" class="mt-5 pt-4 border-top text-center">
             <div class="p-4 rounded border-0 d-inline-block max-w-xl mx-auto shadow-sm text-white" style="background-color: #0f172a;">
@@ -552,6 +797,7 @@
     <script src="https://www.youtube.com/iframe_api"></script>
     <script src="js/script.js"></script>
     <script src="js/quiz.js"></script>
+    <script src="js/alfabetizacion.js"></script>
 
     <!-- Pie de página LSPedia -->
 <footer class="mt-5 py-4 border-top text-center">
