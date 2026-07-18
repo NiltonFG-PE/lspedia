@@ -118,24 +118,42 @@ body.subtitulos-bloquear-scroll {
 }
 
 /* ============================================================
-   MODO HORIZONTAL AUTOMÁTICO: cuando el celular está en pantalla
-   completa Y en orientación horizontal (apaisada), los subtítulos
-   se anclan abajo como en el cine real: una franja ancha y baja,
-   en vez de una caja centrada y alta.
+   MODO HORIZONTAL: en pantalla completa/cine los subtítulos
+   siempre van centrados, en blanco y grandes. Al entrar se intenta
+   bloquear la orientación en horizontal por JS (screen.orientation.
+   lock, ver subtitulos.js); esto solo funciona en Chrome Android
+   con pantalla completa nativa. Como respaldo para cuando el
+   bloqueo no está disponible (Safari/iOS, pantalla completa
+   simulada, etc.), si el celular sigue en vertical mientras está
+   en pantalla completa o modo cine, rotamos el contenido con CSS
+   para que de todas formas se vea horizontal.
    ============================================================ */
 @media (orientation: landscape) {
-    #seccionSubtitulos.quiz-fullscreen .subtitulos-pantalla {
-        align-items: flex-end;
-        justify-content: center;
-        padding: 16px 40px 28px;
-        min-height: 0;
-    }
-    #seccionSubtitulos.quiz-fullscreen .subtitulos-texto {
+    #seccionSubtitulos.quiz-fullscreen .subtitulos-texto,
+    #seccionSubtitulos.subtitulos-inmersivo .subtitulos-texto {
         max-width: 92vw;
     }
-    #seccionSubtitulos.quiz-fullscreen .subtitulos-texto.tam-md { font-size: 1.9rem; }
-    #seccionSubtitulos.quiz-fullscreen .subtitulos-texto.tam-lg { font-size: 2.5rem; }
-    #seccionSubtitulos.quiz-fullscreen .subtitulos-texto.tam-xl { font-size: 3.2rem; }
+    #seccionSubtitulos.quiz-fullscreen .subtitulos-texto.tam-md,
+    #seccionSubtitulos.subtitulos-inmersivo .subtitulos-texto.tam-md { font-size: 2rem; }
+    #seccionSubtitulos.quiz-fullscreen .subtitulos-texto.tam-lg,
+    #seccionSubtitulos.subtitulos-inmersivo .subtitulos-texto.tam-lg { font-size: 2.6rem; }
+    #seccionSubtitulos.quiz-fullscreen .subtitulos-texto.tam-xl,
+    #seccionSubtitulos.subtitulos-inmersivo .subtitulos-texto.tam-xl { font-size: 3.3rem; }
+}
+
+/* Respaldo: si screen.orientation.lock() no funcionó y el celular
+   sigue en vertical dentro de pantalla completa o modo cine, se
+   fuerza la vista horizontal rotando el contenido con CSS. */
+@media (orientation: portrait) and (max-width: 600px) {
+    #seccionSubtitulos.quiz-fullscreen #subtitulosEnVivo {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: 100vh;
+        height: 100vw;
+        transform: translate(-50%, -50%) rotate(90deg);
+        transform-origin: center center;
+    }
 }
 
 .subtitulos-btn-salir-cine {
@@ -158,20 +176,4 @@ body.subtitulos-bloquear-scroll {
 @keyframes subtitulosPulsoVivo {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.55; }
-}
-
-/* --- Medidor de nivel de micrófono (ayuda a ubicar el celular) --- */
-.subtitulos-medidor {
-    width: 74px;
-    height: 8px;
-    background-color: #1e293b;
-    border-radius: 6px;
-    overflow: hidden;
-    flex-shrink: 0;
-}
-.subtitulos-medidor-barra {
-    height: 100%;
-    width: 0%;
-    background: linear-gradient(90deg, #16a34a, #f59e0b, #dc2626);
-    transition: width 0.12s linear;
 }

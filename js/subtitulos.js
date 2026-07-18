@@ -17,14 +17,16 @@
      (Netflix, YouTube, un proyector de cine digital, etc.)
      directamente: usa el MICRÓFONO del dispositivo, así que capta
      el sonido que sale por el parlante de la sala/TV/cine. Por eso
-     la distancia al parlante importa tanto (ver medidor de nivel).
-   - La Web Speech API no permite ajustar manualmente la ganancia o
-     los filtros de ruido del reconocimiento de voz en sí (Chrome
-     administra internamente su propio audio para ese motor). El
-     medidor de nivel usa una captura de audio aparte (Web Audio
-     API) solo para MOSTRAR qué tan fuerte llega el sonido y ayudar
-     a ubicar el celular; no puede "amplificar" lo que el motor de
-     reconocimiento recibe.
+     la distancia al parlante importa tanto: mientras más cerca del
+     parlante esté el celular, mejor se transcribe.
+   - IMPORTANTE (Android): en versiones anteriores este módulo abría
+     un segundo flujo de micrófono (getUserMedia) en paralelo al que
+     usa el reconocimiento de voz, para mostrar un medidor de nivel.
+     En varios Android eso impedía que el reconocimiento capturara
+     audio real (pedía permiso pero nunca transcribía), porque el
+     sistema solo entrega el micrófono a una app/proceso a la vez.
+     Por eso se quitó: ahora SOLO el reconocimiento de voz usa el
+     micrófono.
    - Requiere conexión a internet y permiso de micrófono.
    - Al salir de la sección, el micrófono se apaga automáticamente
      por privacidad (ver salir()).
@@ -66,16 +68,6 @@ const SubtitulosV2 = (function () {
         _eventosListos: false
     };
 
-    // Medidor de nivel de micrófono: usa su propia captura de audio,
-    // separada del reconocimiento de voz, solo para retroalimentación visual.
-    const estadoMedidor = {
-        stream: null,
-        audioCtx: null,
-        analyser: null,
-        datos: null,
-        animId: null
-    };
-
     function el(id) { return document.getElementById(id); }
 
     // ---------------------------------------------------------
@@ -103,11 +95,9 @@ const SubtitulosV2 = (function () {
     }
 
     function salir() {
-        // Por privacidad, siempre apagamos el micrófono (reconocimiento Y
-        // medidor de nivel) al salir de la sección, aunque el usuario no
-        // haya pulsado "Detener".
+        // Por privacidad, siempre apagamos el micrófono al salir de la
+        // sección, aunque el usuario no haya pulsado "Detener".
         detenerEscucha();
-        detenerMedidorNivel();
         salirDeCine();
         salirDePantallaCompleta();
     }
@@ -170,8 +160,6 @@ const SubtitulosV2 = (function () {
         } catch (err) {
             console.warn("No se pudo iniciar el reconocimiento de voz:", err);
         }
-
-        iniciarMedidorNivel();
     }
 
     function detenerEscucha() {
@@ -183,7 +171,6 @@ const SubtitulosV2 = (function () {
             } catch (e) { /* noop */ }
             estado.reconocimiento = null;
         }
-        detenerMedidorNivel();
         mostrarPantalla("intro");
     }
 
@@ -338,80 +325,6 @@ const SubtitulosV2 = (function () {
     }
 
     // ---------------------------------------------------------
-    // MEDIDOR DE NIVEL DE MICRÓFONO
-    // Captura de audio aparte (Web Audio API) solo para mostrar qué
-    // tan fuerte está llegando el sonido, y así ayudar al usuario a
-    // ubicar el celular más cerca del parlante si la barra está baja.
-    // ---------------------------------------------------------
-    function iniciarMedidorNivel() {
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
-
-        navigator.mediaDevices.getUserMedia({
-            audio: {
-                echoCancellation: false,
-                noiseSuppression: false,
-                autoGainControl: true
-            }
-        }).then((stream) => {
-            estadoMedidor.stream = stream;
-            const AudioCtx = window.AudioContext || window.webkitAudioContext;
-            if (!AudioCtx) return;
-
-            estadoMedidor.audioCtx = new AudioCtx();
-            const fuente = estadoMedidor.audioCtx.createMediaStreamSource(stream);
-            estadoMedidor.analyser = estadoMedidor.audioCtx.createAnalyser();
-            estadoMedidor.analyser.fftSize = 512;
-            estadoMedidor.datos = new Uint8Array(estadoMedidor.analyser.frequencyBinCount);
-            fuente.connect(estadoMedidor.analyser);
-
-            actualizarMedidorNivel();
-        }).catch((err) => {
-            // Si falla (permiso denegado, sin micrófono, etc.) simplemente
-            // no mostramos el medidor; el reconocimiento de voz igual
-            // pide su propio permiso de micrófono por separado.
-            console.warn("No se pudo iniciar el medidor de nivel de micrófono:", err);
-        });
-    }
-
-    function actualizarMedidorNivel() {
-        if (!estadoMedidor.analyser) return;
-
-        estadoMedidor.analyser.getByteTimeDomainData(estadoMedidor.datos);
-        let suma = 0;
-        for (let i = 0; i < estadoMedidor.datos.length; i++) {
-            const valor = (estadoMedidor.datos[i] - 128) / 128;
-            suma += valor * valor;
-        }
-        const rms = Math.sqrt(suma / estadoMedidor.datos.length); // 0..1 aprox
-        const porcentaje = Math.min(100, Math.round(rms * 260));
-
-        const barra = el("subtitulosMedidorBarra");
-        if (barra) barra.style.width = porcentaje + "%";
-
-        estadoMedidor.animId = requestAnimationFrame(actualizarMedidorNivel);
-    }
-
-    function detenerMedidorNivel() {
-        if (estadoMedidor.animId) {
-            cancelAnimationFrame(estadoMedidor.animId);
-            estadoMedidor.animId = null;
-        }
-        if (estadoMedidor.stream) {
-            estadoMedidor.stream.getTracks().forEach((t) => t.stop());
-            estadoMedidor.stream = null;
-        }
-        if (estadoMedidor.audioCtx) {
-            estadoMedidor.audioCtx.close().catch(() => {});
-            estadoMedidor.audioCtx = null;
-        }
-        estadoMedidor.analyser = null;
-        estadoMedidor.datos = null;
-
-        const barra = el("subtitulosMedidorBarra");
-        if (barra) barra.style.width = "0%";
-    }
-
-    // ---------------------------------------------------------
     // MODO CINE (fondo negro, subtítulos en blanco, sin controles)
     // ---------------------------------------------------------
     function alternarCine() {
@@ -469,6 +382,7 @@ const SubtitulosV2 = (function () {
         if (seccion) seccion.classList.add("quiz-fullscreen");
         document.body.classList.add("subtitulos-bloquear-scroll");
         actualizarModoInmersivo();
+        intentarBloquearHorizontal();
         window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
@@ -478,10 +392,30 @@ const SubtitulosV2 = (function () {
         if (seccion) seccion.classList.remove("quiz-fullscreen");
         document.body.classList.remove("subtitulos-bloquear-scroll");
         actualizarModoInmersivo();
+        intentarLiberarOrientacion();
 
         const salirFn = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
         if (elementoPantallaCompletaActivo() && salirFn) {
             salirFn.call(document);
+        }
+    }
+
+    // Fuerza la orientación horizontal en pantalla completa/cine, para que
+    // los subtítulos se vean grandes y centrados como pide el usuario. Solo
+    // funciona de forma confiable en Chrome Android y requiere pantalla
+    // completa NATIVA (no la simulada de Safari/iOS); en cualquier otro
+    // caso falla en silencio y el celular se queda en la orientación en la
+    // que esté — el CSS de subtitulos.css igual se adapta solo con
+    // "@media (orientation: landscape)" cuando el usuario rota a mano.
+    function intentarBloquearHorizontal() {
+        if (screen.orientation && typeof screen.orientation.lock === "function") {
+            screen.orientation.lock("landscape").catch(() => { /* no soportado en este navegador/estado */ });
+        }
+    }
+
+    function intentarLiberarOrientacion() {
+        if (screen.orientation && typeof screen.orientation.unlock === "function") {
+            try { screen.orientation.unlock(); } catch (e) { /* noop */ }
         }
     }
 
