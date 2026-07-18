@@ -742,7 +742,7 @@
              ============================================================ -->
         <section id="seccionSubtitulos" class="d-none">
 
-            <div class="card quiz-card border-0 shadow-sm p-3 p-md-4 mb-4">
+            <div class="card quiz-card border-0 shadow-sm p-3 p-md-4 mb-4" id="subtitulosPanelTitulo">
                 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <div class="d-flex align-items-center gap-2">
                         <span class="fs-3" aria-hidden="true">💬</span>
@@ -763,9 +763,13 @@
                     <div class="card quiz-card border-0 shadow-sm text-center p-4 p-md-5">
                         <div class="fs-1 mb-3" aria-hidden="true">🎧</div>
                         <h4 class="fw-bold mb-2">Escucha convertida en subtítulos</h4>
-                        <p class="text-muted mb-4">
+                        <p class="text-muted mb-2">
                             Acerca tu celular al parlante de la película, la TV o la persona que habla, y esta pantalla
                             mostrará lo que se dice como subtítulos en vivo. Ideal para el cine, la sala de tu casa o una charla.
+                        </p>
+                        <p class="small fw-bold mb-4" style="color:#c2410c;">
+                            📢 Para mejores resultados: sube el volumen del parlante y coloca el celular lo más
+                            cerca posible de él. Mientras más lejos esté, menos se detecta el audio.
                         </p>
 
                         <div class="row justify-content-center mb-4">
@@ -794,6 +798,9 @@
                     <div class="d-flex align-items-center gap-2 flex-wrap">
                         <span class="badge bg-danger" id="subtitulosBadgeEnVivo">● EN VIVO</span>
                         <span class="small text-muted" id="subtitulosIdiomaActual"></span>
+                        <div class="subtitulos-medidor" title="Nivel de micrófono detectado">
+                            <div class="subtitulos-medidor-barra" id="subtitulosMedidorBarra"></div>
+                        </div>
                     </div>
                     <div class="d-flex gap-2 flex-wrap">
                         <button id="btnSubtitulosTextoMenos" class="btn btn-sm btn-outline-secondary" title="Reducir tamaño de texto" aria-label="Reducir tamaño de texto">A-</button>
@@ -804,10 +811,8 @@
                 </div>
 
                 <div id="subtitulosPantalla" class="subtitulos-pantalla">
-                    <div id="subtitulosTexto" class="subtitulos-texto tam-md">
-                        <span class="subtitulos-placeholder">Escuchando… acerca el celular al parlante de la película o de quien esté hablando.</span>
-                    </div>
-                    <button id="btnSubtitulosSalirCine" class="btn btn-sm btn-light subtitulos-btn-salir-cine d-none" title="Salir del modo cine" aria-label="Salir del modo cine">✕ Salir de cine</button>
+                    <div id="subtitulosTexto" class="subtitulos-texto tam-md"></div>
+                    <button id="btnSubtitulosSalirCine" class="btn btn-sm btn-light subtitulos-btn-salir-cine d-none" title="Salir del modo cine / pantalla completa" aria-label="Salir del modo cine / pantalla completa">✕ Salir</button>
                 </div>
 
                 <div class="text-center mt-3" id="subtitulosControlesInferiores">

@@ -1,18 +1,63 @@
 /* ============================================================
    LSPedia - Estilos de Subtítulos en tiempo real (SubtitulosV2)
    Archivo independiente. No modifica estilos.css ni quiz.css,
-   aunque reutiliza la clase .quiz-fullscreen y .quiz-btn-fullscreen
-   que ya existen (mismo patrón de pantalla completa que el Quiz).
+   aunque reutiliza la clase .quiz-btn-fullscreen que ya existe.
    ============================================================ */
 
-/* --- Contenedor en modo pantalla completa (reutiliza .quiz-fullscreen) --- */
+/* ============================================================
+   PANTALLA COMPLETA REAL (overlay fijo que cubre TODO el viewport,
+   incluso en móviles donde el navegador deja barras/huecos con un
+   simple 100vh). Usamos 100dvh con fallback a 100vh, y position:
+   fixed para que no dependa del scroll ni del layout de la página.
+   ============================================================ */
 #seccionSubtitulos.quiz-fullscreen {
+    position: fixed;
+    inset: 0;
+    z-index: 2050;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    margin: 0;
+    padding: 10px;
     background-color: #000;
-    padding: 16px 12px;
-    min-height: 100vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+/* Evita que la página de fondo haga scroll mientras estamos en
+   pantalla completa simulada (se activa/desactiva por JS). */
+body.subtitulos-bloquear-scroll {
+    overflow: hidden;
+}
+
+#seccionSubtitulos.quiz-fullscreen #subtitulosEnVivo {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
 }
 #seccionSubtitulos.quiz-fullscreen .subtitulos-pantalla {
-    min-height: calc(100vh - 90px);
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+/* ============================================================
+   MODO INMERSIVO (pantalla completa y/o modo cine): se oculta el
+   encabezado blanco y toda la "chrome" de la página, dejando solo
+   los subtítulos y un botón discreto para salir.
+   ============================================================ */
+#seccionSubtitulos.subtitulos-inmersivo #subtitulosPanelTitulo,
+#seccionSubtitulos.subtitulos-inmersivo #subtitulosBarraControles,
+#seccionSubtitulos.subtitulos-inmersivo #subtitulosControlesInferiores {
+    display: none !important;
+}
+#seccionSubtitulos.subtitulos-inmersivo .subtitulos-btn-salir-cine {
+    display: inline-flex !important;
+}
+/* En modo inmersivo no mostramos el texto de "Escuchando…": la idea
+   es una pantalla negra limpia hasta que aparezca el primer subtítulo. */
+#seccionSubtitulos.subtitulos-inmersivo .subtitulos-placeholder {
+    display: none;
 }
 
 /* --- Caja principal donde aparece el texto de los subtítulos --- */
@@ -28,21 +73,20 @@
     overflow-y: auto;
     transition: background-color 0.3s ease, border-radius 0.3s ease;
 }
+#seccionSubtitulos.subtitulos-inmersivo .subtitulos-pantalla {
+    background-color: #000;
+    border-radius: 0;
+}
 
 .subtitulos-texto {
     color: #ffffff;
     font-weight: 700;
-    line-height: 1.4;
+    line-height: 1.45;
     text-align: center;
     max-width: 900px;
+    white-space: normal;
+    word-wrap: break-word;
     text-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
-}
-
-.subtitulos-linea {
-    margin-bottom: 6px;
-}
-.subtitulos-linea:last-child {
-    margin-bottom: 0;
 }
 
 .subtitulos-placeholder {
@@ -52,7 +96,8 @@
     font-size: 1.15rem;
 }
 
-/* Texto todavía "en proceso" de reconocerse (no confirmado) */
+/* Texto todavía "en proceso" de reconocerse (no confirmado). Se
+   muestra pegado al texto ya confirmado, en el mismo párrafo. */
 .subtitulos-interina {
     color: #cbd5e1;
     font-style: italic;
@@ -73,27 +118,24 @@
 }
 
 /* ============================================================
-   MODO CINE: fondo negro absoluto, solo el texto en blanco,
-   se ocultan la barra de controles y el botón "Detener" para
-   que no distraigan; queda un pequeño botón flotante para salir.
+   MODO HORIZONTAL AUTOMÁTICO: cuando el celular está en pantalla
+   completa Y en orientación horizontal (apaisada), los subtítulos
+   se anclan abajo como en el cine real: una franja ancha y baja,
+   en vez de una caja centrada y alta.
    ============================================================ */
-#seccionSubtitulos.subtitulos-cine {
-    background-color: #000;
-}
-#seccionSubtitulos.subtitulos-cine #subtitulosBarraControles,
-#seccionSubtitulos.subtitulos-cine #subtitulosControlesInferiores {
-    display: none !important;
-}
-#seccionSubtitulos.subtitulos-cine .subtitulos-pantalla {
-    background-color: #000;
-    border-radius: 0;
-    min-height: 70vh;
-}
-#seccionSubtitulos.subtitulos-cine.quiz-fullscreen .subtitulos-pantalla {
-    min-height: 100vh;
-}
-#seccionSubtitulos.subtitulos-cine .subtitulos-btn-salir-cine {
-    display: inline-flex !important;
+@media (orientation: landscape) {
+    #seccionSubtitulos.quiz-fullscreen .subtitulos-pantalla {
+        align-items: flex-end;
+        justify-content: center;
+        padding: 16px 40px 28px;
+        min-height: 0;
+    }
+    #seccionSubtitulos.quiz-fullscreen .subtitulos-texto {
+        max-width: 92vw;
+    }
+    #seccionSubtitulos.quiz-fullscreen .subtitulos-texto.tam-md { font-size: 1.9rem; }
+    #seccionSubtitulos.quiz-fullscreen .subtitulos-texto.tam-lg { font-size: 2.5rem; }
+    #seccionSubtitulos.quiz-fullscreen .subtitulos-texto.tam-xl { font-size: 3.2rem; }
 }
 
 .subtitulos-btn-salir-cine {
@@ -102,6 +144,7 @@
     right: 14px;
     opacity: 0.5;
     transition: opacity 0.2s ease;
+    z-index: 5;
 }
 .subtitulos-btn-salir-cine:hover,
 .subtitulos-btn-salir-cine:focus {
@@ -115,4 +158,20 @@
 @keyframes subtitulosPulsoVivo {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.55; }
+}
+
+/* --- Medidor de nivel de micrófono (ayuda a ubicar el celular) --- */
+.subtitulos-medidor {
+    width: 74px;
+    height: 8px;
+    background-color: #1e293b;
+    border-radius: 6px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+.subtitulos-medidor-barra {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #16a34a, #f59e0b, #dc2626);
+    transition: width 0.12s linear;
 }

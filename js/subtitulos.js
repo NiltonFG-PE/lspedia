@@ -4,21 +4,28 @@
    Módulo independiente (mismo patrón que QuizV2 y AlfabetizacionV2).
    Usa la Web Speech API del navegador para escuchar el audio
    ambiente a través del micrófono del dispositivo y mostrarlo como
-   subtítulos en vivo, con pantalla completa y "modo cine" (fondo
-   negro, texto blanco grande), pensado para que una persona sorda
-   pueda seguir una película, serie, TV o conversación en tiempo real.
+   subtítulos en vivo, con pantalla completa real (overlay fijo),
+   modo cine (fondo negro, texto blanco) y modo horizontal
+   automático al rotar el celular, pensado para que una persona
+   sorda pueda seguir una película, serie, TV o conversación.
 
    ⚠️ LIMITACIONES IMPORTANTES A TENER EN CUENTA:
    - Solo funciona bien en navegadores basados en Chromium (Chrome,
      Edge, Opera, Chrome Android). Safari/iOS y Firefox todavía no
      soportan bien (o nada) la Web Speech API.
    - El navegador NO puede "escuchar" el audio interno de otra app
-     (Netflix, YouTube, un reproductor de cine digital, etc.)
+     (Netflix, YouTube, un proyector de cine digital, etc.)
      directamente: usa el MICRÓFONO del dispositivo, así que capta
-     el sonido que sale por el parlante de la sala/TV/cine. Para
-     mejores resultados, hay que acercar el celular al parlante.
-   - Requiere conexión a internet (Chrome envía el audio a un
-     servicio en la nube para transcribirlo) y permiso de micrófono.
+     el sonido que sale por el parlante de la sala/TV/cine. Por eso
+     la distancia al parlante importa tanto (ver medidor de nivel).
+   - La Web Speech API no permite ajustar manualmente la ganancia o
+     los filtros de ruido del reconocimiento de voz en sí (Chrome
+     administra internamente su propio audio para ese motor). El
+     medidor de nivel usa una captura de audio aparte (Web Audio
+     API) solo para MOSTRAR qué tan fuerte llega el sonido y ayudar
+     a ubicar el celular; no puede "amplificar" lo que el motor de
+     reconocimiento recibe.
+   - Requiere conexión a internet y permiso de micrófono.
    - Al salir de la sección, el micrófono se apaga automáticamente
      por privacidad (ver salir()).
    ============================================================ */
@@ -32,7 +39,7 @@ const SubtitulosV2 = (function () {
         IDIOMA_POR_DEFECTO: "es-PE",
         TAMANOS: ["sm", "md", "lg", "xl"],
         TAMANO_INICIAL_INDEX: 1, // "md"
-        MAX_LINEAS_HISTORIAL: 6  // cuántas frases finales se muestran a la vez
+        MAX_CARACTERES_TEXTO: 420 // ventana de texto visible antes de recortar por el inicio
     };
 
     const NOMBRES_IDIOMA = {
@@ -52,10 +59,21 @@ const SubtitulosV2 = (function () {
         cine: false,
         pantallaCompleta: false,
         tamanoIndex: CONFIG.TAMANO_INICIAL_INDEX,
-        lineasFinales: [],
+        textoAcumulado: "",      // texto ya confirmado, como párrafo corrido (no por líneas separadas)
+        ultimaFraseFinal: "",    // para detectar repeticiones cuando el reconocimiento se reinicia solo
         textoInterino: "",
         _reinicioProgramado: false,
         _eventosListos: false
+    };
+
+    // Medidor de nivel de micrófono: usa su propia captura de audio,
+    // separada del reconocimiento de voz, solo para retroalimentación visual.
+    const estadoMedidor = {
+        stream: null,
+        audioCtx: null,
+        analyser: null,
+        datos: null,
+        animId: null
     };
 
     function el(id) { return document.getElementById(id); }
@@ -85,19 +103,13 @@ const SubtitulosV2 = (function () {
     }
 
     function salir() {
-        // Por privacidad, siempre apagamos el micrófono al salir de la
-        // sección, aunque el usuario no haya pulsado "Detener".
+        // Por privacidad, siempre apagamos el micrófono (reconocimiento Y
+        // medidor de nivel) al salir de la sección, aunque el usuario no
+        // haya pulsado "Detener".
         detenerEscucha();
+        detenerMedidorNivel();
         salirDeCine();
-
-        const seccion = el("seccionSubtitulos");
-        const activo = elementoPantallaCompletaActivo();
-        if (activo && seccion && activo === seccion) {
-            const salirFn = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
-            if (salirFn) salirFn.call(document);
-        }
-        estado.pantallaCompleta = false;
-        if (seccion) seccion.classList.remove("quiz-fullscreen");
+        salirDePantallaCompleta();
     }
 
     function mostrarPantalla(nombre) {
@@ -140,7 +152,8 @@ const SubtitulosV2 = (function () {
         }
 
         estado.activo = true;
-        estado.lineasFinales = [];
+        estado.textoAcumulado = "";
+        estado.ultimaFraseFinal = "";
         estado.textoInterino = "";
         renderizarTexto();
         actualizarEtiquetaIdioma();
@@ -151,6 +164,8 @@ const SubtitulosV2 = (function () {
         } catch (err) {
             console.warn("No se pudo iniciar el reconocimiento de voz:", err);
         }
+
+        iniciarMedidorNivel();
     }
 
     function detenerEscucha() {
@@ -162,6 +177,7 @@ const SubtitulosV2 = (function () {
             } catch (e) { /* noop */ }
             estado.reconocimiento = null;
         }
+        detenerMedidorNivel();
         mostrarPantalla("intro");
     }
 
@@ -171,7 +187,7 @@ const SubtitulosV2 = (function () {
             const resultado = evento.results[i];
             const texto = resultado[0].transcript;
             if (resultado.isFinal) {
-                agregarLineaFinal(texto.trim());
+                agregarTextoFinal(texto.trim());
             } else {
                 interina += texto;
             }
@@ -180,11 +196,52 @@ const SubtitulosV2 = (function () {
         renderizarTexto();
     }
 
-    function agregarLineaFinal(texto) {
+    // Normaliza una frase para comparar (minúsculas, sin espacios extra,
+    // sin signos de puntuación) y así detectar repeticiones aunque
+    // vengan con mayúsculas o puntuación distinta.
+    function normalizar(texto) {
+        return texto
+            .toLowerCase()
+            .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // quita tildes
+            .replace(/[^\p{L}\p{N}\s]/gu, "")
+            .replace(/\s+/g, " ")
+            .trim();
+    }
+
+    // Agrega una frase finalizada al texto corrido, evitando duplicados
+    // consecutivos: cuando el reconocimiento se reinicia solo (por
+    // silencio o límite de tiempo), a veces vuelve a "finalizar" la
+    // misma frase que ya se había mostrado justo antes.
+    function agregarTextoFinal(texto) {
         if (!texto) return;
-        estado.lineasFinales.push(texto);
-        if (estado.lineasFinales.length > CONFIG.MAX_LINEAS_HISTORIAL) {
-            estado.lineasFinales.shift();
+
+        const normalizado = normalizar(texto);
+        if (!normalizado) return;
+
+        const normalizadoAnterior = normalizar(estado.ultimaFraseFinal);
+        if (normalizado === normalizadoAnterior) {
+            return; // repetición exacta de la frase anterior: se ignora
+        }
+        // También ignora el caso en que la nueva frase está totalmente
+        // contenida al final del texto ya acumulado (repetición parcial
+        // típica tras un reinicio del reconocimiento).
+        const acumuladoNormalizado = normalizar(estado.textoAcumulado);
+        if (normalizado.length > 2 && acumuladoNormalizado.endsWith(normalizado)) {
+            return;
+        }
+
+        estado.ultimaFraseFinal = texto;
+        estado.textoAcumulado = (estado.textoAcumulado + " " + texto).trim();
+
+        // Mantenemos solo los últimos N caracteres, cortando por palabra
+        // completa, para que actúe como subtítulos "en vivo" que van
+        // avanzando en vez de crecer para siempre.
+        if (estado.textoAcumulado.length > CONFIG.MAX_CARACTERES_TEXTO) {
+            const recorte = estado.textoAcumulado.length - CONFIG.MAX_CARACTERES_TEXTO;
+            const primerEspacio = estado.textoAcumulado.indexOf(" ", recorte);
+            estado.textoAcumulado = primerEspacio !== -1
+                ? estado.textoAcumulado.slice(primerEspacio + 1)
+                : estado.textoAcumulado.slice(recorte);
         }
     }
 
@@ -215,25 +272,25 @@ const SubtitulosV2 = (function () {
     }
 
     // ---------------------------------------------------------
-    // RENDER DEL TEXTO EN PANTALLA
+    // RENDER DEL TEXTO EN PANTALLA (párrafo corrido: la palabra
+    // detectada continúa en el mismo renglón y pasa sola al
+    // siguiente cuando ya no cabe, en vez de forzar un salto de
+    // línea por cada frase reconocida).
     // ---------------------------------------------------------
     function renderizarTexto() {
         const contenedor = el("subtitulosTexto");
         if (!contenedor) return;
 
-        if (estado.lineasFinales.length === 0 && !estado.textoInterino) {
+        if (!estado.textoAcumulado && !estado.textoInterino) {
             contenedor.innerHTML = '<span class="subtitulos-placeholder">Escuchando… acerca el celular al parlante de la película o de quien esté hablando.</span>';
             return;
         }
 
-        const finales = estado.lineasFinales
-            .map((linea) => `<div class="subtitulos-linea">${escaparHtml(linea)}</div>`)
-            .join("");
         const interina = estado.textoInterino
-            ? `<div class="subtitulos-linea subtitulos-interina">${escaparHtml(estado.textoInterino)}</div>`
+            ? ` <span class="subtitulos-interina">${escaparHtml(estado.textoInterino)}</span>`
             : "";
 
-        contenedor.innerHTML = finales + interina;
+        contenedor.innerHTML = escaparHtml(estado.textoAcumulado) + interina;
         contenedor.scrollTop = contenedor.scrollHeight;
     }
 
@@ -265,72 +322,164 @@ const SubtitulosV2 = (function () {
     }
 
     // ---------------------------------------------------------
+    // MEDIDOR DE NIVEL DE MICRÓFONO
+    // Captura de audio aparte (Web Audio API) solo para mostrar qué
+    // tan fuerte está llegando el sonido, y así ayudar al usuario a
+    // ubicar el celular más cerca del parlante si la barra está baja.
+    // ---------------------------------------------------------
+    function iniciarMedidorNivel() {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
+
+        navigator.mediaDevices.getUserMedia({
+            audio: {
+                echoCancellation: false,
+                noiseSuppression: false,
+                autoGainControl: true
+            }
+        }).then((stream) => {
+            estadoMedidor.stream = stream;
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (!AudioCtx) return;
+
+            estadoMedidor.audioCtx = new AudioCtx();
+            const fuente = estadoMedidor.audioCtx.createMediaStreamSource(stream);
+            estadoMedidor.analyser = estadoMedidor.audioCtx.createAnalyser();
+            estadoMedidor.analyser.fftSize = 512;
+            estadoMedidor.datos = new Uint8Array(estadoMedidor.analyser.frequencyBinCount);
+            fuente.connect(estadoMedidor.analyser);
+
+            actualizarMedidorNivel();
+        }).catch((err) => {
+            // Si falla (permiso denegado, sin micrófono, etc.) simplemente
+            // no mostramos el medidor; el reconocimiento de voz igual
+            // pide su propio permiso de micrófono por separado.
+            console.warn("No se pudo iniciar el medidor de nivel de micrófono:", err);
+        });
+    }
+
+    function actualizarMedidorNivel() {
+        if (!estadoMedidor.analyser) return;
+
+        estadoMedidor.analyser.getByteTimeDomainData(estadoMedidor.datos);
+        let suma = 0;
+        for (let i = 0; i < estadoMedidor.datos.length; i++) {
+            const valor = (estadoMedidor.datos[i] - 128) / 128;
+            suma += valor * valor;
+        }
+        const rms = Math.sqrt(suma / estadoMedidor.datos.length); // 0..1 aprox
+        const porcentaje = Math.min(100, Math.round(rms * 260));
+
+        const barra = el("subtitulosMedidorBarra");
+        if (barra) barra.style.width = porcentaje + "%";
+
+        estadoMedidor.animId = requestAnimationFrame(actualizarMedidorNivel);
+    }
+
+    function detenerMedidorNivel() {
+        if (estadoMedidor.animId) {
+            cancelAnimationFrame(estadoMedidor.animId);
+            estadoMedidor.animId = null;
+        }
+        if (estadoMedidor.stream) {
+            estadoMedidor.stream.getTracks().forEach((t) => t.stop());
+            estadoMedidor.stream = null;
+        }
+        if (estadoMedidor.audioCtx) {
+            estadoMedidor.audioCtx.close().catch(() => {});
+            estadoMedidor.audioCtx = null;
+        }
+        estadoMedidor.analyser = null;
+        estadoMedidor.datos = null;
+
+        const barra = el("subtitulosMedidorBarra");
+        if (barra) barra.style.width = "0%";
+    }
+
+    // ---------------------------------------------------------
     // MODO CINE (fondo negro, subtítulos en blanco, sin controles)
     // ---------------------------------------------------------
     function alternarCine() {
         estado.cine = !estado.cine;
-        aplicarCine();
+        actualizarModoInmersivo();
     }
 
     function salirDeCine() {
         estado.cine = false;
-        aplicarCine();
+        actualizarModoInmersivo();
     }
 
-    function aplicarCine() {
+    // El modo "inmersivo" (pantalla negra sin controles) se activa si
+    // el usuario prendió el modo cine, si está en pantalla completa, o
+    // ambos: cualquiera de los dos oculta el encabezado y los botones.
+    function actualizarModoInmersivo() {
         const seccion = el("seccionSubtitulos");
-        if (seccion) seccion.classList.toggle("subtitulos-cine", estado.cine);
-        const btn = el("btnSubtitulosCine");
-        if (btn) btn.textContent = estado.cine ? "🎬 Salir de cine" : "🎬 Cine";
+        const inmersivo = estado.cine || estado.pantallaCompleta;
+        if (seccion) seccion.classList.toggle("subtitulos-inmersivo", inmersivo);
+
+        const btnCine = el("btnSubtitulosCine");
+        if (btnCine) btnCine.textContent = estado.cine ? "🎬 Salir de cine" : "🎬 Cine";
     }
 
     // ---------------------------------------------------------
-    // PANTALLA COMPLETA (mismo patrón "pseudo-fullscreen" que
-    // QuizV2 / AlfabetizacionV2, compatible con móviles)
+    // PANTALLA COMPLETA REAL (overlay fijo que cubre todo el
+    // viewport; usa la API nativa cuando está disponible y, si no,
+    // recurre al mismo efecto simulado con CSS position:fixed, para
+    // que en móviles quede realmente a pantalla completa).
     // ---------------------------------------------------------
     function elementoPantallaCompletaActivo() {
         return document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement || null;
     }
 
     function alternarPantallaCompleta() {
-        const seccion = el("seccionSubtitulos");
-        if (!seccion) return;
-
-        if (elementoPantallaCompletaActivo() || estado.pantallaCompleta) {
-            const salirFn = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
-            if (elementoPantallaCompletaActivo() && salirFn) {
-                salirFn.call(document);
-            } else {
-                estado.pantallaCompleta = false;
-                seccion.classList.remove("quiz-fullscreen");
-            }
+        if (estado.pantallaCompleta) {
+            salirDePantallaCompleta();
             return;
         }
 
+        const seccion = el("seccionSubtitulos");
+        if (!seccion) return;
+
         const solicitarFn = seccion.requestFullscreen || seccion.webkitRequestFullscreen || seccion.msRequestFullscreen;
         if (solicitarFn) {
-            Promise.resolve(solicitarFn.call(seccion)).catch(activarPantallaCompletaSimulada);
+            Promise.resolve(solicitarFn.call(seccion)).then(activarPantallaCompleta).catch(activarPantallaCompleta);
         } else {
-            activarPantallaCompletaSimulada();
+            activarPantallaCompleta();
         }
     }
 
-    // Alternativa para navegadores que no soportan pantalla completa en
-    // este elemento (por ejemplo, Safari en iOS): simulamos el efecto
-    // con estilos a pantalla completa dentro de la propia página.
-    function activarPantallaCompletaSimulada() {
+    function activarPantallaCompleta() {
         const seccion = el("seccionSubtitulos");
-        if (!seccion) return;
         estado.pantallaCompleta = true;
-        seccion.classList.add("quiz-fullscreen");
+        if (seccion) seccion.classList.add("quiz-fullscreen");
+        document.body.classList.add("subtitulos-bloquear-scroll");
+        actualizarModoInmersivo();
         window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
-    function manejarCambioPantallaCompleta() {
+    function salirDePantallaCompleta() {
         const seccion = el("seccionSubtitulos");
-        const activo = !!elementoPantallaCompletaActivo();
-        estado.pantallaCompleta = activo;
-        if (seccion) seccion.classList.toggle("quiz-fullscreen", activo);
+        estado.pantallaCompleta = false;
+        if (seccion) seccion.classList.remove("quiz-fullscreen");
+        document.body.classList.remove("subtitulos-bloquear-scroll");
+        actualizarModoInmersivo();
+
+        const salirFn = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+        if (elementoPantallaCompletaActivo() && salirFn) {
+            salirFn.call(document);
+        }
+    }
+
+    // Mantiene el estado sincronizado si el usuario sale de pantalla
+    // completa con Esc, el gesto del navegador, etc.
+    function manejarCambioPantallaCompleta() {
+        if (!elementoPantallaCompletaActivo() && estado.pantallaCompleta) {
+            // Ya salió de la pantalla completa nativa; limpiamos nuestro estado.
+            const seccion = el("seccionSubtitulos");
+            estado.pantallaCompleta = false;
+            if (seccion) seccion.classList.remove("quiz-fullscreen");
+            document.body.classList.remove("subtitulos-bloquear-scroll");
+            actualizarModoInmersivo();
+        }
     }
 
     // ---------------------------------------------------------
@@ -357,7 +506,12 @@ const SubtitulosV2 = (function () {
         if (btnCine) btnCine.addEventListener("click", alternarCine);
 
         const btnSalirCine = el("btnSubtitulosSalirCine");
-        if (btnSalirCine) btnSalirCine.addEventListener("click", salirDeCine);
+        if (btnSalirCine) btnSalirCine.addEventListener("click", () => {
+            // El botón flotante de "Salir" en modo inmersivo cierra TODO
+            // (cine y pantalla completa) de un solo toque.
+            salirDeCine();
+            salirDePantallaCompleta();
+        });
 
         const btnFullscreen = el("btnSubtitulosFullscreen");
         if (btnFullscreen) btnFullscreen.addEventListener("click", alternarPantallaCompleta);
