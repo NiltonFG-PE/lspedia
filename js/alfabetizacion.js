@@ -37,13 +37,13 @@ const AlfabetizacionV2 = (function () {
     // CONFIGURACIÓN
     // ---------------------------------------------------------
     const CONFIG = {
-        MOCK_ACTIVO: true, // 👉 cambiar a false cuando el Apps Script combinado esté listo
+        MOCK_ACTIVO: false, // 👉 ya conectado al Apps Script real (Sheet). Poner en true para volver al mock local si hace falta debuggear sin depender de Google.
         MOCK_URL: "data/alfabetizacion-mock.json",
 
         // 👉 Pega aquí la URL de tu Web App de Apps Script (termina en /exec)
         //    (puede ser la misma del Quiz si el doGet combinado responde
         //     también a este endpoint, o una nueva si prefieres separarlo)
-        APPS_SCRIPT_URL: "PEGA_AQUI_LA_URL_DEL_APPS_SCRIPT",
+        APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbw2OCpT7GlBL_UkyUxqD6o-YBmmR5TAzKBywPaVGO9UbdEG4_f2eqrCVpQV6If9IouoDA/exec",
 
         CLAVE_CACHE: "lspedia_alfabetizacion_cache_v1",
         DURACION_CACHE_MS: 5 * 60 * 1000, // 5 minutos, igual que el Quiz
@@ -65,12 +65,11 @@ const AlfabetizacionV2 = (function () {
             "19": "DIECINUEVE"
         },
 
-        // Juego "Completar la palabra": fusiona palabras del abecedario
-        // (con imagen), de los números (sin imagen, se muestra el número
-        // grande) y del diccionario principal (con video de la seña, ver
-        // bancoPalabrasCompletar) en un solo banco de preguntas.
-        // "letrasFaltantes" define cuántas letras hay que completar por
-        // palabra según el nivel elegido.
+        // Juego "Completar la palabra": banco de preguntas con las
+        // palabras de ejemplo del abecedario (con imagen) y los números
+        // (sin imagen, se muestra el número grande). "letrasFaltantes"
+        // define cuántas letras hay que completar por palabra según el
+        // nivel elegido.
         NIVELES_COMPLETAR: [
             { id: "facil", nombre: "Fácil", icono: "🙂", opciones: 3, tiempoSeg: 25, letrasFaltantes: 1, badgeClase: "badge-nivel-facil" },
             { id: "medio", nombre: "Medio", icono: "😐", opciones: 4, tiempoSeg: 18, letrasFaltantes: 2, badgeClase: "badge-nivel-medio" },
@@ -602,28 +601,15 @@ const AlfabetizacionV2 = (function () {
     function bancoPalabrasCompletar() {
         const deLetras = (estado.datos.ejemplos || [])
             .filter((e) => e.palabra && e.palabra.length >= 3)
-            .map((e) => ({ palabra: e.palabra.toUpperCase(), imagen: e.imagen, video: null, numero: null }));
+            .map((e) => ({ palabra: e.palabra.toUpperCase(), imagen: e.imagen, numero: null }));
 
         const deNumeros = Object.keys(CONFIG.PALABRA_NUMERO).map((n) => ({
             palabra: CONFIG.PALABRA_NUMERO[n],
             imagen: null,
-            video: null,
             numero: n
         }));
 
-        // Palabras del diccionario principal (las mismas del Índice
-        // alfabético / Temas Orden, cargadas por script.js en App.datos),
-        // para darle más variedad y contenido al juego. Se muestra el
-        // video de la seña en lugar de una imagen mientras se completa la
-        // palabra. Solo se usan palabras de una sola pieza (sin espacios,
-        // ej. "Hola", "Gracias") que ya tengan video en LSP, para que
-        // funcionen igual que el resto de fichas del juego.
-        const diccionario = (window.App && Array.isArray(window.App.datos)) ? window.App.datos : [];
-        const deDiccionario = diccionario
-            .filter((p) => p.palabra && p.video && /^[A-Za-zÁÉÍÓÚÑÜáéíóúñü]{3,}$/.test(p.palabra))
-            .map((p) => ({ palabra: p.palabra.toUpperCase(), imagen: null, video: p.video, numero: null }));
-
-        return deLetras.concat(deNumeros, deDiccionario);
+        return deLetras.concat(deNumeros);
     }
 
     function nivelCompletarActual() {
@@ -657,7 +643,7 @@ const AlfabetizacionV2 = (function () {
         }
 
         const totalEl = el("alfabCompletarTotalDisponibles");
-        if (totalEl) totalEl.textContent = bancoPalabrasCompletar().length + " palabras disponibles (abecedario + números + diccionario)";
+        if (totalEl) totalEl.textContent = bancoPalabrasCompletar().length + " palabras disponibles (abecedario + números)";
 
         const intro = el("alfabCompletarIntro");
         const activo = el("alfabCompletarActivo");
@@ -715,13 +701,10 @@ const AlfabetizacionV2 = (function () {
         const cont = el("alfabCompletarContenido");
         cont.innerHTML = "";
 
-        // Imagen (letras del abecedario), video (palabras del diccionario)
-        // o número grande (números, no tienen imagen ni video de ejemplo).
+        // Imagen (letras del abecedario) o número grande (números, sin
+        // imagen de ejemplo).
         const cajaImagen = document.createElement("div");
-        if (pregunta.video) {
-            cajaImagen.className = "quiz-video-wrap mb-3";
-            cajaImagen.innerHTML = '<iframe src="https://www.youtube.com/embed/' + encodeURIComponent(pregunta.video) + '?rel=0&modestbranding=1" allowfullscreen title="Video en LSP de la palabra"></iframe>';
-        } else if (pregunta.imagen) {
+        if (pregunta.imagen) {
             cajaImagen.className = "completar-imagen-caja mx-auto mb-3";
             const img = document.createElement("img");
             img.src = pregunta.imagen;

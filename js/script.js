@@ -204,6 +204,11 @@ const App = {
         .catch(error => console.error("Error al cargar LSPedia:", error));
     }
 };
+// "const App = {...}" NO se agrega solo a window (a diferencia de "var"
+// o de una función declarada), así que hay que exponerlo a mano, igual
+// que QuizV2/AlfabetizacionV2/SubtitulosV2 — por si algún otro módulo
+// necesita leer App.datos más adelante.
+window.App = App;
 
 document.addEventListener("DOMContentLoaded", () => {
     App.iniciar();
