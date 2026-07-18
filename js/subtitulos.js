@@ -131,7 +131,13 @@ const SubtitulosV2 = (function () {
 
         const r = new Ctor();
         r.lang = estado.idioma;
-        r.continuous = true;
+        // NOTA IMPORTANTE (Android Chrome): continuous:true es poco fiable en
+        // Android — suele pedir permiso, "arrancar", y no disparar ningún
+        // resultado nunca (se queda escuchando en el vacío). Por eso se usa
+        // continuous:false (una frase/pausa a la vez) y se reinicia solo en
+        // onend/manejarFin(); así sí funciona en Android y sigue funcionando
+        // igual de bien en Chrome de escritorio.
+        r.continuous = false;
         r.interimResults = true;
 
         r.onresult = manejarResultado;
@@ -251,23 +257,33 @@ const SubtitulosV2 = (function () {
             estado.activo = false;
             alert("LSPedia necesita permiso para usar el micrófono para mostrar los subtítulos en tiempo real. Por favor, permite el acceso al micrófono e inténtalo de nuevo.");
             mostrarPantalla("intro");
+            return;
+        }
+        if (evento.error === "language-not-supported") {
+            // Común en algunos Android: el motor de voz del teléfono no tiene
+            // instalado ese idioma/variante exacta (ej. es-419).
+            estado.activo = false;
+            alert("El idioma seleccionado no está disponible en el motor de voz de este celular. Prueba con 'Español (Perú)' o 'Español (España)'.");
+            mostrarPantalla("intro");
+            return;
         }
         // Otros errores (no-speech, network, aborted) se resuelven solos en
         // onend, reintentando automáticamente mientras estado.activo sea true.
     }
 
     function manejarFin() {
-        // Chrome corta la sesión de reconocimiento tras un rato de silencio
-        // o alrededor de 60s; si el usuario sigue con los subtítulos
-        // activos, reiniciamos automáticamente para simular escucha continua.
+        // Con continuous:false, cada sesión termina apenas se detecta una
+        // pausa (o al terminar una frase); si el usuario sigue con los
+        // subtítulos activos, reiniciamos casi de inmediato para que la
+        // escucha se sienta continua, sin perder lo que se hable después.
         if (estado.activo && !estado._reinicioProgramado) {
             estado._reinicioProgramado = true;
             setTimeout(() => {
                 estado._reinicioProgramado = false;
                 if (estado.activo && estado.reconocimiento) {
-                    try { estado.reconocimiento.start(); } catch (e) { /* ya estaba iniciado */ }
+                    try { estado.reconocimiento.start(); } catch (e) { /* ya estaba iniciado, se ignora */ }
                 }
-            }, 300);
+            }, 120);
         }
     }
 
