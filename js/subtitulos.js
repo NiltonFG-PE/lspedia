@@ -306,10 +306,14 @@ const SubtitulosV2 = (function () {
             : "";
 
         contenedor.innerHTML = escaparHtml(estado.textoAcumulado) + interina;
-        // El avance automático de línea (sin deslizar a mano) lo resuelve el
-        // CSS de .subtitulos-pantalla (flex-direction:column + justify-
-        // content:flex-end + overflow:hidden): el texto siempre queda
-        // anclado abajo y lo más viejo se recorta solo por arriba.
+
+        // El bloque de texto (.subtitulos-texto) crece centrado en la
+        // pantalla hasta un máximo de 4 líneas (max-height en CSS); si el
+        // contenido excede esas 4 líneas, se vuelve desplazable y este
+        // scrollTop lo ancla siempre al final, para que la frase más
+        // reciente quede visible y lo más viejo se "recorte" solo por
+        // arriba, sin que el usuario tenga que deslizar nada a mano.
+        contenedor.scrollTop = contenedor.scrollHeight;
     }
 
     function escaparHtml(texto) {

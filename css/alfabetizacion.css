@@ -150,6 +150,17 @@
     background: #fffbeb;
     border-radius: 6px;
 }
+/* Cuando faltan 2 o 3 letras (nivel Medio/Difícil), esta marca cuál de
+   los espacios en blanco toca llenar en este momento. */
+.completar-letra-casilla.blank.activa {
+    border-bottom-color: #d97706;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25);
+    animation: completarBlancoActivo 1.1s ease-in-out infinite;
+}
+@keyframes completarBlancoActivo {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}
 .completar-letra-casilla.correcta {
     color: #16a34a;
     border-bottom-color: #16a34a;
@@ -197,6 +208,18 @@
 /* Caja de grafía: la letra/video se muestra grande, similar a la referencia */
 .alfab-grafia-caja {
     background: #f8fafc;
+}
+
+/* Fonética (foto de boca) y Grafía (video de trazo): misma proporción
+   1:1 en ambas cajas para que siempre se vean del mismo tamaño, sin
+   importar si la foto o el video original son más anchos o más altos
+   (object-fit:contain en .apoyo-visual-img evita que se deformen). */
+#alfabBocaCaja,
+#alfabTrazoCaja {
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    height: auto;
+    max-height: 340px;
 }
 
 /* Las 4 cajas de imagen estática (.alfab-tipo-img/.alfab-tipo-box) ya no

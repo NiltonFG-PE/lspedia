@@ -71,6 +71,7 @@
             align-items: center;
             gap: 8px; 
             padding: 0.65rem 1.15rem !important;
+            white-space: nowrap;
         }
 
         .navbar-nav .nav-link.text-warning {
@@ -83,10 +84,25 @@
             text-shadow: 0 0 10px rgba(255, 193, 7, 0.7); 
         }
 
-        @media (max-width: 991px) {
+        @media (max-width: 1199.98px) {
             .navbar-nav .nav-link {
                 font-size: 19px;
             }
+        }
+
+        /* Evita que el menú (u otro elemento) desborde el ancho de la
+           pantalla y "empuje" o descentre el contenido en tablets. */
+        html, body {
+            overflow-x: hidden;
+        }
+
+        /* Con el navbar ya expandido (pantallas anchas), si aun así no
+           entran todos los ítems en una sola fila, que pasen a una
+           segunda línea centrada en vez de desbordarse/superponerse. */
+        .navbar-nav {
+            flex-wrap: wrap;
+            justify-content: center;
+            row-gap: 4px;
         }
 
         /* Letras A-Z interactivas FLUIDAS y SIN NEGRITA */
@@ -204,7 +220,7 @@
 
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm py-2">
+    <nav class="navbar navbar-expand-xl navbar-dark bg-primary shadow-sm py-2">
         <div class="container">
             <a class="navbar-brand fw-bold d-flex align-items-center" href="#" id="btnLogo">
                 <img src="img/lspedia.png" alt="Logo LSPedia" height="85" style="object-fit: contain;">
@@ -491,8 +507,8 @@
             <!-- SUB-NAVEGACIÓN ENTRE LOS 3 MÓDULOS -->
             <div class="d-flex justify-content-center mb-4">
                 <div class="btn-group alfab-submenu flex-wrap" role="group" aria-label="Módulos de Alfabetización">
-                    <button type="button" class="btn btn-outline-primary active" data-alfab-modulo="aprender" id="btnAlfabModoAprender">🔤 Aprender</button>
                     <button type="button" class="btn btn-outline-primary" data-alfab-modulo="completar" id="btnAlfabModoCompletar">🧩 Completar la palabra</button>
+                    <button type="button" class="btn btn-outline-primary active" data-alfab-modulo="aprender" id="btnAlfabModoAprender">🔤 Aprender</button>
                     <button type="button" class="btn btn-outline-primary" data-alfab-modulo="unir" id="btnAlfabModoUnir">🔗 Unir con flechas</button>
                 </div>
             </div>

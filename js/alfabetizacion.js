@@ -66,12 +66,15 @@ const AlfabetizacionV2 = (function () {
         },
 
         // Juego "Completar la palabra": fusiona palabras del abecedario
-        // (con imagen) y de los números (sin imagen, se muestra el número
-        // grande en su lugar) en un solo banco de preguntas.
+        // (con imagen), de los números (sin imagen, se muestra el número
+        // grande) y del diccionario principal (con video de la seña, ver
+        // bancoPalabrasCompletar) en un solo banco de preguntas.
+        // "letrasFaltantes" define cuántas letras hay que completar por
+        // palabra según el nivel elegido.
         NIVELES_COMPLETAR: [
-            { id: "facil", nombre: "Fácil", icono: "🙂", opciones: 3, tiempoSeg: 25, badgeClase: "badge-nivel-facil" },
-            { id: "medio", nombre: "Medio", icono: "😐", opciones: 4, tiempoSeg: 18, badgeClase: "badge-nivel-medio" },
-            { id: "dificil", nombre: "Difícil", icono: "🔥", opciones: 5, tiempoSeg: 12, badgeClase: "badge-nivel-dificil" }
+            { id: "facil", nombre: "Fácil", icono: "🙂", opciones: 3, tiempoSeg: 25, letrasFaltantes: 1, badgeClase: "badge-nivel-facil" },
+            { id: "medio", nombre: "Medio", icono: "😐", opciones: 4, tiempoSeg: 18, letrasFaltantes: 2, badgeClase: "badge-nivel-medio" },
+            { id: "dificil", nombre: "Difícil", icono: "🔥", opciones: 5, tiempoSeg: 12, letrasFaltantes: 3, badgeClase: "badge-nivel-dificil" }
         ],
         PREGUNTAS_POR_RONDA_COMPLETAR: 10,
         LETRAS_DISPONIBLES: "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ".split("")
@@ -104,7 +107,10 @@ const AlfabetizacionV2 = (function () {
             revision: [],
             respondida: false,
             timerId: null,
-            tiempoRestante: 0
+            tiempoRestante: 0,
+            subIndice: 0,           // qué letra faltante (dentro de la palabra actual) se está resolviendo
+            palabraTuvoError: false, // si alguna letra de la palabra actual salió mal
+            blancoRespondido: false  // evita doble clic mientras se pasa a la siguiente letra faltante
         }
     };
 
@@ -596,15 +602,28 @@ const AlfabetizacionV2 = (function () {
     function bancoPalabrasCompletar() {
         const deLetras = (estado.datos.ejemplos || [])
             .filter((e) => e.palabra && e.palabra.length >= 3)
-            .map((e) => ({ palabra: e.palabra.toUpperCase(), imagen: e.imagen, numero: null }));
+            .map((e) => ({ palabra: e.palabra.toUpperCase(), imagen: e.imagen, video: null, numero: null }));
 
         const deNumeros = Object.keys(CONFIG.PALABRA_NUMERO).map((n) => ({
             palabra: CONFIG.PALABRA_NUMERO[n],
             imagen: null,
+            video: null,
             numero: n
         }));
 
-        return deLetras.concat(deNumeros);
+        // Palabras del diccionario principal (las mismas del Índice
+        // alfabético / Temas Orden, cargadas por script.js en App.datos),
+        // para darle más variedad y contenido al juego. Se muestra el
+        // video de la seña en lugar de una imagen mientras se completa la
+        // palabra. Solo se usan palabras de una sola pieza (sin espacios,
+        // ej. "Hola", "Gracias") que ya tengan video en LSP, para que
+        // funcionen igual que el resto de fichas del juego.
+        const diccionario = (window.App && Array.isArray(window.App.datos)) ? window.App.datos : [];
+        const deDiccionario = diccionario
+            .filter((p) => p.palabra && p.video && /^[A-Za-zÁÉÍÓÚÑÜáéíóúñü]{3,}$/.test(p.palabra))
+            .map((p) => ({ palabra: p.palabra.toUpperCase(), imagen: null, video: p.video, numero: null }));
+
+        return deLetras.concat(deNumeros, deDiccionario);
     }
 
     function nivelCompletarActual() {
@@ -638,7 +657,7 @@ const AlfabetizacionV2 = (function () {
         }
 
         const totalEl = el("alfabCompletarTotalDisponibles");
-        if (totalEl) totalEl.textContent = bancoPalabrasCompletar().length + " palabras disponibles (abecedario + números)";
+        if (totalEl) totalEl.textContent = bancoPalabrasCompletar().length + " palabras disponibles (abecedario + números + diccionario)";
 
         const intro = el("alfabCompletarIntro");
         const activo = el("alfabCompletarActivo");
@@ -681,32 +700,35 @@ const AlfabetizacionV2 = (function () {
         el("btnAlfabCompletarSiguiente").classList.add("d-none");
         el("alfabCompletarFeedback").innerHTML = "";
 
-        // Elegir al azar qué letra falta, y su versión sin tilde (las
-        // fichas de letra disponibles son A-Z + Ñ, siempre sin acentos).
+        // Cuántas y cuáles letras faltan, según el nivel (Fácil=1, Medio=2,
+        // Difícil=3 letras). Nunca se deja la palabra 100% en blanco: si es
+        // muy corta, se limita para que quede al menos 1 letra visible.
         const letras = pregunta.palabra.split("");
-        const indiceBlanco = Math.floor(Math.random() * letras.length);
-        pregunta._indiceBlanco = indiceBlanco;
-        pregunta._letraCorrecta = normalizarLetra(letras[indiceBlanco]);
+        const cantidadBlancos = Math.min(nivel.letrasFaltantes, Math.max(1, letras.length - 1));
+        const indicesBlanco = barajar(letras.map((_, i) => i)).slice(0, cantidadBlancos).sort((a, b) => a - b);
+        pregunta._indicesBlanco = indicesBlanco;
+        pregunta._letrasCorrectas = indicesBlanco.map((i) => normalizarLetra(letras[i]));
 
-        // Opciones: la correcta + distractores al azar, sin repetir.
-        const opciones = new Set([pregunta._letraCorrecta]);
-        while (opciones.size < nivel.opciones) {
-            opciones.add(CONFIG.LETRAS_DISPONIBLES[Math.floor(Math.random() * CONFIG.LETRAS_DISPONIBLES.length)]);
-        }
-        const opcionesBarajadas = barajar(Array.from(opciones));
+        estado.completar.subIndice = 0;
+        estado.completar.palabraTuvoError = false;
 
         const cont = el("alfabCompletarContenido");
         cont.innerHTML = "";
 
-        // Imagen (letras) o número grande (números, no tienen imagen de ejemplo)
+        // Imagen (letras del abecedario), video (palabras del diccionario)
+        // o número grande (números, no tienen imagen ni video de ejemplo).
         const cajaImagen = document.createElement("div");
-        cajaImagen.className = "completar-imagen-caja mx-auto mb-3";
-        if (pregunta.imagen) {
+        if (pregunta.video) {
+            cajaImagen.className = "quiz-video-wrap mb-3";
+            cajaImagen.innerHTML = '<iframe src="https://www.youtube.com/embed/' + encodeURIComponent(pregunta.video) + '?rel=0&modestbranding=1" allowfullscreen title="Video en LSP de la palabra"></iframe>';
+        } else if (pregunta.imagen) {
+            cajaImagen.className = "completar-imagen-caja mx-auto mb-3";
             const img = document.createElement("img");
             img.src = pregunta.imagen;
             img.alt = pregunta.palabra;
             cajaImagen.appendChild(img);
         } else {
+            cajaImagen.className = "completar-imagen-caja mx-auto mb-3";
             const num = document.createElement("span");
             num.className = "completar-numero-grande";
             num.textContent = pregunta.numero;
@@ -714,21 +736,56 @@ const AlfabetizacionV2 = (function () {
         }
         cont.appendChild(cajaImagen);
 
-        // Palabra con la letra faltante
+        // Palabra con los espacios en blanco (uno o varios, según el nivel)
         const filaPalabra = document.createElement("div");
         filaPalabra.className = "completar-palabra mb-2";
         letras.forEach((letra, i) => {
+            const esBlanco = indicesBlanco.includes(i);
             const casilla = document.createElement("span");
-            casilla.className = "completar-letra-casilla" + (i === indiceBlanco ? " blank" : "");
-            casilla.textContent = i === indiceBlanco ? "" : letra;
+            casilla.className = "completar-letra-casilla" + (esBlanco ? " blank" : "");
+            casilla.textContent = esBlanco ? "" : letra;
             casilla.id = "completarCasilla" + i;
             filaPalabra.appendChild(casilla);
         });
         cont.appendChild(filaPalabra);
 
-        // Opciones de letra (se tocan, no se arrastran)
+        // Contenedor de opciones de letra: se redibuja solo (sin rehacer
+        // toda la palabra) cada vez que se pasa a la siguiente letra
+        // faltante dentro de la misma palabra (ver renderOpcionesBlancoActual).
         const filaOpciones = document.createElement("div");
+        filaOpciones.id = "alfabCompletarOpciones";
         filaOpciones.className = "completar-opciones d-flex flex-wrap justify-content-center gap-2 mt-3";
+        cont.appendChild(filaOpciones);
+
+        renderOpcionesBlancoActual();
+        iniciarTimerCompletar(nivel.tiempoSeg);
+    }
+
+    // Dibuja las opciones de letra para la letra faltante actual
+    // (estado.completar.subIndice) y resalta con ".activa" cuál casilla
+    // toca llenar ahora, cuando hay más de una (niveles Medio/Difícil).
+    function renderOpcionesBlancoActual() {
+        const nivel = nivelCompletarActual();
+        const pregunta = estado.completar.preguntas[estado.completar.indice];
+        const subIndice = estado.completar.subIndice;
+        const indiceBlanco = pregunta._indicesBlanco[subIndice];
+        const letraCorrecta = pregunta._letrasCorrectas[subIndice];
+        estado.completar.blancoRespondido = false;
+
+        pregunta._indicesBlanco.forEach((idx) => {
+            const casilla = el("completarCasilla" + idx);
+            if (casilla) casilla.classList.toggle("activa", idx === indiceBlanco);
+        });
+
+        const opciones = new Set([letraCorrecta]);
+        while (opciones.size < nivel.opciones) {
+            opciones.add(CONFIG.LETRAS_DISPONIBLES[Math.floor(Math.random() * CONFIG.LETRAS_DISPONIBLES.length)]);
+        }
+        const opcionesBarajadas = barajar(Array.from(opciones));
+
+        const filaOpciones = el("alfabCompletarOpciones");
+        if (!filaOpciones) return;
+        filaOpciones.innerHTML = "";
         opcionesBarajadas.forEach((letra) => {
             const btn = document.createElement("button");
             btn.type = "button";
@@ -737,64 +794,91 @@ const AlfabetizacionV2 = (function () {
             btn.addEventListener("click", () => seleccionarOpcionCompletar(letra, btn));
             filaOpciones.appendChild(btn);
         });
-        cont.appendChild(filaOpciones);
-
-        iniciarTimerCompletar(nivel.tiempoSeg);
     }
 
     function seleccionarOpcionCompletar(letra, btnEl) {
-        if (estado.completar.respondida) return;
-        estado.completar.respondida = true;
-        detenerTimerCompletar();
+        if (estado.completar.respondida || estado.completar.blancoRespondido) return;
+        estado.completar.blancoRespondido = true;
 
         const pregunta = estado.completar.preguntas[estado.completar.indice];
-        const esCorrecta = letra === pregunta._letraCorrecta;
+        const subIndice = estado.completar.subIndice;
+        const indiceBlanco = pregunta._indicesBlanco[subIndice];
+        const letraCorrecta = pregunta._letrasCorrectas[subIndice];
+        const esCorrecta = letra === letraCorrecta;
 
-        const casilla = el("completarCasilla" + pregunta._indiceBlanco);
+        const casilla = el("completarCasilla" + indiceBlanco);
         if (casilla) {
-            casilla.textContent = pregunta.palabra[pregunta._indiceBlanco];
+            casilla.textContent = pregunta.palabra[indiceBlanco];
+            casilla.classList.remove("activa");
             casilla.classList.add(esCorrecta ? "correcta" : "incorrecta");
         }
 
         document.querySelectorAll(".completar-opcion-letra").forEach((b) => {
             b.disabled = true;
             if (b === btnEl) b.classList.add(esCorrecta ? "correcta" : "incorrecta");
-            if (!esCorrecta && b.textContent === pregunta._letraCorrecta) b.classList.add("correcta");
+            if (!esCorrecta && b.textContent === letraCorrecta) b.classList.add("correcta");
         });
 
         if (esCorrecta) {
-            estado.completar.correctas++;
             estado.completar.puntaje += 10;
-            el("alfabCompletarFeedback").innerHTML = '<span class="text-success">¡Muy bien! 🎉</span>';
         } else {
-            estado.completar.incorrectas++;
-            el("alfabCompletarFeedback").innerHTML = '<span class="text-danger">Era: ' + pregunta._letraCorrecta + "</span>";
+            estado.completar.palabraTuvoError = true;
         }
         el("alfabCompletarPuntaje").textContent = "⭐ " + estado.completar.puntaje;
 
-        estado.completar.revision.push({ ok: esCorrecta, texto: pregunta.palabra + " (" + pregunta._letraCorrecta + ")" });
+        const quedanLetrasFaltantes = subIndice + 1 < pregunta._indicesBlanco.length;
+        if (quedanLetrasFaltantes) {
+            estado.completar.subIndice++;
+            // Pequeña pausa para que se alcance a ver el color antes de
+            // pasar a la siguiente letra faltante de la misma palabra.
+            setTimeout(() => {
+                if (!estado.completar.respondida) renderOpcionesBlancoActual();
+            }, 700);
+            return;
+        }
 
-        el("btnAlfabCompletarSiguiente").classList.remove("d-none");
+        finalizarPreguntaCompletar(!estado.completar.palabraTuvoError);
     }
 
     function tiempoAgotadoCompletar() {
         if (estado.completar.respondida) return;
-        estado.completar.respondida = true;
 
         const pregunta = estado.completar.preguntas[estado.completar.indice];
-        const casilla = el("completarCasilla" + pregunta._indiceBlanco);
-        if (casilla) {
-            casilla.textContent = pregunta.palabra[pregunta._indiceBlanco];
-            casilla.classList.add("incorrecta");
-        }
-        document.querySelectorAll(".completar-opcion-letra").forEach((b) => {
-            b.disabled = true;
-            if (b.textContent === pregunta._letraCorrecta) b.classList.add("correcta");
+        // Revela todas las letras que quedaron sin responder (puede ser
+        // más de una si se acabó el tiempo con varias letras faltantes).
+        pregunta._indicesBlanco.slice(estado.completar.subIndice).forEach((idx) => {
+            const casilla = el("completarCasilla" + idx);
+            if (casilla) {
+                casilla.textContent = pregunta.palabra[idx];
+                casilla.classList.remove("activa");
+                casilla.classList.add("incorrecta");
+            }
         });
+        document.querySelectorAll(".completar-opcion-letra").forEach((b) => { b.disabled = true; });
 
-        estado.completar.incorrectas++;
-        el("alfabCompletarFeedback").innerHTML = '<span class="text-danger">⏱ Se acabó el tiempo. Era: ' + pregunta._letraCorrecta + "</span>";
-        estado.completar.revision.push({ ok: false, texto: pregunta.palabra + " (" + pregunta._letraCorrecta + ")" });
+        estado.completar.palabraTuvoError = true;
+        el("alfabCompletarFeedback").innerHTML = '<span class="text-danger">⏱ Se acabó el tiempo.</span>';
+        finalizarPreguntaCompletar(false);
+    }
+
+    // Cierra la palabra actual (todas sus letras faltantes ya respondidas
+    // o el tiempo se acabó): registra el puntaje, la revisión final y
+    // habilita el botón "Siguiente →".
+    function finalizarPreguntaCompletar(fueCorrecta) {
+        estado.completar.respondida = true;
+        detenerTimerCompletar();
+
+        const pregunta = estado.completar.preguntas[estado.completar.indice];
+        if (fueCorrecta) {
+            estado.completar.correctas++;
+            el("alfabCompletarFeedback").innerHTML = '<span class="text-success">¡Muy bien! 🎉</span>';
+        } else {
+            estado.completar.incorrectas++;
+            if (!el("alfabCompletarFeedback").innerHTML) {
+                el("alfabCompletarFeedback").innerHTML = '<span class="text-danger">Revisa las letras en rojo</span>';
+            }
+        }
+        estado.completar.revision.push({ ok: fueCorrecta, texto: pregunta.palabra + " (" + pregunta._letrasCorrectas.join(", ") + ")" });
 
         el("btnAlfabCompletarSiguiente").classList.remove("d-none");
     }

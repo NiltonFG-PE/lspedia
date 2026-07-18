@@ -42,184 +42,6 @@ body.subtitulos-bloquear-scroll {
 }
 
 /* ============================================================
-   MODO INMERSIVO (pantalla completa y/o modo cine): se oculta el
-   encabezado blanco y toda la "chrome" de la página, dejando solo
-   los subtítulos y un botón discreto para salir.
-   ============================================================ */
-#seccionSubtitulos.subtitulos-inmersivo #subtitulosPanelTitulo,
-#seccionSubtitulos.subtitulos-inmersivo #subtitulosBarraControles,
-#seccionSubtitulos.subtitulos-inmersivo #subtitulosControlesInferiores {
-    display: none !important;
-}
-#seccionSubtitulos.subtitulos-inmersivo .subtitulos-btn-salir-cine {
-    display: inline-flex !important;
-}
-/* En modo inmersivo no mostramos el texto de "Escuchando…": la idea
-   es una pantalla negra limpia hasta que aparezca el primer subtítulo. */
-#seccionSubtitulos.subtitulos-inmersivo .subtitulos-placeholder {
-    display: none;
-}
-
-/* --- Caja principal donde aparece el texto de los subtítulos --- */
-.subtitulos-pantalla {
-    position: relative;
-    background-color: #0f172a;
-    border-radius: 18px;
-    min-height: 46vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 32px 24px;
-    overflow-y: auto;
-    transition: background-color 0.3s ease, border-radius 0.3s ease;
-}
-#seccionSubtitulos.subtitulos-inmersivo .subtitulos-pantalla {
-    background-color: #000;
-    border-radius: 0;
-}
-
-.subtitulos-texto {
-    color: #ffffff;
-    font-weight: 700;
-    line-height: 1.45;
-    text-align: center;
-    max-width: 900px;
-    white-space: normal;
-    word-wrap: break-word;
-    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
-}
-
-.subtitulos-placeholder {
-    color: #94a3b8;
-    font-weight: 500;
-    font-style: italic;
-    font-size: 1.15rem;
-}
-
-/* Texto todavía "en proceso" de reconocerse (no confirmado). Se
-   muestra pegado al texto ya confirmado, en el mismo párrafo. */
-.subtitulos-interina {
-    color: #cbd5e1;
-    font-style: italic;
-    opacity: 0.85;
-}
-
-/* --- Tamaños de texto ajustables (accesibilidad) --- */
-.subtitulos-texto.tam-sm { font-size: 1.25rem; }
-.subtitulos-texto.tam-md { font-size: 1.75rem; }
-.subtitulos-texto.tam-lg { font-size: 2.35rem; }
-.subtitulos-texto.tam-xl { font-size: 3.1rem; }
-
-@media (max-width: 576px) {
-    .subtitulos-texto.tam-sm { font-size: 1.05rem; }
-    .subtitulos-texto.tam-md { font-size: 1.4rem; }
-    .subtitulos-texto.tam-lg { font-size: 1.8rem; }
-    .subtitulos-texto.tam-xl { font-size: 2.3rem; }
-}
-
-/* ============================================================
-   MODO HORIZONTAL: en pantalla completa/cine los subtítulos
-   siempre van centrados, en blanco y grandes. Al entrar se intenta
-   bloquear la orientación en horizontal por JS (screen.orientation.
-   lock, ver subtitulos.js); esto solo funciona en Chrome Android
-   con pantalla completa nativa. Como respaldo para cuando el
-   bloqueo no está disponible (Safari/iOS, pantalla completa
-   simulada, etc.), si el celular sigue en vertical mientras está
-   en pantalla completa o modo cine, rotamos el contenido con CSS
-   para que de todas formas se vea horizontal.
-   ============================================================ */
-@media (orientation: landscape) {
-    #seccionSubtitulos.quiz-fullscreen .subtitulos-texto,
-    #seccionSubtitulos.subtitulos-inmersivo .subtitulos-texto {
-        max-width: 92vw;
-    }
-    #seccionSubtitulos.quiz-fullscreen .subtitulos-texto.tam-md,
-    #seccionSubtitulos.subtitulos-inmersivo .subtitulos-texto.tam-md { font-size: 2rem; }
-    #seccionSubtitulos.quiz-fullscreen .subtitulos-texto.tam-lg,
-    #seccionSubtitulos.subtitulos-inmersivo .subtitulos-texto.tam-lg { font-size: 2.6rem; }
-    #seccionSubtitulos.quiz-fullscreen .subtitulos-texto.tam-xl,
-    #seccionSubtitulos.subtitulos-inmersivo .subtitulos-texto.tam-xl { font-size: 3.3rem; }
-}
-
-/* Respaldo: si screen.orientation.lock() no funcionó y el celular
-   sigue en vertical dentro de pantalla completa o modo cine, se
-   fuerza la vista horizontal rotando el contenido con CSS. */
-@media (orientation: portrait) and (max-width: 600px) {
-    #seccionSubtitulos.quiz-fullscreen #subtitulosEnVivo {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        width: 100vh;
-        height: 100vw;
-        transform: translate(-50%, -50%) rotate(90deg);
-        transform-origin: center center;
-    }
-}
-
-.subtitulos-btn-salir-cine {
-    position: absolute;
-    top: 14px;
-    right: 14px;
-    opacity: 0.5;
-    transition: opacity 0.2s ease;
-    z-index: 5;
-}
-.subtitulos-btn-salir-cine:hover,
-.subtitulos-btn-salir-cine:focus {
-    opacity: 1;
-}
-
-/* --- Insignia "EN VIVO" con parpadeo suave --- */
-#subtitulosBadgeEnVivo {
-    animation: subtitulosPulsoVivo 1.6s ease-in-out infinite;
-}
-@keyframes subtitulosPulsoVivo {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.55; }
-}/* ============================================================
-   LSPedia - Estilos de Subtítulos en tiempo real (SubtitulosV2)
-   Archivo independiente. No modifica estilos.css ni quiz.css,
-   aunque reutiliza la clase .quiz-btn-fullscreen que ya existe.
-   ============================================================ */
-
-/* ============================================================
-   PANTALLA COMPLETA REAL (overlay fijo que cubre TODO el viewport,
-   incluso en móviles donde el navegador deja barras/huecos con un
-   simple 100vh). Usamos 100dvh con fallback a 100vh, y position:
-   fixed para que no dependa del scroll ni del layout de la página.
-   ============================================================ */
-#seccionSubtitulos.quiz-fullscreen {
-    position: fixed;
-    inset: 0;
-    z-index: 2050;
-    width: 100vw;
-    height: 100vh;
-    height: 100dvh;
-    margin: 0;
-    padding: 10px;
-    background-color: #000;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-}
-/* Evita que la página de fondo haga scroll mientras estamos en
-   pantalla completa simulada (se activa/desactiva por JS). */
-body.subtitulos-bloquear-scroll {
-    overflow: hidden;
-}
-
-#seccionSubtitulos.quiz-fullscreen #subtitulosEnVivo {
-    flex: 1 1 auto;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-}
-#seccionSubtitulos.quiz-fullscreen .subtitulos-pantalla {
-    flex: 1 1 auto;
-    min-height: 0;
-}
-
-/* ============================================================
    MODO INMERSIVO (pantalla completa): se oculta el encabezado
    blanco y la barra de controles de arriba, dejando solo los
    subtítulos, los controles flotantes (tamaño de letra y color) y
@@ -239,7 +61,13 @@ body.subtitulos-bloquear-scroll {
     display: none;
 }
 
-/* --- Caja principal donde aparece el texto de los subtítulos --- */
+/* --- Caja principal donde aparece el texto de los subtítulos ---
+   El texto (.subtitulos-texto) se centra tanto vertical como
+   horizontalmente dentro de esta caja. Como .subtitulos-texto ya
+   no ocupa todo el alto disponible (ver más abajo), el primer
+   subtítulo aparece centrado en la pantalla negra; a medida que
+   crece pasa a ocupar más líneas, siempre centrado, hasta el
+   máximo de 4 líneas que permite .subtitulos-texto. */
 .subtitulos-pantalla {
     position: relative;
     background-color: #0f172a;
@@ -248,10 +76,7 @@ body.subtitulos-bloquear-scroll {
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* flex-end + overflow:hidden = "modo lectura" automático: el texto
-       nuevo siempre queda pegado abajo, y lo más viejo se recorta solo
-       por arriba, sin que el usuario tenga que deslizar nada a mano. */
-    justify-content: flex-end;
+    justify-content: center;
     padding: 32px 24px;
     overflow: hidden;
     transition: background-color 0.3s ease, border-radius 0.3s ease;
@@ -280,15 +105,28 @@ body.subtitulos-bloquear-scroll {
     opacity: 1;
 }
 
+/* El bloque de texto crece desde el centro de la pantalla y se
+   detiene en 4 líneas (line-height 1.45 × 4 ≈ 5.8em, en "em" para
+   que se ajuste solo al tamaño de fuente elegido en tam-sm/md/lg/xl).
+   Al superar las 4 líneas, en vez de seguir creciendo se vuelve un
+   "visor" que se desplaza solo (ver renderizarTexto() en
+   subtitulos.js): las líneas más viejas se recortan por arriba y la
+   más reciente queda siempre visible abajo, sin scrollbar. */
 .subtitulos-texto {
     color: #ffffff;
     font-weight: 700;
     line-height: 1.45;
     text-align: center;
     max-width: 900px;
+    max-height: 5.8em;
+    overflow-y: auto;
     white-space: normal;
     word-wrap: break-word;
     text-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+    scrollbar-width: none; /* Firefox: oculta la barra de scroll */
+}
+.subtitulos-texto::-webkit-scrollbar {
+    display: none; /* Chrome/Safari: oculta la barra de scroll */
 }
 
 .subtitulos-placeholder {
