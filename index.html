@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="css/estilos.css">
     <link rel="stylesheet" href="css/quiz.css">
     <link rel="stylesheet" href="css/alfabetizacion.css">
+    <link rel="stylesheet" href="css/subtitulos.css">
 
     <!-- Preconnect: adelanta la conexión a Google para que el Quiz cargue más rápido -->
     <link rel="preconnect" href="https://script.google.com">
@@ -221,6 +222,7 @@
                     <li class="nav-item"><a class="nav-link" href="#" id="btnCategorias"><span aria-hidden="true">📁</span> Temas orden</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" id="btnQuiz"><span aria-hidden="true">🎮</span> Jugar</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" id="btnAlfabetizacion"><span aria-hidden="true">🔤</span> Alfabetización</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" id="btnSubtitulos"><span aria-hidden="true">💬</span> Subtítulos</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" id="btnNavFavoritos"><span aria-hidden="true">⭐</span> Favoritos</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" id="btnHistorial"><span aria-hidden="true">🕒</span> Historial</a></li>
                     <li class="nav-item"><a class="nav-link text-warning" href="#" data-bs-toggle="modal" data-bs-target="#modalSobreNosotros"><span aria-hidden="true">🤟</span> Sobre Nosotros</a></li>
@@ -729,6 +731,107 @@
 
         </section>
 
+        <!-- ============================================================
+             SECCIÓN SUBTÍTULOS EN TIEMPO REAL (js/subtitulos.js, namespace
+             SubtitulosV2). Independiente del Quiz y de Alfabetización.
+             Usa el micrófono del dispositivo + la Web Speech API del
+             navegador para transcribir el audio ambiente (por ejemplo el
+             de una película en el cine o la TV) y mostrarlo como
+             subtítulos en vivo, con pantalla completa y "modo cine"
+             (fondo negro, texto blanco grande).
+             ============================================================ -->
+        <section id="seccionSubtitulos" class="d-none">
+
+            <div class="card quiz-card border-0 shadow-sm p-3 p-md-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="fs-3" aria-hidden="true">💬</span>
+                        <div>
+                            <h5 class="fw-bold mb-0">Subtítulos en tiempo real</h5>
+                            <p class="small text-muted mb-0">Convierte el sonido ambiente en texto, para seguir películas y conversaciones al instante.</p>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button id="btnSubtitulosSalir" class="btn btn-outline-secondary btn-sm rounded-pill" title="Salir de Subtítulos">↩ Salir</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANTALLA 1: INTRO / CONFIGURACIÓN -->
+            <div id="subtitulosIntro" class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card quiz-card border-0 shadow-sm text-center p-4 p-md-5">
+                        <div class="fs-1 mb-3" aria-hidden="true">🎧</div>
+                        <h4 class="fw-bold mb-2">Escucha convertida en subtítulos</h4>
+                        <p class="text-muted mb-4">
+                            Acerca tu celular al parlante de la película, la TV o la persona que habla, y esta pantalla
+                            mostrará lo que se dice como subtítulos en vivo. Ideal para el cine, la sala de tu casa o una charla.
+                        </p>
+
+                        <div class="row justify-content-center mb-4">
+                            <div class="col-sm-6 col-md-5 text-start">
+                                <label for="subtitulosSelectIdioma" class="form-label small fw-bold text-muted">Idioma de los subtítulos</label>
+                                <select id="subtitulosSelectIdioma" class="form-select">
+                                    <option value="es-PE">Español (Perú)</option>
+                                    <option value="es-419">Español (Latinoamérica)</option>
+                                    <option value="es-ES">Español (España)</option>
+                                    <option value="en-US">English (US)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button id="btnSubtitulosIniciar" class="btn btn-warning btn-lg fw-bold rounded-pill px-4 mx-auto">
+                            🎤 Activar micrófono y empezar
+                        </button>
+                        <p class="small text-muted mt-3 mb-0" id="subtitulosAvisoCompat"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANTALLA 2: SUBTÍTULOS EN VIVO -->
+            <div id="subtitulosEnVivo" class="d-none">
+                <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2" id="subtitulosBarraControles">
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <span class="badge bg-danger" id="subtitulosBadgeEnVivo">● EN VIVO</span>
+                        <span class="small text-muted" id="subtitulosIdiomaActual"></span>
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button id="btnSubtitulosTextoMenos" class="btn btn-sm btn-outline-secondary" title="Reducir tamaño de texto" aria-label="Reducir tamaño de texto">A-</button>
+                        <button id="btnSubtitulosTextoMas" class="btn btn-sm btn-outline-secondary" title="Aumentar tamaño de texto" aria-label="Aumentar tamaño de texto">A+</button>
+                        <button id="btnSubtitulosCine" class="btn btn-sm btn-outline-dark" title="Modo cine: fondo negro y subtítulos en blanco">🎬 Cine</button>
+                        <button id="btnSubtitulosFullscreen" class="btn btn-outline-secondary quiz-btn-fullscreen" title="Pantalla completa" aria-label="Pantalla completa">⛶</button>
+                    </div>
+                </div>
+
+                <div id="subtitulosPantalla" class="subtitulos-pantalla">
+                    <div id="subtitulosTexto" class="subtitulos-texto tam-md">
+                        <span class="subtitulos-placeholder">Escuchando… acerca el celular al parlante de la película o de quien esté hablando.</span>
+                    </div>
+                    <button id="btnSubtitulosSalirCine" class="btn btn-sm btn-light subtitulos-btn-salir-cine d-none" title="Salir del modo cine" aria-label="Salir del modo cine">✕ Salir de cine</button>
+                </div>
+
+                <div class="text-center mt-3" id="subtitulosControlesInferiores">
+                    <button id="btnSubtitulosDetener" class="btn btn-outline-danger fw-bold rounded-pill px-4">⏹ Detener subtítulos</button>
+                </div>
+            </div>
+
+            <!-- PANTALLA 3: NAVEGADOR NO COMPATIBLE -->
+            <div id="subtitulosNoSoportado" class="d-none row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card quiz-card border-0 shadow-sm text-center p-4 p-md-5">
+                        <div class="fs-1 mb-3" aria-hidden="true">⚠️</div>
+                        <h5 class="fw-bold mb-2">Tu navegador no admite el reconocimiento de voz</h5>
+                        <p class="text-muted mb-0">
+                            Para usar los subtítulos en tiempo real, abre esta página en <strong>Google Chrome</strong>
+                            (en Android o en tu computadora). Otros navegadores como Safari o Firefox todavía no
+                            soportan esta función correctamente.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
         <!-- RECUADRO CON NUEVO COLOR AZUL OSCURO Y BOTÓN AMARILLO -->
         <section id="seccionSugerencias" class="mt-5 pt-4 border-top text-center">
             <div class="p-4 rounded border-0 d-inline-block max-w-xl mx-auto shadow-sm text-white" style="background-color: #0f172a;">
@@ -818,6 +921,7 @@
     <script src="js/script.js"></script>
     <script src="js/quiz.js"></script>
     <script src="js/alfabetizacion.js"></script>
+    <script src="js/subtitulos.js"></script>
 
     <!-- Pie de página LSPedia -->
 <footer class="mt-5 py-4 border-top text-center">

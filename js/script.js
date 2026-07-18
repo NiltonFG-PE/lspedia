@@ -44,6 +44,7 @@ document.getElementById("btnCategorias").addEventListener("click", (e) => {
     e.preventDefault();
     ocultarQuiz();
     ocultarAlfabetizacion();
+    ocultarSubtitulos();
     mostrarCategorias();
     panelCategorias.scrollIntoView({ behavior: 'smooth', block: 'center' });
     panelCategorias.classList.add("highlight-anim");
@@ -54,6 +55,7 @@ document.getElementById("btnNavFavoritos").addEventListener("click", (e) => {
     e.preventDefault();
     ocultarQuiz();
     ocultarAlfabetizacion();
+    ocultarSubtitulos();
     const seccionFav = document.getElementById("seccionFavoritos");
     seccionFav.scrollIntoView({ behavior: 'smooth', block: 'center' });
     seccionFav.classList.add("highlight-anim");
@@ -64,6 +66,7 @@ document.getElementById("btnHistorial").addEventListener("click", (e) => {
     e.preventDefault();
     ocultarQuiz();
     ocultarAlfabetizacion();
+    ocultarSubtitulos();
     mostrarPantallaHistorial();
     seccionHistorial.scrollIntoView({ behavior: 'smooth', block: 'center' });
     seccionHistorial.classList.add("highlight-anim");
@@ -99,6 +102,7 @@ function mostrarSeccionQuiz(){
     ultimasPalabras.innerHTML = "";
     seccionHistorial.classList.add("d-none");
     ocultarAlfabetizacion();
+    ocultarSubtitulos();
     seccionQuiz.classList.remove("d-none");
     // QuizV2 (js/quiz.js) carga sus propias preguntas desde la Hoja 2 de Google Sheets.
     if(window.QuizV2 && typeof QuizV2.iniciar === "function") QuizV2.iniciar();
@@ -127,6 +131,7 @@ function mostrarSeccionAlfabetizacion(){
     ultimasPalabras.innerHTML = "";
     seccionHistorial.classList.add("d-none");
     ocultarQuiz();
+    ocultarSubtitulos();
     seccionAlfabetizacion.classList.remove("d-none");
     // AlfabetizacionV2 (js/alfabetizacion.js) carga sus datos desde Google Sheets (aún pendiente de crear).
     if(window.AlfabetizacionV2 && typeof AlfabetizacionV2.iniciar === "function"){
@@ -135,6 +140,47 @@ function mostrarSeccionAlfabetizacion(){
         console.warn("AlfabetizacionV2 aún no está definido: falta crear/cargar js/alfabetizacion.js.");
     }
     seccionAlfabetizacion.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// --- SECCIÓN SUBTÍTULOS EN TIEMPO REAL (independiente: micrófono + Web Speech API) ---
+const seccionSubtitulos = document.getElementById("seccionSubtitulos");
+const btnSubtitulos = document.getElementById("btnSubtitulos");
+if(btnSubtitulos){
+    btnSubtitulos.addEventListener("click", (e) => {
+        e.preventDefault();
+        mostrarSeccionSubtitulos();
+    });
+}
+
+function ocultarSubtitulos(){
+    if(seccionSubtitulos) seccionSubtitulos.classList.add("d-none");
+    // js/subtitulos.js (namespace SubtitulosV2) apaga el micrófono al salir,
+    // por privacidad, aunque el usuario no haya pulsado "Detener".
+    if(window.SubtitulosV2 && typeof SubtitulosV2.salir === "function") SubtitulosV2.salir();
+}
+
+function mostrarSeccionSubtitulos(){
+    resultado.innerHTML = "";
+    panelCategorias.innerHTML = "";
+    ultimasPalabras.innerHTML = "";
+    seccionHistorial.classList.add("d-none");
+    ocultarQuiz();
+    ocultarAlfabetizacion();
+    seccionSubtitulos.classList.remove("d-none");
+    if(window.SubtitulosV2 && typeof SubtitulosV2.iniciar === "function"){
+        SubtitulosV2.iniciar();
+    } else {
+        console.warn("SubtitulosV2 aún no está definido: falta crear/cargar js/subtitulos.js.");
+    }
+    seccionSubtitulos.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+const btnSubtitulosSalir = document.getElementById("btnSubtitulosSalir");
+if(btnSubtitulosSalir){
+    btnSubtitulosSalir.addEventListener("click", (e) => {
+        e.preventDefault();
+        ocultarSubtitulos();
+    });
 }
 
 // --- CARGA DE DATOS CENTRALIZADA ---

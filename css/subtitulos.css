@@ -1,0 +1,118 @@
+/* ============================================================
+   LSPedia - Estilos de Subtítulos en tiempo real (SubtitulosV2)
+   Archivo independiente. No modifica estilos.css ni quiz.css,
+   aunque reutiliza la clase .quiz-fullscreen y .quiz-btn-fullscreen
+   que ya existen (mismo patrón de pantalla completa que el Quiz).
+   ============================================================ */
+
+/* --- Contenedor en modo pantalla completa (reutiliza .quiz-fullscreen) --- */
+#seccionSubtitulos.quiz-fullscreen {
+    background-color: #000;
+    padding: 16px 12px;
+    min-height: 100vh;
+}
+#seccionSubtitulos.quiz-fullscreen .subtitulos-pantalla {
+    min-height: calc(100vh - 90px);
+}
+
+/* --- Caja principal donde aparece el texto de los subtítulos --- */
+.subtitulos-pantalla {
+    position: relative;
+    background-color: #0f172a;
+    border-radius: 18px;
+    min-height: 46vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 24px;
+    overflow-y: auto;
+    transition: background-color 0.3s ease, border-radius 0.3s ease;
+}
+
+.subtitulos-texto {
+    color: #ffffff;
+    font-weight: 700;
+    line-height: 1.4;
+    text-align: center;
+    max-width: 900px;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+}
+
+.subtitulos-linea {
+    margin-bottom: 6px;
+}
+.subtitulos-linea:last-child {
+    margin-bottom: 0;
+}
+
+.subtitulos-placeholder {
+    color: #94a3b8;
+    font-weight: 500;
+    font-style: italic;
+    font-size: 1.15rem;
+}
+
+/* Texto todavía "en proceso" de reconocerse (no confirmado) */
+.subtitulos-interina {
+    color: #cbd5e1;
+    font-style: italic;
+    opacity: 0.85;
+}
+
+/* --- Tamaños de texto ajustables (accesibilidad) --- */
+.subtitulos-texto.tam-sm { font-size: 1.25rem; }
+.subtitulos-texto.tam-md { font-size: 1.75rem; }
+.subtitulos-texto.tam-lg { font-size: 2.35rem; }
+.subtitulos-texto.tam-xl { font-size: 3.1rem; }
+
+@media (max-width: 576px) {
+    .subtitulos-texto.tam-sm { font-size: 1.05rem; }
+    .subtitulos-texto.tam-md { font-size: 1.4rem; }
+    .subtitulos-texto.tam-lg { font-size: 1.8rem; }
+    .subtitulos-texto.tam-xl { font-size: 2.3rem; }
+}
+
+/* ============================================================
+   MODO CINE: fondo negro absoluto, solo el texto en blanco,
+   se ocultan la barra de controles y el botón "Detener" para
+   que no distraigan; queda un pequeño botón flotante para salir.
+   ============================================================ */
+#seccionSubtitulos.subtitulos-cine {
+    background-color: #000;
+}
+#seccionSubtitulos.subtitulos-cine #subtitulosBarraControles,
+#seccionSubtitulos.subtitulos-cine #subtitulosControlesInferiores {
+    display: none !important;
+}
+#seccionSubtitulos.subtitulos-cine .subtitulos-pantalla {
+    background-color: #000;
+    border-radius: 0;
+    min-height: 70vh;
+}
+#seccionSubtitulos.subtitulos-cine.quiz-fullscreen .subtitulos-pantalla {
+    min-height: 100vh;
+}
+#seccionSubtitulos.subtitulos-cine .subtitulos-btn-salir-cine {
+    display: inline-flex !important;
+}
+
+.subtitulos-btn-salir-cine {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
+}
+.subtitulos-btn-salir-cine:hover,
+.subtitulos-btn-salir-cine:focus {
+    opacity: 1;
+}
+
+/* --- Insignia "EN VIVO" con parpadeo suave --- */
+#subtitulosBadgeEnVivo {
+    animation: subtitulosPulsoVivo 1.6s ease-in-out infinite;
+}
+@keyframes subtitulosPulsoVivo {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.55; }
+}
