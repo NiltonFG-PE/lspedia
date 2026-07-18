@@ -4,9 +4,11 @@
    Módulo independiente (mismo patrón que QuizV2 y AlfabetizacionV2).
    Usa la Web Speech API del navegador para escuchar el audio
    ambiente a través del micrófono del dispositivo y mostrarlo como
-   subtítulos en vivo, con pantalla completa real (overlay fijo),
-   modo cine (fondo negro, texto blanco) y modo horizontal
-   automático al rotar el celular, pensado para que una persona
+   subtítulos en vivo, con pantalla completa real (overlay fijo) que
+   ya se ve tipo "cine" (fondo negro, texto blanco grande) sin
+   necesitar un modo aparte, más un botón para copiar toda la
+   transcripción y otro para resaltar en color la palabra que se
+   está reconociendo en ese momento. Pensado para que una persona
    sorda pueda seguir una película, serie, TV o conversación.
 
    ⚠️ LIMITACIONES IMPORTANTES A TENER EN CUENTA:
@@ -41,7 +43,14 @@ const SubtitulosV2 = (function () {
         IDIOMA_POR_DEFECTO: "es-PE",
         TAMANOS: ["sm", "md", "lg", "xl"],
         TAMANO_INICIAL_INDEX: 1, // "md"
-        MAX_CARACTERES_TEXTO: 420 // ventana de texto visible antes de recortar por el inicio
+        MAX_CARACTERES_TEXTO: 420, // ventana de texto visible antes de recortar por el inicio
+        COLORES_RESALTADO: ["verde", "amarillo", "azul"]
+    };
+
+    const COLOR_INFO = {
+        verde: { emoji: "🟢", nombre: "Verde" },
+        amarillo: { emoji: "🟡", nombre: "Amarillo" },
+        azul: { emoji: "🔵", nombre: "Azul" }
     };
 
     const NOMBRES_IDIOMA = {
@@ -58,10 +67,11 @@ const SubtitulosV2 = (function () {
         reconocimiento: null,
         activo: false,           // el usuario pidió escuchar (se mantiene true entre reinicios automáticos)
         idioma: CONFIG.IDIOMA_POR_DEFECTO,
-        cine: false,
         pantallaCompleta: false,
         tamanoIndex: CONFIG.TAMANO_INICIAL_INDEX,
-        textoAcumulado: "",      // texto ya confirmado, como párrafo corrido (no por líneas separadas)
+        colorResaltado: "verde",
+        textoAcumulado: "",      // ventana visible en pantalla (se recorta para no crecer sin límite)
+        textoCompleto: "",       // transcripción completa de toda la sesión, sin recortar (para "Guardar")
         ultimaFraseFinal: "",    // para detectar repeticiones cuando el reconocimiento se reinicia solo
         textoInterino: "",
         _reinicioProgramado: false,
@@ -98,7 +108,6 @@ const SubtitulosV2 = (function () {
         // Por privacidad, siempre apagamos el micrófono al salir de la
         // sección, aunque el usuario no haya pulsado "Detener".
         detenerEscucha();
-        salirDeCine();
         salirDePantallaCompleta();
     }
 
@@ -149,6 +158,7 @@ const SubtitulosV2 = (function () {
 
         estado.activo = true;
         estado.textoAcumulado = "";
+        estado.textoCompleto = "";
         estado.ultimaFraseFinal = "";
         estado.textoInterino = "";
         renderizarTexto();
@@ -225,10 +235,12 @@ const SubtitulosV2 = (function () {
 
         estado.ultimaFraseFinal = texto;
         estado.textoAcumulado = (estado.textoAcumulado + " " + texto).trim();
+        estado.textoCompleto = (estado.textoCompleto + " " + texto).trim();
 
-        // Mantenemos solo los últimos N caracteres, cortando por palabra
-        // completa, para que actúe como subtítulos "en vivo" que van
-        // avanzando en vez de crecer para siempre.
+        // Mantenemos solo los últimos N caracteres EN PANTALLA (textoAcumulado),
+        // cortando por palabra completa, para que actúe como subtítulos "en
+        // vivo" que van avanzando en vez de crecer para siempre. textoCompleto
+        // en cambio NUNCA se recorta: guarda toda la sesión para "Guardar".
         if (estado.textoAcumulado.length > CONFIG.MAX_CARACTERES_TEXTO) {
             const recorte = estado.textoAcumulado.length - CONFIG.MAX_CARACTERES_TEXTO;
             const primerEspacio = estado.textoAcumulado.indexOf(" ", recorte);
@@ -290,11 +302,14 @@ const SubtitulosV2 = (function () {
         }
 
         const interina = estado.textoInterino
-            ? ` <span class="subtitulos-interina">${escaparHtml(estado.textoInterino)}</span>`
+            ? ` <span class="subtitulos-interina color-${estado.colorResaltado}">${escaparHtml(estado.textoInterino)}</span>`
             : "";
 
         contenedor.innerHTML = escaparHtml(estado.textoAcumulado) + interina;
-        contenedor.scrollTop = contenedor.scrollHeight;
+        // El avance automático de línea (sin deslizar a mano) lo resuelve el
+        // CSS de .subtitulos-pantalla (flex-direction:column + justify-
+        // content:flex-end + overflow:hidden): el texto siempre queda
+        // anclado abajo y lo más viejo se recorta solo por arriba.
     }
 
     function escaparHtml(texto) {
@@ -325,28 +340,82 @@ const SubtitulosV2 = (function () {
     }
 
     // ---------------------------------------------------------
-    // MODO CINE (fondo negro, subtítulos en blanco, sin controles)
+    // GUARDAR / COPIAR TODA LA TRANSCRIPCIÓN
     // ---------------------------------------------------------
-    function alternarCine() {
-        estado.cine = !estado.cine;
-        actualizarModoInmersivo();
+    function copiarTranscripcion() {
+        const texto = estado.textoCompleto.trim();
+        if (!texto) {
+            alert("Todavía no se ha transcrito ningún subtítulo para copiar.");
+            return;
+        }
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(texto)
+                .then(mostrarConfirmacionGuardado)
+                .catch(() => copiarConFallback(texto));
+        } else {
+            copiarConFallback(texto);
+        }
     }
 
-    function salirDeCine() {
-        estado.cine = false;
-        actualizarModoInmersivo();
+    // Respaldo para navegadores/contextos sin permiso de portapapeles
+    // moderno: crea un textarea temporal, lo selecciona y usa el comando
+    // de copiar clásico del navegador.
+    function copiarConFallback(texto) {
+        const textarea = document.createElement("textarea");
+        textarea.value = texto;
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        try {
+            document.execCommand("copy");
+            mostrarConfirmacionGuardado();
+        } catch (e) {
+            alert("No se pudo copiar automáticamente. Mantén presionado el texto de los subtítulos para copiarlo manualmente.");
+        }
+        document.body.removeChild(textarea);
     }
 
-    // El modo "inmersivo" (pantalla negra sin controles) se activa si
-    // el usuario prendió el modo cine, si está en pantalla completa, o
-    // ambos: cualquiera de los dos oculta el encabezado y los botones.
+    function mostrarConfirmacionGuardado() {
+        const btn = el("btnSubtitulosGuardar");
+        if (!btn) return;
+        const original = btn.innerHTML;
+        btn.innerHTML = "✅ Copiado";
+        setTimeout(() => { btn.innerHTML = original; }, 1800);
+    }
+
+    // ---------------------------------------------------------
+    // COLOR DE LA PALABRA EN TIEMPO REAL
+    // La Web Speech API no da marcas de tiempo por palabra, solo un texto
+    // "interino" que va creciendo mientras se reconoce la frase; por eso el
+    // resaltado de color se aplica a ese fragmento interino completo (lo
+    // más cercano posible a "lo que se está diciendo ahora mismo"), y el
+    // resto del texto ya confirmado se queda en blanco.
+    // ---------------------------------------------------------
+    function alternarColorResaltado() {
+        const lista = CONFIG.COLORES_RESALTADO;
+        const idx = lista.indexOf(estado.colorResaltado);
+        estado.colorResaltado = lista[(idx + 1) % lista.length];
+        actualizarBotonColor();
+        renderizarTexto();
+    }
+
+    function actualizarBotonColor() {
+        const btn = el("btnSubtitulosColor");
+        if (!btn) return;
+        const info = COLOR_INFO[estado.colorResaltado];
+        btn.textContent = info.emoji;
+        btn.title = "Color de la palabra en vivo: " + info.nombre + " (toca para cambiar)";
+    }
+
+    // El modo "inmersivo" (pantalla negra sin controles, solo los
+    // subtítulos y los botones flotantes) se activa al entrar a pantalla
+    // completa.
     function actualizarModoInmersivo() {
         const seccion = el("seccionSubtitulos");
-        const inmersivo = estado.cine || estado.pantallaCompleta;
-        if (seccion) seccion.classList.toggle("subtitulos-inmersivo", inmersivo);
-
-        const btnCine = el("btnSubtitulosCine");
-        if (btnCine) btnCine.textContent = estado.cine ? "🎬 Salir de cine" : "🎬 Cine";
+        if (seccion) seccion.classList.toggle("subtitulos-inmersivo", estado.pantallaCompleta);
     }
 
     // ---------------------------------------------------------
@@ -400,8 +469,8 @@ const SubtitulosV2 = (function () {
         }
     }
 
-    // Fuerza la orientación horizontal en pantalla completa/cine, para que
-    // los subtítulos se vean grandes y centrados como pide el usuario. Solo
+    // Fuerza la orientación horizontal en pantalla completa, para que los
+    // subtítulos se vean grandes y centrados como pide el usuario. Solo
     // funciona de forma confiable en Chrome Android y requiere pantalla
     // completa NATIVA (no la simulada de Safari/iOS); en cualquier otro
     // caso falla en silencio y el celular se queda en la orientación en la
@@ -452,16 +521,14 @@ const SubtitulosV2 = (function () {
         const btnMenos = el("btnSubtitulosTextoMenos");
         if (btnMenos) btnMenos.addEventListener("click", () => ajustarTamano(-1));
 
-        const btnCine = el("btnSubtitulosCine");
-        if (btnCine) btnCine.addEventListener("click", alternarCine);
+        const btnColor = el("btnSubtitulosColor");
+        if (btnColor) btnColor.addEventListener("click", alternarColorResaltado);
+
+        const btnGuardar = el("btnSubtitulosGuardar");
+        if (btnGuardar) btnGuardar.addEventListener("click", copiarTranscripcion);
 
         const btnSalirCine = el("btnSubtitulosSalirCine");
-        if (btnSalirCine) btnSalirCine.addEventListener("click", () => {
-            // El botón flotante de "Salir" en modo inmersivo cierra TODO
-            // (cine y pantalla completa) de un solo toque.
-            salirDeCine();
-            salirDePantallaCompleta();
-        });
+        if (btnSalirCine) btnSalirCine.addEventListener("click", salirDePantallaCompleta);
 
         const btnFullscreen = el("btnSubtitulosFullscreen");
         if (btnFullscreen) btnFullscreen.addEventListener("click", alternarPantallaCompleta);
@@ -471,6 +538,7 @@ const SubtitulosV2 = (function () {
         });
 
         aplicarTamano();
+        actualizarBotonColor();
 
         // Aviso de compatibilidad en la pantalla de intro.
         const aviso = el("subtitulosAvisoCompat");

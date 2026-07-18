@@ -799,16 +799,22 @@
                         <span class="small text-muted" id="subtitulosIdiomaActual"></span>
                     </div>
                     <div class="d-flex gap-2 flex-wrap">
-                        <button id="btnSubtitulosTextoMenos" class="btn btn-sm btn-outline-secondary" title="Reducir tamaño de texto" aria-label="Reducir tamaño de texto">A-</button>
-                        <button id="btnSubtitulosTextoMas" class="btn btn-sm btn-outline-secondary" title="Aumentar tamaño de texto" aria-label="Aumentar tamaño de texto">A+</button>
-                        <button id="btnSubtitulosCine" class="btn btn-sm btn-outline-dark" title="Modo cine: fondo negro y subtítulos en blanco">🎬 Cine</button>
+                        <button id="btnSubtitulosGuardar" class="btn btn-sm btn-outline-primary" title="Copiar todo el texto subtitulado">💾 Guardar</button>
                         <button id="btnSubtitulosFullscreen" class="btn btn-outline-secondary quiz-btn-fullscreen" title="Pantalla completa" aria-label="Pantalla completa">⛶</button>
                     </div>
                 </div>
 
                 <div id="subtitulosPantalla" class="subtitulos-pantalla">
+                    <!-- Controles flotantes: siempre visibles, incluso en pantalla
+                         completa (a diferencia de la barra de arriba, que se oculta). -->
+                    <div class="subtitulos-controles-flotantes" id="subtitulosControlesFlotantes">
+                        <button id="btnSubtitulosTextoMenos" class="btn btn-sm btn-light" title="Reducir tamaño de texto" aria-label="Reducir tamaño de texto">A-</button>
+                        <button id="btnSubtitulosTextoMas" class="btn btn-sm btn-light" title="Aumentar tamaño de texto" aria-label="Aumentar tamaño de texto">A+</button>
+                        <button id="btnSubtitulosColor" class="btn btn-sm btn-light" title="Cambiar color de la palabra en vivo" aria-label="Cambiar color de la palabra en vivo">🟢</button>
+                    </div>
+
                     <div id="subtitulosTexto" class="subtitulos-texto tam-md"></div>
-                    <button id="btnSubtitulosSalirCine" class="btn btn-sm btn-light subtitulos-btn-salir-cine d-none" title="Salir del modo cine / pantalla completa" aria-label="Salir del modo cine / pantalla completa">✕ Salir</button>
+                    <button id="btnSubtitulosSalirCine" class="btn btn-sm btn-light subtitulos-btn-salir-cine d-none" title="Salir de pantalla completa" aria-label="Salir de pantalla completa">✕ Salir</button>
                 </div>
 
                 <div class="text-center mt-3" id="subtitulosControlesInferiores">
