@@ -52,7 +52,29 @@ const AlfabetizacionV2 = (function () {
         VELOCIDAD_INDEX_INICIAL: 1, // 1x
 
         // Las 4 variantes tipográficas, en el mismo orden que los chips del HTML.
-        VARIANTES_TIPO: ["mayuscula", "minuscula", "cursiva-mayuscula", "cursiva-minuscula"]
+        VARIANTES_TIPO: ["mayuscula", "minuscula", "cursiva-mayuscula", "cursiva-minuscula"],
+
+        // Los números 0-19 se pronuncian como palabra (ej. 13 = TRECE), así que
+        // la fonética se arma reutilizando la boca de cada letra de la palabra
+        // (img/alfabetizacion/boca/{LETRA}.png), no una imagen por número.
+        PALABRA_NUMERO: {
+            "0": "CERO", "1": "UNO", "2": "DOS", "3": "TRES", "4": "CUATRO",
+            "5": "CINCO", "6": "SEIS", "7": "SIETE", "8": "OCHO", "9": "NUEVE",
+            "10": "DIEZ", "11": "ONCE", "12": "DOCE", "13": "TRECE", "14": "CATORCE",
+            "15": "QUINCE", "16": "DIECISEIS", "17": "DIECISIETE", "18": "DIECIOCHO",
+            "19": "DIECINUEVE"
+        },
+
+        // Juego "Completar la palabra": fusiona palabras del abecedario
+        // (con imagen) y de los números (sin imagen, se muestra el número
+        // grande en su lugar) en un solo banco de preguntas.
+        NIVELES_COMPLETAR: [
+            { id: "facil", nombre: "Fácil", icono: "🙂", opciones: 3, tiempoSeg: 25, badgeClase: "badge-nivel-facil" },
+            { id: "medio", nombre: "Medio", icono: "😐", opciones: 4, tiempoSeg: 18, badgeClase: "badge-nivel-medio" },
+            { id: "dificil", nombre: "Difícil", icono: "🔥", opciones: 5, tiempoSeg: 12, badgeClase: "badge-nivel-dificil" }
+        ],
+        PREGUNTAS_POR_RONDA_COMPLETAR: 10,
+        LETRAS_DISPONIBLES: "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ".split("")
     };
 
     // ---------------------------------------------------------
@@ -70,6 +92,19 @@ const AlfabetizacionV2 = (function () {
             velocidadIndex: CONFIG.VELOCIDAD_INDEX_INICIAL,
             ejemploIndice: 0,
             variante: "mayuscula"    // variante tipográfica activa (chip seleccionado)
+        },
+
+        completar: {
+            nivelId: null,
+            preguntas: [],
+            indice: 0,
+            puntaje: 0,
+            correctas: 0,
+            incorrectas: 0,
+            revision: [],
+            respondida: false,
+            timerId: null,
+            tiempoRestante: 0
         }
     };
 
@@ -237,10 +272,11 @@ const AlfabetizacionV2 = (function () {
     function renderModuloActivo() {
         if (estado.moduloActivo === "aprender") {
             renderAprender();
+        } else if (estado.moduloActivo === "completar") {
+            renderCompletarIntro();
         }
-        // "completar" y "unir" se implementan en el siguiente paso;
-        // por ahora sus pantallas de intro ya están en el HTML y no
-        // requieren datos para mostrarse.
+        // "unir" se implementa en el siguiente paso; su pantalla de intro
+        // ya está en el HTML y no requiere datos para mostrarse.
     }
 
     // ===========================================================
@@ -283,47 +319,69 @@ const AlfabetizacionV2 = (function () {
         });
     }
 
-    // Convención de nombre para los 4 videos de grafía por variante
-    // (mayúscula, minúscula, cursiva mayúscula, cursiva minúscula).
-    // No vienen del Sheet: se arman a partir del carácter + variante.
-    function rutaVideoGrafia(caracter, variante) {
-        return "img/alfabetizacion/grafias/" + encodeURIComponent(caracter) + "-" + variante + ".mp4";
+    // Convención de nombre para los videos de grafía. Las LETRAS tienen 4
+    // variantes (mayúscula, minúscula, cursiva mayúscula, cursiva minúscula).
+    // Los NÚMEROS no tienen variantes tipográficas, así que usan un solo
+    // archivo por dígito (sin sufijo de variante). No vienen del Sheet: se
+    // arman a partir del carácter (+ variante, si aplica).
+    function rutaVideoGrafia(c, variante) {
+        const base = "img/alfabetizacion/grafias/" + encodeURIComponent(c.caracter);
+        if (c.tipo === "numero") return base + ".mp4";
+        return base + "-" + variante + ".mp4";
     }
 
     // Misma convención que rutaVideoGrafia, pero para la imagen estática
-    // que se muestra DENTRO de cada chip (una por variante, del carácter
-    // actual). Tampoco viene del Sheet.
-    function rutaImagenGrafia(caracter, variante) {
-        return "img/alfabetizacion/grafias/" + encodeURIComponent(caracter) + "-" + variante + ".png";
+    // que se muestra DENTRO de cada chip. Tampoco viene del Sheet.
+    function rutaImagenGrafia(c, variante) {
+        const base = "img/alfabetizacion/grafias/" + encodeURIComponent(c.caracter);
+        if (c.tipo === "numero") return base + ".png";
+        return base + "-" + variante + ".png";
     }
 
-    // Actualiza las 4 imágenes de los chips (mayúscula/minúscula/cursiva
-    // mayúscula/cursiva minúscula) para que muestren el carácter actual.
-    // Se llama una vez por carácter (no por cambio de variante activa,
-    // ya que las 4 imágenes están siempre visibles a la vez).
+    // Actualiza la(s) imagen(es) de los chips para que muestren el carácter
+    // actual: 4 imágenes (una por variante) si es letra, o solo 1 si es
+    // número (los números no tienen mayúscula/minúscula/cursivas).
     function actualizarImagenesChips(c) {
+        if (c.tipo === "numero") {
+            const img = el("alfabChipNumeroImg");
+            if (img) {
+                img.src = rutaImagenGrafia(c, null);
+                img.alt = c.caracter;
+            }
+            return;
+        }
         CONFIG.VARIANTES_TIPO.forEach((v) => {
             const img = document.querySelector('[data-alfab-chip-img="' + v + '"]');
             if (!img) return;
-            img.src = rutaImagenGrafia(c.caracter, v);
+            img.src = rutaImagenGrafia(c, v);
             img.alt = c.caracter + " (" + v + ")";
         });
     }
 
-    // Pinta el chip activo y carga el video de grafía de esa variante
-    // para el carácter actual, conservando la velocidad ya elegida.
+    // Pinta el chip activo y carga el video de grafía para el carácter
+    // actual, conservando la velocidad ya elegida. En números no hay
+    // variante que resaltar: solo se carga su único video de grafía.
     function renderVarianteActiva() {
         const c = caracterActual();
         if (!c) return;
+
+        const video = el("alfabTrazoVideo");
+        if (!video) return;
+
+        if (c.tipo === "numero") {
+            video.src = rutaVideoGrafia(c, null);
+            video.playbackRate = CONFIG.VELOCIDADES_TRAZO[estado.aprender.velocidadIndex];
+            video.load();
+            video.play().catch(() => { /* el autoplay puede requerir un gesto del usuario en algunos navegadores */ });
+            return;
+        }
 
         CONFIG.VARIANTES_TIPO.forEach((v) => {
             const chip = document.querySelector('[data-alfab-variante="' + v + '"]');
             if (chip) chip.classList.toggle("active", v === estado.aprender.variante);
         });
 
-        const video = el("alfabTrazoVideo");
-        if (!video) return;
-        video.src = rutaVideoGrafia(c.caracter, estado.aprender.variante);
+        video.src = rutaVideoGrafia(c, estado.aprender.variante);
         video.playbackRate = CONFIG.VELOCIDADES_TRAZO[estado.aprender.velocidadIndex];
         video.load();
         video.play().catch(() => { /* el autoplay puede requerir un gesto del usuario en algunos navegadores */ });
@@ -343,12 +401,60 @@ const AlfabetizacionV2 = (function () {
         el("alfabCaracterActual").textContent = c.caracter;
         actualizarImagenesChips(c);
 
-        el("alfabBocaImg").src = c.imagenBoca || "";
+        renderFonetica(c);
 
         actualizarLabelVelocidad();
         renderVarianteActiva();
 
         renderEjemploActual();
+    }
+
+    // Pinta la sección de Fonética según el tipo de carácter:
+    // LETRAS -> una sola imagen de boca (comportamiento de siempre).
+    // NÚMEROS -> tira desplazable con la boca de cada letra de la palabra
+    //            (ej. "13" -> T, R, E, C, E), reutilizando las imágenes
+    //            boca/{LETRA}.png que ya existen para el abecedario.
+    function renderFonetica(c) {
+        const bocaCaja = el("alfabBocaCaja");
+        const bocaNumeroWrap = el("alfabBocaNumeroWrap");
+
+        if (c.tipo === "numero") {
+            if (bocaCaja) bocaCaja.classList.add("d-none");
+            if (bocaNumeroWrap) {
+                bocaNumeroWrap.classList.remove("d-none");
+                bocaNumeroWrap.classList.add("d-flex");
+            }
+
+            const palabra = CONFIG.PALABRA_NUMERO[c.caracter] || "";
+            const tira = el("alfabBocaNumeroTira");
+            if (tira) {
+                tira.innerHTML = "";
+                palabra.split("").forEach((letra) => {
+                    const item = document.createElement("div");
+                    item.className = "alfab-boca-numero-item";
+
+                    const img = document.createElement("img");
+                    img.src = "img/alfabetizacion/boca/" + encodeURIComponent(letra) + ".png";
+                    img.alt = "Boca de la letra " + letra;
+
+                    const label = document.createElement("span");
+                    label.textContent = letra;
+
+                    item.appendChild(img);
+                    item.appendChild(label);
+                    tira.appendChild(item);
+                });
+                tira.scrollLeft = 0;
+            }
+            return;
+        }
+
+        if (bocaCaja) bocaCaja.classList.remove("d-none");
+        if (bocaNumeroWrap) {
+            bocaNumeroWrap.classList.add("d-none");
+            bocaNumeroWrap.classList.remove("d-flex");
+        }
+        el("alfabBocaImg").src = c.imagenBoca || "";
     }
 
     function irACaracter(delta) {
@@ -368,6 +474,18 @@ const AlfabetizacionV2 = (function () {
 
         el("btnAlfabTipoLetras").classList.toggle("active", tipo === "letra");
         el("btnAlfabTipoNumeros").classList.toggle("active", tipo === "numero");
+
+        const esNumero = tipo === "numero";
+
+        // Números: 1 solo chip (sin variantes tipográficas) en vez de 4.
+        const chipsLetra = el("alfabEstilosTipograficos");
+        const chipNumero = el("alfabChipNumero");
+        if (chipsLetra) chipsLetra.classList.toggle("d-none", esNumero);
+        if (chipNumero) chipNumero.classList.toggle("d-none", !esNumero);
+
+        // Números: sin sección de ejemplos de palabras.
+        const ejemplosSeccion = el("alfabEjemplosSeccion");
+        if (ejemplosSeccion) ejemplosSeccion.classList.toggle("d-none", esNumero);
 
         renderAprender();
     }
@@ -446,6 +564,304 @@ const AlfabetizacionV2 = (function () {
         if (!ejemplos.length) return;
         estado.aprender.ejemploIndice = (estado.aprender.ejemploIndice + delta + ejemplos.length) % ejemplos.length;
         renderEjemploActual();
+    }
+
+    // ===========================================================
+    // MÓDULO 2: JUEGO "COMPLETAR LA PALABRA"
+    // Fusiona palabras del abecedario (con imagen, vienen de
+    // estado.datos.ejemplos) y palabras de los números (sin imagen,
+    // vienen de CONFIG.PALABRA_NUMERO) en un solo banco de preguntas.
+    // Interacción por TAP (no arrastre): se toca la letra correcta y
+    // se coloca sola en el espacio en blanco — más simple y funciona
+    // igual de bien en móvil que arrastrar.
+    // ===========================================================
+
+    // Quita tildes de una sola letra para poder compararla contra las
+    // fichas de letra disponibles (A-Z + Ñ, siempre sin acentos).
+    function normalizarLetra(letra) {
+        const mapa = { "Á": "A", "É": "E", "Í": "I", "Ó": "O", "Ú": "U", "Ü": "U" };
+        return mapa[letra] || letra;
+    }
+
+    // Barajado Fisher-Yates genérico (no muta el arreglo original).
+    function barajar(arr) {
+        const copia = arr.slice();
+        for (let i = copia.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [copia[i], copia[j]] = [copia[j], copia[i]];
+        }
+        return copia;
+    }
+
+    function bancoPalabrasCompletar() {
+        const deLetras = (estado.datos.ejemplos || [])
+            .filter((e) => e.palabra && e.palabra.length >= 3)
+            .map((e) => ({ palabra: e.palabra.toUpperCase(), imagen: e.imagen, numero: null }));
+
+        const deNumeros = Object.keys(CONFIG.PALABRA_NUMERO).map((n) => ({
+            palabra: CONFIG.PALABRA_NUMERO[n],
+            imagen: null,
+            numero: n
+        }));
+
+        return deLetras.concat(deNumeros);
+    }
+
+    function nivelCompletarActual() {
+        return CONFIG.NIVELES_COMPLETAR.find((n) => n.id === estado.completar.nivelId) || CONFIG.NIVELES_COMPLETAR[0];
+    }
+
+    function renderCompletarIntro() {
+        detenerTimerCompletar();
+        if (!estado.completar.nivelId) estado.completar.nivelId = CONFIG.NIVELES_COMPLETAR[0].id;
+
+        const cont = el("alfabCompletarSelectorNivel");
+        if (cont) {
+            cont.innerHTML = "";
+            CONFIG.NIVELES_COMPLETAR.forEach((nivel) => {
+                const col = document.createElement("div");
+                col.className = "col-4";
+
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = "quiz-selector-btn w-100" + (nivel.id === estado.completar.nivelId ? " activo" : "");
+                btn.innerHTML = '<span class="icono">' + nivel.icono + "</span>" + nivel.nombre;
+                btn.addEventListener("click", () => {
+                    estado.completar.nivelId = nivel.id;
+                    cont.querySelectorAll(".quiz-selector-btn").forEach((b) => b.classList.remove("activo"));
+                    btn.classList.add("activo");
+                });
+
+                col.appendChild(btn);
+                cont.appendChild(col);
+            });
+        }
+
+        const totalEl = el("alfabCompletarTotalDisponibles");
+        if (totalEl) totalEl.textContent = bancoPalabrasCompletar().length + " palabras disponibles (abecedario + números)";
+
+        const intro = el("alfabCompletarIntro");
+        const activo = el("alfabCompletarActivo");
+        if (intro) intro.classList.remove("d-none");
+        if (activo) activo.classList.add("d-none");
+    }
+
+    function iniciarJuegoCompletar() {
+        const banco = barajar(bancoPalabrasCompletar());
+        const cantidad = Math.min(CONFIG.PREGUNTAS_POR_RONDA_COMPLETAR, banco.length);
+
+        estado.completar.preguntas = banco.slice(0, cantidad);
+        estado.completar.indice = 0;
+        estado.completar.puntaje = 0;
+        estado.completar.correctas = 0;
+        estado.completar.incorrectas = 0;
+        estado.completar.revision = [];
+        estado.completar.respondida = false;
+
+        el("alfabCompletarIntro").classList.add("d-none");
+        el("alfabCompletarActivo").classList.remove("d-none");
+
+        renderPreguntaCompletar();
+    }
+
+    function renderPreguntaCompletar() {
+        detenerTimerCompletar();
+        estado.completar.respondida = false;
+
+        const nivel = nivelCompletarActual();
+        const pregunta = estado.completar.preguntas[estado.completar.indice];
+        if (!pregunta) { mostrarResultadosCompletar(); return; }
+
+        el("alfabCompletarProgreso").textContent = "Palabra " + (estado.completar.indice + 1) + " de " + estado.completar.preguntas.length;
+        const badge = el("alfabCompletarNivelBadge");
+        badge.textContent = nivel.nombre;
+        badge.className = "badge " + nivel.badgeClase;
+        el("alfabCompletarPuntaje").textContent = "⭐ " + estado.completar.puntaje;
+        el("alfabCompletarBarraProgreso").style.width = (estado.completar.indice / estado.completar.preguntas.length * 100) + "%";
+        el("btnAlfabCompletarSiguiente").classList.add("d-none");
+        el("alfabCompletarFeedback").innerHTML = "";
+
+        // Elegir al azar qué letra falta, y su versión sin tilde (las
+        // fichas de letra disponibles son A-Z + Ñ, siempre sin acentos).
+        const letras = pregunta.palabra.split("");
+        const indiceBlanco = Math.floor(Math.random() * letras.length);
+        pregunta._indiceBlanco = indiceBlanco;
+        pregunta._letraCorrecta = normalizarLetra(letras[indiceBlanco]);
+
+        // Opciones: la correcta + distractores al azar, sin repetir.
+        const opciones = new Set([pregunta._letraCorrecta]);
+        while (opciones.size < nivel.opciones) {
+            opciones.add(CONFIG.LETRAS_DISPONIBLES[Math.floor(Math.random() * CONFIG.LETRAS_DISPONIBLES.length)]);
+        }
+        const opcionesBarajadas = barajar(Array.from(opciones));
+
+        const cont = el("alfabCompletarContenido");
+        cont.innerHTML = "";
+
+        // Imagen (letras) o número grande (números, no tienen imagen de ejemplo)
+        const cajaImagen = document.createElement("div");
+        cajaImagen.className = "completar-imagen-caja mx-auto mb-3";
+        if (pregunta.imagen) {
+            const img = document.createElement("img");
+            img.src = pregunta.imagen;
+            img.alt = pregunta.palabra;
+            cajaImagen.appendChild(img);
+        } else {
+            const num = document.createElement("span");
+            num.className = "completar-numero-grande";
+            num.textContent = pregunta.numero;
+            cajaImagen.appendChild(num);
+        }
+        cont.appendChild(cajaImagen);
+
+        // Palabra con la letra faltante
+        const filaPalabra = document.createElement("div");
+        filaPalabra.className = "completar-palabra mb-2";
+        letras.forEach((letra, i) => {
+            const casilla = document.createElement("span");
+            casilla.className = "completar-letra-casilla" + (i === indiceBlanco ? " blank" : "");
+            casilla.textContent = i === indiceBlanco ? "" : letra;
+            casilla.id = "completarCasilla" + i;
+            filaPalabra.appendChild(casilla);
+        });
+        cont.appendChild(filaPalabra);
+
+        // Opciones de letra (se tocan, no se arrastran)
+        const filaOpciones = document.createElement("div");
+        filaOpciones.className = "completar-opciones d-flex flex-wrap justify-content-center gap-2 mt-3";
+        opcionesBarajadas.forEach((letra) => {
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "completar-opcion-letra";
+            btn.textContent = letra;
+            btn.addEventListener("click", () => seleccionarOpcionCompletar(letra, btn));
+            filaOpciones.appendChild(btn);
+        });
+        cont.appendChild(filaOpciones);
+
+        iniciarTimerCompletar(nivel.tiempoSeg);
+    }
+
+    function seleccionarOpcionCompletar(letra, btnEl) {
+        if (estado.completar.respondida) return;
+        estado.completar.respondida = true;
+        detenerTimerCompletar();
+
+        const pregunta = estado.completar.preguntas[estado.completar.indice];
+        const esCorrecta = letra === pregunta._letraCorrecta;
+
+        const casilla = el("completarCasilla" + pregunta._indiceBlanco);
+        if (casilla) {
+            casilla.textContent = pregunta.palabra[pregunta._indiceBlanco];
+            casilla.classList.add(esCorrecta ? "correcta" : "incorrecta");
+        }
+
+        document.querySelectorAll(".completar-opcion-letra").forEach((b) => {
+            b.disabled = true;
+            if (b === btnEl) b.classList.add(esCorrecta ? "correcta" : "incorrecta");
+            if (!esCorrecta && b.textContent === pregunta._letraCorrecta) b.classList.add("correcta");
+        });
+
+        if (esCorrecta) {
+            estado.completar.correctas++;
+            estado.completar.puntaje += 10;
+            el("alfabCompletarFeedback").innerHTML = '<span class="text-success">¡Muy bien! 🎉</span>';
+        } else {
+            estado.completar.incorrectas++;
+            el("alfabCompletarFeedback").innerHTML = '<span class="text-danger">Era: ' + pregunta._letraCorrecta + "</span>";
+        }
+        el("alfabCompletarPuntaje").textContent = "⭐ " + estado.completar.puntaje;
+
+        estado.completar.revision.push({ ok: esCorrecta, texto: pregunta.palabra + " (" + pregunta._letraCorrecta + ")" });
+
+        el("btnAlfabCompletarSiguiente").classList.remove("d-none");
+    }
+
+    function tiempoAgotadoCompletar() {
+        if (estado.completar.respondida) return;
+        estado.completar.respondida = true;
+
+        const pregunta = estado.completar.preguntas[estado.completar.indice];
+        const casilla = el("completarCasilla" + pregunta._indiceBlanco);
+        if (casilla) {
+            casilla.textContent = pregunta.palabra[pregunta._indiceBlanco];
+            casilla.classList.add("incorrecta");
+        }
+        document.querySelectorAll(".completar-opcion-letra").forEach((b) => {
+            b.disabled = true;
+            if (b.textContent === pregunta._letraCorrecta) b.classList.add("correcta");
+        });
+
+        estado.completar.incorrectas++;
+        el("alfabCompletarFeedback").innerHTML = '<span class="text-danger">⏱ Se acabó el tiempo. Era: ' + pregunta._letraCorrecta + "</span>";
+        estado.completar.revision.push({ ok: false, texto: pregunta.palabra + " (" + pregunta._letraCorrecta + ")" });
+
+        el("btnAlfabCompletarSiguiente").classList.remove("d-none");
+    }
+
+    function avanzarCompletar() {
+        estado.completar.indice++;
+        if (estado.completar.indice >= estado.completar.preguntas.length) {
+            mostrarResultadosCompletar();
+        } else {
+            renderPreguntaCompletar();
+        }
+    }
+
+    function iniciarTimerCompletar(segundos) {
+        estado.completar.tiempoRestante = segundos;
+        const barra = el("alfabCompletarBarraTiempo");
+        if (barra) {
+            barra.style.width = "100%";
+            barra.classList.remove("tiempo-medio", "tiempo-critico");
+        }
+        estado.completar.timerId = setInterval(() => {
+            estado.completar.tiempoRestante--;
+            const pct = Math.max(0, (estado.completar.tiempoRestante / segundos) * 100);
+            if (barra) {
+                barra.style.width = pct + "%";
+                barra.classList.toggle("tiempo-medio", pct <= 50 && pct > 25);
+                barra.classList.toggle("tiempo-critico", pct <= 25);
+            }
+            if (estado.completar.tiempoRestante <= 0) {
+                detenerTimerCompletar();
+                tiempoAgotadoCompletar();
+            }
+        }, 1000);
+    }
+
+    function detenerTimerCompletar() {
+        if (estado.completar.timerId) {
+            clearInterval(estado.completar.timerId);
+            estado.completar.timerId = null;
+        }
+    }
+
+    function mostrarResultadosCompletar() {
+        detenerTimerCompletar();
+        const total = estado.completar.correctas + estado.completar.incorrectas;
+        const pct = total ? Math.round((estado.completar.correctas / total) * 100) : 0;
+
+        el("alfabResultadoIcono").textContent = pct >= 70 ? "🏆" : pct >= 40 ? "👍" : "💪";
+        el("alfabResultadoTitulo").textContent = "¡Ronda completada!";
+        el("alfabResultadoTexto").textContent = "Completaste " + total + ' palabras del juego "Completar la palabra".';
+        el("alfabStatCorrectas").textContent = estado.completar.correctas;
+        el("alfabStatIncorrectas").textContent = estado.completar.incorrectas;
+        el("alfabStatPorcentaje").textContent = pct + "%";
+
+        const lista = el("alfabRevisionLista");
+        if (lista) {
+            lista.innerHTML = "";
+            estado.completar.revision.forEach((r) => {
+                const item = document.createElement("div");
+                item.className = "quiz-revision-item " + (r.ok ? "ok" : "fail");
+                item.innerHTML = "<span>" + (r.ok ? "✔" : "✘") + " " + r.texto + "</span>";
+                lista.appendChild(item);
+            });
+        }
+
+        estado._alfabResultadosVolverA = "completar";
+        mostrarBloque("alfabResultados");
     }
 
     // ---------------------------------------------------------
@@ -544,11 +960,59 @@ const AlfabetizacionV2 = (function () {
         const btnTrazoReiniciar = el("btnAlfabTrazoReiniciar");
         if (btnTrazoReiniciar) btnTrazoReiniciar.addEventListener("click", reiniciarTrazo);
 
+        const btnBocaNumeroAnterior = el("btnAlfabBocaNumeroAnterior");
+        if (btnBocaNumeroAnterior) {
+            btnBocaNumeroAnterior.addEventListener("click", () => {
+                const tira = el("alfabBocaNumeroTira");
+                if (tira) tira.scrollBy({ left: -100, behavior: "smooth" });
+            });
+        }
+
+        const btnBocaNumeroSiguiente = el("btnAlfabBocaNumeroSiguiente");
+        if (btnBocaNumeroSiguiente) {
+            btnBocaNumeroSiguiente.addEventListener("click", () => {
+                const tira = el("alfabBocaNumeroTira");
+                if (tira) tira.scrollBy({ left: 100, behavior: "smooth" });
+            });
+        }
+
         const btnEjemploAnterior = el("btnAlfabEjemploAnterior");
         if (btnEjemploAnterior) btnEjemploAnterior.addEventListener("click", () => irAEjemplo(-1));
 
         const btnEjemploSiguiente = el("btnAlfabEjemploSiguiente");
         if (btnEjemploSiguiente) btnEjemploSiguiente.addEventListener("click", () => irAEjemplo(1));
+
+        const btnCompletarEmpezar = el("btnAlfabCompletarEmpezar");
+        if (btnCompletarEmpezar) btnCompletarEmpezar.addEventListener("click", iniciarJuegoCompletar);
+
+        const btnCompletarSiguiente = el("btnAlfabCompletarSiguiente");
+        if (btnCompletarSiguiente) btnCompletarSiguiente.addEventListener("click", avanzarCompletar);
+
+        const btnCompletarMenu = el("btnAlfabCompletarMenu");
+        if (btnCompletarMenu) btnCompletarMenu.addEventListener("click", renderCompletarIntro);
+
+        const btnAlfabReiniciar = el("btnAlfabReiniciar");
+        if (btnAlfabReiniciar) {
+            btnAlfabReiniciar.addEventListener("click", () => {
+                if (estado._alfabResultadosVolverA === "completar") {
+                    mostrarBloque("alfabCompletar");
+                    iniciarJuegoCompletar();
+                }
+                // "unir" se agrega cuando ese módulo esté implementado
+            });
+        }
+
+        const btnAlfabSalirResultados = el("btnAlfabSalirResultados");
+        if (btnAlfabSalirResultados) {
+            btnAlfabSalirResultados.addEventListener("click", () => {
+                if (estado._alfabResultadosVolverA === "completar") {
+                    mostrarBloque("alfabCompletar");
+                    renderCompletarIntro();
+                } else {
+                    cambiarModulo("aprender");
+                }
+            });
+        }
 
         const btnFullscreen = el("btnAlfabFullscreen");
         if (btnFullscreen) btnFullscreen.addEventListener("click", alternarPantallaCompleta);

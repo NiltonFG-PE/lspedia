@@ -514,7 +514,7 @@
                     <div class="d-flex justify-content-center mb-3">
                         <div class="btn-group" role="group" aria-label="Tipo de contenido">
                             <button type="button" class="btn btn-sm btn-outline-secondary active" data-alfab-tipo="letra" id="btnAlfabTipoLetras">Abecedario A-Z</button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary" data-alfab-tipo="numero" id="btnAlfabTipoNumeros">Números 0-9</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" data-alfab-tipo="numero" id="btnAlfabTipoNumeros">Números 0-19</button>
                         </div>
                     </div>
 
@@ -550,13 +550,31 @@
                             </button>
                         </div>
 
+                        <!-- Chip único para números: no tienen variantes tipográficas (mayúscula/
+                             minúscula/cursivas), así que se muestra un solo cuadro con el número.
+                             Oculto por defecto; alfabetizacion.js lo muestra al elegir "Números". -->
+                        <div class="alfab-chips-tipograficos d-none" id="alfabChipNumero">
+                            <button type="button" class="alfab-chip-tipo alfab-chip-numero active" aria-label="Ver grafía del número">
+                                <img class="alfab-chip-img" id="alfabChipNumeroImg" src="" alt="">
+                            </button>
+                        </div>
+
                         <div class="row g-4 mb-4">
-                            <!-- Imagen de fonética (boca): reutiliza .apoyo-visual-caja del diccionario -->
+                            <!-- Imagen de fonética (boca): reutiliza .apoyo-visual-caja del diccionario.
+                                 LETRAS: una sola imagen (la boca de esa letra).
+                                 NÚMEROS: se pronuncian como palabra (ej. "13" = TRECE), así que se
+                                 muestra una tira desplazable con la boca de cada letra de la palabra,
+                                 reutilizando las imágenes boca/{LETRA}.png que ya existen. -->
                             <div class="col-md-6">
                                 <p class="text-uppercase small fw-bold mb-2" style="color:#64748b; letter-spacing:0.05em;">🔊👄 Fonética</p>
                                 <div class="apoyo-visual-caja rounded border" id="alfabBocaCaja">
                                     <img id="alfabBocaImg" src="" alt="Imagen de fonética" class="apoyo-visual-img">
                                     <span class="apoyo-visual-lupa">Ampliar 🔍</span>
+                                </div>
+                                <div class="d-none align-items-center gap-2" id="alfabBocaNumeroWrap">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle flex-shrink-0" id="btnAlfabBocaNumeroAnterior" title="Desplazar a la izquierda" aria-label="Desplazar a la izquierda">◀</button>
+                                    <div class="alfab-boca-numero-tira" id="alfabBocaNumeroTira"></div>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle flex-shrink-0" id="btnAlfabBocaNumeroSiguiente" title="Desplazar a la derecha" aria-label="Desplazar a la derecha">▶</button>
                                 </div>
                             </div>
 
@@ -576,8 +594,10 @@
                             </div>
                         </div>
 
-                        <!-- Ejemplos de palabras navegables con flechas -->
-                        <div>
+                        <!-- Ejemplos de palabras navegables con flechas.
+                             Solo aplica al Abecedario: los Números no usan ejemplos,
+                             por eso todo el bloque tiene id para poder ocultarlo. -->
+                        <div id="alfabEjemplosSeccion">
                             <p class="text-uppercase small fw-bold mb-2" style="color:#64748b; letter-spacing:0.05em;">📚 Ejemplos de palabras</p>
                             <div class="card border-0 bg-light">
                                 <div class="d-flex align-items-center justify-content-between p-3">

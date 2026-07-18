@@ -59,6 +59,141 @@
 .alfab-chip-cursiva-minuscula { border-color: #c084fc; }
 .alfab-chip-cursiva-minuscula.active { background: #f3e8ff; border-color: #9333ea; box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.18); }
 
+/* Chip único de números (sin variantes tipográficas como las letras) */
+.alfab-chip-numero { border-color: var(--accent-color, #0284c7); }
+.alfab-chip-numero.active { background: #e0f2fe; border-color: #0284c7; box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.18); }
+
+/* ============================================================
+   Tira de fonética letra por letra (para NÚMEROS: se pronuncian
+   como palabra, ej. 13 = T-R-E-C-E, y se reutiliza la boca de
+   cada letra ya existente en img/alfabetizacion/boca/{LETRA}.png)
+   ============================================================ */
+.alfab-boca-numero-tira {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 4px 2px;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+.alfab-boca-numero-item {
+    flex: 0 0 auto;
+    text-align: center;
+}
+.alfab-boca-numero-item img {
+    width: 78px;
+    height: 78px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 3px solid #0f172a;
+    background-color: #0f172a;
+    display: block;
+}
+.alfab-boca-numero-item span {
+    display: block;
+    margin-top: 6px;
+    font-weight: 800;
+    font-size: 1.15rem;
+    color: var(--text-main, #0f172a);
+}
+
+/* ============================================================
+   Juego "Completar la palabra": fusiona palabras del abecedario
+   (con imagen) y de los números (sin imagen, se muestra el número
+   grande). Interacción por toque: se elige la ficha de letra y se
+   coloca sola en el espacio en blanco.
+   ============================================================ */
+.completar-imagen-caja {
+    width: 160px;
+    height: 160px;
+    max-width: 100%;
+    background: #eef2ff;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+.completar-imagen-caja img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 12px;
+}
+.completar-numero-grande {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--accent-color, #0284c7);
+}
+
+.completar-palabra {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.completar-letra-casilla {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 44px;
+    padding: 0 2px;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--primary-color, #0f172a);
+    border-bottom: 3px solid transparent;
+}
+.completar-letra-casilla.blank {
+    border-bottom: 3px dashed #f59e0b;
+    background: #fffbeb;
+    border-radius: 6px;
+}
+.completar-letra-casilla.correcta {
+    color: #16a34a;
+    border-bottom-color: #16a34a;
+    background: #f0fdf4;
+    border-radius: 6px;
+}
+.completar-letra-casilla.incorrecta {
+    color: #dc2626;
+    border-bottom-color: #dc2626;
+    background: #fef2f2;
+    border-radius: 6px;
+}
+
+.completar-opcion-letra {
+    width: 64px;
+    height: 64px;
+    border-radius: 14px;
+    border: 2px solid var(--border-color, #cbd5e1);
+    background: #ffffff;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--text-main, #0f172a);
+    transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+.completar-opcion-letra:not(:disabled):hover {
+    border-color: var(--accent-color, #0284c7);
+    transform: translateY(-2px);
+}
+.completar-opcion-letra:disabled {
+    opacity: 0.6;
+}
+.completar-opcion-letra.correcta {
+    background: #dcfce7;
+    border-color: #16a34a;
+    color: #166534;
+    animation: quizPulso 0.5s ease;
+}
+.completar-opcion-letra.incorrecta {
+    background: #fef2f2;
+    border-color: #dc2626;
+    color: #991b1b;
+    animation: quizTiemble 0.4s ease;
+}
+
 /* Caja de grafía: la letra/video se muestra grande, similar a la referencia */
 .alfab-grafia-caja {
     background: #f8fafc;

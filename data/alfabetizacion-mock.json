@@ -165,21 +165,123 @@
     },
     {
       "tipo": "numero",
+      "caracter": "0",
+      "imagenBoca": "img/alfabetizacion/boca/0.png",
+      "trazoVideo": "img/alfabetizacion/grafias/0.mp4"
+    },
+    {
+      "tipo": "numero",
       "caracter": "1",
       "imagenBoca": "img/alfabetizacion/boca/1.png",
-      "trazoVideo": "img/alfabetizacion/grafias/1-mayuscula.mp4"
+      "trazoVideo": "img/alfabetizacion/grafias/1.mp4"
     },
     {
       "tipo": "numero",
       "caracter": "2",
       "imagenBoca": "img/alfabetizacion/boca/2.png",
-      "trazoVideo": "img/alfabetizacion/grafias/2-mayuscula.mp4"
+      "trazoVideo": "img/alfabetizacion/grafias/2.mp4"
     },
     {
       "tipo": "numero",
       "caracter": "3",
       "imagenBoca": "img/alfabetizacion/boca/3.png",
-      "trazoVideo": "img/alfabetizacion/grafias/3-mayuscula.mp4"
+      "trazoVideo": "img/alfabetizacion/grafias/3.mp4"
+    },
+    {
+      "tipo": "numero",
+      "caracter": "4",
+      "imagenBoca": "img/alfabetizacion/boca/4.png",
+      "trazoVideo": "img/alfabetizacion/grafias/4.mp4"
+    },
+    {
+      "tipo": "numero",
+      "caracter": "5",
+      "imagenBoca": "img/alfabetizacion/boca/5.png",
+      "trazoVideo": "img/alfabetizacion/grafias/5.mp4"
+    },
+    {
+      "tipo": "numero",
+      "caracter": "6",
+      "imagenBoca": "img/alfabetizacion/boca/6.png",
+      "trazoVideo": "img/alfabetizacion/grafias/6.mp4"
+    },
+    {
+      "tipo": "numero",
+      "caracter": "7",
+      "imagenBoca": "img/alfabetizacion/boca/7.png",
+      "trazoVideo": "img/alfabetizacion/grafias/7.mp4"
+    },
+    {
+      "tipo": "numero",
+      "caracter": "8",
+      "imagenBoca": "img/alfabetizacion/boca/8.png",
+      "trazoVideo": "img/alfabetizacion/grafias/8.mp4"
+    },
+    {
+      "tipo": "numero",
+      "caracter": "9",
+      "imagenBoca": "img/alfabetizacion/boca/9.png",
+      "trazoVideo": "img/alfabetizacion/grafias/9.mp4"
+    },
+    {
+      "tipo": "numero",
+      "caracter": "10",
+      "imagenBoca": "img/alfabetizacion/boca/10.png",
+      "trazoVideo": "img/alfabetizacion/grafias/10.mp4"
+    },
+    {
+      "tipo": "numero",
+      "caracter": "11",
+      "imagenBoca": "img/alfabetizacion/boca/11.png",
+      "trazoVideo": "img/alfabetizacion/grafias/11.mp4"
+    },
+    {
+      "tipo": "numero",
+      "caracter": "12",
+      "imagenBoca": "img/alfabetizacion/boca/12.png",
+      "trazoVideo": "img/alfabetizacion/grafias/12.mp4"
+    },
+    {
+      "tipo": "numero",
+      "caracter": "13",
+      "imagenBoca": "img/alfabetizacion/boca/13.png",
+      "trazoVideo": "img/alfabetizacion/grafias/13.mp4"
+    },
+    {
+      "tipo": "numero",
+      "caracter": "14",
+      "imagenBoca": "img/alfabetizacion/boca/14.png",
+      "trazoVideo": "img/alfabetizacion/grafias/14.mp4"
+    },
+    {
+      "tipo": "numero",
+      "caracter": "15",
+      "imagenBoca": "img/alfabetizacion/boca/15.png",
+      "trazoVideo": "img/alfabetizacion/grafias/15.mp4"
+    },
+    {
+      "tipo": "numero",
+      "caracter": "16",
+      "imagenBoca": "img/alfabetizacion/boca/16.png",
+      "trazoVideo": "img/alfabetizacion/grafias/16.mp4"
+    },
+    {
+      "tipo": "numero",
+      "caracter": "17",
+      "imagenBoca": "img/alfabetizacion/boca/17.png",
+      "trazoVideo": "img/alfabetizacion/grafias/17.mp4"
+    },
+    {
+      "tipo": "numero",
+      "caracter": "18",
+      "imagenBoca": "img/alfabetizacion/boca/18.png",
+      "trazoVideo": "img/alfabetizacion/grafias/18.mp4"
+    },
+    {
+      "tipo": "numero",
+      "caracter": "19",
+      "imagenBoca": "img/alfabetizacion/boca/19.png",
+      "trazoVideo": "img/alfabetizacion/grafias/19.mp4"
     }
   ],
   "ejemplos": [
@@ -192,7 +294,7 @@
     {
       "caracter": "B",
       "palabra": "Barco",
-      "imagen": "img/alfabetizacion/ejemplos/barco.jpg",
+      "imagen": "img/alfabetizacion/ejemplos/barco.png",
       "orden": 1
     },
     {
@@ -204,7 +306,7 @@
     {
       "caracter": "D",
       "palabra": "Delfín",
-      "imagen": "img/alfabetizacion/ejemplos/delfin.jpg",
+      "imagen": "img/alfabetizacion/ejemplos/delfin.png",
       "orden": 1
     },
     {
