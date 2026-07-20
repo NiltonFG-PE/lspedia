@@ -6,6 +6,7 @@
     "video": "rFuT5HVdUQ8",
     "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Hola.jpg",
     "variantes": "Holi, Holis, Holiwi, Olas, Hi, Oli, Olis",
+    "senasugerida": "pjcIpuGwnms",
     "": ""
   },
   {
@@ -15,6 +16,7 @@
     "video": "LYOezaHRvzo",
     "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Adi%C3%B3s.png",
     "variantes": "Adios, Chau, Hasta la vista, Chao",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -24,6 +26,7 @@
     "video": "0DCgqyuwE0w",
     "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Buenos%20d%C3%ADas.jpg",
     "variantes": "Buen día, Buenas, Bnas",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -33,6 +36,7 @@
     "video": "",
     "imagen": "https://img.magnific.com/foto-gratis/retrato-linda-joven-cubre-camara-riendo-coqueteando-tomando-cafe_1258-193590.jpg?t=st=1783618736~exp=1783622336~hmac=c274be37fc34a9e51ac195706606d5121d53551804d997df3b37c4690b2e4389&w=1480",
     "variantes": "Buena tarde, Bnas, Bnas tardes ",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -42,6 +46,7 @@
     "video": "",
     "imagen": "https://img.magnific.com/foto-gratis/retrato-linda-joven-cubre-camara-riendo-coqueteando-tomando-cafe_1258-193590.jpg?t=st=1783618736~exp=1783622336~hmac=c274be37fc34a9e51ac195706606d5121d53551804d997df3b37c4690b2e4389&w=1480",
     "variantes": "Buenas noches, Bnas, Bnas noches",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -51,6 +56,7 @@
     "video": "-h387KYCmQQ",
     "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Bienvenido.jpg",
     "variantes": "Bienvenida, Bienvenidos,Bienvenidas,  Bienvenid@s",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -60,6 +66,7 @@
     "video": "",
     "imagen": "",
     "variantes": "Muchas gracias, Muchísimas gracias, Mil gracias, Gracias totales, Grax, Grx, Muxas grax, Se agradece, ",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -69,6 +76,7 @@
     "video": "KVaWHQgz81A",
     "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Por%20favor.png",
     "variantes": "Porfa, Porfis, Por favorcito,Plis, Xfa,  Xfis, Pls, ",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -78,6 +86,7 @@
     "video": "dQNpMmYbP9Y",
     "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Disculpa.jpg",
     "variantes": "Disculpa, Disculpe, Disculpen, disculpas,  disculpaste, disculparás, Sorry, Perdón, Perdóname, Lo siento, pedir disculpas, disculpame",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -87,6 +96,7 @@
     "video": "",
     "imagen": "",
     "variantes": "",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -96,6 +106,7 @@
     "video": "",
     "imagen": "",
     "variantes": "",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -105,6 +116,7 @@
     "video": "",
     "imagen": "",
     "variantes": "",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -114,6 +126,7 @@
     "video": "",
     "imagen": "",
     "variantes": "",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -123,6 +136,7 @@
     "video": "",
     "imagen": "",
     "variantes": "",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -132,6 +146,7 @@
     "video": "wh99j8igQ54",
     "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Hip%C3%B3tesis.jpg",
     "variantes": "Suposición, conjetura, teoría, premisa, hipotesis",
+    "senasugerida": "",
     "": "git commit -m \"borrar botón oraciones\""
   }
 ]
