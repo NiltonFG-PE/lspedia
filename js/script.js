@@ -346,6 +346,19 @@ function ejecutarBusquedaDirecta() {
 }
 
 // --- MOSTRAR PALABRA ---
+// Extrae el ID de video de un enlace de YouTube en cualquiera de sus
+// formatos comunes (watch?v=, youtu.be/, embed/, shorts/). Si lo que
+// llega ya es un ID "pelado" de 11 caracteres (como usa la columna
+// "video"), lo devuelve tal cual. Si no reconoce nada, devuelve "".
+function extraerIdYouTube(valor) {
+    if (!valor) return "";
+    const texto = valor.trim();
+    const match = texto.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{11})/);
+    if (match) return match[1];
+    if (/^[A-Za-z0-9_-]{11}$/.test(texto)) return texto;
+    return "";
+}
+
 function mostrarPalabra(p){
     ocultarQuiz();
     ocultarAlfabetizacion();
@@ -367,7 +380,7 @@ function mostrarPalabra(p){
                 <img src="${p.imagen}" class="apoyo-visual-img" alt="Imagen de apoyo visual para ${p.palabra}">
                 <span class="apoyo-visual-lupa">🔍 Ampliar</span>
            </div>`
-        : `<div class="d-flex flex-column align-items-center justify-content-center bg-light text-muted text-center p-3 rounded border w-100 h-100" style="min-height:200px;">
+        : `<div class="d-flex flex-column align-items-center justify-content-center bg-light text-muted text-center p-3 rounded border w-100 h-100" style="height:100%;">
                 <span class="fs-1 mb-2">🖼️</span>
                 <span class="small fw-bold">Imagen próximamente</span>
            </div>`;
@@ -390,27 +403,51 @@ function mostrarPalabra(p){
            </div>`
         : "";
     let bloqueVariantes = p.variantes && p.variantes.trim() !== "" ? `<div class="mb-3 p-2 bg-light rounded border"><span class="d-block fw-bold text-secondary mb-1" style="font-size: 10px; letter-spacing: 0.5px;">🔄 CONJUGACIONES O VARIANTES:</span><span class="text-muted small fst-italic">${p.variantes}</span></div>` : "";
+
+    // --- SEÑA SUGERIDA (columna G del Sheet: enlaces completos de YouTube) ---
+    // A diferencia de "video" (columna D), que guarda solo el ID del video,
+    // esta columna nueva guarda el ENLACE completo de YouTube tal cual se
+    // copia del navegador, así que hay que extraer el ID nosotros mismos.
+    // En el Sheet, ponle a la columna G exactamente el encabezado
+    // "senaSugerida" (todo junto, sin tilde ni espacios) para que el
+    // export a data/palabras.json genere esa misma clave. Por las dudas,
+    // también se aceptan un par de variantes con tilde/espacio.
+    const valorSenaSugerida = p.senaSugerida || p.señaSugerida || p["Seña sugerida"] || p["Seña Sugerida"] || "";
+    const idSenaSugerida = extraerIdYouTube(valorSenaSugerida);
+    const bloqueSenaSugerida = idSenaSugerida
+        ? `<div class="ratio ratio-16x9 shadow-sm rounded overflow-hidden border">
+                <iframe src="https://www.youtube.com/embed/${idSenaSugerida}" title="Seña sugerida para ${p.palabra}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+           </div>`
+        : `<div class="d-flex flex-column align-items-center justify-content-center bg-light text-muted text-center p-3 rounded border" style="min-height:140px;">
+                <span class="fs-2 mb-1">🎥</span>
+                <span class="small fw-bold">Seña sugerida próximamente</span>
+           </div>`;
+
     resultado.innerHTML=`
     <div class="card shadow-sm mb-4 animate-fade-in" style="border-radius: 15px; border-color: #dceefc;">
         <div class="card-body p-4">
             <span class="badge bg-primary mb-2" style="font-size: 11px;">${p.categoria.trim()}</span>
-            <h3 class="fw-bold mb-1" style="color: #0d6efd;">${p.palabra}</h3>
-            <p class="text-muted small mb-3">${p.definicion}</p>
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+                <h3 class="fw-bold mb-0" style="color: #0d6efd;">${p.palabra}</h3>
+                <button id="btnFavorito" class="btn btn-sm btn-outline-primary py-1 px-3 flex-shrink-0" style="border-radius: 15px; font-size: 12px; font-weight: bold;">${textoBoton}</button>
+            </div>
+            <p class="mb-3 p-3 rounded" style="background-color: #eef6ff; border-left: 4px solid #0d6efd; font-size: 1rem; line-height: 1.5; color: #1e293b;">${p.definicion}</p>
             ${bloqueVariantes}
-            <button id="btnFavorito" class="btn btn-sm btn-outline-primary mb-4 py-1 px-3" style="border-radius: 15px; font-size: 12px; font-weight: bold;">${textoBoton}</button>
             <div class="row g-4 justify-content-center align-items-stretch">
                 <div class="col-md-8 d-flex flex-column">
-                    <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider text-md-start">🤟 Video en LSP:</span>
+                    <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider text-md-start">🤟 Significado en LSP:</span>
                     <div class="ratio ratio-16x9 shadow-sm rounded overflow-hidden border">
                         ${bloqueVideo}
                     </div>
                     ${bloqueControlesVideo}
                 </div>
                 <div class="col-md-4 d-flex flex-column">
-                    <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider">📸 Apoyo Visual:</span>
-                    <div class="shadow-sm rounded overflow-hidden border bg-light flex-grow-1">
+                    <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider">📸 Imagen Ejemplo:</span>
+                    <div class="shadow-sm rounded overflow-hidden border bg-light mb-3" style="height:160px;">
                         ${bloqueImagen}
                     </div>
+                    <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider">🎥 Seña Sugerida:</span>
+                    ${bloqueSenaSugerida}
                 </div>
             </div>
         </div>

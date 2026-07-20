@@ -76,7 +76,18 @@ const AlfabetizacionV2 = (function () {
             { id: "dificil", nombre: "Difícil", icono: "🔥", opciones: 5, tiempoSeg: 12, letrasFaltantes: 3, badgeClase: "badge-nivel-dificil" }
         ],
         PREGUNTAS_POR_RONDA_COMPLETAR: 10,
-        LETRAS_DISPONIBLES: "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ".split("")
+        LETRAS_DISPONIBLES: "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ".split(""),
+
+        // Juego "Unir con flechas": banco de parejas imagen/número <-> palabra
+        // (mismo banco que Completar en su parte de imágenes, más los números).
+        // "pares" = cuántas parejas se muestran en el tablero según el nivel.
+        NIVELES_UNIR: [
+            { id: "facil", nombre: "Fácil", icono: "🙂", pares: 4, badgeClase: "badge-nivel-facil" },
+            { id: "medio", nombre: "Medio", icono: "😐", pares: 6, badgeClase: "badge-nivel-medio" },
+            { id: "dificil", nombre: "Difícil", icono: "🔥", pares: 8, badgeClase: "badge-nivel-dificil" }
+        ],
+        RONDAS_POR_PARTIDA_UNIR: 3,
+        PUNTOS_POR_PAREJA_UNIR: 15
     };
 
     // ---------------------------------------------------------
@@ -110,6 +121,21 @@ const AlfabetizacionV2 = (function () {
             subIndice: 0,           // qué letra faltante (dentro de la palabra actual) se está resolviendo
             palabraTuvoError: false, // si alguna letra de la palabra actual salió mal
             blancoRespondido: false  // evita doble clic mientras se pasa a la siguiente letra faltante
+        },
+
+        unir: {
+            nivelId: null,
+            ronda: 0,                 // ronda actual dentro de la partida (0-based)
+            pares: [],                // parejas de la ronda actual: [{ palabra, imagen, numero }, ...]
+            ordenImagenes: [],        // índices de "pares", en el orden visual de la columna izquierda
+            ordenPalabras: [],        // índices de "pares", en el orden visual de la columna derecha
+            conexiones: {},           // { indiceImagen: indicePalabra } — conexiones aún no confirmadas
+            resueltos: new Set(),     // índices ya confirmados como correctos (bloqueados, en verde)
+            seleccion: null,          // { tipo: 'imagen'|'palabra', indice, el } en espera de su pareja
+            puntaje: 0,
+            correctas: 0,
+            incorrectas: 0,
+            revision: []
         }
     };
 
@@ -279,9 +305,9 @@ const AlfabetizacionV2 = (function () {
             renderAprender();
         } else if (estado.moduloActivo === "completar") {
             renderCompletarIntro();
+        } else if (estado.moduloActivo === "unir") {
+            renderUnirIntro();
         }
-        // "unir" se implementa en el siguiente paso; su pantalla de intro
-        // ya está en el HTML y no requiere datos para mostrarse.
     }
 
     // ===========================================================
@@ -931,6 +957,370 @@ const AlfabetizacionV2 = (function () {
         mostrarBloque("alfabResultados");
     }
 
+    // ===========================================================
+    // MÓDULO 3: JUEGO "UNIR CON FLECHAS"
+    // Columna izquierda = imágenes (letras) o números grandes;
+    // columna derecha = palabras, en orden barajado independiente.
+    // Interacción por TOQUE (no arrastre libre, más confiable en
+    // móvil): se toca un ítem de una columna y luego su pareja en la
+    // otra columna; eso dibuja una línea "pendiente" (gris) entre
+    // ambos. El botón "✔ Comprobar" valida todas las conexiones
+    // pendientes a la vez: las correctas quedan bloqueadas en verde,
+    // las incorrectas se muestran un momento en rojo y luego se
+    // liberan para reintentarlas. Al completar todas las parejas de
+    // la ronda, se pasa automáticamente a la siguiente ronda (o a
+    // resultados si era la última).
+    // ===========================================================
+
+    // Mismo banco de imágenes que "Completar" (ejemplos con imagen del
+    // abecedario), más los números (sin imagen, número grande).
+    function bancoParesUnir() {
+        const deLetras = (estado.datos.ejemplos || [])
+            .filter((e) => e.palabra && e.imagen)
+            .map((e) => ({ palabra: e.palabra.toUpperCase(), imagen: e.imagen, numero: null }));
+
+        const deNumeros = Object.keys(CONFIG.PALABRA_NUMERO).map((n) => ({
+            palabra: CONFIG.PALABRA_NUMERO[n],
+            imagen: null,
+            numero: n
+        }));
+
+        return deLetras.concat(deNumeros);
+    }
+
+    function nivelUnirActual() {
+        return CONFIG.NIVELES_UNIR.find((n) => n.id === estado.unir.nivelId) || CONFIG.NIVELES_UNIR[0];
+    }
+
+    function renderUnirIntro() {
+        if (!estado.unir.nivelId) estado.unir.nivelId = CONFIG.NIVELES_UNIR[0].id;
+
+        const cont = el("alfabUnirSelectorNivel");
+        if (cont) {
+            cont.innerHTML = "";
+            CONFIG.NIVELES_UNIR.forEach((nivel) => {
+                const col = document.createElement("div");
+                col.className = "col-4";
+
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = "quiz-selector-btn w-100" + (nivel.id === estado.unir.nivelId ? " activo" : "");
+                btn.innerHTML = '<span class="icono">' + nivel.icono + "</span>" + nivel.nombre;
+                btn.addEventListener("click", () => {
+                    estado.unir.nivelId = nivel.id;
+                    cont.querySelectorAll(".quiz-selector-btn").forEach((b) => b.classList.remove("activo"));
+                    btn.classList.add("activo");
+                });
+
+                col.appendChild(btn);
+                cont.appendChild(col);
+            });
+        }
+
+        const totalEl = el("alfabUnirTotalDisponibles");
+        if (totalEl) totalEl.textContent = bancoParesUnir().length + " parejas disponibles (abecedario + números)";
+
+        const intro = el("alfabUnirIntro");
+        const activo = el("alfabUnirActivo");
+        if (intro) intro.classList.remove("d-none");
+        if (activo) activo.classList.add("d-none");
+    }
+
+    function iniciarJuegoUnir() {
+        estado.unir.ronda = 0;
+        estado.unir.puntaje = 0;
+        estado.unir.correctas = 0;
+        estado.unir.incorrectas = 0;
+        estado.unir.revision = [];
+
+        el("alfabUnirIntro").classList.add("d-none");
+        el("alfabUnirActivo").classList.remove("d-none");
+
+        prepararRondaUnir();
+    }
+
+    // Arma un tablero nuevo: elige "pares" parejas al azar del banco y
+    // baraja el orden visual de cada columna de forma independiente
+    // (para que la imagen N no quede siempre frente a la palabra N).
+    function prepararRondaUnir() {
+        const nivel = nivelUnirActual();
+        const banco = barajar(bancoParesUnir());
+        const cantidad = Math.min(nivel.pares, banco.length);
+
+        estado.unir.pares = banco.slice(0, cantidad);
+        estado.unir.ordenImagenes = barajar(estado.unir.pares.map((_, i) => i));
+        estado.unir.ordenPalabras = barajar(estado.unir.pares.map((_, i) => i));
+        estado.unir.conexiones = {};
+        estado.unir.resueltos = new Set();
+        estado.unir.seleccion = null;
+
+        renderTableroUnir();
+    }
+
+    function renderTableroUnir() {
+        const nivel = nivelUnirActual();
+        const contImagenes = el("alfabUnirColumnaImagenes");
+        const contPalabras = el("alfabUnirColumnaPalabras");
+        if (!contImagenes || !contPalabras) return;
+
+        contImagenes.innerHTML = "";
+        contPalabras.innerHTML = "";
+
+        estado.unir.ordenImagenes.forEach((idx) => {
+            const par = estado.unir.pares[idx];
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.id = "unirImagen" + idx;
+            btn.className = "alfab-unir-item alfab-unir-imagen";
+
+            if (par.imagen) {
+                const img = document.createElement("img");
+                img.src = par.imagen;
+                img.alt = par.palabra;
+                img.onload = () => dibujarLineasUnir(); // por si la carga de la imagen mueve el layout
+                btn.appendChild(img);
+            } else {
+                const num = document.createElement("span");
+                num.className = "alfab-unir-numero";
+                num.textContent = par.numero;
+                btn.appendChild(num);
+            }
+
+            btn.addEventListener("click", () => alternarSeleccionUnir("imagen", idx, btn));
+            contImagenes.appendChild(btn);
+        });
+
+        estado.unir.ordenPalabras.forEach((idx) => {
+            const par = estado.unir.pares[idx];
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.id = "unirPalabra" + idx;
+            btn.className = "alfab-unir-item alfab-unir-palabra";
+            btn.textContent = par.palabra;
+
+            btn.addEventListener("click", () => alternarSeleccionUnir("palabra", idx, btn));
+            contPalabras.appendChild(btn);
+        });
+
+        el("alfabUnirFeedback").innerHTML = "";
+        el("alfabUnirPuntaje").textContent = "⭐ " + estado.unir.puntaje;
+        el("alfabUnirProgreso").textContent = "Ronda " + (estado.unir.ronda + 1) + " de " + CONFIG.RONDAS_POR_PARTIDA_UNIR;
+
+        const badge = el("alfabUnirNivelBadge");
+        badge.textContent = nivel.nombre;
+        badge.className = "badge " + nivel.badgeClase;
+
+        dibujarLineasUnir();
+    }
+
+    // Toca un ítem (imagen o palabra). El primer toque solo selecciona;
+    // el segundo toque, si es de la columna contraria, crea la conexión.
+    // Tocar dos veces el mismo ítem lo deselecciona; tocar otro ítem de
+    // la misma columna cambia la selección.
+    function alternarSeleccionUnir(tipo, indice, elemento) {
+        const seleccion = estado.unir.seleccion;
+
+        if (seleccion && seleccion.tipo === tipo && seleccion.indice === indice) {
+            elemento.classList.remove("seleccionado");
+            estado.unir.seleccion = null;
+            return;
+        }
+
+        if (!seleccion || seleccion.tipo === tipo) {
+            if (seleccion) seleccion.el.classList.remove("seleccionado");
+            elemento.classList.add("seleccionado");
+            estado.unir.seleccion = { tipo, indice, el: elemento };
+            return;
+        }
+
+        // Columnas distintas: se arma la conexión imagen <-> palabra.
+        const indiceImagen = tipo === "imagen" ? indice : seleccion.indice;
+        const indicePalabra = tipo === "palabra" ? indice : seleccion.indice;
+        seleccion.el.classList.remove("seleccionado");
+        estado.unir.seleccion = null;
+        conectarUnir(indiceImagen, indicePalabra);
+    }
+
+    // Guarda la conexión, liberando primero cualquier conexión previa
+    // que usara alguno de los dos extremos (así se puede "reconectar"
+    // simplemente tocando de nuevo, sin tener que deshacer a mano).
+    function conectarUnir(indiceImagen, indicePalabra) {
+        Object.keys(estado.unir.conexiones).forEach((key) => {
+            const imgIdx = Number(key);
+            if (imgIdx === indiceImagen || estado.unir.conexiones[imgIdx] === indicePalabra) {
+                delete estado.unir.conexiones[imgIdx];
+            }
+        });
+        estado.unir.conexiones[indiceImagen] = indicePalabra;
+
+        actualizarClasesConectadosUnir();
+        dibujarLineasUnir();
+    }
+
+    // Pinta los estados visuales de cada ítem: "acertada" (bloqueado,
+    // en verde) para lo ya confirmado, "conectado" para lo que tiene
+    // una línea pendiente de comprobar, y "error-temp" (animación) para
+    // lo que se acaba de marcar incorrecto en la última comprobación.
+    function actualizarClasesConectadosUnir(resultados) {
+        document.querySelectorAll(".alfab-unir-item").forEach((it) => {
+            it.classList.remove("conectado", "error-temp");
+        });
+
+        estado.unir.pares.forEach((_, idx) => {
+            if (!estado.unir.resueltos.has(idx)) return;
+            const elImg = el("unirImagen" + idx);
+            const elPal = el("unirPalabra" + idx); // en una pareja correcta, palabra idx === imagen idx
+            if (elImg) { elImg.classList.add("acertada"); elImg.disabled = true; }
+            if (elPal) { elPal.classList.add("acertada"); elPal.disabled = true; }
+        });
+
+        Object.keys(estado.unir.conexiones).forEach((key) => {
+            const imgIdx = Number(key);
+            if (estado.unir.resueltos.has(imgIdx)) return;
+            const wordIdx = estado.unir.conexiones[imgIdx];
+            const marcarError = resultados && resultados[imgIdx] === false;
+            const elImg = el("unirImagen" + imgIdx);
+            const elPal = el("unirPalabra" + wordIdx);
+            if (elImg) elImg.classList.add(marcarError ? "error-temp" : "conectado");
+            if (elPal) elPal.classList.add(marcarError ? "error-temp" : "conectado");
+        });
+    }
+
+    // Dibuja (o redibuja) todas las líneas del tablero como <line> de SVG,
+    // calculando las coordenadas a partir de la posición real en pantalla
+    // de cada ítem conectado (borde derecho de la imagen -> borde
+    // izquierdo de la palabra). "resultados", si viene, sirve solo para
+    // pintar en rojo/verde las líneas recién comprobadas.
+    function dibujarLineasUnir(resultados) {
+        const svg = el("alfabUnirLineas");
+        const tablero = el("alfabUnirTablero");
+        if (!svg || !tablero) return;
+
+        const rTablero = tablero.getBoundingClientRect();
+        svg.setAttribute("viewBox", "0 0 " + rTablero.width + " " + rTablero.height);
+        svg.innerHTML = "";
+
+        Object.keys(estado.unir.conexiones).forEach((key) => {
+            const imgIdx = Number(key);
+            const wordIdx = estado.unir.conexiones[imgIdx];
+            const elImg = el("unirImagen" + imgIdx);
+            const elPal = el("unirPalabra" + wordIdx);
+            if (!elImg || !elPal) return;
+
+            const rImg = elImg.getBoundingClientRect();
+            const rPal = elPal.getBoundingClientRect();
+
+            let clase = "alfab-unir-linea pendiente";
+            if (estado.unir.resueltos.has(imgIdx)) clase = "alfab-unir-linea correcta";
+            else if (resultados && resultados[imgIdx] === false) clase = "alfab-unir-linea incorrecta";
+
+            const linea = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            linea.setAttribute("x1", rImg.right - rTablero.left);
+            linea.setAttribute("y1", rImg.top + rImg.height / 2 - rTablero.top);
+            linea.setAttribute("x2", rPal.left - rTablero.left);
+            linea.setAttribute("y2", rPal.top + rPal.height / 2 - rTablero.top);
+            linea.setAttribute("class", clase);
+            svg.appendChild(linea);
+        });
+    }
+
+    // Valida todas las conexiones pendientes (no las ya confirmadas).
+    // Las correctas quedan bloqueadas en verde; las incorrectas se ven
+    // un momento en rojo y luego se liberan para reintentarlas.
+    function comprobarUnir() {
+        const pendientes = Object.keys(estado.unir.conexiones)
+            .map(Number)
+            .filter((imgIdx) => !estado.unir.resueltos.has(imgIdx));
+
+        if (!pendientes.length) {
+            el("alfabUnirFeedback").innerHTML = '<span class="text-muted">Conecta al menos una pareja antes de comprobar.</span>';
+            return;
+        }
+
+        const resultados = {};
+        pendientes.forEach((imgIdx) => {
+            const wordIdx = estado.unir.conexiones[imgIdx];
+            const correcta = imgIdx === wordIdx; // misma pareja del banco de esta ronda
+            resultados[imgIdx] = correcta;
+
+            if (correcta) {
+                estado.unir.resueltos.add(imgIdx);
+                estado.unir.correctas++;
+                estado.unir.puntaje += CONFIG.PUNTOS_POR_PAREJA_UNIR;
+                estado.unir.revision.push({ ok: true, texto: estado.unir.pares[imgIdx].palabra });
+            } else {
+                estado.unir.incorrectas++;
+                estado.unir.revision.push({ ok: false, texto: estado.unir.pares[imgIdx].palabra });
+            }
+        });
+
+        actualizarClasesConectadosUnir(resultados);
+        dibujarLineasUnir(resultados);
+        el("alfabUnirPuntaje").textContent = "⭐ " + estado.unir.puntaje;
+
+        const btnComprobar = el("btnAlfabUnirComprobar");
+        if (btnComprobar) btnComprobar.disabled = true;
+
+        const huboErrores = pendientes.some((idx) => !resultados[idx]);
+        const rondaCompleta = estado.unir.resueltos.size === estado.unir.pares.length;
+
+        if (rondaCompleta) {
+            el("alfabUnirFeedback").innerHTML = '<span class="text-success">¡Ronda completada! 🎉</span>';
+        } else if (huboErrores) {
+            el("alfabUnirFeedback").innerHTML = '<span class="text-danger">Revisa las líneas en rojo e inténtalo de nuevo.</span>';
+        } else {
+            el("alfabUnirFeedback").innerHTML = '<span class="text-success">¡Bien! Sigue conectando las que faltan.</span>';
+        }
+
+        // Pausa breve para que se alcance a ver el color de cada línea
+        // antes de liberar las incorrectas o pasar a la siguiente ronda.
+        setTimeout(() => {
+            pendientes.forEach((imgIdx) => {
+                if (!resultados[imgIdx]) delete estado.unir.conexiones[imgIdx];
+            });
+            actualizarClasesConectadosUnir();
+            dibujarLineasUnir();
+            if (btnComprobar) btnComprobar.disabled = false;
+
+            if (rondaCompleta) avanzarRondaUnir();
+        }, rondaCompleta ? 900 : 1100);
+    }
+
+    function avanzarRondaUnir() {
+        estado.unir.ronda++;
+        if (estado.unir.ronda >= CONFIG.RONDAS_POR_PARTIDA_UNIR) {
+            mostrarResultadosUnir();
+        } else {
+            prepararRondaUnir();
+        }
+    }
+
+    function mostrarResultadosUnir() {
+        const total = estado.unir.correctas + estado.unir.incorrectas;
+        const pct = total ? Math.round((estado.unir.correctas / total) * 100) : 0;
+
+        el("alfabResultadoIcono").textContent = pct >= 70 ? "🏆" : pct >= 40 ? "👍" : "💪";
+        el("alfabResultadoTitulo").textContent = "¡Partida completada!";
+        el("alfabResultadoTexto").textContent = "Uniste " + estado.unir.correctas + ' parejas en el juego "Unir con flechas".';
+        el("alfabStatCorrectas").textContent = estado.unir.correctas;
+        el("alfabStatIncorrectas").textContent = estado.unir.incorrectas;
+        el("alfabStatPorcentaje").textContent = pct + "%";
+
+        const lista = el("alfabRevisionLista");
+        if (lista) {
+            lista.innerHTML = "";
+            estado.unir.revision.forEach((r) => {
+                const item = document.createElement("div");
+                item.className = "quiz-revision-item " + (r.ok ? "ok" : "fail");
+                item.innerHTML = "<span>" + (r.ok ? "✔" : "✘") + " " + r.texto + "</span>";
+                lista.appendChild(item);
+            });
+        }
+
+        estado._alfabResultadosVolverA = "unir";
+        mostrarBloque("alfabResultados");
+    }
+
     // ---------------------------------------------------------
     // PANTALLA COMPLETA (mismo patrón que quiz.js)
     // ---------------------------------------------------------
@@ -1058,14 +1448,35 @@ const AlfabetizacionV2 = (function () {
         const btnCompletarMenu = el("btnAlfabCompletarMenu");
         if (btnCompletarMenu) btnCompletarMenu.addEventListener("click", renderCompletarIntro);
 
+        const btnUnirEmpezar = el("btnAlfabUnirEmpezar");
+        if (btnUnirEmpezar) btnUnirEmpezar.addEventListener("click", iniciarJuegoUnir);
+
+        const btnUnirComprobar = el("btnAlfabUnirComprobar");
+        if (btnUnirComprobar) btnUnirComprobar.addEventListener("click", comprobarUnir);
+
+        const btnUnirMenu = el("btnAlfabUnirMenu");
+        if (btnUnirMenu) btnUnirMenu.addEventListener("click", renderUnirIntro);
+
+        // Las líneas del SVG se calculan con getBoundingClientRect(), así
+        // que hay que recalcularlas si cambia el tamaño/orientación de la
+        // pantalla mientras el tablero de Unir está visible.
+        window.addEventListener("resize", () => {
+            const activo = el("alfabUnirActivo");
+            if (estado.moduloActivo === "unir" && activo && !activo.classList.contains("d-none")) {
+                dibujarLineasUnir();
+            }
+        });
+
         const btnAlfabReiniciar = el("btnAlfabReiniciar");
         if (btnAlfabReiniciar) {
             btnAlfabReiniciar.addEventListener("click", () => {
                 if (estado._alfabResultadosVolverA === "completar") {
                     mostrarBloque("alfabCompletar");
                     iniciarJuegoCompletar();
+                } else if (estado._alfabResultadosVolverA === "unir") {
+                    mostrarBloque("alfabUnir");
+                    iniciarJuegoUnir();
                 }
-                // "unir" se agrega cuando ese módulo esté implementado
             });
         }
 
@@ -1075,6 +1486,9 @@ const AlfabetizacionV2 = (function () {
                 if (estado._alfabResultadosVolverA === "completar") {
                     mostrarBloque("alfabCompletar");
                     renderCompletarIntro();
+                } else if (estado._alfabResultadosVolverA === "unir") {
+                    mostrarBloque("alfabUnir");
+                    renderUnirIntro();
                 } else {
                     cambiarModulo("aprender");
                 }
