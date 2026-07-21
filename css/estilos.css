@@ -235,6 +235,87 @@ iframe {
     object-fit: contain;
 }
 
+/* --- Panel de apoyo visual junto al video principal (Imagen ejemplo /
+   Seña sugerida): mismo estilo de tarjeta para ambos, con la imagen
+   siempre recortada a un tamaño prolijo (sin las bandas blancas que
+   dejaba object-fit:contain con altura fija). --- */
+.apoyo-panel {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 12px;
+}
+.apoyo-panel-titulo {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+.apoyo-panel-caja {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #f1f5f9;
+}
+.apoyo-panel .sena-sugerida-video-wrap {
+    border-radius: 10px;
+}
+.apoyo-panel .controles-video-compactos {
+    margin-top: 10px;
+}
+.apoyo-panel .controles-video-compactos .btn {
+    padding: 4px 10px;
+    font-size: 0.78rem;
+}
+
+/* La imagen de ejemplo llena su caja por completo (recorte tipo "cover"),
+   en vez de quedar chica y centrada dentro de espacio en blanco. */
+#resultado .apoyo-visual-img {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.25s ease;
+}
+.apoyo-visual-caja {
+    position: relative;
+    display: block;
+    cursor: pointer;
+}
+.apoyo-visual-caja:hover .apoyo-visual-img {
+    transform: scale(1.05);
+}
+.apoyo-visual-lupa {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    background: rgba(15, 23, 42, 0.65);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 20px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+.apoyo-visual-caja:hover .apoyo-visual-lupa,
+.apoyo-visual-caja:focus .apoyo-visual-lupa {
+    opacity: 1;
+}
+@media (max-width: 991px) {
+    /* En columna angosta (celular/tablet) se ve mejor una caja más baja
+       que un 4:3 completo, para no alargar demasiado la ficha. */
+    .apoyo-panel-caja {
+        aspect-ratio: 16 / 10;
+    }
+}
+
 /* Ventana del video de "Seña sugerida": en vez de forzar siempre un
    recuadro 16:9 fijo (como hacía la clase ratio/ratio-16x9 de Bootstrap),
    el aspect-ratio se ajusta por JS al tamaño real del video (ver
@@ -285,7 +366,7 @@ iframe {
     box-shadow: 0 6px 18px rgba(15, 23, 42, 0.35);
     cursor: pointer;
     animation: jugarPulso 2.2s ease-in-out infinite;
-    transition: transform 0.15s ease;
+    transition: transform 0.15s ease, opacity 0.2s ease;
 }
 .btn-acceso-jugar:hover,
 .btn-acceso-jugar:focus {
@@ -303,6 +384,142 @@ iframe {
         width: 60px;
         height: 60px;
         font-size: 1.6rem;
+        right: 16px;
+        bottom: 30px;
+    }
+}
+
+/* ==========================================
+   Botones flotantes secundarios: acceso directo a "Subtítulos" y a
+   "Buscar palabras". Se apilan arriba del botón de Jugar, mismo color
+   y estilo circular (amarillo), un poco más chicos y sin la animación
+   de pulso.
+========================================== */
+.btn-acceso-flotante {
+    position: fixed;
+    right: 28px;
+    z-index: 1040;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: none;
+    background-color: #ffc107;
+    color: #0f172a;
+    font-size: 1.5rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.3);
+    cursor: pointer;
+    transition: transform 0.15s ease, opacity 0.2s ease;
+}
+.btn-acceso-flotante:hover,
+.btn-acceso-flotante:focus {
+    transform: scale(1.08);
+}
+.btn-acceso-flotante:active {
+    transform: scale(0.96);
+}
+
+/* Justo arriba del botón de Jugar (bottom: 38px + 68px de alto + 14px de separación) */
+.btn-acceso-subtitulos {
+    bottom: 120px;
+}
+
+/* Arriba del botón de Subtítulos (120px + 56px de alto + 14px de separación) */
+.btn-acceso-buscar {
+    bottom: 190px;
+}
+
+/* Botón "✕" para ocultar el grupo de 3 accesos, como una pequeña
+   insignia sobre la esquina superior del botón de Buscar (el más alto
+   de la pila). */
+.btn-cerrar-accesos {
+    position: fixed;
+    bottom: 232px;
+    right: 20px;
+    z-index: 1041;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+    background-color: #64748b;
+    color: #ffffff;
+    font-size: 12px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 8px rgba(15, 23, 42, 0.3);
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.15s ease, opacity 0.2s ease;
+}
+.btn-cerrar-accesos:hover {
+    transform: scale(1.1);
+    background-color: #475569;
+}
+
+/* Botón para volver a mostrar el grupo, una vez ocultado. Ocupa el
+   mismo lugar/tamaño que tenía el botón de Jugar. */
+.btn-mostrar-accesos {
+    position: fixed;
+    right: 22px;
+    bottom: 38px;
+    z-index: 1040;
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    border: none;
+    background-color: #ffc107;
+    color: #0f172a;
+    font-size: 1.7rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.35);
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+.btn-mostrar-accesos:hover,
+.btn-mostrar-accesos:focus {
+    transform: scale(1.08);
+}
+
+/* Estado oculto: se desvanecen y se deslizan hacia abajo en vez de
+   desaparecer de golpe, y dejan de recibir clics. */
+.fab-oculto {
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
+}
+
+@media (max-width: 576px) {
+    .btn-acceso-flotante {
+        width: 48px;
+        height: 48px;
+        font-size: 1.3rem;
+        right: 22px;
+    }
+    .btn-acceso-subtitulos {
+        bottom: 102px;
+    }
+    .btn-acceso-buscar {
+        bottom: 162px;
+    }
+    .btn-cerrar-accesos {
+        bottom: 200px;
+        right: 16px;
+        width: 20px;
+        height: 20px;
+        font-size: 10px;
+    }
+    .btn-mostrar-accesos {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
         right: 16px;
         bottom: 30px;
     }

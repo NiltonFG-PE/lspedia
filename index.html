@@ -396,6 +396,21 @@
         <span aria-hidden="true">🎮</span>
     </button>
 
+    <button type="button" id="btnAccesoSubtitulos" class="btn-acceso-flotante btn-acceso-subtitulos" title="Ir a Subtítulos" aria-label="Acceso directo a Subtítulos">
+        <span aria-hidden="true">💬</span>
+    </button>
+
+    <button type="button" id="btnAccesoBuscar" class="btn-acceso-flotante btn-acceso-buscar" title="Buscar palabras" aria-label="Acceso directo a Buscar palabras">
+        <span aria-hidden="true">🔍</span>
+    </button>
+
+    <button type="button" id="btnCerrarAccesos" class="btn-cerrar-accesos" title="Ocultar accesos rápidos" aria-label="Ocultar accesos rápidos">✕</button>
+
+    <button type="button" id="btnMostrarAccesos" class="btn-mostrar-accesos d-none" title="Mostrar accesos rápidos" aria-label="Mostrar accesos rápidos">
+        <span aria-hidden="true">🤟</span>
+    </button>
+
+
     <div class="container py-4">
 
         <div class="row justify-content-center mb-4" id="senalDelDia">
@@ -1140,6 +1155,68 @@
     <script src="js/quiz.js"></script>
     <script src="js/alfabetizacion.js"></script>
     <script src="js/subtitulos.js"></script>
+
+    <!-- Botones flotantes de acceso directo: Subtítulos y Buscar palabras
+         (reutilizan la navegación ya existente de los links del menú, no
+         duplican lógica), más el control para ocultarlos/mostrarlos. -->
+    <script>
+        (function () {
+            const CLAVE_OCULTO = "lspedia_accesos_flotantes_ocultos";
+
+            const btnAccesoSubtitulos = document.getElementById("btnAccesoSubtitulos");
+            if (btnAccesoSubtitulos) {
+                btnAccesoSubtitulos.addEventListener("click", () => {
+                    const link = document.getElementById("btnSubtitulos");
+                    if (link) link.click();
+                });
+            }
+
+            const btnAccesoBuscar = document.getElementById("btnAccesoBuscar");
+            if (btnAccesoBuscar) {
+                btnAccesoBuscar.addEventListener("click", () => {
+                    // Solo lleva a la barra de búsqueda, sin pasar por la
+                    // navegación/animación de Inicio.
+                    const input = document.getElementById("buscar");
+                    if (input) {
+                        input.scrollIntoView({ behavior: "smooth", block: "center" });
+                        setTimeout(() => input.focus(), 300);
+                    }
+                });
+            }
+
+            // Ocultar / mostrar el grupo de 3 botones flotantes (Jugar,
+            // Subtítulos, Buscar). El estado elegido se recuerda entre
+            // visitas con localStorage.
+            const botonesGrupo = [
+                document.getElementById("btnAccesoJugar"),
+                document.getElementById("btnAccesoSubtitulos"),
+                document.getElementById("btnAccesoBuscar")
+            ].filter(Boolean);
+            const btnCerrarAccesos = document.getElementById("btnCerrarAccesos");
+            const btnMostrarAccesos = document.getElementById("btnMostrarAccesos");
+
+            function ocultarAccesos() {
+                botonesGrupo.forEach((btn) => btn.classList.add("fab-oculto"));
+                if (btnCerrarAccesos) btnCerrarAccesos.classList.add("fab-oculto");
+                if (btnMostrarAccesos) btnMostrarAccesos.classList.remove("d-none");
+                try { localStorage.setItem(CLAVE_OCULTO, "1"); } catch (e) {}
+            }
+
+            function mostrarAccesos() {
+                botonesGrupo.forEach((btn) => btn.classList.remove("fab-oculto"));
+                if (btnCerrarAccesos) btnCerrarAccesos.classList.remove("fab-oculto");
+                if (btnMostrarAccesos) btnMostrarAccesos.classList.add("d-none");
+                try { localStorage.setItem(CLAVE_OCULTO, "0"); } catch (e) {}
+            }
+
+            if (btnCerrarAccesos) btnCerrarAccesos.addEventListener("click", ocultarAccesos);
+            if (btnMostrarAccesos) btnMostrarAccesos.addEventListener("click", mostrarAccesos);
+
+            let estabaOculto = false;
+            try { estabaOculto = localStorage.getItem(CLAVE_OCULTO) === "1"; } catch (e) {}
+            if (estabaOculto) ocultarAccesos();
+        })();
+    </script>
 
     <!-- Pie de página LSPedia -->
 <footer class="mt-5 py-4 border-top text-center">
