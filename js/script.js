@@ -396,6 +396,7 @@ function mostrarPalabra(p){
             ? `<div class="controles-video d-flex align-items-center justify-content-center gap-2 mt-2 flex-wrap">
                 <button type="button" class="btn btn-sm btn-outline-secondary" id="btnRetroceder10" title="Retroceder 5 segundos" aria-label="Retroceder 5 segundos">⏪ 5s</button>
                 <button type="button" class="btn btn-sm btn-primary" id="btnPlayPause" title="Reproducir o pausar" aria-label="Reproducir o pausar">▶️ Reproducir</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnReiniciarPalabra" title="Reiniciar desde el principio" aria-label="Reiniciar desde el principio">↺ Reiniciar</button>
                 <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAvanzar10" title="Avanzar 10 segundos" aria-label="Avanzar 10 segundos">10s ⏩</button>
                 <button type="button" class="btn btn-sm btn-outline-secondary" id="btnPalabraVelocidadLenta" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
                 <span class="small fw-bold text-muted" id="palabraVelocidadLabel">1x</span>
@@ -418,7 +419,7 @@ function mostrarPalabra(p){
     const valorSenaSugerida = p.senasugerida || p.senaSugerida || p.señaSugerida || p["Seña sugerida"] || p["Seña Sugerida"] || "";
     const idSenaSugerida = extraerIdYouTube(valorSenaSugerida);
     const bloqueSenaSugerida = idSenaSugerida
-        ? `<div class="ratio ratio-16x9 shadow-sm rounded overflow-hidden border">
+        ? `<div class="sena-sugerida-video-wrap shadow-sm rounded overflow-hidden border" id="senaSugeridaVideoWrap">
                 <div id="reproductorSenaSugerida"></div>
            </div>
            <div class="controles-video d-flex align-items-center justify-content-center gap-2 mt-2 flex-wrap">
@@ -445,7 +446,7 @@ function mostrarPalabra(p){
             ${bloqueVariantes}
             <div class="row g-4 justify-content-center align-items-stretch">
                 <div class="col-md-8 d-flex flex-column">
-                    <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider text-md-start">🤟 Significado en LSP:</span>
+                    <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider text-md-start">🤟 Definición en Señas:</span>
                     <div class="ratio ratio-16x9 shadow-sm rounded overflow-hidden border">
                         ${bloqueVideo}
                     </div>
@@ -532,9 +533,10 @@ function configurarControlesVideo() {
     const btnRetroceder = document.getElementById("btnRetroceder10");
     const btnAvanzar = document.getElementById("btnAvanzar10");
     const btnPlayPause = document.getElementById("btnPlayPause");
+    const btnReiniciar = document.getElementById("btnReiniciarPalabra");
     const btnVelocidadLenta = document.getElementById("btnPalabraVelocidadLenta");
     const btnVelocidadRapida = document.getElementById("btnPalabraVelocidadRapida");
-    if (!btnRetroceder || !btnAvanzar || !btnPlayPause || !btnVelocidadLenta || !btnVelocidadRapida || !ytPlayerPalabra) return;
+    if (!btnRetroceder || !btnAvanzar || !btnPlayPause || !btnReiniciar || !btnVelocidadLenta || !btnVelocidadRapida || !ytPlayerPalabra) return;
 
     btnRetroceder.addEventListener("click", () => {
         const tiempoActual = ytPlayerPalabra.getCurrentTime();
@@ -554,6 +556,11 @@ function configurarControlesVideo() {
         } else {
             ytPlayerPalabra.playVideo();
         }
+    });
+
+    btnReiniciar.addEventListener("click", () => {
+        ytPlayerPalabra.seekTo(0, true);
+        ytPlayerPalabra.playVideo();
     });
 
     // Cada video nuevo arranca en 1x, igual que antes con el <select selected>.
@@ -588,11 +595,31 @@ function actualizarBotonPlayPause(evento) {
 // pero con sus propios botones: play/pausa, reiniciar y velocidad — sin
 // retroceder/avanzar, que no hacía falta para este video más corto). ---
 function inicializarReproductorSenaSugerida(videoId) {
+    ajustarAspectoSenaSugerida(videoId);
     if (ytApiListo) {
         crearReproductorSenaSugerida(videoId);
     } else {
         ytVideoIdPendienteSenaSugerida = videoId;
     }
+}
+
+// Consulta el oEmbed público de YouTube para conocer el ancho/alto reales
+// del video de "seña sugerida" (algunos son verticales) y ajustar la
+// ventana a su tamaño real, sin bandas negras ni recortes. Mismo patrón
+// que ajustarAspectoVideo() en quiz.js.
+function ajustarAspectoSenaSugerida(videoId) {
+    const wrap = document.getElementById("senaSugeridaVideoWrap");
+    if (!wrap) return;
+    wrap.style.aspectRatio = "16 / 9"; // valor razonable mientras se confirma el real
+
+    fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent("https://www.youtube.com/watch?v=" + videoId)}&format=json`)
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+            const wrapActual = document.getElementById("senaSugeridaVideoWrap");
+            if (!data || !wrapActual || !data.width || !data.height) return;
+            wrapActual.style.aspectRatio = `${data.width} / ${data.height}`;
+        })
+        .catch(() => { /* si falla la red, se mantiene el valor por defecto */ });
 }
 
 function crearReproductorSenaSugerida(videoId) {

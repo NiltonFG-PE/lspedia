@@ -235,6 +235,25 @@ iframe {
     object-fit: contain;
 }
 
+/* Ventana del video de "Seña sugerida": en vez de forzar siempre un
+   recuadro 16:9 fijo (como hacía la clase ratio/ratio-16x9 de Bootstrap),
+   el aspect-ratio se ajusta por JS al tamaño real del video (ver
+   ajustarAspectoSenaSugerida() en script.js), igual que ya se hace con
+   el reproductor del Quiz. */
+.sena-sugerida-video-wrap {
+    position: relative;
+    width: 100%;
+    background-color: #000;
+    aspect-ratio: 16 / 9; /* valor por defecto mientras se confirma el real */
+}
+.sena-sugerida-video-wrap iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
 /* Animación simple de aparición */
 .animate-fade-in {
     animation: fadeIn 0.3s ease-in-out;
