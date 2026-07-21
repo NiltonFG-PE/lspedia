@@ -217,6 +217,59 @@
     font-size: 13px;
     min-width: 92px;
 }
+
+/* Miniatura de video en la tarjeta "Seña del día" / "de ayer" */
+.senal-dia-miniatura {
+    width: 64px;
+    height: 64px;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    background-color: #1e293b;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.senal-dia-miniatura:hover,
+.senal-dia-miniatura:focus {
+    transform: scale(1.05);
+    border-color: #ffc107;
+    outline: none;
+}
+.senal-dia-miniatura-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.senal-dia-miniatura-play {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.25);
+    color: #fff;
+    font-size: 18px;
+    pointer-events: none;
+}
+@media (max-width: 767px) {
+    .senal-dia-miniatura { width: 56px; height: 56px; }
+}
+
+/* Tarjetas del menú de Juegos (Completar / Unir / Quiz) */
+.menu-juego-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 26px 12px;
+    text-align: center;
+}
+.menu-juego-btn .icono {
+    font-size: 2.2rem;
+}
     </style>
 </head>
 
@@ -350,15 +403,21 @@
                 <div class="card border-0 shadow-sm animate-fade-in position-relative" style="border-radius: 15px; background-color: #0f172a;">
                     <button type="button" class="btn-close btn-close-white position-absolute" style="top: 14px; right: 14px;" id="btnCerrarDelDia" aria-label="Cerrar"></button>
                     <div class="card-body p-4 text-white d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
-                        <div>
-                            <span class="badge mb-2" style="background-color: #ffc107; color:#000;" id="categoriaDelDia"></span>
-                            <div class="d-flex align-items-center mb-1">
-                                <button type="button" class="btn btn-sm p-0 me-2 text-white border-0 bg-transparent" id="btnSenalAnterior" title="Ver seña de ayer" aria-label="Ver seña del día anterior" style="font-size:14px; opacity:0.8;">◀</button>
-                                <span class="text-uppercase small fw-bold" style="letter-spacing: 0.05em; color:#94a3b8;" id="labelSenalDelDia">✨ Seña del día</span>
-                                <button type="button" class="btn btn-sm p-0 ms-2 text-white border-0 bg-transparent d-none" id="btnSenalSiguiente" title="Volver a hoy" aria-label="Volver a la seña de hoy" style="font-size:14px; opacity:0.8;">▶</button>
+                        <div class="d-flex align-items-center gap-3 flex-grow-1">
+                            <div class="senal-dia-miniatura flex-shrink-0 d-none" id="miniaturaDelDiaWrap" role="button" tabindex="0" title="Ver seña" aria-label="Ver la seña completa">
+                                <img id="miniaturaDelDiaImg" src="" alt="" class="senal-dia-miniatura-img">
+                                <span class="senal-dia-miniatura-play" aria-hidden="true">▶</span>
                             </div>
-                            <h4 class="fw-bold mb-2 text-white" id="tituloDelDia"></h4>
-                            <p class="small mb-0 text-white" id="descripcionDelDia"></p>
+                            <div>
+                                <span class="badge mb-2" style="background-color: #ffc107; color:#000;" id="categoriaDelDia"></span>
+                                <div class="d-flex align-items-center mb-1">
+                                    <button type="button" class="btn btn-sm p-0 me-2 text-white border-0 bg-transparent" id="btnSenalAnterior" title="Ver seña de ayer" aria-label="Ver seña del día anterior" style="font-size:14px; opacity:0.8;">◀</button>
+                                    <span class="text-uppercase small fw-bold" style="letter-spacing: 0.05em; color:#94a3b8;" id="labelSenalDelDia">✨ Seña del día</span>
+                                    <button type="button" class="btn btn-sm p-0 ms-2 text-white border-0 bg-transparent d-none" id="btnSenalSiguiente" title="Volver a hoy" aria-label="Volver a la seña de hoy" style="font-size:14px; opacity:0.8;">▶</button>
+                                </div>
+                                <h4 class="fw-bold mb-2 text-white" id="tituloDelDia"></h4>
+                                <p class="small mb-0 text-white" id="descripcionDelDia"></p>
+                            </div>
                         </div>
                         <button class="btn btn-warning px-4 py-2 rounded-pill fw-bold text-dark flex-shrink-0" id="btnVerDelDia">
                             Ver Seña
@@ -474,6 +533,16 @@
             <div id="listaFavoritos" class="row g-2"></div>
         </section>
 
+        <!-- ================================================================
+             SECCIÓN JUGAR: ahora es el punto de entrada único a los 3
+             juegos de LSPedia. Al abrir la sección se muestra primero un
+             menú (#quizMenuJuegos) para elegir "Completar la palabra",
+             "Unir con flechas" o "Quiz". Los dos primeros son en realidad
+             los mismos módulos de siempre de Alfabetización (js/alfabetizacion.js,
+             namespace AlfabetizacionV2): sus IDs no cambiaron, solo se
+             movieron físicamente aquí dentro para que aparezcan bajo
+             "Jugar" en vez de bajo "Alfabetización".
+             ================================================================ -->
         <section id="seccionQuiz" class="mb-5 d-none">
 
             <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
@@ -484,10 +553,37 @@
                 </div>
             </div>
 
+            <!-- MENÚ: elegir a qué juego jugar -->
+            <div id="quizMenuJuegos" class="row justify-content-center">
+                <div class="col-lg-9">
+                    <p class="text-muted small text-center mb-4">Elige a qué quieres jugar.</p>
+                    <div class="row g-3">
+                        <div class="col-12 col-md-4">
+                            <button type="button" class="quiz-selector-btn menu-juego-btn w-100 h-100" id="btnMenuJuegoCompletar">
+                                <span class="icono">🧩</span>
+                                <span class="fw-bold">Completar la palabra</span>
+                            </button>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <button type="button" class="quiz-selector-btn menu-juego-btn w-100 h-100" id="btnMenuJuegoUnir">
+                                <span class="icono">🔗</span>
+                                <span class="fw-bold">Unir con flechas</span>
+                            </button>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <button type="button" class="quiz-selector-btn menu-juego-btn w-100 h-100" id="btnMenuJuegoQuiz">
+                                <span class="icono">🎲</span>
+                                <span class="fw-bold">Quiz</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- CARGANDO PREGUNTAS DESDE GOOGLE SHEETS -->
-            <div id="quizCargando" class="text-center py-5">
+            <div id="quizCargando" class="text-center py-5 d-none">
                 <div class="spinner-border text-primary" role="status"></div>
-                <p class="text-muted small mt-3 mb-0">Cargando preguntas...</p>
+                <p class="text-muted small mt-3 mb-0">Cargando...</p>
             </div>
 
             <!-- ERROR DE CARGA -->
@@ -497,6 +593,9 @@
             <div id="quizIntro" class="row justify-content-center d-none">
                 <div class="col-lg-8">
                     <div class="card quiz-card border-0 shadow-sm p-4">
+                        <div class="text-center mb-2">
+                            <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill btn-volver-menu-juegos">↩ Elegir otro juego</button>
+                        </div>
                         <p class="text-muted small text-center mb-4">Elige el nivel y el modo de juego para tu ronda de práctica.</p>
 
                         <p class="text-uppercase small fw-bold mb-2" style="color:#64748b; letter-spacing:0.05em;">Nivel</p>
@@ -550,7 +649,7 @@
                 </div>
             </div>
 
-            <!-- RESULTADOS FINALES -->
+            <!-- RESULTADOS FINALES DEL QUIZ -->
             <div id="quizResultados" class="row justify-content-center d-none">
                 <div class="col-lg-8">
                     <div class="card quiz-card border-0 shadow-sm text-center p-4">
@@ -577,16 +676,129 @@
                 </div>
             </div>
 
+            <!-- ============================================================ -->
+            <!-- JUEGO "COMPLETAR LA PALABRA" (antes en Alfabetización) -->
+            <!-- ============================================================ -->
+            <div id="alfabCompletar" class="row justify-content-center d-none">
+                <div class="col-lg-8">
+
+                    <!-- INTRO: selección de nivel (mismo patrón que quizIntro / quiz-selector-btn) -->
+                    <div id="alfabCompletarIntro" class="card quiz-card border-0 shadow-sm p-4">
+                        <div class="text-center mb-2">
+                            <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill btn-volver-menu-juegos">↩ Elegir otro juego</button>
+                        </div>
+                        <p class="text-muted small text-center mb-4">Elige el nivel para practicar completando palabras con la letra que falta.</p>
+                        <p class="text-uppercase small fw-bold mb-2" style="color:#64748b; letter-spacing:0.05em;">Nivel</p>
+                        <div class="row g-2 mb-4" id="alfabCompletarSelectorNivel"></div>
+                        <p class="text-center small mb-3" id="alfabCompletarTotalDisponibles"></p>
+                        <div class="text-center">
+                            <button id="btnAlfabCompletarEmpezar" class="btn btn-warning fw-bold py-2 px-4 rounded-pill">▶ Empezar</button>
+                        </div>
+                    </div>
+
+                    <!-- JUEGO ACTIVO -->
+                    <div id="alfabCompletarActivo" class="card quiz-card border-0 shadow-sm p-4 d-none">
+                        <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                            <span class="badge bg-primary" id="alfabCompletarProgreso">Palabra 1</span>
+                            <span class="badge badge-nivel-facil" id="alfabCompletarNivelBadge">Fácil</span>
+                            <span class="fw-bold small text-muted" id="alfabCompletarPuntaje">⭐ 0</span>
+                            <button id="btnAlfabCompletarMenu" class="btn btn-outline-secondary btn-sm rounded-pill ms-auto" title="Volver al menú del juego">↩ Menú</button>
+                        </div>
+                        <div class="quiz-progreso-wrap mb-2"><div class="quiz-progreso-barra" id="alfabCompletarBarraProgreso" style="width:0%"></div></div>
+                        <div class="quiz-timer-wrap"><div class="quiz-timer-barra" id="alfabCompletarBarraTiempo" style="width:100%"></div></div>
+
+                        <!-- JS: imagen + palabra con letra faltante + opciones de letra -->
+                        <div id="alfabCompletarContenido" class="text-center py-3"></div>
+
+                        <div id="alfabCompletarFeedback" class="text-center small fw-bold mt-3"></div>
+                        <div class="d-flex justify-content-center gap-2 mt-3">
+                            <button id="btnAlfabCompletarSiguiente" class="btn btn-primary rounded-pill fw-bold d-none">Siguiente →</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ============================================================ -->
+            <!-- JUEGO "UNIR CON FLECHAS" (antes en Alfabetización) -->
+            <!-- ============================================================ -->
+            <div id="alfabUnir" class="row justify-content-center d-none">
+                <div class="col-lg-9">
+
+                    <!-- INTRO: selección de nivel -->
+                    <div id="alfabUnirIntro" class="card quiz-card border-0 shadow-sm p-4">
+                        <div class="text-center mb-2">
+                            <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill btn-volver-menu-juegos">↩ Elegir otro juego</button>
+                        </div>
+                        <p class="text-muted small text-center mb-4">Elige el nivel para practicar uniendo cada imagen con su palabra.</p>
+                        <p class="text-uppercase small fw-bold mb-2" style="color:#64748b; letter-spacing:0.05em;">Nivel</p>
+                        <div class="row g-2 mb-4" id="alfabUnirSelectorNivel"></div>
+                        <p class="text-center small mb-3" id="alfabUnirTotalDisponibles"></p>
+                        <div class="text-center">
+                            <button id="btnAlfabUnirEmpezar" class="btn btn-warning fw-bold py-2 px-4 rounded-pill">▶ Empezar</button>
+                        </div>
+                    </div>
+
+                    <!-- JUEGO ACTIVO -->
+                    <div id="alfabUnirActivo" class="card quiz-card border-0 shadow-sm p-4 d-none">
+                        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                            <span class="badge bg-primary" id="alfabUnirProgreso">Ronda 1</span>
+                            <span class="badge badge-nivel-facil" id="alfabUnirNivelBadge">Fácil</span>
+                            <span class="fw-bold small text-muted" id="alfabUnirPuntaje">⭐ 0</span>
+                            <button id="btnAlfabUnirComprobar" class="btn btn-success btn-sm rounded-pill">✔ Comprobar</button>
+                            <button id="btnAlfabUnirMenu" class="btn btn-outline-secondary btn-sm rounded-pill" title="Volver al menú del juego">↩ Menú</button>
+                        </div>
+
+                        <!-- JS: columna de imágenes vs columna de palabras + SVG superpuesto para trazar líneas (mouse y touch) -->
+                        <div class="alfab-unir-tablero position-relative" id="alfabUnirTablero">
+                            <div class="row">
+                                <div class="col-6" id="alfabUnirColumnaImagenes"></div>
+                                <div class="col-6" id="alfabUnirColumnaPalabras"></div>
+                            </div>
+                            <svg id="alfabUnirLineas" class="alfab-unir-lineas-svg"></svg>
+                        </div>
+
+                        <div id="alfabUnirFeedback" class="text-center small fw-bold mt-3"></div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- RESULTADOS FINALES: compartido por "Completar la palabra" y "Unir con flechas" -->
+            <div id="alfabResultados" class="row justify-content-center d-none">
+                <div class="col-lg-8">
+                    <div class="card quiz-card border-0 shadow-sm text-center p-4">
+                        <div class="fs-1 mb-2" id="alfabResultadoIcono">🏆</div>
+                        <h4 class="fw-bold mb-1" id="alfabResultadoTitulo">¡Ronda completada!</h4>
+                        <p class="mb-3" id="alfabResultadoTexto"></p>
+
+                        <div class="row g-2 mb-4">
+                            <div class="col-4"><div class="quiz-stat-box"><div class="valor text-success" id="alfabStatCorrectas">0</div><div class="small text-muted">Correctas</div></div></div>
+                            <div class="col-4"><div class="quiz-stat-box"><div class="valor text-danger" id="alfabStatIncorrectas">0</div><div class="small text-muted">Incorrectas</div></div></div>
+                            <div class="col-4"><div class="quiz-stat-box"><div class="valor text-primary" id="alfabStatPorcentaje">0%</div><div class="small text-muted">Precisión</div></div></div>
+                        </div>
+
+                        <div class="text-start mb-3">
+                            <p class="text-uppercase small fw-bold text-muted mb-2">Revisión de respuestas</p>
+                            <div id="alfabRevisionLista"></div>
+                        </div>
+
+                        <div class="d-flex justify-content-center gap-2 flex-wrap">
+                            <button id="btnAlfabReiniciar" class="btn btn-warning fw-bold py-2 px-4 rounded-pill">🔁 Jugar de nuevo</button>
+                            <button id="btnAlfabSalirResultados" class="btn btn-outline-secondary fw-bold py-2 px-4 rounded-pill">Salir</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </section>
 
         <!-- ================================================================
-             SECCIÓN ALFABETIZACIÓN (independiente del Quiz: Memoria y
-             Dictado LSA no se tocan). Módulo por módulo:
-               1) alfabAprender      -> Abecedario A-Z y números 0-9
-               2) alfabCompletar     -> Juego "Completar la palabra"
-               3) alfabUnir          -> Juego "Unir con flechas"
-             Toda la lógica vivirá en js/alfabetizacion.js (namespace
-             AlfabetizacionV2, siguiendo el mismo patrón que QuizV2).
+             SECCIÓN ALFABETIZACIÓN: ahora solo contiene el módulo
+             "Aprender" (abecedario A-Z y números 0-19). Los juegos
+             "Completar la palabra" y "Unir con flechas" se movieron a la
+             sección Jugar (#seccionQuiz), pero siguen viviendo en
+             js/alfabetizacion.js (AlfabetizacionV2): no cambia su lógica.
              ================================================================ -->
         <section id="seccionAlfabetizacion" class="mb-5 d-none">
 
@@ -595,15 +807,6 @@
                 <div class="d-flex gap-2">
                     <button id="btnAlfabFullscreen" class="btn btn-outline-secondary quiz-btn-fullscreen" title="Pantalla completa" aria-label="Pantalla completa">⛶</button>
                     <button id="btnAlfabSalir" class="btn btn-outline-danger btn-sm rounded-pill">Salir</button>
-                </div>
-            </div>
-
-            <!-- SUB-NAVEGACIÓN ENTRE LOS 3 MÓDULOS -->
-            <div class="d-flex justify-content-center mb-4">
-                <div class="btn-group alfab-submenu flex-wrap" role="group" aria-label="Módulos de Alfabetización">
-                    <button type="button" class="btn btn-outline-primary" data-alfab-modulo="completar" id="btnAlfabModoCompletar">🧩 Completar la palabra</button>
-                    <button type="button" class="btn btn-outline-primary active" data-alfab-modulo="aprender" id="btnAlfabModoAprender">🔤 Aprender</button>
-                    <button type="button" class="btn btn-outline-primary" data-alfab-modulo="unir" id="btnAlfabModoUnir">🔗 Unir con flechas</button>
                 </div>
             </div>
 
@@ -617,7 +820,7 @@
             <div id="alfabError" class="alert alert-danger d-none"></div>
 
             <!-- ============================================================ -->
-            <!-- MÓDULO 1: APRENDER — abecedario A-Z y números 0-9 -->
+            <!-- MÓDULO APRENDER — abecedario A-Z y números 0-9 -->
             <!-- ============================================================ -->
             <div id="alfabAprender" class="row justify-content-center">
                 <div class="col-lg-9">
@@ -726,115 +929,6 @@
                             </div>
                         </div>
 
-                    </div>
-                </div>
-            </div>
-
-            <!-- ============================================================ -->
-            <!-- MÓDULO 2: JUEGO "COMPLETAR LA PALABRA" -->
-            <!-- ============================================================ -->
-            <div id="alfabCompletar" class="row justify-content-center d-none">
-                <div class="col-lg-8">
-
-                    <!-- INTRO: selección de nivel (mismo patrón que quizIntro / quiz-selector-btn) -->
-                    <div id="alfabCompletarIntro" class="card quiz-card border-0 shadow-sm p-4">
-                        <p class="text-muted small text-center mb-4">Elige el nivel para practicar completando palabras con la letra que falta.</p>
-                        <p class="text-uppercase small fw-bold mb-2" style="color:#64748b; letter-spacing:0.05em;">Nivel</p>
-                        <div class="row g-2 mb-4" id="alfabCompletarSelectorNivel"></div>
-                        <p class="text-center small mb-3" id="alfabCompletarTotalDisponibles"></p>
-                        <div class="text-center">
-                            <button id="btnAlfabCompletarEmpezar" class="btn btn-warning fw-bold py-2 px-4 rounded-pill">▶ Empezar</button>
-                        </div>
-                    </div>
-
-                    <!-- JUEGO ACTIVO -->
-                    <div id="alfabCompletarActivo" class="card quiz-card border-0 shadow-sm p-4 d-none">
-                        <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
-                            <span class="badge bg-primary" id="alfabCompletarProgreso">Palabra 1</span>
-                            <span class="badge badge-nivel-facil" id="alfabCompletarNivelBadge">Fácil</span>
-                            <span class="fw-bold small text-muted" id="alfabCompletarPuntaje">⭐ 0</span>
-                            <button id="btnAlfabCompletarMenu" class="btn btn-outline-secondary btn-sm rounded-pill ms-auto" title="Volver al menú del juego">↩ Menú</button>
-                        </div>
-                        <div class="quiz-progreso-wrap mb-2"><div class="quiz-progreso-barra" id="alfabCompletarBarraProgreso" style="width:0%"></div></div>
-                        <div class="quiz-timer-wrap"><div class="quiz-timer-barra" id="alfabCompletarBarraTiempo" style="width:100%"></div></div>
-
-                        <!-- JS: imagen + palabra con letra faltante + opciones de letra -->
-                        <div id="alfabCompletarContenido" class="text-center py-3"></div>
-
-                        <div id="alfabCompletarFeedback" class="text-center small fw-bold mt-3"></div>
-                        <div class="d-flex justify-content-center gap-2 mt-3">
-                            <button id="btnAlfabCompletarSiguiente" class="btn btn-primary rounded-pill fw-bold d-none">Siguiente →</button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- ============================================================ -->
-            <!-- MÓDULO 3: JUEGO "UNIR CON FLECHAS" -->
-            <!-- ============================================================ -->
-            <div id="alfabUnir" class="row justify-content-center d-none">
-                <div class="col-lg-9">
-
-                    <!-- INTRO: selección de nivel -->
-                    <div id="alfabUnirIntro" class="card quiz-card border-0 shadow-sm p-4">
-                        <p class="text-muted small text-center mb-4">Elige el nivel para practicar uniendo cada imagen con su palabra.</p>
-                        <p class="text-uppercase small fw-bold mb-2" style="color:#64748b; letter-spacing:0.05em;">Nivel</p>
-                        <div class="row g-2 mb-4" id="alfabUnirSelectorNivel"></div>
-                        <p class="text-center small mb-3" id="alfabUnirTotalDisponibles"></p>
-                        <div class="text-center">
-                            <button id="btnAlfabUnirEmpezar" class="btn btn-warning fw-bold py-2 px-4 rounded-pill">▶ Empezar</button>
-                        </div>
-                    </div>
-
-                    <!-- JUEGO ACTIVO -->
-                    <div id="alfabUnirActivo" class="card quiz-card border-0 shadow-sm p-4 d-none">
-                        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-                            <span class="badge bg-primary" id="alfabUnirProgreso">Ronda 1</span>
-                            <span class="badge badge-nivel-facil" id="alfabUnirNivelBadge">Fácil</span>
-                            <span class="fw-bold small text-muted" id="alfabUnirPuntaje">⭐ 0</span>
-                            <button id="btnAlfabUnirComprobar" class="btn btn-success btn-sm rounded-pill">✔ Comprobar</button>
-                            <button id="btnAlfabUnirMenu" class="btn btn-outline-secondary btn-sm rounded-pill" title="Volver al menú del juego">↩ Menú</button>
-                        </div>
-
-                        <!-- JS: columna de imágenes vs columna de palabras + SVG superpuesto para trazar líneas (mouse y touch) -->
-                        <div class="alfab-unir-tablero position-relative" id="alfabUnirTablero">
-                            <div class="row">
-                                <div class="col-6" id="alfabUnirColumnaImagenes"></div>
-                                <div class="col-6" id="alfabUnirColumnaPalabras"></div>
-                            </div>
-                            <svg id="alfabUnirLineas" class="alfab-unir-lineas-svg"></svg>
-                        </div>
-
-                        <div id="alfabUnirFeedback" class="text-center small fw-bold mt-3"></div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- RESULTADOS FINALES: compartido por los 2 juegos de Alfabetización (no reutiliza #quizResultados) -->
-            <div id="alfabResultados" class="row justify-content-center d-none">
-                <div class="col-lg-8">
-                    <div class="card quiz-card border-0 shadow-sm text-center p-4">
-                        <div class="fs-1 mb-2" id="alfabResultadoIcono">🏆</div>
-                        <h4 class="fw-bold mb-1" id="alfabResultadoTitulo">¡Ronda completada!</h4>
-                        <p class="mb-3" id="alfabResultadoTexto"></p>
-
-                        <div class="row g-2 mb-4">
-                            <div class="col-4"><div class="quiz-stat-box"><div class="valor text-success" id="alfabStatCorrectas">0</div><div class="small text-muted">Correctas</div></div></div>
-                            <div class="col-4"><div class="quiz-stat-box"><div class="valor text-danger" id="alfabStatIncorrectas">0</div><div class="small text-muted">Incorrectas</div></div></div>
-                            <div class="col-4"><div class="quiz-stat-box"><div class="valor text-primary" id="alfabStatPorcentaje">0%</div><div class="small text-muted">Precisión</div></div></div>
-                        </div>
-
-                        <div class="text-start mb-3">
-                            <p class="text-uppercase small fw-bold text-muted mb-2">Revisión de respuestas</p>
-                            <div id="alfabRevisionLista"></div>
-                        </div>
-
-                        <div class="d-flex justify-content-center gap-2 flex-wrap">
-                            <button id="btnAlfabReiniciar" class="btn btn-warning fw-bold py-2 px-4 rounded-pill">🔁 Jugar de nuevo</button>
-                            <button id="btnAlfabSalirResultados" class="btn btn-outline-secondary fw-bold py-2 px-4 rounded-pill">Salir</button>
-                        </div>
                     </div>
                 </div>
             </div>

@@ -90,10 +90,71 @@ if(btnAccesoJugar){
     });
 }
 
+// --- PANTALLAS DENTRO DE "JUGAR" ---
+// La sección Jugar ahora arranca siempre en un menú (#quizMenuJuegos)
+// para elegir "Completar la palabra", "Unir con flechas" o "Quiz".
+// Los dos primeros juegos viven en js/alfabetizacion.js (AlfabetizacionV2)
+// y el Quiz en js/quiz.js (QuizV2); esta lista cubre TODAS las pantallas
+// posibles dentro de #seccionQuiz para poder ocultarlas de una sola vez
+// antes de mostrar la que corresponde, sin importar de qué módulo venga.
+const PANTALLAS_SECCION_JUEGOS = [
+    "quizMenuJuegos", "quizCargando", "quizIntro", "quizActivo", "quizMemoria", "quizResultados",
+    "alfabCompletar", "alfabUnir", "alfabResultados"
+];
+
+function ocultarPantallasJuegos(){
+    PANTALLAS_SECCION_JUEGOS.forEach((id) => {
+        const n = document.getElementById(id);
+        if(n) n.classList.add("d-none");
+    });
+}
+
+function mostrarPantallaJuegos(id){
+    ocultarPantallasJuegos();
+    const n = document.getElementById(id);
+    if(n) n.classList.remove("d-none");
+}
+
+function mostrarMenuJuegos(){
+    if(window.QuizV2 && typeof QuizV2.salir === "function") QuizV2.salir();
+    if(window.AlfabetizacionV2 && typeof AlfabetizacionV2.detenerJuegosActivos === "function") AlfabetizacionV2.detenerJuegosActivos();
+    mostrarPantallaJuegos("quizMenuJuegos");
+}
+
+function abrirJuegoCompletar(){
+    mostrarPantallaJuegos("quizCargando");
+    if(window.AlfabetizacionV2 && typeof AlfabetizacionV2.mostrarJuego === "function") AlfabetizacionV2.mostrarJuego("completar");
+}
+
+function abrirJuegoUnir(){
+    mostrarPantallaJuegos("quizCargando");
+    if(window.AlfabetizacionV2 && typeof AlfabetizacionV2.mostrarJuego === "function") AlfabetizacionV2.mostrarJuego("unir");
+}
+
+function abrirJuegoQuiz(){
+    mostrarPantallaJuegos("quizCargando");
+    if(window.QuizV2 && typeof QuizV2.iniciar === "function") QuizV2.iniciar();
+}
+
+const btnMenuJuegoCompletar = document.getElementById("btnMenuJuegoCompletar");
+if(btnMenuJuegoCompletar) btnMenuJuegoCompletar.addEventListener("click", abrirJuegoCompletar);
+
+const btnMenuJuegoUnir = document.getElementById("btnMenuJuegoUnir");
+if(btnMenuJuegoUnir) btnMenuJuegoUnir.addEventListener("click", abrirJuegoUnir);
+
+const btnMenuJuegoQuiz = document.getElementById("btnMenuJuegoQuiz");
+if(btnMenuJuegoQuiz) btnMenuJuegoQuiz.addEventListener("click", abrirJuegoQuiz);
+
+document.querySelectorAll(".btn-volver-menu-juegos").forEach((btn) => {
+    btn.addEventListener("click", mostrarMenuJuegos);
+});
+
 function ocultarQuiz(){
     if(seccionQuiz) seccionQuiz.classList.add("d-none");
     // El Quiz ahora es independiente (QuizV2) y tiene sus propios datos desde Google Sheets.
     if(window.QuizV2 && typeof QuizV2.salir === "function") QuizV2.salir();
+    // "Completar la palabra" y "Unir con flechas" (AlfabetizacionV2) también viven aquí ahora.
+    if(window.AlfabetizacionV2 && typeof AlfabetizacionV2.detenerJuegosActivos === "function") AlfabetizacionV2.detenerJuegosActivos();
 }
 
 function mostrarSeccionQuiz(){
@@ -104,12 +165,11 @@ function mostrarSeccionQuiz(){
     ocultarAlfabetizacion();
     ocultarSubtitulos();
     seccionQuiz.classList.remove("d-none");
-    // QuizV2 (js/quiz.js) carga sus propias preguntas desde la Hoja 2 de Google Sheets.
-    if(window.QuizV2 && typeof QuizV2.iniciar === "function") QuizV2.iniciar();
+    mostrarMenuJuegos();
     seccionQuiz.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// --- SECCIÓN ALFABETIZACIÓN (independiente del Quiz: Memoria y Dictado LSA no se tocan) ---
+// --- SECCIÓN ALFABETIZACIÓN (ahora solo el módulo "Aprender") ---
 const seccionAlfabetizacion = document.getElementById("seccionAlfabetizacion");
 const btnAlfabetizacion = document.getElementById("btnAlfabetizacion");
 if(btnAlfabetizacion){
@@ -133,7 +193,7 @@ function mostrarSeccionAlfabetizacion(){
     ocultarQuiz();
     ocultarSubtitulos();
     seccionAlfabetizacion.classList.remove("d-none");
-    // AlfabetizacionV2 (js/alfabetizacion.js) carga sus datos desde Google Sheets (aún pendiente de crear).
+    // AlfabetizacionV2 (js/alfabetizacion.js) carga sus datos desde Google Sheets.
     if(window.AlfabetizacionV2 && typeof AlfabetizacionV2.iniciar === "function"){
         AlfabetizacionV2.iniciar();
     } else {
@@ -380,7 +440,7 @@ function mostrarPalabra(p){
                 <img src="${p.imagen}" class="apoyo-visual-img" alt="Imagen de apoyo visual para ${p.palabra}">
                 <span class="apoyo-visual-lupa">🔍 Ampliar</span>
            </div>`
-        : `<div class="d-flex flex-column align-items-center justify-content-center bg-light text-muted text-center p-3 rounded border w-100 h-100" style="height:100%;">
+        : `<div class="d-flex flex-column align-items-center justify-content-center text-muted text-center p-3 w-100 h-100">
                 <span class="fs-1 mb-2">🖼️</span>
                 <span class="small fw-bold">Imagen próximamente</span>
            </div>`;
@@ -418,21 +478,23 @@ function mostrarPalabra(p){
     // las demás como respaldo por si en algún momento se exporta distinto.
     const valorSenaSugerida = p.senasugerida || p.senaSugerida || p.señaSugerida || p["Seña sugerida"] || p["Seña Sugerida"] || "";
     const idSenaSugerida = extraerIdYouTube(valorSenaSugerida);
-    const bloqueSenaSugerida = idSenaSugerida
-        ? `<div class="sena-sugerida-video-wrap shadow-sm rounded overflow-hidden border" id="senaSugeridaVideoWrap">
+    const bloqueSenaSugeridaVideo = idSenaSugerida
+        ? `<div class="sena-sugerida-video-wrap shadow-sm rounded overflow-hidden" id="senaSugeridaVideoWrap">
                 <div id="reproductorSenaSugerida"></div>
-           </div>
-           <div class="controles-video d-flex align-items-center justify-content-center gap-2 mt-2 flex-wrap">
+           </div>`
+        : `<div class="apoyo-panel-caja d-flex flex-column align-items-center justify-content-center text-muted text-center p-3">
+                <span class="fs-2 mb-1">🎥</span>
+                <span class="small fw-bold">Seña sugerida próximamente</span>
+           </div>`;
+    const bloqueSenaSugeridaControles = idSenaSugerida
+        ? `<div class="controles-video controles-video-compactos d-flex align-items-center justify-content-center gap-2 mt-2 flex-wrap">
                 <button type="button" class="btn btn-sm btn-primary" id="btnPlayPauseSenaSugerida" title="Reproducir o pausar" aria-label="Reproducir o pausar">▶️ Reproducir</button>
                 <button type="button" class="btn btn-sm btn-outline-secondary" id="btnReiniciarSenaSugerida" title="Reiniciar desde el principio" aria-label="Reiniciar desde el principio">↺ Reiniciar</button>
                 <button type="button" class="btn btn-sm btn-outline-secondary" id="btnSenaSugeridaVelocidadLenta" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
                 <span class="small fw-bold text-muted" id="senaSugeridaVelocidadLabel">1x</span>
                 <button type="button" class="btn btn-sm btn-outline-secondary" id="btnSenaSugeridaVelocidadRapida" title="Aumentar velocidad" aria-label="Aumentar velocidad">🐇</button>
            </div>`
-        : `<div class="d-flex flex-column align-items-center justify-content-center bg-light text-muted text-center p-3 rounded border" style="min-height:140px;">
-                <span class="fs-2 mb-1">🎥</span>
-                <span class="small fw-bold">Seña sugerida próximamente</span>
-           </div>`;
+        : "";
 
     resultado.innerHTML=`
     <div class="card shadow-sm mb-4 animate-fade-in" style="border-radius: 15px; border-color: #dceefc;">
@@ -445,20 +507,25 @@ function mostrarPalabra(p){
             <p class="mb-3 p-3 rounded" style="background-color: #eef6ff; border-left: 4px solid #0d6efd; font-size: 1rem; line-height: 1.5; color: #1e293b;">${p.definicion}</p>
             ${bloqueVariantes}
             <div class="row g-4 justify-content-center align-items-stretch">
-                <div class="col-md-8 d-flex flex-column">
+                <div class="col-lg-7 d-flex flex-column">
                     <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider text-md-start">🤟 Definición en Señas:</span>
                     <div class="ratio ratio-16x9 shadow-sm rounded overflow-hidden border">
                         ${bloqueVideo}
                     </div>
                     ${bloqueControlesVideo}
                 </div>
-                <div class="col-md-4 d-flex flex-column">
-                    <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider">📸 Imagen Ejemplo:</span>
-                    <div class="shadow-sm rounded overflow-hidden border bg-light mb-3" style="height:160px;">
-                        ${bloqueImagen}
+                <div class="col-lg-5 d-flex flex-column gap-3">
+                    <div class="apoyo-panel">
+                        <span class="apoyo-panel-titulo">📸 Imagen ejemplo</span>
+                        <div class="apoyo-panel-caja">
+                            ${bloqueImagen}
+                        </div>
                     </div>
-                    <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider">🎥 Seña Sugerida:</span>
-                    ${bloqueSenaSugerida}
+                    <div class="apoyo-panel flex-grow-1 d-flex flex-column">
+                        <span class="apoyo-panel-titulo">🎥 Seña sugerida</span>
+                        ${bloqueSenaSugeridaVideo}
+                        ${bloqueSenaSugeridaControles}
+                    </div>
                 </div>
             </div>
         </div>
@@ -839,6 +906,27 @@ function mostrarSenalDelDia(offset = offsetSenalDelDia){
 
     document.getElementById("categoriaDelDia").textContent =
         palabra.categoria;
+
+    // --- Miniatura del video (reutiliza extraerIdYouTube, definida más arriba) ---
+    const miniaturaWrap = document.getElementById("miniaturaDelDiaWrap");
+    const miniaturaImg = document.getElementById("miniaturaDelDiaImg");
+    if (miniaturaWrap && miniaturaImg) {
+        const idVideoDelDia = extraerIdYouTube(palabra.video);
+        if (idVideoDelDia) {
+            miniaturaImg.src = `https://img.youtube.com/vi/${idVideoDelDia}/mqdefault.jpg`;
+            miniaturaImg.alt = `Miniatura de la seña "${palabra.palabra}"`;
+            miniaturaWrap.classList.remove("d-none");
+            const abrirDesdeMiniatura = () => {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+                document.getElementById("senalDelDia").style.display = "none";
+                mostrarPalabra(palabra);
+            };
+            miniaturaWrap.onclick = abrirDesdeMiniatura;
+            miniaturaWrap.onkeypress = (e) => { if (e.key === "Enter") abrirDesdeMiniatura(); };
+        } else {
+            miniaturaWrap.classList.add("d-none");
+        }
+    }
 
     const labelSenalDelDia = document.getElementById("labelSenalDelDia");
     if(labelSenalDelDia){

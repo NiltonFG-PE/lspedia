@@ -175,11 +175,11 @@ const QuizV2 = (function () {
         }
     }
 
-    function mostrarError(msg) {
-        ocultarTodosLosBloques();
-        const cont = el("quizError");
-        cont.textContent = "⚠️ " + msg;
-        cont.classList.remove("d-none");
+    function ocultarTodosLosBloques() {
+        ["quizCargando", "quizIntro", "quizActivo", "quizMemoria", "quizResultados", "quizMenuJuegos", "alfabCompletar", "alfabUnir", "alfabResultados"].forEach((id) => {
+            const n = el(id);
+            if (n) n.classList.add("d-none");
+        });
     }
 
     // ---------------------------------------------------------
@@ -1007,9 +1007,10 @@ const QuizV2 = (function () {
         const btnMenuMemoria = el("btnQuizMenuMemoria");
         if (btnMenuMemoria) btnMenuMemoria.addEventListener("click", volverAlMenu);
 
-        const btnSalir = el("btnQuizSalir");
+          const btnSalir = el("btnQuizSalir");
         if (btnSalir) btnSalir.addEventListener("click", () => {
             salir();
+            if (window.AlfabetizacionV2 && typeof AlfabetizacionV2.detenerJuegosActivos === "function") AlfabetizacionV2.detenerJuegosActivos();
             const seccion = el("seccionQuiz");
             if (seccion) seccion.classList.add("d-none");
         });
@@ -1017,6 +1018,7 @@ const QuizV2 = (function () {
         const btnSalirResultados = el("btnQuizSalirResultados");
         if (btnSalirResultados) btnSalirResultados.addEventListener("click", () => {
             salir();
+            if (window.AlfabetizacionV2 && typeof AlfabetizacionV2.detenerJuegosActivos === "function") AlfabetizacionV2.detenerJuegosActivos();
             const seccion = el("seccionQuiz");
             if (seccion) seccion.classList.add("d-none");
         });

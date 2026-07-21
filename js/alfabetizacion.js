@@ -230,8 +230,7 @@ const AlfabetizacionV2 = (function () {
     }
 
     function alTerminarCarga() {
-        mostrarBloque("alfabAprender");
-        renderModuloActivo();
+        cambiarModulo(estado.moduloActivo || "aprender");
     }
 
     function manejarErrorCarga(err) {
@@ -275,7 +274,7 @@ const AlfabetizacionV2 = (function () {
     // NAVEGACIÓN ENTRE BLOQUES (cargando / error / los 3 módulos / resultados)
     // ---------------------------------------------------------
     function ocultarTodosLosBloques() {
-        ["alfabCargando", "alfabAprender", "alfabCompletar", "alfabUnir", "alfabResultados"].forEach((id) => {
+        ["alfabCargando", "alfabAprender", "alfabCompletar", "alfabUnir", "alfabResultados", "quizCargando", "quizMenuJuegos"].forEach((id) => {
             const bloque = el(id);
             if (bloque) bloque.classList.add("d-none");
         });
@@ -1375,6 +1374,31 @@ const AlfabetizacionV2 = (function () {
     }
 
     // ---------------------------------------------------------
+    // ENTRADA PÚBLICA PARA LOS JUEGOS "COMPLETAR" Y "UNIR" DESDE
+    // LA SECCIÓN JUGAR (llamada desde script.js: AlfabetizacionV2.mostrarJuego)
+    // ---------------------------------------------------------
+    function mostrarJuego(modulo) {
+        enlazarEventos();
+        estado.moduloActivo = modulo;
+        const hayDatos = (estado.datos.alfabeto && estado.datos.alfabeto.length) ||
+                          (estado.datos.ejemplos && estado.datos.ejemplos.length);
+        if (hayDatos) {
+            cambiarModulo(modulo);
+        } else {
+            mostrarBloque("quizCargando");
+            cargarDatos(false);
+        }
+    }
+
+    // Detiene cualquier temporizador de "Completar la palabra" que haya
+    // quedado corriendo si el usuario sale de la sección Jugar sin pulsar
+    // los botones de menú/salir propios del juego (por ejemplo, navegando
+    // a otra sección del sitio).
+    function detenerJuegosActivos() {
+        detenerTimerCompletar();
+    }
+
+    // ---------------------------------------------------------
     // SALIR
     // ---------------------------------------------------------
     function salir() {
@@ -1521,7 +1545,7 @@ const AlfabetizacionV2 = (function () {
         cargarDatos(false);
     }
 
-    return { iniciar, salir };
+    return { iniciar, salir, mostrarJuego, detenerJuegosActivos };
 })();
 
 window.AlfabetizacionV2 = AlfabetizacionV2;
