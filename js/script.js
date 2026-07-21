@@ -408,11 +408,14 @@ function mostrarPalabra(p){
     // A diferencia de "video" (columna D), que guarda solo el ID del video,
     // esta columna nueva guarda el ENLACE completo de YouTube tal cual se
     // copia del navegador, así que hay que extraer el ID nosotros mismos.
-    // En el Sheet, ponle a la columna G exactamente el encabezado
-    // "senaSugerida" (todo junto, sin tilde ni espacios) para que el
-    // export a data/palabras.json genere esa misma clave. Por las dudas,
-    // también se aceptan un par de variantes con tilde/espacio.
-    const valorSenaSugerida = p.senaSugerida || p.señaSugerida || p["Seña sugerida"] || p["Seña Sugerida"] || "";
+    // OJO: el Apps Script de sincronización (Google Sheets -> GitHub)
+    // convierte TODOS los encabezados a minúsculas antes de armar el JSON
+    // (encabezados = datos[0].map(h => h.toString().trim().toLowerCase())),
+    // así que aunque en el Sheet la columna se llame "senaSugerida", en
+    // data/palabras.json termina como "senasugerida" (todo minúsculas, sin
+    // camelCase). Por eso hay que buscar esa variante primero; se dejan
+    // las demás como respaldo por si en algún momento se exporta distinto.
+    const valorSenaSugerida = p.senasugerida || p.senaSugerida || p.señaSugerida || p["Seña sugerida"] || p["Seña Sugerida"] || "";
     const idSenaSugerida = extraerIdYouTube(valorSenaSugerida);
     const bloqueSenaSugerida = idSenaSugerida
         ? `<div class="ratio ratio-16x9 shadow-sm rounded overflow-hidden border">
