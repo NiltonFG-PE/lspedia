@@ -221,7 +221,97 @@
 </head>
 
 <body>
+<!-- ============================================================
+     SPLASH SCREEN: pantalla de carga con el logo y una barrita
+     animada. Se muestra apenas abre la página/app y se oculta sola
+     cuando termina de cargar todo (o después de un mínimo de tiempo,
+     para que no sea un parpadeo si la carga es muy rápida).
 
+     DÓNDE VA: pega este bloque completo JUSTO DESPUÉS de <body>,
+     osea entre la línea 221 (<body>) y la línea 223 (<nav ...) de
+     tu index.html actual.
+     ============================================================ -->
+
+<div id="splashScreen">
+    <img src="img/lspedia.png" alt="LSPedia" id="splashLogo">
+    <div class="splash-barra-wrap">
+        <div class="splash-barra"></div>
+    </div>
+</div>
+
+<style>
+    #splashScreen {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background-color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 28px;
+        transition: opacity 0.4s ease;
+    }
+    #splashScreen.splash-oculto {
+        opacity: 0;
+        pointer-events: none;
+    }
+    #splashLogo {
+        width: min(70vw, 320px);
+        height: auto;
+        animation: splashLatido 1.6s ease-in-out infinite;
+    }
+    @keyframes splashLatido {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.04); }
+    }
+    .splash-barra-wrap {
+        width: min(60vw, 220px);
+        height: 6px;
+        border-radius: 20px;
+        background-color: #e2e8f0;
+        overflow: hidden;
+    }
+    .splash-barra {
+        height: 100%;
+        width: 40%;
+        border-radius: 20px;
+        background: linear-gradient(90deg, #0284c7, #38bdf8);
+        animation: splashCargando 1.1s ease-in-out infinite;
+    }
+    @keyframes splashCargando {
+        0%   { transform: translateX(-100%); }
+        100% { transform: translateX(350%); }
+    }
+</style>
+
+<script>
+    // Se oculta cuando la página termina de cargar (window.load), con un
+    // mínimo de 700ms visible para que no sea un parpadeo si todo carga
+    // muy rápido, y un máximo de 4s por si algo tarda de más (para que
+    // nunca se quede trabado tapando el sitio).
+    (function () {
+        const inicio = Date.now();
+        const MINIMO_MS = 700;
+        const MAXIMO_MS = 4000;
+
+        function ocultarSplash() {
+            const splash = document.getElementById("splashScreen");
+            if (!splash || splash.classList.contains("splash-oculto")) return;
+            splash.classList.add("splash-oculto");
+            setTimeout(() => splash.remove(), 500);
+        }
+
+        function intentarOcultar() {
+            const transcurrido = Date.now() - inicio;
+            const espera = Math.max(0, MINIMO_MS - transcurrido);
+            setTimeout(ocultarSplash, espera);
+        }
+
+        window.addEventListener("load", intentarOcultar);
+        setTimeout(ocultarSplash, MAXIMO_MS); // respaldo de seguridad
+    })();
+</script>
     <nav class="navbar navbar-expand-xl navbar-dark bg-primary shadow-sm py-2">
         <div class="container">
             <a class="navbar-brand fw-bold d-flex align-items-center" href="#" id="btnLogo">
