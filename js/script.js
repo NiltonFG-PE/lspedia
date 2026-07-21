@@ -419,7 +419,14 @@ function mostrarPalabra(p){
     const idSenaSugerida = extraerIdYouTube(valorSenaSugerida);
     const bloqueSenaSugerida = idSenaSugerida
         ? `<div class="ratio ratio-16x9 shadow-sm rounded overflow-hidden border">
-                <iframe src="https://www.youtube.com/embed/${idSenaSugerida}" title="Seña sugerida para ${p.palabra}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                <div id="reproductorSenaSugerida"></div>
+           </div>
+           <div class="controles-video d-flex align-items-center justify-content-center gap-2 mt-2 flex-wrap">
+                <button type="button" class="btn btn-sm btn-primary" id="btnPlayPauseSenaSugerida" title="Reproducir o pausar" aria-label="Reproducir o pausar">▶️ Reproducir</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnReiniciarSenaSugerida" title="Reiniciar desde el principio" aria-label="Reiniciar desde el principio">↺ Reiniciar</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnSenaSugeridaVelocidadLenta" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
+                <span class="small fw-bold text-muted" id="senaSugeridaVelocidadLabel">1x</span>
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnSenaSugeridaVelocidadRapida" title="Aumentar velocidad" aria-label="Aumentar velocidad">🐇</button>
            </div>`
         : `<div class="d-flex flex-column align-items-center justify-content-center bg-light text-muted text-center p-3 rounded border" style="min-height:140px;">
                 <span class="fs-2 mb-1">🎥</span>
@@ -466,6 +473,11 @@ function mostrarPalabra(p){
     } else {
         ytPlayerPalabra = null;
     }
+    if (idSenaSugerida) {
+        inicializarReproductorSenaSugerida(idSenaSugerida);
+    } else {
+        ytPlayerSenaSugerida = null;
+    }
     setTimeout(() => resultado.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
 }
 
@@ -474,12 +486,19 @@ let ytPlayerPalabra = null;
 let ytApiListo = false;
 let ytVideoIdPendiente = null;
 
+let ytPlayerSenaSugerida = null;
+let ytVideoIdPendienteSenaSugerida = null;
+
 // Esta función la llama automáticamente el script de YouTube (iframe_api) cuando está lista.
 function onYouTubeIframeAPIReady() {
     ytApiListo = true;
     if (ytVideoIdPendiente) {
         crearReproductorPalabra(ytVideoIdPendiente);
         ytVideoIdPendiente = null;
+    }
+    if (ytVideoIdPendienteSenaSugerida) {
+        crearReproductorSenaSugerida(ytVideoIdPendienteSenaSugerida);
+        ytVideoIdPendienteSenaSugerida = null;
     }
 }
 window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
@@ -561,6 +580,84 @@ function actualizarLabelVelocidadPalabra() {
 
 function actualizarBotonPlayPause(evento) {
     const btnPlayPause = document.getElementById("btnPlayPause");
+    if (!btnPlayPause) return;
+    btnPlayPause.textContent = evento.data === YT.PlayerState.PLAYING ? "⏸ Pausar" : "▶️ Reproducir";
+}
+
+// --- REPRODUCTOR DE "SEÑA SUGERIDA" (mismo patrón que el video principal,
+// pero con sus propios botones: play/pausa, reiniciar y velocidad — sin
+// retroceder/avanzar, que no hacía falta para este video más corto). ---
+function inicializarReproductorSenaSugerida(videoId) {
+    if (ytApiListo) {
+        crearReproductorSenaSugerida(videoId);
+    } else {
+        ytVideoIdPendienteSenaSugerida = videoId;
+    }
+}
+
+function crearReproductorSenaSugerida(videoId) {
+    const contenedor = document.getElementById("reproductorSenaSugerida");
+    if (!contenedor) return;
+    if (ytPlayerSenaSugerida && typeof ytPlayerSenaSugerida.destroy === "function") {
+        ytPlayerSenaSugerida.destroy();
+    }
+    ytPlayerSenaSugerida = new YT.Player("reproductorSenaSugerida", {
+        videoId: videoId,
+        playerVars: { rel: 0, modestbranding: 1 },
+        events: {
+            onReady: configurarControlesSenaSugerida,
+            onStateChange: actualizarBotonPlayPauseSenaSugerida
+        }
+    });
+}
+
+let senaSugeridaVelocidadIndex = 3; // 1x
+
+function configurarControlesSenaSugerida() {
+    const btnPlayPause = document.getElementById("btnPlayPauseSenaSugerida");
+    const btnReiniciar = document.getElementById("btnReiniciarSenaSugerida");
+    const btnVelocidadLenta = document.getElementById("btnSenaSugeridaVelocidadLenta");
+    const btnVelocidadRapida = document.getElementById("btnSenaSugeridaVelocidadRapida");
+    if (!btnPlayPause || !btnReiniciar || !btnVelocidadLenta || !btnVelocidadRapida || !ytPlayerSenaSugerida) return;
+
+    btnPlayPause.addEventListener("click", () => {
+        const estado = ytPlayerSenaSugerida.getPlayerState();
+        if (estado === YT.PlayerState.PLAYING) {
+            ytPlayerSenaSugerida.pauseVideo();
+        } else {
+            ytPlayerSenaSugerida.playVideo();
+        }
+    });
+
+    btnReiniciar.addEventListener("click", () => {
+        ytPlayerSenaSugerida.seekTo(0, true);
+        ytPlayerSenaSugerida.playVideo();
+    });
+
+    // Cada video nuevo arranca en 1x.
+    senaSugeridaVelocidadIndex = VELOCIDADES_PALABRA.indexOf(1);
+    ytPlayerSenaSugerida.setPlaybackRate(1);
+    actualizarLabelVelocidadSenaSugerida();
+
+    btnVelocidadLenta.addEventListener("click", () => cambiarVelocidadSenaSugerida(-1));
+    btnVelocidadRapida.addEventListener("click", () => cambiarVelocidadSenaSugerida(1));
+}
+
+function cambiarVelocidadSenaSugerida(delta) {
+    if (!ytPlayerSenaSugerida) return;
+    const max = VELOCIDADES_PALABRA.length - 1;
+    senaSugeridaVelocidadIndex = Math.min(max, Math.max(0, senaSugeridaVelocidadIndex + delta));
+    ytPlayerSenaSugerida.setPlaybackRate(VELOCIDADES_PALABRA[senaSugeridaVelocidadIndex]);
+    actualizarLabelVelocidadSenaSugerida();
+}
+
+function actualizarLabelVelocidadSenaSugerida() {
+    const label = document.getElementById("senaSugeridaVelocidadLabel");
+    if (label) label.textContent = VELOCIDADES_PALABRA[senaSugeridaVelocidadIndex] + "x";
+}
+
+function actualizarBotonPlayPauseSenaSugerida(evento) {
+    const btnPlayPause = document.getElementById("btnPlayPauseSenaSugerida");
     if (!btnPlayPause) return;
     btnPlayPause.textContent = evento.data === YT.PlayerState.PLAYING ? "⏸ Pausar" : "▶️ Reproducir";
 }
