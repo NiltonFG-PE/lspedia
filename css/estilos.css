@@ -290,19 +290,33 @@ iframe {
 }
 
 /* Panel que envuelve las tarjetas de estadísticas (Palabras/Categorías/
-   Videos), con un fondo bien distinto al resto de la página (blanco/gris
-   claro) para que resalte como un bloque aparte. Las tarjetas de adentro
-   (.stat-card-clicable) siguen siendo blancas, así que quedan "flotando"
-   sobre este panel oscuro. */
+   Videos), con un fondo celeste claro que contrasta suave con el resto
+   de la página (blanco/gris muy claro) sin ser oscuro ni agresivo. Las
+   tarjetas de adentro (.stat-card-clicable) siguen siendo blancas. */
 .stats-panel-destacado {
-    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+    background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
     border-radius: 20px;
     padding: 28px 16px;
-    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.18);
+    box-shadow: 0 6px 18px rgba(2, 132, 199, 0.12);
 }
 @media (max-width: 576px) {
     .stats-panel-destacado {
         padding: 20px 10px;
+        border-radius: 16px;
+    }
+}
+
+/* Panel que envuelve "Puede que también te interese", con fondo amarillo
+   claro para diferenciarlo visualmente del resto de bloques de la página. */
+.sugerencias-panel-destacado {
+    background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+    border-radius: 20px;
+    padding: 20px 18px;
+    box-shadow: 0 6px 18px rgba(202, 138, 4, 0.12);
+}
+@media (max-width: 576px) {
+    .sugerencias-panel-destacado {
+        padding: 16px 12px;
         border-radius: 16px;
     }
 }

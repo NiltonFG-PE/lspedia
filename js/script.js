@@ -742,12 +742,18 @@ function mostrarSugerenciasRelacionadas(palabraActual){
     ultimasPalabras.innerHTML = "";
     const relacionadas = App.datos.filter(p => p.categoria.trim() === palabraActual.categoria.trim() && p.palabra !== palabraActual.palabra);
     if (relacionadas.length === 0) return;
-    ultimasPalabras.innerHTML = `<div class="col-12 mt-4 mb-2"><h5 class="fw-bold">Puede que también te interese</h5></div>`;
+    // Todo el bloque (título + tarjetas) va dentro de un único "col-12"
+    // con fondo amarillo claro (.sugerencias-panel-destacado), así el
+    // panel de color solo aparece cuando realmente hay sugerencias que
+    // mostrar (si no hay, ultimasPalabras queda vacío y no se ve ninguna
+    // caja de color de más).
+    ultimasPalabras.innerHTML = `<div class="col-12"><div class="sugerencias-panel-destacado"><h5 class="fw-bold mb-3">Puede que también te interese</h5><div class="row g-2" id="sugerenciasPanelFilas"></div></div></div>`;
+    const filas = document.getElementById("sugerenciasPanelFilas");
     relacionadas.slice(-4).reverse().forEach(p => {
         const col = document.createElement("div"); col.className = "col-12 col-md-6 mb-2";
-        col.innerHTML = `<div class="card h-100 border-0 shadow-sm" style="border-radius: 12px; background-color: #f8f9fa;"><div class="row g-0 align-items-center"><div class="col-3 p-2"><img src="${p.imagen || 'https://via.placeholder.com/150'}" class="img-fluid rounded" style="height: 70px; width: 70px; object-fit: cover;"></div><div class="col-9"><div class="card-body py-2 px-2"><h6 class="mb-0 fw-bold text-primary">${p.palabra}</h6></div></div></div></div>`;
+        col.innerHTML = `<div class="card h-100 border-0 shadow-sm" style="border-radius: 12px; background-color: #ffffff;"><div class="row g-0 align-items-center"><div class="col-3 p-2"><img src="${p.imagen || 'https://via.placeholder.com/150'}" class="img-fluid rounded" style="height: 70px; width: 70px; object-fit: cover;"></div><div class="col-9"><div class="card-body py-2 px-2"><h6 class="mb-0 fw-bold text-primary">${p.palabra}</h6></div></div></div></div>`;
         col.onclick = () => { window.scrollTo({ top: 0, behavior: 'smooth' }); mostrarPalabra(p); };
-        ultimasPalabras.appendChild(col);
+        filas.appendChild(col);
     });
 }
 

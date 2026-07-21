@@ -340,35 +340,37 @@
 
         <div id="resultado" class="mb-4 animate-fade-in"></div>
 
-        <div class="row g-3 justify-content-center mb-4">
-            <div class="col-4 col-md-3">
-                <div class="card stat-card-clicable border-0 shadow-sm h-100 text-center py-4 px-2" id="statCardPalabras" role="button" tabindex="0" style="border-radius: 16px;">
-                    <div class="fs-1 mb-2">📚</div>
-                    <div class="text-uppercase small fw-bold mb-1" style="letter-spacing:0.05em; color:#94a3b8;">Palabras</div>
-                    <div class="fs-2 fw-bold" id="totalPalabras" style="color: var(--text-main);">0</div>
-                    <div class="small fw-semibold mt-1" style="color:#16a34a;">100% Completo</div>
+        <div id="ultimasPalabras" class="row g-2 mb-4"></div>
+        <div id="panelCategorias" class="row g-2 mb-4 p-2"></div>
+
+        <div class="stats-panel-destacado mb-4">
+            <div class="row g-3 justify-content-center">
+                <div class="col-4 col-md-3">
+                    <div class="card stat-card-clicable border-0 shadow-sm h-100 text-center py-4 px-2" id="statCardPalabras" role="button" tabindex="0" style="border-radius: 16px;">
+                        <div class="fs-1 mb-2">📚</div>
+                        <div class="text-uppercase small fw-bold mb-1" style="letter-spacing:0.05em; color:#94a3b8;">Palabras</div>
+                        <div class="fs-2 fw-bold" id="totalPalabras" style="color: var(--text-main);">0</div>
+                        <div class="small fw-semibold mt-1" style="color:#16a34a;">100% Completo</div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-4 col-md-3">
-                <div class="card stat-card-clicable border-0 shadow-sm h-100 text-center py-4 px-2" id="statCardCategorias" role="button" tabindex="0" style="border-radius: 16px;">
-                    <div class="fs-1 mb-2">📁</div>
-                    <div class="text-uppercase small fw-bold mb-1" style="letter-spacing:0.05em; color:#94a3b8;">Categorías</div>
-                    <div class="fs-2 fw-bold" id="totalCategorias" style="color: var(--text-main);">0</div>
-                    <div class="small fw-semibold mt-1" style="color:#0284c7;">Ubicadas</div>
+                <div class="col-4 col-md-3">
+                    <div class="card stat-card-clicable border-0 shadow-sm h-100 text-center py-4 px-2" id="statCardCategorias" role="button" tabindex="0" style="border-radius: 16px;">
+                        <div class="fs-1 mb-2">📁</div>
+                        <div class="text-uppercase small fw-bold mb-1" style="letter-spacing:0.05em; color:#94a3b8;">Categorías</div>
+                        <div class="fs-2 fw-bold" id="totalCategorias" style="color: var(--text-main);">0</div>
+                        <div class="small fw-semibold mt-1" style="color:#0284c7;">Ubicadas</div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-4 col-md-3">
-                <div class="card stat-card-clicable border-0 shadow-sm h-100 text-center py-4 px-2" id="statCardVideos" role="button" tabindex="0" style="border-radius: 16px;">
-                    <div class="fs-1 mb-2">🎥</div>
-                    <div class="text-uppercase small fw-bold mb-1" style="letter-spacing:0.05em; color:#94a3b8;">Videos</div>
-                    <div class="fs-2 fw-bold" id="totalVideos" style="color: var(--text-main);">0</div>
-                    <div class="small fw-semibold mt-1" style="color:#7c3aed;">HD de YouTube</div>
+                <div class="col-4 col-md-3">
+                    <div class="card stat-card-clicable border-0 shadow-sm h-100 text-center py-4 px-2" id="statCardVideos" role="button" tabindex="0" style="border-radius: 16px;">
+                        <div class="fs-1 mb-2">🎥</div>
+                        <div class="text-uppercase small fw-bold mb-1" style="letter-spacing:0.05em; color:#94a3b8;">Videos</div>
+                        <div class="fs-2 fw-bold" id="totalVideos" style="color: var(--text-main);">0</div>
+                        <div class="small fw-semibold mt-1" style="color:#7c3aed;">HD de YouTube</div>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div id="ultimasPalabras" class="row g-2 mb-4"></div>
-        <div id="panelCategorias" class="row g-2 mb-4 p-2"></div>
 
         <section id="seccionHistorial" class="mb-5 d-none p-3">
             <h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">🕒 Mi Historial de Búsqueda</h6>
