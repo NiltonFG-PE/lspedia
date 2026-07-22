@@ -392,22 +392,47 @@
         </div>
     </nav>
 
-    <button type="button" id="btnAccesoJugar" class="btn-acceso-jugar" title="Ir a Jugar" aria-label="Acceso directo a Jugar">
-        <span aria-hidden="true">🎮</span>
-    </button>
+    <!-- Cada botón flotante va envuelto en un ".fab-wrap" que agrega una
+         pequeña "x" individual (esquina superior derecha) para cerrar
+         SOLO ese botón, además del botón "✕" grupal de abajo que cierra
+         los 3 de una vez. El estado de cada uno (oculto/visible) se
+         recuerda por separado en localStorage. -->
+    <div class="fab-wrap" id="fabWrapJugar">
+        <button type="button" id="btnAccesoJugar" class="btn-acceso-jugar" title="Ir a Jugar" aria-label="Acceso directo a Jugar">
+            <span aria-hidden="true">🎮</span>
+        </button>
+        <button type="button" class="fab-cerrar-individual" data-fab="jugar" title="Ocultar este acceso" aria-label="Ocultar acceso a Jugar">✕</button>
+    </div>
 
-    <button type="button" id="btnAccesoSubtitulos" class="btn-acceso-flotante btn-acceso-subtitulos" title="Ir a Subtítulos" aria-label="Acceso directo a Subtítulos">
-        <span aria-hidden="true">💬</span>
-    </button>
+    <div class="fab-wrap" id="fabWrapSubtitulos">
+        <button type="button" id="btnAccesoSubtitulos" class="btn-acceso-flotante btn-acceso-subtitulos" title="Ir a Subtítulos" aria-label="Acceso directo a Subtítulos">
+            <svg class="icono-acceso-subtitulos" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                <circle cx="32" cy="32" r="30" fill="#FFC107"/>
+                <circle cx="32" cy="32" r="24.5" fill="#FFA000"/>
+                <circle cx="32" cy="32" r="21.5" fill="#FDE3A7"/>
+                <rect x="15" y="24" width="34" height="19" rx="4.5" fill="#FFF6DF"/>
+                <rect x="19.5" y="28.5" width="17" height="3" rx="1.5" fill="#2b2b2b"/>
+                <rect x="38.5" y="28.5" width="6.5" height="3" rx="1.5" fill="#2b2b2b"/>
+                <rect x="19.5" y="34" width="6.5" height="3" rx="1.5" fill="#2b2b2b"/>
+                <rect x="28" y="34" width="17" height="3" rx="1.5" fill="#2b2b2b"/>
+                <rect x="19.5" y="38.5" width="17" height="3" rx="1.5" fill="#2b2b2b"/>
+                <rect x="38.5" y="38.5" width="6.5" height="3" rx="1.5" fill="#2b2b2b"/>
+            </svg>
+        </button>
+        <button type="button" class="fab-cerrar-individual" data-fab="subtitulos" title="Ocultar este acceso" aria-label="Ocultar acceso a Subtítulos">✕</button>
+    </div>
 
-    <button type="button" id="btnAccesoBuscar" class="btn-acceso-flotante btn-acceso-buscar" title="Buscar palabras" aria-label="Acceso directo a Buscar palabras">
-        <span aria-hidden="true">🔍</span>
-    </button>
+    <div class="fab-wrap" id="fabWrapBuscar">
+        <button type="button" id="btnAccesoBuscar" class="btn-acceso-flotante btn-acceso-buscar" title="Buscar palabras" aria-label="Acceso directo a Buscar palabras">
+            <span aria-hidden="true">🔍</span>
+        </button>
+        <button type="button" class="fab-cerrar-individual" data-fab="buscar" title="Ocultar este acceso" aria-label="Ocultar acceso a Buscar palabras">✕</button>
+    </div>
 
-    <button type="button" id="btnCerrarAccesos" class="btn-cerrar-accesos" title="Ocultar accesos rápidos" aria-label="Ocultar accesos rápidos">✕</button>
+    <button type="button" id="btnCerrarAccesos" class="btn-cerrar-accesos" title="Ocultar todos los accesos rápidos" aria-label="Ocultar todos los accesos rápidos">✕</button>
 
     <button type="button" id="btnMostrarAccesos" class="btn-mostrar-accesos d-none" title="Mostrar accesos rápidos" aria-label="Mostrar accesos rápidos">
-        <span aria-hidden="true">🤟</span>
+        <span aria-hidden="true">🤟🏻</span>
     </button>
 
 
@@ -985,10 +1010,39 @@
                         <p class="text-muted mb-2">
                             Esta pantalla te ayudará a ver subtítulos en vivo. Ideal para el cine
                         </p>
-                        <p class="small fw-bold mb-4" style="color:#c2410c;">
-                            📢 Para mejores resultados: sube el volumen del parlante y coloca el celular lo más
-                            cerca posible de él. Mientras más lejos esté, menos se detecta el audio.
-                        </p>
+
+                        <!-- Tips de uso ampliados: consejos concretos para que el celular
+                             capte mejor el audio de la sala antes de que arranque la escucha. -->
+                        <div class="text-start mx-auto mb-4" style="max-width: 480px; background:#fff7ed; border:1px solid #fed7aa; border-radius:12px; padding:14px 18px;">
+                            <p class="small fw-bold mb-2" style="color:#c2410c;">📢 Consejos para captar mejor el audio:</p>
+                            <ul class="small text-muted mb-0 ps-3" style="color:#9a3412 !important;">
+                                <li>Saca el celular de la funda/bolsillo y sostenlo con el micrófono apuntando hacia los parlantes.</li>
+                                <li>Mientras más cerca esté del parlante, mejor se transcribe: evita dejarlo sobre la pierna o mesa baja.</li>
+                                <li>Si tienes audífonos con micrófono (manos libres), pruébalos: suelen captar mejor que el micrófono trasero del celular.</li>
+                                <li>Evita hablar o hacer ruido cerca del celular mientras esté escuchando.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Medidor de nivel de audio ambiente: usa un stream de micrófono
+                             independiente SOLO en esta pantalla (antes de iniciar el
+                             reconocimiento de voz), para que el usuario pueda comprobar y
+                             ajustar la posición del celular ANTES de empezar la sesión.
+                             Se apaga automáticamente al pulsar "Activar micrófono y empezar"
+                             o al salir de esta pantalla, para no competir por el micrófono
+                             con SpeechRecognition (ver nota en subtitulos.js). -->
+                        <div class="mx-auto mb-4" style="max-width: 480px;">
+                            <div id="subtitulosMedidorCaja" class="p-3" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px;">
+                                <button id="btnSubtitulosProbarNivel" type="button" class="btn btn-outline-secondary btn-sm rounded-pill fw-bold mb-2">
+                                    🎚️ Probar nivel de audio
+                                </button>
+                                <div id="subtitulosMedidorNivel" class="d-none">
+                                    <div class="subtitulos-medidor-barra-wrap">
+                                        <div id="subtitulosMedidorBarra" class="subtitulos-medidor-barra"></div>
+                                    </div>
+                                    <p id="subtitulosMedidorEtiqueta" class="small fw-bold mt-2 mb-0">Escuchando el ambiente…</p>
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="row justify-content-center mb-4">
                             <div class="col-sm-6 col-md-5 text-start">
@@ -1161,7 +1215,8 @@
          duplican lógica), más el control para ocultarlos/mostrarlos. -->
     <script>
         (function () {
-            const CLAVE_OCULTO = "lspedia_accesos_flotantes_ocultos";
+            const CLAVE_OCULTO = "lspedia_accesos_flotantes_ocultos"; // legado: estado del grupo completo
+            const CLAVE_OCULTOS_INDIVIDUALES = "lspedia_accesos_individuales_ocultos"; // { jugar, subtitulos, buscar }
 
             const btnAccesoSubtitulos = document.getElementById("btnAccesoSubtitulos");
             if (btnAccesoSubtitulos) {
@@ -1184,37 +1239,106 @@
                 });
             }
 
-            // Ocultar / mostrar el grupo de 3 botones flotantes (Jugar,
-            // Subtítulos, Buscar). El estado elegido se recuerda entre
-            // visitas con localStorage.
-            const botonesGrupo = [
-                document.getElementById("btnAccesoJugar"),
-                document.getElementById("btnAccesoSubtitulos"),
-                document.getElementById("btnAccesoBuscar")
-            ].filter(Boolean);
+            // ------------------------------------------------------------
+            // Ocultar / mostrar accesos flotantes: cada botón (Jugar,
+            // Subtítulos, Buscar) se puede cerrar POR SEPARADO con su
+            // propia "x" individual, además del botón "✕" grupal que
+            // cierra los 3 de una vez. El botón de reemplazo "🤟" vuelve a
+            // mostrar TODOS los accesos (el grupo completo), sea cual sea
+            // la combinación que estaba oculta.
+            // ------------------------------------------------------------
+            const WRAPS = {
+                jugar: document.getElementById("fabWrapJugar"),
+                subtitulos: document.getElementById("fabWrapSubtitulos"),
+                buscar: document.getElementById("fabWrapBuscar")
+            };
             const btnCerrarAccesos = document.getElementById("btnCerrarAccesos");
             const btnMostrarAccesos = document.getElementById("btnMostrarAccesos");
 
+            function leerOcultosIndividuales() {
+                try {
+                    return JSON.parse(localStorage.getItem(CLAVE_OCULTOS_INDIVIDUALES) || "{}");
+                } catch (e) {
+                    return {};
+                }
+            }
+
+            function guardarOcultosIndividuales(ocultos) {
+                try { localStorage.setItem(CLAVE_OCULTOS_INDIVIDUALES, JSON.stringify(ocultos)); } catch (e) {}
+            }
+
+            // Actualiza la visibilidad de btnCerrarAccesos / btnMostrarAccesos
+            // según cuántos de los 3 wraps queden visibles: si TODOS están
+            // ocultos, se muestra el botón de reemplazo "🤟"; si al menos uno
+            // sigue visible, se mantiene el "✕" grupal disponible.
+            function actualizarBotonesGrupo() {
+                const ocultos = leerOcultosIndividuales();
+                const todosOcultos = ["jugar", "subtitulos", "buscar"].every((clave) => ocultos[clave]);
+                if (btnCerrarAccesos) btnCerrarAccesos.classList.toggle("fab-oculto", todosOcultos);
+                if (btnMostrarAccesos) btnMostrarAccesos.classList.toggle("d-none", !todosOcultos);
+            }
+
+            function ocultarUno(clave) {
+                const wrap = WRAPS[clave];
+                if (wrap) wrap.classList.add("fab-oculto");
+                const ocultos = leerOcultosIndividuales();
+                ocultos[clave] = true;
+                guardarOcultosIndividuales(ocultos);
+                // Mantenemos el localStorage "legado" en sync por si algo más
+                // lo lee, aunque ya no es la única fuente de verdad.
+                try { localStorage.setItem(CLAVE_OCULTO, "0"); } catch (e) {}
+                actualizarBotonesGrupo();
+            }
+
+            function mostrarUno(clave) {
+                const wrap = WRAPS[clave];
+                if (wrap) wrap.classList.remove("fab-oculto");
+                const ocultos = leerOcultosIndividuales();
+                ocultos[clave] = false;
+                guardarOcultosIndividuales(ocultos);
+                actualizarBotonesGrupo();
+            }
+
             function ocultarAccesos() {
-                botonesGrupo.forEach((btn) => btn.classList.add("fab-oculto"));
-                if (btnCerrarAccesos) btnCerrarAccesos.classList.add("fab-oculto");
-                if (btnMostrarAccesos) btnMostrarAccesos.classList.remove("d-none");
-                try { localStorage.setItem(CLAVE_OCULTO, "1"); } catch (e) {}
+                // Botón "✕" grupal: oculta los 3 de una vez.
+                Object.keys(WRAPS).forEach(ocultarUno);
             }
 
             function mostrarAccesos() {
-                botonesGrupo.forEach((btn) => btn.classList.remove("fab-oculto"));
-                if (btnCerrarAccesos) btnCerrarAccesos.classList.remove("fab-oculto");
-                if (btnMostrarAccesos) btnMostrarAccesos.classList.add("d-none");
-                try { localStorage.setItem(CLAVE_OCULTO, "0"); } catch (e) {}
+                // Botón de reemplazo "🤟": vuelve a mostrar los 3 de una vez.
+                Object.keys(WRAPS).forEach(mostrarUno);
             }
+
+            document.querySelectorAll(".fab-cerrar-individual").forEach((btn) => {
+                btn.addEventListener("click", (e) => {
+                    e.stopPropagation(); // no debe disparar el clic del botón principal debajo
+                    const clave = btn.getAttribute("data-fab");
+                    if (clave) ocultarUno(clave);
+                });
+            });
 
             if (btnCerrarAccesos) btnCerrarAccesos.addEventListener("click", ocultarAccesos);
             if (btnMostrarAccesos) btnMostrarAccesos.addEventListener("click", mostrarAccesos);
 
-            let estabaOculto = false;
-            try { estabaOculto = localStorage.getItem(CLAVE_OCULTO) === "1"; } catch (e) {}
-            if (estabaOculto) ocultarAccesos();
+            // Restaura el estado guardado al cargar la página. Si existe el
+            // estado individual nuevo, manda sobre el legado (grupo completo).
+            const ocultosGuardados = leerOcultosIndividuales();
+            const hayEstadoIndividual = Object.keys(ocultosGuardados).length > 0;
+            if (hayEstadoIndividual) {
+                Object.keys(WRAPS).forEach((clave) => {
+                    if (ocultosGuardados[clave]) {
+                        const wrap = WRAPS[clave];
+                        if (wrap) wrap.classList.add("fab-oculto");
+                    }
+                });
+                actualizarBotonesGrupo();
+            } else {
+                // Compatibilidad con visitantes que ya tenían guardado el
+                // estado "legado" de grupo completo, antes de este cambio.
+                let estabaOculto = false;
+                try { estabaOculto = localStorage.getItem(CLAVE_OCULTO) === "1"; } catch (e) {}
+                if (estabaOculto) ocultarAccesos();
+            }
         })();
     </script>
 
