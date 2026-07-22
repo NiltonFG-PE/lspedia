@@ -411,13 +411,13 @@ iframe {
 }
 .btn-acceso-flotante {
     position: static;
-    width: 56px;
-    height: 56px;
+    width: 68px;
+    height: 68px;
     border-radius: 50%;
     border: none;
     background-color: #ffc107;
     color: #0f172a;
-    font-size: 1.5rem;
+    font-size: 1.9rem;
     line-height: 1;
     display: flex;
     align-items: center;
@@ -451,9 +451,9 @@ iframe {
     filter: drop-shadow(0 6px 12px rgba(15, 23, 42, 0.3));
 }
 
-/* Arriba del botón de Subtítulos (120px + 56px de alto + 14px de separación) */
+/* Arriba del botón de Subtítulos (120px + 68px de alto + 14px de separación) */
 #fabWrapBuscar {
-    bottom: 190px;
+    bottom: 202px;
 }
 
 /* ==========================================
@@ -507,7 +507,7 @@ iframe {
    de la pila). */
 .btn-cerrar-accesos {
     position: fixed;
-    bottom: 232px;
+    bottom: 286px;
     right: 20px;
     z-index: 1041;
     width: 24px;
@@ -574,18 +574,18 @@ iframe {
         right: 22px;
     }
     .btn-acceso-flotante {
-        width: 48px;
-        height: 48px;
-        font-size: 1.3rem;
+        width: 60px;
+        height: 60px;
+        font-size: 1.6rem;
     }
     #fabWrapSubtitulos {
-        bottom: 102px;
+        bottom: 104px;
     }
     #fabWrapBuscar {
-        bottom: 162px;
+        bottom: 178px;
     }
     .btn-cerrar-accesos {
-        bottom: 200px;
+        bottom: 252px;
         right: 16px;
         width: 20px;
         height: 20px;
