@@ -347,11 +347,17 @@ iframe {
 /* ==========================================
    Botón flotante: acceso directo a "Jugar" (Quiz)
 ========================================== */
-.btn-acceso-jugar {
+/* El position:fixed ahora vive en el .fab-wrap (contenedor), no en el
+   botón, para poder anclar junto a él la "x" individual sin romper el
+   layout. El botón interno pasa a position:static. */
+#fabWrapJugar {
     position: fixed;
     right: 22px;
     bottom: 38px;
     z-index: 1040;
+}
+.btn-acceso-jugar {
+    position: static;
     width: 68px;
     height: 68px;
     border-radius: 50%;
@@ -380,12 +386,14 @@ iframe {
     50% { box-shadow: 0 6px 18px rgba(15, 23, 42, 0.35), 0 0 0 10px rgba(255, 193, 7, 0); }
 }
 @media (max-width: 576px) {
+    #fabWrapJugar {
+        right: 16px;
+        bottom: 30px;
+    }
     .btn-acceso-jugar {
         width: 60px;
         height: 60px;
         font-size: 1.6rem;
-        right: 16px;
-        bottom: 30px;
     }
 }
 
@@ -395,10 +403,14 @@ iframe {
    y estilo circular (amarillo), un poco más chicos y sin la animación
    de pulso.
 ========================================== */
-.btn-acceso-flotante {
+#fabWrapSubtitulos,
+#fabWrapBuscar {
     position: fixed;
     right: 28px;
     z-index: 1040;
+}
+.btn-acceso-flotante {
+    position: static;
     width: 56px;
     height: 56px;
     border-radius: 50%;
@@ -423,13 +435,71 @@ iframe {
 }
 
 /* Justo arriba del botón de Jugar (bottom: 38px + 68px de alto + 14px de separación) */
-.btn-acceso-subtitulos {
+#fabWrapSubtitulos {
     bottom: 120px;
+}
+.btn-acceso-subtitulos {
+    /* El ícono SVG ya trae su propio círculo dorado, así que quitamos
+       el fondo/relleno del <button> para no duplicar el círculo. */
+    background-color: transparent;
+    box-shadow: none;
+    padding: 0;
+}
+.icono-acceso-subtitulos {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 6px 12px rgba(15, 23, 42, 0.3));
 }
 
 /* Arriba del botón de Subtítulos (120px + 56px de alto + 14px de separación) */
-.btn-acceso-buscar {
+#fabWrapBuscar {
     bottom: 190px;
+}
+
+/* ==========================================
+   "x" individual de cada acceso flotante: un botón pequeño y discreto
+   en la esquina superior derecha de cada uno, para cerrar SOLO ese
+   acceso sin afectar a los otros dos. Aparece siempre visible pero
+   pequeño y con opacidad baja, para no competir visualmente con el
+   ícono principal; se resalta al pasar el cursor/tocar cerca.
+========================================== */
+.fab-wrap {
+    position: fixed;
+}
+.fab-cerrar-individual {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+    background-color: #64748b;
+    color: #ffffff;
+    font-size: 0.7rem;
+    line-height: 1;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.85;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.35);
+    transition: transform 0.15s ease, opacity 0.15s ease, background-color 0.15s ease;
+    z-index: 1041;
+}
+.fab-cerrar-individual:hover,
+.fab-cerrar-individual:focus {
+    opacity: 1;
+    background-color: #dc2626;
+    transform: scale(1.12);
+}
+@media (max-width: 576px) {
+    .fab-cerrar-individual {
+        width: 20px;
+        height: 20px;
+        font-size: 0.65rem;
+    }
 }
 
 /* Botón "✕" para ocultar el grupo de 3 accesos, como una pequeña
@@ -489,7 +559,9 @@ iframe {
 }
 
 /* Estado oculto: se desvanecen y se deslizan hacia abajo en vez de
-   desaparecer de golpe, y dejan de recibir clics. */
+   desaparecer de golpe, y dejan de recibir clics. Se aplica al
+   .fab-wrap completo (botón + su "x" individual) para ocultar ambos
+   a la vez. */
 .fab-oculto {
     opacity: 0;
     transform: translateY(20px);
@@ -497,16 +569,19 @@ iframe {
 }
 
 @media (max-width: 576px) {
+    #fabWrapSubtitulos,
+    #fabWrapBuscar {
+        right: 22px;
+    }
     .btn-acceso-flotante {
         width: 48px;
         height: 48px;
         font-size: 1.3rem;
-        right: 22px;
     }
-    .btn-acceso-subtitulos {
+    #fabWrapSubtitulos {
         bottom: 102px;
     }
-    .btn-acceso-buscar {
+    #fabWrapBuscar {
         bottom: 162px;
     }
     .btn-cerrar-accesos {

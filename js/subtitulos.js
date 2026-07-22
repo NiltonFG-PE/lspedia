@@ -75,7 +75,16 @@ const SubtitulosV2 = (function () {
         ultimaFraseFinal: "",    // para detectar repeticiones cuando el reconocimiento se reinicia solo
         textoInterino: "",
         _reinicioProgramado: false,
-        _eventosListos: false
+        _eventosListos: false,
+        // --- Medidor de nivel de audio (pantalla intro, ver más abajo) ---
+        medidor: {
+            activo: false,
+            stream: null,
+            audioContext: null,
+            analyser: null,
+            datos: null,
+            rafId: null
+        }
     };
 
     function el(id) { return document.getElementById(id); }
@@ -108,6 +117,7 @@ const SubtitulosV2 = (function () {
         // Por privacidad, siempre apagamos el micrófono al salir de la
         // sección, aunque el usuario no haya pulsado "Detener".
         detenerEscucha();
+        detenerMedidorNivel();
         salirDePantallaCompleta();
     }
 
@@ -147,6 +157,11 @@ const SubtitulosV2 = (function () {
     }
 
     function iniciarEscucha() {
+        // Si el usuario estaba probando el nivel de audio, apagamos ese
+        // stream antes de arrancar el reconocimiento real: no deben
+        // competir por el micrófono al mismo tiempo.
+        detenerMedidorNivel();
+
         const selectIdioma = el("subtitulosSelectIdioma");
         if (selectIdioma) estado.idioma = selectIdioma.value || CONFIG.IDIOMA_POR_DEFECTO;
 
@@ -182,6 +197,150 @@ const SubtitulosV2 = (function () {
             estado.reconocimiento = null;
         }
         mostrarPantalla("intro");
+    }
+
+    // ---------------------------------------------------------
+    // MEDIDOR DE NIVEL DE AUDIO AMBIENTE (solo pantalla intro)
+    // ------------------------------------------------------------
+    // Objetivo: antes de iniciar la escucha real, dejar que el usuario
+    // vea si el celular está captando suficiente volumen del parlante
+    // del cine (o de quien esté hablando) y ajuste la posición.
+    //
+    // ⚠️ Usa su PROPIO stream de micrófono (getUserMedia), separado del
+    // que usará después SpeechRecognition. Por eso:
+    //   - Solo se activa cuando el usuario pulsa "Probar nivel de audio"
+    //     en la pantalla intro, nunca junto con el reconocimiento real.
+    //   - Se apaga automáticamente al pulsar "Activar micrófono y
+    //     empezar" (iniciarEscucha) y al salir de la sección (salir()),
+    //     para no competir por el micrófono con SpeechRecognition en
+    //     Android (mismo motivo por el que se quitó el medidor anterior
+    //     que corría en paralelo al reconocimiento; ver notas arriba).
+    // ---------------------------------------------------------
+    function medidorSoportado() {
+        return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.AudioContext || window.webkitAudioContext);
+    }
+
+    function iniciarMedidorNivel() {
+        if (estado.medidor.activo) return;
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            actualizarEtiquetaMedidor("Tu navegador no admite probar el nivel de audio aquí.", "bajo");
+            return;
+        }
+
+        const btnProbar = el("btnSubtitulosProbarNivel");
+        const cajaMedidor = el("subtitulosMedidorNivel");
+        if (btnProbar) { btnProbar.disabled = true; btnProbar.textContent = "🎚️ Conectando micrófono…"; }
+
+        navigator.mediaDevices.getUserMedia({ audio: true })
+            .then((stream) => {
+                // El usuario pudo haber cambiado de pantalla mientras se
+                // esperaba el permiso; si ya no corresponde, cerramos el
+                // stream inmediatamente sin mostrar nada.
+                if (!el("subtitulosIntro") || el("subtitulosIntro").classList.contains("d-none")) {
+                    stream.getTracks().forEach((t) => t.stop());
+                    return;
+                }
+
+                const Ctor = window.AudioContext || window.webkitAudioContext;
+                const audioContext = new Ctor();
+                const fuente = audioContext.createMediaStreamSource(stream);
+                const analyser = audioContext.createAnalyser();
+                analyser.fftSize = 512;
+                analyser.smoothingTimeConstant = 0.6;
+                fuente.connect(analyser);
+
+                estado.medidor.activo = true;
+                estado.medidor.stream = stream;
+                estado.medidor.audioContext = audioContext;
+                estado.medidor.analyser = analyser;
+                estado.medidor.datos = new Uint8Array(analyser.frequencyBinCount);
+
+                if (btnProbar) { btnProbar.classList.add("d-none"); }
+                if (cajaMedidor) { cajaMedidor.classList.remove("d-none"); }
+
+                bucleMedidor();
+            })
+            .catch((err) => {
+                console.warn("No se pudo abrir el micrófono para el medidor de nivel:", err);
+                if (btnProbar) { btnProbar.disabled = false; btnProbar.textContent = "🎚️ Probar nivel de audio"; }
+                actualizarEtiquetaMedidor("No se pudo acceder al micrófono. Revisa los permisos del navegador.", "bajo");
+                if (cajaMedidor) cajaMedidor.classList.remove("d-none");
+            });
+    }
+
+    function bucleMedidor() {
+        if (!estado.medidor.activo || !estado.medidor.analyser) return;
+
+        estado.medidor.analyser.getByteTimeDomainData(estado.medidor.datos);
+
+        // RMS (root-mean-square) del buffer de forma de onda: una medida
+        // simple y estable del volumen general captado, de 0 a ~1.
+        let sumaCuadrados = 0;
+        for (let i = 0; i < estado.medidor.datos.length; i++) {
+            const muestra = (estado.medidor.datos[i] - 128) / 128;
+            sumaCuadrados += muestra * muestra;
+        }
+        const rms = Math.sqrt(sumaCuadrados / estado.medidor.datos.length);
+
+        // Escalamos el RMS (típicamente pequeño, ~0 a 0.3 en voz/ambiente
+        // normal) a un porcentaje 0-100 más expresivo para la barra.
+        const porcentaje = Math.min(100, Math.round(rms * 100 * 3.2));
+
+        const barra = el("subtitulosMedidorBarra");
+        let nivel = "bajo";
+        if (porcentaje >= 55) nivel = "bien";
+        else if (porcentaje >= 25) nivel = "regular";
+
+        if (barra) {
+            barra.style.width = porcentaje + "%";
+            barra.classList.remove("nivel-regular", "nivel-bien");
+            if (nivel === "regular") barra.classList.add("nivel-regular");
+            if (nivel === "bien") barra.classList.add("nivel-bien");
+        }
+
+        const MENSAJES_NIVEL = {
+            bajo: "🔴 Muy bajo — acerca más el celular al parlante o sube el volumen.",
+            regular: "🟡 Regular — puede funcionar, pero mejor acércalo un poco más.",
+            bien: "🟢 ¡Bien! Este nivel debería transcribirse correctamente."
+        };
+        actualizarEtiquetaMedidor(MENSAJES_NIVEL[nivel], nivel);
+
+        estado.medidor.rafId = requestAnimationFrame(bucleMedidor);
+    }
+
+    function actualizarEtiquetaMedidor(texto, nivel) {
+        const etiqueta = el("subtitulosMedidorEtiqueta");
+        if (!etiqueta) return;
+        etiqueta.textContent = texto;
+        etiqueta.classList.remove("etiqueta-bajo", "etiqueta-regular", "etiqueta-bien");
+        etiqueta.classList.add("etiqueta-" + nivel);
+    }
+
+    function detenerMedidorNivel() {
+        if (estado.medidor.rafId) {
+            cancelAnimationFrame(estado.medidor.rafId);
+            estado.medidor.rafId = null;
+        }
+        if (estado.medidor.stream) {
+            estado.medidor.stream.getTracks().forEach((t) => t.stop());
+            estado.medidor.stream = null;
+        }
+        if (estado.medidor.audioContext) {
+            try { estado.medidor.audioContext.close(); } catch (e) { /* noop */ }
+            estado.medidor.audioContext = null;
+        }
+        estado.medidor.analyser = null;
+        estado.medidor.datos = null;
+        estado.medidor.activo = false;
+
+        // Reset visual: vuelve a mostrarse el botón "Probar nivel de audio"
+        // listo para la próxima vez que se entre a esta pantalla.
+        const btnProbar = el("btnSubtitulosProbarNivel");
+        const cajaMedidor = el("subtitulosMedidorNivel");
+        const barra = el("subtitulosMedidorBarra");
+        if (btnProbar) { btnProbar.disabled = false; btnProbar.textContent = "🎚️ Probar nivel de audio"; btnProbar.classList.remove("d-none"); }
+        if (cajaMedidor) cajaMedidor.classList.add("d-none");
+        if (barra) { barra.style.width = "0%"; barra.classList.remove("nivel-regular", "nivel-bien"); }
     }
 
     function manejarResultado(evento) {
@@ -515,6 +674,9 @@ const SubtitulosV2 = (function () {
 
         const btnIniciar = el("btnSubtitulosIniciar");
         if (btnIniciar) btnIniciar.addEventListener("click", iniciarEscucha);
+
+        const btnProbarNivel = el("btnSubtitulosProbarNivel");
+        if (btnProbarNivel) btnProbarNivel.addEventListener("click", iniciarMedidorNivel);
 
         const btnDetener = el("btnSubtitulosDetener");
         if (btnDetener) btnDetener.addEventListener("click", detenerEscucha);

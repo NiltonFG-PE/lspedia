@@ -215,3 +215,31 @@ body.subtitulos-bloquear-scroll {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.55; }
 }
+
+/* ============================================================
+   MEDIDOR DE NIVEL DE AUDIO (pantalla intro): barra horizontal que
+   sube/baja según el volumen ambiente captado por el micrófono,
+   con 3 tramos de color (bajo/regular/bien) para que el usuario
+   ajuste la posición del celular ANTES de iniciar la escucha real.
+   ============================================================ */
+.subtitulos-medidor-barra-wrap {
+    width: 100%;
+    height: 22px;
+    border-radius: 20px;
+    background-color: #e2e8f0;
+    overflow: hidden;
+    position: relative;
+}
+.subtitulos-medidor-barra {
+    height: 100%;
+    width: 0%;
+    border-radius: 20px;
+    background-color: #dc2626; /* rojo por defecto (bajo); JS cambia a amarillo/verde */
+    transition: width 0.12s linear, background-color 0.2s ease;
+}
+.subtitulos-medidor-barra.nivel-regular { background-color: #f59e0b; }
+.subtitulos-medidor-barra.nivel-bien { background-color: #16a34a; }
+
+#subtitulosMedidorEtiqueta.etiqueta-bajo { color: #dc2626; }
+#subtitulosMedidorEtiqueta.etiqueta-regular { color: #b45309; }
+#subtitulosMedidorEtiqueta.etiqueta-bien { color: #16a34a; }
