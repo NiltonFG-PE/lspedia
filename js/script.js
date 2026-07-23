@@ -6,7 +6,6 @@ const resultado = document.getElementById("resultado");
 const totalPalabras = document.getElementById("totalPalabras");
 const totalCategorias = document.getElementById("totalCategorias");
 const totalVideos = document.getElementById("totalVideos");
-const totalSenas = document.getElementById("totalSenas");
 
 const panelCategorias = document.getElementById("panelCategorias");
 const ultimasPalabras = document.getElementById("ultimasPalabras");
@@ -320,13 +319,6 @@ if (statCardVideos) {
     });
 }
 
-const statCardSenas = document.getElementById("statCardSenas");
-if (statCardSenas) {
-    statCardSenas.addEventListener("click", () => {
-        mostrarSeccionQuiz();
-    });
-}
-
 const indiceAlfabetico = document.getElementById("indiceAlfabetico");
 if(indiceAlfabetico){
     indiceAlfabetico.addEventListener("show.bs.collapse", () => {
@@ -339,12 +331,11 @@ if(indiceAlfabetico){
     });
 }
 
-// --- BANCO DE LA HOJA 2 (para que el buscador también la incluya) ---
+// --- BANCO DE LA HOJA 2 (solo para Categorías y para fusionar el video
+//     del Quiz cuando falta en la Hoja 1; el buscador YA NO la usa) ---
 // QuizV2 (js/quiz.js) ya precarga la Hoja 2 en segundo plano apenas
 // carga la página (para que el juego abra al instante). Reutilizamos
-// esa misma data en vivo en vez de conectarnos otra vez a Google Sheets:
-// así el buscador principal también puede mostrar esas palabras, sin
-// duplicar la lógica de carga/caché que ya tiene quiz.js.
+// esa misma data en vivo en vez de conectarnos otra vez a Google Sheets.
 function obtenerBancoHoja2() {
     return (window.QuizV2 && typeof QuizV2.obtenerBanco === "function") ? QuizV2.obtenerBanco() : [];
 }
@@ -381,7 +372,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (window.QuizV2 && typeof QuizV2.onBancoListo === "function") {
         QuizV2.onBancoListo(() => {
             actualizarEstadisticas();
-            if (buscar.value.trim() !== "") buscarPalabras();
             // Si el panel de categorías (o una categoría abierta) ya estaba
             // visible antes de que llegaran los datos de la Hoja 2, se
             // refresca solo para que las palabras del Quiz aparezcan sin
@@ -393,11 +383,11 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     } else {
-        console.warn("QuizV2 no está disponible: el buscador no podrá mostrar palabras de la Hoja 2.");
+        console.warn("QuizV2 no está disponible: las categorías no podrán mostrar palabras de la Hoja 2.");
     }
 });
 
-// --- BUSCADOR INTELIGENTE ---
+// --- BUSCADOR INTELIGENTE (solo Hoja 1) ---
 buscar.addEventListener("input", buscarPalabras);
 
 function buscarPalabras(){
@@ -416,13 +406,6 @@ function buscarPalabras(){
         return;
     }document.getElementById("senalDelDia").style.display = "none";
 
-    // Si la Hoja 2 todavía no se cargó (la precarga en segundo plano
-    // puede tardar unos segundos), pedimos que se apure ahora. No hace
-    // nada si ya está cargada o si ya hay una petición en curso.
-    if (window.QuizV2 && typeof QuizV2.asegurarBancoCargado === "function") {
-        QuizV2.asegurarBancoCargado();
-    }
-
     const encontrados = App.datos
     .filter(p => {
         const matchPrincipal = p.palabra.toLowerCase().includes(texto);
@@ -431,17 +414,9 @@ function buscarPalabras(){
     })
     .slice(0,10);
 
-    // --- Resultados adicionales de la Hoja 2 (banco del Quiz) ---
-    // Se excluyen palabras que ya aparecen arriba (Hoja 1) para no
-    // mostrar la misma palabra duplicada en la lista de sugerencias.
-    const palabrasYaEncontradas = new Set(encontrados.map(p => p.palabra.trim().toLowerCase()));
-    const encontradosHoja2 = obtenerBancoHoja2()
-    .filter(p => p.palabra && p.palabra.toLowerCase().includes(texto) && !palabrasYaEncontradas.has(p.palabra.trim().toLowerCase()))
-    .slice(0, Math.max(0, 10 - encontrados.length));
-
     sugerencias.style.display = "block";
 
-    if(encontrados.length===0 && encontradosHoja2.length===0){
+    if(encontrados.length===0){
         sugerencias.innerHTML = `
             <div class="list-group-item text-center py-3" style="background-color: #343a40; border: none;">
                 <span class="text-white d-block mb-2 small">No hay resultados para "${texto}"</span>
@@ -463,14 +438,6 @@ function buscarPalabras(){
         boton.onclick=()=>mostrarPalabra(p);
         sugerencias.appendChild(boton);
     });
-
-    encontradosHoja2.forEach(p=>{
-        const boton=document.createElement("button");
-        boton.className="list-group-item list-group-item-action text-start";
-        boton.innerHTML=`<strong>${p.palabra}</strong> <span class="badge bg-warning text-dark ms-2" style="font-size: 10px;">Quiz</span> <span class="badge float-end" style="font-size: 10px;">${(p.categoria || "").trim()}</span>`;
-        boton.onclick=()=>mostrarPalabraSimplificada(p);
-        sugerencias.appendChild(boton);
-    });
 }
 
 // --- BUSQUEDA DIRECTA ---
@@ -483,10 +450,6 @@ function ejecutarBusquedaDirecta() {
     sugerencias.innerHTML = "";
     sugerencias.style.display = "none";
 
-    if (window.QuizV2 && typeof QuizV2.asegurarBancoCargado === "function") {
-        QuizV2.asegurarBancoCargado();
-    }
-    
     const encontrados = App.datos.filter(p => {
         const matchPrincipal = p.palabra.toLowerCase() === texto;
         const matchVariantes = p.variantes ? p.variantes.toLowerCase().split(',').map(v=>v.trim()).includes(texto) : false;
@@ -498,24 +461,9 @@ function ejecutarBusquedaDirecta() {
         return;
     }
 
-    // --- Coincidencia exacta en la Hoja 2 (banco del Quiz) ---
-    const bancoHoja2 = obtenerBancoHoja2();
-    const exactoHoja2 = bancoHoja2.find(p => p.palabra && p.palabra.toLowerCase() === texto);
-    if(exactoHoja2) {
-        mostrarPalabraSimplificada(exactoHoja2);
-        return;
-    }
-
     const parciales = App.datos.filter(p => p.palabra.toLowerCase().includes(texto) || (p.variantes && p.variantes.toLowerCase().includes(texto)));
     if(parciales.length > 0) {
         mostrarPalabra(parciales[0]);
-        return;
-    }
-
-    // --- Coincidencia parcial en la Hoja 2 (banco del Quiz) ---
-    const parcialHoja2 = bancoHoja2.find(p => p.palabra && p.palabra.toLowerCase().includes(texto));
-    if(parcialHoja2) {
-        mostrarPalabraSimplificada(parcialHoja2);
         return;
     }
 
@@ -859,9 +807,6 @@ function actualizarEstadisticas(){
 
     totalPalabras.textContent = App.datos.length;
     totalCategorias.textContent = [...new Set(App.datos.map(p => p.categoria.trim()))].length;
-
-    // "Señas": cantidad de palabras del banco del Quiz (Hoja 2).
-    if (totalSenas) totalSenas.textContent = bancoHoja2.length;
 
     // "Videos": total de palabras entre la Hoja 1 y la Hoja 2, fusionando
     // por nombre para no contar dos veces una palabra que exista en ambas.
