@@ -17,6 +17,10 @@ const listaFavoritos = document.getElementById("listaFavoritos");
 const CLAVE_FAVORITOS = "lspedia_favoritos";
 const CLAVE_HISTORIAL = "lspedia_historial";
 
+// Recuerda qué categoría está abierta (si hay alguna) para poder
+// refrescarla automáticamente si llegan datos nuevos del banco del Quiz.
+let categoriaActualMostrada = null;
+
 // Mismas 7 velocidades que tenía el selector anterior, ahora con
 // control tortuga 🐢 / conejo 🐇 igual que en el módulo Alfabetización.
 const VELOCIDADES_PALABRA = [0.6, 0.8, 0.9, 1, 1.2, 1.6, 2];
@@ -161,6 +165,7 @@ function ocultarQuiz(){
 function mostrarSeccionQuiz(){
     resultado.innerHTML = "";
     panelCategorias.innerHTML = "";
+    categoriaActualMostrada = null;
     ultimasPalabras.innerHTML = "";
     seccionHistorial.classList.add("d-none");
     ocultarAlfabetizacion();
@@ -189,6 +194,7 @@ function ocultarAlfabetizacion(){
 function mostrarSeccionAlfabetizacion(){
     resultado.innerHTML = "";
     panelCategorias.innerHTML = "";
+    categoriaActualMostrada = null;
     ultimasPalabras.innerHTML = "";
     seccionHistorial.classList.add("d-none");
     ocultarQuiz();
@@ -223,6 +229,7 @@ function ocultarSubtitulos(){
 function mostrarSeccionSubtitulos(){
     resultado.innerHTML = "";
     panelCategorias.innerHTML = "";
+    categoriaActualMostrada = null;
     ultimasPalabras.innerHTML = "";
     seccionHistorial.classList.add("d-none");
     ocultarQuiz();
@@ -259,7 +266,7 @@ const App = {
             const urlParams = new URLSearchParams(window.location.search);
             const palabraEnUrl = urlParams.get("p");
             if (palabraEnUrl) {
-                mostrarPalabraPorNombre(palabraEnUrl);
+                restaurarPalabraDesdeUrl(palabraEnUrl);
             }
         })
         .catch(error => console.error("Error al cargar LSPedia:", error));
@@ -364,6 +371,15 @@ document.addEventListener("DOMContentLoaded", () => {
         QuizV2.onBancoListo(() => {
             actualizarEstadisticas();
             if (buscar.value.trim() !== "") buscarPalabras();
+            // Si el panel de categorías (o una categoría abierta) ya estaba
+            // visible antes de que llegaran los datos de la Hoja 2, se
+            // refresca solo para que las palabras del Quiz aparezcan sin
+            // que el usuario tenga que volver a hacer clic.
+            if (categoriaActualMostrada) {
+                mostrarCategoria(categoriaActualMostrada);
+            } else if (panelCategorias && panelCategorias.children.length > 0) {
+                mostrarCategorias();
+            }
         });
     } else {
         console.warn("QuizV2 no está disponible: el buscador no podrá mostrar palabras de la Hoja 2.");
@@ -381,6 +397,7 @@ function buscarPalabras(){
     //resultado.innerHTML = "";
     //ultimasPalabras.innerHTML = ""; 
     //panelCategorias.innerHTML = "";
+    categoriaActualMostrada = null;
     seccionHistorial.classList.add("d-none"); 
 
     if(texto === "") {
@@ -493,6 +510,7 @@ function ejecutarBusquedaDirecta() {
 
     buscar.blur();
     panelCategorias.innerHTML = "";
+    categoriaActualMostrada = null;
     ultimasPalabras.innerHTML = "";
     seccionHistorial.classList.add("d-none");
     resultado.innerHTML = `
@@ -531,6 +549,7 @@ function mostrarPalabra(p){
     sugerencias.innerHTML="";
     sugerencias.style.display = "none";
     panelCategorias.innerHTML = ""; 
+    categoriaActualMostrada = null;
     seccionHistorial.classList.add("d-none");
     const nuevaUrl = window.location.pathname + "?p=" + encodeURIComponent(p.palabra);
     window.history.pushState({path: nuevaUrl}, '', nuevaUrl);
@@ -623,8 +642,9 @@ function mostrarPalabra(p){
 // La Hoja 2 solo tiene palabra, video, categoría y nivel (no definición,
 // imagen, variantes ni seña sugerida), así que esta es una versión
 // reducida de mostrarPalabra() con lo mínimo que hay disponible.
-// Por eso mismo no toca favoritos, historial ni la URL (?p=...): esas
-// funciones buscan en App.datos, que no incluye estas palabras.
+// No toca favoritos ni historial (viven ligados a App.datos), pero SÍ
+// actualiza la URL (?p=...) para que restaurarPalabraDesdeUrl() pueda
+// recuperar este mismo resultado si el usuario refresca la página.
 function mostrarPalabraSimplificada(p){
     ocultarQuiz();
     ocultarAlfabetizacion();
@@ -633,9 +653,12 @@ function mostrarPalabraSimplificada(p){
     sugerencias.innerHTML = "";
     sugerencias.style.display = "none";
     panelCategorias.innerHTML = "";
+    categoriaActualMostrada = null;
     ultimasPalabras.innerHTML = "";
     seccionHistorial.classList.add("d-none");
     document.getElementById("senalDelDia").style.display = "none";
+    const nuevaUrl = window.location.pathname + "?p=" + encodeURIComponent(p.palabra);
+    window.history.pushState({path: nuevaUrl}, '', nuevaUrl);
 
     const idVideo = extraerIdYouTube(p.video);
     const bloqueVideo = idVideo
@@ -845,6 +868,7 @@ function filtrarPorLetra(letra) {
     sugerencias.style.display = "none";
     resultado.innerHTML = "";
     panelCategorias.innerHTML = "";
+    categoriaActualMostrada = null;
     ultimasPalabras.innerHTML = ""; 
     seccionHistorial.classList.add("d-none");
     window.history.pushState({}, '', window.location.pathname);
@@ -868,27 +892,79 @@ function filtrarPorLetra(letra) {
 // --- CATEGORÍAS ---
 function mostrarCategorias(){
     resultado.innerHTML=""; panelCategorias.innerHTML=""; ultimasPalabras.innerHTML = ""; seccionHistorial.classList.add("d-none");
-    const categories = [...new Set(App.datos.map(p => p.categoria.trim()))].sort();
+    if (window.QuizV2 && typeof QuizV2.asegurarBancoCargado === "function") {
+        QuizV2.asegurarBancoCargado();
+    }
+    const datosUnificados = obtenerDatosUnificados();
+    const categories = [...new Set(datosUnificados.map(p => p.categoria.trim()))].sort();
     categories.forEach(nombre=>{
-        const cantidad = App.datos.filter(p => p.categoria.trim() === nombre).length;
+        const cantidad = datosUnificados.filter(p => p.categoria.trim() === nombre).length;
         const card = document.createElement("div");
         card.className = "col-6 col-md-3 animate-fade-in";
         card.innerHTML = `<div class="card h-100 shadow-sm categoria-card" style="border-radius: 12px; border: 1px solid #dceefc;"><div class="card-body text-center py-3"><h6 class="mb-1 fw-bold text-primary">${nombre}</h6><p class="mb-0 small text-muted">${cantidad} palabras</p></div></div>`;
         card.onclick = () => mostrarCategoria(nombre);
         panelCategorias.appendChild(card);
     });
+    categoriaActualMostrada = null;
+}
+
+// --- DATOS UNIFICADOS (Hoja 1 + palabras de la Hoja 2 que no están en la Hoja 1) ---
+// Se usa en categorías (y se puede reutilizar donde haga falta) para que
+// las palabras del banco del Quiz no queden "invisibles" fuera del buscador.
+// Solo se incluyen las de la Hoja 2 que ya tienen categoría, para que el
+// agrupamiento por categoría tenga sentido.
+function obtenerDatosUnificados(){
+    const nombresHoja1 = new Set(App.datos.map(p => p.palabra.trim().toLowerCase()));
+    const soloHoja2 = obtenerBancoHoja2()
+        .filter(p => p.palabra && p.categoria && p.categoria.trim() !== "" && !nombresHoja1.has(p.palabra.trim().toLowerCase()))
+        .map(p => ({ ...p, _soloQuiz: true }));
+    return [...App.datos, ...soloHoja2];
 }
 
 function mostrarCategoria(nombre){
+    categoriaActualMostrada = nombre;
     resultado.innerHTML=`<h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">Categoría: ${nombre}</h6>`;
-    App.datos.filter(p => p.categoria.trim() === nombre).forEach(p=>{
-        resultado.innerHTML+=`<div class="card mb-2 palabra-card shadow-sm animate-fade-in" style="border-radius: 10px;"><div class="card-body p-2 d-flex justify-content-between align-items-center"><div><h6 class="mb-0 fw-bold text-primary">${p.palabra}</h6></div><button class="btn btn-sm btn-primary py-1 px-3 fw-bold" onclick="mostrarPalabraPorNombre('${p.palabra}')">Ver Seña</button></div></div>`;
+    obtenerDatosUnificados().filter(p => p.categoria.trim() === nombre).forEach(p=>{
+        const badgeQuiz = p._soloQuiz ? ` <span class="badge bg-warning text-dark ms-1" style="font-size: 10px;">🎮 Quiz</span>` : "";
+        resultado.innerHTML+=`<div class="card mb-2 palabra-card shadow-sm animate-fade-in" style="border-radius: 10px;"><div class="card-body p-2 d-flex justify-content-between align-items-center"><div><h6 class="mb-0 fw-bold text-primary">${p.palabra}${badgeQuiz}</h6></div><button class="btn btn-sm btn-primary py-1 px-3 fw-bold" onclick="mostrarPalabraPorNombreUnificado('${p.palabra.replace(/'/g, "\\'")}')">Ver Seña</button></div></div>`;
     });
+}
+
+// Igual que mostrarPalabraPorNombre(), pero también busca en el banco
+// del Quiz (Hoja 2) cuando la palabra no está en el diccionario principal.
+function mostrarPalabraPorNombreUnificado(nombre){
+    const enHoja1 = App.datos.find(p => p.palabra.toLowerCase() === nombre.toLowerCase());
+    if(enHoja1){ window.scrollTo({ top: 0, behavior: 'smooth' }); mostrarPalabra(enHoja1); return; }
+    const enHoja2 = obtenerBancoHoja2().find(p => p.palabra && p.palabra.toLowerCase() === nombre.toLowerCase());
+    if(enHoja2){ window.scrollTo({ top: 0, behavior: 'smooth' }); mostrarPalabraSimplificada(enHoja2); }
 }
 
 function mostrarPalabraPorNombre(nombre){
     const palabra = App.datos.find(p => p.palabra.toLowerCase() === nombre.toLowerCase());
     if(palabra){ window.scrollTo({ top: 0, behavior: 'smooth' }); mostrarPalabra(palabra); }
+}
+
+// --- RESTAURAR RESULTADO AL CARGAR/REFRESCAR LA PÁGINA (?p=...) ---
+// Si la palabra está en el diccionario (Hoja 1) se muestra de inmediato.
+// Si no está ahí, puede ser una palabra que solo vive en el banco del
+// Quiz (Hoja 2): en ese caso esperamos (o forzamos) su carga y recién
+// entonces la mostramos, en vez de simplemente volver al inicio.
+function restaurarPalabraDesdeUrl(nombre){
+    const enHoja1 = App.datos.find(p => p.palabra.toLowerCase() === nombre.toLowerCase());
+    if(enHoja1){
+        mostrarPalabra(enHoja1);
+        return;
+    }
+    if(window.QuizV2 && typeof QuizV2.onBancoListo === "function"){
+        if(typeof QuizV2.asegurarBancoCargado === "function") QuizV2.asegurarBancoCargado();
+        QuizV2.onBancoListo((banco) => {
+            const enHoja2 = (banco || []).find(p => p.palabra && p.palabra.toLowerCase() === nombre.toLowerCase());
+            // Solo mostramos si el usuario sigue en el resultado esperado (no navegó a otra pantalla mientras cargaba).
+            if(enHoja2 && new URLSearchParams(window.location.search).get("p") === nombre){
+                mostrarPalabraSimplificada(enHoja2);
+            }
+        });
+    }
 }
 
 function mostrarSugerenciasRelacionadas(palabraActual){
