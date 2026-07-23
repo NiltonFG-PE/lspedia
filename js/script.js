@@ -255,6 +255,17 @@ if(btnSubtitulosSalir){
 const App = {
     datos: [],
     iniciar: function() {
+        // Precarga en segundo plano el banco del Quiz (Hoja 2) desde el
+        // primer instante, sin esperar a que el usuario busque algo o
+        // entre a la sección Quiz. js/quiz.js ya dispara su propia carga
+        // automática al cargar la página; esta llamada es una segunda
+        // garantía explícita (no hace nada si ya está cargando o cargado)
+        // para que quede claro, en un solo lugar, que las palabras de la
+        // Hoja 2 deben estar disponibles lo antes posible.
+        if (window.QuizV2 && typeof QuizV2.asegurarBancoCargado === "function") {
+            QuizV2.asegurarBancoCargado();
+        }
+
         fetch("data/palabras.json")
         .then(res => res.json())
         .then(data => {
