@@ -397,14 +397,14 @@
          SOLO ese botón, además del botón "✕" grupal de abajo que cierra
          los 3 de una vez. El estado de cada uno (oculto/visible) se
          recuerda por separado en localStorage. -->
-    <div class="fab-wrap" id="fabWrapJugar">
+    <div class="fab-wrap fab-oculto" id="fabWrapJugar">
         <button type="button" id="btnAccesoJugar" class="btn-acceso-jugar" title="Ir a Jugar" aria-label="Acceso directo a Jugar">
             <span aria-hidden="true">🎮</span>
         </button>
         <button type="button" class="fab-cerrar-individual" data-fab="jugar" title="Ocultar este acceso" aria-label="Ocultar acceso a Jugar">✕</button>
     </div>
 
-    <div class="fab-wrap" id="fabWrapSubtitulos">
+    <div class="fab-wrap fab-oculto" id="fabWrapSubtitulos">
         <button type="button" id="btnAccesoSubtitulos" class="btn-acceso-flotante btn-acceso-subtitulos" title="Ir a Subtítulos" aria-label="Acceso directo a Subtítulos">
             <svg class="icono-acceso-subtitulos" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
                 <circle cx="32" cy="32" r="30" fill="#FFC107"/>
@@ -422,16 +422,16 @@
         <button type="button" class="fab-cerrar-individual" data-fab="subtitulos" title="Ocultar este acceso" aria-label="Ocultar acceso a Subtítulos">✕</button>
     </div>
 
-    <div class="fab-wrap" id="fabWrapBuscar">
+    <div class="fab-wrap fab-oculto" id="fabWrapBuscar">
         <button type="button" id="btnAccesoBuscar" class="btn-acceso-flotante btn-acceso-buscar" title="Buscar palabras" aria-label="Acceso directo a Buscar palabras">
             <span aria-hidden="true">🔍</span>
         </button>
         <button type="button" class="fab-cerrar-individual" data-fab="buscar" title="Ocultar este acceso" aria-label="Ocultar acceso a Buscar palabras">✕</button>
     </div>
 
-    <button type="button" id="btnCerrarAccesos" class="btn-cerrar-accesos" title="Ocultar todos los accesos rápidos" aria-label="Ocultar todos los accesos rápidos">←</button>
+    <button type="button" id="btnCerrarAccesos" class="btn-cerrar-accesos fab-oculto" title="Ocultar todos los accesos rápidos" aria-label="Ocultar todos los accesos rápidos">←</button>
 
-    <button type="button" id="btnMostrarAccesos" class="btn-mostrar-accesos d-none" title="Mostrar accesos rápidos" aria-label="Mostrar accesos rápidos">
+    <button type="button" id="btnMostrarAccesos" class="btn-mostrar-accesos" title="Mostrar accesos rápidos" aria-label="Mostrar accesos rápidos">
         <span aria-hidden="true">🤟🏻</span>
     </button>
 
@@ -1330,22 +1330,39 @@
 
             // Restaura el estado guardado al cargar la página. Si existe el
             // estado individual nuevo, manda sobre el legado (grupo completo).
+            // Por defecto (sin nada guardado todavía) los accesos arrancan
+            // OCULTOS: el HTML ya los marca con "fab-oculto" para evitar el
+            // parpadeo, y el usuario los despliega tocando el botón "🤟🏻".
             const ocultosGuardados = leerOcultosIndividuales();
             const hayEstadoIndividual = Object.keys(ocultosGuardados).length > 0;
             if (hayEstadoIndividual) {
                 Object.keys(WRAPS).forEach((clave) => {
-                    if (ocultosGuardados[clave]) {
-                        const wrap = WRAPS[clave];
-                        if (wrap) wrap.classList.add("fab-oculto");
-                    }
+                    const wrap = WRAPS[clave];
+                    if (!wrap) return;
+                    wrap.classList.toggle("fab-oculto", !!ocultosGuardados[clave]);
                 });
                 actualizarBotonesGrupo();
             } else {
                 // Compatibilidad con visitantes que ya tenían guardado el
-                // estado "legado" de grupo completo, antes de este cambio.
-                let estabaOculto = false;
-                try { estabaOculto = localStorage.getItem(CLAVE_OCULTO) === "1"; } catch (e) {}
-                if (estabaOculto) ocultarAccesos();
+                // estado "legado" de grupo completo, antes de este cambio:
+                // si explícitamente los tenían visibles, se respeta esa
+                // elección. Si no hay ningún estado guardado (primera
+                // visita) o el legado indica que estaban ocultos, no se
+                // hace nada más: ya arrancan ocultos por defecto.
+                let hayLegado = false, estabaOculto = true;
+                try {
+                    hayLegado = localStorage.getItem(CLAVE_OCULTO) !== null;
+                    estabaOculto = localStorage.getItem(CLAVE_OCULTO) === "1";
+                } catch (e) {}
+                if (hayLegado && !estabaOculto) {
+                    mostrarAccesos();
+                } else {
+                    // Primera visita (sin nada guardado) o legado que ya
+                    // indicaba "oculto": se guarda explícitamente el estado
+                    // oculto de cada uno (ocultarAccesos ya actualiza los
+                    // botones del grupo al final).
+                    ocultarAccesos();
+                }
             }
         })();
     </script>

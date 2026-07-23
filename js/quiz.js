@@ -75,6 +75,39 @@ const QuizV2 = (function () {
     // ---------------------------------------------------------
     // CARGA DE DATOS DESDE GOOGLE SHEETS
     // ---------------------------------------------------------
+
+    // cargaEnCurso evita disparar varias peticiones a la vez (por ejemplo,
+    // si el buscador del diccionario y la precarga en segundo plano piden
+    // el banco casi al mismo tiempo). listenersBancoListo son funciones
+    // externas (como el buscador en script.js) que quieren enterarse en
+    // cuanto el banco tenga datos, sin tener que estar consultando solas.
+    let cargaEnCurso = false;
+    const listenersBancoListo = [];
+
+    function notificarBancoListo() {
+        listenersBancoListo.forEach((cb) => {
+            try { cb(estado.banco); } catch (e) { /* un listener roto no debe tumbar a los demás */ }
+        });
+    }
+
+    // Se llama desde script.js cada vez que el usuario usa el buscador
+    // principal: si el banco de la Hoja 2 todavía está vacío y no hay una
+    // petición en curso, la dispara de inmediato (en vez de esperar a que
+    // termine la precarga en segundo plano, que puede tardar unos segundos).
+    function asegurarBancoCargado() {
+        if (estado.banco && estado.banco.length > 0) return;
+        if (cargaEnCurso) return;
+        fetchRemoto(true);
+    }
+
+    // Registra una función para que se ejecute apenas el banco tenga datos.
+    // Si ya los tiene en este momento, se ejecuta de inmediato.
+    function onBancoListo(cb) {
+        if (typeof cb !== "function") return;
+        if (estado.banco && estado.banco.length > 0) { cb(estado.banco); return; }
+        listenersBancoListo.push(cb);
+    }
+
     function cargarBanco(forzar) {
         mostrarBloque("quizCargando");
         el("quizError").classList.add("d-none");
@@ -96,6 +129,8 @@ const QuizV2 = (function () {
             return;
         }
 
+        cargaEnCurso = true;
+
         // Usamos JSONP (una etiqueta <script>) en vez de fetch() porque
         // Apps Script + GitHub Pages suele bloquear la lectura de la
         // respuesta por CORS ("Failed to fetch"), aunque la URL sí
@@ -111,12 +146,14 @@ const QuizV2 = (function () {
 
         window[nombreCallback] = function (data) {
             resuelto = true;
+            cargaEnCurso = false;
             limpiar();
             try {
                 if (!data.ok) throw new Error(data.error || "Respuesta inválida del servidor.");
                 estado.banco = data.preguntas.filter((p) => p.palabra && p.video);
                 guardarCache(estado.banco);
                 if (!silencioso) mostrarIntro();
+                notificarBancoListo();
             } catch (err) {
                 manejarErrorCarga(err, silencioso);
             }
@@ -128,6 +165,7 @@ const QuizV2 = (function () {
         script.src = CONFIG.APPS_SCRIPT_URL + separador + "callback=" + nombreCallback;
         script.onerror = () => {
             if (!resuelto) {
+                cargaEnCurso = false;
                 limpiar();
                 manejarErrorCarga(new Error("No se pudo conectar con Google Apps Script (revisa la URL o el despliegue)."), silencioso);
             }
@@ -137,6 +175,7 @@ const QuizV2 = (function () {
         // Si en 10s no hay respuesta, mostramos error en vez de dejarlo cargando para siempre.
         setTimeout(() => {
             if (!resuelto) {
+                cargaEnCurso = false;
                 limpiar();
                 manejarErrorCarga(new Error("Tiempo de espera agotado al conectar con Google Sheets."), silencioso);
             }
@@ -1046,7 +1085,16 @@ const QuizV2 = (function () {
         cargarBanco(false);
     }
 
-    return { iniciar, salir };
+    // obtenerBanco() se usa desde script.js para que el buscador principal
+    // del diccionario también pueda mostrar palabras de la Hoja 2 (las que
+    // usa este Quiz). Devolvemos la referencia viva a estado.banco, así que
+    // siempre refleja el dato más reciente (incluso si todavía se está
+    // precargando en segundo plano cuando se llama por primera vez).
+    // asegurarBancoCargado() y onBancoListo() existen para que el buscador
+    // no dependa únicamente de la precarga automática de más abajo: puede
+    // forzar la carga apenas el usuario lo necesite y enterarse cuando
+    // termine, sin tener que sondear el arreglo a mano.
+    return { iniciar, salir, obtenerBanco: () => estado.banco, asegurarBancoCargado, onBancoListo };
 })();
 
 // Se expone explícitamente en window: una declaración "const" de nivel
@@ -1055,16 +1103,21 @@ const QuizV2 = (function () {
 window.QuizV2 = QuizV2;
 
 document.addEventListener("DOMContentLoaded", () => {
-    // Precargamos las preguntas en segundo plano (modo silencioso, sin
-    // tocar la interfaz) apenas el navegador tiene un momento libre,
-    // para que cuando el usuario pulse "Jugar" los datos ya estén
-    // en caché y la sección abra al instante. Si falla, no pasa nada:
-    // cargarBanco() hará el intento normal (con pantalla de carga) al
-    // entrar a la sección.
-    const precargarEnSegundoPlano = () => fetchRemoto(true);
-    if ("requestIdleCallback" in window) {
-        requestIdleCallback(precargarEnSegundoPlano, { timeout: 4000 });
-    } else {
-        setTimeout(precargarEnSegundoPlano, 2000);
+    // Si hay una copia en caché (aunque esté vencida), la usamos de
+    // inmediato para que el buscador y el cuadro "Señas" de estadísticas
+    // muestren datos apenas carga la página, en vez de esperar a que
+    // termine la petición de red.
+    const cacheInicial = leerCache(true);
+    if (cacheInicial && cacheInicial.length) {
+        estado.banco = cacheInicial;
+        notificarBancoListo();
     }
+
+    // Precargamos (o refrescamos) las preguntas desde Google Sheets en
+    // segundo plano. La petición usa JSONP (una etiqueta <script>), que
+    // no bloquea el renderizado de la página, así que no hace falta
+    // esperar a que el navegador esté "idle" ni retrasarla con un
+    // setTimeout: se dispara de una vez para que los datos reales
+    // lleguen lo antes posible.
+    fetchRemoto(true);
 });
