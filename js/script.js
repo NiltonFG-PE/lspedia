@@ -551,7 +551,7 @@ function mostrarPalabra(p){
     // en vez de mostrarla como texto se arma una tercera caja con su propio
     // reproductor controlable (mismos botones que el video principal, pero
     // con IDs "...Sugerida" para no chocar con los del reproductor principal).
-    const idVideoSugerida = extraerIdYouTube(p.senaSugerida);
+    const idVideoSugerida = extraerIdYouTube(p.senasugerida);
     const bloqueSenaSugerida = idVideoSugerida
         ? `<div class="apoyo-panel mt-3 mt-lg-0">
                 <span class="apoyo-panel-titulo">💡 Seña sugerida</span>
@@ -956,11 +956,16 @@ function actualizarEstadisticas(){
     totalPalabras.textContent = App.datos.length;
     totalCategorias.textContent = [...new Set(App.datos.map(p => p.categoria.trim()))].length;
 
-    // "Videos": total de palabras entre la Hoja 1 y la Hoja 2, fusionando
-    // por nombre para no contar dos veces una palabra que exista en ambas.
-    const nombresUnicos = new Set(App.datos.map(p => p.palabra.trim().toLowerCase()));
-    bancoHoja2.forEach(p => { if (p.palabra) nombresUnicos.add(p.palabra.trim().toLowerCase()); });
-    totalVideos.textContent = nombresUnicos.size;
+    // "Videos": suma de archivos de video reales, no de palabras únicas.
+    // Se cuentan por separado (sin deduplicar por nombre de palabra) porque
+    // son archivos distintos aunque pertenezcan a la misma palabra:
+    // 1) video principal de la Hoja 1, 2) seña sugerida de la Hoja 1
+    // (columna G, senasugerida) y 3) video del banco del Quiz (Hoja 2,
+    // que QuizV2 ya entrega filtrado a solo filas con video).
+    const videosHoja1 = App.datos.filter(p => p.video && p.video.trim() !== "").length;
+    const senasSugeridas = App.datos.filter(p => p.senasugerida && p.senasugerida.trim() !== "").length;
+    const videosQuiz = bancoHoja2.length;
+    totalVideos.textContent = videosHoja1 + senasSugeridas + videosQuiz;
 }
 
 // --- FILTRO ABC ---
