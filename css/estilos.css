@@ -262,9 +262,6 @@ iframe {
     overflow: hidden;
     background-color: #f1f5f9;
 }
-.apoyo-panel .sena-sugerida-video-wrap {
-    border-radius: 10px;
-}
 .apoyo-panel .controles-video-compactos {
     margin-top: 10px;
 }
@@ -316,18 +313,21 @@ iframe {
     }
 }
 
-/* Ventana del video de "Seña sugerida": en vez de forzar siempre un
-   recuadro 16:9 fijo (como hacía la clase ratio/ratio-16x9 de Bootstrap),
-   el aspect-ratio se ajusta por JS al tamaño real del video (ver
-   ajustarAspectoSenaSugerida() en script.js), igual que ya se hace con
-   el reproductor del Quiz. */
-.sena-sugerida-video-wrap {
+/* Ventana del video principal de una palabra (Definición en Señas): en
+   vez de forzar siempre un recuadro 16:9 fijo (como hacía la clase
+   ratio/ratio-16x9 de Bootstrap), el aspect-ratio se ajusta por JS al
+   tamaño real del video (ver ajustarAspectoReproductorPalabra() en
+   script.js), igual que ya se hace con el reproductor del Quiz. */
+.reproductor-palabra-wrap {
     position: relative;
     width: 100%;
+    max-width: 480px;
+    max-height: 70vh;
+    margin: 0 auto;
     background-color: #000;
     aspect-ratio: 16 / 9; /* valor por defecto mientras se confirma el real */
 }
-.sena-sugerida-video-wrap iframe {
+.reproductor-palabra-wrap iframe {
     position: absolute;
     inset: 0;
     width: 100%;
