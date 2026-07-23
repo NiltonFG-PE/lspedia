@@ -1,5 +1,75 @@
 [
   {
+    "palabra": "Gracias",
+    "definicion": "Expresión general para agradecer un favor, un regalo o una atención.",
+    "categoria": "Cortesía",
+    "video": "5RqiA53IyuM",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/gracias.png",
+    "variantes": "Muchas gracias, Muchísimas gracias, Mil gracias, Gracias totales, Grax, Grx, Muxas grax, Se agradece, ",
+    "senasugerida": "gFBjazpKa2E",
+    "": ""
+  },
+  {
+    "palabra": "Por favor",
+    "definicion": "Fórmula elemental para solicitar algo con respeto y sin imposición.",
+    "categoria": "Cortesía",
+    "video": "KVaWHQgz81A",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Por%20favor.png",
+    "variantes": "Porfa, Porfis, Por favorcito,Plis, Xfa,  Xfis, Pls, ",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Disculpa",
+    "definicion": "Petición de perdón por una falta leve, o fórmula para interrumpir educadamente.",
+    "categoria": "Cortesía",
+    "video": "dQNpMmYbP9Y",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Disculpa.jpg",
+    "variantes": "Disculpa, Disculpe, Disculpen, disculpas,  disculpaste, disculparás, Sorry, Perdón, Perdóname, Lo siento, pedir disculpas, disculpame",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "De nada",
+    "definicion": "Respuesta estándar y educada cuando alguien nos da las gracias.",
+    "categoria": "Cortesía",
+    "video": "",
+    "imagen": "",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Con gusto",
+    "definicion": "Indicación formal y amable de que se hace un favor con placer.",
+    "categoria": "Cortesía",
+    "video": "",
+    "imagen": "",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Felicidades",
+    "definicion": "Expresión de alegría y reconocimiento por el éxito o celebración de alguien.",
+    "categoria": "Cortesía",
+    "video": "",
+    "imagen": "",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Hipótesis",
+    "definicion": "Una suposición razonable que sirve como punto de partida para investigar.",
+    "categoria": "Educación",
+    "video": "wh99j8igQ54",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Hip%C3%B3tesis.jpg",
+    "variantes": "Suposición, conjetura, teoría, premisa, hipotesis",
+    "senasugerida": "",
+    "": ""
+  },
+  {
     "palabra": "Hola",
     "definicion": "Es la palabra que usamos para saludar a alguien cuando lo vemos o empezamos a hablar con él. No importa la hora que sea.",
     "categoria": "Saludos",
@@ -56,96 +126,6 @@
     "video": "-h387KYCmQQ",
     "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Bienvenido.jpg",
     "variantes": "Bienvenida, Bienvenidos,Bienvenidas,  Bienvenid@s",
-    "senasugerida": "",
-    "": ""
-  },
-  {
-    "palabra": "Gracias",
-    "definicion": "Expresión general para agradecer un favor, un regalo o una atención.",
-    "categoria": "Cortesía",
-    "video": "",
-    "imagen": "",
-    "variantes": "Muchas gracias, Muchísimas gracias, Mil gracias, Gracias totales, Grax, Grx, Muxas grax, Se agradece, ",
-    "senasugerida": "",
-    "": ""
-  },
-  {
-    "palabra": "Por favor",
-    "definicion": "Fórmula elemental para solicitar algo con respeto y sin imposición.",
-    "categoria": "Cortesía",
-    "video": "KVaWHQgz81A",
-    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Por%20favor.png",
-    "variantes": "Porfa, Porfis, Por favorcito,Plis, Xfa,  Xfis, Pls, ",
-    "senasugerida": "",
-    "": ""
-  },
-  {
-    "palabra": "Disculpa",
-    "definicion": "Petición de perdón por una falta leve, o fórmula para interrumpir educadamente.",
-    "categoria": "Cortesía",
-    "video": "dQNpMmYbP9Y",
-    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Disculpa.jpg",
-    "variantes": "Disculpa, Disculpe, Disculpen, disculpas,  disculpaste, disculparás, Sorry, Perdón, Perdóname, Lo siento, pedir disculpas, disculpame",
-    "senasugerida": "",
-    "": ""
-  },
-  {
-    "palabra": "De nada",
-    "definicion": "Respuesta estándar y educada cuando alguien nos da las gracias.",
-    "categoria": "Cortesía",
-    "video": "",
-    "imagen": "",
-    "variantes": "",
-    "senasugerida": "",
-    "": ""
-  },
-  {
-    "palabra": "Con gusto",
-    "definicion": "Indicación formal y amable de que se hace un favor con placer.",
-    "categoria": "Cortesía",
-    "video": "",
-    "imagen": "",
-    "variantes": "",
-    "senasugerida": "",
-    "": ""
-  },
-  {
-    "palabra": "Salud",
-    "definicion": "Deseo de bienestar que se expresa cuando alguien estornuda, o al brindar con bebidas.",
-    "categoria": "Cortesía",
-    "video": "",
-    "imagen": "",
-    "variantes": "",
-    "senasugerida": "",
-    "": ""
-  },
-  {
-    "palabra": "Provecho",
-    "definicion": "Deseo de que una comida le siente bien a quien está a punto de comer o está comiendo.",
-    "categoria": "Cortesía",
-    "video": "",
-    "imagen": "",
-    "variantes": "",
-    "senasugerida": "",
-    "": ""
-  },
-  {
-    "palabra": "Felicidades",
-    "definicion": "Expresión de alegría y reconocimiento por el éxito o celebración de alguien.",
-    "categoria": "Cortesía",
-    "video": "",
-    "imagen": "",
-    "variantes": "",
-    "senasugerida": "",
-    "": ""
-  },
-  {
-    "palabra": "Hipótesis",
-    "definicion": "Una suposición razonable que sirve como punto de partida para investigar.",
-    "categoria": "Educación",
-    "video": "wh99j8igQ54",
-    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Hip%C3%B3tesis.jpg",
-    "variantes": "Suposición, conjetura, teoría, premisa, hipotesis",
     "senasugerida": "",
     "": "git commit -m \"borrar botón oraciones\""
   }

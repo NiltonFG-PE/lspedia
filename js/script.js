@@ -6,7 +6,6 @@ const resultado = document.getElementById("resultado");
 const totalPalabras = document.getElementById("totalPalabras");
 const totalCategorias = document.getElementById("totalCategorias");
 const totalVideos = document.getElementById("totalVideos");
-const totalSenas = document.getElementById("totalSenas");
 
 const panelCategorias = document.getElementById("panelCategorias");
 const ultimasPalabras = document.getElementById("ultimasPalabras");
@@ -320,13 +319,6 @@ if (statCardVideos) {
     });
 }
 
-const statCardSenas = document.getElementById("statCardSenas");
-if (statCardSenas) {
-    statCardSenas.addEventListener("click", () => {
-        mostrarSeccionQuiz();
-    });
-}
-
 const indiceAlfabetico = document.getElementById("indiceAlfabetico");
 if(indiceAlfabetico){
     indiceAlfabetico.addEventListener("show.bs.collapse", () => {
@@ -339,12 +331,11 @@ if(indiceAlfabetico){
     });
 }
 
-// --- BANCO DE LA HOJA 2 (para que el buscador también la incluya) ---
+// --- BANCO DE LA HOJA 2 (solo para Categorías y para fusionar el video
+//     del Quiz cuando falta en la Hoja 1; el buscador YA NO la usa) ---
 // QuizV2 (js/quiz.js) ya precarga la Hoja 2 en segundo plano apenas
 // carga la página (para que el juego abra al instante). Reutilizamos
-// esa misma data en vivo en vez de conectarnos otra vez a Google Sheets:
-// así el buscador principal también puede mostrar esas palabras, sin
-// duplicar la lógica de carga/caché que ya tiene quiz.js.
+// esa misma data en vivo en vez de conectarnos otra vez a Google Sheets.
 function obtenerBancoHoja2() {
     return (window.QuizV2 && typeof QuizV2.obtenerBanco === "function") ? QuizV2.obtenerBanco() : [];
 }
@@ -384,7 +375,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (window.QuizV2 && typeof QuizV2.onBancoListo === "function") {
         QuizV2.onBancoListo(() => {
             actualizarEstadisticas();
-            if (buscar.value.trim() !== "") buscarPalabras();
             // Si el panel de categorías (o una categoría abierta) ya estaba
             // visible antes de que llegaran los datos de la Hoja 2, se
             // refresca solo para que las palabras del Quiz aparezcan sin
@@ -396,11 +386,11 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     } else {
-        console.warn("QuizV2 no está disponible: el buscador no podrá mostrar palabras de la Hoja 2.");
+        console.warn("QuizV2 no está disponible: las categorías no podrán mostrar palabras de la Hoja 2.");
     }
 });
 
-// --- BUSCADOR INTELIGENTE ---
+// --- BUSCADOR INTELIGENTE (solo Hoja 1) ---
 buscar.addEventListener("input", buscarPalabras);
 
 function buscarPalabras(){
@@ -419,13 +409,6 @@ function buscarPalabras(){
         return;
     }document.getElementById("senalDelDia").style.display = "none";
 
-    // Si la Hoja 2 todavía no se cargó (la precarga en segundo plano
-    // puede tardar unos segundos), pedimos que se apure ahora. No hace
-    // nada si ya está cargada o si ya hay una petición en curso.
-    if (window.QuizV2 && typeof QuizV2.asegurarBancoCargado === "function") {
-        QuizV2.asegurarBancoCargado();
-    }
-
     const encontrados = App.datos
     .filter(p => {
         const matchPrincipal = p.palabra.toLowerCase().includes(texto);
@@ -434,17 +417,9 @@ function buscarPalabras(){
     })
     .slice(0,10);
 
-    // --- Resultados adicionales de la Hoja 2 (banco del Quiz) ---
-    // Se excluyen palabras que ya aparecen arriba (Hoja 1) para no
-    // mostrar la misma palabra duplicada en la lista de sugerencias.
-    const palabrasYaEncontradas = new Set(encontrados.map(p => p.palabra.trim().toLowerCase()));
-    const encontradosHoja2 = obtenerBancoHoja2()
-    .filter(p => p.palabra && p.palabra.toLowerCase().includes(texto) && !palabrasYaEncontradas.has(p.palabra.trim().toLowerCase()))
-    .slice(0, Math.max(0, 10 - encontrados.length));
-
     sugerencias.style.display = "block";
 
-    if(encontrados.length===0 && encontradosHoja2.length===0){
+    if(encontrados.length===0){
         sugerencias.innerHTML = `
             <div class="list-group-item text-center py-3" style="background-color: #343a40; border: none;">
                 <span class="text-white d-block mb-2 small">No hay resultados para "${texto}"</span>
@@ -466,14 +441,6 @@ function buscarPalabras(){
         boton.onclick=()=>mostrarPalabra(p);
         sugerencias.appendChild(boton);
     });
-
-    encontradosHoja2.forEach(p=>{
-        const boton=document.createElement("button");
-        boton.className="list-group-item list-group-item-action text-start";
-        boton.innerHTML=`<strong>${p.palabra}</strong> <span class="badge bg-warning text-dark ms-2" style="font-size: 10px;">Quiz</span> <span class="badge float-end" style="font-size: 10px;">${(p.categoria || "").trim()}</span>`;
-        boton.onclick=()=>mostrarPalabraSimplificada(p);
-        sugerencias.appendChild(boton);
-    });
 }
 
 // --- BUSQUEDA DIRECTA ---
@@ -486,10 +453,6 @@ function ejecutarBusquedaDirecta() {
     sugerencias.innerHTML = "";
     sugerencias.style.display = "none";
 
-    if (window.QuizV2 && typeof QuizV2.asegurarBancoCargado === "function") {
-        QuizV2.asegurarBancoCargado();
-    }
-    
     const encontrados = App.datos.filter(p => {
         const matchPrincipal = p.palabra.toLowerCase() === texto;
         const matchVariantes = p.variantes ? p.variantes.toLowerCase().split(',').map(v=>v.trim()).includes(texto) : false;
@@ -501,24 +464,9 @@ function ejecutarBusquedaDirecta() {
         return;
     }
 
-    // --- Coincidencia exacta en la Hoja 2 (banco del Quiz) ---
-    const bancoHoja2 = obtenerBancoHoja2();
-    const exactoHoja2 = bancoHoja2.find(p => p.palabra && p.palabra.toLowerCase() === texto);
-    if(exactoHoja2) {
-        mostrarPalabraSimplificada(exactoHoja2);
-        return;
-    }
-
     const parciales = App.datos.filter(p => p.palabra.toLowerCase().includes(texto) || (p.variantes && p.variantes.toLowerCase().includes(texto)));
     if(parciales.length > 0) {
         mostrarPalabra(parciales[0]);
-        return;
-    }
-
-    // --- Coincidencia parcial en la Hoja 2 (banco del Quiz) ---
-    const parcialHoja2 = bancoHoja2.find(p => p.palabra && p.palabra.toLowerCase().includes(texto));
-    if(parcialHoja2) {
-        mostrarPalabraSimplificada(parcialHoja2);
         return;
     }
 
@@ -602,6 +550,29 @@ function mostrarPalabra(p){
         : "";
     let bloqueVariantes = p.variantes && p.variantes.trim() !== "" ? `<div class="mb-3 p-2 bg-light rounded border"><span class="d-block fw-bold text-secondary mb-1" style="font-size: 10px; letter-spacing: 0.5px;">🔄 CONJUGACIONES O VARIANTES:</span><span class="text-muted small fst-italic">${p.variantes}</span></div>` : "";
 
+    // Columna "senaSugerida" de la Hoja 1: es un ID/URL de YouTube, así que
+    // en vez de mostrarla como texto se arma una tercera caja con su propio
+    // reproductor controlable (mismos botones que el video principal, pero
+    // con IDs "...Sugerida" para no chocar con los del reproductor principal).
+    const idVideoSugerida = extraerIdYouTube(p.senasugerida);
+    const bloqueSenaSugerida = idVideoSugerida
+        ? `<div class="apoyo-panel mt-3 mt-lg-0">
+                <span class="apoyo-panel-titulo">💡 Seña sugerida</span>
+                <div class="reproductor-palabra-wrap shadow-sm rounded overflow-hidden border mx-0" id="reproductorSugeridaWrap" style="max-width: none;">
+                    <div id="reproductorSugerida"></div>
+                </div>
+                <div class="controles-video controles-video-compactos d-flex align-items-center justify-content-center gap-2 mt-2 flex-wrap">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnRetroceder10Sugerida" title="Retroceder 5 segundos" aria-label="Retroceder 5 segundos">⏪ 5s</button>
+                    <button type="button" class="btn btn-sm btn-primary" id="btnPlayPauseSugerida" title="Reproducir o pausar" aria-label="Reproducir o pausar">▶️ Reproducir</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnReiniciarSugerida" title="Reiniciar desde el principio" aria-label="Reiniciar desde el principio">↺ Reiniciar</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAvanzar10Sugerida" title="Avanzar 10 segundos" aria-label="Avanzar 10 segundos">10s ⏩</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnVelocidadLentaSugerida" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
+                    <span class="small fw-bold text-muted" id="velocidadLabelSugerida">1x</span>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnVelocidadRapidaSugerida" title="Aumentar velocidad" aria-label="Aumentar velocidad">🐇</button>
+                </div>
+           </div>`
+        : "";
+
     // Insignia opcional cuando la palabra también aparece en el banco del
     // Quiz (Hoja 2), resultado de fusionarConHoja2() más arriba.
     const bloqueBadgeQuiz = p._tambienEnQuiz
@@ -650,13 +621,14 @@ function mostrarPalabra(p){
                     </div>
                     ${bloqueControlesVideo}
                 </div>
-                <div class="col-lg-5 d-flex flex-column justify-content-center">
+                <div class="col-lg-5 d-flex flex-column justify-content-center gap-3">
                     <div class="apoyo-panel">
                         <span class="apoyo-panel-titulo">📸 Imagen ejemplo</span>
                         <div class="apoyo-panel-caja">
                             ${bloqueImagen}
                         </div>
                     </div>
+                    ${bloqueSenaSugerida}
                 </div>
             </div>
             ${bloqueVideoSena}
@@ -673,10 +645,17 @@ function mostrarPalabra(p){
     } else {
         ytPlayerPalabra = null;
     }
+<<<<<<< HEAD
     if (idVideoQuiz) {
         inicializarReproductorPalabraQuiz(idVideoQuiz);
     } else {
         ytPlayerPalabraQuiz = null;
+=======
+    if (idVideoSugerida) {
+        inicializarReproductorSugerida(idVideoSugerida);
+    } else {
+        ytPlayerSugerida = null;
+>>>>>>> develop
     }
     setTimeout(() => resultado.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
 }
@@ -763,9 +742,15 @@ function onYouTubeIframeAPIReady() {
         crearReproductorPalabra(ytVideoIdPendiente);
         ytVideoIdPendiente = null;
     }
+<<<<<<< HEAD
     if (ytVideoIdPendienteQuiz) {
         crearReproductorPalabraQuiz(ytVideoIdPendienteQuiz);
         ytVideoIdPendienteQuiz = null;
+=======
+    if (ytVideoIdSugeridaPendiente) {
+        crearReproductorSugerida(ytVideoIdSugeridaPendiente);
+        ytVideoIdSugeridaPendiente = null;
+>>>>>>> develop
     }
 }
 window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
@@ -878,6 +863,7 @@ function actualizarBotonPlayPause(evento) {
     btnPlayPause.textContent = evento.data === YT.PlayerState.PLAYING ? "⏸ Pausar" : "▶️ Reproducir";
 }
 
+<<<<<<< HEAD
 // --- REPRODUCTOR DEL BLOQUE "VIDEO SEÑA" (video de la Hoja 2 / banco del Quiz) ---
 // Mismo patrón y mismos controles que el reproductor principal de arriba,
 // pero completamente independiente: su propio id de DOM, su propio
@@ -896,19 +882,51 @@ function inicializarReproductorPalabraQuiz(videoId) {
 
 function ajustarAspectoReproductorPalabraQuiz(videoId) {
     const wrap = document.getElementById("reproductorPalabraQuizWrap");
+=======
+// --- REPRODUCTOR DE VIDEO CONTROLABLE PARA "SEÑA SUGERIDA" (columna G,
+// senaSugerida, de la Hoja 1). Es una copia independiente del reproductor
+// principal (misma API de YouTube, mismos controles: pausar, reiniciar,
+// retroceder/avanzar y velocidad) pero con su propia instancia y sus
+// propios IDs, para poder mostrarse al mismo tiempo que el video principal
+// sin que ambos reproductores se pisen entre sí. ---
+let ytPlayerSugerida = null;
+let ytVideoIdSugeridaPendiente = null;
+const VELOCIDADES_SUGERIDA = VELOCIDADES_PALABRA;
+let velocidadSugeridaIndex = VELOCIDADES_SUGERIDA.indexOf(1);
+
+function inicializarReproductorSugerida(videoId) {
+    ajustarAspectoReproductorSugerida(videoId);
+    if (ytApiListo) {
+        crearReproductorSugerida(videoId);
+    } else {
+        // La API de YouTube todavía no cargó (la carga onYouTubeIframeAPIReady
+        // ya crea el reproductor principal si estaba pendiente; aquí guardamos
+        // también el video de la seña sugerida para crearlo en ese mismo momento).
+        ytVideoIdSugeridaPendiente = videoId;
+    }
+}
+
+function ajustarAspectoReproductorSugerida(videoId) {
+    const wrap = document.getElementById("reproductorSugeridaWrap");
+>>>>>>> develop
     if (!wrap) return;
     wrap.style.aspectRatio = "16 / 9";
 
     fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent("https://www.youtube.com/watch?v=" + videoId)}&format=json`)
         .then((res) => (res.ok ? res.json() : null))
         .then((data) => {
+<<<<<<< HEAD
             const wrapActual = document.getElementById("reproductorPalabraQuizWrap");
+=======
+            const wrapActual = document.getElementById("reproductorSugeridaWrap");
+>>>>>>> develop
             if (!data || !wrapActual || !data.width || !data.height) return;
             wrapActual.style.aspectRatio = `${data.width} / ${data.height}`;
         })
         .catch(() => { /* si falla la red, se mantiene el valor por defecto */ });
 }
 
+<<<<<<< HEAD
 function crearReproductorPalabraQuiz(videoId) {
     const contenedor = document.getElementById("reproductorPalabraQuiz");
     if (!contenedor) return;
@@ -921,10 +939,25 @@ function crearReproductorPalabraQuiz(videoId) {
         events: {
             onReady: configurarControlesVideoQuiz,
             onStateChange: actualizarBotonPlayPauseQuiz
+=======
+function crearReproductorSugerida(videoId) {
+    const contenedor = document.getElementById("reproductorSugerida");
+    if (!contenedor) return;
+    if (ytPlayerSugerida && typeof ytPlayerSugerida.destroy === "function") {
+        ytPlayerSugerida.destroy();
+    }
+    ytPlayerSugerida = new YT.Player("reproductorSugerida", {
+        videoId: videoId,
+        playerVars: { rel: 0, modestbranding: 1 },
+        events: {
+            onReady: configurarControlesVideoSugerida,
+            onStateChange: actualizarBotonPlayPauseSugerida
+>>>>>>> develop
         }
     });
 }
 
+<<<<<<< HEAD
 function configurarControlesVideoQuiz() {
     const btnRetroceder = document.getElementById("btnRetroceder10Quiz");
     const btnAvanzar = document.getElementById("btnAvanzar10Quiz");
@@ -951,10 +984,39 @@ function configurarControlesVideoQuiz() {
             ytPlayerPalabraQuiz.pauseVideo();
         } else {
             ytPlayerPalabraQuiz.playVideo();
+=======
+function configurarControlesVideoSugerida() {
+    const btnRetroceder = document.getElementById("btnRetroceder10Sugerida");
+    const btnAvanzar = document.getElementById("btnAvanzar10Sugerida");
+    const btnPlayPause = document.getElementById("btnPlayPauseSugerida");
+    const btnReiniciar = document.getElementById("btnReiniciarSugerida");
+    const btnVelocidadLenta = document.getElementById("btnVelocidadLentaSugerida");
+    const btnVelocidadRapida = document.getElementById("btnVelocidadRapidaSugerida");
+    if (!btnRetroceder || !btnAvanzar || !btnPlayPause || !btnReiniciar || !btnVelocidadLenta || !btnVelocidadRapida || !ytPlayerSugerida) return;
+
+    btnRetroceder.addEventListener("click", () => {
+        const tiempoActual = ytPlayerSugerida.getCurrentTime();
+        ytPlayerSugerida.seekTo(Math.max(0, tiempoActual - 5), true);
+    });
+
+    btnAvanzar.addEventListener("click", () => {
+        const tiempoActual = ytPlayerSugerida.getCurrentTime();
+        const duracion = ytPlayerSugerida.getDuration();
+        ytPlayerSugerida.seekTo(Math.min(duracion, tiempoActual + 10), true);
+    });
+
+    btnPlayPause.addEventListener("click", () => {
+        const estado = ytPlayerSugerida.getPlayerState();
+        if (estado === YT.PlayerState.PLAYING) {
+            ytPlayerSugerida.pauseVideo();
+        } else {
+            ytPlayerSugerida.playVideo();
+>>>>>>> develop
         }
     });
 
     btnReiniciar.addEventListener("click", () => {
+<<<<<<< HEAD
         ytPlayerPalabraQuiz.seekTo(0, true);
         ytPlayerPalabraQuiz.playVideo();
     });
@@ -983,6 +1045,35 @@ function actualizarLabelVelocidadPalabraQuiz() {
 
 function actualizarBotonPlayPauseQuiz(evento) {
     const btnPlayPause = document.getElementById("btnPlayPauseQuiz");
+=======
+        ytPlayerSugerida.seekTo(0, true);
+        ytPlayerSugerida.playVideo();
+    });
+
+    velocidadSugeridaIndex = VELOCIDADES_SUGERIDA.indexOf(1);
+    ytPlayerSugerida.setPlaybackRate(1);
+    actualizarLabelVelocidadSugerida();
+
+    btnVelocidadLenta.addEventListener("click", () => cambiarVelocidadSugerida(-1));
+    btnVelocidadRapida.addEventListener("click", () => cambiarVelocidadSugerida(1));
+}
+
+function cambiarVelocidadSugerida(delta) {
+    if (!ytPlayerSugerida) return;
+    const max = VELOCIDADES_SUGERIDA.length - 1;
+    velocidadSugeridaIndex = Math.min(max, Math.max(0, velocidadSugeridaIndex + delta));
+    ytPlayerSugerida.setPlaybackRate(VELOCIDADES_SUGERIDA[velocidadSugeridaIndex]);
+    actualizarLabelVelocidadSugerida();
+}
+
+function actualizarLabelVelocidadSugerida() {
+    const label = document.getElementById("velocidadLabelSugerida");
+    if (label) label.textContent = VELOCIDADES_SUGERIDA[velocidadSugeridaIndex] + "x";
+}
+
+function actualizarBotonPlayPauseSugerida(evento) {
+    const btnPlayPause = document.getElementById("btnPlayPauseSugerida");
+>>>>>>> develop
     if (!btnPlayPause) return;
     btnPlayPause.textContent = evento.data === YT.PlayerState.PLAYING ? "⏸ Pausar" : "▶️ Reproducir";
 }
@@ -1007,14 +1098,16 @@ function actualizarEstadisticas(){
     totalPalabras.textContent = App.datos.length;
     totalCategorias.textContent = [...new Set(App.datos.map(p => p.categoria.trim()))].length;
 
-    // "Señas": cantidad de palabras del banco del Quiz (Hoja 2).
-    if (totalSenas) totalSenas.textContent = bancoHoja2.length;
-
-    // "Videos": total de palabras entre la Hoja 1 y la Hoja 2, fusionando
-    // por nombre para no contar dos veces una palabra que exista en ambas.
-    const nombresUnicos = new Set(App.datos.map(p => p.palabra.trim().toLowerCase()));
-    bancoHoja2.forEach(p => { if (p.palabra) nombresUnicos.add(p.palabra.trim().toLowerCase()); });
-    totalVideos.textContent = nombresUnicos.size;
+    // "Videos": suma de archivos de video reales, no de palabras únicas.
+    // Se cuentan por separado (sin deduplicar por nombre de palabra) porque
+    // son archivos distintos aunque pertenezcan a la misma palabra:
+    // 1) video principal de la Hoja 1, 2) seña sugerida de la Hoja 1
+    // (columna G, senasugerida) y 3) video del banco del Quiz (Hoja 2,
+    // que QuizV2 ya entrega filtrado a solo filas con video).
+    const videosHoja1 = App.datos.filter(p => p.video && p.video.trim() !== "").length;
+    const senasSugeridas = App.datos.filter(p => p.senasugerida && p.senasugerida.trim() !== "").length;
+    const videosQuiz = bancoHoja2.length;
+    totalVideos.textContent = videosHoja1 + senasSugeridas + videosQuiz;
 }
 
 // --- FILTRO ABC ---
