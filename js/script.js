@@ -547,6 +547,9 @@ function mostrarPalabra(p){
         : "";
     let bloqueVariantes = p.variantes && p.variantes.trim() !== "" ? `<div class="mb-3 p-2 bg-light rounded border"><span class="d-block fw-bold text-secondary mb-1" style="font-size: 10px; letter-spacing: 0.5px;">🔄 CONJUGACIONES O VARIANTES:</span><span class="text-muted small fst-italic">${p.variantes}</span></div>` : "";
 
+    // Columna "senaSugerida" de la Hoja 1: solo se muestra si trae contenido.
+    let bloqueSenaSugerida = p.senaSugerida && p.senaSugerida.trim() !== "" ? `<div class="mb-3 p-2 bg-light rounded border"><span class="d-block fw-bold text-secondary mb-1" style="font-size: 10px; letter-spacing: 0.5px;">💡 SEÑA SUGERIDA:</span><span class="text-muted small fst-italic">${p.senaSugerida}</span></div>` : "";
+
     // Insignia opcional cuando la palabra también aparece en el banco del
     // Quiz (Hoja 2), resultado de fusionarConHoja2() más arriba.
     const bloqueBadgeQuiz = p._tambienEnQuiz
@@ -564,6 +567,7 @@ function mostrarPalabra(p){
             </div>
             <p class="mb-3 p-3 rounded" style="background-color: #eef6ff; border-left: 4px solid #0d6efd; font-size: 1rem; line-height: 1.5; color: #1e293b;">${p.definicion}</p>
             ${bloqueVariantes}
+            ${bloqueSenaSugerida}
             <div class="row g-4 justify-content-center align-items-stretch">
                 <div class="col-lg-7 d-flex flex-column">
                     <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider text-md-start">🤟 Definición en Señas:</span>
