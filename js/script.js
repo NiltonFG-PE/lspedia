@@ -434,7 +434,25 @@ function buscarPalabras(){
         if(p.variantes && p.variantes.toLowerCase().includes(texto) && !p.palabra.toLowerCase().includes(texto)){
             textoMatch += ` <small class="text-primary ms-2 fw-bold" style="font-size: 11px;">(Variante: ${texto})</small>`;
         }
-        boton.innerHTML=`${textoMatch} <span class="badge float-end" style="font-size: 10px;">${p.categoria.trim()}</span>`;
+
+        // Video-first: miniatura de la seña junto a cada sugerencia,
+        // así se reconoce visualmente antes de leer la palabra.
+        const idVideoSugerencia = extraerIdYouTube(p.video);
+        const miniatura = idVideoSugerencia
+            ? `<div class="sugerencia-thumb-wrap">
+                   <img src="https://img.youtube.com/vi/${idVideoSugerencia}/mqdefault.jpg" alt="Seña de ${p.palabra}" loading="lazy">
+                   <span class="sugerencia-thumb-play">▶</span>
+               </div>`
+            : `<div class="sugerencia-thumb-wrap sin-video">🤟</div>`;
+
+        boton.innerHTML=`
+            <div class="sugerencia-fila">
+                ${miniatura}
+                <div class="sugerencia-texto">
+                    ${textoMatch}
+                    <span class="badge" style="font-size: 10px;">${p.categoria.trim()}</span>
+                </div>
+            </div>`;
         boton.onclick=()=>mostrarPalabra(p);
         sugerencias.appendChild(boton);
     });
