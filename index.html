@@ -518,14 +518,10 @@
    la nueva barra. */
 @media (max-width: 1199.98px) {
     body { padding-bottom: 74px; }
-    /* En movil/tablet los botones flotantes (Jugar/Subtitulos/Buscar,
-       mas los de cerrar/mostrar accesos) quedan ocultos por completo:
-       solo la barra inferior de navegacion queda visible ahi abajo. */
-    .fab-wrap,
-    .btn-cerrar-accesos,
-    .btn-mostrar-accesos {
-        display: none !important;
-    }
+    /* Los botones flotantes (Jugar/Herramientas/Temas orden, mas los de
+       cerrar/mostrar accesos) ahora se mantienen visibles también en
+       movil/tablet y a cualquier nivel de zoom, ademas de la barra
+       inferior de navegacion. */
 }
 
 /* ============================================================
@@ -756,7 +752,11 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
          pequeña "x" individual (esquina superior derecha) para cerrar
          SOLO ese botón, además del botón "✕" grupal de abajo que cierra
          los 3 de una vez. El estado de cada uno (oculto/visible) se
-         recuerda por separado en localStorage. -->
+         recuerda por separado en localStorage. En escritorio, si el
+         usuario nunca tocó ninguno de esos controles antes, arrancan
+         VISIBLES por defecto (ver el script al final del archivo); en
+         móvil/tablet los oculta directamente el CSS (queda la barra
+         inferior tipo app en su lugar). -->
     <div class="fab-wrap fab-oculto" id="fabWrapJugar">
         <button type="button" id="btnAccesoJugar" class="btn-acceso-jugar" title="Ir a Jugar" aria-label="Acceso directo a Jugar">
             <span aria-hidden="true">🎮</span>
@@ -764,29 +764,20 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
         <button type="button" class="fab-cerrar-individual" data-fab="jugar" title="Ocultar este acceso" aria-label="Ocultar acceso a Jugar">✕</button>
     </div>
 
-    <div class="fab-wrap fab-oculto" id="fabWrapSubtitulos">
-        <button type="button" id="btnAccesoSubtitulos" class="btn-acceso-flotante btn-acceso-subtitulos" title="Ir a Subtítulos" aria-label="Acceso directo a Subtítulos">
-            <svg class="icono-acceso-subtitulos" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-                <circle cx="32" cy="32" r="30" fill="#FFC107"/>
-                <circle cx="32" cy="32" r="24.5" fill="#FFA000"/>
-                <circle cx="32" cy="32" r="21.5" fill="#FDE3A7"/>
-                <rect x="15" y="24" width="34" height="19" rx="4.5" fill="#FFF6DF"/>
-                <rect x="19.5" y="28.5" width="17" height="3" rx="1.5" fill="#2b2b2b"/>
-                <rect x="38.5" y="28.5" width="6.5" height="3" rx="1.5" fill="#2b2b2b"/>
-                <rect x="19.5" y="34" width="6.5" height="3" rx="1.5" fill="#2b2b2b"/>
-                <rect x="28" y="34" width="17" height="3" rx="1.5" fill="#2b2b2b"/>
-                <rect x="19.5" y="38.5" width="17" height="3" rx="1.5" fill="#2b2b2b"/>
-                <rect x="38.5" y="38.5" width="6.5" height="3" rx="1.5" fill="#2b2b2b"/>
-            </svg>
+    <div class="fab-wrap fab-oculto" id="fabWrapHerramientas">
+        <button type="button" id="btnAccesoHerramientas" class="btn-acceso-flotante btn-acceso-herramientas" title="Ir a Herramientas" aria-label="Acceso directo a Herramientas">
+            <span aria-hidden="true">🛠️</span>
         </button>
-        <button type="button" class="fab-cerrar-individual" data-fab="subtitulos" title="Ocultar este acceso" aria-label="Ocultar acceso a Subtítulos">✕</button>
+        <button type="button" class="fab-cerrar-individual" data-fab="herramientas" title="Ocultar este acceso" aria-label="Ocultar acceso a Herramientas">✕</button>
     </div>
 
-    <div class="fab-wrap fab-oculto" id="fabWrapBuscar">
-        <button type="button" id="btnAccesoBuscar" class="btn-acceso-flotante btn-acceso-buscar" title="Buscar palabras" aria-label="Acceso directo a Buscar palabras">
-            <span aria-hidden="true">🔍</span>
+    <div class="fab-wrap fab-oculto" id="fabWrapTemas">
+        <button type="button" id="btnAccesoTemas" class="btn-acceso-flotante btn-acceso-temas" title="Ir a Temas orden" aria-label="Acceso directo a Temas orden">
+            <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 6.5C3 5.67157 3.67157 5 4.5 5H9.17157C9.5694 5 9.95093 5.15804 10.2322 5.43934L11.5 6.70711C11.7811 6.98811 12.1627 7.14615 12.5605 7.14615H19.5C20.3284 7.14615 21 7.81772 21 8.64615V17.5C21 18.3284 20.3284 19 19.5 19H4.5C3.67157 19 3 18.3284 3 17.5V6.5Z" fill="#0ea5e9"/>
+            </svg>
         </button>
-        <button type="button" class="fab-cerrar-individual" data-fab="buscar" title="Ocultar este acceso" aria-label="Ocultar acceso a Buscar palabras">✕</button>
+        <button type="button" class="fab-cerrar-individual" data-fab="temas" title="Ocultar este acceso" aria-label="Ocultar acceso a Temas orden">✕</button>
     </div>
 
     <button type="button" id="btnCerrarAccesos" class="btn-cerrar-accesos fab-oculto" title="Ocultar todos los accesos rápidos" aria-label="Ocultar todos los accesos rápidos">←</button>
@@ -1616,27 +1607,24 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
             const CLAVE_OCULTO = "lspedia_accesos_flotantes_ocultos"; // legado: estado del grupo completo
             const CLAVE_OCULTOS_INDIVIDUALES = "lspedia_accesos_individuales_ocultos"; // { jugar, subtitulos, buscar }
 
-            const btnAccesoSubtitulos = document.getElementById("btnAccesoSubtitulos");
-            if (btnAccesoSubtitulos) {
-                btnAccesoSubtitulos.addEventListener("click", () => {
-                    // Subtítulos ahora vive dentro de "Herramientas" (junto a
-                    // Jugar y Alfabetización), así que este acceso directo
-                    // lleva ahí en vez de a un botón de menú que ya no existe.
+            const btnAccesoHerramientas = document.getElementById("btnAccesoHerramientas");
+            if (btnAccesoHerramientas) {
+                btnAccesoHerramientas.addEventListener("click", () => {
+                    // Lleva directo al contenido de "Herramientas" (Subtítulos,
+                    // Jugar y Alfabetización), simulando el clic del botón real
+                    // del menú para no duplicar lógica.
                     const link = document.getElementById("btnHerramientas");
                     if (link) link.click();
                 });
             }
 
-            const btnAccesoBuscar = document.getElementById("btnAccesoBuscar");
-            if (btnAccesoBuscar) {
-                btnAccesoBuscar.addEventListener("click", () => {
-                    // Solo lleva a la barra de búsqueda, sin pasar por la
-                    // navegación/animación de Inicio.
-                    const input = document.getElementById("buscar");
-                    if (input) {
-                        input.scrollIntoView({ behavior: "smooth", block: "center" });
-                        setTimeout(() => input.focus(), 300);
-                    }
+            const btnAccesoTemas = document.getElementById("btnAccesoTemas");
+            if (btnAccesoTemas) {
+                btnAccesoTemas.addEventListener("click", () => {
+                    // Lleva directo al contenido de "Temas orden", simulando el
+                    // clic del botón real del menú para no duplicar lógica.
+                    const link = document.getElementById("btnCategorias");
+                    if (link) link.click();
                 });
             }
 
@@ -1650,8 +1638,8 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
             // ------------------------------------------------------------
             const WRAPS = {
                 jugar: document.getElementById("fabWrapJugar"),
-                subtitulos: document.getElementById("fabWrapSubtitulos"),
-                buscar: document.getElementById("fabWrapBuscar")
+                herramientas: document.getElementById("fabWrapHerramientas"),
+                temas: document.getElementById("fabWrapTemas")
             };
             const btnCerrarAccesos = document.getElementById("btnCerrarAccesos");
             const btnMostrarAccesos = document.getElementById("btnMostrarAccesos");
@@ -1674,7 +1662,7 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
             // sigue visible, se mantiene el "✕" grupal disponible.
             function actualizarBotonesGrupo() {
                 const ocultos = leerOcultosIndividuales();
-                const todosOcultos = ["jugar", "subtitulos", "buscar"].every((clave) => ocultos[clave]);
+                const todosOcultos = ["jugar", "herramientas", "temas"].every((clave) => ocultos[clave]);
                 if (btnCerrarAccesos) btnCerrarAccesos.classList.toggle("fab-oculto", todosOcultos);
                 if (btnMostrarAccesos) btnMostrarAccesos.classList.toggle("d-none", !todosOcultos);
             }
@@ -1723,9 +1711,9 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
 
             // Restaura el estado guardado al cargar la página. Si existe el
             // estado individual nuevo, manda sobre el legado (grupo completo).
-            // Por defecto (sin nada guardado todavía) los accesos arrancan
-            // OCULTOS: el HTML ya los marca con "fab-oculto" para evitar el
-            // parpadeo, y el usuario los despliega tocando el botón "🤟🏻".
+            // Si nunca se guardó nada, arrancan VISIBLES por defecto en
+            // cualquier dispositivo y a cualquier nivel de zoom, sin que el
+            // usuario tenga que tocar el botón "🤟🏻".
             const ocultosGuardados = leerOcultosIndividuales();
             const hayEstadoIndividual = Object.keys(ocultosGuardados).length > 0;
             if (hayEstadoIndividual) {
@@ -1738,23 +1726,19 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
             } else {
                 // Compatibilidad con visitantes que ya tenían guardado el
                 // estado "legado" de grupo completo, antes de este cambio:
-                // si explícitamente los tenían visibles, se respeta esa
-                // elección. Si no hay ningún estado guardado (primera
-                // visita) o el legado indica que estaban ocultos, no se
-                // hace nada más: ya arrancan ocultos por defecto.
+                // si explícitamente los tenían visibles u ocultos, se respeta
+                // esa elección tal cual estaba.
                 let hayLegado = false, estabaOculto = true;
                 try {
                     hayLegado = localStorage.getItem(CLAVE_OCULTO) !== null;
                     estabaOculto = localStorage.getItem(CLAVE_OCULTO) === "1";
                 } catch (e) {}
-                if (hayLegado && !estabaOculto) {
-                    mostrarAccesos();
+                if (hayLegado) {
+                    if (!estabaOculto) mostrarAccesos(); else ocultarAccesos();
                 } else {
-                    // Primera visita (sin nada guardado) o legado que ya
-                    // indicaba "oculto": se guarda explícitamente el estado
-                    // oculto de cada uno (ocultarAccesos ya actualiza los
-                    // botones del grupo al final).
-                    ocultarAccesos();
+                    // Primera visita: se muestran por defecto, sin importar
+                    // el ancho de pantalla ni el zoom.
+                    mostrarAccesos();
                 }
             }
         })();
