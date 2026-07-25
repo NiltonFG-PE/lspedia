@@ -791,18 +791,34 @@ function extraerIdYouTube(valor) {
     return "";
 }
 
-function mostrarPalabra(p){
+function mostrarPalabra(p, opciones = {}){
+    // opciones.enCategorias === true  ->  este resultado viene de la vista
+    // "Temas orden" (categorías): se pinta dentro de #resultadoCategorias,
+    // con el botón "Atrás" arriba (incluso arriba del video), en vez de en
+    // #resultado (que queda por encima del buscador de categorías y
+    // provocaba que el botón "Atrás" y la lista de resultados aparecieran
+    // debajo del video en vez de arriba).
     // Si la misma palabra también existe en la Hoja 2 (banco del Quiz),
     // se fusiona el resultado en vez de tratarlas por separado.
     p = fusionarConHoja2(p);
+    const enCategorias = !!opciones.enCategorias;
     ocultarQuiz();
     ocultarAlfabetizacion();
-    buscar.value = p.palabra;
-    buscar.blur();
-    sugerencias.innerHTML="";
-    sugerencias.style.display = "none";
-    panelCategorias.innerHTML = ""; 
-    categoriaActualMostrada = null;
+    if(!enCategorias){
+        buscar.value = p.palabra;
+        buscar.blur();
+        sugerencias.innerHTML="";
+        sugerencias.style.display = "none";
+        panelCategorias.innerHTML = ""; 
+        categoriaActualMostrada = null;
+        resultado.innerHTML = "";
+    } else {
+        // No tocamos el buscador principal ni las tarjetas de categoría
+        // (siguen visibles arriba, igual que al buscar dentro de una
+        // categoría o con el buscador de "Temas orden").
+        resultado.innerHTML = "";
+        ultimasPalabras.innerHTML = "";
+    }
     ocultarPanelesGuardados();
     const nuevaUrl = window.location.pathname + "?p=" + encodeURIComponent(p.palabra);
     window.history.pushState({path: nuevaUrl}, '', nuevaUrl);
@@ -870,7 +886,9 @@ function mostrarPalabra(p){
         ? `<span class="badge bg-warning text-dark mb-2 ms-1" style="font-size: 11px;">🎮 También en el Quiz${p.nivel ? " · " + p.nivel : ""}</span>`
         : "";
 
-    resultado.innerHTML=`
+    const contenedorDestino = enCategorias ? resultadoCategorias : resultado;
+    contenedorDestino.innerHTML = `
+    ${enCategorias ? botonAtrasCategorias() : ""}
     <div class="card shadow-sm mb-4 animate-fade-in" style="border-radius: 15px; border-color: #dceefc;">
         <div class="card-body p-4">
             <span class="badge bg-primary mb-2" style="font-size: 11px;">${p.categoria.trim()}</span>
@@ -906,7 +924,9 @@ function mostrarPalabra(p){
         document.getElementById("btnFavorito").textContent = ahoraEnFavoritos ? "★ En favoritos" : "⭐ Agregar a favoritos";
         mostrarFavoritos();
     });
-    mostrarSugerenciasRelacionadas(p);
+    if (!enCategorias) {
+        mostrarSugerenciasRelacionadas(p);
+    }
     if (hayVideo) {
         inicializarReproductorPalabra(p.video);
     } else {
@@ -917,7 +937,7 @@ function mostrarPalabra(p){
     } else {
         ytPlayerSugerida = null;
     }
-    setTimeout(() => resultado.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+    setTimeout(() => contenedorDestino.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
 }
 
 // --- TARJETA SIMPLIFICADA PARA PALABRAS DE LA HOJA 2 (banco del Quiz) ---
@@ -927,16 +947,27 @@ function mostrarPalabra(p){
 // No toca favoritos ni historial (viven ligados a App.datos), pero SÍ
 // actualiza la URL (?p=...) para que restaurarPalabraDesdeUrl() pueda
 // recuperar este mismo resultado si el usuario refresca la página.
-function mostrarPalabraSimplificada(p){
+function mostrarPalabraSimplificada(p, opciones = {}){
+    // opciones.enCategorias === true -> viene de "Temas orden" (categorías):
+    // se pinta en #resultadoCategorias con el botón "Atrás" arriba del
+    // video, y no se tocan el buscador principal ni las tarjetas de
+    // categoría (ver mostrarPalabra() para la misma lógica en detalle).
+    const enCategorias = !!opciones.enCategorias;
     ocultarQuiz();
     ocultarAlfabetizacion();
-    buscar.value = p.palabra;
-    buscar.blur();
-    sugerencias.innerHTML = "";
-    sugerencias.style.display = "none";
-    panelCategorias.innerHTML = "";
-    categoriaActualMostrada = null;
-    ultimasPalabras.innerHTML = "";
+    if(!enCategorias){
+        buscar.value = p.palabra;
+        buscar.blur();
+        sugerencias.innerHTML = "";
+        sugerencias.style.display = "none";
+        panelCategorias.innerHTML = "";
+        categoriaActualMostrada = null;
+        ultimasPalabras.innerHTML = "";
+        resultado.innerHTML = "";
+    } else {
+        resultado.innerHTML = "";
+        ultimasPalabras.innerHTML = "";
+    }
     ocultarPanelesGuardados();
     document.getElementById("senalDelDia").style.display = "none";
     const nuevaUrl = window.location.pathname + "?p=" + encodeURIComponent(p.palabra);
@@ -961,7 +992,9 @@ function mostrarPalabraSimplificada(p){
            </div>`
         : "";
 
-    resultado.innerHTML = `
+    const contenedorDestino = enCategorias ? resultadoCategorias : resultado;
+    contenedorDestino.innerHTML = `
+    ${enCategorias ? botonAtrasCategorias() : ""}
     <div class="card shadow-sm mb-4 animate-fade-in" style="border-radius: 15px; border-color: #dceefc;">
         <div class="card-body p-4">
             <span class="badge bg-warning text-dark mb-2" style="font-size: 11px;">🎮 Banco del Quiz</span>
@@ -985,7 +1018,7 @@ function mostrarPalabraSimplificada(p){
     } else {
         ytPlayerPalabra = null;
     }
-    setTimeout(() => resultado.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+    setTimeout(() => contenedorDestino.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
 }
 
 // --- REPRODUCTOR DE VIDEO CONTROLABLE (YouTube IFrame API) ---
@@ -1412,9 +1445,9 @@ function mostrarCategoria(nombre){
 // del Quiz (Hoja 2) cuando la palabra no está en el diccionario principal.
 function mostrarPalabraPorNombreUnificado(nombre){
     const enHoja1 = App.datos.find(p => p.palabra.toLowerCase() === nombre.toLowerCase());
-    if(enHoja1){ window.scrollTo({ top: 0, behavior: 'smooth' }); mostrarPalabra(enHoja1); return; }
+    if(enHoja1){ mostrarPalabra(enHoja1, { enCategorias: true }); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
     const enHoja2 = obtenerBancoHoja2().find(p => p.palabra && p.palabra.toLowerCase() === nombre.toLowerCase());
-    if(enHoja2){ window.scrollTo({ top: 0, behavior: 'smooth' }); mostrarPalabraSimplificada(enHoja2); }
+    if(enHoja2){ mostrarPalabraSimplificada(enHoja2, { enCategorias: true }); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 }
 
 function mostrarPalabraPorNombre(nombre){
