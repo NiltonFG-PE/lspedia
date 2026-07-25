@@ -218,43 +218,140 @@
     min-width: 92px;
 }
 
-/* Miniatura de video en la tarjeta "Seña del día" / "de ayer" */
-.senal-dia-miniatura {
-    width: 64px;
-    height: 64px;
+/* Tarjeta "Seña del día" / "de ayer" — formato rectangular horizontal */
+.dia-rect-card {
+    display: flex;
+    background-color: #0f172a;
     border-radius: 10px;
     overflow: hidden;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.16);
+}
+.dia-rect-media {
     position: relative;
+    width: 220px;
+    flex-shrink: 0;
+    background-color: #000;
     cursor: pointer;
-    background-color: #1e293b;
-    border: 2px solid rgba(255, 255, 255, 0.15);
-    transition: transform 0.15s ease, border-color 0.15s ease;
 }
-.senal-dia-miniatura:hover,
-.senal-dia-miniatura:focus {
-    transform: scale(1.05);
-    border-color: #ffc107;
-    outline: none;
-}
-.senal-dia-miniatura-img {
+.dia-rect-media-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
+    opacity: 0.9;
 }
-.senal-dia-miniatura-play {
+.dia-rect-media-play {
     position: absolute;
     inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.25);
+    background: rgba(15, 23, 42, 0.18);
     color: #fff;
-    font-size: 18px;
+    font-size: 20px;
     pointer-events: none;
 }
+.dia-rect-media-tag {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(15, 23, 42, 0.6);
+    color: #fff;
+    font-size: 9.5px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+    pointer-events: none;
+}
+.dia-rect-media:hover .dia-rect-media-img,
+.dia-rect-media:focus .dia-rect-media-img {
+    opacity: 1;
+}
+.dia-rect-body {
+    flex: 1;
+    padding: 18px 20px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+}
+.dia-rect-nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+/* Flechas de navegación grandes: 38px en escritorio, 44px en móvil,
+   para que sean fáciles de tocar con el pulgar (zona táctil mínima
+   recomendada ~44px), en vez de los 14px de texto que tenían antes. */
+.dia-rect-nav-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.dia-rect-nav-btn:hover,
+.dia-rect-nav-btn:focus {
+    background: rgba(255, 255, 255, 0.22);
+    outline: none;
+}
+.dia-rect-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #ffc107;
+}
+.dia-rect-badge {
+    background-color: #ffc107 !important;
+    color: #000 !important;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 5px;
+    margin-bottom: 8px;
+    width: fit-content;
+}
+.dia-rect-titulo {
+    font-size: 19px;
+    font-weight: 800;
+    margin: 0 0 6px;
+    color: #fff;
+}
+.dia-rect-desc {
+    font-size: 12px;
+    color: #cbd5e1;
+    line-height: 1.5;
+    margin: 0 0 14px;
+}
+.dia-rect-btn {
+    background-color: #ffc107;
+    color: #0f172a;
+    font-weight: 700;
+    font-size: 12.5px;
+    padding: 9px 18px;
+    border-radius: 6px;
+    border: none;
+    width: fit-content;
+}
+.dia-rect-btn:hover {
+    background-color: #e6ac00;
+    color: #0f172a;
+}
 @media (max-width: 767px) {
-    .senal-dia-miniatura { width: 56px; height: 56px; }
+    .dia-rect-card { flex-direction: column; }
+    .dia-rect-media { width: 100%; aspect-ratio: 16 / 9; }
+    .dia-rect-body { padding: 16px; }
+    .dia-rect-nav-btn { width: 44px; height: 44px; font-size: 18px; border-radius: 10px; }
 }
 
 /* Tarjetas del menú de Juegos (Completar / Unir / Quiz) */
@@ -440,28 +537,25 @@
 
         <div class="row justify-content-center mb-4" id="senalDelDia">
             <div class="col-lg-8">
-                <div class="card border-0 shadow-sm animate-fade-in position-relative" style="border-radius: 15px; background-color: #0f172a;">
-                    <button type="button" class="btn-close btn-close-white position-absolute" style="top: 14px; right: 14px;" id="btnCerrarDelDia" aria-label="Cerrar"></button>
-                    <div class="card-body p-4 text-white d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
-                        <div class="d-flex align-items-center gap-3 flex-grow-1">
-                            <div class="senal-dia-miniatura flex-shrink-0 d-none" id="miniaturaDelDiaWrap" role="button" tabindex="0" title="Ver seña" aria-label="Ver la seña completa">
-                                <img id="miniaturaDelDiaImg" src="" alt="" class="senal-dia-miniatura-img">
-                                <span class="senal-dia-miniatura-play" aria-hidden="true">▶</span>
-                            </div>
-                            <div>
-                                <span class="badge mb-2" style="background-color: #ffc107; color:#000;" id="categoriaDelDia"></span>
-                                <div class="d-flex align-items-center mb-1">
-                                    <button type="button" class="btn btn-sm p-0 me-2 text-white border-0 bg-transparent" id="btnSenalAnterior" title="Ver seña de ayer" aria-label="Ver seña del día anterior" style="font-size:14px; opacity:0.8;">◀</button>
-                                    <span class="text-uppercase small fw-bold" style="letter-spacing: 0.05em; color:#94a3b8;" id="labelSenalDelDia">✨ Seña del día</span>
-                                    <button type="button" class="btn btn-sm p-0 ms-2 text-white border-0 bg-transparent d-none" id="btnSenalSiguiente" title="Volver a hoy" aria-label="Volver a la seña de hoy" style="font-size:14px; opacity:0.8;">▶</button>
-                                </div>
-                                <h4 class="fw-bold mb-2 text-white" id="tituloDelDia"></h4>
-                                <p class="small mb-0 text-white" id="descripcionDelDia"></p>
-                            </div>
+                <div class="dia-rect-card animate-fade-in position-relative">
+                    <button type="button" class="btn-close btn-close-white position-absolute" style="top: 12px; right: 12px; z-index: 2;" id="btnCerrarDelDia" aria-label="Cerrar"></button>
+
+                    <div class="dia-rect-media d-none" id="miniaturaDelDiaWrap" role="button" tabindex="0" title="Ver seña" aria-label="Ver la seña completa">
+                        <img id="miniaturaDelDiaImg" src="" alt="" class="dia-rect-media-img">
+                        <span class="dia-rect-media-tag">🎥 VIDEO</span>
+                        <span class="dia-rect-media-play" aria-hidden="true">▶</span>
+                    </div>
+
+                    <div class="dia-rect-body">
+                        <div class="dia-rect-nav">
+                            <button type="button" class="dia-rect-nav-btn" id="btnSenalAnterior" title="Ver seña de ayer" aria-label="Ver la seña del día anterior">◀</button>
+                            <span class="dia-rect-label" id="labelSenalDelDia">✨ Seña del día</span>
+                            <button type="button" class="dia-rect-nav-btn d-none" id="btnSenalSiguiente" title="Volver a hoy" aria-label="Volver a la seña de hoy">▶</button>
                         </div>
-                        <button class="btn btn-warning px-4 py-2 rounded-pill fw-bold text-dark flex-shrink-0" id="btnVerDelDia">
-                            Ver Seña
-                        </button>
+                        <span class="badge dia-rect-badge" id="categoriaDelDia"></span>
+                        <h4 class="dia-rect-titulo" id="tituloDelDia"></h4>
+                        <p class="dia-rect-desc" id="descripcionDelDia"></p>
+                        <button class="btn dia-rect-btn" id="btnVerDelDia">Ver seña completa</button>
                     </div>
                 </div>
             </div>

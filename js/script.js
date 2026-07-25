@@ -572,7 +572,7 @@ function mostrarPalabra(p){
     const idVideoSugerida = extraerIdYouTube(p.senasugerida);
     const bloqueSenaSugerida = idVideoSugerida
         ? `<div class="apoyo-panel mt-3 mt-lg-0">
-                <span class="apoyo-panel-titulo">💡 Seña sugerida</span>
+                <span class="apoyo-panel-titulo">💡 Seña</span>
                 <div class="reproductor-palabra-wrap shadow-sm rounded overflow-hidden border mx-0" id="reproductorSugeridaWrap" style="max-width: none;">
                     <div id="reproductorSugerida"></div>
                 </div>
@@ -607,7 +607,7 @@ function mostrarPalabra(p){
             ${bloqueVariantes}
             <div class="row g-4 justify-content-center align-items-stretch">
                 <div class="col-lg-7 d-flex flex-column">
-                    <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider text-md-start">🤟 Definición en Señas:</span>
+                    <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider text-md-start">🤟 Significado:</span>
                     <div class="reproductor-palabra-wrap shadow-sm rounded overflow-hidden border" id="reproductorPalabraWrap">
                         ${bloqueVideo}
                     </div>
@@ -615,7 +615,7 @@ function mostrarPalabra(p){
                 </div>
                 <div class="col-lg-5 d-flex flex-column justify-content-center gap-3">
                     <div class="apoyo-panel">
-                        <span class="apoyo-panel-titulo">📸 Imagen ejemplo</span>
+                        <span class="apoyo-panel-titulo">📸 Ejemplo</span>
                         <div class="apoyo-panel-caja">
                             ${bloqueImagen}
                         </div>
@@ -969,18 +969,21 @@ function abrirImagenAmpliada(url, palabra){
 
 // --- ESTADÍSTICAS ---
 function actualizarEstadisticas(){
+    const bancoHoja2 = obtenerBancoHoja2();
+
     totalPalabras.textContent = App.datos.length;
     totalCategorias.textContent = [...new Set(App.datos.map(p => p.categoria.trim()))].length;
 
-    // "Videos": suma de archivos de video reales de la Hoja 1, no de
-    // palabras únicas. Se cuentan por separado (sin deduplicar por nombre
-    // de palabra) porque son archivos distintos aunque pertenezcan a la
-    // misma palabra: 1) video principal (columna D, "video") y 2) seña
-    // sugerida (columna G, "senasugerida"). Ya no se suma el banco de la
-    // Hoja 2 (Quiz).
+    // "Videos": suma de archivos de video reales, no de palabras únicas.
+    // Se cuentan por separado (sin deduplicar por nombre de palabra) porque
+    // son archivos distintos aunque pertenezcan a la misma palabra:
+    // 1) video principal de la Hoja 1, 2) seña sugerida de la Hoja 1
+    // (columna G, senasugerida) y 3) video del banco del Quiz (Hoja 2,
+    // que QuizV2 ya entrega filtrado a solo filas con video).
     const videosHoja1 = App.datos.filter(p => p.video && p.video.trim() !== "").length;
     const senasSugeridas = App.datos.filter(p => p.senasugerida && p.senasugerida.trim() !== "").length;
-    totalVideos.textContent = videosHoja1 + senasSugeridas;
+    const videosQuiz = bancoHoja2.length;
+    totalVideos.textContent = videosHoja1 + senasSugeridas + videosQuiz;
 }
 
 // --- FILTRO ABC ---
