@@ -54,46 +54,53 @@ if(btnInicio) {
     });
 }
 
+// El botón "Historial" del menú se fusionó dentro de "Temas orden":
+// un solo clic ahora muestra Categorías, Favoritos e Historial juntos
+// (cada uno sigue siendo su propio bloque independiente en el HTML).
 document.getElementById("btnCategorias").addEventListener("click", (e) => {
     e.preventDefault();
-    ocultarQuiz();
-    ocultarAlfabetizacion();
-    ocultarSubtitulos();
+    ocultarSeccionHerramientas();
+    mostrarBloqueInicio();
     mostrarCategorias();
+    mostrarPantallaHistorialYFavoritos();
     panelCategorias.scrollIntoView({ behavior: 'smooth', block: 'center' });
     panelCategorias.classList.add("highlight-anim");
-    setTimeout(() => panelCategorias.classList.remove("highlight-anim"), 2000);
-});
-
-document.getElementById("btnHistorial").addEventListener("click", (e) => {
-    e.preventDefault();
-    ocultarQuiz();
-    ocultarAlfabetizacion();
-    ocultarSubtitulos();
-    mostrarPantallaHistorialYFavoritos();
-    seccionFavoritos.scrollIntoView({ behavior: 'smooth', block: 'center' });
     seccionFavoritos.classList.add("highlight-anim");
     seccionHistorial.classList.add("highlight-anim");
     setTimeout(() => {
+        panelCategorias.classList.remove("highlight-anim");
         seccionFavoritos.classList.remove("highlight-anim");
         seccionHistorial.classList.remove("highlight-anim");
     }, 2000);
 });
 
-const seccionQuiz = document.getElementById("seccionQuiz");
-const btnQuiz = document.getElementById("btnQuiz");
-if(btnQuiz){
-    btnQuiz.addEventListener("click", (e) => {
-        e.preventDefault();
-        mostrarSeccionQuiz();
+// --- BARRA DE NAVEGACIÓN INFERIOR (solo móvil/tablet) ---
+// Cada botón de la barra de abajo solo simula el clic del enlace
+// equivalente del menú de arriba (data-vinculado guarda su id), así
+// que no duplicamos ninguna lógica: toda la navegación real sigue
+// pasando por los mismos handlers de siempre.
+document.querySelectorAll(".mbn-item").forEach(boton => {
+    boton.addEventListener("click", () => {
+        document.querySelectorAll(".mbn-item").forEach(b => b.classList.remove("active"));
+        boton.classList.add("active");
+        const idVinculado = boton.dataset.vinculado;
+        const elementoOriginal = idVinculado && document.getElementById(idVinculado);
+        if(elementoOriginal) elementoOriginal.click();
     });
-}
+});
 
+// "Jugar", "Alfabetización" y "Subtítulos" ya no tienen botón propio en
+// el menú: viven todos juntos, cada uno en su bloque independiente,
+// dentro de "Herramientas" (ver mostrarSeccionHerramientas más abajo).
+const seccionQuiz = document.getElementById("seccionQuiz");
+
+// El acceso flotante "🎮 Jugar" ahora lleva directo a Herramientas
+// (donde Jugar vive junto a Subtítulos y Alfabetización).
 const btnAccesoJugar = document.getElementById("btnAccesoJugar");
 if(btnAccesoJugar){
     btnAccesoJugar.addEventListener("click", (e) => {
         e.preventDefault();
-        mostrarSeccionQuiz();
+        mostrarSeccionHerramientas();
     });
 }
 
@@ -164,28 +171,10 @@ function ocultarQuiz(){
     if(window.AlfabetizacionV2 && typeof AlfabetizacionV2.detenerJuegosActivos === "function") AlfabetizacionV2.detenerJuegosActivos();
 }
 
-function mostrarSeccionQuiz(){
-    resultado.innerHTML = "";
-    panelCategorias.innerHTML = "";
-    categoriaActualMostrada = null;
-    ultimasPalabras.innerHTML = "";
-    ocultarPanelesGuardados();
-    ocultarAlfabetizacion();
-    ocultarSubtitulos();
-    seccionQuiz.classList.remove("d-none");
-    mostrarMenuJuegos();
-    seccionQuiz.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
 // --- SECCIÓN ALFABETIZACIÓN (ahora solo el módulo "Aprender") ---
+// Ya no tiene botón propio en el menú: vive dentro de "Herramientas"
+// (ver mostrarSeccionHerramientas más abajo), junto a Jugar y Subtítulos.
 const seccionAlfabetizacion = document.getElementById("seccionAlfabetizacion");
-const btnAlfabetizacion = document.getElementById("btnAlfabetizacion");
-if(btnAlfabetizacion){
-    btnAlfabetizacion.addEventListener("click", (e) => {
-        e.preventDefault();
-        mostrarSeccionAlfabetizacion();
-    });
-}
 
 function ocultarAlfabetizacion(){
     if(seccionAlfabetizacion) seccionAlfabetizacion.classList.add("d-none");
@@ -193,33 +182,10 @@ function ocultarAlfabetizacion(){
     if(window.AlfabetizacionV2 && typeof AlfabetizacionV2.salir === "function") AlfabetizacionV2.salir();
 }
 
-function mostrarSeccionAlfabetizacion(){
-    resultado.innerHTML = "";
-    panelCategorias.innerHTML = "";
-    categoriaActualMostrada = null;
-    ultimasPalabras.innerHTML = "";
-    ocultarPanelesGuardados();
-    ocultarQuiz();
-    ocultarSubtitulos();
-    seccionAlfabetizacion.classList.remove("d-none");
-    // AlfabetizacionV2 (js/alfabetizacion.js) carga sus datos desde Google Sheets.
-    if(window.AlfabetizacionV2 && typeof AlfabetizacionV2.iniciar === "function"){
-        AlfabetizacionV2.iniciar();
-    } else {
-        console.warn("AlfabetizacionV2 aún no está definido: falta crear/cargar js/alfabetizacion.js.");
-    }
-    seccionAlfabetizacion.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
 // --- SECCIÓN SUBTÍTULOS EN TIEMPO REAL (independiente: micrófono + Web Speech API) ---
+// Ya no tiene botón propio en el menú: vive dentro de "Herramientas"
+// (ver mostrarSeccionHerramientas más abajo), junto a Jugar y Alfabetización.
 const seccionSubtitulos = document.getElementById("seccionSubtitulos");
-const btnSubtitulos = document.getElementById("btnSubtitulos");
-if(btnSubtitulos){
-    btnSubtitulos.addEventListener("click", (e) => {
-        e.preventDefault();
-        mostrarSeccionSubtitulos();
-    });
-}
 
 function ocultarSubtitulos(){
     if(seccionSubtitulos) seccionSubtitulos.classList.add("d-none");
@@ -228,29 +194,83 @@ function ocultarSubtitulos(){
     if(window.SubtitulosV2 && typeof SubtitulosV2.salir === "function") SubtitulosV2.salir();
 }
 
-function mostrarSeccionSubtitulos(){
-    resultado.innerHTML = "";
-    panelCategorias.innerHTML = "";
-    categoriaActualMostrada = null;
-    ultimasPalabras.innerHTML = "";
-    ocultarPanelesGuardados();
-    ocultarQuiz();
-    ocultarAlfabetizacion();
-    seccionSubtitulos.classList.remove("d-none");
-    if(window.SubtitulosV2 && typeof SubtitulosV2.iniciar === "function"){
-        SubtitulosV2.iniciar();
-    } else {
-        console.warn("SubtitulosV2 aún no está definido: falta crear/cargar js/subtitulos.js.");
-    }
-    seccionSubtitulos.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
 const btnSubtitulosSalir = document.getElementById("btnSubtitulosSalir");
 if(btnSubtitulosSalir){
     btnSubtitulosSalir.addEventListener("click", (e) => {
         e.preventDefault();
         ocultarSubtitulos();
     });
+}
+
+// --- SECCIÓN "HERRAMIENTAS" (fusiona Subtítulos + Jugar + Alfabetización) ---
+// A diferencia de como funcionaban antes por separado, acá los 3
+// módulos se muestran TODOS a la vez, uno debajo del otro, cada uno en
+// su propio bloque (<section>) para que no se confundan entre sí.
+// Orden pedido: primero Subtítulos, luego Jugar, y al final Alfabetización.
+const btnHerramientas = document.getElementById("btnHerramientas");
+if(btnHerramientas){
+    btnHerramientas.addEventListener("click", (e) => {
+        e.preventDefault();
+        mostrarSeccionHerramientas();
+    });
+}
+
+// Oculta y "apaga" los 3 módulos de Herramientas de una sola vez
+// (se usa al salir hacia Inicio o Temas orden).
+function ocultarSeccionHerramientas(){
+    ocultarSubtitulos();
+    ocultarQuiz();
+    ocultarAlfabetizacion();
+}
+
+// Dentro de "Herramientas" no se muestra ni la seña del día ni el
+// buscador (se ven solo en Inicio/Temas orden).
+function ocultarBloqueInicio(){
+    const senal = document.getElementById("senalDelDia");
+    if(senal) senal.style.display = "none";
+    const bloqueBuscador = document.getElementById("bloqueBuscador");
+    if(bloqueBuscador) bloqueBuscador.classList.add("d-none");
+}
+
+function mostrarBloqueInicio(){
+    const bloqueBuscador = document.getElementById("bloqueBuscador");
+    if(bloqueBuscador) bloqueBuscador.classList.remove("d-none");
+    // La seña del día no se vuelve a mostrar sola: igual que antes, una
+    // vez oculta (por ejemplo al ver una palabra) solo reaparece con
+    // una recarga de página real (btnInicio ya hace eso).
+}
+
+function mostrarSeccionHerramientas(){
+    resultado.innerHTML = "";
+    panelCategorias.innerHTML = "";
+    categoriaActualMostrada = null;
+    ultimasPalabras.innerHTML = "";
+    ocultarPanelesGuardados();
+    ocultarBloqueInicio();
+
+    // 1) Subtítulos
+    if(seccionSubtitulos){
+        seccionSubtitulos.classList.remove("d-none");
+        if(window.SubtitulosV2 && typeof SubtitulosV2.iniciar === "function"){
+            SubtitulosV2.iniciar();
+        }
+    }
+
+    // 2) Jugar
+    if(seccionQuiz){
+        seccionQuiz.classList.remove("d-none");
+        mostrarMenuJuegos();
+    }
+
+    // 3) Alfabetización
+    if(seccionAlfabetizacion){
+        seccionAlfabetizacion.classList.remove("d-none");
+        if(window.AlfabetizacionV2 && typeof AlfabetizacionV2.iniciar === "function"){
+            AlfabetizacionV2.iniciar();
+        }
+    }
+
+    if(seccionSubtitulos) seccionSubtitulos.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // --- CARGA DE DATOS CENTRALIZADA ---
