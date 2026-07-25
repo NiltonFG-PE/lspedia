@@ -44,36 +44,36 @@ if(btnLogo) {
     });
 }
 
-const CLAVE_ENFOCAR_BUSCADOR = "lspedia_enfocar_buscador";
+// El botón "Buscar" (🔍, antes "Inicio") YA NO recarga la página: una
+// recarga completa siempre dispara la pantalla de carga (splash), por
+// más corta que sea. En su lugar, resetea la vista a la pantalla
+// principal (igual que hacía "Inicio" antes de mostrar resultados) y
+// deja el buscador enfocado al instante, sin ningún parpadeo/carga de
+// por medio.
 const btnInicio = document.getElementById("btnInicio");
 if(btnInicio) {
     btnInicio.addEventListener("click", (e) => {
         e.preventDefault();
-        try { sessionStorage.setItem(CLAVE_ENFOCAR_BUSCADOR, "1"); } catch (err) {}
-        window.location.href = window.location.pathname;
+        irAlBuscador();
     });
 }
 
-// Si venimos de tocar "Buscar" (guardó el aviso arriba antes de
-// recargar), apenas esté todo listo se enfoca el campo de búsqueda
-// para que el usuario pueda escribir de inmediato. Se limpia el aviso
-// enseguida para que no vuelva a enfocar en una recarga manual normal.
-document.addEventListener("DOMContentLoaded", () => {
-    let debeEnfocar = false;
-    try {
-        debeEnfocar = sessionStorage.getItem(CLAVE_ENFOCAR_BUSCADOR) === "1";
-        sessionStorage.removeItem(CLAVE_ENFOCAR_BUSCADOR);
-    } catch (err) {}
-    if (debeEnfocar) {
-        setTimeout(() => {
-            const input = document.getElementById("buscar");
-            if (input) {
-                input.scrollIntoView({ behavior: "smooth", block: "center" });
-                input.focus();
-            }
-        }, 450); // espera a que se oculte el splash screen (ya reducido)
+function irAlBuscador(){
+    ocultarSeccionHerramientas();
+    ocultarPanelesGuardados();
+    resultado.innerHTML = "";
+    panelCategorias.innerHTML = "";
+    ultimasPalabras.innerHTML = "";
+    categoriaActualMostrada = null;
+    document.body.classList.remove("vista-temas-movil");
+    mostrarBloqueInicio();
+    if (sugerencias) sugerencias.innerHTML = "";
+    if (buscar) buscar.value = "";
+    if (buscar) {
+        buscar.scrollIntoView({ behavior: "smooth", block: "center" });
+        setTimeout(() => buscar.focus(), 250);
     }
-});
+}
 
 // El botón "Historial" del menú se fusionó dentro de "Temas orden":
 // un solo clic ahora muestra Categorías, Favoritos e Historial juntos
