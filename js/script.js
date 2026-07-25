@@ -3,6 +3,11 @@ const btnBuscar = document.getElementById("btnBuscar");
 const sugerencias = document.getElementById("sugerencias");
 const resultado = document.getElementById("resultado");
 
+const bloqueBuscador = document.getElementById("bloqueBuscador");
+const bloqueBuscadorCategorias = document.getElementById("bloqueBuscadorCategorias");
+const buscarCategorias = document.getElementById("buscarCategorias");
+const resultadoCategorias = document.getElementById("resultadoCategorias");
+
 const totalPalabras = document.getElementById("totalPalabras");
 const totalCategorias = document.getElementById("totalCategorias");
 const totalVideos = document.getElementById("totalVideos");
@@ -80,6 +85,20 @@ function colapsarIndiceAlfabetico(){
     if (indice && btn && indice.classList.contains("show")) btn.click();
 }
 
+// --- RECORDAR LA VISTA ACTUAL EN LA URL (para que un refresh no vuelva
+//     siempre a Inicio) ---
+// Usa replaceState (no pushState) a propósito: cambiar de "Temas orden" a
+// "Herramientas" varias veces no debe ir llenando el historial del
+// navegador, solo necesitamos que la URL actual refleje dónde está el
+// usuario para poder restaurarlo al recargar. Cuando se muestra una
+// palabra (?p=...) o se filtra por letra, esas rutas ya arman su propia
+// URL desde cero (pathname + su propio parámetro), así que la vista
+// guardada queda reemplazada sola sin que haga falta limpiarla a mano.
+function actualizarVistaUrl(vista){
+    const nuevaUrl = vista ? (window.location.pathname + "?vista=" + vista) : window.location.pathname;
+    window.history.replaceState({}, '', nuevaUrl);
+}
+
 function irAlBuscador(){
     ocultarSeccionHerramientas();
     ocultarPanelesGuardados();
@@ -89,6 +108,7 @@ function irAlBuscador(){
     categoriaActualMostrada = null;
     document.body.classList.remove("vista-temas-movil");
     mostrarBloqueInicio();
+    actualizarVistaUrl(null);
     desplegarIndiceAlfabetico();
     if (sugerencias) sugerencias.innerHTML = "";
     if (buscar) buscar.value = "";
@@ -111,8 +131,13 @@ document.getElementById("btnCategorias").addEventListener("click", (e) => {
     // día/ayer y el panel de Estadísticas; también aplica en escritorio.
     document.body.classList.add("vista-temas-movil");
     colapsarIndiceAlfabetico();
+    // El buscador general (#buscar, busca en todo el diccionario) se
+    // reemplaza acá por el buscador azul exclusivo de Categorías (solo
+    // filtra las tarjetas por nombre). Aplica igual en escritorio y móvil.
+    mostrarBuscadorDeCategorias();
     mostrarCategorias();
     mostrarPantallaHistorialYFavoritos();
+    actualizarVistaUrl("temas");
     panelCategorias.scrollIntoView({ behavior: 'smooth', block: 'center' });
     panelCategorias.classList.add("highlight-anim");
     seccionFavoritos.classList.add("highlight-anim");
@@ -297,6 +322,7 @@ function volverAlMenuHerramientasMovilSiCorresponde(){
         menuMovil.classList.remove("d-none");
         menuMovil.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+    actualizarVistaUrl("herramientas");
 }
 
 // Dentro de "Herramientas" no se muestra ni la seña del día, ni el
@@ -310,6 +336,8 @@ function ocultarBloqueInicio(){
     if(titulo) titulo.style.display = "none";
     const bloqueBuscador = document.getElementById("bloqueBuscador");
     if(bloqueBuscador) bloqueBuscador.classList.add("d-none");
+    const bloqueBuscadorCategorias = document.getElementById("bloqueBuscadorCategorias");
+    if(bloqueBuscadorCategorias) bloqueBuscadorCategorias.classList.add("d-none");
     const filaBotonIndice = document.getElementById("filaBotonIndiceAlfabetico");
     if(filaBotonIndice) filaBotonIndice.style.display = "none";
     const filaIndice = document.getElementById("filaIndiceAlfabetico");
@@ -325,6 +353,8 @@ function mostrarBloqueInicio(){
     if(titulo) titulo.style.display = "";
     const bloqueBuscador = document.getElementById("bloqueBuscador");
     if(bloqueBuscador) bloqueBuscador.classList.remove("d-none");
+    const bloqueBuscadorCategorias = document.getElementById("bloqueBuscadorCategorias");
+    if(bloqueBuscadorCategorias) bloqueBuscadorCategorias.classList.add("d-none");
     const filaBotonIndice = document.getElementById("filaBotonIndiceAlfabetico");
     if(filaBotonIndice) filaBotonIndice.style.display = "";
     const filaIndice = document.getElementById("filaIndiceAlfabetico");
@@ -346,6 +376,7 @@ function mostrarSeccionHerramientas(){
     ocultarPanelesGuardados();
     ocultarBloqueInicio();
     document.body.classList.remove("vista-temas-movil");
+    actualizarVistaUrl("herramientas");
 
     const menuMovil = document.getElementById("herramientasMenuMovil");
 
@@ -415,6 +446,7 @@ if(btnHerrMovilSubtitulos){
             } catch(err){ console.error("No se pudo iniciar Subtítulos:", err); }
             seccionSubtitulos.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
+        actualizarVistaUrl("herramientas-subtitulos");
     });
 }
 
@@ -428,6 +460,7 @@ if(btnHerrMovilJugar){
             try { mostrarMenuJuegos(); } catch(err){ console.error("No se pudo abrir Jugar:", err); }
             seccionQuiz.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
+        actualizarVistaUrl("herramientas-jugar");
     });
 }
 
@@ -445,6 +478,7 @@ if(btnHerrMovilAlfabetizacion){
             } catch(err){ console.error("No se pudo iniciar Alfabetización:", err); }
             seccionAlfabetizacion.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
+        actualizarVistaUrl("herramientas-alfabetizacion");
     });
 }
 
@@ -495,6 +529,27 @@ const App = {
             const palabraEnUrl = urlParams.get("p");
             if (palabraEnUrl) {
                 restaurarPalabraDesdeUrl(palabraEnUrl);
+            } else {
+                // Si no hay una palabra específica que restaurar, revisa si
+                // el usuario estaba en "Temas orden" o "Herramientas" antes
+                // del refresh (ver actualizarVistaUrl) y lo deja ahí mismo
+                // en vez de mandarlo siempre a Inicio.
+                const vistaEnUrl = urlParams.get("vista");
+                if (vistaEnUrl === "temas") {
+                    const btnCategorias = document.getElementById("btnCategorias");
+                    if (btnCategorias) btnCategorias.click();
+                } else if (vistaEnUrl && vistaEnUrl.indexOf("herramientas") === 0) {
+                    mostrarSeccionHerramientas();
+                    // Si además había un módulo puntual abierto (selector móvil /
+                    // modo escritorio forzado), lo reabre tal cual estaba.
+                    if (vistaEnUrl === "herramientas-subtitulos" && btnHerrMovilSubtitulos) {
+                        btnHerrMovilSubtitulos.click();
+                    } else if (vistaEnUrl === "herramientas-jugar" && btnHerrMovilJugar) {
+                        btnHerrMovilJugar.click();
+                    } else if (vistaEnUrl === "herramientas-alfabetizacion" && btnHerrMovilAlfabetizacion) {
+                        btnHerrMovilAlfabetizacion.click();
+                    }
+                }
             }
         })
         .catch(error => console.error("Error al cargar LSPedia:", error));
@@ -1272,6 +1327,63 @@ function mostrarCategorias(){
     categoriaActualMostrada = null;
 }
 
+// --- BUSCADOR EXCLUSIVO DE "TEMAS ORDEN" ---
+// Reemplaza al buscador general (#buscar) mientras esta vista está
+// activa, en escritorio y en móvil por igual. Busca dentro del CONTENIDO
+// de las categorías (palabras reales: Cortesía, Educación, Saludos,
+// Verbos y las que se agreguen a futuro), no solo el nombre de la
+// categoría. Los resultados (o la categoría elegida al tocar una
+// tarjeta) se pintan en #resultadoCategorias, que queda debajo del
+// buscador Y debajo de las tarjetas de categoría, con un botón "Atrás"
+// para volver a la vista limpia de tarjetas.
+function mostrarBuscadorDeCategorias(){
+    if(bloqueBuscador) bloqueBuscador.classList.add("d-none");
+    if(bloqueBuscadorCategorias) bloqueBuscadorCategorias.classList.remove("d-none");
+    limpiarResultadoCategorias();
+}
+
+if(buscarCategorias){
+    buscarCategorias.addEventListener("input", buscarEnCategorias);
+}
+
+function botonAtrasCategorias(){
+    return `<button type="button" class="btn btn-sm btn-outline-primary fw-bold mb-3" onclick="limpiarResultadoCategorias()">⬅ Atrás</button>`;
+}
+
+// Limpia la búsqueda/categoría seleccionada y deja solo las tarjetas de
+// categoría visibles (usado por el botón "Atrás" y al entrar de nuevo a
+// "Temas orden").
+function limpiarResultadoCategorias(){
+    if(resultadoCategorias) resultadoCategorias.innerHTML = "";
+    if(buscarCategorias) buscarCategorias.value = "";
+    categoriaActualMostrada = null;
+}
+window.limpiarResultadoCategorias = limpiarResultadoCategorias;
+
+function buscarEnCategorias(){
+    if(!resultadoCategorias || !buscarCategorias) return;
+    const textoOriginal = buscarCategorias.value.trim();
+    const texto = textoOriginal.toLowerCase();
+    categoriaActualMostrada = null;
+    if(!texto){
+        resultadoCategorias.innerHTML = "";
+        return;
+    }
+    const coincidencias = obtenerDatosUnificados().filter(p => p.palabra.toLowerCase().includes(texto));
+    if(coincidencias.length === 0){
+        resultadoCategorias.innerHTML = botonAtrasCategorias() +
+            `<div class="alert alert-light border text-center text-muted small py-3" style="border-radius: 12px;">No hay palabras que coincidan con "${textoOriginal}".</div>`;
+        return;
+    }
+    let html = botonAtrasCategorias() +
+        `<h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">Resultados para "${textoOriginal}"</h6>`;
+    coincidencias.forEach(p => {
+        const badgeQuiz = p._soloQuiz ? ` <span class="badge bg-warning text-dark ms-1" style="font-size: 10px;">🎮 Quiz</span>` : "";
+        html += `<div class="card mb-2 palabra-card shadow-sm animate-fade-in" style="border-radius: 10px;"><div class="card-body p-2 d-flex justify-content-between align-items-center"><div><h6 class="mb-0 fw-bold text-primary">${p.palabra}${badgeQuiz}</h6><small class="text-muted">${p.categoria.trim()}</small></div><button class="btn btn-sm btn-primary py-1 px-3 fw-bold" onclick="mostrarPalabraPorNombreUnificado('${p.palabra.replace(/'/g, "\\'")}')">Ver Seña</button></div></div>`;
+    });
+    resultadoCategorias.innerHTML = html;
+}
+
 // --- DATOS UNIFICADOS (Hoja 1 + palabras de la Hoja 2 que no están en la Hoja 1) ---
 // Se usa en categorías (y se puede reutilizar donde haga falta) para que
 // las palabras del banco del Quiz no queden "invisibles" fuera del buscador.
@@ -1287,11 +1399,13 @@ function obtenerDatosUnificados(){
 
 function mostrarCategoria(nombre){
     categoriaActualMostrada = nombre;
-    resultado.innerHTML=`<h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">Categoría: ${nombre}</h6>`;
+    if(buscarCategorias) buscarCategorias.value = "";
+    let html = botonAtrasCategorias() + `<h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">Categoría: ${nombre}</h6>`;
     obtenerDatosUnificados().filter(p => p.categoria.trim() === nombre).forEach(p=>{
         const badgeQuiz = p._soloQuiz ? ` <span class="badge bg-warning text-dark ms-1" style="font-size: 10px;">🎮 Quiz</span>` : "";
-        resultado.innerHTML+=`<div class="card mb-2 palabra-card shadow-sm animate-fade-in" style="border-radius: 10px;"><div class="card-body p-2 d-flex justify-content-between align-items-center"><div><h6 class="mb-0 fw-bold text-primary">${p.palabra}${badgeQuiz}</h6></div><button class="btn btn-sm btn-primary py-1 px-3 fw-bold" onclick="mostrarPalabraPorNombreUnificado('${p.palabra.replace(/'/g, "\\'")}')">Ver Seña</button></div></div>`;
+        html += `<div class="card mb-2 palabra-card shadow-sm animate-fade-in" style="border-radius: 10px;"><div class="card-body p-2 d-flex justify-content-between align-items-center"><div><h6 class="mb-0 fw-bold text-primary">${p.palabra}${badgeQuiz}</h6></div><button class="btn btn-sm btn-primary py-1 px-3 fw-bold" onclick="mostrarPalabraPorNombreUnificado('${p.palabra.replace(/'/g, "\\'")}')">Ver Seña</button></div></div>`;
     });
+    resultadoCategorias.innerHTML = html;
 }
 
 // Igual que mostrarPalabraPorNombre(), pero también busca en el banco

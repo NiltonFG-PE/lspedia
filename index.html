@@ -889,7 +889,24 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
         <div id="resultado" class="mb-4 animate-fade-in"></div>
 
         <div id="ultimasPalabras" class="row g-2 mb-4"></div>
+
+        <!-- Buscador exclusivo de "Temas orden": reemplaza al buscador general
+             (#bloqueBuscador) mientras esta vista está activa. Solo filtra las
+             tarjetas de Categorías (por nombre), nunca palabras del diccionario.
+             Mismo bloque para escritorio y móvil (se muestra/oculta por JS). -->
+        <div class="row justify-content-center mb-3 d-none" id="bloqueBuscadorCategorias">
+            <div class="col-lg-8 position-relative">
+                <div class="input-group input-group-lg shadow-sm" style="border-radius: 50px; border: 2px solid #0d6efd; overflow: hidden; background-color: #fff;">
+                    <input id="buscarCategorias" type="text" class="form-control border-0 px-4 shadow-none text-secondary" placeholder="Busca una palabra dentro de las categorías..." style="font-size: 1.1rem; background: transparent;">
+                    <button class="btn px-4 d-flex align-items-center justify-content-center" type="button" id="btnBuscarCategorias" style="background-color: #0d6efd; color: #fff;">
+                        <span style="font-size: 1.3rem;">🔍</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <div id="panelCategorias" class="row g-2 mb-4 p-2"></div>
+        <div id="resultadoCategorias" class="mb-4"></div>
 
         <div class="stats-panel-destacado mb-4">
             <div class="row g-3 justify-content-center">
