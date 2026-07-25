@@ -95,8 +95,9 @@
         /* La barra azul superior con el logo ahora también se ve en móvil,
            igual que en escritorio. Como la navegación real ya vive en la
            barra inferior (mobile-bottom-nav), acá se oculta el botón
-           hamburguesa y el menú colapsable para no duplicar accesos, y se
-           achica un poco el logo para que la barra quede compacta. */
+           hamburguesa y el menú colapsable para no duplicar accesos.
+           Además, igual que la barra inferior, ahora queda FIJA arriba
+           al hacer scroll, con el logo centrado y un poco más grande. */
         @media (max-width: 1199.98px) {
             .navbar-toggler {
                 display: none !important;
@@ -104,8 +105,27 @@
             #menuPrincipal {
                 display: none !important;
             }
+            nav.navbar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 1030;
+            }
+            nav.navbar .container {
+                justify-content: center !important;
+            }
+            .navbar-brand {
+                margin: 0 !important;
+            }
             .navbar-brand img {
-                height: 48px !important;
+                height: 64px !important;
+            }
+            /* Empuja el contenido hacia abajo para que la barra fija de
+               arriba no lo tape (mismo criterio que el padding-bottom de
+               abajo, para dejar lugar a la barra inferior). */
+            body {
+                padding-top: 80px;
             }
         }
 
@@ -473,7 +493,7 @@
     bottom: 0;
     z-index: 1035;
     display: flex;
-    background-color: #ffffff;
+    background-color: #eef1f5;
     border-top: 1px solid #e2e8f0;
     box-shadow: 0 -4px 14px rgba(15, 23, 42, 0.08);
     padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -586,6 +606,13 @@ html.modo-escritorio-forzado .mobile-bottom-nav {
 }
 html.modo-escritorio-forzado body {
     padding-bottom: 0 !important;
+    padding-top: 0 !important;
+}
+html.modo-escritorio-forzado nav.navbar {
+    position: static !important;
+}
+html.modo-escritorio-forzado nav.navbar .container {
+    justify-content: space-between !important;
 }
 html.modo-escritorio-forzado body.vista-temas-movil #senalDelDia,
 html.modo-escritorio-forzado body.vista-temas-movil .stats-panel-destacado {
