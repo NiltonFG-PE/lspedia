@@ -10,8 +10,18 @@ const totalVideos = document.getElementById("totalVideos");
 const panelCategorias = document.getElementById("panelCategorias");
 const ultimasPalabras = document.getElementById("ultimasPalabras");
 const seccionHistorial = document.getElementById("seccionHistorial");
+const seccionFavoritos = document.getElementById("seccionFavoritos");
 const listaHistorial = document.getElementById("listaHistorial");
 const listaFavoritos = document.getElementById("listaFavoritos");
+
+// El botón de menú "Favoritos" se fusionó con "Historial": un solo
+// botón ("Historial") ahora abre ambos paneles, cada uno en su propio
+// bloque independiente (primero Favoritos, luego Historial). Esta
+// función centraliza el ocultarlos cuando se navega a otra sección.
+function ocultarPanelesGuardados(){
+    seccionHistorial.classList.add("d-none");
+    if(seccionFavoritos) seccionFavoritos.classList.add("d-none");
+}
 
 const CLAVE_FAVORITOS = "lspedia_favoritos";
 const CLAVE_HISTORIAL = "lspedia_historial";
@@ -55,26 +65,19 @@ document.getElementById("btnCategorias").addEventListener("click", (e) => {
     setTimeout(() => panelCategorias.classList.remove("highlight-anim"), 2000);
 });
 
-document.getElementById("btnNavFavoritos").addEventListener("click", (e) => {
-    e.preventDefault();
-    ocultarQuiz();
-    ocultarAlfabetizacion();
-    ocultarSubtitulos();
-    const seccionFav = document.getElementById("seccionFavoritos");
-    seccionFav.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    seccionFav.classList.add("highlight-anim");
-    setTimeout(() => seccionFav.classList.remove("highlight-anim"), 2000);
-});
-
 document.getElementById("btnHistorial").addEventListener("click", (e) => {
     e.preventDefault();
     ocultarQuiz();
     ocultarAlfabetizacion();
     ocultarSubtitulos();
-    mostrarPantallaHistorial();
-    seccionHistorial.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    mostrarPantallaHistorialYFavoritos();
+    seccionFavoritos.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    seccionFavoritos.classList.add("highlight-anim");
     seccionHistorial.classList.add("highlight-anim");
-    setTimeout(() => seccionHistorial.classList.remove("highlight-anim"), 2000);
+    setTimeout(() => {
+        seccionFavoritos.classList.remove("highlight-anim");
+        seccionHistorial.classList.remove("highlight-anim");
+    }, 2000);
 });
 
 const seccionQuiz = document.getElementById("seccionQuiz");
@@ -166,7 +169,7 @@ function mostrarSeccionQuiz(){
     panelCategorias.innerHTML = "";
     categoriaActualMostrada = null;
     ultimasPalabras.innerHTML = "";
-    seccionHistorial.classList.add("d-none");
+    ocultarPanelesGuardados();
     ocultarAlfabetizacion();
     ocultarSubtitulos();
     seccionQuiz.classList.remove("d-none");
@@ -195,7 +198,7 @@ function mostrarSeccionAlfabetizacion(){
     panelCategorias.innerHTML = "";
     categoriaActualMostrada = null;
     ultimasPalabras.innerHTML = "";
-    seccionHistorial.classList.add("d-none");
+    ocultarPanelesGuardados();
     ocultarQuiz();
     ocultarSubtitulos();
     seccionAlfabetizacion.classList.remove("d-none");
@@ -230,7 +233,7 @@ function mostrarSeccionSubtitulos(){
     panelCategorias.innerHTML = "";
     categoriaActualMostrada = null;
     ultimasPalabras.innerHTML = "";
-    seccionHistorial.classList.add("d-none");
+    ocultarPanelesGuardados();
     ocultarQuiz();
     ocultarAlfabetizacion();
     seccionSubtitulos.classList.remove("d-none");
@@ -399,7 +402,7 @@ function buscarPalabras(){
     //ultimasPalabras.innerHTML = ""; 
     //panelCategorias.innerHTML = "";
     categoriaActualMostrada = null;
-    seccionHistorial.classList.add("d-none"); 
+    ocultarPanelesGuardados(); 
 
     if(texto === "") {
         sugerencias.style.display = "none";
@@ -489,7 +492,7 @@ function ejecutarBusquedaDirecta() {
     panelCategorias.innerHTML = "";
     categoriaActualMostrada = null;
     ultimasPalabras.innerHTML = "";
-    seccionHistorial.classList.add("d-none");
+    ocultarPanelesGuardados();
     resultado.innerHTML = `
     <div class="card shadow-sm mb-4 border-0 animate-fade-in" style="border-radius: 15px; background-color: #f8f9fa;">
         <div class="card-body p-5 text-center">
@@ -527,7 +530,7 @@ function mostrarPalabra(p){
     sugerencias.style.display = "none";
     panelCategorias.innerHTML = ""; 
     categoriaActualMostrada = null;
-    seccionHistorial.classList.add("d-none");
+    ocultarPanelesGuardados();
     const nuevaUrl = window.location.pathname + "?p=" + encodeURIComponent(p.palabra);
     window.history.pushState({path: nuevaUrl}, '', nuevaUrl);
     agregarAHistorial(p.palabra); 
@@ -661,7 +664,7 @@ function mostrarPalabraSimplificada(p){
     panelCategorias.innerHTML = "";
     categoriaActualMostrada = null;
     ultimasPalabras.innerHTML = "";
-    seccionHistorial.classList.add("d-none");
+    ocultarPanelesGuardados();
     document.getElementById("senalDelDia").style.display = "none";
     const nuevaUrl = window.location.pathname + "?p=" + encodeURIComponent(p.palabra);
     window.history.pushState({path: nuevaUrl}, '', nuevaUrl);
@@ -997,7 +1000,7 @@ function filtrarPorLetra(letra) {
     panelCategorias.innerHTML = "";
     categoriaActualMostrada = null;
     ultimasPalabras.innerHTML = ""; 
-    seccionHistorial.classList.add("d-none");
+    ocultarPanelesGuardados();
     window.history.pushState({}, '', window.location.pathname);
     const filtradas = App.datos.filter(p => p.palabra.toUpperCase().startsWith(letra.toUpperCase()));
     if (filtradas.length === 0) {
@@ -1018,7 +1021,7 @@ function filtrarPorLetra(letra) {
 
 // --- CATEGORÍAS ---
 function mostrarCategorias(){
-    resultado.innerHTML=""; panelCategorias.innerHTML=""; ultimasPalabras.innerHTML = ""; seccionHistorial.classList.add("d-none");
+    resultado.innerHTML=""; panelCategorias.innerHTML=""; ultimasPalabras.innerHTML = ""; ocultarPanelesGuardados();
     if (window.QuizV2 && typeof QuizV2.asegurarBancoCargado === "function") {
         QuizV2.asegurarBancoCargado();
     }
@@ -1127,7 +1130,13 @@ function mostrarFavoritos(){
     });
 }
 function agregarAHistorial(n){ let h = JSON.parse(localStorage.getItem(CLAVE_HISTORIAL) || "[]"); h = h.filter(i=>i!==n); h.unshift(n); if(h.length>12) h.pop(); localStorage.setItem(CLAVE_HISTORIAL, JSON.stringify(h)); }
-function mostrarPantallaHistorial(){
+function mostrarPantallaHistorialYFavoritos(){
+    // Primero Favoritos, luego Historial — mismo orden en que aparecen
+    // los bloques en el HTML. Cada uno sigue siendo un bloque
+    // independiente (su propio <section>), solo comparten el botón
+    // de menú que los abre.
+    if(seccionFavoritos) seccionFavoritos.classList.remove("d-none");
+    mostrarFavoritos();
     seccionHistorial.classList.remove("d-none");
     listaHistorial.innerHTML = "";
     JSON.parse(localStorage.getItem(CLAVE_HISTORIAL) || "[]").forEach(nombre => {

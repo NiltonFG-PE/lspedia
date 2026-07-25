@@ -348,10 +348,31 @@
     color: #0f172a;
 }
 @media (max-width: 767px) {
-    .dia-rect-card { flex-direction: column; }
-    .dia-rect-media { width: 100%; aspect-ratio: 16 / 9; }
-    .dia-rect-body { padding: 16px; }
-    .dia-rect-nav-btn { width: 44px; height: 44px; font-size: 18px; border-radius: 10px; }
+    /* Antes se apilaba en columna con el video a ancho completo (16:9),
+       lo que hacía la tarjeta muy alta. Ahora se mantiene horizontal
+       como en escritorio, con una miniatura pequeña en proporción 4:3
+       (en vez de cuadrada) para que el video quepa sin recortarse tanto,
+       en un formato rectangular compacto. */
+    .dia-rect-card { flex-direction: row; align-items: stretch; }
+    .dia-rect-media { width: 88px; aspect-ratio: 4 / 3; align-self: center; border-radius: 8px; overflow: hidden; margin: 8px 0 8px 8px; }
+    .dia-rect-media-tag { display: none; }
+    .dia-rect-media-play { font-size: 13px; }
+    .dia-rect-body { padding: 8px 10px; justify-content: center; }
+    .dia-rect-nav { margin-bottom: 3px; gap: 6px; }
+    .dia-rect-nav-btn { width: 28px; height: 28px; font-size: 12px; border-radius: 7px; }
+    .dia-rect-label { font-size: 12px; font-weight: 800; }
+    .dia-rect-badge { font-size: 9px; padding: 2px 7px; margin-bottom: 4px; }
+    .dia-rect-titulo { font-size: 13.5px; margin-bottom: 3px; }
+    .dia-rect-desc {
+        font-size: 10px;
+        line-height: 1.35;
+        margin-bottom: 6px;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .dia-rect-btn { font-size: 10px; padding: 5px 11px; }
 }
 
 /* Tarjetas del menú de Juegos (Completar / Unir / Quiz) */
@@ -481,7 +502,6 @@
                     <li class="nav-item"><a class="nav-link" href="#" id="btnQuiz"><span aria-hidden="true">🎮</span> Jugar</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" id="btnAlfabetizacion"><span aria-hidden="true">🔤</span> Alfabetización</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" id="btnSubtitulos"><span aria-hidden="true">💬</span> Subtítulos</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" id="btnNavFavoritos"><span aria-hidden="true">⭐</span> Favoritos</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" id="btnHistorial"><span aria-hidden="true">🕒</span> Historial</a></li>
                     <li class="nav-item"><a class="nav-link text-warning" href="#" data-bs-toggle="modal" data-bs-target="#modalSobreNosotros"><span aria-hidden="true">🤟</span> Sobre Nosotros</a></li>
                 </ul>
@@ -555,7 +575,7 @@
                         <span class="badge dia-rect-badge" id="categoriaDelDia"></span>
                         <h4 class="dia-rect-titulo" id="tituloDelDia"></h4>
                         <p class="dia-rect-desc" id="descripcionDelDia"></p>
-                        <button class="btn dia-rect-btn" id="btnVerDelDia">Ver seña completa</button>
+                        <button class="btn dia-rect-btn" id="btnVerDelDia">Ver ahora</button>
                     </div>
                 </div>
             </div>
@@ -657,14 +677,14 @@
             </div>
         </div>
 
+        <section id="seccionFavoritos" class="mb-5 p-3 d-none" style="background-color: #f0f8ff; border-radius: 12px; border: 1px solid #dceefc;">
+            <h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">⭐ Mis Favoritos</h6>
+            <div id="listaFavoritos" class="row g-2"></div>
+        </section>
+
         <section id="seccionHistorial" class="mb-5 d-none p-3">
             <h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">🕒 Mi Historial de Búsqueda</h6>
             <div id="listaHistorial" class="row g-2"></div>
-        </section>
-
-        <section id="seccionFavoritos" class="mb-5 p-3" style="background-color: #f0f8ff; border-radius: 12px; border: 1px solid #dceefc;">
-            <h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">⭐ Mis Favoritos</h6>
-            <div id="listaFavoritos" class="row g-2"></div>
         </section>
 
         <!-- ================================================================
