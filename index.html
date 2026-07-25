@@ -890,10 +890,15 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
 
         <div id="ultimasPalabras" class="row g-2 mb-4"></div>
 
-        <!-- Buscador exclusivo de "Temas orden": reemplaza al buscador general
-             (#bloqueBuscador) mientras esta vista está activa. Solo filtra las
-             tarjetas de Categorías (por nombre), nunca palabras del diccionario.
-             Mismo bloque para escritorio y móvil (se muestra/oculta por JS). -->
+        <!-- Vista "Temas orden": primero las etiquetas (tarjetas de categoría),
+             y debajo el buscador exclusivo de esta vista (reemplaza al
+             buscador general #bloqueBuscador mientras está activa). Los
+             resultados/sugerencias al escribir aparecen justo debajo del
+             buscador, en #resultadoCategorias. Mismo orden en escritorio y
+             en móvil (se muestra/oculta por JS, ver mostrarBuscadorDeCategorias
+             y el listener de btnCategorias en script.js). -->
+        <div id="panelCategorias" class="row g-2 mb-4 p-2"></div>
+
         <div class="row justify-content-center mb-3 d-none" id="bloqueBuscadorCategorias">
             <div class="col-lg-8 position-relative">
                 <div class="input-group input-group-lg shadow-sm" style="border-radius: 50px; border: 2px solid #0d6efd; overflow: hidden; background-color: #fff;">
@@ -905,7 +910,6 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
             </div>
         </div>
 
-        <div id="panelCategorias" class="row g-2 mb-4 p-2"></div>
         <div id="resultadoCategorias" class="mb-4"></div>
 
         <div class="stats-panel-destacado mb-4">

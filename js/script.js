@@ -104,6 +104,7 @@ function irAlBuscador(){
     ocultarPanelesGuardados();
     resultado.innerHTML = "";
     panelCategorias.innerHTML = "";
+    resultadoCategorias.innerHTML = "";
     ultimasPalabras.innerHTML = "";
     categoriaActualMostrada = null;
     document.body.classList.remove("vista-temas-movil");
@@ -131,6 +132,15 @@ document.getElementById("btnCategorias").addEventListener("click", (e) => {
     // día/ayer y el panel de Estadísticas; también aplica en escritorio.
     document.body.classList.add("vista-temas-movil");
     colapsarIndiceAlfabetico();
+    // El botón "A-Z | Índice alfabético" no debe verse dentro de "Temas
+    // orden" (ahí ya se navega por las tarjetas de categoría y por el
+    // buscador azul de abajo): se oculta por completo, en escritorio y
+    // en móvil por igual. mostrarBloqueInicio() lo vuelve a mostrar al
+    // salir hacia "Buscar" (ver irAlBuscador()).
+    const filaBotonIndiceTemas = document.getElementById("filaBotonIndiceAlfabetico");
+    if(filaBotonIndiceTemas) filaBotonIndiceTemas.style.display = "none";
+    const filaIndiceTemas = document.getElementById("filaIndiceAlfabetico");
+    if(filaIndiceTemas) filaIndiceTemas.style.display = "none";
     // El buscador general (#buscar, busca en todo el diccionario) se
     // reemplaza acá por el buscador azul exclusivo de Categorías (solo
     // filtra las tarjetas por nombre). Aplica igual en escritorio y móvil.
@@ -371,6 +381,7 @@ function mostrarBloqueInicio(){
 function mostrarSeccionHerramientas(){
     resultado.innerHTML = "";
     panelCategorias.innerHTML = "";
+    resultadoCategorias.innerHTML = "";
     categoriaActualMostrada = null;
     ultimasPalabras.innerHTML = "";
     ocultarPanelesGuardados();
