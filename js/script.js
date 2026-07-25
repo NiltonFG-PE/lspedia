@@ -179,13 +179,14 @@ document.querySelectorAll(".mbn-item").forEach(boton => {
 // dentro de "Herramientas" (ver mostrarSeccionHerramientas más abajo).
 const seccionQuiz = document.getElementById("seccionQuiz");
 
-// El acceso flotante "🎮 Jugar" ahora lleva directo a Herramientas
-// (donde Jugar vive junto a Subtítulos y Alfabetización).
+// El acceso flotante "🎮 Jugar" lleva directo a la sección Jugar (el
+// menú con "Completar la palabra", "Unir con flechas" y "Quiz"),
+// saltándose el selector de Herramientas (ver abrirJugarDirecto más abajo).
 const btnAccesoJugar = document.getElementById("btnAccesoJugar");
 if(btnAccesoJugar){
     btnAccesoJugar.addEventListener("click", (e) => {
         e.preventDefault();
-        mostrarSeccionHerramientas();
+        abrirJugarDirecto();
     });
 }
 
@@ -438,6 +439,36 @@ function mostrarSeccionHerramientas(){
     }
 
     if(seccionSubtitulos) seccionSubtitulos.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// Acceso directo a "Jugar" (usado por el botón flotante 🎮): a
+// diferencia de mostrarSeccionHerramientas(), acá NO se pasa primero
+// por el selector de 3 botones grandes (Subtítulos/Jugar/Alfabetización):
+// se muestra de una el menú "Elige a qué quieres jugar" (quizMenuJuegos),
+// igual que en la imagen de referencia.
+function abrirJugarDirecto(){
+    resultado.innerHTML = "";
+    panelCategorias.innerHTML = "";
+    resultadoCategorias.innerHTML = "";
+    categoriaActualMostrada = null;
+    ultimasPalabras.innerHTML = "";
+    ocultarPanelesGuardados();
+    ocultarBloqueInicio();
+    document.body.classList.remove("vista-temas-movil");
+    actualizarVistaUrl("herramientas-jugar");
+
+    // Se ocultan el selector de Herramientas y los otros 2 módulos
+    // (Subtítulos/Alfabetización): solo debe quedar visible Jugar.
+    const menuMovil = document.getElementById("herramientasMenuMovil");
+    if(menuMovil) menuMovil.classList.add("d-none");
+    ocultarSubtitulos();
+    ocultarAlfabetizacion();
+
+    if(seccionQuiz){
+        seccionQuiz.classList.remove("d-none");
+        try { mostrarMenuJuegos(); } catch(err){ console.error("No se pudo abrir Jugar:", err); }
+        seccionQuiz.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
 }
 
 // --- BOTONES GRANDES DEL MENÚ DE HERRAMIENTAS (solo móvil) ---
@@ -1289,21 +1320,19 @@ function abrirImagenAmpliada(url, palabra){
 
 // --- ESTADÍSTICAS ---
 function actualizarEstadisticas(){
-    const bancoHoja2 = obtenerBancoHoja2();
-
     totalPalabras.textContent = App.datos.length;
     totalCategorias.textContent = [...new Set(App.datos.map(p => p.categoria.trim()))].length;
 
-    // "Videos": suma de archivos de video reales, no de palabras únicas.
-    // Se cuentan por separado (sin deduplicar por nombre de palabra) porque
-    // son archivos distintos aunque pertenezcan a la misma palabra:
-    // 1) video principal de la Hoja 1, 2) seña sugerida de la Hoja 1
-    // (columna G, senasugerida) y 3) video del banco del Quiz (Hoja 2,
-    // que QuizV2 ya entrega filtrado a solo filas con video).
+    // "Videos": suma de archivos de video reales de la Hoja 1, sin
+    // deduplicar por nombre de palabra, porque son archivos distintos
+    // aunque pertenezcan a la misma palabra: 1) video principal
+    // (columna D, "video") y 2) seña sugerida (columna G, "senasugerida").
+    // Ya NO se suman los videos del banco del Quiz (Hoja 2): son un banco
+    // de práctica aparte y sumarlos inflaba el total por encima de la
+    // cantidad real de videos que tiene el diccionario.
     const videosHoja1 = App.datos.filter(p => p.video && p.video.trim() !== "").length;
     const senasSugeridas = App.datos.filter(p => p.senasugerida && p.senasugerida.trim() !== "").length;
-    const videosQuiz = bancoHoja2.length;
-    totalVideos.textContent = videosHoja1 + senasSugeridas + videosQuiz;
+    totalVideos.textContent = videosHoja1 + senasSugeridas;
 }
 
 // --- FILTRO ABC ---
