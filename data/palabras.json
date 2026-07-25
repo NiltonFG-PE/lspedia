@@ -34,7 +34,7 @@
     "definicion": "Respuesta estándar y educada cuando alguien nos da las gracias.",
     "categoria": "Cortesía",
     "video": "aKL3ZbMrvts",
-    "imagen": "",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/de%20nada.jpg",
     "variantes": "",
     "senasugerida": "",
     "": ""
@@ -44,7 +44,7 @@
     "definicion": "Indicación formal y amable de que se hace un favor con placer.",
     "categoria": "Cortesía",
     "video": "biR1gIIGKfA",
-    "imagen": "",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/con%20gusto.png",
     "variantes": "",
     "senasugerida": "",
     "": ""
@@ -54,7 +54,7 @@
     "definicion": "Expresión de alegría y reconocimiento por el éxito o celebración de alguien.",
     "categoria": "Cortesía",
     "video": "Kj7stDbuMrw",
-    "imagen": "",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/felicitaciones.jpg",
     "variantes": "felicidades, Enhorabuena, Bravo, Bien hecho, felicito, Excelente, Muy bien, felicitaciones,Te felicito,Los felicito,Te felicitamos, Los felicitamos",
     "senasugerida": "",
     "": ""
@@ -94,7 +94,7 @@
     "definicion": "Es la fórmula de cortesía más común para saludar a alguien en la mañana, pero solo desde que amanece hasta el mediodía (la hora de comer).",
     "categoria": "Saludos",
     "video": "X3RfXXj9H0s",
-    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Buenos%20d%C3%ADas.jpg",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Buenos%20dias.png",
     "variantes": "Buen día, Buenas, Bnas",
     "senasugerida": "",
     "": ""
@@ -103,8 +103,8 @@
     "palabra": "Buenas tardes",
     "definicion": "Es el saludo que usamos desde el mediodía hasta que se oculta el sol (cuando empieza a oscurecer).",
     "categoria": "Saludos",
-    "video": "",
-    "imagen": "https://img.magnific.com/foto-gratis/retrato-linda-joven-cubre-camara-riendo-coqueteando-tomando-cafe_1258-193590.jpg?t=st=1783618736~exp=1783622336~hmac=c274be37fc34a9e51ac195706606d5121d53551804d997df3b37c4690b2e4389&w=1480",
+    "video": "nXhQA4mAvHw",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Buenas%20noches.jpg",
     "variantes": "Buena tarde, Bnas, Bnas tardes ",
     "senasugerida": "",
     "": ""
@@ -113,8 +113,8 @@
     "palabra": "Buenas noches",
     "definicion": "Es el saludo que usamos cuando ya está oscuro (de noche). También sirve para despedirte de alguien antes de irte a dormir.",
     "categoria": "Saludos",
-    "video": "",
-    "imagen": "https://img.magnific.com/foto-gratis/retrato-linda-joven-cubre-camara-riendo-coqueteando-tomando-cafe_1258-193590.jpg?t=st=1783618736~exp=1783622336~hmac=c274be37fc34a9e51ac195706606d5121d53551804d997df3b37c4690b2e4389&w=1480",
+    "video": "iE5EUuNcYiI",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Buenas%20noches.jpg",
     "variantes": "Buenas noches, Bnas, Bnas noches",
     "senasugerida": "",
     "": ""
