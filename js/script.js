@@ -58,6 +58,28 @@ if(btnInicio) {
     });
 }
 
+// Solo en la versión de escritorio (ver detección en index.html) el
+// índice alfabético debe aparecer desplegado por defecto en el Inicio,
+// y colapsado (no desplegado) al entrar a "Temas orden". En móvil no
+// cambia nada: sigue arrancando colapsado como antes.
+function esModoEscritorioForzado(){
+    return document.documentElement.classList.contains("modo-escritorio-forzado");
+}
+
+function desplegarIndiceAlfabetico(){
+    if (!esModoEscritorioForzado()) return;
+    const indice = document.getElementById("indiceAlfabetico");
+    const btn = document.getElementById("btnToggleAbc");
+    if (indice && btn && !indice.classList.contains("show")) btn.click();
+}
+
+function colapsarIndiceAlfabetico(){
+    if (!esModoEscritorioForzado()) return;
+    const indice = document.getElementById("indiceAlfabetico");
+    const btn = document.getElementById("btnToggleAbc");
+    if (indice && btn && indice.classList.contains("show")) btn.click();
+}
+
 function irAlBuscador(){
     ocultarSeccionHerramientas();
     ocultarPanelesGuardados();
@@ -67,6 +89,7 @@ function irAlBuscador(){
     categoriaActualMostrada = null;
     document.body.classList.remove("vista-temas-movil");
     mostrarBloqueInicio();
+    desplegarIndiceAlfabetico();
     if (sugerencias) sugerencias.innerHTML = "";
     if (buscar) buscar.value = "";
     if (buscar) {
@@ -85,8 +108,9 @@ document.getElementById("btnCategorias").addEventListener("click", (e) => {
     // Vista "Temas" en móvil: solo deben quedar visibles el buscador, el
     // índice A-Z, las categorías, Favoritos e Historial. La clase la lee
     // el CSS (@media max-width 1199.98px) para ocultar la seña del
-    // día/ayer y el panel de Estadísticas; en escritorio no tiene efecto.
+    // día/ayer y el panel de Estadísticas; también aplica en escritorio.
     document.body.classList.add("vista-temas-movil");
+    colapsarIndiceAlfabetico();
     mostrarCategorias();
     mostrarPantallaHistorialYFavoritos();
     panelCategorias.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -256,10 +280,10 @@ function ocultarSeccionHerramientas(){
 // (ver el media query "max-width: 1199.98px" del CSS, equivalente al
 // breakpoint "xl" de Bootstrap).
 function esVistaMovilHerramientas(){
-    // Si el navegador móvil pidió "Versión para escritorio" (ver el
-    // script de detección en index.html), se respeta el diseño real de
-    // escritorio aunque la pantalla física siga siendo chica.
-    if (document.documentElement.classList.contains("modo-escritorio-forzado")) return false;
+    // En la versión de escritorio, Herramientas también usa el selector
+    // de 3 botones grandes (Subtítulos / Jugar / Alfabetización), igual
+    // que en móvil, sin importar el ancho de la ventana.
+    if (document.documentElement.classList.contains("modo-escritorio-forzado")) return true;
     return window.innerWidth < 1200;
 }
 
@@ -523,6 +547,9 @@ if(indiceAlfabetico){
         const flecha = document.getElementById("flechaAbc");
         if(flecha) flecha.style.transform = "rotate(0deg)";
     });
+    // En escritorio el índice alfabético arranca desplegado (en móvil
+    // sigue arrancando colapsado, como antes).
+    desplegarIndiceAlfabetico();
 }
 
 // --- BANCO DE LA HOJA 2 (solo para Categorías y para fusionar el video
