@@ -518,10 +518,24 @@
    la nueva barra. */
 @media (max-width: 1199.98px) {
     body { padding-bottom: 74px; }
-    /* Los botones flotantes (Jugar/Herramientas/Temas orden, mas los de
-       cerrar/mostrar accesos) ahora se mantienen visibles también en
-       movil/tablet y a cualquier nivel de zoom, ademas de la barra
-       inferior de navegacion. */
+}
+
+/* Los botones flotantes (Jugar/Herramientas/Temas orden, mas los de
+   cerrar/mostrar accesos) solo deben verse en la versión de escritorio.
+   En vez de basarnos en el ancho de pantalla (que cambia con el zoom del
+   navegador y hacía que en escritorio, al hacer zoom, se ocultaran por
+   error), usamos el tipo de puntero: los celulares/tablets táctiles no
+   tienen "hover" y su puntero es "coarse" (el dedo), mientras que una PC
+   con mouse sí tiene hover y puntero "fine". Así, en escritorio los
+   botones se mantienen visibles a cualquier nivel de zoom, y en
+   móvil/tablet quedan ocultos siempre (ahí ya existe la barra inferior
+   tipo app para navegar). */
+@media (hover: none), (pointer: coarse) {
+    .fab-wrap,
+    .btn-cerrar-accesos,
+    .btn-mostrar-accesos {
+        display: none !important;
+    }
 }
 
 /* ============================================================
