@@ -61,6 +61,11 @@ document.getElementById("btnCategorias").addEventListener("click", (e) => {
     e.preventDefault();
     ocultarSeccionHerramientas();
     mostrarBloqueInicio();
+    // Vista "Temas" en móvil: solo deben quedar visibles el buscador, el
+    // índice A-Z, las categorías, Favoritos e Historial. La clase la lee
+    // el CSS (@media max-width 1199.98px) para ocultar la seña del
+    // día/ayer y el panel de Estadísticas; en escritorio no tiene efecto.
+    document.body.classList.add("vista-temas-movil");
     mostrarCategorias();
     mostrarPantallaHistorialYFavoritos();
     panelCategorias.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -199,6 +204,7 @@ if(btnSubtitulosSalir){
     btnSubtitulosSalir.addEventListener("click", (e) => {
         e.preventDefault();
         ocultarSubtitulos();
+        volverAlMenuHerramientasMovilSiCorresponde();
     });
 }
 
@@ -221,6 +227,27 @@ function ocultarSeccionHerramientas(){
     ocultarSubtitulos();
     ocultarQuiz();
     ocultarAlfabetizacion();
+    const menuMovil = document.getElementById("herramientasMenuMovil");
+    if(menuMovil) menuMovil.classList.add("d-none");
+}
+
+// Mismo punto de corte que usa el resto de la barra inferior móvil
+// (ver el media query "max-width: 1199.98px" del CSS, equivalente al
+// breakpoint "xl" de Bootstrap).
+function esVistaMovilHerramientas(){
+    return window.innerWidth < 1200;
+}
+
+// En móvil, "Salir" de cualquiera de los 3 módulos regresa al selector
+// de botones grandes en vez de dejar la pantalla vacía. En escritorio no
+// hace nada (ahí los 3 bloques siguen mostrándose juntos, como antes).
+function volverAlMenuHerramientasMovilSiCorresponde(){
+    if(!esVistaMovilHerramientas()) return;
+    const menuMovil = document.getElementById("herramientasMenuMovil");
+    if(menuMovil){
+        menuMovil.classList.remove("d-none");
+        menuMovil.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
 }
 
 // Dentro de "Herramientas" no se muestra ni la seña del día ni el
@@ -247,30 +274,127 @@ function mostrarSeccionHerramientas(){
     ultimasPalabras.innerHTML = "";
     ocultarPanelesGuardados();
     ocultarBloqueInicio();
+    document.body.classList.remove("vista-temas-movil");
+
+    const menuMovil = document.getElementById("herramientasMenuMovil");
+
+    if(esVistaMovilHerramientas() && menuMovil){
+        // EN MÓVIL: primero se muestra el selector con los 3 botones
+        // grandes (Subtítulos / Jugar / Alfabetización), SIN iniciar
+        // ningún módulo todavía. Antes se intentaba arrancar los 3 a la
+        // vez (incluyendo el micrófono de Subtítulos), y si alguno fallaba
+        // al iniciar, los que venían después -como Jugar- se quedaban sin
+        // cargar. Ahora cada módulo solo se inicia cuando el usuario toca
+        // su botón (ver btnHerrMovilJugar y compañía más abajo).
+        ocultarSubtitulos();
+        ocultarQuiz();
+        ocultarAlfabetizacion();
+        menuMovil.classList.remove("d-none");
+        menuMovil.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+    }
+
+    // EN ESCRITORIO: se mantiene el comportamiento anterior, los 3
+    // bloques se muestran juntos, uno debajo del otro.
+    if(menuMovil) menuMovil.classList.add("d-none");
 
     // 1) Subtítulos
     if(seccionSubtitulos){
         seccionSubtitulos.classList.remove("d-none");
-        if(window.SubtitulosV2 && typeof SubtitulosV2.iniciar === "function"){
-            SubtitulosV2.iniciar();
-        }
+        try {
+            if(window.SubtitulosV2 && typeof SubtitulosV2.iniciar === "function"){
+                SubtitulosV2.iniciar();
+            }
+        } catch(err){ console.error("No se pudo iniciar Subtítulos:", err); }
     }
 
     // 2) Jugar
     if(seccionQuiz){
         seccionQuiz.classList.remove("d-none");
-        mostrarMenuJuegos();
+        try { mostrarMenuJuegos(); } catch(err){ console.error("No se pudo abrir Jugar:", err); }
     }
 
     // 3) Alfabetización
     if(seccionAlfabetizacion){
         seccionAlfabetizacion.classList.remove("d-none");
-        if(window.AlfabetizacionV2 && typeof AlfabetizacionV2.iniciar === "function"){
-            AlfabetizacionV2.iniciar();
-        }
+        try {
+            if(window.AlfabetizacionV2 && typeof AlfabetizacionV2.iniciar === "function"){
+                AlfabetizacionV2.iniciar();
+            }
+        } catch(err){ console.error("No se pudo iniciar Alfabetización:", err); }
     }
 
     if(seccionSubtitulos) seccionSubtitulos.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// --- BOTONES GRANDES DEL MENÚ DE HERRAMIENTAS (solo móvil) ---
+// Cada uno oculta el selector y recién ahí carga/muestra su módulo
+// correspondiente, uno a la vez (nunca los 3 juntos en móvil).
+const btnHerrMovilSubtitulos = document.getElementById("btnHerrMovilSubtitulos");
+if(btnHerrMovilSubtitulos){
+    btnHerrMovilSubtitulos.addEventListener("click", () => {
+        const menuMovil = document.getElementById("herramientasMenuMovil");
+        if(menuMovil) menuMovil.classList.add("d-none");
+        if(seccionSubtitulos){
+            seccionSubtitulos.classList.remove("d-none");
+            try {
+                if(window.SubtitulosV2 && typeof SubtitulosV2.iniciar === "function"){
+                    SubtitulosV2.iniciar();
+                }
+            } catch(err){ console.error("No se pudo iniciar Subtítulos:", err); }
+            seccionSubtitulos.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    });
+}
+
+const btnHerrMovilJugar = document.getElementById("btnHerrMovilJugar");
+if(btnHerrMovilJugar){
+    btnHerrMovilJugar.addEventListener("click", () => {
+        const menuMovil = document.getElementById("herramientasMenuMovil");
+        if(menuMovil) menuMovil.classList.add("d-none");
+        if(seccionQuiz){
+            seccionQuiz.classList.remove("d-none");
+            try { mostrarMenuJuegos(); } catch(err){ console.error("No se pudo abrir Jugar:", err); }
+            seccionQuiz.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    });
+}
+
+const btnHerrMovilAlfabetizacion = document.getElementById("btnHerrMovilAlfabetizacion");
+if(btnHerrMovilAlfabetizacion){
+    btnHerrMovilAlfabetizacion.addEventListener("click", () => {
+        const menuMovil = document.getElementById("herramientasMenuMovil");
+        if(menuMovil) menuMovil.classList.add("d-none");
+        if(seccionAlfabetizacion){
+            seccionAlfabetizacion.classList.remove("d-none");
+            try {
+                if(window.AlfabetizacionV2 && typeof AlfabetizacionV2.iniciar === "function"){
+                    AlfabetizacionV2.iniciar();
+                }
+            } catch(err){ console.error("No se pudo iniciar Alfabetización:", err); }
+            seccionAlfabetizacion.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    });
+}
+
+// "Salir" de cada módulo: en móvil regresa al selector de botones
+// grandes; en escritorio solo oculta ese bloque puntual (como antes).
+const btnQuizSalir = document.getElementById("btnQuizSalir");
+if(btnQuizSalir){
+    btnQuizSalir.addEventListener("click", (e) => {
+        e.preventDefault();
+        ocultarQuiz();
+        volverAlMenuHerramientasMovilSiCorresponde();
+    });
+}
+
+const btnAlfabSalir = document.getElementById("btnAlfabSalir");
+if(btnAlfabSalir){
+    btnAlfabSalir.addEventListener("click", (e) => {
+        e.preventDefault();
+        ocultarAlfabetizacion();
+        volverAlMenuHerramientasMovilSiCorresponde();
+    });
 }
 
 // --- CARGA DE DATOS CENTRALIZADA ---
