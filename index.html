@@ -617,7 +617,7 @@ html.modo-escritorio-forzado #herramientasMenuMovil {
         align-items: center;
         justify-content: center;
         gap: 28px;
-        transition: opacity 0.4s ease;
+        transition: opacity 0.25s ease;
     }
     #splashScreen.splash-oculto {
         opacity: 0;
@@ -659,14 +659,14 @@ html.modo-escritorio-forzado #herramientasMenuMovil {
     // nunca se quede trabado tapando el sitio).
     (function () {
         const inicio = Date.now();
-        const MINIMO_MS = 700;
+        const MINIMO_MS = 250;
         const MAXIMO_MS = 4000;
 
         function ocultarSplash() {
             const splash = document.getElementById("splashScreen");
             if (!splash || splash.classList.contains("splash-oculto")) return;
             splash.classList.add("splash-oculto");
-            setTimeout(() => splash.remove(), 500);
+            setTimeout(() => splash.remove(), 260);
         }
 
         function intentarOcultar() {
@@ -799,7 +799,7 @@ html.modo-escritorio-forzado #herramientasMenuMovil {
             </div>
         </div>
 
-        <div class="text-center mb-4 header-minimal">
+        <div class="text-center mb-4 header-minimal" id="bloqueTituloPrincipal">
             <h1 class="fw-bold tracking-tight">Diccionario de Lengua de Señas Peruana (LSP) y Español</h1>
             <p class="text-muted small">Aprende el significado de las palabras con el apoyo de videos en señas.</p>
         </div>
