@@ -52,11 +52,11 @@
         }
 
         .categoria-card {
-            transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+            transition: filter 0.2s ease-in-out, transform 0.2s ease-in-out;
         }
         .categoria-card:hover {
-            background-color: #dceefc !important; 
-            transform: scale(1.03); 
+            filter: brightness(0.96) saturate(1.15);
+            transform: scale(1.03);
             cursor: pointer;
         }
 
@@ -485,8 +485,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 3px;
-    padding: 8px 2px 7px;
+    gap: 4px;
+    padding: 13px 2px 11px;
     background: none;
     border: none;
     color: #64748b;
@@ -497,11 +497,11 @@
     transform: scale(0.94);
 }
 .mbn-icon {
-    font-size: 20px;
+    font-size: 27px;
     line-height: 1;
 }
 .mbn-label {
-    font-size: 10px;
+    font-size: 12.5px;
     font-weight: 700;
     white-space: nowrap;
     overflow: hidden;
@@ -517,7 +517,7 @@
    flotantes (Jugar/Subtítulos/Buscar) para que no se solapen con
    la nueva barra. */
 @media (max-width: 1199.98px) {
-    body { padding-bottom: 60px; }
+    body { padding-bottom: 74px; }
     /* En movil/tablet los botones flotantes (Jugar/Subtitulos/Buscar,
        mas los de cerrar/mostrar accesos) quedan ocultos por completo:
        solo la barra inferior de navegacion queda visible ahi abajo. */
@@ -528,10 +528,66 @@
     }
 }
 
+/* ============================================================
+   "VERSIÓN PARA ESCRITORIO" DESDE EL NAVEGADOR DEL CELULAR:
+   Cuando el usuario activa esa opción en Chrome/Safari móvil, el
+   navegador cambia el user-agent a uno de escritorio (deja de decir
+   "Mobile"/"Android"/"iPhone"), aunque la pantalla física siga siendo
+   chica. Un script en <body> detecta eso y agrega la clase
+   "modo-escritorio-forzado" al <html>. Estas reglas anulan (con más
+   especificidad, para ganarle a los @media de arriba) todo lo que
+   normalmente se activa solo en pantallas angostas, para que se vea
+   el diseño real de escritorio: menú superior completo, sin barra
+   inferior tipo app, sin el selector simplificado de Herramientas.
+   ============================================================ */
+html.modo-escritorio-forzado .navbar-toggler {
+    display: none !important;
+}
+html.modo-escritorio-forzado #menuPrincipal {
+    display: flex !important;
+    flex-basis: auto;
+}
+html.modo-escritorio-forzado .navbar-brand img {
+    height: 85px !important;
+}
+html.modo-escritorio-forzado .mobile-bottom-nav {
+    display: none !important;
+}
+html.modo-escritorio-forzado body {
+    padding-bottom: 0 !important;
+}
+html.modo-escritorio-forzado body.vista-temas-movil #senalDelDia {
+    display: flex !important;
+}
+html.modo-escritorio-forzado body.vista-temas-movil .stats-panel-destacado {
+    display: block !important;
+}
+html.modo-escritorio-forzado .herr-movil-btn-wrap,
+html.modo-escritorio-forzado #herramientasMenuMovil {
+    display: none !important;
+}
+
     </style>
 </head>
 
 <body>
+<!-- Detecta si el navegador móvil está en "Versión para escritorio":
+     en ese modo, Chrome/Safari cambian el user-agent a uno de PC (ya
+     no dice "Mobile"/"Android"/"iPhone"), aunque la pantalla siga
+     siendo chica. Si detecta eso, agrega una clase al <html> que las
+     reglas CSS de arriba usan para mostrar el diseño real de
+     escritorio en vez del diseño móvil. -->
+<script>
+    (function () {
+        try {
+            var ua = navigator.userAgent || "";
+            var esMovilReal = /Mobi|Android|iPhone|iPad|iPod/i.test(ua);
+            if (!esMovilReal) {
+                document.documentElement.classList.add("modo-escritorio-forzado");
+            }
+        } catch (e) {}
+    })();
+</script>
 <!-- ============================================================
      SPLASH SCREEN: pantalla de carga con el logo y una barrita
      animada. Se muestra apenas abre la página/app y se oculta sola
@@ -635,7 +691,7 @@
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <a class="nav-link active" href="#" id="btnInicio">
-                            <span id="iconoInicio" aria-hidden="true" style="font-size: 20px; line-height: 1;">🏠</span> Inicio
+                            <span id="iconoInicio" aria-hidden="true" style="font-size: 20px; line-height: 1;">🔍</span> Buscar
                         </a>
                     </li>
                     <li class="nav-item"><a class="nav-link" href="#" id="btnCategorias"><span aria-hidden="true">📁</span> Temas orden</a></li>
@@ -654,8 +710,8 @@
          esta barra (menos usado) y sigue disponible en el menú ☰. -->
     <nav class="mobile-bottom-nav d-xl-none" id="mobileBottomNav" aria-label="Navegación principal">
         <button type="button" class="mbn-item active" data-vinculado="btnInicio">
-            <span class="mbn-icon" aria-hidden="true">🏠</span>
-            <span class="mbn-label">Inicio</span>
+            <span class="mbn-icon" aria-hidden="true">🔍</span>
+            <span class="mbn-label">Buscar</span>
         </button>
         <button type="button" class="mbn-item" data-vinculado="btnCategorias">
             <span class="mbn-icon" aria-hidden="true">📁</span>
@@ -760,7 +816,7 @@
             </div>
         </div>
 
-        <div class="row justify-content-center mb-2 mt-4">
+        <div class="row justify-content-center mb-2 mt-4" id="filaBotonIndiceAlfabetico">
             <div class="col-lg-8 text-center">
                 <button class="btn btn-abc-toggle d-inline-flex align-items-center gap-2" type="button" data-bs-toggle="collapse" data-bs-target="#indiceAlfabetico" aria-expanded="false" aria-controls="indiceAlfabetico" id="btnToggleAbc">
                     <span class="abc-toggle-label">A-Z</span>
@@ -770,7 +826,7 @@
             </div>
         </div>
 
-        <div class="row justify-content-center mb-4">
+        <div class="row justify-content-center mb-4" id="filaIndiceAlfabetico">
             <div class="col-lg-8">
                 <div class="collapse" id="indiceAlfabetico">
                 <div class="indice-alfabetico d-flex justify-content-between flex-wrap gap-1 p-2 bg-white rounded shadow-sm border">
