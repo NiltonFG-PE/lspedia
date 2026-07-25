@@ -44,15 +44,45 @@ if(btnLogo) {
     });
 }
 
+// El botón que antes era "Inicio" (🏠) ahora es "Buscar" (🔍): sigue
+// llevando a la página principal (misma recarga limpia de siempre),
+// pero además deja el buscador enfocado y listo para escribir. Como la
+// recarga borra todo el estado de JS, guardamos un aviso en
+// sessionStorage para que, apenas cargue de nuevo la página, se
+// enfoque el campo de búsqueda automáticamente (ver más abajo, cerca
+// del splash screen).
+const CLAVE_ENFOCAR_BUSCADOR = "lspedia_enfocar_buscador";
 const btnInicio = document.getElementById("btnInicio");
 if(btnInicio) {
     btnInicio.addEventListener("click", (e) => {
         e.preventDefault();
         const icono = document.getElementById("iconoInicio");
         if(icono) icono.classList.add("spin-anim");
+        try { sessionStorage.setItem(CLAVE_ENFOCAR_BUSCADOR, "1"); } catch (err) {}
         setTimeout(() => window.location.href = window.location.pathname, 500); 
     });
 }
+
+// Si venimos de tocar "Buscar" (guardó el aviso arriba antes de
+// recargar), apenas esté todo listo se enfoca el campo de búsqueda
+// para que el usuario pueda escribir de inmediato. Se limpia el aviso
+// enseguida para que no vuelva a enfocar en una recarga manual normal.
+document.addEventListener("DOMContentLoaded", () => {
+    let debeEnfocar = false;
+    try {
+        debeEnfocar = sessionStorage.getItem(CLAVE_ENFOCAR_BUSCADOR) === "1";
+        sessionStorage.removeItem(CLAVE_ENFOCAR_BUSCADOR);
+    } catch (err) {}
+    if (debeEnfocar) {
+        setTimeout(() => {
+            const input = document.getElementById("buscar");
+            if (input) {
+                input.scrollIntoView({ behavior: "smooth", block: "center" });
+                input.focus();
+            }
+        }, 900); // espera a que se oculte el splash screen
+    }
+});
 
 // El botón "Historial" del menú se fusionó dentro de "Temas orden":
 // un solo clic ahora muestra Categorías, Favoritos e Historial juntos
@@ -235,6 +265,10 @@ function ocultarSeccionHerramientas(){
 // (ver el media query "max-width: 1199.98px" del CSS, equivalente al
 // breakpoint "xl" de Bootstrap).
 function esVistaMovilHerramientas(){
+    // Si el navegador móvil pidió "Versión para escritorio" (ver el
+    // script de detección en index.html), se respeta el diseño real de
+    // escritorio aunque la pantalla física siga siendo chica.
+    if (document.documentElement.classList.contains("modo-escritorio-forzado")) return false;
     return window.innerWidth < 1200;
 }
 
@@ -250,18 +284,31 @@ function volverAlMenuHerramientasMovilSiCorresponde(){
     }
 }
 
-// Dentro de "Herramientas" no se muestra ni la seña del día ni el
-// buscador (se ven solo en Inicio/Temas orden).
+// Dentro de "Herramientas" no se muestra ni la seña del día, ni el
+// buscador, ni el botón de "Índice alfabético", ni el panel de
+// Estadísticas (se ven solo en Inicio/Temas orden).
 function ocultarBloqueInicio(){
     const senal = document.getElementById("senalDelDia");
     if(senal) senal.style.display = "none";
     const bloqueBuscador = document.getElementById("bloqueBuscador");
     if(bloqueBuscador) bloqueBuscador.classList.add("d-none");
+    const filaBotonIndice = document.getElementById("filaBotonIndiceAlfabetico");
+    if(filaBotonIndice) filaBotonIndice.style.display = "none";
+    const filaIndice = document.getElementById("filaIndiceAlfabetico");
+    if(filaIndice) filaIndice.style.display = "none";
+    const statsPanel = document.querySelector(".stats-panel-destacado");
+    if(statsPanel) statsPanel.style.display = "none";
 }
 
 function mostrarBloqueInicio(){
     const bloqueBuscador = document.getElementById("bloqueBuscador");
     if(bloqueBuscador) bloqueBuscador.classList.remove("d-none");
+    const filaBotonIndice = document.getElementById("filaBotonIndiceAlfabetico");
+    if(filaBotonIndice) filaBotonIndice.style.display = "";
+    const filaIndice = document.getElementById("filaIndiceAlfabetico");
+    if(filaIndice) filaIndice.style.display = "";
+    const statsPanel = document.querySelector(".stats-panel-destacado");
+    if(statsPanel) statsPanel.style.display = "";
     // La seña del día no se vuelve a mostrar sola: igual que antes, una
     // vez oculta (por ejemplo al ver una palabra) solo reaparece con
     // una recarga de página real (btnInicio ya hace eso).
@@ -1164,6 +1211,21 @@ function filtrarPorLetra(letra) {
 }
 
 // --- CATEGORÍAS ---
+// Paleta de colores suaves/claros para diferenciar cada tarjeta de
+// categoría a simple vista. Se repite en ciclo si hay más categorías
+// que colores en la lista.
+const COLORES_CATEGORIAS = [
+    { fondo: "#e0f2fe", borde: "#bae6fd", texto: "#0369a1" }, // celeste
+    { fondo: "#fce7f3", borde: "#fbcfe8", texto: "#be185d" }, // rosado
+    { fondo: "#fef3c7", borde: "#fde68a", texto: "#b45309" }, // amarillo
+    { fondo: "#dcfce7", borde: "#bbf7d0", texto: "#15803d" }, // verde
+    { fondo: "#ede9fe", borde: "#ddd6fe", texto: "#6d28d9" }, // violeta
+    { fondo: "#ffedd5", borde: "#fed7aa", texto: "#c2410c" }, // naranja
+    { fondo: "#e0e7ff", borde: "#c7d2fe", texto: "#4338ca" }, // índigo
+    { fondo: "#fee2e2", borde: "#fecaca", texto: "#b91c1c" }, // rojo suave
+    { fondo: "#ccfbf1", borde: "#99f6e4", texto: "#0f766e" }, // turquesa
+];
+
 function mostrarCategorias(){
     resultado.innerHTML=""; panelCategorias.innerHTML=""; ultimasPalabras.innerHTML = ""; ocultarPanelesGuardados();
     if (window.QuizV2 && typeof QuizV2.asegurarBancoCargado === "function") {
@@ -1171,11 +1233,12 @@ function mostrarCategorias(){
     }
     const datosUnificados = obtenerDatosUnificados();
     const categories = [...new Set(datosUnificados.map(p => p.categoria.trim()))].sort();
-    categories.forEach(nombre=>{
+    categories.forEach((nombre, indice)=>{
         const cantidad = datosUnificados.filter(p => p.categoria.trim() === nombre).length;
+        const color = COLORES_CATEGORIAS[indice % COLORES_CATEGORIAS.length];
         const card = document.createElement("div");
         card.className = "col-6 col-md-3 animate-fade-in";
-        card.innerHTML = `<div class="card h-100 shadow-sm categoria-card" style="border-radius: 12px; border: 1px solid #dceefc;"><div class="card-body text-center py-3"><h6 class="mb-1 fw-bold text-primary">${nombre}</h6><p class="mb-0 small text-muted">${cantidad} palabras</p></div></div>`;
+        card.innerHTML = `<div class="card h-100 shadow-sm categoria-card" style="border-radius: 16px; border: 2px solid ${color.borde}; background-color: ${color.fondo};"><div class="card-body text-center py-4"><h5 class="mb-2 fw-bold" style="color: ${color.texto}; font-size: 1.25rem;">${nombre}</h5><p class="mb-0 fw-semibold" style="color: ${color.texto}; opacity: 0.85; font-size: 1rem;">${cantidad} palabras</p></div></div>`;
         card.onclick = () => mostrarCategoria(nombre);
         panelCategorias.appendChild(card);
     });
