@@ -92,6 +92,77 @@
             }
         }
 
+        /* La barra azul superior con el logo ahora también se ve en móvil,
+           igual que en escritorio. Como la navegación real ya vive en la
+           barra inferior (mobile-bottom-nav), acá se oculta el botón
+           hamburguesa y el menú colapsable para no duplicar accesos, y se
+           achica un poco el logo para que la barra quede compacta. */
+        @media (max-width: 1199.98px) {
+            .navbar-toggler {
+                display: none !important;
+            }
+            #menuPrincipal {
+                display: none !important;
+            }
+            .navbar-brand img {
+                height: 48px !important;
+            }
+        }
+
+        /* Vista "Temas" en móvil: al tocar TEMAS solo deben quedar visibles
+           el buscador, el índice A-Z, las categorías, Mis Favoritos y Mi
+           Historial. La seña de hoy/ayer y el bloque de Estadísticas se
+           ocultan (script.js agrega/quita la clase "vista-temas-movil" en
+           <body>). Solo aplica en móvil/tablet: en escritorio no cambia
+           nada. */
+        @media (max-width: 1199.98px) {
+            body.vista-temas-movil #senalDelDia,
+            body.vista-temas-movil .stats-panel-destacado {
+                display: none !important;
+            }
+        }
+
+        /* ============================================================
+           MENÚ DE HERRAMIENTAS EN MÓVIL: 3 botones grandes (Subtítulos,
+           Jugar, Alfabetización), cada uno con su propio color de fondo
+           para diferenciarlos a simple vista. Ver mostrarSeccionHerramientas()
+           en script.js: en móvil se muestra primero este selector y solo se
+           carga el módulo elegido al tocar su botón (antes se intentaba
+           iniciar los 3 a la vez, que era lo que hacía que "Jugar" se
+           quedara sin cargar). En escritorio no se usa (d-xl-none).
+           ============================================================ */
+        .herr-movil-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            padding: 26px 20px;
+            border-radius: 18px;
+            border: none;
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+            box-shadow: 0 6px 16px rgba(15, 23, 42, 0.15);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .herr-movil-btn:active {
+            transform: scale(0.97);
+        }
+        .herr-movil-icono {
+            font-size: 30px;
+            line-height: 1;
+        }
+        .herr-movil-btn-subtitulos {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+        .herr-movil-btn-jugar {
+            background: linear-gradient(135deg, #7c3aed, #5b21b6);
+        }
+        .herr-movil-btn-alfabetizacion {
+            background: linear-gradient(135deg, #059669, #047857);
+        }
+
         /* Evita que el menú (u otro elemento) desborde el ancho de la
            pantalla y "empuje" o descentre el contenido en tablets. */
         html, body {
@@ -552,7 +623,7 @@
         setTimeout(ocultarSplash, MAXIMO_MS); // respaldo de seguridad
     })();
 </script>
-    <nav class="navbar navbar-expand-xl navbar-dark bg-primary shadow-sm py-2 d-none d-xl-flex">
+    <nav class="navbar navbar-expand-xl navbar-dark bg-primary shadow-sm py-2 d-flex">
         <div class="container">
             <a class="navbar-brand fw-bold d-flex align-items-center" href="#" id="btnLogo">
                 <img src="img/lspedia.png" alt="Logo LSPedia" height="85" style="object-fit: contain;">
@@ -787,6 +858,38 @@
              subtítulos en vivo, con pantalla completa y "modo cine"
              (fondo negro, texto blanco grande).
              ============================================================ -->
+        <!-- ============================================================
+             MENÚ DE HERRAMIENTAS (solo móvil/tablet). Al tocar
+             "Herramientas" en la barra inferior aparece primero este
+             selector con 3 botones grandes; recién al presionar uno se
+             carga y muestra el módulo correspondiente (ver script.js).
+             En escritorio (d-xl-none) no se usa: ahí los 3 bloques se
+             siguen mostrando juntos, uno debajo del otro, como antes.
+             ============================================================ -->
+        <div id="herramientasMenuMovil" class="d-none d-xl-none mb-4">
+            <h4 class="fw-bold mb-3 text-center">🛠️ Herramientas</h4>
+            <div class="row g-3">
+                <div class="col-12">
+                    <button type="button" id="btnHerrMovilSubtitulos" class="herr-movil-btn herr-movil-btn-subtitulos w-100">
+                        <span class="herr-movil-icono" aria-hidden="true">💬</span>
+                        <span class="herr-movil-texto">SUBTÍTULOS</span>
+                    </button>
+                </div>
+                <div class="col-12">
+                    <button type="button" id="btnHerrMovilJugar" class="herr-movil-btn herr-movil-btn-jugar w-100">
+                        <span class="herr-movil-icono" aria-hidden="true">🎮</span>
+                        <span class="herr-movil-texto">JUGAR</span>
+                    </button>
+                </div>
+                <div class="col-12">
+                    <button type="button" id="btnHerrMovilAlfabetizacion" class="herr-movil-btn herr-movil-btn-alfabetizacion w-100">
+                        <span class="herr-movil-icono" aria-hidden="true">🔤</span>
+                        <span class="herr-movil-texto">ALFABETIZACIÓN</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <section id="seccionSubtitulos" class="d-none">
 
             <div class="card quiz-card border-0 shadow-sm p-3 p-md-4 mb-4" id="subtitulosPanelTitulo">
