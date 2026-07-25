@@ -148,7 +148,6 @@ const AlfabetizacionV2 = (function () {
     // CARGA DE DATOS (mock local o Apps Script real, mismo contrato)
     // ---------------------------------------------------------
     function cargarDatos(forzar) {
-        mostrarBloque("alfabCargando");
         el("alfabError").classList.add("d-none");
 
         const cache = leerCache();
@@ -157,6 +156,8 @@ const AlfabetizacionV2 = (function () {
             alTerminarCarga();
             return;
         }
+
+        mostrarBloque("alfabCargando");
 
         if (CONFIG.MOCK_ACTIVO) {
             fetch(CONFIG.MOCK_URL)
@@ -172,7 +173,31 @@ const AlfabetizacionV2 = (function () {
             return;
         }
 
+        // Modo real: el mock local (mismo origen, sin CORS/JSONP) se usa
+        // como "cascarón" para pintar el abecedario casi al instante,
+        // mientras en paralelo se pide el dato real a Google Sheets. En
+        // cuanto llegue el real, reemplaza en silencio lo que se esté
+        // viendo (guardarDatos ya deja todo en caché para la próxima
+        // vez). Así el módulo se siente listo en menos de 1 segundo aunque
+        // Apps Script tarde varios segundos en responder, sin depender de
+        // activar MOCK_ACTIVO ni desconectar el Sheet real.
+        pintarMockDeInmediato();
         fetchRemoto();
+    }
+
+    // Pinta el mock local de inmediato SOLO si todavía no hay nada mejor
+    // en pantalla (evita pisar el dato real si, por lo que sea, llegó
+    // primero). Si el mock falla, no pasa nada: seguimos esperando el
+    // dato real sin mostrar error por esto.
+    function pintarMockDeInmediato() {
+        fetch(CONFIG.MOCK_URL)
+            .then((res) => (res.ok ? res.json() : Promise.reject(new Error("No se pudo leer " + CONFIG.MOCK_URL))))
+            .then((data) => {
+                if (!data.ok || estado.datos.alfabeto.length > 0) return;
+                estado.datos = { alfabeto: data.alfabeto || [], ejemplos: data.ejemplos || [] };
+                alTerminarCarga();
+            })
+            .catch(() => { /* silencioso: el dato real sigue en camino */ });
     }
 
     // Igual que quiz.js: JSONP porque Apps Script + GitHub Pages suele
@@ -239,6 +264,10 @@ const AlfabetizacionV2 = (function () {
         if (cache) {
             estado.datos = cache;
             alTerminarCarga();
+        } else if (estado.datos.alfabeto.length > 0) {
+            // Ya se alcanzó a pintar el mock local (ver pintarMockDeInmediato):
+            // seguimos con eso en vez de tapar la pantalla con un error.
+            console.warn("Alfabetización: usando datos de respaldo (mock) porque falló la conexión con Google Sheets.");
         } else {
             mostrarError("No se pudo cargar Alfabetización. Detalle técnico: " + (err && err.message ? err.message : err));
         }

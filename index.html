@@ -52,11 +52,11 @@
         }
 
         .categoria-card {
-            transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+            transition: filter 0.2s ease-in-out, transform 0.2s ease-in-out;
         }
         .categoria-card:hover {
-            background-color: #dceefc !important; 
-            transform: scale(1.03); 
+            filter: brightness(0.96) saturate(1.15);
+            transform: scale(1.03);
             cursor: pointer;
         }
 
@@ -90,6 +90,77 @@
             .navbar-nav .nav-link {
                 font-size: 19px;
             }
+        }
+
+        /* La barra azul superior con el logo ahora también se ve en móvil,
+           igual que en escritorio. Como la navegación real ya vive en la
+           barra inferior (mobile-bottom-nav), acá se oculta el botón
+           hamburguesa y el menú colapsable para no duplicar accesos, y se
+           achica un poco el logo para que la barra quede compacta. */
+        @media (max-width: 1199.98px) {
+            .navbar-toggler {
+                display: none !important;
+            }
+            #menuPrincipal {
+                display: none !important;
+            }
+            .navbar-brand img {
+                height: 48px !important;
+            }
+        }
+
+        /* Vista "Temas" en móvil: al tocar TEMAS solo deben quedar visibles
+           el buscador, el índice A-Z, las categorías, Mis Favoritos y Mi
+           Historial. La seña de hoy/ayer y el bloque de Estadísticas se
+           ocultan (script.js agrega/quita la clase "vista-temas-movil" en
+           <body>). Solo aplica en móvil/tablet: en escritorio no cambia
+           nada. */
+        @media (max-width: 1199.98px) {
+            body.vista-temas-movil #senalDelDia,
+            body.vista-temas-movil .stats-panel-destacado {
+                display: none !important;
+            }
+        }
+
+        /* ============================================================
+           MENÚ DE HERRAMIENTAS EN MÓVIL: 3 botones grandes (Subtítulos,
+           Jugar, Alfabetización), cada uno con su propio color de fondo
+           para diferenciarlos a simple vista. Ver mostrarSeccionHerramientas()
+           en script.js: en móvil se muestra primero este selector y solo se
+           carga el módulo elegido al tocar su botón (antes se intentaba
+           iniciar los 3 a la vez, que era lo que hacía que "Jugar" se
+           quedara sin cargar). En escritorio no se usa (d-xl-none).
+           ============================================================ */
+        .herr-movil-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            padding: 26px 20px;
+            border-radius: 18px;
+            border: none;
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+            box-shadow: 0 6px 16px rgba(15, 23, 42, 0.15);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .herr-movil-btn:active {
+            transform: scale(0.97);
+        }
+        .herr-movil-icono {
+            font-size: 30px;
+            line-height: 1;
+        }
+        .herr-movil-btn-subtitulos {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+        .herr-movil-btn-jugar {
+            background: linear-gradient(135deg, #7c3aed, #5b21b6);
+        }
+        .herr-movil-btn-alfabetizacion {
+            background: linear-gradient(135deg, #059669, #047857);
         }
 
         /* Evita que el menú (u otro elemento) desborde el ancho de la
@@ -218,43 +289,161 @@
     min-width: 92px;
 }
 
-/* Miniatura de video en la tarjeta "Seña del día" / "de ayer" */
-.senal-dia-miniatura {
-    width: 64px;
-    height: 64px;
+/* Tarjeta "Seña del día" / "de ayer" — formato rectangular horizontal */
+.dia-rect-card {
+    display: flex;
+    background-color: #0f172a;
     border-radius: 10px;
     overflow: hidden;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.16);
+}
+.dia-rect-media {
     position: relative;
+    width: 220px;
+    flex-shrink: 0;
+    background-color: #000;
     cursor: pointer;
-    background-color: #1e293b;
-    border: 2px solid rgba(255, 255, 255, 0.15);
-    transition: transform 0.15s ease, border-color 0.15s ease;
 }
-.senal-dia-miniatura:hover,
-.senal-dia-miniatura:focus {
-    transform: scale(1.05);
-    border-color: #ffc107;
-    outline: none;
-}
-.senal-dia-miniatura-img {
+.dia-rect-media-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
+    opacity: 0.9;
 }
-.senal-dia-miniatura-play {
+.dia-rect-media-play {
     position: absolute;
     inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.25);
+    background: rgba(15, 23, 42, 0.18);
     color: #fff;
-    font-size: 18px;
+    font-size: 20px;
     pointer-events: none;
 }
+.dia-rect-media-tag {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(15, 23, 42, 0.6);
+    color: #fff;
+    font-size: 9.5px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+    pointer-events: none;
+}
+.dia-rect-media:hover .dia-rect-media-img,
+.dia-rect-media:focus .dia-rect-media-img {
+    opacity: 1;
+}
+.dia-rect-body {
+    flex: 1;
+    padding: 18px 20px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+}
+.dia-rect-nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+/* Flechas de navegación grandes: 38px en escritorio, 44px en móvil,
+   para que sean fáciles de tocar con el pulgar (zona táctil mínima
+   recomendada ~44px), en vez de los 14px de texto que tenían antes. */
+.dia-rect-nav-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.dia-rect-nav-btn:hover,
+.dia-rect-nav-btn:focus {
+    background: rgba(255, 255, 255, 0.22);
+    outline: none;
+}
+.dia-rect-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #ffc107;
+}
+.dia-rect-badge {
+    background-color: #ffc107 !important;
+    color: #000 !important;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 5px;
+    margin-bottom: 8px;
+    width: fit-content;
+}
+.dia-rect-titulo {
+    font-size: 19px;
+    font-weight: 800;
+    margin: 0 0 6px;
+    color: #fff;
+}
+.dia-rect-desc {
+    font-size: 12px;
+    color: #cbd5e1;
+    line-height: 1.5;
+    margin: 0 0 14px;
+}
+.dia-rect-btn {
+    background-color: #ffc107;
+    color: #0f172a;
+    font-weight: 700;
+    font-size: 12.5px;
+    padding: 9px 18px;
+    border-radius: 6px;
+    border: none;
+    width: fit-content;
+}
+.dia-rect-btn:hover {
+    background-color: #e6ac00;
+    color: #0f172a;
+}
 @media (max-width: 767px) {
-    .senal-dia-miniatura { width: 56px; height: 56px; }
+    /* Antes se apilaba en columna con el video a ancho completo (16:9),
+       lo que hacía la tarjeta muy alta. Ahora se mantiene horizontal
+       como en escritorio, con una miniatura pequeña en proporción 4:3
+       (en vez de cuadrada) para que el video quepa sin recortarse tanto,
+       en un formato rectangular compacto. */
+    .dia-rect-card { flex-direction: row; align-items: stretch; }
+    .dia-rect-media { width: 88px; aspect-ratio: 4 / 3; align-self: center; border-radius: 8px; overflow: hidden; margin: 8px 0 8px 8px; }
+    .dia-rect-media-tag { display: none; }
+    .dia-rect-media-play { font-size: 13px; }
+    .dia-rect-body { padding: 8px 10px; justify-content: center; }
+    .dia-rect-nav { margin-bottom: 3px; gap: 6px; }
+    .dia-rect-nav-btn { width: 28px; height: 28px; font-size: 12px; border-radius: 7px; }
+    .dia-rect-label { font-size: 12px; font-weight: 800; }
+    .dia-rect-badge { font-size: 9px; padding: 2px 7px; margin-bottom: 4px; }
+    .dia-rect-titulo { font-size: 13.5px; margin-bottom: 3px; }
+    .dia-rect-desc {
+        font-size: 10px;
+        line-height: 1.35;
+        margin-bottom: 6px;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .dia-rect-btn { font-size: 10px; padding: 5px 11px; }
 }
 
 /* Tarjetas del menú de Juegos (Completar / Unir / Quiz) */
@@ -270,10 +459,159 @@
 .menu-juego-btn .icono {
     font-size: 2.2rem;
 }
+
+/* ============================================================
+   Navegación inferior tipo app, solo en móvil/tablet (se oculta a
+   partir del breakpoint "xl" de Bootstrap, que es cuando el navbar
+   de arriba deja de estar colapsado detrás del ☰). La versión de
+   escritorio (navbar superior) queda exactamente igual que antes.
+   ============================================================ */
+.mobile-bottom-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1035;
+    display: flex;
+    background-color: #ffffff;
+    border-top: 1px solid #e2e8f0;
+    box-shadow: 0 -4px 14px rgba(15, 23, 42, 0.08);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.mbn-item {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 13px 2px 11px;
+    background: none;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    transition: color 0.15s ease, transform 0.1s ease;
+}
+.mbn-item:active {
+    transform: scale(0.94);
+}
+.mbn-icon {
+    font-size: 27px;
+    line-height: 1;
+}
+.mbn-label {
+    font-size: 12.5px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+.mbn-item.active {
+    color: var(--accent-color, #0284c7);
+}
+
+/* Deja espacio abajo para que el footer y el contenido no queden
+   tapados detrás de la barra fija, y sube el stack de botones
+   flotantes (Jugar/Subtítulos/Buscar) para que no se solapen con
+   la nueva barra. */
+@media (max-width: 1199.98px) {
+    body { padding-bottom: 74px; }
+    /* En movil/tablet los botones flotantes (Jugar/Subtitulos/Buscar,
+       mas los de cerrar/mostrar accesos) quedan ocultos por completo:
+       solo la barra inferior de navegacion queda visible ahi abajo. */
+    .fab-wrap,
+    .btn-cerrar-accesos,
+    .btn-mostrar-accesos {
+        display: none !important;
+    }
+}
+
+/* ============================================================
+   "VERSIÓN PARA ESCRITORIO" DESDE EL NAVEGADOR DEL CELULAR:
+   Cuando el usuario activa esa opción en Chrome/Safari móvil, el
+   navegador cambia el user-agent a uno de escritorio (deja de decir
+   "Mobile"/"Android"/"iPhone"), aunque la pantalla física siga siendo
+   chica. Un script en <body> detecta eso y agrega la clase
+   "modo-escritorio-forzado" al <html>. Estas reglas anulan (con más
+   especificidad, para ganarle a los @media de arriba) todo lo que
+   normalmente se activa solo en pantallas angostas, para que se vea
+   el diseño real de escritorio: menú superior completo, sin barra
+   inferior tipo app, sin el selector simplificado de Herramientas.
+   ============================================================ */
+/* Escritorio ANGOSTO (menor a 1200px): el logo se mantiene arriba a
+   la izquierda y los botones de menú se esconden detrás del ícono ☰
+   (hamburguesa), que al tocarlo despliega la lista completa como un
+   menú desplegable clásico (mismo comportamiento nativo de Bootstrap
+   que ya trae el botón data-bs-toggle="collapse" del HTML, solo que
+   antes se ocultaba a propósito para pantallas angostas porque esa
+   regla estaba pensada para el celular real, que usa su propia barra
+   inferior en vez de este menú). Escritorio AMPLIO (1200px o más): se
+   ve igual que siempre, con los botones en una sola fila. */
+html.modo-escritorio-forzado .navbar-toggler {
+    display: block !important;
+}
+html.modo-escritorio-forzado #menuPrincipal {
+    display: none !important;
+}
+html.modo-escritorio-forzado #menuPrincipal.show {
+    display: block !important;
+}
+@media (min-width: 1200px) {
+    html.modo-escritorio-forzado .navbar-toggler {
+        display: none !important;
+    }
+    html.modo-escritorio-forzado #menuPrincipal,
+    html.modo-escritorio-forzado #menuPrincipal.show {
+        display: flex !important;
+        flex-basis: auto;
+    }
+}
+html.modo-escritorio-forzado .navbar-brand img {
+    height: 85px !important;
+}
+html.modo-escritorio-forzado .mobile-bottom-nav {
+    display: none !important;
+}
+html.modo-escritorio-forzado body {
+    padding-bottom: 0 !important;
+}
+html.modo-escritorio-forzado body.vista-temas-movil #senalDelDia,
+html.modo-escritorio-forzado body.vista-temas-movil .stats-panel-destacado {
+    display: none !important;
+}
+/* El selector de 3 botones grandes de Herramientas (Subtítulos, Jugar,
+   Alfabetización) ahora también se usa en escritorio (ver
+   esVistaMovilHerramientas() en script.js): por eso ya NO se oculta
+   acá. Solo se anula el "d-xl-none" de Bootstrap (que lo escondía a
+   partir de 1200px) para que pueda mostrarse a cualquier ancho cuando
+   script.js le saque la clase "d-none". */
+html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
+    display: block !important;
+}
+
     </style>
 </head>
 
 <body>
+<!-- Detecta si el navegador móvil está en "Versión para escritorio":
+     en ese modo, Chrome/Safari cambian el user-agent a uno de PC (ya
+     no dice "Mobile"/"Android"/"iPhone"), aunque la pantalla siga
+     siendo chica. Si detecta eso, agrega una clase al <html> que las
+     reglas CSS de arriba usan para mostrar el diseño real de
+     escritorio en vez del diseño móvil. -->
+<script>
+    (function () {
+        try {
+            var ua = navigator.userAgent || "";
+            var esMovilReal = /Mobi|Android|iPhone|iPad|iPod/i.test(ua);
+            if (!esMovilReal) {
+                document.documentElement.classList.add("modo-escritorio-forzado");
+            }
+        } catch (e) {}
+    })();
+</script>
 <!-- ============================================================
      SPLASH SCREEN: pantalla de carga con el logo y una barrita
      animada. Se muestra apenas abre la página/app y se oculta sola
@@ -303,7 +641,7 @@
         align-items: center;
         justify-content: center;
         gap: 28px;
-        transition: opacity 0.4s ease;
+        transition: opacity 0.25s ease;
     }
     #splashScreen.splash-oculto {
         opacity: 0;
@@ -340,19 +678,20 @@
 
 <script>
     // Se oculta cuando la página termina de cargar (window.load), con un
-    // mínimo de 700ms visible para que no sea un parpadeo si todo carga
-    // muy rápido, y un máximo de 4s por si algo tarda de más (para que
-    // nunca se quede trabado tapando el sitio).
+    // mínimo de 250ms visible para que no sea un parpadeo si todo carga
+    // muy rápido, y un máximo de 2s por si algo tarda de más (para que
+    // nunca se quede trabado tapando el sitio, ni en escritorio ni en
+    // móvil).
     (function () {
         const inicio = Date.now();
-        const MINIMO_MS = 700;
-        const MAXIMO_MS = 4000;
+        const MINIMO_MS = 250;
+        const MAXIMO_MS = 2000;
 
         function ocultarSplash() {
             const splash = document.getElementById("splashScreen");
             if (!splash || splash.classList.contains("splash-oculto")) return;
             splash.classList.add("splash-oculto");
-            setTimeout(() => splash.remove(), 500);
+            setTimeout(() => splash.remove(), 260);
         }
 
         function intentarOcultar() {
@@ -365,7 +704,7 @@
         setTimeout(ocultarSplash, MAXIMO_MS); // respaldo de seguridad
     })();
 </script>
-    <nav class="navbar navbar-expand-xl navbar-dark bg-primary shadow-sm py-2">
+    <nav class="navbar navbar-expand-xl navbar-dark bg-primary shadow-sm py-2 d-flex">
         <div class="container">
             <a class="navbar-brand fw-bold d-flex align-items-center" href="#" id="btnLogo">
                 <img src="img/lspedia.png" alt="Logo LSPedia" height="85" style="object-fit: contain;">
@@ -377,19 +716,40 @@
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <a class="nav-link active" href="#" id="btnInicio">
-                            <span id="iconoInicio" aria-hidden="true" style="font-size: 20px; line-height: 1;">🏠</span> Inicio
+                            <span id="iconoInicio" aria-hidden="true" style="font-size: 20px; line-height: 1;">🔍</span> Buscar
                         </a>
                     </li>
                     <li class="nav-item"><a class="nav-link" href="#" id="btnCategorias"><span aria-hidden="true">📁</span> Temas orden</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" id="btnQuiz"><span aria-hidden="true">🎮</span> Jugar</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" id="btnAlfabetizacion"><span aria-hidden="true">🔤</span> Alfabetización</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" id="btnSubtitulos"><span aria-hidden="true">💬</span> Subtítulos</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" id="btnNavFavoritos"><span aria-hidden="true">⭐</span> Favoritos</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" id="btnHistorial"><span aria-hidden="true">🕒</span> Historial</a></li>
-                    <li class="nav-item"><a class="nav-link text-warning" href="#" data-bs-toggle="modal" data-bs-target="#modalSobreNosotros"><span aria-hidden="true">🤟</span> Sobre Nosotros</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" id="btnHerramientas"><span aria-hidden="true">🛠️</span> Herramientas</a></li>
+                    <li class="nav-item"><a class="nav-link text-warning" href="#" id="btnSobreNosotros" data-bs-toggle="modal" data-bs-target="#modalSobreNosotros"><span aria-hidden="true">🤟</span> Sobre Nosotros</a></li>
                 </ul>
             </div>
         </div>
+    </nav>
+
+    <!-- Barra de navegación inferior tipo app, solo en móvil (se oculta
+         en escritorio con d-md-none). Reutiliza las mismas acciones del
+         menú de arriba: cada botón simplemente simula el clic del enlace
+         original correspondiente, así que toda la lógica sigue viviendo
+         en un solo lugar (script.js). "Sobre Nosotros" queda fuera de
+         esta barra (menos usado) y sigue disponible en el menú ☰. -->
+    <nav class="mobile-bottom-nav d-xl-none" id="mobileBottomNav" aria-label="Navegación principal">
+        <button type="button" class="mbn-item active" data-vinculado="btnInicio">
+            <span class="mbn-icon" aria-hidden="true">🔍</span>
+            <span class="mbn-label">Buscar</span>
+        </button>
+        <button type="button" class="mbn-item" data-vinculado="btnCategorias">
+            <span class="mbn-icon" aria-hidden="true">📁</span>
+            <span class="mbn-label">Temas</span>
+        </button>
+        <button type="button" class="mbn-item" data-vinculado="btnHerramientas">
+            <span class="mbn-icon" aria-hidden="true">🛠️</span>
+            <span class="mbn-label">Herramientas</span>
+        </button>
+        <button type="button" class="mbn-item" data-vinculado="btnSobreNosotros">
+            <span class="mbn-icon" aria-hidden="true">🤟</span>
+            <span class="mbn-label">Nosotros</span>
+        </button>
     </nav>
 
     <!-- Cada botón flotante va envuelto en un ".fab-wrap" que agrega una
@@ -440,39 +800,36 @@
 
         <div class="row justify-content-center mb-4" id="senalDelDia">
             <div class="col-lg-8">
-                <div class="card border-0 shadow-sm animate-fade-in position-relative" style="border-radius: 15px; background-color: #0f172a;">
-                    <button type="button" class="btn-close btn-close-white position-absolute" style="top: 14px; right: 14px;" id="btnCerrarDelDia" aria-label="Cerrar"></button>
-                    <div class="card-body p-4 text-white d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
-                        <div class="d-flex align-items-center gap-3 flex-grow-1">
-                            <div class="senal-dia-miniatura flex-shrink-0 d-none" id="miniaturaDelDiaWrap" role="button" tabindex="0" title="Ver seña" aria-label="Ver la seña completa">
-                                <img id="miniaturaDelDiaImg" src="" alt="" class="senal-dia-miniatura-img">
-                                <span class="senal-dia-miniatura-play" aria-hidden="true">▶</span>
-                            </div>
-                            <div>
-                                <span class="badge mb-2" style="background-color: #ffc107; color:#000;" id="categoriaDelDia"></span>
-                                <div class="d-flex align-items-center mb-1">
-                                    <button type="button" class="btn btn-sm p-0 me-2 text-white border-0 bg-transparent" id="btnSenalAnterior" title="Ver seña de ayer" aria-label="Ver seña del día anterior" style="font-size:14px; opacity:0.8;">◀</button>
-                                    <span class="text-uppercase small fw-bold" style="letter-spacing: 0.05em; color:#94a3b8;" id="labelSenalDelDia">✨ Seña del día</span>
-                                    <button type="button" class="btn btn-sm p-0 ms-2 text-white border-0 bg-transparent d-none" id="btnSenalSiguiente" title="Volver a hoy" aria-label="Volver a la seña de hoy" style="font-size:14px; opacity:0.8;">▶</button>
-                                </div>
-                                <h4 class="fw-bold mb-2 text-white" id="tituloDelDia"></h4>
-                                <p class="small mb-0 text-white" id="descripcionDelDia"></p>
-                            </div>
+                <div class="dia-rect-card animate-fade-in position-relative">
+                    <button type="button" class="btn-close btn-close-white position-absolute" style="top: 12px; right: 12px; z-index: 2;" id="btnCerrarDelDia" aria-label="Cerrar"></button>
+
+                    <div class="dia-rect-media d-none" id="miniaturaDelDiaWrap" role="button" tabindex="0" title="Ver seña" aria-label="Ver la seña completa">
+                        <img id="miniaturaDelDiaImg" src="" alt="" class="dia-rect-media-img">
+                        <span class="dia-rect-media-tag">🎥 VIDEO</span>
+                        <span class="dia-rect-media-play" aria-hidden="true">▶</span>
+                    </div>
+
+                    <div class="dia-rect-body">
+                        <div class="dia-rect-nav">
+                            <button type="button" class="dia-rect-nav-btn" id="btnSenalAnterior" title="Ver seña de ayer" aria-label="Ver la seña del día anterior">◀</button>
+                            <span class="dia-rect-label" id="labelSenalDelDia">✨ Seña del día</span>
+                            <button type="button" class="dia-rect-nav-btn d-none" id="btnSenalSiguiente" title="Volver a hoy" aria-label="Volver a la seña de hoy">▶</button>
                         </div>
-                        <button class="btn btn-warning px-4 py-2 rounded-pill fw-bold text-dark flex-shrink-0" id="btnVerDelDia">
-                            Ver Seña
-                        </button>
+                        <span class="badge dia-rect-badge" id="categoriaDelDia"></span>
+                        <h4 class="dia-rect-titulo" id="tituloDelDia"></h4>
+                        <p class="dia-rect-desc" id="descripcionDelDia"></p>
+                        <button class="btn dia-rect-btn" id="btnVerDelDia">Ver ahora</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="text-center mb-4 header-minimal">
+        <div class="text-center mb-4 header-minimal" id="bloqueTituloPrincipal">
             <h1 class="fw-bold tracking-tight">Diccionario de Lengua de Señas Peruana (LSP) y Español</h1>
             <p class="text-muted small">Aprende el significado de las palabras con el apoyo de videos en señas.</p>
         </div>
 
-        <div class="row justify-content-center mb-3">
+        <div class="row justify-content-center mb-3" id="bloqueBuscador">
             <div class="col-lg-8 position-relative">
                 <div class="input-group input-group-lg shadow-sm" style="border-radius: 50px; border: 2px solid #ffc107; overflow: hidden; background-color: #fff;">
                     <input id="buscar" type="text" class="form-control border-0 px-4 shadow-none text-secondary" placeholder="Escribe la palabra que buscas aquí..." style="font-size: 1.1rem; background: transparent;">
@@ -484,7 +841,7 @@
             </div>
         </div>
 
-        <div class="row justify-content-center mb-2 mt-4">
+        <div class="row justify-content-center mb-2 mt-4" id="filaBotonIndiceAlfabetico">
             <div class="col-lg-8 text-center">
                 <button class="btn btn-abc-toggle d-inline-flex align-items-center gap-2" type="button" data-bs-toggle="collapse" data-bs-target="#indiceAlfabetico" aria-expanded="false" aria-controls="indiceAlfabetico" id="btnToggleAbc">
                     <span class="abc-toggle-label">A-Z</span>
@@ -494,7 +851,7 @@
             </div>
         </div>
 
-        <div class="row justify-content-center mb-4">
+        <div class="row justify-content-center mb-4" id="filaIndiceAlfabetico">
             <div class="col-lg-8">
                 <div class="collapse" id="indiceAlfabetico">
                 <div class="indice-alfabetico d-flex justify-content-between flex-wrap gap-1 p-2 bg-white rounded shadow-sm border">
@@ -532,7 +889,28 @@
         <div id="resultado" class="mb-4 animate-fade-in"></div>
 
         <div id="ultimasPalabras" class="row g-2 mb-4"></div>
+
+        <!-- Vista "Temas orden": primero las etiquetas (tarjetas de categoría),
+             y debajo el buscador exclusivo de esta vista (reemplaza al
+             buscador general #bloqueBuscador mientras está activa). Los
+             resultados/sugerencias al escribir aparecen justo debajo del
+             buscador, en #resultadoCategorias. Mismo orden en escritorio y
+             en móvil (se muestra/oculta por JS, ver mostrarBuscadorDeCategorias
+             y el listener de btnCategorias en script.js). -->
         <div id="panelCategorias" class="row g-2 mb-4 p-2"></div>
+
+        <div class="row justify-content-center mb-3 d-none" id="bloqueBuscadorCategorias">
+            <div class="col-lg-8 position-relative">
+                <div class="input-group input-group-lg shadow-sm" style="border-radius: 50px; border: 2px solid #0d6efd; overflow: hidden; background-color: #fff;">
+                    <input id="buscarCategorias" type="text" class="form-control border-0 px-4 shadow-none text-secondary" placeholder="Busca una palabra dentro de las categorías..." style="font-size: 1.1rem; background: transparent;">
+                    <button class="btn px-4 d-flex align-items-center justify-content-center" type="button" id="btnBuscarCategorias" style="background-color: #0d6efd; color: #fff;">
+                        <span style="font-size: 1.3rem;">🔍</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="resultadoCategorias" class="mb-4"></div>
 
         <div class="stats-panel-destacado mb-4">
             <div class="row g-3 justify-content-center">
@@ -563,14 +941,183 @@
             </div>
         </div>
 
+        <section id="seccionFavoritos" class="mb-5 p-3 d-none" style="background-color: #f0f8ff; border-radius: 12px; border: 1px solid #dceefc;">
+            <h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">⭐ Mis Favoritos</h6>
+            <div id="listaFavoritos" class="row g-2"></div>
+        </section>
+
         <section id="seccionHistorial" class="mb-5 d-none p-3">
             <h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">🕒 Mi Historial de Búsqueda</h6>
             <div id="listaHistorial" class="row g-2"></div>
         </section>
 
-        <section id="seccionFavoritos" class="mb-5 p-3" style="background-color: #f0f8ff; border-radius: 12px; border: 1px solid #dceefc;">
-            <h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">⭐ Mis Favoritos</h6>
-            <div id="listaFavoritos" class="row g-2"></div>
+        <!-- ============================================================
+             SECCIÓN SUBTÍTULOS EN TIEMPO REAL (js/subtitulos.js, namespace
+             SubtitulosV2). Independiente del Quiz y de Alfabetización.
+             Usa el micrófono del dispositivo + la Web Speech API del
+             navegador para transcribir el audio ambiente (por ejemplo el
+             de una película en el cine o la TV) y mostrarlo como
+             subtítulos en vivo, con pantalla completa y "modo cine"
+             (fondo negro, texto blanco grande).
+             ============================================================ -->
+        <!-- ============================================================
+             MENÚ DE HERRAMIENTAS (solo móvil/tablet). Al tocar
+             "Herramientas" en la barra inferior aparece primero este
+             selector con 3 botones grandes; recién al presionar uno se
+             carga y muestra el módulo correspondiente (ver script.js).
+             En escritorio (d-xl-none) no se usa: ahí los 3 bloques se
+             siguen mostrando juntos, uno debajo del otro, como antes.
+             ============================================================ -->
+        <div id="herramientasMenuMovil" class="d-none d-xl-none mb-4">
+            <h4 class="fw-bold mb-3 text-center">🛠️ Herramientas</h4>
+            <div class="row g-3">
+                <div class="col-12">
+                    <button type="button" id="btnHerrMovilSubtitulos" class="herr-movil-btn herr-movil-btn-subtitulos w-100">
+                        <span class="herr-movil-icono" aria-hidden="true">💬</span>
+                        <span class="herr-movil-texto">SUBTÍTULOS</span>
+                    </button>
+                </div>
+                <div class="col-12">
+                    <button type="button" id="btnHerrMovilJugar" class="herr-movil-btn herr-movil-btn-jugar w-100">
+                        <span class="herr-movil-icono" aria-hidden="true">🎮</span>
+                        <span class="herr-movil-texto">JUGAR</span>
+                    </button>
+                </div>
+                <div class="col-12">
+                    <button type="button" id="btnHerrMovilAlfabetizacion" class="herr-movil-btn herr-movil-btn-alfabetizacion w-100">
+                        <span class="herr-movil-icono" aria-hidden="true">🔤</span>
+                        <span class="herr-movil-texto">ALFABETIZACIÓN</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <section id="seccionSubtitulos" class="d-none">
+
+            <div class="card quiz-card border-0 shadow-sm p-3 p-md-4 mb-4" id="subtitulosPanelTitulo">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="fs-3" aria-hidden="true">💬</span>
+                        <div>
+                            <h5 class="fw-bold mb-0">Subtítulos en tiempo real</h5>
+                            <p class="small text-muted mb-0">Convierte el sonido ambiente en texto, para seguir películas y conversaciones al instante.</p>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button id="btnSubtitulosSalir" class="btn btn-outline-secondary btn-sm rounded-pill" title="Salir de Subtítulos">↩ Salir</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANTALLA 1: INTRO / CONFIGURACIÓN -->
+            <div id="subtitulosIntro" class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card quiz-card border-0 shadow-sm text-center p-4 p-md-5">
+                        <div class="fs-1 mb-3" aria-hidden="true">🎧</div>
+                        <h4 class="fw-bold mb-2">Escucha convertida en subtítulos</h4>
+                        <p class="text-muted mb-2">
+                            Esta pantalla te ayudará a ver subtítulos en vivo. Ideal para el cine
+                        </p>
+
+                        <!-- Tips de uso ampliados: consejos concretos para que el celular
+                             capte mejor el audio de la sala antes de que arranque la escucha. -->
+                        <div class="text-start mx-auto mb-4" style="max-width: 480px; background:#fff7ed; border:1px solid #fed7aa; border-radius:12px; padding:14px 18px;">
+                            <p class="small fw-bold mb-2" style="color:#c2410c;">📢 Consejos para captar mejor el audio:</p>
+                            <ul class="small text-muted mb-0 ps-3" style="color:#9a3412 !important;">
+                                <li>Saca el celular de la funda/bolsillo y sostenlo con el micrófono apuntando hacia los parlantes.</li>
+                                <li>Mientras más cerca esté del parlante, mejor se transcribe: evita dejarlo sobre la pierna o mesa baja.</li>
+                                <li>Si tienes audífonos con micrófono (manos libres), pruébalos: suelen captar mejor que el micrófono trasero del celular.</li>
+                                <li>Evita hablar o hacer ruido cerca del celular mientras esté escuchando.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Medidor de nivel de audio ambiente: usa un stream de micrófono
+                             independiente SOLO en esta pantalla (antes de iniciar el
+                             reconocimiento de voz), para que el usuario pueda comprobar y
+                             ajustar la posición del celular ANTES de empezar la sesión.
+                             Se apaga automáticamente al pulsar "Activar micrófono y empezar"
+                             o al salir de esta pantalla, para no competir por el micrófono
+                             con SpeechRecognition (ver nota en subtitulos.js). -->
+                        <div class="mx-auto mb-4" style="max-width: 480px;">
+                            <div id="subtitulosMedidorCaja" class="p-3" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px;">
+                                <button id="btnSubtitulosProbarNivel" type="button" class="btn btn-outline-secondary btn-sm rounded-pill fw-bold mb-2">
+                                    🎚️ Probar nivel de audio
+                                </button>
+                                <div id="subtitulosMedidorNivel" class="d-none">
+                                    <div class="subtitulos-medidor-barra-wrap">
+                                        <div id="subtitulosMedidorBarra" class="subtitulos-medidor-barra"></div>
+                                    </div>
+                                    <p id="subtitulosMedidorEtiqueta" class="small fw-bold mt-2 mb-0">Escuchando el ambiente…</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row justify-content-center mb-4">
+                            <div class="col-sm-6 col-md-5 text-start">
+                                <label for="subtitulosSelectIdioma" class="form-label small fw-bold text-muted">Idioma de los subtítulos</label>
+                                <select id="subtitulosSelectIdioma" class="form-select">
+                                    <option value="es-PE">Español (Perú)</option>
+                                    <option value="es-419">Español (Latinoamérica)</option>
+                                    <option value="es-ES">Español (España)</option>
+                                    <option value="en-US">English (US)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button id="btnSubtitulosIniciar" class="btn btn-warning btn-lg fw-bold rounded-pill px-4 mx-auto">
+                            🎤 Activar micrófono y empezar
+                        </button>
+                        <p class="small text-muted mt-3 mb-0" id="subtitulosAvisoCompat"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANTALLA 2: SUBTÍTULOS EN VIVO -->
+            <div id="subtitulosEnVivo" class="d-none">
+                <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2" id="subtitulosBarraControles">
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <span class="badge bg-danger" id="subtitulosBadgeEnVivo">● EN VIVO</span>
+                        <span class="small text-muted" id="subtitulosIdiomaActual"></span>
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button id="btnSubtitulosGuardar" class="btn btn-sm btn-outline-primary" title="Copiar todo el texto subtitulado">💾 Guardar</button>
+                        <button id="btnSubtitulosFullscreen" class="btn btn-outline-secondary quiz-btn-fullscreen" title="Pantalla completa" aria-label="Pantalla completa">⛶</button>
+                    </div>
+                </div>
+
+                <div id="subtitulosPantalla" class="subtitulos-pantalla">
+                    <!-- Controles flotantes: siempre visibles, incluso en pantalla
+                         completa (a diferencia de la barra de arriba, que se oculta). -->
+                    <div class="subtitulos-controles-flotantes" id="subtitulosControlesFlotantes">
+                        <button id="btnSubtitulosTextoMenos" class="btn btn-sm btn-light" title="Reducir tamaño de texto" aria-label="Reducir tamaño de texto">A-</button>
+                        <button id="btnSubtitulosTextoMas" class="btn btn-sm btn-light" title="Aumentar tamaño de texto" aria-label="Aumentar tamaño de texto">A+</button>
+                        <button id="btnSubtitulosColor" class="btn btn-sm btn-light" title="Cambiar color de la palabra en vivo" aria-label="Cambiar color de la palabra en vivo">🟢</button>
+                    </div>
+
+                    <div id="subtitulosTexto" class="subtitulos-texto tam-md"></div>
+                    <button id="btnSubtitulosSalirCine" class="btn btn-sm btn-light subtitulos-btn-salir-cine d-none" title="Salir de pantalla completa" aria-label="Salir de pantalla completa">✕ Salir</button>
+                </div>
+
+                <div class="text-center mt-3" id="subtitulosControlesInferiores">
+                    <button id="btnSubtitulosDetener" class="btn btn-outline-danger fw-bold rounded-pill px-4">⏹ Detener subtítulos</button>
+                </div>
+            </div>
+
+            <!-- PANTALLA 3: NAVEGADOR NO COMPATIBLE -->
+            <div id="subtitulosNoSoportado" class="d-none row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card quiz-card border-0 shadow-sm text-center p-4 p-md-5">
+                        <div class="fs-1 mb-3" aria-hidden="true">⚠️</div>
+                        <h5 class="fw-bold mb-2">Tu navegador no admite el reconocimiento de voz</h5>
+                        <p class="text-muted mb-0">
+                            Para usar los subtítulos en tiempo real, abre esta página en <strong>Google Chrome</strong>
+                            (en Android o en tu computadora). Otros navegadores como Safari o Firefox todavía no
+                            soportan esta función correctamente.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
         </section>
 
         <!-- ================================================================
@@ -975,143 +1522,6 @@
 
         </section>
 
-        <!-- ============================================================
-             SECCIÓN SUBTÍTULOS EN TIEMPO REAL (js/subtitulos.js, namespace
-             SubtitulosV2). Independiente del Quiz y de Alfabetización.
-             Usa el micrófono del dispositivo + la Web Speech API del
-             navegador para transcribir el audio ambiente (por ejemplo el
-             de una película en el cine o la TV) y mostrarlo como
-             subtítulos en vivo, con pantalla completa y "modo cine"
-             (fondo negro, texto blanco grande).
-             ============================================================ -->
-        <section id="seccionSubtitulos" class="d-none">
-
-            <div class="card quiz-card border-0 shadow-sm p-3 p-md-4 mb-4" id="subtitulosPanelTitulo">
-                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="fs-3" aria-hidden="true">💬</span>
-                        <div>
-                            <h5 class="fw-bold mb-0">Subtítulos en tiempo real</h5>
-                            <p class="small text-muted mb-0">Convierte el sonido ambiente en texto, para seguir películas y conversaciones al instante.</p>
-                        </div>
-                    </div>
-                    <div class="d-flex gap-2">
-                        <button id="btnSubtitulosSalir" class="btn btn-outline-secondary btn-sm rounded-pill" title="Salir de Subtítulos">↩ Salir</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- PANTALLA 1: INTRO / CONFIGURACIÓN -->
-            <div id="subtitulosIntro" class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="card quiz-card border-0 shadow-sm text-center p-4 p-md-5">
-                        <div class="fs-1 mb-3" aria-hidden="true">🎧</div>
-                        <h4 class="fw-bold mb-2">Escucha convertida en subtítulos</h4>
-                        <p class="text-muted mb-2">
-                            Esta pantalla te ayudará a ver subtítulos en vivo. Ideal para el cine
-                        </p>
-
-                        <!-- Tips de uso ampliados: consejos concretos para que el celular
-                             capte mejor el audio de la sala antes de que arranque la escucha. -->
-                        <div class="text-start mx-auto mb-4" style="max-width: 480px; background:#fff7ed; border:1px solid #fed7aa; border-radius:12px; padding:14px 18px;">
-                            <p class="small fw-bold mb-2" style="color:#c2410c;">📢 Consejos para captar mejor el audio:</p>
-                            <ul class="small text-muted mb-0 ps-3" style="color:#9a3412 !important;">
-                                <li>Saca el celular de la funda/bolsillo y sostenlo con el micrófono apuntando hacia los parlantes.</li>
-                                <li>Mientras más cerca esté del parlante, mejor se transcribe: evita dejarlo sobre la pierna o mesa baja.</li>
-                                <li>Si tienes audífonos con micrófono (manos libres), pruébalos: suelen captar mejor que el micrófono trasero del celular.</li>
-                                <li>Evita hablar o hacer ruido cerca del celular mientras esté escuchando.</li>
-                            </ul>
-                        </div>
-
-                        <!-- Medidor de nivel de audio ambiente: usa un stream de micrófono
-                             independiente SOLO en esta pantalla (antes de iniciar el
-                             reconocimiento de voz), para que el usuario pueda comprobar y
-                             ajustar la posición del celular ANTES de empezar la sesión.
-                             Se apaga automáticamente al pulsar "Activar micrófono y empezar"
-                             o al salir de esta pantalla, para no competir por el micrófono
-                             con SpeechRecognition (ver nota en subtitulos.js). -->
-                        <div class="mx-auto mb-4" style="max-width: 480px;">
-                            <div id="subtitulosMedidorCaja" class="p-3" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px;">
-                                <button id="btnSubtitulosProbarNivel" type="button" class="btn btn-outline-secondary btn-sm rounded-pill fw-bold mb-2">
-                                    🎚️ Probar nivel de audio
-                                </button>
-                                <div id="subtitulosMedidorNivel" class="d-none">
-                                    <div class="subtitulos-medidor-barra-wrap">
-                                        <div id="subtitulosMedidorBarra" class="subtitulos-medidor-barra"></div>
-                                    </div>
-                                    <p id="subtitulosMedidorEtiqueta" class="small fw-bold mt-2 mb-0">Escuchando el ambiente…</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row justify-content-center mb-4">
-                            <div class="col-sm-6 col-md-5 text-start">
-                                <label for="subtitulosSelectIdioma" class="form-label small fw-bold text-muted">Idioma de los subtítulos</label>
-                                <select id="subtitulosSelectIdioma" class="form-select">
-                                    <option value="es-PE">Español (Perú)</option>
-                                    <option value="es-419">Español (Latinoamérica)</option>
-                                    <option value="es-ES">Español (España)</option>
-                                    <option value="en-US">English (US)</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <button id="btnSubtitulosIniciar" class="btn btn-warning btn-lg fw-bold rounded-pill px-4 mx-auto">
-                            🎤 Activar micrófono y empezar
-                        </button>
-                        <p class="small text-muted mt-3 mb-0" id="subtitulosAvisoCompat"></p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- PANTALLA 2: SUBTÍTULOS EN VIVO -->
-            <div id="subtitulosEnVivo" class="d-none">
-                <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2" id="subtitulosBarraControles">
-                    <div class="d-flex align-items-center gap-2 flex-wrap">
-                        <span class="badge bg-danger" id="subtitulosBadgeEnVivo">● EN VIVO</span>
-                        <span class="small text-muted" id="subtitulosIdiomaActual"></span>
-                    </div>
-                    <div class="d-flex gap-2 flex-wrap">
-                        <button id="btnSubtitulosGuardar" class="btn btn-sm btn-outline-primary" title="Copiar todo el texto subtitulado">💾 Guardar</button>
-                        <button id="btnSubtitulosFullscreen" class="btn btn-outline-secondary quiz-btn-fullscreen" title="Pantalla completa" aria-label="Pantalla completa">⛶</button>
-                    </div>
-                </div>
-
-                <div id="subtitulosPantalla" class="subtitulos-pantalla">
-                    <!-- Controles flotantes: siempre visibles, incluso en pantalla
-                         completa (a diferencia de la barra de arriba, que se oculta). -->
-                    <div class="subtitulos-controles-flotantes" id="subtitulosControlesFlotantes">
-                        <button id="btnSubtitulosTextoMenos" class="btn btn-sm btn-light" title="Reducir tamaño de texto" aria-label="Reducir tamaño de texto">A-</button>
-                        <button id="btnSubtitulosTextoMas" class="btn btn-sm btn-light" title="Aumentar tamaño de texto" aria-label="Aumentar tamaño de texto">A+</button>
-                        <button id="btnSubtitulosColor" class="btn btn-sm btn-light" title="Cambiar color de la palabra en vivo" aria-label="Cambiar color de la palabra en vivo">🟢</button>
-                    </div>
-
-                    <div id="subtitulosTexto" class="subtitulos-texto tam-md"></div>
-                    <button id="btnSubtitulosSalirCine" class="btn btn-sm btn-light subtitulos-btn-salir-cine d-none" title="Salir de pantalla completa" aria-label="Salir de pantalla completa">✕ Salir</button>
-                </div>
-
-                <div class="text-center mt-3" id="subtitulosControlesInferiores">
-                    <button id="btnSubtitulosDetener" class="btn btn-outline-danger fw-bold rounded-pill px-4">⏹ Detener subtítulos</button>
-                </div>
-            </div>
-
-            <!-- PANTALLA 3: NAVEGADOR NO COMPATIBLE -->
-            <div id="subtitulosNoSoportado" class="d-none row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="card quiz-card border-0 shadow-sm text-center p-4 p-md-5">
-                        <div class="fs-1 mb-3" aria-hidden="true">⚠️</div>
-                        <h5 class="fw-bold mb-2">Tu navegador no admite el reconocimiento de voz</h5>
-                        <p class="text-muted mb-0">
-                            Para usar los subtítulos en tiempo real, abre esta página en <strong>Google Chrome</strong>
-                            (en Android o en tu computadora). Otros navegadores como Safari o Firefox todavía no
-                            soportan esta función correctamente.
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-        </section>
-
         <!-- RECUADRO CON NUEVO COLOR AZUL OSCURO Y BOTÓN AMARILLO -->
         <section id="seccionSugerencias" class="mt-5 pt-4 border-top text-center">
             <div class="p-4 rounded border-0 d-inline-block max-w-xl mx-auto shadow-sm text-white" style="background-color: #0f172a;">
@@ -1221,7 +1631,10 @@
             const btnAccesoSubtitulos = document.getElementById("btnAccesoSubtitulos");
             if (btnAccesoSubtitulos) {
                 btnAccesoSubtitulos.addEventListener("click", () => {
-                    const link = document.getElementById("btnSubtitulos");
+                    // Subtítulos ahora vive dentro de "Herramientas" (junto a
+                    // Jugar y Alfabetización), así que este acceso directo
+                    // lleva ahí en vez de a un botón de menú que ya no existe.
+                    const link = document.getElementById("btnHerramientas");
                     if (link) link.click();
                 });
             }

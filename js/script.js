@@ -3,6 +3,11 @@ const btnBuscar = document.getElementById("btnBuscar");
 const sugerencias = document.getElementById("sugerencias");
 const resultado = document.getElementById("resultado");
 
+const bloqueBuscador = document.getElementById("bloqueBuscador");
+const bloqueBuscadorCategorias = document.getElementById("bloqueBuscadorCategorias");
+const buscarCategorias = document.getElementById("buscarCategorias");
+const resultadoCategorias = document.getElementById("resultadoCategorias");
+
 const totalPalabras = document.getElementById("totalPalabras");
 const totalCategorias = document.getElementById("totalCategorias");
 const totalVideos = document.getElementById("totalVideos");
@@ -10,8 +15,18 @@ const totalVideos = document.getElementById("totalVideos");
 const panelCategorias = document.getElementById("panelCategorias");
 const ultimasPalabras = document.getElementById("ultimasPalabras");
 const seccionHistorial = document.getElementById("seccionHistorial");
+const seccionFavoritos = document.getElementById("seccionFavoritos");
 const listaHistorial = document.getElementById("listaHistorial");
 const listaFavoritos = document.getElementById("listaFavoritos");
+
+// El botón de menú "Favoritos" se fusionó con "Historial": un solo
+// botón ("Historial") ahora abre ambos paneles, cada uno en su propio
+// bloque independiente (primero Favoritos, luego Historial). Esta
+// función centraliza el ocultarlos cuando se navega a otra sección.
+function ocultarPanelesGuardados(){
+    seccionHistorial.classList.add("d-none");
+    if(seccionFavoritos) seccionFavoritos.classList.add("d-none");
+}
 
 const CLAVE_FAVORITOS = "lspedia_favoritos";
 const CLAVE_HISTORIAL = "lspedia_historial";
@@ -34,63 +49,143 @@ if(btnLogo) {
     });
 }
 
+// El botón "Buscar" (🔍, antes "Inicio") YA NO recarga la página: una
+// recarga completa siempre dispara la pantalla de carga (splash), por
+// más corta que sea. En su lugar, resetea la vista a la pantalla
+// principal (igual que hacía "Inicio" antes de mostrar resultados) y
+// deja el buscador enfocado al instante, sin ningún parpadeo/carga de
+// por medio.
 const btnInicio = document.getElementById("btnInicio");
 if(btnInicio) {
     btnInicio.addEventListener("click", (e) => {
         e.preventDefault();
-        const icono = document.getElementById("iconoInicio");
-        if(icono) icono.classList.add("spin-anim");
-        setTimeout(() => window.location.href = window.location.pathname, 500); 
+        irAlBuscador();
     });
 }
 
+// Solo en la versión de escritorio (ver detección en index.html) el
+// índice alfabético debe aparecer desplegado por defecto en el Inicio,
+// y colapsado (no desplegado) al entrar a "Temas orden". En móvil no
+// cambia nada: sigue arrancando colapsado como antes.
+function esModoEscritorioForzado(){
+    return document.documentElement.classList.contains("modo-escritorio-forzado");
+}
+
+function desplegarIndiceAlfabetico(){
+    if (!esModoEscritorioForzado()) return;
+    const indice = document.getElementById("indiceAlfabetico");
+    const btn = document.getElementById("btnToggleAbc");
+    if (indice && btn && !indice.classList.contains("show")) btn.click();
+}
+
+function colapsarIndiceAlfabetico(){
+    if (!esModoEscritorioForzado()) return;
+    const indice = document.getElementById("indiceAlfabetico");
+    const btn = document.getElementById("btnToggleAbc");
+    if (indice && btn && indice.classList.contains("show")) btn.click();
+}
+
+// --- RECORDAR LA VISTA ACTUAL EN LA URL (para que un refresh no vuelva
+//     siempre a Inicio) ---
+// Usa replaceState (no pushState) a propósito: cambiar de "Temas orden" a
+// "Herramientas" varias veces no debe ir llenando el historial del
+// navegador, solo necesitamos que la URL actual refleje dónde está el
+// usuario para poder restaurarlo al recargar. Cuando se muestra una
+// palabra (?p=...) o se filtra por letra, esas rutas ya arman su propia
+// URL desde cero (pathname + su propio parámetro), así que la vista
+// guardada queda reemplazada sola sin que haga falta limpiarla a mano.
+function actualizarVistaUrl(vista){
+    const nuevaUrl = vista ? (window.location.pathname + "?vista=" + vista) : window.location.pathname;
+    window.history.replaceState({}, '', nuevaUrl);
+}
+
+function irAlBuscador(){
+    ocultarSeccionHerramientas();
+    ocultarPanelesGuardados();
+    resultado.innerHTML = "";
+    panelCategorias.innerHTML = "";
+    resultadoCategorias.innerHTML = "";
+    ultimasPalabras.innerHTML = "";
+    categoriaActualMostrada = null;
+    document.body.classList.remove("vista-temas-movil");
+    mostrarBloqueInicio();
+    actualizarVistaUrl(null);
+    desplegarIndiceAlfabetico();
+    if (sugerencias) sugerencias.innerHTML = "";
+    if (buscar) buscar.value = "";
+    if (buscar) {
+        buscar.scrollIntoView({ behavior: "smooth", block: "center" });
+        setTimeout(() => buscar.focus(), 250);
+    }
+}
+
+// El botón "Historial" del menú se fusionó dentro de "Temas orden":
+// un solo clic ahora muestra Categorías, Favoritos e Historial juntos
+// (cada uno sigue siendo su propio bloque independiente en el HTML).
 document.getElementById("btnCategorias").addEventListener("click", (e) => {
     e.preventDefault();
-    ocultarQuiz();
-    ocultarAlfabetizacion();
-    ocultarSubtitulos();
+    ocultarSeccionHerramientas();
+    mostrarBloqueInicio();
+    // Vista "Temas" en móvil: solo deben quedar visibles el buscador, el
+    // índice A-Z, las categorías, Favoritos e Historial. La clase la lee
+    // el CSS (@media max-width 1199.98px) para ocultar la seña del
+    // día/ayer y el panel de Estadísticas; también aplica en escritorio.
+    document.body.classList.add("vista-temas-movil");
+    colapsarIndiceAlfabetico();
+    // El botón "A-Z | Índice alfabético" no debe verse dentro de "Temas
+    // orden" (ahí ya se navega por las tarjetas de categoría y por el
+    // buscador azul de abajo): se oculta por completo, en escritorio y
+    // en móvil por igual. mostrarBloqueInicio() lo vuelve a mostrar al
+    // salir hacia "Buscar" (ver irAlBuscador()).
+    const filaBotonIndiceTemas = document.getElementById("filaBotonIndiceAlfabetico");
+    if(filaBotonIndiceTemas) filaBotonIndiceTemas.style.display = "none";
+    const filaIndiceTemas = document.getElementById("filaIndiceAlfabetico");
+    if(filaIndiceTemas) filaIndiceTemas.style.display = "none";
+    // El buscador general (#buscar, busca en todo el diccionario) se
+    // reemplaza acá por el buscador azul exclusivo de Categorías (solo
+    // filtra las tarjetas por nombre). Aplica igual en escritorio y móvil.
+    mostrarBuscadorDeCategorias();
     mostrarCategorias();
+    mostrarPantallaHistorialYFavoritos();
+    actualizarVistaUrl("temas");
     panelCategorias.scrollIntoView({ behavior: 'smooth', block: 'center' });
     panelCategorias.classList.add("highlight-anim");
-    setTimeout(() => panelCategorias.classList.remove("highlight-anim"), 2000);
-});
-
-document.getElementById("btnNavFavoritos").addEventListener("click", (e) => {
-    e.preventDefault();
-    ocultarQuiz();
-    ocultarAlfabetizacion();
-    ocultarSubtitulos();
-    const seccionFav = document.getElementById("seccionFavoritos");
-    seccionFav.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    seccionFav.classList.add("highlight-anim");
-    setTimeout(() => seccionFav.classList.remove("highlight-anim"), 2000);
-});
-
-document.getElementById("btnHistorial").addEventListener("click", (e) => {
-    e.preventDefault();
-    ocultarQuiz();
-    ocultarAlfabetizacion();
-    ocultarSubtitulos();
-    mostrarPantallaHistorial();
-    seccionHistorial.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    seccionFavoritos.classList.add("highlight-anim");
     seccionHistorial.classList.add("highlight-anim");
-    setTimeout(() => seccionHistorial.classList.remove("highlight-anim"), 2000);
+    setTimeout(() => {
+        panelCategorias.classList.remove("highlight-anim");
+        seccionFavoritos.classList.remove("highlight-anim");
+        seccionHistorial.classList.remove("highlight-anim");
+    }, 2000);
 });
 
-const seccionQuiz = document.getElementById("seccionQuiz");
-const btnQuiz = document.getElementById("btnQuiz");
-if(btnQuiz){
-    btnQuiz.addEventListener("click", (e) => {
-        e.preventDefault();
-        mostrarSeccionQuiz();
+// --- BARRA DE NAVEGACIÓN INFERIOR (solo móvil/tablet) ---
+// Cada botón de la barra de abajo solo simula el clic del enlace
+// equivalente del menú de arriba (data-vinculado guarda su id), así
+// que no duplicamos ninguna lógica: toda la navegación real sigue
+// pasando por los mismos handlers de siempre.
+document.querySelectorAll(".mbn-item").forEach(boton => {
+    boton.addEventListener("click", () => {
+        document.querySelectorAll(".mbn-item").forEach(b => b.classList.remove("active"));
+        boton.classList.add("active");
+        const idVinculado = boton.dataset.vinculado;
+        const elementoOriginal = idVinculado && document.getElementById(idVinculado);
+        if(elementoOriginal) elementoOriginal.click();
     });
-}
+});
 
+// "Jugar", "Alfabetización" y "Subtítulos" ya no tienen botón propio en
+// el menú: viven todos juntos, cada uno en su bloque independiente,
+// dentro de "Herramientas" (ver mostrarSeccionHerramientas más abajo).
+const seccionQuiz = document.getElementById("seccionQuiz");
+
+// El acceso flotante "🎮 Jugar" ahora lleva directo a Herramientas
+// (donde Jugar vive junto a Subtítulos y Alfabetización).
 const btnAccesoJugar = document.getElementById("btnAccesoJugar");
 if(btnAccesoJugar){
     btnAccesoJugar.addEventListener("click", (e) => {
         e.preventDefault();
-        mostrarSeccionQuiz();
+        mostrarSeccionHerramientas();
     });
 }
 
@@ -161,28 +256,10 @@ function ocultarQuiz(){
     if(window.AlfabetizacionV2 && typeof AlfabetizacionV2.detenerJuegosActivos === "function") AlfabetizacionV2.detenerJuegosActivos();
 }
 
-function mostrarSeccionQuiz(){
-    resultado.innerHTML = "";
-    panelCategorias.innerHTML = "";
-    categoriaActualMostrada = null;
-    ultimasPalabras.innerHTML = "";
-    seccionHistorial.classList.add("d-none");
-    ocultarAlfabetizacion();
-    ocultarSubtitulos();
-    seccionQuiz.classList.remove("d-none");
-    mostrarMenuJuegos();
-    seccionQuiz.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
 // --- SECCIÓN ALFABETIZACIÓN (ahora solo el módulo "Aprender") ---
+// Ya no tiene botón propio en el menú: vive dentro de "Herramientas"
+// (ver mostrarSeccionHerramientas más abajo), junto a Jugar y Subtítulos.
 const seccionAlfabetizacion = document.getElementById("seccionAlfabetizacion");
-const btnAlfabetizacion = document.getElementById("btnAlfabetizacion");
-if(btnAlfabetizacion){
-    btnAlfabetizacion.addEventListener("click", (e) => {
-        e.preventDefault();
-        mostrarSeccionAlfabetizacion();
-    });
-}
 
 function ocultarAlfabetizacion(){
     if(seccionAlfabetizacion) seccionAlfabetizacion.classList.add("d-none");
@@ -190,33 +267,10 @@ function ocultarAlfabetizacion(){
     if(window.AlfabetizacionV2 && typeof AlfabetizacionV2.salir === "function") AlfabetizacionV2.salir();
 }
 
-function mostrarSeccionAlfabetizacion(){
-    resultado.innerHTML = "";
-    panelCategorias.innerHTML = "";
-    categoriaActualMostrada = null;
-    ultimasPalabras.innerHTML = "";
-    seccionHistorial.classList.add("d-none");
-    ocultarQuiz();
-    ocultarSubtitulos();
-    seccionAlfabetizacion.classList.remove("d-none");
-    // AlfabetizacionV2 (js/alfabetizacion.js) carga sus datos desde Google Sheets.
-    if(window.AlfabetizacionV2 && typeof AlfabetizacionV2.iniciar === "function"){
-        AlfabetizacionV2.iniciar();
-    } else {
-        console.warn("AlfabetizacionV2 aún no está definido: falta crear/cargar js/alfabetizacion.js.");
-    }
-    seccionAlfabetizacion.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
 // --- SECCIÓN SUBTÍTULOS EN TIEMPO REAL (independiente: micrófono + Web Speech API) ---
+// Ya no tiene botón propio en el menú: vive dentro de "Herramientas"
+// (ver mostrarSeccionHerramientas más abajo), junto a Jugar y Alfabetización.
 const seccionSubtitulos = document.getElementById("seccionSubtitulos");
-const btnSubtitulos = document.getElementById("btnSubtitulos");
-if(btnSubtitulos){
-    btnSubtitulos.addEventListener("click", (e) => {
-        e.preventDefault();
-        mostrarSeccionSubtitulos();
-    });
-}
 
 function ocultarSubtitulos(){
     if(seccionSubtitulos) seccionSubtitulos.classList.add("d-none");
@@ -225,28 +279,237 @@ function ocultarSubtitulos(){
     if(window.SubtitulosV2 && typeof SubtitulosV2.salir === "function") SubtitulosV2.salir();
 }
 
-function mostrarSeccionSubtitulos(){
-    resultado.innerHTML = "";
-    panelCategorias.innerHTML = "";
-    categoriaActualMostrada = null;
-    ultimasPalabras.innerHTML = "";
-    seccionHistorial.classList.add("d-none");
-    ocultarQuiz();
-    ocultarAlfabetizacion();
-    seccionSubtitulos.classList.remove("d-none");
-    if(window.SubtitulosV2 && typeof SubtitulosV2.iniciar === "function"){
-        SubtitulosV2.iniciar();
-    } else {
-        console.warn("SubtitulosV2 aún no está definido: falta crear/cargar js/subtitulos.js.");
-    }
-    seccionSubtitulos.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
 const btnSubtitulosSalir = document.getElementById("btnSubtitulosSalir");
 if(btnSubtitulosSalir){
     btnSubtitulosSalir.addEventListener("click", (e) => {
         e.preventDefault();
         ocultarSubtitulos();
+        volverAlMenuHerramientasMovilSiCorresponde();
+    });
+}
+
+// --- SECCIÓN "HERRAMIENTAS" (fusiona Subtítulos + Jugar + Alfabetización) ---
+// A diferencia de como funcionaban antes por separado, acá los 3
+// módulos se muestran TODOS a la vez, uno debajo del otro, cada uno en
+// su propio bloque (<section>) para que no se confundan entre sí.
+// Orden pedido: primero Subtítulos, luego Jugar, y al final Alfabetización.
+const btnHerramientas = document.getElementById("btnHerramientas");
+if(btnHerramientas){
+    btnHerramientas.addEventListener("click", (e) => {
+        e.preventDefault();
+        mostrarSeccionHerramientas();
+    });
+}
+
+// Oculta y "apaga" los 3 módulos de Herramientas de una sola vez
+// (se usa al salir hacia Inicio o Temas orden).
+function ocultarSeccionHerramientas(){
+    ocultarSubtitulos();
+    ocultarQuiz();
+    ocultarAlfabetizacion();
+    const menuMovil = document.getElementById("herramientasMenuMovil");
+    if(menuMovil) menuMovil.classList.add("d-none");
+}
+
+// Mismo punto de corte que usa el resto de la barra inferior móvil
+// (ver el media query "max-width: 1199.98px" del CSS, equivalente al
+// breakpoint "xl" de Bootstrap).
+function esVistaMovilHerramientas(){
+    // En la versión de escritorio, Herramientas también usa el selector
+    // de 3 botones grandes (Subtítulos / Jugar / Alfabetización), igual
+    // que en móvil, sin importar el ancho de la ventana.
+    if (document.documentElement.classList.contains("modo-escritorio-forzado")) return true;
+    return window.innerWidth < 1200;
+}
+
+// En móvil, "Salir" de cualquiera de los 3 módulos regresa al selector
+// de botones grandes en vez de dejar la pantalla vacía. En escritorio no
+// hace nada (ahí los 3 bloques siguen mostrándose juntos, como antes).
+function volverAlMenuHerramientasMovilSiCorresponde(){
+    if(!esVistaMovilHerramientas()) return;
+    const menuMovil = document.getElementById("herramientasMenuMovil");
+    if(menuMovil){
+        menuMovil.classList.remove("d-none");
+        menuMovil.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    actualizarVistaUrl("herramientas");
+}
+
+// Dentro de "Herramientas" no se muestra ni la seña del día, ni el
+// título principal, ni el buscador, ni el botón de "Índice alfabético",
+// ni el panel de Estadísticas, ni el bloque "¿Falta alguna palabra?"
+// (se ven solo en Inicio/Temas orden).
+function ocultarBloqueInicio(){
+    const senal = document.getElementById("senalDelDia");
+    if(senal) senal.style.display = "none";
+    const titulo = document.getElementById("bloqueTituloPrincipal");
+    if(titulo) titulo.style.display = "none";
+    const bloqueBuscador = document.getElementById("bloqueBuscador");
+    if(bloqueBuscador) bloqueBuscador.classList.add("d-none");
+    const bloqueBuscadorCategorias = document.getElementById("bloqueBuscadorCategorias");
+    if(bloqueBuscadorCategorias) bloqueBuscadorCategorias.classList.add("d-none");
+    const filaBotonIndice = document.getElementById("filaBotonIndiceAlfabetico");
+    if(filaBotonIndice) filaBotonIndice.style.display = "none";
+    const filaIndice = document.getElementById("filaIndiceAlfabetico");
+    if(filaIndice) filaIndice.style.display = "none";
+    const statsPanel = document.querySelector(".stats-panel-destacado");
+    if(statsPanel) statsPanel.style.display = "none";
+    const sugerencias = document.getElementById("seccionSugerencias");
+    if(sugerencias) sugerencias.style.display = "none";
+}
+
+function mostrarBloqueInicio(){
+    const titulo = document.getElementById("bloqueTituloPrincipal");
+    if(titulo) titulo.style.display = "";
+    const bloqueBuscador = document.getElementById("bloqueBuscador");
+    if(bloqueBuscador) bloqueBuscador.classList.remove("d-none");
+    const bloqueBuscadorCategorias = document.getElementById("bloqueBuscadorCategorias");
+    if(bloqueBuscadorCategorias) bloqueBuscadorCategorias.classList.add("d-none");
+    const filaBotonIndice = document.getElementById("filaBotonIndiceAlfabetico");
+    if(filaBotonIndice) filaBotonIndice.style.display = "";
+    const filaIndice = document.getElementById("filaIndiceAlfabetico");
+    if(filaIndice) filaIndice.style.display = "";
+    const statsPanel = document.querySelector(".stats-panel-destacado");
+    if(statsPanel) statsPanel.style.display = "";
+    const sugerencias = document.getElementById("seccionSugerencias");
+    if(sugerencias) sugerencias.style.display = "";
+    // La seña del día no se vuelve a mostrar sola: igual que antes, una
+    // vez oculta (por ejemplo al ver una palabra) solo reaparece con
+    // una recarga de página real (btnInicio ya hace eso).
+}
+
+function mostrarSeccionHerramientas(){
+    resultado.innerHTML = "";
+    panelCategorias.innerHTML = "";
+    resultadoCategorias.innerHTML = "";
+    categoriaActualMostrada = null;
+    ultimasPalabras.innerHTML = "";
+    ocultarPanelesGuardados();
+    ocultarBloqueInicio();
+    document.body.classList.remove("vista-temas-movil");
+    actualizarVistaUrl("herramientas");
+
+    const menuMovil = document.getElementById("herramientasMenuMovil");
+
+    if(esVistaMovilHerramientas() && menuMovil){
+        // EN MÓVIL: primero se muestra el selector con los 3 botones
+        // grandes (Subtítulos / Jugar / Alfabetización), SIN iniciar
+        // ningún módulo todavía. Antes se intentaba arrancar los 3 a la
+        // vez (incluyendo el micrófono de Subtítulos), y si alguno fallaba
+        // al iniciar, los que venían después -como Jugar- se quedaban sin
+        // cargar. Ahora cada módulo solo se inicia cuando el usuario toca
+        // su botón (ver btnHerrMovilJugar y compañía más abajo).
+        ocultarSubtitulos();
+        ocultarQuiz();
+        ocultarAlfabetizacion();
+        menuMovil.classList.remove("d-none");
+        menuMovil.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+    }
+
+    // EN ESCRITORIO: se mantiene el comportamiento anterior, los 3
+    // bloques se muestran juntos, uno debajo del otro.
+    if(menuMovil) menuMovil.classList.add("d-none");
+
+    // 1) Subtítulos
+    if(seccionSubtitulos){
+        seccionSubtitulos.classList.remove("d-none");
+        try {
+            if(window.SubtitulosV2 && typeof SubtitulosV2.iniciar === "function"){
+                SubtitulosV2.iniciar();
+            }
+        } catch(err){ console.error("No se pudo iniciar Subtítulos:", err); }
+    }
+
+    // 2) Jugar
+    if(seccionQuiz){
+        seccionQuiz.classList.remove("d-none");
+        try { mostrarMenuJuegos(); } catch(err){ console.error("No se pudo abrir Jugar:", err); }
+    }
+
+    // 3) Alfabetización
+    if(seccionAlfabetizacion){
+        seccionAlfabetizacion.classList.remove("d-none");
+        try {
+            if(window.AlfabetizacionV2 && typeof AlfabetizacionV2.iniciar === "function"){
+                AlfabetizacionV2.iniciar();
+            }
+        } catch(err){ console.error("No se pudo iniciar Alfabetización:", err); }
+    }
+
+    if(seccionSubtitulos) seccionSubtitulos.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// --- BOTONES GRANDES DEL MENÚ DE HERRAMIENTAS (solo móvil) ---
+// Cada uno oculta el selector y recién ahí carga/muestra su módulo
+// correspondiente, uno a la vez (nunca los 3 juntos en móvil).
+const btnHerrMovilSubtitulos = document.getElementById("btnHerrMovilSubtitulos");
+if(btnHerrMovilSubtitulos){
+    btnHerrMovilSubtitulos.addEventListener("click", () => {
+        const menuMovil = document.getElementById("herramientasMenuMovil");
+        if(menuMovil) menuMovil.classList.add("d-none");
+        if(seccionSubtitulos){
+            seccionSubtitulos.classList.remove("d-none");
+            try {
+                if(window.SubtitulosV2 && typeof SubtitulosV2.iniciar === "function"){
+                    SubtitulosV2.iniciar();
+                }
+            } catch(err){ console.error("No se pudo iniciar Subtítulos:", err); }
+            seccionSubtitulos.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        actualizarVistaUrl("herramientas-subtitulos");
+    });
+}
+
+const btnHerrMovilJugar = document.getElementById("btnHerrMovilJugar");
+if(btnHerrMovilJugar){
+    btnHerrMovilJugar.addEventListener("click", () => {
+        const menuMovil = document.getElementById("herramientasMenuMovil");
+        if(menuMovil) menuMovil.classList.add("d-none");
+        if(seccionQuiz){
+            seccionQuiz.classList.remove("d-none");
+            try { mostrarMenuJuegos(); } catch(err){ console.error("No se pudo abrir Jugar:", err); }
+            seccionQuiz.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        actualizarVistaUrl("herramientas-jugar");
+    });
+}
+
+const btnHerrMovilAlfabetizacion = document.getElementById("btnHerrMovilAlfabetizacion");
+if(btnHerrMovilAlfabetizacion){
+    btnHerrMovilAlfabetizacion.addEventListener("click", () => {
+        const menuMovil = document.getElementById("herramientasMenuMovil");
+        if(menuMovil) menuMovil.classList.add("d-none");
+        if(seccionAlfabetizacion){
+            seccionAlfabetizacion.classList.remove("d-none");
+            try {
+                if(window.AlfabetizacionV2 && typeof AlfabetizacionV2.iniciar === "function"){
+                    AlfabetizacionV2.iniciar();
+                }
+            } catch(err){ console.error("No se pudo iniciar Alfabetización:", err); }
+            seccionAlfabetizacion.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        actualizarVistaUrl("herramientas-alfabetizacion");
+    });
+}
+
+// "Salir" de cada módulo: en móvil regresa al selector de botones
+// grandes; en escritorio solo oculta ese bloque puntual (como antes).
+const btnQuizSalir = document.getElementById("btnQuizSalir");
+if(btnQuizSalir){
+    btnQuizSalir.addEventListener("click", (e) => {
+        e.preventDefault();
+        ocultarQuiz();
+        volverAlMenuHerramientasMovilSiCorresponde();
+    });
+}
+
+const btnAlfabSalir = document.getElementById("btnAlfabSalir");
+if(btnAlfabSalir){
+    btnAlfabSalir.addEventListener("click", (e) => {
+        e.preventDefault();
+        ocultarAlfabetizacion();
+        volverAlMenuHerramientasMovilSiCorresponde();
     });
 }
 
@@ -277,6 +540,27 @@ const App = {
             const palabraEnUrl = urlParams.get("p");
             if (palabraEnUrl) {
                 restaurarPalabraDesdeUrl(palabraEnUrl);
+            } else {
+                // Si no hay una palabra específica que restaurar, revisa si
+                // el usuario estaba en "Temas orden" o "Herramientas" antes
+                // del refresh (ver actualizarVistaUrl) y lo deja ahí mismo
+                // en vez de mandarlo siempre a Inicio.
+                const vistaEnUrl = urlParams.get("vista");
+                if (vistaEnUrl === "temas") {
+                    const btnCategorias = document.getElementById("btnCategorias");
+                    if (btnCategorias) btnCategorias.click();
+                } else if (vistaEnUrl && vistaEnUrl.indexOf("herramientas") === 0) {
+                    mostrarSeccionHerramientas();
+                    // Si además había un módulo puntual abierto (selector móvil /
+                    // modo escritorio forzado), lo reabre tal cual estaba.
+                    if (vistaEnUrl === "herramientas-subtitulos" && btnHerrMovilSubtitulos) {
+                        btnHerrMovilSubtitulos.click();
+                    } else if (vistaEnUrl === "herramientas-jugar" && btnHerrMovilJugar) {
+                        btnHerrMovilJugar.click();
+                    } else if (vistaEnUrl === "herramientas-alfabetizacion" && btnHerrMovilAlfabetizacion) {
+                        btnHerrMovilAlfabetizacion.click();
+                    }
+                }
             }
         })
         .catch(error => console.error("Error al cargar LSPedia:", error));
@@ -329,6 +613,9 @@ if(indiceAlfabetico){
         const flecha = document.getElementById("flechaAbc");
         if(flecha) flecha.style.transform = "rotate(0deg)";
     });
+    // En escritorio el índice alfabético arranca desplegado (en móvil
+    // sigue arrancando colapsado, como antes).
+    desplegarIndiceAlfabetico();
 }
 
 // --- BANCO DE LA HOJA 2 (solo para Categorías y para fusionar el video
@@ -402,7 +689,7 @@ function buscarPalabras(){
     //ultimasPalabras.innerHTML = ""; 
     //panelCategorias.innerHTML = "";
     categoriaActualMostrada = null;
-    seccionHistorial.classList.add("d-none"); 
+    ocultarPanelesGuardados(); 
 
     if(texto === "") {
         sugerencias.style.display = "none";
@@ -437,7 +724,25 @@ function buscarPalabras(){
         if(p.variantes && p.variantes.toLowerCase().includes(texto) && !p.palabra.toLowerCase().includes(texto)){
             textoMatch += ` <small class="text-primary ms-2 fw-bold" style="font-size: 11px;">(Variante: ${texto})</small>`;
         }
-        boton.innerHTML=`${textoMatch} <span class="badge float-end" style="font-size: 10px;">${p.categoria.trim()}</span>`;
+
+        // Video-first: miniatura de la seña junto a cada sugerencia,
+        // así se reconoce visualmente antes de leer la palabra.
+        const idVideoSugerencia = extraerIdYouTube(p.video);
+        const miniatura = idVideoSugerencia
+            ? `<div class="sugerencia-thumb-wrap">
+                   <img src="https://img.youtube.com/vi/${idVideoSugerencia}/mqdefault.jpg" alt="Seña de ${p.palabra}" loading="lazy">
+                   <span class="sugerencia-thumb-play">▶</span>
+               </div>`
+            : `<div class="sugerencia-thumb-wrap sin-video">🤟</div>`;
+
+        boton.innerHTML=`
+            <div class="sugerencia-fila">
+                ${miniatura}
+                <div class="sugerencia-texto">
+                    ${textoMatch}
+                    <span class="badge" style="font-size: 10px;">${p.categoria.trim()}</span>
+                </div>
+            </div>`;
         boton.onclick=()=>mostrarPalabra(p);
         sugerencias.appendChild(boton);
     });
@@ -474,7 +779,7 @@ function ejecutarBusquedaDirecta() {
     panelCategorias.innerHTML = "";
     categoriaActualMostrada = null;
     ultimasPalabras.innerHTML = "";
-    seccionHistorial.classList.add("d-none");
+    ocultarPanelesGuardados();
     resultado.innerHTML = `
     <div class="card shadow-sm mb-4 border-0 animate-fade-in" style="border-radius: 15px; background-color: #f8f9fa;">
         <div class="card-body p-5 text-center">
@@ -500,19 +805,35 @@ function extraerIdYouTube(valor) {
     return "";
 }
 
-function mostrarPalabra(p){
+function mostrarPalabra(p, opciones = {}){
+    // opciones.enCategorias === true  ->  este resultado viene de la vista
+    // "Temas orden" (categorías): se pinta dentro de #resultadoCategorias,
+    // con el botón "Atrás" arriba (incluso arriba del video), en vez de en
+    // #resultado (que queda por encima del buscador de categorías y
+    // provocaba que el botón "Atrás" y la lista de resultados aparecieran
+    // debajo del video en vez de arriba).
     // Si la misma palabra también existe en la Hoja 2 (banco del Quiz),
     // se fusiona el resultado en vez de tratarlas por separado.
     p = fusionarConHoja2(p);
+    const enCategorias = !!opciones.enCategorias;
     ocultarQuiz();
     ocultarAlfabetizacion();
-    buscar.value = p.palabra;
-    buscar.blur();
-    sugerencias.innerHTML="";
-    sugerencias.style.display = "none";
-    panelCategorias.innerHTML = ""; 
-    categoriaActualMostrada = null;
-    seccionHistorial.classList.add("d-none");
+    if(!enCategorias){
+        buscar.value = p.palabra;
+        buscar.blur();
+        sugerencias.innerHTML="";
+        sugerencias.style.display = "none";
+        panelCategorias.innerHTML = ""; 
+        categoriaActualMostrada = null;
+        resultado.innerHTML = "";
+    } else {
+        // No tocamos el buscador principal ni las tarjetas de categoría
+        // (siguen visibles arriba, igual que al buscar dentro de una
+        // categoría o con el buscador de "Temas orden").
+        resultado.innerHTML = "";
+        ultimasPalabras.innerHTML = "";
+    }
+    ocultarPanelesGuardados();
     const nuevaUrl = window.location.pathname + "?p=" + encodeURIComponent(p.palabra);
     window.history.pushState({path: nuevaUrl}, '', nuevaUrl);
     agregarAHistorial(p.palabra); 
@@ -557,7 +878,7 @@ function mostrarPalabra(p){
     const idVideoSugerida = extraerIdYouTube(p.senasugerida);
     const bloqueSenaSugerida = idVideoSugerida
         ? `<div class="apoyo-panel mt-3 mt-lg-0">
-                <span class="apoyo-panel-titulo">💡 Seña sugerida</span>
+                <span class="apoyo-panel-titulo">💡 Seña</span>
                 <div class="reproductor-palabra-wrap shadow-sm rounded overflow-hidden border mx-0" id="reproductorSugeridaWrap" style="max-width: none;">
                     <div id="reproductorSugerida"></div>
                 </div>
@@ -602,7 +923,9 @@ function mostrarPalabra(p){
            </div>`
         : "";
 
-    resultado.innerHTML=`
+    const contenedorDestino = enCategorias ? resultadoCategorias : resultado;
+    contenedorDestino.innerHTML = `
+    ${enCategorias ? botonAtrasCategorias() : ""}
     <div class="card shadow-sm mb-4 animate-fade-in" style="border-radius: 15px; border-color: #dceefc;">
         <div class="card-body p-4">
             <span class="badge bg-primary mb-2" style="font-size: 11px;">${p.categoria.trim()}</span>
@@ -615,7 +938,7 @@ function mostrarPalabra(p){
             ${bloqueVariantes}
             <div class="row g-4 justify-content-center align-items-stretch">
                 <div class="col-lg-7 d-flex flex-column">
-                    <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider text-md-start">🤟 Definición en Señas:</span>
+                    <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider text-md-start">🤟 Significado:</span>
                     <div class="reproductor-palabra-wrap shadow-sm rounded overflow-hidden border" id="reproductorPalabraWrap">
                         ${bloqueVideo}
                     </div>
@@ -623,7 +946,7 @@ function mostrarPalabra(p){
                 </div>
                 <div class="col-lg-5 d-flex flex-column justify-content-center gap-3">
                     <div class="apoyo-panel">
-                        <span class="apoyo-panel-titulo">📸 Imagen ejemplo</span>
+                        <span class="apoyo-panel-titulo">📸 Ejemplo</span>
                         <div class="apoyo-panel-caja">
                             ${bloqueImagen}
                         </div>
@@ -639,25 +962,25 @@ function mostrarPalabra(p){
         document.getElementById("btnFavorito").textContent = ahoraEnFavoritos ? "★ En favoritos" : "⭐ Agregar a favoritos";
         mostrarFavoritos();
     });
-    mostrarSugerenciasRelacionadas(p);
+    if (!enCategorias) {
+        mostrarSugerenciasRelacionadas(p);
+    }
     if (hayVideo) {
         inicializarReproductorPalabra(p.video);
     } else {
         ytPlayerPalabra = null;
     }
-<<<<<<< HEAD
     if (idVideoQuiz) {
         inicializarReproductorPalabraQuiz(idVideoQuiz);
     } else {
         ytPlayerPalabraQuiz = null;
-=======
+    }
     if (idVideoSugerida) {
         inicializarReproductorSugerida(idVideoSugerida);
     } else {
         ytPlayerSugerida = null;
->>>>>>> develop
     }
-    setTimeout(() => resultado.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+    setTimeout(() => contenedorDestino.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
 }
 
 // --- TARJETA SIMPLIFICADA PARA PALABRAS DE LA HOJA 2 (banco del Quiz) ---
@@ -667,17 +990,28 @@ function mostrarPalabra(p){
 // No toca favoritos ni historial (viven ligados a App.datos), pero SÍ
 // actualiza la URL (?p=...) para que restaurarPalabraDesdeUrl() pueda
 // recuperar este mismo resultado si el usuario refresca la página.
-function mostrarPalabraSimplificada(p){
+function mostrarPalabraSimplificada(p, opciones = {}){
+    // opciones.enCategorias === true -> viene de "Temas orden" (categorías):
+    // se pinta en #resultadoCategorias con el botón "Atrás" arriba del
+    // video, y no se tocan el buscador principal ni las tarjetas de
+    // categoría (ver mostrarPalabra() para la misma lógica en detalle).
+    const enCategorias = !!opciones.enCategorias;
     ocultarQuiz();
     ocultarAlfabetizacion();
-    buscar.value = p.palabra;
-    buscar.blur();
-    sugerencias.innerHTML = "";
-    sugerencias.style.display = "none";
-    panelCategorias.innerHTML = "";
-    categoriaActualMostrada = null;
-    ultimasPalabras.innerHTML = "";
-    seccionHistorial.classList.add("d-none");
+    if(!enCategorias){
+        buscar.value = p.palabra;
+        buscar.blur();
+        sugerencias.innerHTML = "";
+        sugerencias.style.display = "none";
+        panelCategorias.innerHTML = "";
+        categoriaActualMostrada = null;
+        ultimasPalabras.innerHTML = "";
+        resultado.innerHTML = "";
+    } else {
+        resultado.innerHTML = "";
+        ultimasPalabras.innerHTML = "";
+    }
+    ocultarPanelesGuardados();
     document.getElementById("senalDelDia").style.display = "none";
     const nuevaUrl = window.location.pathname + "?p=" + encodeURIComponent(p.palabra);
     window.history.pushState({path: nuevaUrl}, '', nuevaUrl);
@@ -701,7 +1035,9 @@ function mostrarPalabraSimplificada(p){
            </div>`
         : "";
 
-    resultado.innerHTML = `
+    const contenedorDestino = enCategorias ? resultadoCategorias : resultado;
+    contenedorDestino.innerHTML = `
+    ${enCategorias ? botonAtrasCategorias() : ""}
     <div class="card shadow-sm mb-4 animate-fade-in" style="border-radius: 15px; border-color: #dceefc;">
         <div class="card-body p-4">
             <span class="badge bg-warning text-dark mb-2" style="font-size: 11px;">🎮 Banco del Quiz</span>
@@ -725,7 +1061,7 @@ function mostrarPalabraSimplificada(p){
     } else {
         ytPlayerPalabra = null;
     }
-    setTimeout(() => resultado.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+    setTimeout(() => contenedorDestino.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
 }
 
 // --- REPRODUCTOR DE VIDEO CONTROLABLE (YouTube IFrame API) ---
@@ -742,15 +1078,13 @@ function onYouTubeIframeAPIReady() {
         crearReproductorPalabra(ytVideoIdPendiente);
         ytVideoIdPendiente = null;
     }
-<<<<<<< HEAD
     if (ytVideoIdPendienteQuiz) {
         crearReproductorPalabraQuiz(ytVideoIdPendienteQuiz);
         ytVideoIdPendienteQuiz = null;
-=======
+    }
     if (ytVideoIdSugeridaPendiente) {
         crearReproductorSugerida(ytVideoIdSugeridaPendiente);
         ytVideoIdSugeridaPendiente = null;
->>>>>>> develop
     }
 }
 window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
@@ -863,7 +1197,6 @@ function actualizarBotonPlayPause(evento) {
     btnPlayPause.textContent = evento.data === YT.PlayerState.PLAYING ? "⏸ Pausar" : "▶️ Reproducir";
 }
 
-<<<<<<< HEAD
 // --- REPRODUCTOR DEL BLOQUE "VIDEO SEÑA" (video de la Hoja 2 / banco del Quiz) ---
 // Mismo patrón y mismos controles que el reproductor principal de arriba,
 // pero completamente independiente: su propio id de DOM, su propio
@@ -882,51 +1215,19 @@ function inicializarReproductorPalabraQuiz(videoId) {
 
 function ajustarAspectoReproductorPalabraQuiz(videoId) {
     const wrap = document.getElementById("reproductorPalabraQuizWrap");
-=======
-// --- REPRODUCTOR DE VIDEO CONTROLABLE PARA "SEÑA SUGERIDA" (columna G,
-// senaSugerida, de la Hoja 1). Es una copia independiente del reproductor
-// principal (misma API de YouTube, mismos controles: pausar, reiniciar,
-// retroceder/avanzar y velocidad) pero con su propia instancia y sus
-// propios IDs, para poder mostrarse al mismo tiempo que el video principal
-// sin que ambos reproductores se pisen entre sí. ---
-let ytPlayerSugerida = null;
-let ytVideoIdSugeridaPendiente = null;
-const VELOCIDADES_SUGERIDA = VELOCIDADES_PALABRA;
-let velocidadSugeridaIndex = VELOCIDADES_SUGERIDA.indexOf(1);
-
-function inicializarReproductorSugerida(videoId) {
-    ajustarAspectoReproductorSugerida(videoId);
-    if (ytApiListo) {
-        crearReproductorSugerida(videoId);
-    } else {
-        // La API de YouTube todavía no cargó (la carga onYouTubeIframeAPIReady
-        // ya crea el reproductor principal si estaba pendiente; aquí guardamos
-        // también el video de la seña sugerida para crearlo en ese mismo momento).
-        ytVideoIdSugeridaPendiente = videoId;
-    }
-}
-
-function ajustarAspectoReproductorSugerida(videoId) {
-    const wrap = document.getElementById("reproductorSugeridaWrap");
->>>>>>> develop
     if (!wrap) return;
     wrap.style.aspectRatio = "16 / 9";
 
     fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent("https://www.youtube.com/watch?v=" + videoId)}&format=json`)
         .then((res) => (res.ok ? res.json() : null))
         .then((data) => {
-<<<<<<< HEAD
             const wrapActual = document.getElementById("reproductorPalabraQuizWrap");
-=======
-            const wrapActual = document.getElementById("reproductorSugeridaWrap");
->>>>>>> develop
             if (!data || !wrapActual || !data.width || !data.height) return;
             wrapActual.style.aspectRatio = `${data.width} / ${data.height}`;
         })
         .catch(() => { /* si falla la red, se mantiene el valor por defecto */ });
 }
 
-<<<<<<< HEAD
 function crearReproductorPalabraQuiz(videoId) {
     const contenedor = document.getElementById("reproductorPalabraQuiz");
     if (!contenedor) return;
@@ -939,25 +1240,10 @@ function crearReproductorPalabraQuiz(videoId) {
         events: {
             onReady: configurarControlesVideoQuiz,
             onStateChange: actualizarBotonPlayPauseQuiz
-=======
-function crearReproductorSugerida(videoId) {
-    const contenedor = document.getElementById("reproductorSugerida");
-    if (!contenedor) return;
-    if (ytPlayerSugerida && typeof ytPlayerSugerida.destroy === "function") {
-        ytPlayerSugerida.destroy();
-    }
-    ytPlayerSugerida = new YT.Player("reproductorSugerida", {
-        videoId: videoId,
-        playerVars: { rel: 0, modestbranding: 1 },
-        events: {
-            onReady: configurarControlesVideoSugerida,
-            onStateChange: actualizarBotonPlayPauseSugerida
->>>>>>> develop
         }
     });
 }
 
-<<<<<<< HEAD
 function configurarControlesVideoQuiz() {
     const btnRetroceder = document.getElementById("btnRetroceder10Quiz");
     const btnAvanzar = document.getElementById("btnAvanzar10Quiz");
@@ -984,39 +1270,10 @@ function configurarControlesVideoQuiz() {
             ytPlayerPalabraQuiz.pauseVideo();
         } else {
             ytPlayerPalabraQuiz.playVideo();
-=======
-function configurarControlesVideoSugerida() {
-    const btnRetroceder = document.getElementById("btnRetroceder10Sugerida");
-    const btnAvanzar = document.getElementById("btnAvanzar10Sugerida");
-    const btnPlayPause = document.getElementById("btnPlayPauseSugerida");
-    const btnReiniciar = document.getElementById("btnReiniciarSugerida");
-    const btnVelocidadLenta = document.getElementById("btnVelocidadLentaSugerida");
-    const btnVelocidadRapida = document.getElementById("btnVelocidadRapidaSugerida");
-    if (!btnRetroceder || !btnAvanzar || !btnPlayPause || !btnReiniciar || !btnVelocidadLenta || !btnVelocidadRapida || !ytPlayerSugerida) return;
-
-    btnRetroceder.addEventListener("click", () => {
-        const tiempoActual = ytPlayerSugerida.getCurrentTime();
-        ytPlayerSugerida.seekTo(Math.max(0, tiempoActual - 5), true);
-    });
-
-    btnAvanzar.addEventListener("click", () => {
-        const tiempoActual = ytPlayerSugerida.getCurrentTime();
-        const duracion = ytPlayerSugerida.getDuration();
-        ytPlayerSugerida.seekTo(Math.min(duracion, tiempoActual + 10), true);
-    });
-
-    btnPlayPause.addEventListener("click", () => {
-        const estado = ytPlayerSugerida.getPlayerState();
-        if (estado === YT.PlayerState.PLAYING) {
-            ytPlayerSugerida.pauseVideo();
-        } else {
-            ytPlayerSugerida.playVideo();
->>>>>>> develop
         }
     });
 
     btnReiniciar.addEventListener("click", () => {
-<<<<<<< HEAD
         ytPlayerPalabraQuiz.seekTo(0, true);
         ytPlayerPalabraQuiz.playVideo();
     });
@@ -1045,7 +1302,94 @@ function actualizarLabelVelocidadPalabraQuiz() {
 
 function actualizarBotonPlayPauseQuiz(evento) {
     const btnPlayPause = document.getElementById("btnPlayPauseQuiz");
-=======
+    if (!btnPlayPause) return;
+    btnPlayPause.textContent = evento.data === YT.PlayerState.PLAYING ? "⏸ Pausar" : "▶️ Reproducir";
+}
+
+// --- REPRODUCTOR DE VIDEO CONTROLABLE PARA "SEÑA SUGERIDA" (columna G,
+// senaSugerida, de la Hoja 1). Es una copia independiente del reproductor
+// principal (misma API de YouTube, mismos controles: pausar, reiniciar,
+// retroceder/avanzar y velocidad) pero con su propia instancia y sus
+// propios IDs, para poder mostrarse al mismo tiempo que el video principal
+// sin que ambos reproductores se pisen entre sí. ---
+let ytPlayerSugerida = null;
+let ytVideoIdSugeridaPendiente = null;
+const VELOCIDADES_SUGERIDA = VELOCIDADES_PALABRA;
+let velocidadSugeridaIndex = VELOCIDADES_SUGERIDA.indexOf(1);
+
+function inicializarReproductorSugerida(videoId) {
+    ajustarAspectoReproductorSugerida(videoId);
+    if (ytApiListo) {
+        crearReproductorSugerida(videoId);
+    } else {
+        // La API de YouTube todavía no cargó (la carga onYouTubeIframeAPIReady
+        // ya crea el reproductor principal si estaba pendiente; aquí guardamos
+        // también el video de la seña sugerida para crearlo en ese mismo momento).
+        ytVideoIdSugeridaPendiente = videoId;
+    }
+}
+
+function ajustarAspectoReproductorSugerida(videoId) {
+    const wrap = document.getElementById("reproductorSugeridaWrap");
+    if (!wrap) return;
+    wrap.style.aspectRatio = "16 / 9";
+
+    fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent("https://www.youtube.com/watch?v=" + videoId)}&format=json`)
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+            const wrapActual = document.getElementById("reproductorSugeridaWrap");
+            if (!data || !wrapActual || !data.width || !data.height) return;
+            wrapActual.style.aspectRatio = `${data.width} / ${data.height}`;
+        })
+        .catch(() => { /* si falla la red, se mantiene el valor por defecto */ });
+}
+
+function crearReproductorSugerida(videoId) {
+    const contenedor = document.getElementById("reproductorSugerida");
+    if (!contenedor) return;
+    if (ytPlayerSugerida && typeof ytPlayerSugerida.destroy === "function") {
+        ytPlayerSugerida.destroy();
+    }
+    ytPlayerSugerida = new YT.Player("reproductorSugerida", {
+        videoId: videoId,
+        playerVars: { rel: 0, modestbranding: 1 },
+        events: {
+            onReady: configurarControlesVideoSugerida,
+            onStateChange: actualizarBotonPlayPauseSugerida
+        }
+    });
+}
+
+function configurarControlesVideoSugerida() {
+    const btnRetroceder = document.getElementById("btnRetroceder10Sugerida");
+    const btnAvanzar = document.getElementById("btnAvanzar10Sugerida");
+    const btnPlayPause = document.getElementById("btnPlayPauseSugerida");
+    const btnReiniciar = document.getElementById("btnReiniciarSugerida");
+    const btnVelocidadLenta = document.getElementById("btnVelocidadLentaSugerida");
+    const btnVelocidadRapida = document.getElementById("btnVelocidadRapidaSugerida");
+    if (!btnRetroceder || !btnAvanzar || !btnPlayPause || !btnReiniciar || !btnVelocidadLenta || !btnVelocidadRapida || !ytPlayerSugerida) return;
+
+    btnRetroceder.addEventListener("click", () => {
+        const tiempoActual = ytPlayerSugerida.getCurrentTime();
+        ytPlayerSugerida.seekTo(Math.max(0, tiempoActual - 5), true);
+    });
+
+    btnAvanzar.addEventListener("click", () => {
+        const tiempoActual = ytPlayerSugerida.getCurrentTime();
+        const duracion = ytPlayerSugerida.getDuration();
+        ytPlayerSugerida.seekTo(Math.min(duracion, tiempoActual + 10), true);
+    });
+
+    btnPlayPause.addEventListener("click", () => {
+        const estado = ytPlayerSugerida.getPlayerState();
+        if (estado === YT.PlayerState.PLAYING) {
+            ytPlayerSugerida.pauseVideo();
+        } else {
+            ytPlayerSugerida.playVideo();
+        }
+    });
+
+    btnReiniciar.addEventListener("click", () => {
         ytPlayerSugerida.seekTo(0, true);
         ytPlayerSugerida.playVideo();
     });
@@ -1073,7 +1417,6 @@ function actualizarLabelVelocidadSugerida() {
 
 function actualizarBotonPlayPauseSugerida(evento) {
     const btnPlayPause = document.getElementById("btnPlayPauseSugerida");
->>>>>>> develop
     if (!btnPlayPause) return;
     btnPlayPause.textContent = evento.data === YT.PlayerState.PLAYING ? "⏸ Pausar" : "▶️ Reproducir";
 }
@@ -1121,7 +1464,7 @@ function filtrarPorLetra(letra) {
     panelCategorias.innerHTML = "";
     categoriaActualMostrada = null;
     ultimasPalabras.innerHTML = ""; 
-    seccionHistorial.classList.add("d-none");
+    ocultarPanelesGuardados();
     window.history.pushState({}, '', window.location.pathname);
     const filtradas = App.datos.filter(p => p.palabra.toUpperCase().startsWith(letra.toUpperCase()));
     if (filtradas.length === 0) {
@@ -1141,22 +1484,95 @@ function filtrarPorLetra(letra) {
 }
 
 // --- CATEGORÍAS ---
+// Paleta de colores suaves/claros para diferenciar cada tarjeta de
+// categoría a simple vista. Se repite en ciclo si hay más categorías
+// que colores en la lista.
+const COLORES_CATEGORIAS = [
+    { fondo: "#e0f2fe", borde: "#bae6fd", texto: "#0369a1" }, // celeste
+    { fondo: "#fce7f3", borde: "#fbcfe8", texto: "#be185d" }, // rosado
+    { fondo: "#fef3c7", borde: "#fde68a", texto: "#b45309" }, // amarillo
+    { fondo: "#dcfce7", borde: "#bbf7d0", texto: "#15803d" }, // verde
+    { fondo: "#ede9fe", borde: "#ddd6fe", texto: "#6d28d9" }, // violeta
+    { fondo: "#ffedd5", borde: "#fed7aa", texto: "#c2410c" }, // naranja
+    { fondo: "#e0e7ff", borde: "#c7d2fe", texto: "#4338ca" }, // índigo
+    { fondo: "#fee2e2", borde: "#fecaca", texto: "#b91c1c" }, // rojo suave
+    { fondo: "#ccfbf1", borde: "#99f6e4", texto: "#0f766e" }, // turquesa
+];
+
 function mostrarCategorias(){
-    resultado.innerHTML=""; panelCategorias.innerHTML=""; ultimasPalabras.innerHTML = ""; seccionHistorial.classList.add("d-none");
+    resultado.innerHTML=""; panelCategorias.innerHTML=""; ultimasPalabras.innerHTML = ""; ocultarPanelesGuardados();
     if (window.QuizV2 && typeof QuizV2.asegurarBancoCargado === "function") {
         QuizV2.asegurarBancoCargado();
     }
     const datosUnificados = obtenerDatosUnificados();
     const categories = [...new Set(datosUnificados.map(p => p.categoria.trim()))].sort();
-    categories.forEach(nombre=>{
+    categories.forEach((nombre, indice)=>{
         const cantidad = datosUnificados.filter(p => p.categoria.trim() === nombre).length;
+        const color = COLORES_CATEGORIAS[indice % COLORES_CATEGORIAS.length];
         const card = document.createElement("div");
         card.className = "col-6 col-md-3 animate-fade-in";
-        card.innerHTML = `<div class="card h-100 shadow-sm categoria-card" style="border-radius: 12px; border: 1px solid #dceefc;"><div class="card-body text-center py-3"><h6 class="mb-1 fw-bold text-primary">${nombre}</h6><p class="mb-0 small text-muted">${cantidad} palabras</p></div></div>`;
+        card.innerHTML = `<div class="card h-100 shadow-sm categoria-card" style="border-radius: 16px; border: 2px solid ${color.borde}; background-color: ${color.fondo};"><div class="card-body text-center py-4"><h5 class="mb-2 fw-bold" style="color: ${color.texto}; font-size: 1.25rem;">${nombre}</h5><p class="mb-0 fw-semibold" style="color: ${color.texto}; opacity: 0.85; font-size: 1rem;">${cantidad} palabras</p></div></div>`;
         card.onclick = () => mostrarCategoria(nombre);
         panelCategorias.appendChild(card);
     });
     categoriaActualMostrada = null;
+}
+
+// --- BUSCADOR EXCLUSIVO DE "TEMAS ORDEN" ---
+// Reemplaza al buscador general (#buscar) mientras esta vista está
+// activa, en escritorio y en móvil por igual. Busca dentro del CONTENIDO
+// de las categorías (palabras reales: Cortesía, Educación, Saludos,
+// Verbos y las que se agreguen a futuro), no solo el nombre de la
+// categoría. Los resultados (o la categoría elegida al tocar una
+// tarjeta) se pintan en #resultadoCategorias, que queda debajo del
+// buscador Y debajo de las tarjetas de categoría, con un botón "Atrás"
+// para volver a la vista limpia de tarjetas.
+function mostrarBuscadorDeCategorias(){
+    if(bloqueBuscador) bloqueBuscador.classList.add("d-none");
+    if(bloqueBuscadorCategorias) bloqueBuscadorCategorias.classList.remove("d-none");
+    limpiarResultadoCategorias();
+}
+
+if(buscarCategorias){
+    buscarCategorias.addEventListener("input", buscarEnCategorias);
+}
+
+function botonAtrasCategorias(){
+    return `<button type="button" class="btn btn-sm btn-outline-primary fw-bold mb-3" onclick="limpiarResultadoCategorias()">⬅ Atrás</button>`;
+}
+
+// Limpia la búsqueda/categoría seleccionada y deja solo las tarjetas de
+// categoría visibles (usado por el botón "Atrás" y al entrar de nuevo a
+// "Temas orden").
+function limpiarResultadoCategorias(){
+    if(resultadoCategorias) resultadoCategorias.innerHTML = "";
+    if(buscarCategorias) buscarCategorias.value = "";
+    categoriaActualMostrada = null;
+}
+window.limpiarResultadoCategorias = limpiarResultadoCategorias;
+
+function buscarEnCategorias(){
+    if(!resultadoCategorias || !buscarCategorias) return;
+    const textoOriginal = buscarCategorias.value.trim();
+    const texto = textoOriginal.toLowerCase();
+    categoriaActualMostrada = null;
+    if(!texto){
+        resultadoCategorias.innerHTML = "";
+        return;
+    }
+    const coincidencias = obtenerDatosUnificados().filter(p => p.palabra.toLowerCase().includes(texto));
+    if(coincidencias.length === 0){
+        resultadoCategorias.innerHTML = botonAtrasCategorias() +
+            `<div class="alert alert-light border text-center text-muted small py-3" style="border-radius: 12px;">No hay palabras que coincidan con "${textoOriginal}".</div>`;
+        return;
+    }
+    let html = botonAtrasCategorias() +
+        `<h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">Resultados para "${textoOriginal}"</h6>`;
+    coincidencias.forEach(p => {
+        const badgeQuiz = p._soloQuiz ? ` <span class="badge bg-warning text-dark ms-1" style="font-size: 10px;">🎮 Quiz</span>` : "";
+        html += `<div class="card mb-2 palabra-card shadow-sm animate-fade-in" style="border-radius: 10px;"><div class="card-body p-2 d-flex justify-content-between align-items-center"><div><h6 class="mb-0 fw-bold text-primary">${p.palabra}${badgeQuiz}</h6><small class="text-muted">${p.categoria.trim()}</small></div><button class="btn btn-sm btn-primary py-1 px-3 fw-bold" onclick="mostrarPalabraPorNombreUnificado('${p.palabra.replace(/'/g, "\\'")}')">Ver Seña</button></div></div>`;
+    });
+    resultadoCategorias.innerHTML = html;
 }
 
 // --- DATOS UNIFICADOS (Hoja 1 + palabras de la Hoja 2 que no están en la Hoja 1) ---
@@ -1174,20 +1590,22 @@ function obtenerDatosUnificados(){
 
 function mostrarCategoria(nombre){
     categoriaActualMostrada = nombre;
-    resultado.innerHTML=`<h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">Categoría: ${nombre}</h6>`;
+    if(buscarCategorias) buscarCategorias.value = "";
+    let html = botonAtrasCategorias() + `<h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">Categoría: ${nombre}</h6>`;
     obtenerDatosUnificados().filter(p => p.categoria.trim() === nombre).forEach(p=>{
         const badgeQuiz = p._soloQuiz ? ` <span class="badge bg-warning text-dark ms-1" style="font-size: 10px;">🎮 Quiz</span>` : "";
-        resultado.innerHTML+=`<div class="card mb-2 palabra-card shadow-sm animate-fade-in" style="border-radius: 10px;"><div class="card-body p-2 d-flex justify-content-between align-items-center"><div><h6 class="mb-0 fw-bold text-primary">${p.palabra}${badgeQuiz}</h6></div><button class="btn btn-sm btn-primary py-1 px-3 fw-bold" onclick="mostrarPalabraPorNombreUnificado('${p.palabra.replace(/'/g, "\\'")}')">Ver Seña</button></div></div>`;
+        html += `<div class="card mb-2 palabra-card shadow-sm animate-fade-in" style="border-radius: 10px;"><div class="card-body p-2 d-flex justify-content-between align-items-center"><div><h6 class="mb-0 fw-bold text-primary">${p.palabra}${badgeQuiz}</h6></div><button class="btn btn-sm btn-primary py-1 px-3 fw-bold" onclick="mostrarPalabraPorNombreUnificado('${p.palabra.replace(/'/g, "\\'")}')">Ver Seña</button></div></div>`;
     });
+    resultadoCategorias.innerHTML = html;
 }
 
 // Igual que mostrarPalabraPorNombre(), pero también busca en el banco
 // del Quiz (Hoja 2) cuando la palabra no está en el diccionario principal.
 function mostrarPalabraPorNombreUnificado(nombre){
     const enHoja1 = App.datos.find(p => p.palabra.toLowerCase() === nombre.toLowerCase());
-    if(enHoja1){ window.scrollTo({ top: 0, behavior: 'smooth' }); mostrarPalabra(enHoja1); return; }
+    if(enHoja1){ mostrarPalabra(enHoja1, { enCategorias: true }); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
     const enHoja2 = obtenerBancoHoja2().find(p => p.palabra && p.palabra.toLowerCase() === nombre.toLowerCase());
-    if(enHoja2){ window.scrollTo({ top: 0, behavior: 'smooth' }); mostrarPalabraSimplificada(enHoja2); }
+    if(enHoja2){ mostrarPalabraSimplificada(enHoja2, { enCategorias: true }); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 }
 
 function mostrarPalabraPorNombre(nombre){
@@ -1251,7 +1669,13 @@ function mostrarFavoritos(){
     });
 }
 function agregarAHistorial(n){ let h = JSON.parse(localStorage.getItem(CLAVE_HISTORIAL) || "[]"); h = h.filter(i=>i!==n); h.unshift(n); if(h.length>12) h.pop(); localStorage.setItem(CLAVE_HISTORIAL, JSON.stringify(h)); }
-function mostrarPantallaHistorial(){
+function mostrarPantallaHistorialYFavoritos(){
+    // Primero Favoritos, luego Historial — mismo orden en que aparecen
+    // los bloques en el HTML. Cada uno sigue siendo un bloque
+    // independiente (su propio <section>), solo comparten el botón
+    // de menú que los abre.
+    if(seccionFavoritos) seccionFavoritos.classList.remove("d-none");
+    mostrarFavoritos();
     seccionHistorial.classList.remove("d-none");
     listaHistorial.innerHTML = "";
     JSON.parse(localStorage.getItem(CLAVE_HISTORIAL) || "[]").forEach(nombre => {
