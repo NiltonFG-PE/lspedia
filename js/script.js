@@ -969,21 +969,18 @@ function abrirImagenAmpliada(url, palabra){
 
 // --- ESTADÍSTICAS ---
 function actualizarEstadisticas(){
-    const bancoHoja2 = obtenerBancoHoja2();
-
     totalPalabras.textContent = App.datos.length;
     totalCategorias.textContent = [...new Set(App.datos.map(p => p.categoria.trim()))].length;
 
-    // "Videos": suma de archivos de video reales, no de palabras únicas.
-    // Se cuentan por separado (sin deduplicar por nombre de palabra) porque
-    // son archivos distintos aunque pertenezcan a la misma palabra:
-    // 1) video principal de la Hoja 1, 2) seña sugerida de la Hoja 1
-    // (columna G, senasugerida) y 3) video del banco del Quiz (Hoja 2,
-    // que QuizV2 ya entrega filtrado a solo filas con video).
+    // "Videos": suma de archivos de video reales de la Hoja 1, no de
+    // palabras únicas. Se cuentan por separado (sin deduplicar por nombre
+    // de palabra) porque son archivos distintos aunque pertenezcan a la
+    // misma palabra: 1) video principal (columna D, "video") y 2) seña
+    // sugerida (columna G, "senasugerida"). Ya no se suma el banco de la
+    // Hoja 2 (Quiz).
     const videosHoja1 = App.datos.filter(p => p.video && p.video.trim() !== "").length;
     const senasSugeridas = App.datos.filter(p => p.senasugerida && p.senasugerida.trim() !== "").length;
-    const videosQuiz = bancoHoja2.length;
-    totalVideos.textContent = videosHoja1 + senasSugeridas + videosQuiz;
+    totalVideos.textContent = videosHoja1 + senasSugeridas;
 }
 
 // --- FILTRO ABC ---
