@@ -44,22 +44,13 @@ if(btnLogo) {
     });
 }
 
-// El botón que antes era "Inicio" (🏠) ahora es "Buscar" (🔍): sigue
-// llevando a la página principal (misma recarga limpia de siempre),
-// pero además deja el buscador enfocado y listo para escribir. Como la
-// recarga borra todo el estado de JS, guardamos un aviso en
-// sessionStorage para que, apenas cargue de nuevo la página, se
-// enfoque el campo de búsqueda automáticamente (ver más abajo, cerca
-// del splash screen).
 const CLAVE_ENFOCAR_BUSCADOR = "lspedia_enfocar_buscador";
 const btnInicio = document.getElementById("btnInicio");
 if(btnInicio) {
     btnInicio.addEventListener("click", (e) => {
         e.preventDefault();
-        const icono = document.getElementById("iconoInicio");
-        if(icono) icono.classList.add("spin-anim");
         try { sessionStorage.setItem(CLAVE_ENFOCAR_BUSCADOR, "1"); } catch (err) {}
-        setTimeout(() => window.location.href = window.location.pathname, 500); 
+        window.location.href = window.location.pathname;
     });
 }
 
@@ -80,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 input.scrollIntoView({ behavior: "smooth", block: "center" });
                 input.focus();
             }
-        }, 900); // espera a que se oculte el splash screen
+        }, 450); // espera a que se oculte el splash screen (ya reducido)
     }
 });
 
@@ -285,11 +276,14 @@ function volverAlMenuHerramientasMovilSiCorresponde(){
 }
 
 // Dentro de "Herramientas" no se muestra ni la seña del día, ni el
-// buscador, ni el botón de "Índice alfabético", ni el panel de
-// Estadísticas (se ven solo en Inicio/Temas orden).
+// título principal, ni el buscador, ni el botón de "Índice alfabético",
+// ni el panel de Estadísticas, ni el bloque "¿Falta alguna palabra?"
+// (se ven solo en Inicio/Temas orden).
 function ocultarBloqueInicio(){
     const senal = document.getElementById("senalDelDia");
     if(senal) senal.style.display = "none";
+    const titulo = document.getElementById("bloqueTituloPrincipal");
+    if(titulo) titulo.style.display = "none";
     const bloqueBuscador = document.getElementById("bloqueBuscador");
     if(bloqueBuscador) bloqueBuscador.classList.add("d-none");
     const filaBotonIndice = document.getElementById("filaBotonIndiceAlfabetico");
@@ -298,9 +292,13 @@ function ocultarBloqueInicio(){
     if(filaIndice) filaIndice.style.display = "none";
     const statsPanel = document.querySelector(".stats-panel-destacado");
     if(statsPanel) statsPanel.style.display = "none";
+    const sugerencias = document.getElementById("seccionSugerencias");
+    if(sugerencias) sugerencias.style.display = "none";
 }
 
 function mostrarBloqueInicio(){
+    const titulo = document.getElementById("bloqueTituloPrincipal");
+    if(titulo) titulo.style.display = "";
     const bloqueBuscador = document.getElementById("bloqueBuscador");
     if(bloqueBuscador) bloqueBuscador.classList.remove("d-none");
     const filaBotonIndice = document.getElementById("filaBotonIndiceAlfabetico");
@@ -309,6 +307,8 @@ function mostrarBloqueInicio(){
     if(filaIndice) filaIndice.style.display = "";
     const statsPanel = document.querySelector(".stats-panel-destacado");
     if(statsPanel) statsPanel.style.display = "";
+    const sugerencias = document.getElementById("seccionSugerencias");
+    if(sugerencias) sugerencias.style.display = "";
     // La seña del día no se vuelve a mostrar sola: igual que antes, una
     // vez oculta (por ejemplo al ver una palabra) solo reaparece con
     // una recarga de página real (btnInicio ya hace eso).
