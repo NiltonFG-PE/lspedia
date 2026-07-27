@@ -718,14 +718,14 @@ iframe {
    tarjetas de adentro (.stat-card-clicable) siguen siendo blancas. */
 .stats-panel-destacado {
     background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
-    border-radius: 20px;
-    padding: 28px 16px;
+    border-radius: 16px;
+    padding: 14px 12px;
     box-shadow: 0 6px 18px rgba(2, 132, 199, 0.12);
 }
 @media (max-width: 576px) {
     .stats-panel-destacado {
-        padding: 20px 10px;
-        border-radius: 16px;
+        padding: 10px 8px;
+        border-radius: 14px;
     }
 }
 
