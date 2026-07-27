@@ -631,8 +631,17 @@ const QuizV2 = (function () {
             if (distractores.length) palabraMostrada = mezclar(distractores)[0].palabra;
         }
         contenedor.innerHTML = `
-            <div class="ratio ratio-16x9 rounded overflow-hidden border mb-3">
-                <iframe src="https://www.youtube.com/embed/${pregunta.video}?rel=0&modestbranding=1" allowfullscreen title="Video en LSP"></iframe>
+            <div class="quiz-video-wrap mb-2" id="quizVideoWrap">
+                <div id="quizReproductorVideo"></div>
+            </div>
+            <div class="quiz-video-controles d-flex align-items-center justify-content-center flex-wrap gap-2 mb-3">
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle quiz-video-btn" id="quizBtnRetroceder" title="Retroceder 1 segundo" aria-label="Retroceder 1 segundo">⏪</button>
+                <button type="button" class="btn btn-sm btn-primary rounded-circle quiz-video-btn" id="quizBtnPlayPause" title="Pausar / Repetir" aria-label="Pausar o repetir el video">⏸</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle quiz-video-btn" id="quizBtnAvanzar" title="Adelantar 2 segundos" aria-label="Adelantar 2 segundos">⏩</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary quiz-video-btn-velocidad" id="quizBtnLento" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
+                <span class="small fw-bold text-muted" id="quizVelocidadLabel">1x</span>
+                <button type="button" class="btn btn-sm btn-outline-secondary quiz-video-btn-velocidad" id="quizBtnRapido" title="Aumentar velocidad" aria-label="Aumentar velocidad">🐇</button>
+                <button type="button" class="btn btn-sm btn-outline-danger rounded-circle quiz-video-btn" id="quizBtnMeGusta" title="Me gusta" aria-label="Me gusta">🤍</button>
             </div>
             <p class="text-center fw-bold mb-3">¿Esta seña significa <span class="text-primary">"${palabraMostrada}"</span>?</p>
             <div class="row g-2" id="quizOpcionesDinamicas">
@@ -644,6 +653,8 @@ const QuizV2 = (function () {
         const btnF = contenedor.querySelector("#btnQuizFalso");
         btnV.onclick = () => responder(btnV, esAfirmacionVerdadera, pregunta.palabra);
         btnF.onclick = () => responder(btnF, !esAfirmacionVerdadera, pregunta.palabra);
+
+        prepararVideoQuiz(pregunta.video);
     }
 
     // ---------------------------------------------------------
@@ -934,6 +945,15 @@ const QuizV2 = (function () {
 
     function reproducirSonidoIncorrecto() {
         tono(220, 220, 0, "sawtooth");
+        vibrarError();
+    }
+
+    // Vibración corta al equivocarse (si el dispositivo/navegador lo permite).
+    // Safari/iOS no soporta navigator.vibrate: falla en silencio.
+    function vibrarError() {
+        if (navigator.vibrate) {
+            try { navigator.vibrate(200); } catch (e) { /* no soportado o bloqueado */ }
+        }
     }
 
     // ---------------------------------------------------------

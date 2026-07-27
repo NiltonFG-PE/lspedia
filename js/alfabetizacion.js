@@ -98,6 +98,7 @@ const AlfabetizacionV2 = (function () {
         cargando: false,
         moduloActivo: "aprender", // aprender | completar | unir
         pantallaCompleta: false,
+        audioCtx: null,
 
         aprender: {
             tipo: "letra",           // letra | numero
@@ -652,6 +653,52 @@ const AlfabetizacionV2 = (function () {
         return copia;
     }
 
+    // ---------------------------------------------------------
+    // SONIDOS Y VIBRACIÓN (mismo patrón que js/quiz.js, sintetizado
+    // con Web Audio API, sin archivos externos). Se usan en los
+    // juegos "Completar la palabra" y "Unir con flechas".
+    // ---------------------------------------------------------
+    function obtenerAudioCtx() {
+        if (!estado.audioCtx) {
+            const AC = window.AudioContext || window.webkitAudioContext;
+            if (AC) estado.audioCtx = new AC();
+        }
+        return estado.audioCtx;
+    }
+
+    function tono(frecuencia, duracionMs, retrasoMs, tipo) {
+        const ctx = obtenerAudioCtx();
+        if (!ctx) return;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = tipo || "sine";
+        osc.frequency.value = frecuencia;
+        gain.gain.setValueAtTime(0.15, ctx.currentTime + (retrasoMs / 1000));
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + (retrasoMs / 1000) + (duracionMs / 1000));
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + (retrasoMs / 1000));
+        osc.stop(ctx.currentTime + (retrasoMs / 1000) + (duracionMs / 1000) + 0.05);
+    }
+
+    function reproducirSonidoCorrecto() {
+        tono(587, 120, 0, "triangle");
+        tono(880, 160, 110, "triangle");
+    }
+
+    function reproducirSonidoIncorrecto() {
+        tono(220, 220, 0, "sawtooth");
+        vibrarError();
+    }
+
+    // Vibración corta al equivocarse (si el dispositivo/navegador lo
+    // permite). Safari/iOS no soporta navigator.vibrate: falla en silencio.
+    function vibrarError() {
+        if (navigator.vibrate) {
+            try { navigator.vibrate(200); } catch (e) { /* no soportado o bloqueado */ }
+        }
+    }
+
     function bancoPalabrasCompletar() {
         const deLetras = (estado.datos.ejemplos || [])
             .filter((e) => e.palabra && e.palabra.length >= 3)
@@ -858,8 +905,10 @@ const AlfabetizacionV2 = (function () {
 
         if (esCorrecta) {
             estado.completar.puntaje += 10;
+            reproducirSonidoCorrecto();
         } else {
             estado.completar.palabraTuvoError = true;
+            reproducirSonidoIncorrecto();
         }
         el("alfabCompletarPuntaje").textContent = "⭐ " + estado.completar.puntaje;
 
@@ -894,6 +943,7 @@ const AlfabetizacionV2 = (function () {
         document.querySelectorAll(".completar-opcion-letra").forEach((b) => { b.disabled = true; });
 
         estado.completar.palabraTuvoError = true;
+        reproducirSonidoIncorrecto();
         el("alfabCompletarFeedback").innerHTML = '<span class="text-danger">⏱ Se acabó el tiempo.</span>';
         finalizarPreguntaCompletar(false);
     }
@@ -1291,6 +1341,8 @@ const AlfabetizacionV2 = (function () {
 
         const huboErrores = pendientes.some((idx) => !resultados[idx]);
         const rondaCompleta = estado.unir.resueltos.size === estado.unir.pares.length;
+
+        if (huboErrores) reproducirSonidoIncorrecto(); else reproducirSonidoCorrecto();
 
         if (rondaCompleta) {
             el("alfabUnirFeedback").innerHTML = '<span class="text-success">¡Ronda completada! 🎉</span>';
