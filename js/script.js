@@ -448,6 +448,8 @@ function mostrarSeccionHerramientas(){
 function ocultarSeccionNosotros(){
     const seccion = document.getElementById("seccionNosotros");
     if(seccion) seccion.classList.add("d-none");
+    if(nosotrosPantallaCompletaActiva) toggleNosotrosPantallaCompleta(true);
+    if(ytPlayerNosotros && typeof ytPlayerNosotros.pauseVideo === "function") ytPlayerNosotros.pauseVideo();
 }
 
 function mostrarSeccionNosotros(){
@@ -467,6 +469,7 @@ function mostrarSeccionNosotros(){
         seccion.classList.remove("d-none");
         seccion.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+    iniciarReproductorNosotros();
 }
 
 const btnSobreNosotros = document.getElementById("btnSobreNosotros");
@@ -1146,6 +1149,13 @@ let ytPlayerPalabra = null;
 let ytApiListo = false;
 let ytVideoIdPendiente = null;
 
+// --- REPRODUCTOR DE VIDEO CONTROLABLE PARA "SOBRE NOSOTROS" ---
+const ID_VIDEO_NOSOTROS = "nPf8pRDbkeM";
+let ytPlayerNosotros = null;
+let ytVideoNosotrosPendiente = null;
+let nosotrosVelocidadIndex = VELOCIDADES_PALABRA.indexOf(1);
+let nosotrosPantallaCompletaActiva = false;
+
 // Esta función la llama automáticamente el script de YouTube (iframe_api) cuando está lista.
 function onYouTubeIframeAPIReady() {
     ytApiListo = true;
@@ -1157,8 +1167,138 @@ function onYouTubeIframeAPIReady() {
         crearReproductorSugerida(ytVideoIdSugeridaPendiente);
         ytVideoIdSugeridaPendiente = null;
     }
+    if (ytVideoNosotrosPendiente) {
+        crearReproductorNosotros(ytVideoNosotrosPendiente);
+        ytVideoNosotrosPendiente = null;
+    }
 }
 window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+
+// El video de "Sobre Nosotros" es fijo (no depende de datos del Sheet), así
+// que se intenta crear una sola vez, la primera vez que se abre la sección
+// (ver mostrarSeccionNosotros). Si la API de YouTube todavía no cargó, queda
+// pendiente igual que el reproductor de palabra.
+function iniciarReproductorNosotros() {
+    if (ytPlayerNosotros) return; // ya está creado, no se recrea
+    if (ytApiListo) {
+        crearReproductorNosotros(ID_VIDEO_NOSOTROS);
+    } else {
+        ytVideoNosotrosPendiente = ID_VIDEO_NOSOTROS;
+    }
+}
+
+function crearReproductorNosotros(videoId) {
+    const contenedor = document.getElementById("reproductorNosotros");
+    if (!contenedor) return;
+    ytPlayerNosotros = new YT.Player("reproductorNosotros", {
+        videoId: videoId,
+        playerVars: { rel: 0, modestbranding: 1 },
+        events: {
+            onReady: configurarControlesVideoNosotros,
+            onStateChange: actualizarBotonPlayPauseNosotros
+        }
+    });
+}
+
+function configurarControlesVideoNosotros() {
+    const btnRetroceder = document.getElementById("btnRetroceder10Nosotros");
+    const btnAvanzar = document.getElementById("btnAvanzar10Nosotros");
+    const btnPlayPause = document.getElementById("btnPlayPauseNosotros");
+    const btnReiniciar = document.getElementById("btnReiniciarNosotros");
+    const btnVelocidadLenta = document.getElementById("btnNosotrosVelocidadLenta");
+    const btnVelocidadRapida = document.getElementById("btnNosotrosVelocidadRapida");
+    const btnPantallaCompleta = document.getElementById("btnNosotrosPantallaCompleta");
+    if (!btnRetroceder || !btnAvanzar || !btnPlayPause || !btnReiniciar || !btnVelocidadLenta || !btnVelocidadRapida || !ytPlayerNosotros) return;
+
+    btnRetroceder.addEventListener("click", () => {
+        const tiempoActual = ytPlayerNosotros.getCurrentTime();
+        ytPlayerNosotros.seekTo(Math.max(0, tiempoActual - 5), true);
+    });
+
+    btnAvanzar.addEventListener("click", () => {
+        const tiempoActual = ytPlayerNosotros.getCurrentTime();
+        const duracion = ytPlayerNosotros.getDuration();
+        ytPlayerNosotros.seekTo(Math.min(duracion, tiempoActual + 10), true);
+    });
+
+    btnPlayPause.addEventListener("click", () => {
+        const estado = ytPlayerNosotros.getPlayerState();
+        if (estado === YT.PlayerState.PLAYING) {
+            ytPlayerNosotros.pauseVideo();
+        } else {
+            ytPlayerNosotros.playVideo();
+        }
+    });
+
+    btnReiniciar.addEventListener("click", () => {
+        ytPlayerNosotros.seekTo(0, true);
+        ytPlayerNosotros.playVideo();
+    });
+
+    nosotrosVelocidadIndex = VELOCIDADES_PALABRA.indexOf(1);
+    ytPlayerNosotros.setPlaybackRate(1);
+    actualizarLabelVelocidadNosotros();
+
+    btnVelocidadLenta.addEventListener("click", () => cambiarVelocidadNosotros(-1));
+    btnVelocidadRapida.addEventListener("click", () => cambiarVelocidadNosotros(1));
+
+    if (btnPantallaCompleta) {
+        btnPantallaCompleta.addEventListener("click", toggleNosotrosPantallaCompleta);
+    }
+}
+
+function cambiarVelocidadNosotros(delta) {
+    if (!ytPlayerNosotros) return;
+    const max = VELOCIDADES_PALABRA.length - 1;
+    nosotrosVelocidadIndex = Math.min(max, Math.max(0, nosotrosVelocidadIndex + delta));
+    ytPlayerNosotros.setPlaybackRate(VELOCIDADES_PALABRA[nosotrosVelocidadIndex]);
+    actualizarLabelVelocidadNosotros();
+}
+
+function actualizarLabelVelocidadNosotros() {
+    const label = document.getElementById("nosotrosVelocidadLabel");
+    if (label) label.textContent = VELOCIDADES_PALABRA[nosotrosVelocidadIndex] + "x";
+}
+
+function actualizarBotonPlayPauseNosotros(evento) {
+    const btnPlayPause = document.getElementById("btnPlayPauseNosotros");
+    if (!btnPlayPause) return;
+    btnPlayPause.textContent = evento.data === YT.PlayerState.PLAYING ? "⏸ Pausar" : "▶️ Reproducir";
+}
+
+// Vista "pantalla completa" del video de Sobre Nosotros: es un overlay
+// dentro de la misma ventana (no usa requestFullscreen), así la barra de
+// direcciones del navegador se mantiene visible. Se cierra con el mismo
+// botón, con la tecla Escape, o al salir de la sección "Sobre Nosotros".
+function toggleNosotrosPantallaCompleta(forzarCerrar) {
+    const wrap = document.getElementById("nosotrosVideoWrap");
+    const btn = document.getElementById("btnNosotrosPantallaCompleta");
+    if (!wrap) return;
+
+    const cerrar = forzarCerrar === true || nosotrosPantallaCompletaActiva;
+    nosotrosPantallaCompletaActiva = !cerrar;
+
+    wrap.classList.toggle("nosotros-pantalla-completa", nosotrosPantallaCompletaActiva);
+    document.body.classList.toggle("nosotros-pantalla-completa-activa", nosotrosPantallaCompletaActiva);
+
+    if (btn) {
+        btn.innerHTML = nosotrosPantallaCompletaActiva ? "✕ Salir de pantalla completa" : "⛶ Pantalla completa";
+        btn.title = nosotrosPantallaCompletaActiva ? "Salir de pantalla completa" : "Ver en pantalla completa";
+        btn.setAttribute("aria-label", btn.title);
+    }
+
+    if (nosotrosPantallaCompletaActiva) {
+        document.addEventListener("keydown", salirNosotrosPantallaCompletaConEscape);
+    } else {
+        document.removeEventListener("keydown", salirNosotrosPantallaCompletaConEscape);
+    }
+}
+
+function salirNosotrosPantallaCompletaConEscape(evento) {
+    if (evento.key === "Escape") {
+        toggleNosotrosPantallaCompleta(true);
+    }
+}
 
 function inicializarReproductorPalabra(videoId) {
     ajustarAspectoReproductorPalabra(videoId);

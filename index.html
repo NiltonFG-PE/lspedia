@@ -313,23 +313,56 @@
            estadísticas: ícono circular arriba, texto centrado.
            ============================================================ */
         .nosotros-apoyo-card {
+            position: relative;
             background-color: #ffffff;
-            border: 1px solid #eef1f6;
+            border: 1.5px solid #eef1f6;
             border-radius: 14px;
             padding: 18px 12px;
             box-shadow: 0 3px 9px rgba(15, 23, 42, 0.06);
             cursor: pointer;
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            overflow: hidden;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+        }
+        .nosotros-apoyo-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--nosotros-acento, #cbd5e1);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.2s ease;
         }
         .nosotros-apoyo-card:hover,
         .nosotros-apoyo-card:focus-visible {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(15, 23, 42, 0.1);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 22px rgba(15, 23, 42, 0.13);
+            border-color: var(--nosotros-acento, #cbd5e1);
             outline: none;
         }
+        .nosotros-apoyo-card:hover::before,
+        .nosotros-apoyo-card:focus-visible::before {
+            transform: scaleX(1);
+        }
+        .nosotros-apoyo-card:hover .nosotros-apoyo-icono,
+        .nosotros-apoyo-card:focus-visible .nosotros-apoyo-icono {
+            transform: scale(1.18) rotate(-4deg);
+        }
+        .nosotros-apoyo-card:hover .nosotros-apoyo-titulo,
+        .nosotros-apoyo-card:focus-visible .nosotros-apoyo-titulo {
+            color: var(--nosotros-acento, #0f172a);
+        }
+        .nosotros-apoyo-card-idea { --nosotros-acento: #f59e0b; }
+        .nosotros-apoyo-card-sugerencia { --nosotros-acento: #f59e0b; }
+        .nosotros-apoyo-card-donacion { --nosotros-acento: #e11d48; }
+        .nosotros-apoyo-card-interprete { --nosotros-acento: #7c3aed; }
         .nosotros-apoyo-icono {
             font-size: 28px;
             margin-bottom: 8px;
+            display: inline-block;
+            transition: transform 0.2s ease;
         }
         .nosotros-apoyo-titulo {
             font-weight: 800;
@@ -812,6 +845,39 @@
     font-weight: bold;
     font-size: 13px;
     min-width: 92px;
+}
+
+/* Vista "pantalla completa" del video de Sobre Nosotros: es un overlay
+   dentro de la misma ventana del navegador (no usa la Fullscreen API real),
+   para que la barra de direcciones y el resto de la página sigan visibles. */
+.nosotros-video-wrap.nosotros-pantalla-completa {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    background-color: rgba(15, 23, 42, 0.97);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: none;
+    padding: 16px;
+    margin: 0;
+    overflow-y: auto;
+}
+.nosotros-video-wrap.nosotros-pantalla-completa #nosotrosVideoRatio {
+    width: 100%;
+    max-width: 1100px;
+}
+.nosotros-video-wrap.nosotros-pantalla-completa #nosotrosVideoLeyenda {
+    color: #e2e8f0 !important;
+}
+.nosotros-video-wrap.nosotros-pantalla-completa .controles-video {
+    background-color: rgba(255, 255, 255, 0.95);
+    width: 100%;
+    max-width: 1100px;
+}
+body.nosotros-pantalla-completa-activa {
+    overflow: hidden;
 }
 
 /* Tarjeta "Seña del día" / "de ayer" — formato rectangular horizontal */
@@ -2168,6 +2234,56 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
         <section id="seccionNosotros" class="mb-5 d-none">
             <div class="nosotros-contenido mx-auto" style="max-width: 760px;">
 
+                <div class="nosotros-video-wrap mb-4" id="nosotrosVideoWrap">
+                    <div class="ratio ratio-16x9 rounded-4 overflow-hidden shadow-sm" id="nosotrosVideoRatio">
+                        <div id="reproductorNosotros"></div>
+                    </div>
+                    <p class="text-center small text-muted mt-2 mb-0" id="nosotrosVideoLeyenda">🤟 Traducción en Lengua de Señas Peruana (LSP) de este contenido</p>
+
+                    <div class="controles-video d-flex align-items-center justify-content-center gap-2 mt-2 flex-wrap">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="btnRetroceder10Nosotros" title="Retroceder 5 segundos" aria-label="Retroceder 5 segundos">⏪ 5s</button>
+                        <button type="button" class="btn btn-sm btn-primary" id="btnPlayPauseNosotros" title="Reproducir o pausar" aria-label="Reproducir o pausar">▶️ Reproducir</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="btnReiniciarNosotros" title="Reiniciar desde el principio" aria-label="Reiniciar desde el principio">↺ Reiniciar</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAvanzar10Nosotros" title="Avanzar 10 segundos" aria-label="Avanzar 10 segundos">10s ⏩</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="btnNosotrosVelocidadLenta" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
+                        <span class="small fw-bold text-muted" id="nosotrosVelocidadLabel">1x</span>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="btnNosotrosVelocidadRapida" title="Aumentar velocidad" aria-label="Aumentar velocidad">🐇</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="btnNosotrosPantallaCompleta" title="Ver en pantalla completa" aria-label="Ver en pantalla completa">⛶ Pantalla completa</button>
+                    </div>
+                </div>
+
+                <!-- Bloque de 4 tarjetas: formas concretas de apoyar (justo debajo del video) -->
+                <div class="row g-3 mb-5">
+                    <div class="col-6 col-md-3">
+                        <div class="nosotros-apoyo-card nosotros-apoyo-card-sugerencia h-100 text-center" role="button" tabindex="0" data-bs-toggle="modal" data-bs-target="#modalSugerencia">
+                            <div class="nosotros-apoyo-icono" aria-hidden="true">💡</div>
+                            <div class="nosotros-apoyo-titulo">Sugerir palabra</div>
+                            <div class="nosotros-apoyo-desc">¿Falta un término? Envíanos tu propuesta.</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="nosotros-apoyo-card nosotros-apoyo-card-idea h-100 text-center" role="button" tabindex="0" data-bs-toggle="modal" data-bs-target="#modalEnviarIdea">
+                            <div class="nosotros-apoyo-icono" aria-hidden="true">💬</div>
+                            <div class="nosotros-apoyo-titulo">Enviar una idea</div>
+                            <div class="nosotros-apoyo-desc">Comparte sugerencias para mejorar LSPedia.</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="nosotros-apoyo-card nosotros-apoyo-card-donacion h-100 text-center" role="button" tabindex="0" data-bs-toggle="modal" data-bs-target="#modalDonacion">
+                            <div class="nosotros-apoyo-icono" aria-hidden="true">❤️</div>
+                            <div class="nosotros-apoyo-titulo">Hacer una donación</div>
+                            <div class="nosotros-apoyo-desc">Ayuda a mantener el proyecto gratuito y en crecimiento.</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="nosotros-apoyo-card nosotros-apoyo-card-interprete h-100 text-center" role="button" tabindex="0" data-bs-toggle="modal" data-bs-target="#modalInterprete">
+                            <div class="nosotros-apoyo-icono" aria-hidden="true">🎤</div>
+                            <div class="nosotros-apoyo-titulo">Contratar un intérprete</div>
+                            <div class="nosotros-apoyo-desc">Solicita servicios de interpretación en LSP.</div>
+                        </div>
+                    </div>
+                </div>
+
                 <h4 class="fw-bold text-dark mb-3">¿Qué es LSPedia?</h4>
                 <p class="text-secondary mb-3" style="line-height: 1.7;">LSPedia es una plataforma gratuita que busca acercar el español y la Lengua de Señas Peruana (LSP), facilitando una comunicación más inclusiva entre personas sordas y oyentes.</p>
                 <p class="text-secondary mb-4" style="line-height: 1.7;">Nuestro objetivo es ayudar a las personas sordas a comprender mejor el español mediante explicaciones y videos en LSP, y ofrecer a cualquier persona una herramienta práctica para aprender, comunicarse y promover la inclusión.</p>
@@ -2190,38 +2306,6 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
                 <h4 class="fw-bold text-dark mb-3">Gracias por ser parte de LSPedia</h4>
                 <p class="text-secondary mb-3" style="line-height: 1.7;">Cada sugerencia, colaboración, donación o servicio contratado nos ayuda a construir una plataforma más completa y accesible para miles de personas.</p>
                 <p class="text-secondary mb-5" style="line-height: 1.7;">Juntos podemos hacer que la información sea más accesible para todos.</p>
-
-                <!-- Bloque de 4 tarjetas: formas concretas de apoyar -->
-                <div class="row g-3">
-                    <div class="col-6 col-md-3">
-                        <div class="nosotros-apoyo-card h-100 text-center" role="button" tabindex="0" data-bs-toggle="modal" data-bs-target="#modalSugerencia">
-                            <div class="nosotros-apoyo-icono" aria-hidden="true">💡</div>
-                            <div class="nosotros-apoyo-titulo">Sugerir palabra</div>
-                            <div class="nosotros-apoyo-desc">¿Falta un término? Envíanos tu propuesta.</div>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-3">
-                        <div class="nosotros-apoyo-card h-100 text-center" role="button" tabindex="0" data-bs-toggle="modal" data-bs-target="#modalEnviarIdea">
-                            <div class="nosotros-apoyo-icono" aria-hidden="true">💬</div>
-                            <div class="nosotros-apoyo-titulo">Enviar una idea</div>
-                            <div class="nosotros-apoyo-desc">Comparte sugerencias para mejorar LSPedia.</div>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-3">
-                        <div class="nosotros-apoyo-card h-100 text-center" role="button" tabindex="0" data-bs-toggle="modal" data-bs-target="#modalDonacion">
-                            <div class="nosotros-apoyo-icono" aria-hidden="true">❤️</div>
-                            <div class="nosotros-apoyo-titulo">Hacer una donación</div>
-                            <div class="nosotros-apoyo-desc">Ayuda a mantener el proyecto gratuito y en crecimiento.</div>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-3">
-                        <div class="nosotros-apoyo-card h-100 text-center" role="button" tabindex="0" data-bs-toggle="modal" data-bs-target="#modalInterprete">
-                            <div class="nosotros-apoyo-icono" aria-hidden="true">🎤</div>
-                            <div class="nosotros-apoyo-titulo">Contratar un intérprete</div>
-                            <div class="nosotros-apoyo-desc">Solicita servicios de interpretación en LSP.</div>
-                        </div>
-                    </div>
-                </div>
 
             </div>
         </section>
