@@ -402,9 +402,11 @@ const QuizV2 = (function () {
                 <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle quiz-video-btn" id="quizBtnRetroceder" title="Retroceder 1 segundo" aria-label="Retroceder 1 segundo">⏪</button>
                 <button type="button" class="btn btn-sm btn-primary rounded-circle quiz-video-btn" id="quizBtnPlayPause" title="Pausar / Repetir" aria-label="Pausar o repetir el video">⏸</button>
                 <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle quiz-video-btn" id="quizBtnAvanzar" title="Adelantar 2 segundos" aria-label="Adelantar 2 segundos">⏩</button>
-                <button type="button" class="btn btn-sm btn-outline-secondary quiz-video-btn-velocidad" id="quizBtnLento" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
-                <span class="small fw-bold text-muted" id="quizVelocidadLabel">1x</span>
-                <button type="button" class="btn btn-sm btn-outline-secondary quiz-video-btn-velocidad" id="quizBtnRapido" title="Aumentar velocidad" aria-label="Aumentar velocidad">🐇</button>
+                <div class="quiz-video-velocidad-grupo">
+                    <button type="button" class="btn btn-sm btn-outline-secondary quiz-video-btn-velocidad" id="quizBtnLento" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
+                    <span class="small fw-bold text-muted" id="quizVelocidadLabel">1x</span>
+                    <button type="button" class="btn btn-sm btn-outline-secondary quiz-video-btn-velocidad" id="quizBtnRapido" title="Aumentar velocidad" aria-label="Aumentar velocidad">🐇</button>
+                </div>
                 <button type="button" class="btn btn-sm btn-outline-danger rounded-circle quiz-video-btn" id="quizBtnMeGusta" title="Me gusta" aria-label="Me gusta">🤍</button>
             </div>
             <p class="text-center fw-bold mb-3">¿Qué palabra representa esta seña?</p>
@@ -638,9 +640,11 @@ const QuizV2 = (function () {
                 <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle quiz-video-btn" id="quizBtnRetroceder" title="Retroceder 1 segundo" aria-label="Retroceder 1 segundo">⏪</button>
                 <button type="button" class="btn btn-sm btn-primary rounded-circle quiz-video-btn" id="quizBtnPlayPause" title="Pausar / Repetir" aria-label="Pausar o repetir el video">⏸</button>
                 <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle quiz-video-btn" id="quizBtnAvanzar" title="Adelantar 2 segundos" aria-label="Adelantar 2 segundos">⏩</button>
-                <button type="button" class="btn btn-sm btn-outline-secondary quiz-video-btn-velocidad" id="quizBtnLento" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
-                <span class="small fw-bold text-muted" id="quizVelocidadLabel">1x</span>
-                <button type="button" class="btn btn-sm btn-outline-secondary quiz-video-btn-velocidad" id="quizBtnRapido" title="Aumentar velocidad" aria-label="Aumentar velocidad">🐇</button>
+                <div class="quiz-video-velocidad-grupo">
+                    <button type="button" class="btn btn-sm btn-outline-secondary quiz-video-btn-velocidad" id="quizBtnLento" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
+                    <span class="small fw-bold text-muted" id="quizVelocidadLabel">1x</span>
+                    <button type="button" class="btn btn-sm btn-outline-secondary quiz-video-btn-velocidad" id="quizBtnRapido" title="Aumentar velocidad" aria-label="Aumentar velocidad">🐇</button>
+                </div>
                 <button type="button" class="btn btn-sm btn-outline-danger rounded-circle quiz-video-btn" id="quizBtnMeGusta" title="Me gusta" aria-label="Me gusta">🤍</button>
             </div>
             <p class="text-center fw-bold mb-3">¿Esta seña significa <span class="text-primary">"${palabraMostrada}"</span>?</p>

@@ -2147,9 +2147,11 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
                                     <video id="alfabTrazoVideo" class="apoyo-visual-img" muted loop playsinline preload="auto"></video>
                                 </div>
                                 <div class="controles-video d-flex align-items-center justify-content-center gap-2">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAlfabTrazoLento" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
-                                    <span class="small fw-bold text-muted" id="alfabTrazoVelocidadLabel">1x</span>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAlfabTrazoRapido" title="Aumentar velocidad" aria-label="Aumentar velocidad">🐇</button>
+                                    <div class="controles-video-velocidad">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAlfabTrazoLento" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
+                                        <span class="small fw-bold text-muted" id="alfabTrazoVelocidadLabel">1x</span>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAlfabTrazoRapido" title="Aumentar velocidad" aria-label="Aumentar velocidad">🐇</button>
+                                    </div>
                                     <button type="button" class="btn btn-sm btn-warning ms-2" id="btnAlfabTrazoReiniciar" title="Repetir animación" aria-label="Repetir animación">🔁</button>
                                 </div>
                             </div>
@@ -2245,9 +2247,11 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
                         <button type="button" class="btn btn-sm btn-primary" id="btnPlayPauseNosotros" title="Reproducir o pausar" aria-label="Reproducir o pausar">▶️ Reproducir</button>
                         <button type="button" class="btn btn-sm btn-outline-secondary" id="btnReiniciarNosotros" title="Reiniciar desde el principio" aria-label="Reiniciar desde el principio">↺ Reiniciar</button>
                         <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAvanzar10Nosotros" title="Avanzar 10 segundos" aria-label="Avanzar 10 segundos">10s ⏩</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" id="btnNosotrosVelocidadLenta" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
-                        <span class="small fw-bold text-muted" id="nosotrosVelocidadLabel">1x</span>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" id="btnNosotrosVelocidadRapida" title="Aumentar velocidad" aria-label="Aumentar velocidad">🐇</button>
+                        <div class="controles-video-velocidad">
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="btnNosotrosVelocidadLenta" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
+                            <span class="small fw-bold text-muted" id="nosotrosVelocidadLabel">1x</span>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="btnNosotrosVelocidadRapida" title="Aumentar velocidad" aria-label="Aumentar velocidad">🐇</button>
+                        </div>
                         <button type="button" class="btn btn-sm btn-outline-secondary" id="btnNosotrosPantallaCompleta" title="Ver en pantalla completa" aria-label="Ver en pantalla completa">⛶ Pantalla completa</button>
                     </div>
                 </div>

@@ -329,6 +329,21 @@ iframe {
     font-size: 0.78rem;
 }
 
+/* Grupo de control de velocidad del reproductor (🐢 + "1x" + 🐇).
+   Se agrupan en un único elemento flex para que, cuando el texto del
+   botón "Reproducir/Pausar" cambia de tamaño y el resto de botones se
+   reacomoda (sobre todo en móvil), la tortuga y el conejo bajen SIEMPRE
+   juntos a la siguiente línea en vez de separarse y confundir al
+   usuario sobre cuál control corresponde a cuál. Se reutiliza en todos
+   los reproductores del sitio (ficha de palabra, seña sugerida, Sobre
+   Nosotros y Alfabetización). */
+.controles-video-velocidad {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
 /* La imagen (o video, en el caso de la grafía de Alfabetización) se
    muestra completa, escalada para entrar en su caja sin recortarse
    (object-fit: contain), en vez de llenar el espacio recortando los
