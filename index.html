@@ -253,42 +253,13 @@
     background-color: #212529; /* Un tono gris muy oscuro, casi negro, como en tu referencia */
 }
 
-/* Caja de la imagen de Apoyo Visual: mismo alto que el video y clicable para ampliar */
-.apoyo-visual-caja {
-    position: relative;
-    min-height: 180px;
-    cursor: zoom-in;
-    background-color: #f8f9fa;
-    overflow: hidden;
-}
-.apoyo-visual-img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    display: block;
-    transition: transform 0.25s ease;
-}
-.apoyo-visual-caja:hover .apoyo-visual-img {
-    transform: scale(1.04);
-}
-.apoyo-visual-lupa {
-    position: absolute;
-    right: 8px;
-    bottom: 8px;
-    background-color: rgba(0,0,0,0.65);
-    color: #fff;
-    font-size: 11px;
-    font-weight: bold;
-    padding: 3px 10px;
-    border-radius: 20px;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    pointer-events: none;
-}
-.apoyo-visual-caja:hover .apoyo-visual-lupa,
-.apoyo-visual-caja:focus .apoyo-visual-lupa {
-    opacity: 1;
-}
+/* Estilos de la caja de Apoyo Visual (.apoyo-visual-caja/.apoyo-visual-img/
+   .apoyo-visual-lupa) centralizados en css/estilos.css: la caja se adapta
+   al tamaño real de la imagen sin recortarla. No se duplican acá para
+   evitar que este <style> (que carga después que css/estilos.css) los
+   pise sin querer. */
+
+
 
 /* Controles personalizados del reproductor de video (LSP) */
 .controles-video {

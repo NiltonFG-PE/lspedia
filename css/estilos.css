@@ -289,9 +289,11 @@ iframe {
 }
 
 /* --- Panel de apoyo visual junto al video principal (Imagen ejemplo /
-   Seña sugerida): mismo estilo de tarjeta para ambos, con la imagen
-   siempre recortada a un tamaño prolijo (sin las bandas blancas que
-   dejaba object-fit:contain con altura fija). --- */
+   Seña sugerida): la caja se adapta al tamaño real de la imagen (dentro
+   de un rango de alto mínimo/máximo) en vez de forzar un recorte tipo
+   "cover"; así ninguna imagen se corta, como mucho queda un poco de
+   espacio de fondo arriba/abajo si la imagen es muy panorámica o muy
+   cuadrada. --- */
 .apoyo-panel {
     background: #ffffff;
     border: 1px solid #e2e8f0;
@@ -309,11 +311,15 @@ iframe {
 }
 .apoyo-panel-caja {
     position: relative;
-    aspect-ratio: 4 / 3;
     width: 100%;
+    min-height: 160px;
+    max-height: 420px;
     border-radius: 10px;
     overflow: hidden;
     background-color: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .apoyo-panel .controles-video-compactos {
     margin-top: 10px;
@@ -323,20 +329,30 @@ iframe {
     font-size: 0.78rem;
 }
 
-/* La imagen de ejemplo llena su caja por completo (recorte tipo "cover"),
-   en vez de quedar chica y centrada dentro de espacio en blanco. */
-#resultado .apoyo-visual-img {
-    width: 100%;
-    height: 100%;
-    max-height: none;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.25s ease;
-}
+/* La imagen (o video, en el caso de la grafía de Alfabetización) se
+   muestra completa, escalada para entrar en su caja sin recortarse
+   (object-fit: contain), en vez de llenar el espacio recortando los
+   bordes. Regla genérica: se reutiliza en la ficha de palabra, en
+   Alfabetización (fonética/grafía/ejemplo) y en cualquier otro lugar
+   que use estas mismas clases. */
 .apoyo-visual-caja {
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 120px;
+    overflow: hidden;
+    background-color: #f8f9fa;
+    cursor: zoom-in;
+}
+.apoyo-visual-img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
     display: block;
-    cursor: pointer;
+    transition: transform 0.25s ease;
 }
 .apoyo-visual-caja:hover .apoyo-visual-img {
     transform: scale(1.05);
@@ -359,10 +375,65 @@ iframe {
     opacity: 1;
 }
 @media (max-width: 991px) {
-    /* En columna angosta (celular/tablet) se ve mejor una caja más baja
-       que un 4:3 completo, para no alargar demasiado la ficha. */
+    /* En columna angosta (celular/tablet) se usa un rango de alto más
+       chico, para no alargar demasiado la ficha. */
     .apoyo-panel-caja {
-        aspect-ratio: 16 / 10;
+        min-height: 140px;
+        max-height: 300px;
+    }
+}
+
+/* Carrusel de varias imágenes de ejemplo dentro de la caja de Apoyo
+   Visual: aparece solo cuando la columna "imagen" trae más de una URL
+   separada por coma. Con una sola imagen se sigue usando la caja simple
+   de siempre (ver mostrarPalabra() en script.js). */
+.carrusel-apoyo-visual,
+.carrusel-apoyo-visual .carousel-inner,
+.carrusel-apoyo-visual .carousel-item {
+    height: 100%;
+}
+.carrusel-apoyo-visual .carousel-control-prev,
+.carrusel-apoyo-visual .carousel-control-next {
+    width: 15%;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+.carrusel-apoyo-visual:hover .carousel-control-prev,
+.carrusel-apoyo-visual:hover .carousel-control-next,
+.carrusel-apoyo-visual:focus-within .carousel-control-prev,
+.carrusel-apoyo-visual:focus-within .carousel-control-next {
+    opacity: 1;
+}
+.carrusel-apoyo-visual .carousel-control-prev-icon,
+.carrusel-apoyo-visual .carousel-control-next-icon {
+    width: 1.6rem;
+    height: 1.6rem;
+    background-color: rgba(15, 23, 42, 0.55);
+    border-radius: 50%;
+    padding: 4px;
+    background-size: 60%;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.carrusel-apoyo-visual-indicadores {
+    margin-bottom: 6px;
+}
+.carrusel-apoyo-visual-indicadores [data-bs-target] {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.6);
+    border: none;
+    margin: 0 3px;
+}
+.carrusel-apoyo-visual-indicadores [data-bs-target].active {
+    background-color: #fff;
+}
+/* En móvil los controles se dejan siempre visibles (no hay :hover con el dedo) */
+@media (max-width: 991px) {
+    .carrusel-apoyo-visual .carousel-control-prev,
+    .carrusel-apoyo-visual .carousel-control-next {
+        opacity: 0.85;
     }
 }
 
