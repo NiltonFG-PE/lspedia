@@ -372,6 +372,35 @@
             color: #0f172a;
         }
 
+        /* Botones del modal "Contratar un intérprete": fila con ícono,
+           nombre del medio de contacto y flecha, mismo lenguaje visual
+           que el resto de tarjetas de Sobre Nosotros. */
+        .btn-contacto-interprete {
+            background-color: #ffffff;
+            border: 1px solid #eef1f6;
+            border-radius: 14px;
+            padding: 14px 16px;
+            box-shadow: 0 3px 9px rgba(15, 23, 42, 0.06);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .btn-contacto-interprete:hover,
+        .btn-contacto-interprete:focus-visible {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(15, 23, 42, 0.1);
+            outline: none;
+        }
+        .btn-contacto-icono {
+            flex-shrink: 0;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+            margin-right: 12px;
+        }
+
 
 
         /* ============================================================
@@ -2170,7 +2199,7 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
-                        <div class="nosotros-apoyo-card h-100 text-center" role="button" tabindex="0">
+                        <div class="nosotros-apoyo-card h-100 text-center" role="button" tabindex="0" data-bs-toggle="modal" data-bs-target="#modalInterprete">
                             <div class="nosotros-apoyo-icono" aria-hidden="true">🎤</div>
                             <div class="nosotros-apoyo-titulo">Contratar un intérprete</div>
                             <div class="nosotros-apoyo-desc">Solicita servicios de interpretación en LSP.</div>
@@ -2248,6 +2277,39 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
                         </div>
                     </div>
                     <p class="text-center small text-muted mt-4 mb-0">Tu donación contribuye a crear más contenido, mejorar la plataforma y mantener LSPedia gratuita para todos.<br><strong class="text-primary">¡Gracias por tu generosidad!</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CONTRATAR UN INTÉRPRETE (botón "Contratar un intérprete" de Sobre Nosotros) -->
+    <div class="modal fade" id="modalInterprete" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header py-3" style="background-color: #343a40 !important;">
+                    <h6 class="modal-title fw-bold d-flex align-items-center" style="color: #ffffff !important; font-size: 16px;"><span class="me-2">🎤</span> Contratar un intérprete</h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p class="text-center text-secondary mb-4">Escríbenos por el medio que prefieras y coordinamos los detalles de tu solicitud de interpretación en LSP.</p>
+                    <div class="d-grid gap-3">
+                        <a href="https://wa.me/51928789623" target="_blank" rel="noopener" class="btn-contacto-interprete d-flex align-items-center text-decoration-none">
+                            <span class="btn-contacto-icono" style="background-color:#dcfce7; color:#16a34a;" aria-hidden="true">💬</span>
+                            <span class="flex-grow-1 text-start">
+                                <span class="d-block fw-bold text-dark">WhatsApp</span>
+                                <span class="d-block small text-muted">+51 928 789 623</span>
+                            </span>
+                            <span class="text-muted" aria-hidden="true">›</span>
+                        </a>
+                        <a href="mailto:proyectolspedia@gmail.com" class="btn-contacto-interprete d-flex align-items-center text-decoration-none">
+                            <span class="btn-contacto-icono" style="background-color:#dbeafe; color:#2563eb;" aria-hidden="true">✉️</span>
+                            <span class="flex-grow-1 text-start">
+                                <span class="d-block fw-bold text-dark">Correo electrónico</span>
+                                <span class="d-block small text-muted">proyectolspedia@gmail.com</span>
+                            </span>
+                            <span class="text-muted" aria-hidden="true">›</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
