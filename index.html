@@ -306,6 +306,72 @@
             .stat2-card-ancha .stat2-numero { font-size: 1.25rem; }
         }
 
+        /* ============================================================
+           SECCIÓN "SOBRE NOSOTROS": tarjetas con las 4 formas de apoyar
+           al proyecto (sugerir palabra, enviar idea, donar, contratar
+           intérprete). Mismo lenguaje visual que las tarjetas de
+           estadísticas: ícono circular arriba, texto centrado.
+           ============================================================ */
+        .nosotros-apoyo-card {
+            background-color: #ffffff;
+            border: 1px solid #eef1f6;
+            border-radius: 14px;
+            padding: 18px 12px;
+            box-shadow: 0 3px 9px rgba(15, 23, 42, 0.06);
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .nosotros-apoyo-card:hover,
+        .nosotros-apoyo-card:focus-visible {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(15, 23, 42, 0.1);
+            outline: none;
+        }
+        .nosotros-apoyo-icono {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        .nosotros-apoyo-titulo {
+            font-weight: 800;
+            color: #0f172a;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+        .nosotros-apoyo-desc {
+            font-size: 0.78rem;
+            color: #64748b;
+            line-height: 1.35;
+        }
+
+        /* Tarjetas del modal "Hacer una donación": una por método de
+           pago (Yape, Binance, PayPal), cada una con su QR. */
+        .donacion-card {
+            background-color: #ffffff;
+            border: 1px solid #eef1f6;
+            border-radius: 14px;
+            padding: 16px 14px;
+            box-shadow: 0 3px 9px rgba(15, 23, 42, 0.06);
+        }
+        .donacion-card-marca {
+            font-weight: 800;
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+        }
+        .donacion-qr {
+            width: 100%;
+            max-width: 170px;
+            aspect-ratio: 1 / 1;
+            object-fit: contain;
+            border-radius: 8px;
+            margin: 0 auto 10px;
+            display: block;
+        }
+        .donacion-card-dato {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #0f172a;
+        }
+
 
 
         /* ============================================================
@@ -1187,7 +1253,7 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
                     </li>
                     <li class="nav-item"><a class="nav-link" href="#" id="btnCategorias"><span aria-hidden="true">📁</span> Temas orden</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" id="btnHerramientas"><span aria-hidden="true">🛠️</span> Herramientas</a></li>
-                    <li class="nav-item"><a class="nav-link text-warning" href="#" id="btnSobreNosotros" data-bs-toggle="modal" data-bs-target="#modalSobreNosotros"><span aria-hidden="true">🤟</span> Sobre Nosotros</a></li>
+                    <li class="nav-item"><a class="nav-link text-warning" href="#" id="btnSobreNosotros"><span aria-hidden="true">🤟</span> Sobre Nosotros</a></li>
                 </ul>
             </div>
         </div>
@@ -2048,6 +2114,73 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
             </div>
         </section>
 
+        <!-- ================================================================
+             SECCIÓN "SOBRE NOSOTROS": reemplaza el antiguo modal. Se
+             muestra/oculta igual que Temas orden y Herramientas, dentro
+             del flujo normal de navegación (ver mostrarSeccionNosotros
+             en script.js).
+             ================================================================ -->
+        <section id="seccionNosotros" class="mb-5 d-none">
+            <div class="nosotros-contenido mx-auto" style="max-width: 760px;">
+
+                <h4 class="fw-bold text-dark mb-3">¿Qué es LSPedia?</h4>
+                <p class="text-secondary mb-3" style="line-height: 1.7;">LSPedia es una plataforma gratuita que busca acercar el español y la Lengua de Señas Peruana (LSP), facilitando una comunicación más inclusiva entre personas sordas y oyentes.</p>
+                <p class="text-secondary mb-4" style="line-height: 1.7;">Nuestro objetivo es ayudar a las personas sordas a comprender mejor el español mediante explicaciones y videos en LSP, y ofrecer a cualquier persona una herramienta práctica para aprender, comunicarse y promover la inclusión.</p>
+
+                <h4 class="fw-bold text-dark mb-3">Un proyecto con respeto por la comunidad sorda</h4>
+                <p class="text-secondary mb-3" style="line-height: 1.7;">La Lengua de Señas Peruana (LSP) es el idioma natural y patrimonio lingüístico de la comunidad sorda.</p>
+                <p class="text-secondary mb-4" style="line-height: 1.7;">LSPedia no pretende reemplazar a los docentes, intérpretes ni a las organizaciones de personas sordas. Nuestro propósito es crear una herramienta de apoyo que facilite el acceso a la información y contribuya al aprendizaje y la inclusión.</p>
+
+                <h4 class="fw-bold text-dark mb-3">Un proyecto que crece gracias a la comunidad</h4>
+                <p class="text-secondary mb-2" style="line-height: 1.7;">LSPedia es un proyecto independiente y en constante desarrollo.</p>
+                <p class="text-secondary mb-2" style="line-height: 1.7;">Puedes ayudar de muchas maneras:</p>
+                <ul class="text-secondary mb-4" style="line-height: 1.9;">
+                    <li>💡 Sugiriendo nuevas palabras para el diccionario.</li>
+                    <li>📝 Enviando ideas o comentarios para mejorar la plataforma.</li>
+                    <li>🤝 Colaborando como persona sorda, intérprete o institución, compartiendo tu experiencia.</li>
+                    <li>❤️ Realizando una donación, que nos permitirá grabar más videos, mejorar el sitio y mantener el proyecto gratuito.</li>
+                    <li>🎤 Contratando servicios de interpretación o traducción en Lengua de Señas Peruana, contribuyendo al crecimiento de LSPedia mientras recibes apoyo profesional.</li>
+                </ul>
+
+                <h4 class="fw-bold text-dark mb-3">Gracias por ser parte de LSPedia</h4>
+                <p class="text-secondary mb-3" style="line-height: 1.7;">Cada sugerencia, colaboración, donación o servicio contratado nos ayuda a construir una plataforma más completa y accesible para miles de personas.</p>
+                <p class="text-secondary mb-5" style="line-height: 1.7;">Juntos podemos hacer que la información sea más accesible para todos.</p>
+
+                <!-- Bloque de 4 tarjetas: formas concretas de apoyar -->
+                <div class="row g-3">
+                    <div class="col-6 col-md-3">
+                        <div class="nosotros-apoyo-card h-100 text-center" role="button" tabindex="0" data-bs-toggle="modal" data-bs-target="#modalSugerencia">
+                            <div class="nosotros-apoyo-icono" aria-hidden="true">💡</div>
+                            <div class="nosotros-apoyo-titulo">Sugerir palabra</div>
+                            <div class="nosotros-apoyo-desc">¿Falta un término? Envíanos tu propuesta.</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="nosotros-apoyo-card h-100 text-center" role="button" tabindex="0" data-bs-toggle="modal" data-bs-target="#modalEnviarIdea">
+                            <div class="nosotros-apoyo-icono" aria-hidden="true">💬</div>
+                            <div class="nosotros-apoyo-titulo">Enviar una idea</div>
+                            <div class="nosotros-apoyo-desc">Comparte sugerencias para mejorar LSPedia.</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="nosotros-apoyo-card h-100 text-center" role="button" tabindex="0" data-bs-toggle="modal" data-bs-target="#modalDonacion">
+                            <div class="nosotros-apoyo-icono" aria-hidden="true">❤️</div>
+                            <div class="nosotros-apoyo-titulo">Hacer una donación</div>
+                            <div class="nosotros-apoyo-desc">Ayuda a mantener el proyecto gratuito y en crecimiento.</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="nosotros-apoyo-card h-100 text-center" role="button" tabindex="0">
+                            <div class="nosotros-apoyo-icono" aria-hidden="true">🎤</div>
+                            <div class="nosotros-apoyo-titulo">Contratar un intérprete</div>
+                            <div class="nosotros-apoyo-desc">Solicita servicios de interpretación en LSP.</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
     </div>
 
     <!-- MODAL SUGERENCIAS DE PALABRAS -->
@@ -2065,7 +2198,61 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
         </div>
     </div>
 
-    <!-- MODAL IMAGEN AMPLIADA (Apoyo Visual) -->
+    <!-- MODAL ENVIAR UNA IDEA (botón "Enviar una idea" de Sobre Nosotros) -->
+    <div class="modal fade" id="modalEnviarIdea" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header py-3" style="background-color: #343a40 !important;">
+                    <h6 class="modal-title fw-bold" style="color: #ffffff !important; font-size: 16px;">Enviar una idea</h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfZIrEAW_AODrgkiYne4-JxID9x46-YlK7nNeJ3FOAb90gRbw/viewform?embedded=true" width="100%" height="450" frameborder="0" marginheight="0" marginwidth="0" title="Formulario para enviar una idea">Cargando…</iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL HACER UNA DONACIÓN (botón "Hacer una donación" de Sobre Nosotros) -->
+    <div class="modal fade" id="modalDonacion" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header py-3" style="background-color: #343a40 !important;">
+                    <h6 class="modal-title fw-bold d-flex align-items-center" style="color: #ffffff !important; font-size: 16px;"><span class="me-2">❤️</span> Hacer una donación</h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p class="text-center text-secondary mb-4">Puedes donar de la forma que te sea más conveniente. ¡Gracias por ser parte de este proyecto!</p>
+                    <div class="row g-3">
+                        <div class="col-12 col-md-4">
+                            <div class="donacion-card text-center h-100">
+                                <div class="donacion-card-marca" style="color:#7c2d92;">Yape</div>
+                                <img src="img/qr-yape.jpg" alt="Código QR de Yape" class="donacion-qr">
+                                <div class="donacion-card-dato">Nilton Fer*</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="donacion-card text-center h-100">
+                                <div class="donacion-card-marca" style="color:#d4a017;">Binance</div>
+                                <img src="img/qr-binance.jpg" alt="Código QR de Binance Pay" class="donacion-qr">
+                                <div class="donacion-card-dato">Binance ID: 61018297</div>
+                                <div class="donacion-card-dato">Usuario: Legacype</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="donacion-card text-center h-100">
+                                <div class="donacion-card-marca text-primary">PayPal</div>
+                                <img src="img/qr-paypal.png" alt="Código QR de PayPal" class="donacion-qr">
+                                <div class="donacion-card-dato">@niltonfg</div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-center small text-muted mt-4 mb-0">Tu donación contribuye a crear más contenido, mejorar la plataforma y mantener LSPedia gratuita para todos.<br><strong class="text-primary">¡Gracias por tu generosidad!</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="modalImagenAmpliada" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content border-0 shadow-lg">
@@ -2082,44 +2269,9 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
         </div>
     </div>
 
-    <!-- MODAL SOBRE NOSOTROS -->
-    <div class="modal fade" id="modalSobreNosotros" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow-lg">
-                <div class="modal-header bg-primary text-white py-3">
-                    <h5 class="modal-title fw-bold d-flex align-items-center"><span class="me-2">🤟</span> Nuestra Filosofía</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-4 text-secondary" style="font-size: 0.95rem; line-height: 1.6;">
-
-                    <!--
-                        Cuando grabes el video con la traducción en LSP de este texto,
-                        reemplaza el <div> de aquí abajo (el que dice "próximamente") por:
-                        <iframe src="https://www.youtube.com/embed/TU_VIDEO_ID?rel=0&modestbranding=1" allowfullscreen title="Traducción en Lengua de Señas Peruana"></iframe>
-                    -->
-                    <div class="ratio ratio-16x9 rounded overflow-hidden border shadow-sm mb-3">
-                        <div class="d-flex flex-column align-items-center justify-content-center h-100 bg-light text-muted text-center p-3">
-                            <span class="fs-1 mb-2">🤟</span>
-                            <span class="small fw-bold">Video con traducción en LSP — próximamente</span>
-                        </div>
-                    </div>
-                    <p class="text-center small text-muted mb-4">🤟 Aquí irá la traducción en Lengua de Señas Peruana de este texto.</p>
-
-                    <h6 class="fw-bold text-dark mb-2">¿Qué es LSPedia?</h6>
-                    <p class="mb-4">LSPedia nace como un puente de comunicación. Es un diccionario digital gratuito diseñado para facilitar el acceso a la información, ayudando a las personas sordas a comprender términos en español a través de su idioma natural, y ofreciendo a los oyentes una herramienta para fomentar la inclusión en su día a día.</p>
-                    
-                    <h6 class="fw-bold text-dark mb-2">Nuestro Respeto por la Comunidad Sorda</h6>
-                    <p class="mb-4">Reconocemos y respetamos profundamente que la Lengua de Señas Peruana (LSP) es patrimonio cultural y lingüístico de la comunidad sorda. Este proyecto no busca apropiarse de la enseñanza del idioma, sino actuar como un facilitador e intérprete. Nuestro objetivo es democratizar el acceso a la información y apoyar el aprendizaje mutuo.</p>
-                    
-                    <h6 class="fw-bold text-dark mb-2">Un Proyecto Colaborativo</h6>
-                    <p class="mb-0">Sabemos que los verdaderos dueños de la LSP son las personas sordas. Por ello, LSPedia es una plataforma viva y abierta. Invitamos activamente a la comunidad sorda, asociaciones e intérpretes a colaborar, darnos retroalimentación y sugerir mejoras para asegurar que nuestra plataforma represente el uso real de la lengua en el país.</p>
-                </div>
-                <div class="modal-footer bg-light border-0 justify-content-center py-3">
-                    <button type="button" class="btn btn-outline-primary px-4 rounded-pill fw-bold" data-bs-dismiss="modal">Entendido</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- (El antiguo MODAL SOBRE NOSOTROS fue reemplazado por la sección
+         #seccionNosotros, mostrada como una pantalla más dentro del
+         flujo normal de navegación, igual que Temas orden o Herramientas.) -->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
