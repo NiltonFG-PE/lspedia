@@ -143,45 +143,103 @@
         }
 
         /* ============================================================
-           MENÚ DE HERRAMIENTAS EN MÓVIL: 3 botones grandes (Subtítulos,
-           Jugar, Alfabetización), cada uno con su propio color de fondo
-           para diferenciarlos a simple vista. Ver mostrarSeccionHerramientas()
-           en script.js: en móvil se muestra primero este selector y solo se
-           carga el módulo elegido al tocar su botón (antes se intentaba
-           iniciar los 3 a la vez, que era lo que hacía que "Jugar" se
-           quedara sin cargar). En escritorio no se usa (d-xl-none).
+           MENÚ DE HERRAMIENTAS EN MÓVIL: 3 tarjetas grandes (Subtítulos,
+           Jugar, Alfabetización), con icono en insignia pastel, título +
+           descripción, y una "ola" de color con botón circular a la
+           derecha. Ver mostrarSeccionHerramientas() en script.js: en
+           móvil se muestra primero este selector y solo se carga el
+           módulo elegido al tocar su tarjeta. En escritorio no se usa
+           (d-xl-none).
            ============================================================ */
         .herr-movil-btn {
+            position: relative;
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 14px;
-            padding: 26px 20px;
-            border-radius: 18px;
+            gap: 16px;
+            padding: 18px 20px;
+            border-radius: 20px;
             border: none;
-            font-size: 19px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            color: #ffffff;
-            box-shadow: 0 6px 16px rgba(15, 23, 42, 0.15);
+            background-color: #ffffff;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+            overflow: hidden;
+            text-align: left;
             transition: transform 0.15s ease, box-shadow 0.15s ease;
         }
         .herr-movil-btn:active {
-            transform: scale(0.97);
+            transform: scale(0.98);
         }
         .herr-movil-icono {
-            font-size: 30px;
+            flex: 0 0 auto;
+            width: 62px;
+            height: 62px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
             line-height: 1;
+            position: relative;
+            z-index: 2;
         }
-        .herr-movil-btn-subtitulos {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
+        .herr-movil-textos {
+            position: relative;
+            z-index: 2;
+            min-width: 0;
         }
-        .herr-movil-btn-jugar {
-            background: linear-gradient(135deg, #7c3aed, #5b21b6);
+        .herr-movil-texto {
+            display: block;
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: 0.4px;
         }
-        .herr-movil-btn-alfabetizacion {
-            background: linear-gradient(135deg, #059669, #047857);
+        .herr-movil-desc {
+            display: block;
+            margin-top: 2px;
+            font-size: 12.5px;
+            font-weight: 500;
+            color: #64748b;
+            line-height: 1.3;
         }
+        .herr-movil-ola {
+            position: absolute;
+            top: 0;
+            right: -55px;
+            bottom: 0;
+            width: 160px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        .herr-movil-flecha {
+            position: absolute;
+            top: 50%;
+            right: 18px;
+            transform: translateY(-50%);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background-color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 800;
+            z-index: 2;
+            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.12);
+        }
+        .herr-movil-btn-subtitulos .herr-movil-icono { background-color: #fde3b8; color: #d97706; }
+        .herr-movil-btn-subtitulos .herr-movil-texto { color: #ea7f0e; }
+        .herr-movil-btn-subtitulos .herr-movil-ola { background: linear-gradient(135deg, #fbbf5c, #ea7f0e); }
+        .herr-movil-btn-subtitulos .herr-movil-flecha { color: #ea7f0e; }
+
+        .herr-movil-btn-jugar .herr-movil-icono { background-color: #e3daf9; color: #7c3aed; }
+        .herr-movil-btn-jugar .herr-movil-texto { color: #7c3aed; }
+        .herr-movil-btn-jugar .herr-movil-ola { background: linear-gradient(135deg, #a78bfa, #6d28d9); }
+        .herr-movil-btn-jugar .herr-movil-flecha { color: #7c3aed; }
+
+        .herr-movil-btn-alfabetizacion .herr-movil-icono { background-color: #c7f0dd; color: #047857; font-weight: 800; font-size: 18px; }
+        .herr-movil-btn-alfabetizacion .herr-movil-texto { color: #059669; }
+        .herr-movil-btn-alfabetizacion .herr-movil-ola { background: linear-gradient(135deg, #34d399, #059669); }
+        .herr-movil-btn-alfabetizacion .herr-movil-flecha { color: #059669; }
 
         /* Evita que el menú (u otro elemento) desborde el ancho de la
            pantalla y "empuje" o descentre el contenido en tablets. */
@@ -213,6 +271,49 @@
             color: #0d6efd !important;
             font-weight: normal !important; 
             text-shadow: 0px 4px 8px rgba(13, 110, 253, 0.2);
+        }
+
+        /* Letra actualmente seleccionada en el índice alfabético */
+        .btn-abc.active {
+            background-color: #fdf1cf !important;
+            color: #92670b !important;
+            font-weight: 700 !important;
+        }
+
+        /* ============================================================
+           Rediseño del índice alfabético SOLO para móvil: tarjeta gris
+           redondeada con una grilla de casillas cuadradas (8 columnas:
+           A-H, I-P, Q-X, Y-Z), igual al diseño de referencia pero más
+           compacta. En escritorio no se toca nada.
+           ============================================================ */
+        @media (max-width: 767.98px) {
+            .indice-alfabetico {
+                display: grid !important;
+                grid-template-columns: repeat(8, 1fr);
+                gap: 6px !important;
+                background-color: #eef1f5 !important;
+                border: none !important;
+                box-shadow: none !important;
+                border-radius: 18px !important;
+                padding: 12px !important;
+            }
+            .btn-abc {
+                width: 100% !important;
+                height: auto !important;
+                aspect-ratio: 1 / 1;
+                background-color: #ffffff;
+                border-radius: 10px;
+                font-size: 0.8rem;
+                box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+            }
+            .btn-abc:hover {
+                transform: none;
+                text-shadow: none;
+                background-color: #f8fafc;
+            }
+            .btn-abc.active {
+                box-shadow: inset 0 0 0 1px rgba(217, 163, 26, 0.25);
+            }
         }
 
         /* Cuadro de Sugerencias en Plomo Oscuro */
@@ -464,10 +565,13 @@
     bottom: 0;
     z-index: 1035;
     display: flex;
+    align-items: center;
+    gap: 6px;
     background-color: #eef1f5;
-    border-top: 1px solid #e2e8f0;
-    box-shadow: 0 -4px 14px rgba(15, 23, 42, 0.08);
-    padding-bottom: env(safe-area-inset-bottom, 0px);
+    border-top: none;
+    border-radius: 22px 22px 0 0;
+    box-shadow: 0 -6px 18px rgba(15, 23, 42, 0.10);
+    padding: 8px 8px calc(8px + env(safe-area-inset-bottom, 0px));
 }
 .mbn-item {
     flex: 1 1 0;
@@ -476,31 +580,63 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-    padding: 13px 2px 11px;
-    background: none;
+    gap: 5px;
+    padding: 6px 4px;
+    background: transparent;
     border: none;
+    border-radius: 14px;
     color: #64748b;
     cursor: pointer;
-    transition: color 0.15s ease, transform 0.1s ease;
+    transition: color 0.18s ease, transform 0.1s ease;
 }
 .mbn-item:active {
     transform: scale(0.94);
 }
+.mbn-icon-wrap {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 13px;
+    background-color: rgba(148, 163, 184, 0.12);
+    transition: background-color 0.18s ease, transform 0.18s ease;
+}
 .mbn-icon {
-    font-size: 27px;
-    line-height: 1;
+    width: 22px;
+    height: 22px;
+    stroke: currentColor;
+    fill: none;
+    transition: transform 0.18s ease;
+}
+/* Íconos entregados como PNG (no dibujados a mano en SVG): se usan
+   como máscara para poder colorearlos igual que los SVG de arriba
+   (gris inactivo / ámbar activo) con currentColor, en vez de quedar
+   fijos en un solo color. */
+.mbn-icon-img {
+    display: inline-block;
+    background-color: currentColor;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
 }
 .mbn-label {
-    font-size: 12.5px;
+    font-size: 11px;
     font-weight: 700;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 100%;
+    color: inherit;
 }
 .mbn-item.active {
-    color: var(--accent-color, #0284c7);
+    color: #92670b;
+}
+.mbn-item.active .mbn-icon-wrap {
+    background-color: #fdeaad;
 }
 
 /* Deja espacio abajo para que el footer y el contenido no queden
@@ -743,19 +879,32 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
          esta barra (menos usado) y sigue disponible en el menú ☰. -->
     <nav class="mobile-bottom-nav d-xl-none" id="mobileBottomNav" aria-label="Navegación principal">
         <button type="button" class="mbn-item active" data-vinculado="btnInicio">
-            <span class="mbn-icon" aria-hidden="true">🔍</span>
+            <span class="mbn-icon-wrap">
+                <svg class="mbn-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="10.5" cy="10.5" r="6"/>
+                    <line x1="20" y1="20" x2="15.1" y2="15.1"/>
+                </svg>
+            </span>
             <span class="mbn-label">Buscar</span>
         </button>
         <button type="button" class="mbn-item" data-vinculado="btnCategorias">
-            <span class="mbn-icon" aria-hidden="true">📁</span>
+            <span class="mbn-icon-wrap">
+                <svg class="mbn-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M3.5 6.5c0-1.1.9-2 2-2h3.6c.5 0 1 .2 1.4.6l1.1 1.1c.4.4.9.6 1.4.6h5.5c1.1 0 2 .9 2 2v7.7c0 1.1-.9 2-2 2h-13c-1.1 0-2-.9-2-2Z"/>
+                </svg>
+            </span>
             <span class="mbn-label">Temas</span>
         </button>
         <button type="button" class="mbn-item" data-vinculado="btnHerramientas">
-            <span class="mbn-icon" aria-hidden="true">🛠️</span>
+            <span class="mbn-icon-wrap">
+                <span class="mbn-icon mbn-icon-img" style="-webkit-mask-image:url('img/icons/nav/icono-herramientas.png'); mask-image:url('img/icons/nav/icono-herramientas.png');" aria-hidden="true"></span>
+            </span>
             <span class="mbn-label">Herramientas</span>
         </button>
         <button type="button" class="mbn-item" data-vinculado="btnSobreNosotros">
-            <span class="mbn-icon" aria-hidden="true">🤟</span>
+            <span class="mbn-icon-wrap">
+                <span class="mbn-icon mbn-icon-img" style="-webkit-mask-image:url('img/icons/nav/icono-nosotros.png'); mask-image:url('img/icons/nav/icono-nosotros.png');" aria-hidden="true"></span>
+            </span>
             <span class="mbn-label">Nosotros</span>
         </button>
     </nav>
@@ -976,20 +1125,32 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
             <div class="row g-3">
                 <div class="col-12">
                     <button type="button" id="btnHerrMovilSubtitulos" class="herr-movil-btn herr-movil-btn-subtitulos w-100">
+                        <span class="herr-movil-ola" aria-hidden="true"></span>
                         <span class="herr-movil-icono" aria-hidden="true">💬</span>
-                        <span class="herr-movil-texto">SUBTÍTULOS</span>
+                        <span class="herr-movil-textos">
+                            <span class="herr-movil-texto">SUBTÍTULOS</span>
+                        </span>
+                        <span class="herr-movil-flecha" aria-hidden="true">›</span>
                     </button>
                 </div>
                 <div class="col-12">
                     <button type="button" id="btnHerrMovilJugar" class="herr-movil-btn herr-movil-btn-jugar w-100">
+                        <span class="herr-movil-ola" aria-hidden="true"></span>
                         <span class="herr-movil-icono" aria-hidden="true">🎮</span>
-                        <span class="herr-movil-texto">JUGAR</span>
+                        <span class="herr-movil-textos">
+                            <span class="herr-movil-texto">JUGAR</span>
+                        </span>
+                        <span class="herr-movil-flecha" aria-hidden="true">›</span>
                     </button>
                 </div>
                 <div class="col-12">
                     <button type="button" id="btnHerrMovilAlfabetizacion" class="herr-movil-btn herr-movil-btn-alfabetizacion w-100">
-                        <span class="herr-movil-icono" aria-hidden="true">🔤</span>
-                        <span class="herr-movil-texto">ALFABETIZACIÓN</span>
+                        <span class="herr-movil-ola" aria-hidden="true"></span>
+                        <span class="herr-movil-icono" aria-hidden="true">abc</span>
+                        <span class="herr-movil-textos">
+                            <span class="herr-movil-texto">ALFABETIZACIÓN</span>
+                        </span>
+                        <span class="herr-movil-flecha" aria-hidden="true">›</span>
                     </button>
                 </div>
             </div>
@@ -1518,8 +1679,9 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
             <div class="p-4 rounded border-0 d-inline-block max-w-xl mx-auto shadow-sm text-white" style="background-color: #0f172a;">
                 <h6 class="fw-bold mb-2 text-white">¿Falta alguna palabra en el diccionario?</h6>
                 <p class="small mb-3 text-light">Ayúdanos sugiriendo términos para expandir la plataforma.</p>
-                <button class="btn btn-warning px-4 rounded-pill fw-bold text-dark" data-bs-toggle="modal" data-bs-target="#modalSugerencia">
+                <button class="btn btn-warning px-4 rounded-pill fw-bold text-dark d-inline-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalSugerencia">
                     Sugerir Palabra
+                    <span aria-hidden="true" style="font-size: 1.1em; line-height: 1;">+</span>
                 </button>
             </div>
         </section>

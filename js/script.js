@@ -712,6 +712,7 @@ function buscarPalabras(){
     const texto = buscar.value.trim().toLowerCase();
     ocultarQuiz();
     ocultarAlfabetizacion();
+    document.querySelectorAll(".btn-abc.active").forEach(boton => boton.classList.remove("active"));
     sugerencias.innerHTML = "";
     //resultado.innerHTML = "";
     //ultimasPalabras.innerHTML = ""; 
@@ -1377,6 +1378,9 @@ function actualizarEstadisticas(){
 function filtrarPorLetra(letra) {
     ocultarQuiz();
     ocultarAlfabetizacion();
+    document.querySelectorAll(".btn-abc").forEach(boton => {
+        boton.classList.toggle("active", boton.textContent.trim().toUpperCase() === letra.toUpperCase());
+    });
     buscar.value = ""; 
     sugerencias.innerHTML = "";
     sugerencias.style.display = "none";
