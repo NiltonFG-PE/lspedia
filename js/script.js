@@ -101,6 +101,7 @@ function actualizarVistaUrl(vista){
 
 function irAlBuscador(){
     ocultarSeccionHerramientas();
+    ocultarSeccionNosotros();
     ocultarPanelesGuardados();
     resultado.innerHTML = "";
     panelCategorias.innerHTML = "";
@@ -125,6 +126,7 @@ function irAlBuscador(){
 document.getElementById("btnCategorias").addEventListener("click", (e) => {
     e.preventDefault();
     ocultarSeccionHerramientas();
+    ocultarSeccionNosotros();
     mostrarBloqueInicio();
     // Vista "Temas" en móvil: solo deben quedar visibles el buscador, el
     // índice A-Z, las categorías, Favoritos e Historial. La clase la lee
@@ -387,6 +389,7 @@ function mostrarSeccionHerramientas(){
     ultimasPalabras.innerHTML = "";
     ocultarPanelesGuardados();
     ocultarBloqueInicio();
+    ocultarSeccionNosotros();
     document.body.classList.remove("vista-temas-movil");
     actualizarVistaUrl("herramientas");
 
@@ -439,6 +442,39 @@ function mostrarSeccionHerramientas(){
     }
 
     if(seccionSubtitulos) seccionSubtitulos.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// --- SECCIÓN "SOBRE NOSOTROS" (reemplaza el antiguo modal) ---
+function ocultarSeccionNosotros(){
+    const seccion = document.getElementById("seccionNosotros");
+    if(seccion) seccion.classList.add("d-none");
+}
+
+function mostrarSeccionNosotros(){
+    resultado.innerHTML = "";
+    panelCategorias.innerHTML = "";
+    resultadoCategorias.innerHTML = "";
+    categoriaActualMostrada = null;
+    ultimasPalabras.innerHTML = "";
+    ocultarPanelesGuardados();
+    ocultarSeccionHerramientas();
+    ocultarBloqueInicio();
+    document.body.classList.remove("vista-temas-movil");
+    actualizarVistaUrl("nosotros");
+
+    const seccion = document.getElementById("seccionNosotros");
+    if(seccion){
+        seccion.classList.remove("d-none");
+        seccion.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
+const btnSobreNosotros = document.getElementById("btnSobreNosotros");
+if(btnSobreNosotros){
+    btnSobreNosotros.addEventListener("click", (e) => {
+        e.preventDefault();
+        mostrarSeccionNosotros();
+    });
 }
 
 // Acceso directo a "Jugar" (usado por el botón flotante 🎮): a
@@ -580,6 +616,9 @@ const App = {
                 if (vistaEnUrl === "temas") {
                     const btnCategorias = document.getElementById("btnCategorias");
                     if (btnCategorias) btnCategorias.click();
+                } else if (vistaEnUrl === "nosotros") {
+                    const btnSobreNosotros = document.getElementById("btnSobreNosotros");
+                    if (btnSobreNosotros) btnSobreNosotros.click();
                 } else if (vistaEnUrl && vistaEnUrl.indexOf("herramientas") === 0) {
                     mostrarSeccionHerramientas();
                     // Si además había un módulo puntual abierto (selector móvil /
