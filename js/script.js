@@ -867,17 +867,55 @@ function mostrarPalabra(p, opciones = {}){
     agregarAHistorial(p.palabra); 
     const enFavoritos = esFavorito(p.palabra);
     const textoBoton = enFavoritos ? "★ En favoritos" : "⭐ Agregar a favoritos";
-    const bloqueImagen = p.imagen && p.imagen.trim() !== ""
-        ? `<div class="apoyo-visual-caja h-100 w-100" role="button" tabindex="0"
-                onclick="abrirImagenAmpliada('${p.imagen}', '${p.palabra.replace(/'/g, "\\'")}')"
-                onkeypress="if(event.key==='Enter') abrirImagenAmpliada('${p.imagen}', '${p.palabra.replace(/'/g, "\\'")}')">
-                <img src="${p.imagen}" class="apoyo-visual-img" alt="Imagen de apoyo visual para ${p.palabra}">
-                <span class="apoyo-visual-lupa">🔍 Ampliar</span>
-           </div>`
-        : `<div class="d-flex flex-column align-items-center justify-content-center text-muted text-center p-3 w-100 h-100">
+    // La columna "imagen" puede traer varias URLs separadas por coma para
+    // mostrar más de un ejemplo por palabra. Con una sola imagen se
+    // mantiene el comportamiento de siempre (clic para ampliar, sin
+    // flechas); con dos o más se arma un carrusel deslizable.
+    const imagenesPalabra = (p.imagen || "")
+        .split(",")
+        .map(url => url.trim())
+        .filter(url => url !== "");
+    const escaparComillasImg = (texto) => texto.replace(/'/g, "\\'");
+    let bloqueImagen;
+    if(imagenesPalabra.length === 0){
+        bloqueImagen = `<div class="d-flex flex-column align-items-center justify-content-center text-muted text-center p-3 w-100 h-100">
                 <span class="fs-1 mb-2">🖼️</span>
                 <span class="small fw-bold">Imagen próximamente</span>
            </div>`;
+    } else if(imagenesPalabra.length === 1){
+        bloqueImagen = `<div class="apoyo-visual-caja h-100 w-100" role="button" tabindex="0"
+                onclick="abrirImagenAmpliada('${imagenesPalabra[0]}', '${escaparComillasImg(p.palabra)}')"
+                onkeypress="if(event.key==='Enter') abrirImagenAmpliada('${imagenesPalabra[0]}', '${escaparComillasImg(p.palabra)}')">
+                <img src="${imagenesPalabra[0]}" class="apoyo-visual-img" alt="Imagen de apoyo visual para ${p.palabra}">
+                <span class="apoyo-visual-lupa">🔍 Ampliar</span>
+           </div>`;
+    } else {
+        const idCarrusel = "carruselImagenesPalabra";
+        const slides = imagenesPalabra.map((url, i) => `
+            <div class="carousel-item ${i === 0 ? "active" : ""}">
+                <div class="apoyo-visual-caja h-100 w-100" role="button" tabindex="0"
+                     onclick="abrirImagenAmpliada('${url}', '${escaparComillasImg(p.palabra)}')"
+                     onkeypress="if(event.key==='Enter') abrirImagenAmpliada('${url}', '${escaparComillasImg(p.palabra)}')">
+                    <img src="${url}" class="apoyo-visual-img" alt="Imagen de apoyo visual ${i + 1} de ${imagenesPalabra.length} para ${p.palabra}">
+                    <span class="apoyo-visual-lupa">🔍 Ampliar</span>
+                </div>
+            </div>`).join("");
+        const indicadores = imagenesPalabra.map((_, i) => `
+            <button type="button" data-bs-target="#${idCarrusel}" data-bs-slide-to="${i}" class="${i === 0 ? "active" : ""}" ${i === 0 ? 'aria-current="true"' : ''} aria-label="Imagen ${i + 1}"></button>`).join("");
+        bloqueImagen = `
+            <div id="${idCarrusel}" class="carousel slide carrusel-apoyo-visual h-100 w-100" data-bs-ride="false">
+                <div class="carousel-inner h-100">${slides}</div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#${idCarrusel}" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Imagen anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#${idCarrusel}" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Imagen siguiente</span>
+                </button>
+                <div class="carousel-indicators carrusel-apoyo-visual-indicadores">${indicadores}</div>
+            </div>`;
+    }
     const hayVideo = p.video && p.video.trim() !== "";
     const bloqueVideo = hayVideo
         ? `<div id="reproductorPalabra"></div>`
@@ -1532,7 +1570,8 @@ function mostrarSugerenciasRelacionadas(palabraActual){
     const filas = document.getElementById("sugerenciasPanelFilas");
     relacionadas.slice(-4).reverse().forEach(p => {
         const col = document.createElement("div"); col.className = "col-12 col-md-6 mb-2";
-        col.innerHTML = `<div class="card h-100 border-0 shadow-sm" style="border-radius: 12px; background-color: #ffffff;"><div class="row g-0 align-items-center"><div class="col-3 p-2"><img src="${p.imagen || 'https://via.placeholder.com/150'}" class="img-fluid rounded" style="height: 70px; width: 70px; object-fit: cover;"></div><div class="col-9"><div class="card-body py-2 px-2"><h6 class="mb-0 fw-bold text-primary">${p.palabra}</h6></div></div></div></div>`;
+        const primeraImagen = (p.imagen || "").split(",")[0].trim();
+        col.innerHTML = `<div class="card h-100 border-0 shadow-sm" style="border-radius: 12px; background-color: #ffffff;"><div class="row g-0 align-items-center"><div class="col-3 p-2"><img src="${primeraImagen || 'https://via.placeholder.com/150'}" class="img-fluid rounded" style="height: 70px; width: 70px; object-fit: cover;"></div><div class="col-9"><div class="card-body py-2 px-2"><h6 class="mb-0 fw-bold text-primary">${p.palabra}</h6></div></div></div></div>`;
         col.onclick = () => { window.scrollTo({ top: 0, behavior: 'smooth' }); mostrarPalabra(p); };
         filas.appendChild(col);
     });
