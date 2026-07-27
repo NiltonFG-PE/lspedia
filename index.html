@@ -371,6 +371,22 @@
             font-size: 0.85rem;
             color: #0f172a;
         }
+        .donacion-qr-link {
+            display: block;
+            border-radius: 8px;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .donacion-qr-link:hover,
+        .donacion-qr-link:focus-visible {
+            transform: scale(1.03);
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+            outline: none;
+        }
+        .donacion-card-nota {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            margin-top: 6px;
+        }
 
         /* Botones del modal "Contratar un intérprete": fila con ícono,
            nombre del medio de contacto y flecha, mismo lenguaje visual
@@ -2256,8 +2272,11 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
                         <div class="col-12 col-md-4">
                             <div class="donacion-card text-center h-100">
                                 <div class="donacion-card-marca" style="color:#7c2d92;">Yape</div>
-                                <img src="img/qr-yape.jpg" alt="Código QR de Yape" class="donacion-qr">
+                                <a href="intent://scan/#Intent;package=com.bcp.innovacxion.yapeapp;scheme=yape;S.browser_fallback_url=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.bcp.innovacxion.yapeapp;end" class="donacion-qr-link" aria-label="Abrir la app Yape para donar">
+                                    <img src="img/qr-yape.jpg" alt="Código QR de Yape" class="donacion-qr">
+                                </a>
                                 <div class="donacion-card-dato">Nilton Fer*</div>
+                                <div class="donacion-card-nota">Toca el QR para abrir Yape</div>
                             </div>
                         </div>
                         <div class="col-12 col-md-4">
@@ -2266,13 +2285,17 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
                                 <img src="img/qr-binance.jpg" alt="Código QR de Binance Pay" class="donacion-qr">
                                 <div class="donacion-card-dato">Binance ID: 61018297</div>
                                 <div class="donacion-card-dato">Usuario: Legacype</div>
+                                <div class="donacion-card-nota">Escanea el QR desde la app Binance</div>
                             </div>
                         </div>
                         <div class="col-12 col-md-4">
                             <div class="donacion-card text-center h-100">
                                 <div class="donacion-card-marca text-primary">PayPal</div>
-                                <img src="img/qr-paypal.png" alt="Código QR de PayPal" class="donacion-qr">
+                                <a href="https://paypal.me/niltonfg" target="_blank" rel="noopener" class="donacion-qr-link" aria-label="Abrir PayPal para donar">
+                                    <img src="img/qr-paypal.png" alt="Código QR de PayPal" class="donacion-qr">
+                                </a>
                                 <div class="donacion-card-dato">@niltonfg</div>
+                                <div class="donacion-card-nota">Toca el QR para abrir PayPal</div>
                             </div>
                         </div>
                     </div>
