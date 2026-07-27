@@ -1,5 +1,15 @@
 [
   {
+    "palabra": "Abismo",
+    "definicion": "Abismo es una profundidad muy grande y difícil de medir. Puede referirse a un lugar físico, como un precipicio muy profundo, o usarse de forma figurada para describir una gran diferencia, un peligro o una situación muy difícil.\n\nEn pocas palabras, un abismo es algo tan profundo o tan grande que parece no tener fin o que es muy difícil de superar.",
+    "categoria": "Reflexión",
+    "video": "0J4ckIW6kaA",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/abismo1.png",
+    "variantes": "abismo económico, al borde del abismo, caer en un abismo, un abismo de diferencia, Precipicio, Barranco",
+    "senasugerida": "",
+    "": ""
+  },
+  {
     "palabra": "Gracias",
     "definicion": "Expresión general para agradecer un favor, un regalo o una atención.",
     "categoria": "Cortesía",
@@ -128,5 +138,15 @@
     "variantes": "Bienvenida, Bienvenidos,Bienvenidas,  Bienvenid@s",
     "senasugerida": "",
     "": "git commit -m \"borrar botón oraciones\""
+  },
+  {
+    "palabra": "Trascender",
+    "definicion": "Transcender significa ir más allá de lo común o de los límites, dejando un impacto, una enseñanza o un cambio que continúa existiendo incluso después de que una persona, un hecho o un momento haya terminado.\n\nEn otras palabras, trascender es hacer algo que tenga un valor o una influencia duradera.",
+    "categoria": "Reflexión",
+    "video": "0bXC16BTNiA",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/trascender1.png, https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/trascender2.png, ",
+    "variantes": "transcender, perdurar, dejar huella, Tener impacto, impacto, Permanecer",
+    "senasugerida": "",
+    "": ""
   }
 ]
