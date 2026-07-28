@@ -1359,10 +1359,10 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <a class="nav-link active" href="#" id="btnInicio">
-                            <span id="iconoInicio" aria-hidden="true" style="font-size: 20px; line-height: 1;">🔍</span> Buscar
+                            <span id="iconoInicio" aria-hidden="true" style="font-size: 20px; line-height: 1;">🔍</span> Diccionario
                         </a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="#" id="btnCategorias"><span aria-hidden="true">📁</span> Temas orden</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" id="btnCategorias"><span aria-hidden="true">📁</span> Vocabulario</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" id="btnHerramientas"><span aria-hidden="true">🛠️</span> Herramientas</a></li>
                     <li class="nav-item"><a class="nav-link text-warning" href="#" id="btnSobreNosotros"><span aria-hidden="true">🤟</span> Sobre Nosotros</a></li>
                 </ul>
@@ -1379,20 +1379,15 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
     <nav class="mobile-bottom-nav d-xl-none" id="mobileBottomNav" aria-label="Navegación principal">
         <button type="button" class="mbn-item active" data-vinculado="btnInicio">
             <span class="mbn-icon-wrap">
-                <svg class="mbn-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <circle cx="10.5" cy="10.5" r="6"/>
-                    <line x1="20" y1="20" x2="15.1" y2="15.1"/>
-                </svg>
+                <span class="mbn-icon mbn-icon-img" style="-webkit-mask-image:url('img/icons/nav/icono-diccionario.png'); mask-image:url('img/icons/nav/icono-diccionario.png');" aria-hidden="true"></span>
             </span>
-            <span class="mbn-label">Buscar</span>
+            <span class="mbn-label">Diccionario</span>
         </button>
         <button type="button" class="mbn-item" data-vinculado="btnCategorias">
             <span class="mbn-icon-wrap">
-                <svg class="mbn-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M3.5 6.5c0-1.1.9-2 2-2h3.6c.5 0 1 .2 1.4.6l1.1 1.1c.4.4.9.6 1.4.6h5.5c1.1 0 2 .9 2 2v7.7c0 1.1-.9 2-2 2h-13c-1.1 0-2-.9-2-2Z"/>
-                </svg>
+                <span class="mbn-icon mbn-icon-img" style="-webkit-mask-image:url('img/icons/nav/icono-vocabulario.png'); mask-image:url('img/icons/nav/icono-vocabulario.png');" aria-hidden="true"></span>
             </span>
-            <span class="mbn-label">Temas</span>
+            <span class="mbn-label">Vocabulario</span>
         </button>
         <button type="button" class="mbn-item" data-vinculado="btnHerramientas">
             <span class="mbn-icon-wrap">
@@ -1432,12 +1427,12 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
     </div>
 
     <div class="fab-wrap fab-oculto" id="fabWrapTemas">
-        <button type="button" id="btnAccesoTemas" class="btn-acceso-flotante btn-acceso-temas" title="Ir a Temas orden" aria-label="Acceso directo a Temas orden">
+        <button type="button" id="btnAccesoTemas" class="btn-acceso-flotante btn-acceso-temas" title="Ir a Vocabulario" aria-label="Acceso directo a Vocabulario">
             <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M3 6.5C3 5.67157 3.67157 5 4.5 5H9.17157C9.5694 5 9.95093 5.15804 10.2322 5.43934L11.5 6.70711C11.7811 6.98811 12.1627 7.14615 12.5605 7.14615H19.5C20.3284 7.14615 21 7.81772 21 8.64615V17.5C21 18.3284 20.3284 19 19.5 19H4.5C3.67157 19 3 18.3284 3 17.5V6.5Z" fill="#0ea5e9"/>
             </svg>
         </button>
-        <button type="button" class="fab-cerrar-individual" data-fab="temas" title="Ocultar este acceso" aria-label="Ocultar acceso a Temas orden">✕</button>
+        <button type="button" class="fab-cerrar-individual" data-fab="temas" title="Ocultar este acceso" aria-label="Ocultar acceso a Vocabulario">✕</button>
     </div>
 
     <button type="button" id="btnCerrarAccesos" class="btn-cerrar-accesos fab-oculto" title="Ocultar todos los accesos rápidos" aria-label="Ocultar todos los accesos rápidos">←</button>
@@ -1476,8 +1471,8 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
         </div>
 
         <div class="text-center mb-4 header-minimal" id="bloqueTituloPrincipal">
-            <h1 class="fw-bold tracking-tight">Diccionario de Lengua de Señas Peruana (LSP) y Español</h1>
-            <p class="text-muted small">Aprende el significado de las palabras con el apoyo de videos en señas.</p>
+            <h1 class="fw-bold tracking-tight" id="tituloPrincipal">Diccionario de Lengua de Señas Peruana (LSP) y Español</h1>
+            <p class="text-muted small" id="subtituloPrincipal">Aprende el significado de las palabras con el apoyo de videos en señas.</p>
         </div>
 
         <div class="row justify-content-center mb-3" id="bloqueBuscador">
@@ -1537,11 +1532,24 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
             </div>
         </div>
 
+        <!-- Tarjetas de Categorías del Diccionario (Hoja 1 de Sheets, data/categorias.json).
+             Aparecen debajo del Índice Alfabético, siempre visibles en la
+             vista "Diccionario". Al tocar una tarjeta se filtran y muestran
+             en #resultado las palabras de esa categoría (igual que al usar
+             el índice A-Z), ver renderCategoriasDiccionario() y
+             filtrarPorCategoriaDiccionario() en script.js. -->
+        <div class="row justify-content-center mb-2" id="filaCategoriasDiccionario">
+            <div class="col-lg-8">
+                <h6 class="text-muted uppercase fw-bold mb-2 tracking-wider text-center">📂 Categorías</h6>
+                <div id="panelCategoriasDiccionario" class="row g-2 mb-4"></div>
+            </div>
+        </div>
+
         <div id="resultado" class="mb-4 animate-fade-in"></div>
 
         <div id="ultimasPalabras" class="row g-2 mb-4"></div>
 
-        <!-- Vista "Temas orden": primero las etiquetas (tarjetas de categoría),
+        <!-- Vista "Vocabulario" (antes "Temas orden"): primero las etiquetas (tarjetas de categoría),
              y debajo el buscador exclusivo de esta vista (reemplaza al
              buscador general #bloqueBuscador mientras está activa). Los
              resultados/sugerencias al escribir aparecen justo debajo del

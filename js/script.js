@@ -99,6 +99,30 @@ function actualizarVistaUrl(vista){
     window.history.replaceState({}, '', nuevaUrl);
 }
 
+// El título y subtítulo de arriba del todo cambian según la vista:
+// "Diccionario" (buscador general) usa el texto original, y
+// "Vocabulario" (tarjetas de categorías) usa un texto propio, más
+// acorde a esa sección.
+const TITULOS_PRINCIPALES = {
+    diccionario: {
+        titulo: "Diccionario de Lengua de Señas Peruana (LSP) y Español",
+        subtitulo: "Aprende el significado de las palabras con el apoyo de videos en señas."
+    },
+    vocabulario: {
+        titulo: "Vocabulario de Lengua de Señas Peruana (LSP)",
+        subtitulo: "Aprende nuevas palabras en español junto con su seña correspondiente en Lengua de Señas Peruana."
+    }
+};
+
+function actualizarTituloPrincipal(vista){
+    const datos = TITULOS_PRINCIPALES[vista];
+    if(!datos) return;
+    const titulo = document.getElementById("tituloPrincipal");
+    const subtitulo = document.getElementById("subtituloPrincipal");
+    if(titulo) titulo.textContent = datos.titulo;
+    if(subtitulo) subtitulo.textContent = datos.subtitulo;
+}
+
 function irAlBuscador(){
     ocultarSeccionHerramientas();
     ocultarSeccionNosotros();
@@ -110,6 +134,7 @@ function irAlBuscador(){
     categoriaActualMostrada = null;
     document.body.classList.remove("vista-temas-movil");
     mostrarBloqueInicio();
+    actualizarTituloPrincipal("diccionario");
     actualizarVistaUrl(null);
     desplegarIndiceAlfabetico();
     if (sugerencias) sugerencias.innerHTML = "";
@@ -128,6 +153,7 @@ document.getElementById("btnCategorias").addEventListener("click", (e) => {
     ocultarSeccionHerramientas();
     ocultarSeccionNosotros();
     mostrarBloqueInicio();
+    actualizarTituloPrincipal("vocabulario");
     // Vista "Temas" en móvil: solo deben quedar visibles el buscador, el
     // índice A-Z, las categorías, Favoritos e Historial. La clase la lee
     // el CSS (@media max-width 1199.98px) para ocultar la seña del
@@ -143,6 +169,8 @@ document.getElementById("btnCategorias").addEventListener("click", (e) => {
     if(filaBotonIndiceTemas) filaBotonIndiceTemas.style.display = "none";
     const filaIndiceTemas = document.getElementById("filaIndiceAlfabetico");
     if(filaIndiceTemas) filaIndiceTemas.style.display = "none";
+    const filaCategoriasDiccTemas = document.getElementById("filaCategoriasDiccionario");
+    if(filaCategoriasDiccTemas) filaCategoriasDiccTemas.style.display = "none";
     // El buscador general (#buscar, busca en todo el diccionario) se
     // reemplaza acá por el buscador azul exclusivo de Categorías (solo
     // filtra las tarjetas por nombre). Aplica igual en escritorio y móvil.
@@ -355,6 +383,8 @@ function ocultarBloqueInicio(){
     if(filaBotonIndice) filaBotonIndice.style.display = "none";
     const filaIndice = document.getElementById("filaIndiceAlfabetico");
     if(filaIndice) filaIndice.style.display = "none";
+    const filaCategoriasDicc = document.getElementById("filaCategoriasDiccionario");
+    if(filaCategoriasDicc) filaCategoriasDicc.style.display = "none";
     const statsPanel = document.querySelector(".stats-panel-destacado");
     if(statsPanel) statsPanel.style.display = "none";
     const sugerencias = document.getElementById("seccionSugerencias");
@@ -372,6 +402,8 @@ function mostrarBloqueInicio(){
     if(filaBotonIndice) filaBotonIndice.style.display = "";
     const filaIndice = document.getElementById("filaIndiceAlfabetico");
     if(filaIndice) filaIndice.style.display = "";
+    const filaCategoriasDicc = document.getElementById("filaCategoriasDiccionario");
+    if(filaCategoriasDicc) filaCategoriasDicc.style.display = "";
     const statsPanel = document.querySelector(".stats-panel-destacado");
     if(statsPanel) statsPanel.style.display = "";
     const sugerencias = document.getElementById("seccionSugerencias");
@@ -601,7 +633,15 @@ const App = {
         fetch("data/palabras.json")
         .then(res => res.json())
         .then(data => {
-            this.datos = data.filter(p => p.palabra && p.categoria);
+            // Solo se muestran en la web las palabras que YA tienen video
+            // cargado. Si agregas una palabra nueva en la Hoja 1 y aún no
+            // le pusiste el video, se queda oculta hasta que el campo
+            // "video" tenga algo escrito.
+            this.datos = data.filter(p => p.palabra && p.categoria && p.video && p.video.trim());
+            // Las categorías reales del diccionario (Hoja 1, columna C)
+            // recién están disponibles acá, así que se pintan las tarjetas
+            // en cuanto llegan las palabras.
+            renderCategoriasDiccionario();
             actualizarEstadisticas();
             mostrarFavoritos();
             mostrarSenalDelDia();
@@ -1608,15 +1648,78 @@ const COLORES_CATEGORIAS = [
     { fondo: "#ccfbf1", borde: "#99f6e4", texto: "#0f766e" }, // turquesa
 ];
 
+// --- TARJETAS DE CATEGORÍAS DEL DICCIONARIO (Hoja 1, columna "categoria") ---
+// Estas tarjetas se arman con las categorías REALES que existen en
+// palabras.json (columna C de la Hoja 1), igual que hace mostrarCategorias()
+// con la Hoja 2. Se muestran solo con el nombre (sin ícono), fijas debajo
+// del Índice Alfabético, dentro de la vista "Diccionario".
+const panelCategoriasDiccionario = document.getElementById("panelCategoriasDiccionario");
+
+function renderCategoriasDiccionario(){
+    if(!panelCategoriasDiccionario) return;
+    panelCategoriasDiccionario.innerHTML = "";
+    // Categorías reales, tomadas de la columna "categoria" de cada palabra
+    // (Hoja 1 de Sheets), sin duplicados y ordenadas alfabéticamente.
+    const nombresCategorias = [...new Set(
+        (App.datos || [])
+            .filter(p => p.categoria && p.categoria.trim())
+            .map(p => p.categoria.trim())
+    )].sort((a, b) => a.localeCompare(b, "es"));
+
+    nombresCategorias.forEach((nombre, indice) => {
+        const color = COLORES_CATEGORIAS[indice % COLORES_CATEGORIAS.length];
+        const card = document.createElement("div");
+        card.className = "col-4 col-md-2 animate-fade-in";
+        card.innerHTML = `<div class="card h-100 shadow-sm categoria-dicc-card" style="border: 2px solid ${color.borde}; background-color: ${color.fondo};"><div class="card-body text-center py-3"><div class="categoria-dicc-nombre" style="color: ${color.texto};">${nombre}</div></div></div>`;
+        card.onclick = () => filtrarPorCategoriaDiccionario(nombre);
+        panelCategoriasDiccionario.appendChild(card);
+    });
+}
+
+// Filtra las palabras del diccionario (Hoja 1, App.datos) por el nombre
+// de la categoría tocada y las pinta en #resultado, igual que hace
+// filtrarPorLetra() con el índice A-Z.
+function filtrarPorCategoriaDiccionario(nombre){
+    ocultarQuiz();
+    ocultarAlfabetizacion();
+    buscar.value = "";
+    sugerencias.innerHTML = "";
+    sugerencias.style.display = "none";
+    resultado.innerHTML = "";
+    panelCategorias.innerHTML = "";
+    resultadoCategorias.innerHTML = "";
+    categoriaActualMostrada = null;
+    ultimasPalabras.innerHTML = "";
+    ocultarPanelesGuardados();
+    window.history.pushState({}, '', window.location.pathname);
+    const filtradas = App.datos.filter(p => p.categoria.trim().toLowerCase() === nombre.trim().toLowerCase());
+    if (filtradas.length === 0) {
+        resultado.innerHTML = `<div class="alert alert-light border text-center text-muted small py-3" style="border-radius: 12px;">No hay palabras en la categoría <strong>${nombre}</strong> todavía.</div>`;
+        return;
+    }
+    resultado.innerHTML = `<h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">Categoría: ${nombre}</h6>`;
+    filtradas.forEach(p => {
+        resultado.innerHTML += `
+        <div class="card mb-2 palabra-card shadow-sm animate-fade-in" style="border-radius: 10px;">
+            <div class="card-body p-2 d-flex justify-content-between align-items-center">
+                <div><h6 class="mb-0 fw-bold text-primary">${p.palabra}</h6><small class="text-muted">${p.categoria.trim()}</small></div>
+                <button class="btn btn-sm btn-primary py-1 px-3 fw-bold" onclick="mostrarPalabraPorNombre('${p.palabra.replace(/'/g, "\\'")}')">Ver Seña</button>
+            </div>
+        </div>`;
+    });
+    resultado.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+window.filtrarPorCategoriaDiccionario = filtrarPorCategoriaDiccionario;
+
 function mostrarCategorias(){
     resultado.innerHTML=""; panelCategorias.innerHTML=""; ultimasPalabras.innerHTML = ""; ocultarPanelesGuardados();
     if (window.QuizV2 && typeof QuizV2.asegurarBancoCargado === "function") {
         QuizV2.asegurarBancoCargado();
     }
-    const datosUnificados = obtenerDatosUnificados();
-    const categories = [...new Set(datosUnificados.map(p => p.categoria.trim()))].sort();
+    const datosVocabulario = obtenerDatosVocabulario();
+    const categories = [...new Set(datosVocabulario.map(p => p.categoria.trim()))].sort();
     categories.forEach((nombre, indice)=>{
-        const cantidad = datosUnificados.filter(p => p.categoria.trim() === nombre).length;
+        const cantidad = datosVocabulario.filter(p => p.categoria.trim() === nombre).length;
         const color = COLORES_CATEGORIAS[indice % COLORES_CATEGORIAS.length];
         const card = document.createElement("div");
         card.className = "col-6 col-md-3 animate-fade-in";
@@ -1627,7 +1730,7 @@ function mostrarCategorias(){
     categoriaActualMostrada = null;
 }
 
-// --- BUSCADOR EXCLUSIVO DE "TEMAS ORDEN" ---
+// --- BUSCADOR EXCLUSIVO DE "VOCABULARIO" (antes "Temas orden") ---
 // Reemplaza al buscador general (#buscar) mientras esta vista está
 // activa, en escritorio y en móvil por igual. Busca dentro del CONTENIDO
 // de las categorías (palabras reales: Cortesía, Educación, Saludos,
@@ -1669,7 +1772,7 @@ function buscarEnCategorias(){
         resultadoCategorias.innerHTML = "";
         return;
     }
-    const coincidencias = obtenerDatosUnificados().filter(p => p.palabra.toLowerCase().includes(texto));
+    const coincidencias = obtenerDatosVocabulario().filter(p => p.palabra.toLowerCase().includes(texto));
     if(coincidencias.length === 0){
         resultadoCategorias.innerHTML = botonAtrasCategorias() +
             `<div class="alert alert-light border text-center text-muted small py-3" style="border-radius: 12px;">No hay palabras que coincidan con "${textoOriginal}".</div>`;
@@ -1678,32 +1781,26 @@ function buscarEnCategorias(){
     let html = botonAtrasCategorias() +
         `<h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">Resultados para "${textoOriginal}"</h6>`;
     coincidencias.forEach(p => {
-        const badgeQuiz = p._soloQuiz ? ` <span class="badge bg-warning text-dark ms-1" style="font-size: 10px;">🎮 Quiz</span>` : "";
-        html += `<div class="card mb-2 palabra-card shadow-sm animate-fade-in" style="border-radius: 10px;"><div class="card-body p-2 d-flex justify-content-between align-items-center"><div><h6 class="mb-0 fw-bold text-primary">${p.palabra}${badgeQuiz}</h6><small class="text-muted">${p.categoria.trim()}</small></div><button class="btn btn-sm btn-primary py-1 px-3 fw-bold" onclick="mostrarPalabraPorNombreUnificado('${p.palabra.replace(/'/g, "\\'")}')">Ver Seña</button></div></div>`;
+        html += `<div class="card mb-2 palabra-card shadow-sm animate-fade-in" style="border-radius: 10px;"><div class="card-body p-2 d-flex justify-content-between align-items-center"><div><h6 class="mb-0 fw-bold text-primary">${p.palabra}</h6><small class="text-muted">${p.categoria.trim()}</small></div><button class="btn btn-sm btn-primary py-1 px-3 fw-bold" onclick="mostrarPalabraPorNombreUnificado('${p.palabra.replace(/'/g, "\\'")}')">Ver Seña</button></div></div>`;
     });
     resultadoCategorias.innerHTML = html;
 }
 
-// --- DATOS UNIFICADOS (Hoja 1 + palabras de la Hoja 2 que no están en la Hoja 1) ---
-// Se usa en categorías (y se puede reutilizar donde haga falta) para que
-// las palabras del banco del Quiz no queden "invisibles" fuera del buscador.
-// Solo se incluyen las de la Hoja 2 que ya tienen categoría, para que el
-// agrupamiento por categoría tenga sentido.
-function obtenerDatosUnificados(){
-    const nombresHoja1 = new Set(App.datos.map(p => p.palabra.trim().toLowerCase()));
-    const soloHoja2 = obtenerBancoHoja2()
-        .filter(p => p.palabra && p.categoria && p.categoria.trim() !== "" && !nombresHoja1.has(p.palabra.trim().toLowerCase()))
-        .map(p => ({ ...p, _soloQuiz: true }));
-    return [...App.datos, ...soloHoja2];
+// --- DATOS DE VOCABULARIO (solo Hoja 2) ---
+// La sección "Vocabulario" (antes "Temas orden") ahora toma sus categorías
+// y palabras EXCLUSIVAMENTE del banco de la Hoja 2 (el mismo que usa el
+// Quiz), sin mezclarlas con el diccionario de la Hoja 1. Solo se incluyen
+// las que ya tienen categoría, para que el agrupamiento tenga sentido.
+function obtenerDatosVocabulario(){
+    return obtenerBancoHoja2().filter(p => p.palabra && p.categoria && p.categoria.trim() !== "");
 }
 
 function mostrarCategoria(nombre){
     categoriaActualMostrada = nombre;
     if(buscarCategorias) buscarCategorias.value = "";
     let html = botonAtrasCategorias() + `<h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">Categoría: ${nombre}</h6>`;
-    obtenerDatosUnificados().filter(p => p.categoria.trim() === nombre).forEach(p=>{
-        const badgeQuiz = p._soloQuiz ? ` <span class="badge bg-warning text-dark ms-1" style="font-size: 10px;">🎮 Quiz</span>` : "";
-        html += `<div class="card mb-2 palabra-card shadow-sm animate-fade-in" style="border-radius: 10px;"><div class="card-body p-2 d-flex justify-content-between align-items-center"><div><h6 class="mb-0 fw-bold text-primary">${p.palabra}${badgeQuiz}</h6></div><button class="btn btn-sm btn-primary py-1 px-3 fw-bold" onclick="mostrarPalabraPorNombreUnificado('${p.palabra.replace(/'/g, "\\'")}')">Ver Seña</button></div></div>`;
+    obtenerDatosVocabulario().filter(p => p.categoria.trim() === nombre).forEach(p=>{
+        html += `<div class="card mb-2 palabra-card shadow-sm animate-fade-in" style="border-radius: 10px;"><div class="card-body p-2 d-flex justify-content-between align-items-center"><div><h6 class="mb-0 fw-bold text-primary">${p.palabra}</h6></div><button class="btn btn-sm btn-primary py-1 px-3 fw-bold" onclick="mostrarPalabraPorNombreUnificado('${p.palabra.replace(/'/g, "\\'")}')">Ver Seña</button></div></div>`;
     });
     resultadoCategorias.innerHTML = html;
 }

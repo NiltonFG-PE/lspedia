@@ -248,6 +248,27 @@ h1, h2, h3, h4, h5, h6 {
 .categoria-card p { font-size: 11px; margin: 0; color: var(--text-muted); }
 .categoria-card:hover { background: #f1f5f9; }
 
+/* Tarjetas de Categorías del Diccionario (data/categorias.json, Hoja 1),
+   debajo del Índice Alfabético en la vista "Diccionario". Más compactas
+   que las tarjetas de "Vocabulario": ícono grande + nombre, en fila. */
+.categoria-dicc-card {
+    cursor: pointer;
+    border-radius: 14px;
+    transition: filter 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+.categoria-dicc-card:hover {
+    filter: brightness(0.96) saturate(1.15);
+    transform: scale(1.03);
+}
+.categoria-dicc-icono {
+    font-size: 1.6rem;
+    line-height: 1;
+}
+.categoria-dicc-nombre {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
 /* Tarjetas de estadísticas clicables (Palabras / Categorías / Videos) */
 .stat-card-clicable {
     cursor: pointer;
