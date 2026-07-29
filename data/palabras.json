@@ -137,7 +137,7 @@
     "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Bienvenido.jpg",
     "variantes": "Bienvenida, Bienvenidos,Bienvenidas,  Bienvenid@s",
     "senasugerida": "",
-    "": ""
+    "": "git commit -m \"borrar botón oraciones\""
   },
   {
     "palabra": "Trascender",
@@ -157,16 +157,16 @@
     "imagen": "",
     "variantes": "",
     "senasugerida": "",
-    "": ""
+    "": "git push origin develop"
   },
   {
-    "palabra": "Los",
-    "definicion": "Animales",
-    "categoria": "Perro",
-    "video": "Gato",
-    "imagen": "Raton",
-    "variantes": "Pollo",
-    "senasugerida": "Pato",
-    "": "Canguro"
+    "palabra": "Los Animales Perro Gato Raton Pollo Pato Gallina Gallo Pavo Pavo Real Paloma Pajaro Vaca Oveja Caballo Burro Llama Tortuga Loro Chancho Sapo Concha de Mar Pescado Delfin Foca Pingüino Elefante Hipopótamo Conejo Cuy Tigre Oso Jirafa Venado Zorro Lobo León Camello Dromedario Cocodrilo Culebra Mono Toro Cóndor Pelícano Búho Abeja Mosca Zancudo Gusano Hormiga Cucaracha Mariposa Araña Canguro",
+    "definicion": "",
+    "categoria": "",
+    "video": "",
+    "imagen": "",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
   }
 ]
