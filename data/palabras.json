@@ -137,7 +137,7 @@
     "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Bienvenido.jpg",
     "variantes": "Bienvenida, Bienvenidos,Bienvenidas,  Bienvenid@s",
     "senasugerida": "",
-    "": ""
+    "": "git commit -m \"borrar botón oraciones\""
   },
   {
     "palabra": "Trascender",
@@ -157,6 +157,6 @@
     "imagen": "",
     "variantes": "",
     "senasugerida": "",
-    "": ""
+    "": "git push origin develop"
   }
 ]
