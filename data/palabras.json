@@ -160,13 +160,13 @@
     "": ""
   },
   {
-    "palabra": "Los",
-    "definicion": "Animales,",
-    "categoria": "Perro,",
-    "video": "Gato,",
-    "imagen": "Raton,",
-    "variantes": "Pollo,",
-    "senasugerida": "Pato,",
+    "palabra": "Los Animales",
+    "definicion": "Perro",
+    "categoria": "Gato",
+    "video": "Raton",
+    "imagen": "Pollo",
+    "variantes": "Pato",
+    "senasugerida": "Gallina",
     "": "Canguro"
   }
 ]
