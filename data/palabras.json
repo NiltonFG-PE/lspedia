@@ -150,23 +150,13 @@
     "": ""
   },
   {
-    "palabra": "palabra",
-    "definicion": "definicion",
-    "categoria": "categoria",
-    "video": "video",
-    "imagen": "imagen",
-    "variantes": "variantes",
-    "senasugerida": "prompt_imagen",
-    "": ""
-  },
-  {
     "palabra": "Profesor",
     "definicion": "Es la persona que enseña en el colegio o la universidad. Explica los temas, corrige tareas y ayuda a los estudiantes a aprender.\n Ejemplo: El profesor de matemática explicó cómo sumar fracciones.",
     "categoria": "Colegio",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración simple y colorida de un profesor de pie frente a una pizarra en un aula, estilo plano (flat design), fondo claro, sin texto.",
     "variantes": "Profesora, Maestro, Maestra, Docente, Miss, Profe",
-    "senasugerida": "Ilustración simple y colorida de un profesor de pie frente a una pizarra en un aula, estilo plano (flat design), fondo claro, sin texto.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -174,9 +164,9 @@
     "definicion": "Es una prueba con preguntas que el profesor da para saber cuánto ha aprendido el estudiante.\n Ejemplo: Mañana tengo examen de historia, tengo que estudiar hoy.",
     "categoria": "Colegio",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de una hoja de examen con preguntas y un lápiz al lado, sobre un pupitre escolar, colores suaves, sin texto legible.",
     "variantes": "Prueba, Evaluación, Test, Parcial",
-    "senasugerida": "Ilustración plana de una hoja de examen con preguntas y un lápiz al lado, sobre un pupitre escolar, colores suaves, sin texto legible.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -184,9 +174,9 @@
     "definicion": "Es el trabajo que el profesor manda para hacer en casa, después de la clase.\n Ejemplo: Tengo que terminar la tarea de comunicación antes de dormir.",
     "categoria": "Colegio",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de un cuaderno abierto con ejercicios escritos y un lápiz, sobre una mesa en casa, estilo flat design, colores cálidos.",
     "variantes": "Deberes, Trabajo escolar, Tarea de casa",
-    "senasugerida": "Ilustración plana de un cuaderno abierto con ejercicios escritos y un lápiz, sobre una mesa en casa, estilo flat design, colores cálidos.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -194,9 +184,9 @@
     "definicion": "Es el tiempo corto de descanso entre clases, cuando los estudiantes salen a jugar o comer algo.\n Ejemplo: En el recreo jugué fútbol con mis amigos.",
     "categoria": "Colegio",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de niños jugando y corriendo en un patio escolar durante el recreo, colores alegres, estilo flat design.",
     "variantes": "Descanso, Hora de recreo",
-    "senasugerida": "Ilustración plana de niños jugando y corriendo en un patio escolar durante el recreo, colores alegres, estilo flat design.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -204,9 +194,9 @@
     "definicion": "Es el salón donde los estudiantes reciben las clases con el profesor.\n Ejemplo: Nuestra aula tiene veinte carpetas y una pizarra grande.",
     "categoria": "Colegio",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de un aula escolar con pizarra, carpetas ordenadas y un profesor al frente, estilo flat design, colores claros.",
     "variantes": "Salón de clase, Clase",
-    "senasugerida": "Ilustración plana de un aula escolar con pizarra, carpetas ordenadas y un profesor al frente, estilo flat design, colores claros.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -214,9 +204,9 @@
     "definicion": "Es un lugar donde hay muchos libros para leer o llevar prestados y estudiar.\n Ejemplo: Fui a la biblioteca a buscar un libro para mi tarea.",
     "categoria": "Colegio",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de estantes llenos de libros de colores y una persona leyendo en una mesa, estilo flat design, ambiente tranquilo.",
     "variantes": "Biblioteca escolar, Sala de lectura",
-    "senasugerida": "Ilustración plana de estantes llenos de libros de colores y una persona leyendo en una mesa, estilo flat design, ambiente tranquilo.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -224,9 +214,9 @@
     "definicion": "Es el número o letra que el profesor da para decir qué tan bien hizo el estudiante un examen o tarea.\n Ejemplo: Saqué una buena nota en el examen de ciencias.",
     "categoria": "Colegio",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de una hoja de examen con un número grande marcado con un check, colores suaves, estilo flat design, sin texto real.",
     "variantes": "Calificación, Puntaje",
-    "senasugerida": "Ilustración plana de una hoja de examen con un número grande marcado con un check, colores suaves, estilo flat design, sin texto real.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -234,9 +224,9 @@
     "definicion": "Es un estudiante que estudia en la misma aula que tú.\n Ejemplo: Mi compañero de clase me prestó su lapicero.",
     "categoria": "Colegio",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de dos estudiantes sentados juntos en carpetas escolares, sonriendo, estilo flat design, colores alegres.",
     "variantes": "Compañero, Compañera, Compañero de colegio",
-    "senasugerida": "Ilustración plana de dos estudiantes sentados juntos en carpetas escolares, sonriendo, estilo flat design, colores alegres.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -244,9 +234,9 @@
     "definicion": "Es el trámite y el pago que se hace para inscribirse y poder estudiar en un colegio, instituto o universidad.\n Ejemplo: Mis papás pagaron mi matrícula para el próximo año escolar.",
     "categoria": "Colegio",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de una persona entregando un formulario y dinero en una ventanilla de secretaría escolar, estilo flat design.",
     "variantes": "Inscripción, Matricularse",
-    "senasugerida": "Ilustración plana de una persona entregando un formulario y dinero en una ventanilla de secretaría escolar, estilo flat design.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -254,9 +244,9 @@
     "definicion": "Es la ropa especial e igual que usan todos los estudiantes de un colegio.\n Ejemplo: Mi uniforme del colegio es azul con blanco.",
     "categoria": "Colegio",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de un uniforme escolar (polo, pantalón/falda) colgado en un perchero, colores azul y blanco, estilo flat design.",
     "variantes": "Uniforme escolar",
-    "senasugerida": "Ilustración plana de un uniforme escolar (polo, pantalón/falda) colgado en un perchero, colores azul y blanco, estilo flat design.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -264,9 +254,9 @@
     "definicion": "Es lo que una persona estudia en la universidad o instituto para trabajar en eso después, como enfermería, ingeniería o diseño.\n Ejemplo: Mi carrera es contabilidad, estudio en la universidad hace dos años.",
     "categoria": "Universidad",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de un estudiante universitario con libros y un birrete de graduación al fondo, estilo flat design, colores suaves.",
     "variantes": "Carrera profesional, Especialidad",
-    "senasugerida": "Ilustración plana de un estudiante universitario con libros y un birrete de graduación al fondo, estilo flat design, colores suaves.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -274,9 +264,9 @@
     "definicion": "Es cada una de las dos partes en que se divide el año de estudios en la universidad.\n Ejemplo: Este semestre estoy llevando cinco cursos.",
     "categoria": "Universidad",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de un calendario dividido en dos mitades de colores diferentes, con libros al costado, estilo flat design.",
     "variantes": "Ciclo académico, Ciclo",
-    "senasugerida": "Ilustración plana de un calendario dividido en dos mitades de colores diferentes, con libros al costado, estilo flat design.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -284,9 +274,9 @@
     "definicion": "Es una ayuda de dinero que da una institución para que una persona pueda estudiar sin pagar todo o parte de su carrera.\n Ejemplo: Gané una beca y ahora no pago la universidad.",
     "categoria": "Universidad",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de una mano entregando un diploma o certificado junto a un símbolo de dinero, estilo flat design, colores cálidos.",
     "variantes": "Beca de estudio, Media beca",
-    "senasugerida": "Ilustración plana de una mano entregando un diploma o certificado junto a un símbolo de dinero, estilo flat design, colores cálidos.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -294,9 +284,9 @@
     "definicion": "Es un trabajo largo de investigación que se escribe para terminar la carrera universitaria.\n Ejemplo: Estoy escribiendo mi tesis para graduarme este año.",
     "categoria": "Universidad",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de una persona escribiendo en una laptop rodeada de libros y hojas, estilo flat design, ambiente de estudio.",
     "variantes": "Tesis de grado, Investigación final",
-    "senasugerida": "Ilustración plana de una persona escribiendo en una laptop rodeada de libros y hojas, estilo flat design, ambiente de estudio.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -304,9 +294,9 @@
     "definicion": "Es el tiempo en que un estudiante trabaja en una empresa para aprender su carrera antes de terminar de estudiar.\n Ejemplo: Empiezo mis prácticas pre-profesionales en un hospital el próximo mes.",
     "categoria": "Universidad",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de un joven practicante con chaleco o mandil trabajando en una oficina junto a un supervisor, estilo flat design.",
     "variantes": "Prácticas, Practicante, Pasantía",
-    "senasugerida": "Ilustración plana de un joven practicante con chaleco o mandil trabajando en una oficina junto a un supervisor, estilo flat design.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -314,9 +304,9 @@
     "definicion": "Es la parte de la universidad donde se estudia un grupo de carreras parecidas, como la Facultad de Ingeniería o de Medicina.\n Ejemplo: La Facultad de Educación está en el segundo piso.",
     "categoria": "Universidad",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de un edificio universitario con una entrada grande y estudiantes caminando, estilo flat design, colores institucionales.",
     "variantes": "Escuela profesional",
-    "senasugerida": "Ilustración plana de un edificio universitario con una entrada grande y estudiantes caminando, estilo flat design, colores institucionales.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -324,9 +314,9 @@
     "definicion": "Es el trámite final que se hace para recibir el título profesional después de terminar la carrera.\n Ejemplo: Después de mi tesis, sigue el proceso de titulación.",
     "categoria": "Universidad",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de una persona sosteniendo un diploma enrollado con cinta, vistiendo birrete de graduación, estilo flat design.",
     "variantes": "Titularse, Graduación",
-    "senasugerida": "Ilustración plana de una persona sosteniendo un diploma enrollado con cinta, vistiendo birrete de graduación, estilo flat design.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -334,9 +324,9 @@
     "definicion": "Es una clase que se da por internet, usando una computadora o celular, en vez de ir físicamente a un salón.\n Ejemplo: Hoy tengo clase en el aula virtual desde mi casa.",
     "categoria": "Universidad",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de una persona frente a una laptop con un profesor en pantalla, en videollamada, estilo flat design, colores claros.",
     "variantes": "Clase virtual, Clase online",
-    "senasugerida": "Ilustración plana de una persona frente a una laptop con un profesor en pantalla, en videollamada, estilo flat design, colores claros.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -344,9 +334,9 @@
     "definicion": "Es la persona que dirige el trabajo y da las órdenes en una empresa o negocio.\n Ejemplo: Mi jefe me pidió terminar el informe antes del viernes.",
     "categoria": "Trabajo",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de una persona con ropa formal dando indicaciones a un trabajador en una oficina, estilo flat design.",
     "variantes": "Jefa, Encargado, Supervisor, Gerente",
-    "senasugerida": "Ilustración plana de una persona con ropa formal dando indicaciones a un trabajador en una oficina, estilo flat design.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -354,9 +344,9 @@
     "definicion": "Es el dinero que una persona recibe por su trabajo, normalmente cada mes.\n Ejemplo: Recibo mi sueldo el último día de cada mes.",
     "categoria": "Trabajo",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de un sobre con billetes y monedas al lado de un calendario, estilo flat design, colores verdes y amarillos.",
     "variantes": "Salario, Pago, Remuneración",
-    "senasugerida": "Ilustración plana de un sobre con billetes y monedas al lado de un calendario, estilo flat design, colores verdes y amarillos.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -364,9 +354,9 @@
     "definicion": "Es un papel que firman el trabajador y la empresa donde se acuerdan las condiciones del trabajo, como el sueldo y el horario.\n Ejemplo: Firmé mi contrato de trabajo por un año.",
     "categoria": "Trabajo",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de dos personas dándose la mano frente a un documento firmado sobre un escritorio, estilo flat design.",
     "variantes": "Contrato de trabajo",
-    "senasugerida": "Ilustración plana de dos personas dándose la mano frente a un documento firmado sobre un escritorio, estilo flat design.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -374,9 +364,9 @@
     "definicion": "Es cuando varias personas se juntan para hablar de un tema o tomar decisiones sobre el trabajo.\n Ejemplo: Tenemos una reunión con el equipo a las diez de la mañana.",
     "categoria": "Trabajo",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de un grupo de personas sentadas alrededor de una mesa de oficina conversando, estilo flat design.",
     "variantes": "Junta, Meeting",
-    "senasugerida": "Ilustración plana de un grupo de personas sentadas alrededor de una mesa de oficina conversando, estilo flat design.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -384,9 +374,9 @@
     "definicion": "Es la conversación entre una persona que busca empleo y la empresa, para ver si puede contratarla.\n Ejemplo: Mañana tengo una entrevista de trabajo en una empresa de ropa.",
     "categoria": "Trabajo",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de dos personas conversando frente a frente en una oficina, una con un currículum en la mano, estilo flat design.",
     "variantes": "Entrevista laboral",
-    "senasugerida": "Ilustración plana de dos personas conversando frente a frente en una oficina, una con un currículum en la mano, estilo flat design.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -394,9 +384,9 @@
     "definicion": "Es dejar un trabajo por decisión propia, avisando a la empresa que ya no vas a trabajar más ahí.\n Ejemplo: Decidí renunciar a mi trabajo para estudiar una carrera.",
     "categoria": "Trabajo",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de una persona entregando una carta a otra persona en una oficina, ambas de pie, estilo flat design.",
     "variantes": "Renuncia, Dejar el trabajo",
-    "senasugerida": "Ilustración plana de una persona entregando una carta a otra persona en una oficina, ambas de pie, estilo flat design.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -404,9 +394,9 @@
     "definicion": "Son las horas en las que una persona debe estar en el trabajo o en el colegio.\n Ejemplo: Mi horario de trabajo es de ocho de la mañana a cinco de la tarde.",
     "categoria": "Trabajo",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de un reloj grande junto a un calendario con horas marcadas, estilo flat design, colores claros.",
     "variantes": "Horario de trabajo, Turno",
-    "senasugerida": "Ilustración plana de un reloj grande junto a un calendario con horas marcadas, estilo flat design, colores claros.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -414,9 +404,9 @@
     "definicion": "Es una persona que trabaja en el mismo lugar que tú.\n Ejemplo: Almorcé con mi compañero de trabajo hoy.",
     "categoria": "Trabajo",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de dos trabajadores sonriendo y conversando en una oficina o taller, estilo flat design.",
     "variantes": "Colega, Compañero laboral",
-    "senasugerida": "Ilustración plana de dos trabajadores sonriendo y conversando en una oficina o taller, estilo flat design.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -424,9 +414,9 @@
     "definicion": "Es un documento donde una persona escribe sus estudios, experiencia y datos, para buscar trabajo.\n Ejemplo: Envié mi currículum a varias empresas esta semana.",
     "categoria": "Trabajo",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de una hoja de documento con secciones y una foto pequeña de perfil, junto a un lapicero, estilo flat design, sin texto real.",
     "variantes": "CV, Hoja de vida",
-    "senasugerida": "Ilustración plana de una hoja de documento con secciones y una foto pequeña de perfil, junto a un lapicero, estilo flat design, sin texto real.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -434,9 +424,9 @@
     "definicion": "Son los días de descanso que un trabajador o estudiante tiene, sin ir al trabajo ni al colegio.\n Ejemplo: En enero tengo vacaciones y voy a viajar con mi familia.",
     "categoria": "Trabajo",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de una persona relajada en la playa con una maleta al lado, estilo flat design, colores veraniegos.",
     "variantes": "Descanso, Días libres",
-    "senasugerida": "Ilustración plana de una persona relajada en la playa con una maleta al lado, estilo flat design, colores veraniegos.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -444,9 +434,9 @@
     "definicion": "Es una señal con luces de colores (rojo, amarillo y verde) que indica cuándo los carros y las personas pueden pasar o deben esperar.\n Ejemplo: Espera a que el semáforo esté en verde para cruzar la calle.",
     "categoria": "Calle",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de un semáforo con sus tres luces de colores junto a una calle, estilo flat design.",
     "variantes": "Luz roja, Luz verde",
-    "senasugerida": "Ilustración plana de un semáforo con sus tres luces de colores junto a una calle, estilo flat design.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -454,9 +444,9 @@
     "definicion": "Es la persona encargada de cuidar el orden y la seguridad de las personas en la calle.\n Ejemplo: Un policía nos ayudó a cruzar la avenida.",
     "categoria": "Calle",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de un oficial de policía con uniforme, de pie en una calle, estilo flat design, colores azul oscuro.",
     "variantes": "Efectivo policial, Agente",
-    "senasugerida": "Ilustración plana de un oficial de policía con uniforme, de pie en una calle, estilo flat design, colores azul oscuro.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -464,9 +454,9 @@
     "definicion": "Es un lugar donde se venden alimentos y otros productos en varios puestos.\n Ejemplo: Mi mamá compra las verduras en el mercado los sábados.",
     "categoria": "Calle",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de puestos de frutas y verduras coloridas en un mercado, con personas comprando, estilo flat design.",
     "variantes": "Mercadito, Mercado de abastos",
-    "senasugerida": "Ilustración plana de puestos de frutas y verduras coloridas en un mercado, con personas comprando, estilo flat design.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -474,9 +464,9 @@
     "definicion": "Son los buses, combis o taxis que cualquier persona puede usar, pagando, para moverse por la ciudad.\n Ejemplo: Tomo el transporte público todos los días para ir al trabajo.",
     "categoria": "Calle",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de un bus urbano en una avenida con personas esperando en el paradero, estilo flat design.",
     "variantes": "Combi, Bus, Micro, Movilidad",
-    "senasugerida": "Ilustración plana de un bus urbano en una avenida con personas esperando en el paradero, estilo flat design.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -484,9 +474,9 @@
     "definicion": "Es una persona que vive cerca de tu casa, en el mismo barrio o edificio.\n Ejemplo: Mi vecino me ayudó a cargar las bolsas del mercado.",
     "categoria": "Calle",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de dos personas conversando frente a sus casas en un barrio, estilo flat design, colores cálidos.",
     "variantes": "Vecina, Vecindario",
-    "senasugerida": "Ilustración plana de dos personas conversando frente a sus casas en un barrio, estilo flat design, colores cálidos.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -494,9 +484,9 @@
     "definicion": "Es un local pequeño donde se venden productos como comida, útiles u otras cosas.\n Ejemplo: Fui a la tienda de la esquina a comprar pan.",
     "categoria": "Calle",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de una bodega de barrio con estantes de productos y un mostrador, estilo flat design.",
     "variantes": "Bodega, Tiendita, Almacén",
-    "senasugerida": "Ilustración plana de una bodega de barrio con estantes de productos y un mostrador, estilo flat design.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -504,9 +494,9 @@
     "definicion": "Es el lugar donde se venden medicinas y otros productos de salud.\n Ejemplo: Fui a la farmacia a comprar pastillas para el dolor de cabeza.",
     "categoria": "Calle",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de una farmacia con una cruz verde en la fachada y estantes con medicinas, estilo flat design.",
     "variantes": "Botica",
-    "senasugerida": "Ilustración plana de una farmacia con una cruz verde en la fachada y estantes con medicinas, estilo flat design.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -514,9 +504,9 @@
     "definicion": "Son los billetes y monedas que se usan para comprar cosas o pagar servicios.\n Ejemplo: No traje suficiente dinero para pagar el taxi.",
     "categoria": "Calle",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de billetes y monedas peruanas juntos sobre una mesa, estilo flat design, colores verdes y morados.",
     "variantes": "Plata, Efectivo, Billetes, Monedas",
-    "senasugerida": "Ilustración plana de billetes y monedas peruanas juntos sobre una mesa, estilo flat design, colores verdes y morados.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -524,9 +514,9 @@
     "definicion": "Es un lugar grande donde los médicos atienden y curan a las personas enfermas o heridas.\n Ejemplo: Llevaron a mi abuelo al hospital porque se sentía mal.",
     "categoria": "Calle",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de un edificio de hospital con una cruz roja en la entrada y una ambulancia al costado, estilo flat design.",
     "variantes": "Clínica, Posta médica",
-    "senasugerida": "Ilustración plana de un edificio de hospital con una cruz roja en la entrada y una ambulancia al costado, estilo flat design.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -534,9 +524,9 @@
     "definicion": "Es una situación grave y urgente que necesita ayuda inmediata, como un accidente o una enfermedad repentina.\n Ejemplo: Llamamos a una ambulancia porque era una emergencia.",
     "categoria": "Calle",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de una ambulancia con luces encendidas circulando por una avenida, estilo flat design, colores rojo y blanco.",
     "variantes": "Urgencia",
-    "senasugerida": "Ilustración plana de una ambulancia con luces encendidas circulando por una avenida, estilo flat design, colores rojo y blanco.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -544,9 +534,9 @@
     "definicion": "Es lo que se pide o se da cuando alguien necesita apoyo para resolver un problema o hacer algo.\n Ejemplo: Pedí ayuda a un vecino porque mi carro no encendía.",
     "categoria": "Calle",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de una persona extendiendo la mano para ayudar a otra que está en el suelo o cargando algo pesado, estilo flat design.",
     "variantes": "Apoyo, Auxilio",
-    "senasugerida": "Ilustración plana de una persona extendiendo la mano para ayudar a otra que está en el suelo o cargando algo pesado, estilo flat design.",
+    "senasugerida": "",
     "": ""
   },
   {
@@ -554,9 +544,9 @@
     "definicion": "Es un momento acordado para encontrarse con alguien, por ejemplo con un médico o en una oficina, a una hora específica.\n Ejemplo: Tengo una cita con el dentista mañana a las tres.",
     "categoria": "Calle",
     "video": "",
-    "imagen": "",
+    "imagen": "Ilustración plana de un calendario con una hora marcada y un reloj al lado, estilo flat design, colores claros.",
     "variantes": "Cita médica, Turno",
-    "senasugerida": "Ilustración plana de un calendario con una hora marcada y un reloj al lado, estilo flat design, colores claros.",
+    "senasugerida": "",
     "": ""
   }
 ]
