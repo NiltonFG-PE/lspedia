@@ -102,14 +102,17 @@ function actualizarVistaUrl(vista){
 // El título y subtítulo de arriba del todo cambian según la vista:
 // "Diccionario" (buscador general) usa el texto original, y
 // "Vocabulario" (tarjetas de categorías) usa un texto propio, más
-// acorde a esa sección.
+// acorde a esa sección. La primera palabra ("Diccionario" / "Vocabulario")
+// va envuelta en <span class="titulo-acento"> para que se vea en azul,
+// igual que en el diseño de referencia; el resto del título queda en el
+// color normal (oscuro).
 const TITULOS_PRINCIPALES = {
     diccionario: {
-        titulo: "Diccionario de Lengua de Señas Peruana (LSP) y Español",
+        titulo: '<span class="titulo-acento">Diccionario</span> de Lengua de Señas Peruana (LSP) y Español',
         subtitulo: "Aprende el significado de las palabras con el apoyo de videos en señas."
     },
     vocabulario: {
-        titulo: "Vocabulario de Lengua de Señas Peruana (LSP)",
+        titulo: '<span class="titulo-acento">Vocabulario</span> de Lengua de Señas Peruana (LSP)',
         subtitulo: "Las señas representan conceptos, no siempre palabras. Los términos en español son solo una referencia para facilitar la búsqueda y el aprendizaje. Las variantes regionales enriquecen la Lengua de Señas Peruana."
     }
 };
@@ -119,8 +122,29 @@ function actualizarTituloPrincipal(vista){
     if(!datos) return;
     const titulo = document.getElementById("tituloPrincipal");
     const subtitulo = document.getElementById("subtituloPrincipal");
-    if(titulo) titulo.textContent = datos.titulo;
-    if(subtitulo) subtitulo.textContent = datos.subtitulo;
+    const listaVocab = document.getElementById("vocabularioIntroLista");
+    // innerHTML (no textContent): así se conserva el <span class="titulo-acento">
+    // que colorea la primera palabra en cada vista.
+    if(titulo) titulo.innerHTML = datos.titulo;
+    const esVocabulario = vista === "vocabulario";
+    // En Vocabulario, la lista con íconos (arriba, en el HTML) reemplaza
+    // al párrafo simple del subtítulo; en Diccionario es al revés.
+    if(subtitulo) subtitulo.classList.toggle("d-none", esVocabulario);
+    if(listaVocab) listaVocab.classList.toggle("d-none", !esVocabulario);
+    if(subtitulo && !esVocabulario) subtitulo.textContent = datos.subtitulo;
+}
+
+// Marca cuál botón del menú superior (escritorio) está activo, quitando
+// la clase de los demás. Antes esta clase solo existía de entrada en
+// "Diccionario" (hardcodeada en el HTML) y nunca se actualizaba al
+// navegar, por eso el subrayado ámbar (CSS ::after sobre .active) se
+// quedaba siempre fijo ahí. Se llama desde cada sección (Diccionario,
+// Vocabulario, Herramientas, Sobre Nosotros) para que el subrayado se
+// mueva junto con la navegación real.
+function activarBotonMenu(idActivo){
+    document.querySelectorAll(".navbar-nav .nav-link").forEach((link) => {
+        link.classList.toggle("active", link.id === idActivo);
+    });
 }
 
 function irAlBuscador(){
@@ -135,6 +159,7 @@ function irAlBuscador(){
     document.body.classList.remove("vista-temas-movil");
     mostrarBloqueInicio();
     actualizarTituloPrincipal("diccionario");
+    activarBotonMenu("btnInicio");
     actualizarVistaUrl(null);
     desplegarIndiceAlfabetico();
     if (sugerencias) sugerencias.innerHTML = "";
@@ -154,6 +179,7 @@ document.getElementById("btnCategorias").addEventListener("click", (e) => {
     ocultarSeccionNosotros();
     mostrarBloqueInicio();
     actualizarTituloPrincipal("vocabulario");
+    activarBotonMenu("btnCategorias");
     // Vista "Temas" en móvil: solo deben quedar visibles el buscador, el
     // índice A-Z, las categorías, Favoritos e Historial. La clase la lee
     // el CSS (@media max-width 1199.98px) para ocultar la seña del
@@ -378,6 +404,7 @@ const btnHerramientas = document.getElementById("btnHerramientas");
 if(btnHerramientas){
     btnHerramientas.addEventListener("click", (e) => {
         e.preventDefault();
+        activarBotonMenu("btnHerramientas");
         mostrarSeccionHerramientas();
     });
 }
@@ -441,6 +468,12 @@ function ocultarBloqueInicio(){
     if(sugerencias) sugerencias.style.display = "none";
     const bloqueEjemplosInicio = document.getElementById("bloqueEjemplos");
     if(bloqueEjemplosInicio) bloqueEjemplosInicio.style.display = "none";
+    // El avatar y la cabecera "ESTADÍSTICAS | LSPedia" solo deben verse en
+    // Diccionario y Vocabulario, no en Herramientas ni en Sobre Nosotros.
+    const colAvatarHero = document.getElementById("colAvatarHero");
+    if(colAvatarHero) colAvatarHero.classList.add("oculto-por-seccion");
+    const statsHeader = document.querySelector(".stats-header");
+    if(statsHeader) statsHeader.style.display = "none";
 }
 
 function mostrarBloqueInicio(){
@@ -462,6 +495,10 @@ function mostrarBloqueInicio(){
     if(sugerencias) sugerencias.style.display = "";
     const bloqueEjemplosInicio = document.getElementById("bloqueEjemplos");
     if(bloqueEjemplosInicio) bloqueEjemplosInicio.style.display = "";
+    const colAvatarHero = document.getElementById("colAvatarHero");
+    if(colAvatarHero) colAvatarHero.classList.remove("oculto-por-seccion");
+    const statsHeader = document.querySelector(".stats-header");
+    if(statsHeader) statsHeader.style.display = "";
     // La seña del día no se vuelve a mostrar sola: igual que antes, una
     // vez oculta (por ejemplo al ver una palabra) solo reaparece con
     // una recarga de página real (btnInicio ya hace eso).
@@ -562,6 +599,7 @@ const btnSobreNosotros = document.getElementById("btnSobreNosotros");
 if(btnSobreNosotros){
     btnSobreNosotros.addEventListener("click", (e) => {
         e.preventDefault();
+        activarBotonMenu("btnSobreNosotros");
         mostrarSeccionNosotros();
     });
 }

@@ -118,23 +118,36 @@
             background-color: rgba(255, 255, 255, 0.12);
         }
 
-        /* Indicador ámbar deslizante: es UNA sola barrita compartida por
-           todo el menú (no una por botón). Por defecto está debajo del
-           botón activo; al pasar el mouse por otro botón, se desliza
-           hasta ahí (JS calcula su posición) y desaparece de donde
-           estaba antes. Al sacar el mouse del menú, vuelve al activo. */
-        .navbar-nav {
-            position: relative;
-        }
-        .navbar-nav .nav-indicador {
+        /* Subrayado ámbar debajo del botón: en vez de una sola barra
+           deslizante calculada por JS (que se rompía en el menú móvil
+           desplegado, apareciendo como una franja gigante), cada botón
+           tiene su propio subrayado con ::after. Siempre queda bien
+           ubicado sin importar el ancho de pantalla ni si el menú está
+           en fila (escritorio) o apilado (menú móvil desplegado). */
+        .navbar-nav .nav-link::after {
+            content: "";
             position: absolute;
+            left: 20px;
+            right: 20px;
             bottom: -6px;
             height: 4px;
             border-radius: 4px;
             background-color: #ffc107;
-            transition: left 0.25s ease, width 0.25s ease, opacity 0.2s ease;
             opacity: 0;
+            transition: opacity 0.2s ease;
             pointer-events: none;
+        }
+        .navbar-nav .nav-link:hover::after,
+        .navbar-nav .nav-link.active::after {
+            opacity: 1;
+        }
+
+        /* El avatar del hero usa clases Bootstrap (d-none d-lg-flex) que
+           llevan !important, así que un simple style.display="none" por
+           JS no alcanza para ocultarlo en escritorio. Esta clase se
+           encarga de eso al entrar a Herramientas / Sobre Nosotros. */
+        #colAvatarHero.oculto-por-seccion {
+            display: none !important;
         }
 
         @media (max-width: 1199.98px) {
@@ -1010,6 +1023,18 @@
             .btn-abc.active {
                 box-shadow: inset 0 0 0 1px rgba(217, 163, 26, 0.25);
             }
+            /* La regla ".indice-alfabetico .btn-abc.active" de css/estilos.css
+               (degradado azul→ámbar oscuro) es más específica que la de
+               arriba y termina ganando en la práctica, dejando la letra
+               seleccionada oscura/negra en vez de amarilla. Se repite acá
+               con la MISMA especificidad + !important para que en móvil se
+               vea igual de amarillo claro que en escritorio. */
+            .indice-alfabetico .btn-abc.active {
+                background: #fdf1cf !important;
+                border-color: transparent !important;
+                color: #92670b !important;
+                box-shadow: inset 0 0 0 1px rgba(217, 163, 26, 0.35) !important;
+            }
         }
 
         /* Cuadro de Sugerencias en Plomo Oscuro */
@@ -1234,32 +1259,88 @@ body.nosotros-pantalla-completa-activa {
     background-color: #e6ac00;
     color: #0f172a;
 }
-@media (max-width: 767px) {
+@media (max-width: 991.98px) {
     /* Antes se apilaba en columna con el video a ancho completo (16:9),
        lo que hacía la tarjeta muy alta. Ahora se mantiene horizontal
        como en escritorio, con una miniatura pequeña en proporción 4:3
        (en vez de cuadrada) para que el video quepa sin recortarse tanto,
-       en un formato rectangular compacto. */
+       en un formato rectangular compacto. Se reduce aún más (miniatura,
+       tipografías y paddings) para que la tarjeta quepa junto al avatar
+       en la misma fila, igual que en el diseño de referencia. Este
+       tratamiento compacto ahora cubre TODO el rango debajo de 992px
+       (celular Y tablet/ventana reducida), para que no quede un tramo
+       intermedio sin ajustar. */
     .dia-rect-card { flex-direction: row; align-items: stretch; }
-    .dia-rect-media { width: 88px; aspect-ratio: 4 / 3; align-self: center; border-radius: 8px; overflow: hidden; margin: 8px 0 8px 8px; }
+    .dia-rect-media { width: 64px; aspect-ratio: 4 / 3; align-self: center; border-radius: 7px; overflow: hidden; margin: 6px 0 6px 6px; }
     .dia-rect-media-tag { display: none; }
-    .dia-rect-media-play { font-size: 13px; }
-    .dia-rect-body { padding: 8px 10px; justify-content: center; }
-    .dia-rect-nav { margin-bottom: 3px; gap: 6px; }
-    .dia-rect-nav-btn { width: 28px; height: 28px; font-size: 12px; border-radius: 7px; }
-    .dia-rect-label { font-size: 12px; font-weight: 800; }
-    .dia-rect-badge { font-size: 9px; padding: 2px 7px; margin-bottom: 4px; }
-    .dia-rect-titulo { font-size: 13.5px; margin-bottom: 3px; }
+    .dia-rect-media-play { font-size: 11px; }
+    .dia-rect-body { padding: 6px 8px; justify-content: center; }
+    .dia-rect-nav { margin-bottom: 2px; gap: 4px; }
+    .dia-rect-nav-btn { width: 22px; height: 22px; font-size: 10px; border-radius: 6px; }
+    .dia-rect-label { font-size: 9.5px; font-weight: 800; }
+    .dia-rect-badge { font-size: 7.5px; padding: 1px 6px; margin-bottom: 3px; }
+    .dia-rect-titulo { font-size: 11px; margin-bottom: 2px; }
     .dia-rect-desc {
-        font-size: 10px;
-        line-height: 1.35;
-        margin-bottom: 6px;
+        font-size: 8.5px;
+        line-height: 1.3;
+        margin-bottom: 5px;
         display: -webkit-box;
-        -webkit-line-clamp: 3;
+        -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
-    .dia-rect-btn { font-size: 10px; padding: 5px 11px; }
+    .dia-rect-btn { font-size: 8.5px; padding: 4px 9px; }
+
+    /* La tarjeta "Seña del día" y el avatar comparten la misma fila,
+       igual que en el diseño de referencia, en vez de que la tarjeta
+       ocupe todo el ancho y empuje al avatar fuera de vista (o que el
+       avatar se muestre gigante y solo arriba, como pasaba entre 768px
+       y 991px al no tener este ajuste). El título + buscador pasan a su
+       propia fila completa debajo de ambos. Se usa grid con áreas
+       nombradas para no depender del orden real de las columnas en el
+       HTML (colAvatarHero trae "order-first" de Bootstrap para el
+       layout de escritorio). La columna del avatar es más angosta que
+       la de la tarjeta: el avatar se dimensiona por alto (no por ancho
+       de columna) para no quedar desproporcionado. */
+    #filaHeroPrincipal {
+        display: grid;
+        grid-template-columns: 3fr 2fr;
+        grid-template-areas:
+            "carta avatar"
+            "titulo titulo";
+        column-gap: 10px;
+        row-gap: 12px;
+        align-items: start;
+        margin-left: 0;
+        margin-right: 0;
+        margin-top: 28px;
+    }
+    #senalDelDia {
+        grid-area: carta;
+        margin: 0;
+        padding: 0;
+    }
+    #colAvatarHero {
+        grid-area: avatar;
+        margin: 0 !important;
+        padding: 0;
+        align-self: center;
+    }
+    #filaHeroPrincipal > .col-lg-6 {
+        grid-area: titulo;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* El avatar se fija por ALTURA (no por ancho de columna) para que
+       su tamaño quede proporcional a la tarjeta sin importar cuán ancha
+       sea la pantalla dentro de este rango; así no crece de más ni en
+       celular angosto ni en ventana reducida. */
+    #colAvatarHero .avatar-hero-img {
+        width: auto;
+        height: 100px;
+        max-width: 100%;
+    }
 }
 
 /* Bloque principal (Seña del día + título/buscador + avatar) en 3
@@ -1327,10 +1408,10 @@ body.nosotros-pantalla-completa-activa {
     }
 }
 
-/* Acento azul en "Señas Peruana" y raya amarilla decorativa debajo del
-   título, igual que en el diseño de referencia. */
+/* Acento azul en "Diccionario" y raya amarilla decorativa debajo del
+   título, igual al diseño de referencia. */
 .titulo-acento {
-    color: #0284c7;
+    color: #268bff;
 }
 .titulo-raya {
     display: block;
@@ -1346,6 +1427,56 @@ body.nosotros-pantalla-completa-activa {
     }
 }
 
+/* Lista de introducción de "Vocabulario": ícono circular azul + texto,
+   con un conector punteado vertical entre ícono e ícono, igual al diseño
+   de referencia. Solo visible en la vista Vocabulario. */
+.vocab-intro-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin: 18px 0 22px;
+}
+.vocab-intro-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    text-align: left;
+}
+.vocab-intro-icono {
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background-color: #2563eb;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    position: relative;
+}
+.vocab-intro-item:not(:last-child) .vocab-intro-icono::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 22px;
+    border-left: 2px dotted #93c5fd;
+}
+.vocab-intro-texto {
+    margin: 0;
+    padding-top: 5px;
+    color: #334155;
+    font-size: 0.98rem;
+    line-height: 1.45;
+}
+.vocab-intro-texto strong {
+    color: #2563eb;
+    font-weight: 700;
+}
+
 /* Chips "Ejemplos" debajo del buscador: palabras rápidas para tocar y
    ver el resultado directamente, sin tener que escribirlas. */
 .ejemplos-busqueda {
@@ -1356,9 +1487,15 @@ body.nosotros-pantalla-completa-activa {
     margin-top: 14px;
 }
 .ejemplos-label {
-    font-size: 13px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #182b55;
+}
+/* Frase destacada en azul dentro del subtítulo del buscador ("videos en
+   Lengua de Señas Peruana"), igual al diseño de referencia. */
+.subtitulo-resaltado {
+    color: #268bff;
     font-weight: 600;
-    color: #64748b;
 }
 .ejemplo-chip {
     border: none;
@@ -1709,7 +1846,6 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
                     <li class="nav-item"><a class="nav-link" href="#" id="btnCategorias"><span class="nav-icono" aria-hidden="true" style="-webkit-mask-image:url('img/icons/nav/icono-vocabulario.png'); mask-image:url('img/icons/nav/icono-vocabulario.png');"></span> Vocabulario</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" id="btnHerramientas"><span class="nav-icono" aria-hidden="true" style="-webkit-mask-image:url('img/icons/nav/icono-herramientas.png'); mask-image:url('img/icons/nav/icono-herramientas.png');"></span> Herramientas</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" id="btnSobreNosotros"><span class="nav-icono" aria-hidden="true" style="-webkit-mask-image:url('img/icons/nav/icono-nosotros.png'); mask-image:url('img/icons/nav/icono-nosotros.png');"></span> Sobre Nosotros</a></li>
-                    <span class="nav-indicador" aria-hidden="true"></span>
                 </ul>
             </div>
         </div>
@@ -1817,14 +1953,34 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
 
             <div class="col-lg-6">
                 <div class="text-center text-lg-start header-minimal mb-3" id="bloqueTituloPrincipal">
-                    <h1 class="fw-bold tracking-tight" id="tituloPrincipal">Diccionario de Lengua de <span class="titulo-acento">Señas Peruana</span> (LSP) y Español</h1>
+                    <h1 class="tracking-tight" id="tituloPrincipal"><span class="titulo-acento">Diccionario</span> de Lengua de Señas Peruana (LSP) y Español</h1>
                     <span class="titulo-raya" aria-hidden="true"></span>
-                    <p class="text-muted mb-0" id="subtituloPrincipal">Aprende el significado de las palabras con el apoyo de videos en señas.</p>
+                    <p class="text-muted mb-0" id="subtituloPrincipal">Busca palabras en español y descubre su significado mediante <span class="subtitulo-resaltado">videos en Lengua de Señas Peruana</span>.</p>
+
+                    <!-- Lista de introducción exclusiva de "Vocabulario": 3 ideas
+                         cortas con ícono + conector vertical punteado entre ellos,
+                         igual al diseño de referencia. Reemplaza al párrafo simple
+                         de arriba mientras esta vista está activa (se alternan por
+                         JS en actualizarTituloPrincipal(), script.js). -->
+                    <div class="vocab-intro-lista d-none" id="vocabularioIntroLista">
+                        <div class="vocab-intro-item">
+                            <span class="vocab-intro-icono" aria-hidden="true">💡</span>
+                            <p class="vocab-intro-texto">Las señas representan <strong>conceptos</strong>, no siempre palabras.</p>
+                        </div>
+                        <div class="vocab-intro-item">
+                            <span class="vocab-intro-icono" aria-hidden="true">🔍</span>
+                            <p class="vocab-intro-texto">Los términos en español son solo una <strong>referencia</strong> para facilitar la búsqueda y el aprendizaje.</p>
+                        </div>
+                        <div class="vocab-intro-item">
+                            <span class="vocab-intro-icono" aria-hidden="true">🌐</span>
+                            <p class="vocab-intro-texto">Las <strong>variantes regionales</strong> enriquecen la Lengua de Señas Peruana.</p>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="position-relative" id="bloqueBuscador">
                     <div class="input-group input-group-lg shadow-sm" style="border-radius: 50px; border: 2px solid #ffc107; overflow: hidden; background-color: #fff;">
-                        <input id="buscar" type="text" class="form-control border-0 px-4 shadow-none text-secondary" placeholder="Escribe la palabra que buscas aquí..." style="font-size: 1.1rem; background: transparent;">
+                        <input id="buscar" type="text" class="form-control border-0 px-4 shadow-none text-secondary" placeholder="Busca una palabra o concepto..." style="font-size: 1.1rem; background: transparent;">
                         <button class="btn px-4 d-flex align-items-center justify-content-center" type="button" id="btnBuscar">
                             <span style="font-size: 1.3rem;">🔍</span>
                         </button>
@@ -1833,7 +1989,7 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
                 </div>
 
                 <div class="ejemplos-busqueda justify-content-center justify-content-lg-start" id="bloqueEjemplos">
-                    <span class="ejemplos-label">Ejemplos:</span>
+                    <span class="ejemplos-label">⭐ Palabras sugeridas</span>
                     <!-- Estos 5 chips son solo un placeholder mientras carga el
                          diccionario (data/palabras.json). En cuanto App.datos está
                          listo, un script más abajo los reemplaza por 5 palabras
@@ -1848,7 +2004,7 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
                 </div>
             </div>
 
-            <div class="col-lg-3 d-none d-lg-flex justify-content-center align-items-start" id="colAvatarHero">
+            <div class="col-lg-3 order-first order-lg-last d-flex justify-content-center align-items-start mb-3 mb-lg-0" id="colAvatarHero">
                 <img src="img/avatar_sin_fondo.png" alt="Personaje de LSPedia sosteniendo una lupa" class="avatar-hero-img">
             </div>
 
@@ -2866,59 +3022,6 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
     <script src="js/quiz.js"></script>
     <script src="js/alfabetizacion.js"></script>
     <script src="js/subtitulos.js"></script>
-
-    <!-- Indicador ámbar deslizante del menú superior: una sola barrita
-         que se mueve (con transición) debajo del botón activo, y que al
-         pasar el mouse sobre otro botón salta hacia ahí, volviendo al
-         activo cuando el mouse sale del menú. -->
-    <script>
-        (function () {
-            const menu = document.querySelector(".navbar-nav");
-            const indicador = menu ? menu.querySelector(".nav-indicador") : null;
-            if (!menu || !indicador) return;
-
-            const enlaces = Array.from(menu.querySelectorAll(".nav-link"));
-
-            function moverIndicadorA(enlace) {
-                if (!enlace) {
-                    indicador.style.opacity = "0";
-                    return;
-                }
-                indicador.style.left = (enlace.offsetLeft + 20) + "px";
-                indicador.style.width = (enlace.offsetWidth - 40) + "px";
-                indicador.style.opacity = "1";
-            }
-
-            function moverAlActivo() {
-                const activo = menu.querySelector(".nav-link.active");
-                moverIndicadorA(activo);
-            }
-
-            enlaces.forEach((enlace) => {
-                enlace.addEventListener("mouseenter", () => moverIndicadorA(enlace));
-            });
-            menu.addEventListener("mouseleave", moverAlActivo);
-
-            // Si algo más (script.js) cambia cuál botón tiene la clase
-            // "active", el indicador se reubica solo, sin necesitar pasar
-            // el mouse por encima.
-            const observador = new MutationObserver(() => {
-                if (!menu.matches(":hover")) moverAlActivo();
-            });
-            enlaces.forEach((enlace) => {
-                observador.observe(enlace, { attributes: true, attributeFilter: ["class"] });
-            });
-
-            // Recalcula posición si cambia el tamaño de ventana (los
-            // botones pueden cambiar de ancho).
-            window.addEventListener("resize", moverAlActivo);
-
-            // Posición inicial (se espera a que las fuentes/layout estén
-            // listos para que los anchos ya sean los definitivos).
-            moverAlActivo();
-            window.addEventListener("load", moverAlActivo);
-        })();
-    </script>
 
     <!-- Chips "Ejemplos" debajo del buscador: al tocar una palabra, la
          escribe en el buscador y dispara el mismo botón de búsqueda que
