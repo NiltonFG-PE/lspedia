@@ -1341,6 +1341,20 @@ body.nosotros-pantalla-completa-activa {
         height: 100px;
         max-width: 100%;
     }
+
+    /* Vista "Vocabulario": la tarjeta "Seña del día" se oculta (ver
+       regla body.vista-temas-movil #senalDelDia más arriba), así que ya
+       no hace falta la fila superior "tarjeta + avatar" seguida del
+       título abajo. En su lugar, el texto (título + lista de intro) y
+       el avatar comparten una sola fila, con el avatar a la derecha,
+       para que no quede solo arriba empujando el texto hacia abajo. */
+    body.vista-temas-movil #filaHeroPrincipal {
+        grid-template-columns: 3fr 2fr;
+        grid-template-areas: "titulo avatar";
+    }
+    body.vista-temas-movil #colAvatarHero {
+        align-self: start;
+    }
 }
 
 /* Bloque principal (Seña del día + título/buscador + avatar) en 3
