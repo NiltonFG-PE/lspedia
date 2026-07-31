@@ -110,7 +110,7 @@ const TITULOS_PRINCIPALES = {
     },
     vocabulario: {
         titulo: "Vocabulario de Lengua de Señas Peruana (LSP)",
-        subtitulo: "Aprende nuevas palabras en español junto con su seña correspondiente en Lengua de Señas Peruana."
+        subtitulo: "Las señas representan conceptos, no siempre palabras. Los términos en español son solo una referencia para facilitar la búsqueda y el aprendizaje. Las variantes regionales enriquecen la Lengua de Señas Peruana."
     }
 };
 
@@ -171,6 +171,10 @@ document.getElementById("btnCategorias").addEventListener("click", (e) => {
     if(filaIndiceTemas) filaIndiceTemas.style.display = "none";
     const filaCategoriasDiccTemas = document.getElementById("filaCategoriasDiccionario");
     if(filaCategoriasDiccTemas) filaCategoriasDiccTemas.style.display = "none";
+    // Los chips "Ejemplos: Hola, Gracias..." pertenecen solo al Diccionario:
+    // en Vocabulario no deben aparecer, para no mezclar ambas secciones.
+    const bloqueEjemplosTemas = document.getElementById("bloqueEjemplos");
+    if(bloqueEjemplosTemas) bloqueEjemplosTemas.style.display = "none";
     // El buscador general (#buscar, busca en todo el diccionario) se
     // reemplaza acá por el buscador azul exclusivo de Categorías (solo
     // filtra las tarjetas por nombre). Aplica igual en escritorio y móvil.
@@ -435,6 +439,8 @@ function ocultarBloqueInicio(){
     if(statsPanel) statsPanel.style.display = "none";
     const sugerencias = document.getElementById("seccionSugerencias");
     if(sugerencias) sugerencias.style.display = "none";
+    const bloqueEjemplosInicio = document.getElementById("bloqueEjemplos");
+    if(bloqueEjemplosInicio) bloqueEjemplosInicio.style.display = "none";
 }
 
 function mostrarBloqueInicio(){
@@ -454,6 +460,8 @@ function mostrarBloqueInicio(){
     if(statsPanel) statsPanel.style.display = "";
     const sugerencias = document.getElementById("seccionSugerencias");
     if(sugerencias) sugerencias.style.display = "";
+    const bloqueEjemplosInicio = document.getElementById("bloqueEjemplos");
+    if(bloqueEjemplosInicio) bloqueEjemplosInicio.style.display = "";
     // La seña del día no se vuelve a mostrar sola: igual que antes, una
     // vez oculta (por ejemplo al ver una palabra) solo reaparece con
     // una recarga de página real (btnInicio ya hace eso).
@@ -1709,9 +1717,59 @@ const COLORES_CATEGORIAS = [
 // --- TARJETAS DE CATEGORÍAS DEL DICCIONARIO (Hoja 1, columna "categoria") ---
 // Estas tarjetas se arman con las categorías REALES que existen en
 // palabras.json (columna C de la Hoja 1), igual que hace mostrarCategorias()
-// con la Hoja 2. Se muestran solo con el nombre (sin ícono), fijas debajo
-// del Índice Alfabético, dentro de la vista "Diccionario".
+// con la Hoja 2, fijas debajo del Índice Alfabético, dentro de la vista
+// "Diccionario". Cada una lleva su propio ícono, descripción corta y
+// paleta de colores (fondo/borde/texto), tomados de
+// CATEGORIAS_DICCIONARIO_INFO cuando la categoría ya está mapeada ahí;
+// cualquier categoría nueva que todavía no tenga ícono propio cae en un
+// color de la paleta genérica (COLORES_CATEGORIAS) con un ícono de
+// carpeta por defecto, para que nunca se quede sin tarjeta.
 const panelCategoriasDiccionario = document.getElementById("panelCategoriasDiccionario");
+
+const CATEGORIAS_DICCIONARIO_INFO = {
+    "cortesía": {
+        icono: "img/categorias/cortesia.png",
+        descripcion: "Palabras para usar a diario",
+        fondo: "#dbeeff", borde: "#bfe0fc", texto: "#1d4ed8"
+    },
+    "educación": {
+        icono: "img/categorias/educacion.png",
+        descripcion: "Aprende y enseña",
+        fondo: "#fce4ef", borde: "#f8c7dd", texto: "#be185d"
+    },
+    "reflexión": {
+        icono: "img/categorias/reflexion.png",
+        descripcion: "Pensamientos y emociones",
+        fondo: "#fff3d6", borde: "#fde7ad", texto: "#b45309"
+    },
+    "saludos": {
+        icono: "img/categorias/saludos.png",
+        descripcion: "Formas de saludar",
+        fondo: "#e1f7ea", borde: "#bdeed0", texto: "#15803d"
+    },
+    "alimentos": {
+        icono: "img/categorias/alimentos.png",
+        descripcion: "Comidas y bebidas",
+        fondo: "#efe6fb", borde: "#ddc9f5", texto: "#7a3fc4"
+    }
+};
+
+function infoCategoriaDiccionario(nombre, indiceFallback){
+    const clave = nombre.trim().toLowerCase();
+    if (CATEGORIAS_DICCIONARIO_INFO[clave]) return CATEGORIAS_DICCIONARIO_INFO[clave];
+    const color = COLORES_CATEGORIAS[indiceFallback % COLORES_CATEGORIAS.length];
+    return { icono: null, descripcion: "Explora estas palabras", fondo: color.fondo, borde: color.borde, texto: color.texto };
+}
+
+// Cuántas categorías se muestran de entrada (el resto queda oculto detrás
+// de la tarjeta "Ver todas las categorías", que SIEMPRE se muestra al
+// final del panel, aunque ya quepan todas de entrada).
+const LIMITE_CATEGORIAS_DICCIONARIO = 5;
+
+// Recuerda si el panel está expandido (mostrando TODAS las categorías) o
+// contraído (mostrando solo el adelanto), para que renderCategoriasDiccionario()
+// pueda redibujarse respetando el estado actual.
+let categoriasDiccionarioExpandido = false;
 
 function renderCategoriasDiccionario(){
     if(!panelCategoriasDiccionario) return;
@@ -1724,14 +1782,55 @@ function renderCategoriasDiccionario(){
             .map(p => p.categoria.trim())
     )].sort((a, b) => a.localeCompare(b, "es"));
 
-    nombresCategorias.forEach((nombre, indice) => {
-        const color = COLORES_CATEGORIAS[indice % COLORES_CATEGORIAS.length];
+    const hayCategoriasOcultas = nombresCategorias.length > LIMITE_CATEGORIAS_DICCIONARIO;
+    const listaAMostrar = (categoriasDiccionarioExpandido || !hayCategoriasOcultas)
+        ? nombresCategorias
+        : nombresCategorias.slice(0, LIMITE_CATEGORIAS_DICCIONARIO);
+
+    listaAMostrar.forEach((nombre) => {
+        // El índice de color se calcula sobre la lista COMPLETA (no sobre
+        // la visible), así cada categoría conserva siempre el mismo color
+        // sin importar si el panel está expandido o contraído.
+        const indice = nombresCategorias.indexOf(nombre);
+        const info = infoCategoriaDiccionario(nombre, indice);
+        const iconoHtml = info.icono
+            ? `<img src="${info.icono}" class="categoria-dicc-icono-img" alt="${nombre}" loading="lazy">`
+            : `<span class="categoria-dicc-icono">📁</span>`;
         const card = document.createElement("div");
-        card.className = "col-4 col-md-2 animate-fade-in";
-        card.innerHTML = `<div class="card h-100 shadow-sm categoria-dicc-card" style="border: 2px solid ${color.borde}; background-color: ${color.fondo};"><div class="card-body text-center py-3"><div class="categoria-dicc-nombre" style="color: ${color.texto};">${nombre}</div></div></div>`;
-        card.onclick = () => filtrarPorCategoriaDiccionario(nombre);
+        card.className = "col-6 col-md-4 col-lg-2 animate-fade-in";
+        card.innerHTML = `
+            <div class="card h-100 categoria-dicc-card" style="border-color: ${info.borde}; background-color: ${info.fondo};">
+                ${iconoHtml}
+                <div>
+                    <div class="categoria-dicc-nombre" style="color: ${info.texto};">${nombre}</div>
+                    <div class="categoria-dicc-desc">${info.descripcion}</div>
+                </div>
+                <span class="categoria-dicc-flecha" style="color: ${info.texto};">›</span>
+            </div>`;
+        card.querySelector(".categoria-dicc-card").onclick = () => filtrarPorCategoriaDiccionario(nombre);
         panelCategoriasDiccionario.appendChild(card);
     });
+
+    // Tarjeta "Ver todas las categorías" / "Ver menos": SIEMPRE se
+    // muestra al final del panel. Si hay categorías escondidas, alterna
+    // entre el adelanto y la lista completa dentro del mismo panel (ya no
+    // navega a otra vista); si no hay ninguna escondida, sigue visible
+    // pero no hace nada al tocarla (ya se ven todas).
+    const cardVerTodas = document.createElement("div");
+    cardVerTodas.className = "col-6 col-md-4 col-lg-2 animate-fade-in";
+    const texto = categoriasDiccionarioExpandido ? "Ver menos" : "Ver todas las categorías";
+    const rotacionFlecha = categoriasDiccionarioExpandido ? "transform: rotate(-90deg);" : "";
+    cardVerTodas.innerHTML = `
+        <div class="card h-100 categoria-dicc-card card-ver-todas">
+            <span class="categoria-dicc-flecha" style="${rotacionFlecha}">›</span>
+            <div class="categoria-dicc-nombre" style="color: var(--primary-color); font-size: 0.82rem;">${texto}</div>
+        </div>`;
+    cardVerTodas.querySelector(".categoria-dicc-card").onclick = () => {
+        if (!hayCategoriasOcultas) return;
+        categoriasDiccionarioExpandido = !categoriasDiccionarioExpandido;
+        renderCategoriasDiccionario();
+    };
+    panelCategoriasDiccionario.appendChild(cardVerTodas);
 }
 
 // Filtra las palabras del diccionario (Hoja 1, App.datos) por el nombre

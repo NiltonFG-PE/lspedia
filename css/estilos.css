@@ -35,8 +35,22 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .header-minimal h1 {
-    font-size: 1.5rem;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 1.9rem;
+    font-weight: 700;
+    line-height: 1.25;
     color: #1e293b;
+}
+.header-minimal #subtituloPrincipal {
+    font-size: 1rem;
+}
+@media (min-width: 992px) {
+    .header-minimal h1 {
+        font-size: 2.5rem;
+    }
+    .header-minimal #subtituloPrincipal {
+        font-size: 1.1rem;
+    }
 }
 
 .uppercase {
@@ -79,12 +93,22 @@ h1, h2, h3, h4, h5, h6 {
     pointer-events: none;
 }
 
-/* Barra A-Z */
+/* Barra A-Z: todas las letras en una sola fila (nunca se parte en dos
+   filas en escritorio/tablet); si el espacio es muy angosto, se
+   comprimen las letras primero (ver .btn-abc de abajo) y, como último
+   recurso, aparece scroll horizontal. */
 .indice-alfabetico {
     background: #ffffff;
+    display: flex !important;
+    flex-wrap: nowrap !important;
     overflow-x: auto;
-    white-space: nowrap;
 }
+
+/* Estilo base de .btn-abc: lo reutiliza también el módulo "Aprender"
+   (js/alfabetizacion.js) fuera del índice alfabético del Diccionario, así
+   que se deja aquí como valor por defecto. El bloque de abajo,
+   ".indice-alfabetico .btn-abc", es más específico y es el que en la
+   práctica se aplica dentro del índice alfabético. */
 .btn-abc {
     color: var(--text-muted);
     font-weight: 600;
@@ -97,39 +121,94 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--accent-color);
 }
 
-/* Botón rectangular del Índice alfabético (icono A-Z + flecha) */
-.btn-abc-toggle {
+/* Letras del Índice alfabético (vista Diccionario): cada una es una
+   "ficha" cuadrada, no un simple link de texto. Se escriben con el
+   prefijo ".indice-alfabetico" para no afectar el .btn-abc que genera
+   por su cuenta el módulo "Aprender" (js/alfabetizacion.js) en otra
+   parte de la página. */
+.indice-alfabetico .btn-abc {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 0;
+    width: auto;
+    min-width: 22px;
+    height: 34px;
+    padding: 0;
+    border-radius: 9px;
     background-color: #ffffff;
     border: 1px solid var(--border-color);
-    border-radius: var(--radius-main);
     color: var(--text-main);
     font-weight: 700;
-    font-size: 14px;
-    letter-spacing: 0.3px;
-    padding: 10px 20px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    font-size: 13px;
+    text-decoration: none;
     transition: all 0.2s ease;
 }
-.btn-abc-toggle:hover {
-    border-color: var(--accent-color);
-    color: var(--accent-color);
-    background-color: #f0f9ff;
+/* Amarillo (#febd0f) con texto blanco al pasar el cursor sobre una
+   letra del índice. */
+.indice-alfabetico .btn-abc:hover {
+    border-color: #febd0f;
+    color: #ffffff;
+    background-color: #febd0f;
     transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(2, 132, 199, 0.12);
 }
-.btn-abc-toggle .abc-toggle-label {
+/* Letra seleccionada: degradado azul → amarillo, los dos colores del
+   logo, en vez del azul liso que se usaba antes. */
+.indice-alfabetico .btn-abc.active {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color) 45%, #f5b400 135%);
+    border-color: transparent;
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.25);
+}
+
+/* Encabezado "Índice alfabético": insignia A-Z + título, con la flecha
+   de expandir/contraer a la derecha. Reemplaza al botón-pastilla
+   anterior (que no llevaba insignia) y no incluye ningún botón
+   "Ver todo": el índice siempre puede desplegarse por completo tocando
+   el propio encabezado. */
+.indice-seccion-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 4px 2px;
+}
+.indice-seccion-titulo-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.indice-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 26px;
+    padding: 0 8px;
+    border-radius: 7px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, #1d4ed8 60%, #f5b400 145%);
+    color: #ffffff;
+    font-size: 12px;
     font-weight: 800;
-    color: var(--accent-color);
-    border-right: 1px solid var(--border-color);
-    padding-right: 10px;
+    letter-spacing: 0.3px;
+    flex-shrink: 0;
 }
-.btn-abc-toggle:hover .abc-toggle-label {
-    border-color: var(--accent-color);
+.indice-seccion-titulo {
+    font-weight: 800;
+    color: var(--primary-color);
+    font-size: 0.95rem;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    text-align: left;
 }
 .flecha-abc-toggle {
     display: inline-block;
+    color: var(--text-muted);
+    font-size: 13px;
     transition: transform 0.2s ease;
-    font-size: 12px;
 }
 
 /* Panel de sugerencias desplegables */
@@ -248,25 +327,103 @@ h1, h2, h3, h4, h5, h6 {
 .categoria-card p { font-size: 11px; margin: 0; color: var(--text-muted); }
 .categoria-card:hover { background: #f1f5f9; }
 
-/* Tarjetas de Categorías del Diccionario (data/categorias.json, Hoja 1),
-   debajo del Índice Alfabético en la vista "Diccionario". Más compactas
-   que las tarjetas de "Vocabulario": ícono grande + nombre, en fila. */
-.categoria-dicc-card {
-    cursor: pointer;
-    border-radius: 14px;
-    transition: filter 0.2s ease-in-out, transform 0.2s ease-in-out;
+/* Encabezado "Categorías": insignia de carpeta + título, alineado a la
+   izquierda (sin ningún botón adicional al lado). */
+.categorias-seccion-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding: 0 2px;
 }
-.categoria-dicc-card:hover {
-    filter: brightness(0.96) saturate(1.15);
-    transform: scale(1.03);
-}
-.categoria-dicc-icono {
-    font-size: 1.6rem;
+.categorias-seccion-icono {
+    font-size: 1.2rem;
     line-height: 1;
 }
+.categorias-seccion-titulo {
+    font-weight: 800;
+    color: var(--primary-color);
+    font-size: 0.95rem;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+}
+
+/* Tarjetas de Categorías del Diccionario (Hoja 1, columna "categoria"),
+   debajo del Índice Alfabético en la vista "Diccionario": ícono propio,
+   nombre, descripción corta y una flecha circular como indicador de
+   "entrar". El color de fondo/borde/texto y el ícono de cada categoría
+   se arman en script.js (CATEGORIAS_DICCIONARIO_INFO). */
+.categoria-dicc-card {
+    cursor: pointer;
+    border-radius: 16px;
+    border-width: 1.5px;
+    border-style: solid;
+    padding: 14px 12px;
+    height: 100%;
+    min-height: 138px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, filter 0.2s ease-in-out;
+}
+.categoria-dicc-card:hover {
+    filter: saturate(1.1);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(15, 23, 42, 0.1);
+}
+.categoria-dicc-icono {
+    font-size: 2.3rem;
+    line-height: 1;
+    margin-bottom: 6px;
+}
+.categoria-dicc-icono-img {
+    width: 46px;
+    height: 46px;
+    object-fit: contain;
+    margin-bottom: 6px;
+}
 .categoria-dicc-nombre {
-    font-size: 0.85rem;
-    font-weight: 600;
+    font-size: 0.92rem;
+    font-weight: 800;
+    margin-bottom: 3px;
+    line-height: 1.15;
+}
+.categoria-dicc-desc {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: rgba(15, 23, 42, 0.62);
+    line-height: 1.25;
+    padding-right: 22px;
+}
+.categoria-dicc-flecha {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 800;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.12);
+}
+/* Última tarjeta del panel: lleva a "Vocabulario" (todas las categorías) */
+.categoria-dicc-card.card-ver-todas {
+    background: #ffffff;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-style: dashed;
+    border-color: var(--border-color);
+}
+.categoria-dicc-card.card-ver-todas .categoria-dicc-flecha {
+    position: static;
+    margin: 0 auto 8px;
+    background: #f0f9ff;
 }
 
 /* Tarjetas de estadísticas clicables (Palabras / Categorías / Videos) */
