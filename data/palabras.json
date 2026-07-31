@@ -550,16 +550,6 @@
     "": ""
   },
   {
-    "palabra": "palabra",
-    "definicion": "definicion",
-    "categoria": "categoria",
-    "video": "video",
-    "imagen": "imagen",
-    "variantes": "variantes",
-    "senasugerida": "prompt_imagen",
-    "": ""
-  },
-  {
     "palabra": "Papá",
     "definicion": "Es la palabra para llamar al padre, el hombre que es tu papá dentro de la familia.\n Ejemplo: Mi papá me lleva al colegio en las mañanas.",
     "categoria": "Familia",
