@@ -2500,1023 +2500,1013 @@
     "": ""
   },
   {
-    "palabra": "Palabra",
-    "definicion": "Definición",
-    "categoria": "Ejemplo",
-    "video": "Categoría",
-    "imagen": "Sinónimos",
-    "variantes": "Prompt_Imagen",
-    "senasugerida": "",
-    "": ""
-  },
-  {
     "palabra": "Análisis",
     "definicion": "Dividir algo en partes pequeñas para entenderlo mejor. Es examinar algo con cuidado y detalle.",
     "categoria": "El profesor hizo un análisis de la novela en clase.",
     "video": "Educación",
-    "imagen": "Examen detallado, Revisión, Estudio profundo, Investigación",
+    "imagen": "",
     "variantes": "Una persona mirando una pirámide de componentes descompuesta en bloques de colores, estilo flat design moderno",
     "senasugerida": "",
-    "": ""
+    "": "Examen detallado, Revisión, Estudio profundo, Investigación"
   },
   {
     "palabra": "Algoritmo",
     "definicion": "Serie de pasos ordenados para resolver un problema o hacer una tarea. Como una receta que debe seguirse paso a paso.",
     "categoria": "Google usa algoritmos para mostrar los resultados de búsqueda.",
     "video": "Tecnología",
-    "imagen": "Procedimiento, Método, Pasos ordenados, Fórmula",
+    "imagen": "",
     "variantes": "Una cadena de bloques conectados con flechas mostrando flujo de pasos, colores azules y morados, estilo minimalista",
     "senasugerida": "",
-    "": ""
+    "": "Procedimiento, Método, Pasos ordenados, Fórmula"
   },
   {
     "palabra": "Argumento",
     "definicion": "Razón o prueba que usamos para demostrar que algo es verdadero o para convencer a otros.",
     "categoria": "Presenté un argumento fuerte en mi ensayo.",
     "video": "Educación",
-    "imagen": "Razón, Prueba, Evidencia, Fundamento",
+    "imagen": "",
     "variantes": "Una persona sosteniendo un escudo con un símbolo de aprobación, defendiendo un punto de vista, estilo ilustración plana",
     "senasugerida": "",
-    "": ""
+    "": "Razón, Prueba, Evidencia, Fundamento"
   },
   {
     "palabra": "Autonomía",
     "definicion": "Capacidad de una persona para tomar sus propias decisiones sin depender de otros.",
     "categoria": "Los estudiantes de universidad tienen más autonomía que los de secundaria.",
     "video": "Psicología",
-    "imagen": "Independencia, Libertad de decisión, Autodeterminación",
+    "imagen": "",
     "variantes": "Una persona de pie en una encrucijada eligiendo entre varios caminos, estilo flat design con colores vibrantes",
     "senasugerida": "",
-    "": ""
+    "": "Independencia, Libertad de decisión, Autodeterminación"
   },
   {
     "palabra": "Autenticidad",
     "definicion": "Ser genuino, real y honesto. No ser falso ni pretender ser algo que no eres.",
     "categoria": "La autenticidad es importante en las redes sociales.",
     "video": "Psicología",
-    "imagen": "Genuinidad, Sinceridad, Honestidad, Realidad",
+    "imagen": "",
     "variantes": "Una persona con un símbolo de verificación brillante, reflejando autenticidad, estilo moderno minimalista",
     "senasugerida": "",
-    "": ""
+    "": "Genuinidad, Sinceridad, Honestidad, Realidad"
   },
   {
     "palabra": "Bibliografía",
     "definicion": "Lista de libros y fuentes que usaste para hacer un trabajo o investigación.",
     "categoria": "Debo incluir una bibliografía al final de mi tesis.",
     "video": "Educación",
-    "imagen": "Referencias, Fuentes, Lista de libros, Citas",
+    "imagen": "",
     "variantes": "Una pila de libros abiertos con notas flotantes, estilo plano con colores tierra",
     "senasugerida": "",
-    "": ""
+    "": "Referencias, Fuentes, Lista de libros, Citas"
   },
   {
     "palabra": "Branding",
     "definicion": "Crear la identidad y la imagen de una marca o empresa para que la gente la reconozca.",
     "categoria": "El branding de Nike incluye el logotipo del check.",
     "video": "Tecnología/Redes Sociales",
-    "imagen": "Marca, Identidad visual, Posicionamiento",
+    "imagen": "",
     "variantes": "Un logotipo abstracto rodeado de símbolos de identidad visual, colores corporativos, estilo moderno",
     "senasugerida": "",
-    "": ""
+    "": "Marca, Identidad visual, Posicionamiento"
   },
   {
     "palabra": "Buffer",
     "definicion": "Espacio temporal donde se guardan datos o información para que fluya sin interrupciones.",
     "categoria": "El video se puso en buffer porque mi internet es lento.",
     "video": "Tecnología",
-    "imagen": "Almacenamiento temporal, Espacio de espera, Cache",
+    "imagen": "",
     "variantes": "Un recipiente recolectando gotitas de datos que luego fluyen hacia un destino, estilo animado",
     "senasugerida": "",
-    "": ""
+    "": "Almacenamiento temporal, Espacio de espera, Cache"
   },
   {
     "palabra": "Catálogo",
     "definicion": "Lista organizada de productos o artículos con sus características y precios.",
     "categoria": "Revisé el catálogo de la tienda online.",
     "video": "Tecnología/Trabajo",
-    "imagen": "Listado, Inventario, Colección, Registro",
+    "imagen": "",
     "variantes": "Una carpeta abierta con tarjetas de productos organizadas en filas, estilo flat design",
     "senasugerida": "",
-    "": ""
+    "": "Listado, Inventario, Colección, Registro"
   },
   {
     "palabra": "Ciclo",
     "definicion": "Serie de eventos o procesos que se repiten en el mismo orden.",
     "categoria": "El ciclo del agua incluye evaporación, condensación y precipitación.",
     "video": "Ciencia",
-    "imagen": "Circulación, Rotación, Secuencia repetida, Proceso cíclico",
+    "imagen": "",
     "variantes": "Una rueda o círculo con flechas mostrando un proceso que se repite, colores vibrantes",
     "senasugerida": "",
-    "": ""
+    "": "Circulación, Rotación, Secuencia repetida, Proceso cíclico"
   },
   {
     "palabra": "Cognición",
     "definicion": "Procesos mentales que usamos para pensar, aprender y entender cosas.",
     "categoria": "La cognición incluye la memoria, la atención y el razonamiento.",
     "video": "Psicología",
-    "imagen": "Pensamiento, Comprensión, Capacidad mental, Procesamiento",
+    "imagen": "",
     "variantes": "Un cerebro abstracto con engranajes y símbolos de pensamiento iluminados, estilo moderno",
     "senasugerida": "",
-    "": ""
+    "": "Pensamiento, Comprensión, Capacidad mental, Procesamiento"
   },
   {
     "palabra": "Conclusión",
     "definicion": "Idea final que se obtiene después de analizar algo.",
     "categoria": "Mi conclusión fue que el experimento funcionó correctamente.",
     "video": "Educación",
-    "imagen": "Resultado, Deducción, Cierre, Veredicto",
+    "imagen": "",
     "variantes": "Una ruta que termina en una bandera de llegada, estilo plano minimalista",
     "senasugerida": "",
-    "": ""
+    "": "Resultado, Deducción, Cierre, Veredicto"
   },
   {
     "palabra": "Consenso",
     "definicion": "Acuerdo general entre las personas. Cuando todos piensan lo mismo.",
     "categoria": "Alcanzamos un consenso en la reunión de trabajo.",
     "video": "Trabajo",
-    "imagen": "Acuerdo, Conformidad, Unanimidad",
+    "imagen": "",
     "variantes": "Un grupo de personas con las manos unidas en círculo, estilo ilustración amigable",
     "senasugerida": "",
-    "": ""
+    "": "Acuerdo, Conformidad, Unanimidad"
   },
   {
     "palabra": "Contexto",
     "definicion": "Las circunstancias o información que rodea algo y ayuda a entenderlo mejor.",
     "categoria": "Sin contexto, no entiendes el significado del chiste.",
     "video": "Educación",
-    "imagen": "Situación, Circunstancias, Marco, Ambiente",
+    "imagen": "",
     "variantes": "Una palabra en el centro rodeada de símbolos que la explican, estilo conceptual",
     "senasugerida": "",
-    "": ""
+    "": "Situación, Circunstancias, Marco, Ambiente"
   },
   {
     "palabra": "Contraseña",
     "definicion": "Código secreto que usas para acceder a tus cuentas y proteger tu información.",
     "categoria": "Mi contraseña es segura y solo yo la conozco.",
     "video": "Tecnología",
-    "imagen": "Clave, PIN, Código secreto, Password",
+    "imagen": "",
     "variantes": "Un candado digital con un símbolo de contraseña, colores de seguridad (verde y azul)",
     "senasugerida": "",
-    "": ""
+    "": "Clave, PIN, Código secreto, Password"
   },
   {
     "palabra": "Creatividad",
     "definicion": "Capacidad de pensar en cosas nuevas e inventar soluciones originales.",
     "categoria": "La creatividad es importante en el diseño gráfico.",
     "video": "Psicología",
-    "imagen": "Inventiva, Imaginación, Originalidad, Innovación",
+    "imagen": "",
     "variantes": "Una bombilla con colores arcoíris explotando en creatividad, estilo artístico",
     "senasugerida": "",
-    "": ""
+    "": "Inventiva, Imaginación, Originalidad, Innovación"
   },
   {
     "palabra": "Crítica",
     "definicion": "Análisis de algo para señalar sus puntos buenos y malos.",
     "categoria": "El profesor dio una crítica constructiva de mi trabajo.",
     "video": "Educación",
-    "imagen": "Evaluación, Análisis, Comentario, Valoración",
+    "imagen": "",
     "variantes": "Una persona analizando un objeto con lupa, mostrando aspectos positivos y negativos",
     "senasugerida": "",
-    "": ""
+    "": "Evaluación, Análisis, Comentario, Valoración"
   },
   {
     "palabra": "Cuestionario",
     "definicion": "Serie de preguntas para obtener información de una persona.",
     "categoria": "Complété un cuestionario para la investigación.",
     "video": "Educación",
-    "imagen": "Encuesta, Formulario, Serie de preguntas, Sondeo",
+    "imagen": "",
     "variantes": "Un formulario con casillas de verificación y preguntas, estilo flat design",
     "senasugerida": "",
-    "": ""
+    "": "Encuesta, Formulario, Serie de preguntas, Sondeo"
   },
   {
     "palabra": "Dashboard",
     "definicion": "Panel de control visual que muestra información importante de un sistema.",
     "categoria": "Veo las estadísticas en el dashboard de mi negocio.",
     "video": "Tecnología",
-    "imagen": "Panel de control, Tablero, Interfaz",
+    "imagen": "",
     "variantes": "Un panel con gráficos, números y indicadores coloridos, estilo moderno tech",
     "senasugerida": "",
-    "": ""
+    "": "Panel de control, Tablero, Interfaz"
   },
   {
     "palabra": "Deducción",
     "definicion": "Proceso de pensar que va de lo general a lo particular. Llegar a una conclusión basada en hechos conocidos.",
     "categoria": "Por deducción, si llueve, el piso estará mojado.",
     "video": "Filosofía",
-    "imagen": "Conclusión lógica, Inferencia, Razonamiento",
+    "imagen": "",
     "variantes": "Una flecha desde una idea grande hacia una idea pequeña específica",
     "senasugerida": "",
-    "": ""
+    "": "Conclusión lógica, Inferencia, Razonamiento"
   },
   {
     "palabra": "Democracia",
     "definicion": "Sistema político donde el poder lo tiene el pueblo a través del voto.",
     "categoria": "En una democracia, todos pueden votar.",
     "video": "Educación/Política",
-    "imagen": "Gobierno del pueblo, Participación ciudadana",
+    "imagen": "",
     "variantes": "Personas votando en urnas, colores patrióticos, estilo ilustración cívica",
     "senasugerida": "",
-    "": ""
+    "": "Gobierno del pueblo, Participación ciudadana"
   },
   {
     "palabra": "Dependencia",
     "definicion": "Necesidad de algo o alguien para poder funcionar o vivir.",
     "categoria": "La dependencia del teléfono móvil es un problema en la sociedad.",
     "video": "Psicología",
-    "imagen": "Subordinación, Necesidad, Vínculo, Relación de poder",
+    "imagen": "",
     "variantes": "Una persona sostenida por una cadena o cordón, representando conexión",
     "senasugerida": "",
-    "": ""
+    "": "Subordinación, Necesidad, Vínculo, Relación de poder"
   },
   {
     "palabra": "Desempeño",
     "definicion": "Forma en que alguien realiza un trabajo o tarea.",
     "categoria": "Mi desempeño laboral ha mejorado este trimestre.",
     "video": "Trabajo",
-    "imagen": "Rendimiento, Actuación, Ejecución, Resultado",
+    "imagen": "",
     "variantes": "Una persona alcanzando una meta con un gráfico de progreso ascendente",
     "senasugerida": "",
-    "": ""
+    "": "Rendimiento, Actuación, Ejecución, Resultado"
   },
   {
     "palabra": "Diálogo",
     "definicion": "Conversación entre dos o más personas donde intercambian ideas y opiniones.",
     "categoria": "Tuvimos un diálogo importante sobre el problema.",
     "video": "Comunicación",
-    "imagen": "Conversación, Intercambio, Comunicación, Charla",
+    "imagen": "",
     "variantes": "Dos personas hablando con burbujas de diálogo entre ellas, estilo chat",
     "senasugerida": "",
-    "": ""
+    "": "Conversación, Intercambio, Comunicación, Charla"
   },
   {
     "palabra": "Digital",
     "definicion": "Relacionado con computadoras, internet y números. Lo opuesto a analógico.",
     "categoria": "Prefiero los libros digitales en mi tablet.",
     "video": "Tecnología",
-    "imagen": "Electrónico, Numérico, En línea, Virtual",
+    "imagen": "",
     "variantes": "Un símbolo de 1 y 0 formando una forma de onda o tecnología",
     "senasugerida": "",
-    "": ""
+    "": "Electrónico, Numérico, En línea, Virtual"
   },
   {
     "palabra": "Dilema",
     "definicion": "Situación difícil donde debes elegir entre dos opciones y ambas tienen problemas.",
     "categoria": "Enfrento un dilema: trabajar o estudiar.",
     "video": "Psicología",
-    "imagen": "Encrucijada, Problema, Conflicto, Difícil decisión",
+    "imagen": "",
     "variantes": "Una persona en una bifurcación de camino, sin saber cuál elegir",
     "senasugerida": "",
-    "": ""
+    "": "Encrucijada, Problema, Conflicto, Difícil decisión"
   },
   {
     "palabra": "Diligencia",
     "definicion": "Esfuerzo y cuidado que pones en hacer bien las cosas.",
     "categoria": "Completé el proyecto con diligencia.",
     "video": "Ética/Trabajo",
-    "imagen": "Esfuerzo, Dedicación, Atención, Responsabilidad",
+    "imagen": "",
     "variantes": "Una persona trabajando concentrada en detalles, con símbolos de calidad",
     "senasugerida": "",
-    "": ""
+    "": "Esfuerzo, Dedicación, Atención, Responsabilidad"
   },
   {
     "palabra": "Discrepancia",
     "definicion": "Diferencia o desacuerdo entre dos cosas o entre lo que dicen dos personas.",
     "categoria": "Hay una discrepancia entre el reporte y la realidad.",
     "video": "Educación",
-    "imagen": "Diferencia, Desacuerdo, Contradicción, Inconsistencia",
+    "imagen": "",
     "variantes": "Dos ecuaciones matemáticas con resultados diferentes, estilo matemático",
     "senasugerida": "",
-    "": ""
+    "": "Diferencia, Desacuerdo, Contradicción, Inconsistencia"
   },
   {
     "palabra": "Distribución",
     "definicion": "Manera en que algo se reparte o se extiende en diferentes lugares.",
     "categoria": "La distribución de los productos llega a todas las ciudades.",
     "video": "Trabajo/Economía",
-    "imagen": "Reparto, Dispersión, Circulación, Envío",
+    "imagen": "",
     "variantes": "Líneas y puntos mostrando como algo se extiende desde un centro",
     "senasugerida": "",
-    "": ""
+    "": "Reparto, Dispersión, Circulación, Envío"
   },
   {
     "palabra": "Diversidad",
     "definicion": "Variedad de personas, ideas o cosas diferentes en un lugar.",
     "categoria": "Nuestro equipo tiene mucha diversidad de talento.",
     "video": "Sociedad",
-    "imagen": "Variedad, Pluralidad, Multiplicidad, Heterogeneidad",
+    "imagen": "",
     "variantes": "Personas de diferentes colores, formas y tamaños juntas, estilo inclusivo",
     "senasugerida": "",
-    "": ""
+    "": "Variedad, Pluralidad, Multiplicidad, Heterogeneidad"
   },
   {
     "palabra": "Docencia",
     "definicion": "Profesión y arte de enseñar. La actividad de ser profesor.",
     "categoria": "Mi vocación es la docencia en educación primaria.",
     "video": "Educación",
-    "imagen": "Enseñanza, Profesorado, Educación, Magisterio",
+    "imagen": "",
     "variantes": "Un profesor de frente a estudiantes con símbolos de aprendizaje",
     "senasugerida": "",
-    "": ""
+    "": "Enseñanza, Profesorado, Educación, Magisterio"
   },
   {
     "palabra": "Dominio",
     "definicion": "Maestría o control total sobre algo. También es conocimiento profundo de un tema.",
     "categoria": "Tengo dominio del idioma inglés.",
     "video": "Educación/Habilidades",
-    "imagen": "Maestría, Control, Experto, Competencia",
+    "imagen": "",
     "variantes": "Una persona en la cima de una montaña controlando el territorio",
     "senasugerida": "",
-    "": ""
+    "": "Maestría, Control, Experto, Competencia"
   },
   {
     "palabra": "Ecosistema",
     "definicion": "Grupo de seres vivos y su ambiente que forman un sistema equilibrado.",
     "categoria": "El ecosistema del bosque incluye plantas, animales y hongos.",
     "video": "Ciencia",
-    "imagen": "Ambiente, Hábitat, Comunidad biótica, Sistema natural",
+    "imagen": "",
     "variantes": "Plantas, animales y elementos naturales interconectados en un sistema",
     "senasugerida": "",
-    "": ""
+    "": "Ambiente, Hábitat, Comunidad biótica, Sistema natural"
   },
   {
     "palabra": "Eficiencia",
     "definicion": "Capacidad de realizar un trabajo de la mejor manera posible con menos recursos.",
     "categoria": "La eficiencia de la máquina ha mejorado.",
     "video": "Trabajo",
-    "imagen": "Efectividad, Rendimiento, Productividad, Optimización",
+    "imagen": "",
     "variantes": "Un reloj-engranaje funcionando perfectamente con energía fluyendo",
     "senasugerida": "",
-    "": ""
+    "": "Efectividad, Rendimiento, Productividad, Optimización"
   },
   {
     "palabra": "Ejecución",
     "definicion": "Acción de realizar o llevar a cabo un plan o proyecto.",
     "categoria": "La ejecución del plan salió perfecta.",
     "video": "Trabajo",
-    "imagen": "Realización, Implementación, Cumplimiento, Desarrollo",
+    "imagen": "",
     "variantes": "Una persona haciendo que un proyecto pase de idea a realidad",
     "senasugerida": "",
-    "": ""
+    "": "Realización, Implementación, Cumplimiento, Desarrollo"
   },
   {
     "palabra": "Elemento",
     "definicion": "Parte pequeña e importante de algo más grande.",
     "categoria": "El hidrógeno es un elemento químico.",
     "video": "Ciencia",
-    "imagen": "Componente, Parte, Sustancia, Ingrediente",
+    "imagen": "",
     "variantes": "Piezas pequeñas formando un todo, estilo construcción",
     "senasugerida": "",
-    "": ""
+    "": "Componente, Parte, Sustancia, Ingrediente"
   },
   {
     "palabra": "Empatía",
     "definicion": "Capacidad de entender y sentir las emociones de otra persona.",
     "categoria": "Mostré empatía hacia mi amigo que estaba triste.",
     "video": "Psicología",
-    "imagen": "Comprensión, Solidaridad, Simpatía, Compasión",
+    "imagen": "",
     "variantes": "Dos personas conectadas por un corazón, estilo emocional y caálido",
     "senasugerida": "",
-    "": ""
+    "": "Comprensión, Solidaridad, Simpatía, Compasión"
   },
   {
     "palabra": "Encriptación",
     "definicion": "Proceso de convertir información en código secreto para protegerla.",
     "categoria": "La encriptación protege mis mensajes en WhatsApp.",
     "video": "Tecnología",
-    "imagen": "Codificación, Cifrado, Protección de datos, Codificación de seguridad",
+    "imagen": "",
     "variantes": "Datos transformados en símbolos y códigos, candado digital",
     "senasugerida": "",
-    "": ""
+    "": "Codificación, Cifrado, Protección de datos, Codificación de seguridad"
   },
   {
     "palabra": "Enfoque",
     "definicion": "Manera de ver o aproximarse a un problema o tema.",
     "categoria": "Cambié mi enfoque sobre la solución.",
     "video": "Educación",
-    "imagen": "Perspectiva, Punto de vista, Manera de abordar, Estrategia",
+    "imagen": "",
     "variantes": "Una lupa enfocada en un objetivo, líneas de concentración",
     "senasugerida": "",
-    "": ""
+    "": "Perspectiva, Punto de vista, Manera de abordar, Estrategia"
   },
   {
     "palabra": "Enumeración",
     "definicion": "Lista de cosas en orden, mencionando cada una.",
     "categoria": "Hice una enumeración de todos los elementos necesarios.",
     "video": "Educación",
-    "imagen": "Lista, Conteo, Relación, Inventario numerado",
+    "imagen": "",
     "variantes": "Números del 1 al 5 con ítems al lado, estilo organizacional",
     "senasugerida": "",
-    "": ""
+    "": "Lista, Conteo, Relación, Inventario numerado"
   },
   {
     "palabra": "Envío",
     "definicion": "Acción de mandar o transportar algo a otra persona o lugar.",
     "categoria": "El envío llegará en tres días.",
     "video": "Trabajo/Comercio",
-    "imagen": "Remesa, Transporte, Distribución, Paquete",
+    "imagen": "",
     "variantes": "Un paquete con alas volando hacia un destino, estilo de entrega",
     "senasugerida": "",
-    "": ""
+    "": "Remesa, Transporte, Distribución, Paquete"
   },
   {
     "palabra": "Epistemología",
     "definicion": "Rama de la filosofía que estudia cómo conocemos las cosas.",
     "categoria": "La epistemología pregunta: ¿cómo sabemos que algo es verdad?",
     "video": "Filosofía",
-    "imagen": "Teoría del conocimiento, Estudio del saber",
+    "imagen": "",
     "variantes": "Una cabeza pensante con símbolos de conocimiento alrededor",
     "senasugerida": "",
-    "": ""
+    "": "Teoría del conocimiento, Estudio del saber"
   },
   {
     "palabra": "Equilibrio",
     "definicion": "Estado de estar en balance. Ni demasiado de un lado ni del otro.",
     "categoria": "Busco un equilibrio entre trabajo y vida personal.",
     "video": "Bienestar",
-    "imagen": "Balance, Armonía, Estabilidad, Proporción",
+    "imagen": "",
     "variantes": "Una balanza perfectamente equilibrada o una persona en postura armoniosa",
     "senasugerida": "",
-    "": ""
+    "": "Balance, Armonía, Estabilidad, Proporción"
   },
   {
     "palabra": "Equipo",
     "definicion": "Grupo de personas trabajando juntas para un objetivo común.",
     "categoria": "Trabajo en equipo con mis compañeros.",
     "video": "Trabajo",
-    "imagen": "Grupo, Conjunto, Cuadrilla, Banda",
+    "imagen": "",
     "variantes": "Personas diferentes unidas en círculo con símbolo de trabajo conjunto",
     "senasugerida": "",
-    "": ""
+    "": "Grupo, Conjunto, Cuadrilla, Banda"
   },
   {
     "palabra": "Errático",
     "definicion": "Comportamiento impredecible y sin patrón claro. Que cambia sin razón.",
     "categoria": "Su desempeño fue errático: a veces bien, a veces mal.",
     "video": "Descripción",
-    "imagen": "Impredecible, Inconsistente, Irregular, Caótico",
+    "imagen": "",
     "variantes": "Una línea zigzagueante sin dirección clara, estilo caótico",
     "senasugerida": "",
-    "": ""
+    "": "Impredecible, Inconsistente, Irregular, Caótico"
   },
   {
     "palabra": "Error",
     "definicion": "Equivocación o falta que se comete sin intención.",
     "categoria": "Cometí un error en el cálculo.",
     "video": "Educación",
-    "imagen": "Equivocación, Falta, Fallo, Desacierto",
+    "imagen": "",
     "variantes": "Una X roja sobre algo incorrecto, símbolo de error",
     "senasugerida": "",
-    "": ""
+    "": "Equivocación, Falta, Fallo, Desacierto"
   },
   {
     "palabra": "Escalabilidad",
     "definicion": "Capacidad de un sistema para crecer y manejar más volumen sin perder calidad.",
     "categoria": "Nuestra aplicación tiene buena escalabilidad.",
     "video": "Tecnología",
-    "imagen": "Crecimiento, Expansibilidad, Flexibilidad, Adaptabilidad",
+    "imagen": "",
     "variantes": "Escaleras ascendentes con un sistema creciendo de tamaño",
     "senasugerida": "",
-    "": ""
+    "": "Crecimiento, Expansibilidad, Flexibilidad, Adaptabilidad"
   },
   {
     "palabra": "Escepticismo",
     "definicion": "Actitud de dudar y no creer fácilmente en cosas sin buena evidencia.",
     "categoria": "Mostraba escepticismo hacia la idea.",
     "video": "Filosofía",
-    "imagen": "Duda, Incredulidad, Desconfianza, Cuestionamiento",
+    "imagen": "",
     "variantes": "Una persona levantando una ceja con interrogante flotante",
     "senasugerida": "",
-    "": ""
+    "": "Duda, Incredulidad, Desconfianza, Cuestionamiento"
   },
   {
     "palabra": "Escenario",
     "definicion": "Situación o contexto donde ocurren los eventos.",
     "categoria": "En este escenario, las cosas serían diferentes.",
     "video": "Educación",
-    "imagen": "Situación, Contexto, Ambiente, Circunstancia",
+    "imagen": "",
     "variantes": "Un escenario de teatro o un lugar donde ocurren eventos",
     "senasugerida": "",
-    "": ""
+    "": "Situación, Contexto, Ambiente, Circunstancia"
   },
   {
     "palabra": "Esencia",
     "definicion": "Lo más importante o fundamental de algo.",
     "categoria": "La esencia del negocio es servir al cliente.",
     "video": "Filosofía",
-    "imagen": "Núcleo, Elemento vital, Lo fundamental, Naturaleza",
+    "imagen": "",
     "variantes": "El corazón o centro luminoso de algo, estilo simbólico",
     "senasugerida": "",
-    "": ""
+    "": "Núcleo, Elemento vital, Lo fundamental, Naturaleza"
   },
   {
     "palabra": "Especialización",
     "definicion": "Dedicarse profundamente a aprender sobre un área específica.",
     "categoria": "Mi especialización es en derecho penal.",
     "video": "Educación",
-    "imagen": "Especialidad, Formación específica, Expertise",
+    "imagen": "",
     "variantes": "Un árbol que se divide en ramas especializadas diferentes",
     "senasugerida": "",
-    "": ""
+    "": "Especialidad, Formación específica, Expertise"
   },
   {
     "palabra": "Específico",
     "definicion": "Que es exacto y preciso. No general ni vago.",
     "categoria": "Dame un ejemplo específico de lo que dices.",
     "video": "Descripción",
-    "imagen": "Preciso, Exacto, Determinado, Concreto",
+    "imagen": "",
     "variantes": "Un objetivo con un punto rojo en el centro, muy preciso",
     "senasugerida": "",
-    "": ""
+    "": "Preciso, Exacto, Determinado, Concreto"
   },
   {
     "palabra": "Espectro",
     "definicion": "Rango completo de algo. En ciencia, es la descomposición de la luz en sus colores.",
     "categoria": "En el espectro político, existen muchas posiciones.",
     "video": "Ciencia",
-    "imagen": "Rango, Alcance, Escala, Gama",
+    "imagen": "",
     "variantes": "Los colores del arcoíris en una línea o espectro de luz",
     "senasugerida": "",
-    "": ""
+    "": "Rango, Alcance, Escala, Gama"
   },
   {
     "palabra": "Estándar",
     "definicion": "Nivel de calidad o características que algo debe cumplir.",
     "categoria": "Nuestro producto cumple con altos estándares de calidad.",
     "video": "Trabajo",
-    "imagen": "Criterio, Norma, Patrón, Requisito",
+    "imagen": "",
     "variantes": "Una varilla de medida o un sello de aprobación de calidad",
     "senasugerida": "",
-    "": ""
+    "": "Criterio, Norma, Patrón, Requisito"
   },
   {
     "palabra": "Estrategia",
     "definicion": "Plan general para alcanzar un objetivo.",
     "categoria": "Tenemos una estrategia para aumentar las ventas.",
     "video": "Trabajo",
-    "imagen": "Plan, Táctica, Método, Aproximación",
+    "imagen": "",
     "variantes": "Un tablero de ajedrez o un mapa de batalla, estilo estratégico",
     "senasugerida": "",
-    "": ""
+    "": "Plan, Táctica, Método, Aproximación"
   },
   {
     "palabra": "Estructura",
     "definicion": "Forma en que están organizados y conectados los elementos de algo.",
     "categoria": "La estructura de mi tesis tiene introdución, desarrollo y conclusión.",
     "video": "Educación",
-    "imagen": "Organización, Construcción, Esqueleto, Armazón",
+    "imagen": "",
     "variantes": "Una construcción o esqueleto mostrando cómo están conectadas las partes",
     "senasugerida": "",
-    "": ""
+    "": "Organización, Construcción, Esqueleto, Armazón"
   },
   {
     "palabra": "Estudio",
     "definicion": "Acción de aprender y entender un tema mediante investigación.",
     "categoria": "Hice un estudio sobre los efectos del cambio climático.",
     "video": "Educación",
-    "imagen": "Investigación, Análisis, Aprendizaje, Examen",
+    "imagen": "",
     "variantes": "Libros abiertos y notas, alguien investigando con lupa",
     "senasugerida": "",
-    "": ""
+    "": "Investigación, Análisis, Aprendizaje, Examen"
   },
   {
     "palabra": "Ética",
     "definicion": "Conjunto de principios sobre lo que es correcto e incorrecto.",
     "categoria": "La ética en los negocios es muy importante.",
     "video": "Filosofía",
-    "imagen": "Moral, Principios, Valores, Conducta correcta",
+    "imagen": "",
     "variantes": "Una balanza con valores positivos en un lado, estilo equilibrado",
     "senasugerida": "",
-    "": ""
+    "": "Moral, Principios, Valores, Conducta correcta"
   },
   {
     "palabra": "Evaluación",
     "definicion": "Análisis de algo para determinar su valor o calidad.",
     "categoria": "Recibiré una evaluación de desempeño al final del trimestre.",
     "video": "Educación",
-    "imagen": "Calificación, Valoración, Examen, Juicio",
+    "imagen": "",
     "variantes": "Una lista de verificación o una rúbrica de evaluación",
     "senasugerida": "",
-    "": ""
+    "": "Calificación, Valoración, Examen, Juicio"
   },
   {
     "palabra": "Evidencia",
     "definicion": "Prueba o demostración clara que algo es verdadero.",
     "categoria": "Hay evidencia de que el cambio climático existe.",
     "video": "Educación",
-    "imagen": "Prueba, Indicio, Demostración, Hecho verificado",
+    "imagen": "",
     "variantes": "Piezas de un rompecabezas encajando o huella de investigación",
     "senasugerida": "",
-    "": ""
+    "": "Prueba, Indicio, Demostración, Hecho verificado"
   },
   {
     "palabra": "Exactitud",
     "definicion": "Precisión completa. Estar correcto sin errores.",
     "categoria": "La exactitud es importante en las matemáticas.",
     "video": "Educación",
-    "imagen": "Precisión, Corrección, Exactitud, Certeza",
+    "imagen": "",
     "variantes": "Un blanco con flecha perfectamente en el centro",
     "senasugerida": "",
-    "": ""
+    "": "Precisión, Corrección, Exactitud, Certeza"
   },
   {
     "palabra": "Examen",
     "definicion": "Prueba para evaluar el conocimiento de alguien sobre un tema.",
     "categoria": "Tengo un examen de matemáticas mañana.",
     "video": "Educación",
-    "imagen": "Prueba, Test, Evaluación, Interrogatorio",
+    "imagen": "",
     "variantes": "Un papel de examen con preguntas y espacios para responder",
     "senasugerida": "",
-    "": ""
+    "": "Prueba, Test, Evaluación, Interrogatorio"
   },
   {
     "palabra": "Experiencia",
     "definicion": "Conocimiento adquirido a través de vivir situaciones.",
     "categoria": "Tengo 5 años de experiencia en marketing.",
     "video": "Trabajo",
-    "imagen": "Vivencia, Práctica, Conocimiento práctico, Trayectoria",
+    "imagen": "",
     "variantes": "Una línea de tiempo mostrando años de aprendizaje y crecimiento",
     "senasugerida": "",
-    "": ""
+    "": "Vivencia, Práctica, Conocimiento práctico, Trayectoria"
   },
   {
     "palabra": "Experimento",
     "definicion": "Prueba científica realizada para verificar una teoría o hipótesis.",
     "categoria": "Realizamos un experimento en la clase de química.",
     "video": "Ciencia",
-    "imagen": "Prueba, Test, Ensayo científico, Investigación",
+    "imagen": "",
     "variantes": "Un laboratorio con tubos de ensayo y equipos científicos",
     "senasugerida": "",
-    "": ""
+    "": "Prueba, Test, Ensayo científico, Investigación"
   },
   {
     "palabra": "Explicación",
     "definicion": "Acción de aclarar algo para que se entienda mejor.",
     "categoria": "Pedí una explicación del tema que no comprendía.",
     "video": "Educación",
-    "imagen": "Aclaración, Descripción, Interpretación, Exposición",
+    "imagen": "",
     "variantes": "Una bombilla encendida junto a un símbolo de comprensión",
     "senasugerida": "",
-    "": ""
+    "": "Aclaración, Descripción, Interpretación, Exposición"
   },
   {
     "palabra": "Exploración",
     "definicion": "Acción de investigar o descubrir cosas nuevas.",
     "categoria": "La exploración espacial nos ayuda a entender el universo.",
     "video": "Ciencia",
-    "imagen": "Investigación, Descubrimiento, Búsqueda, Aventura",
+    "imagen": "",
     "variantes": "Un explorador o astronauta descubriendo territorios nuevos",
     "senasugerida": "",
-    "": ""
+    "": "Investigación, Descubrimiento, Búsqueda, Aventura"
   },
   {
     "palabra": "Exposición",
     "definicion": "Presentación pública de ideas, trabajos o productos.",
     "categoria": "Hice una exposición sobre mi proyecto de investigación.",
     "video": "Educación",
-    "imagen": "Presentación, Muestra, Demostración, Exhibición",
+    "imagen": "",
     "variantes": "Una persona presentando ante una audiencia, estilo dinámico",
     "senasugerida": "",
-    "": ""
+    "": "Presentación, Muestra, Demostración, Exhibición"
   },
   {
     "palabra": "Expresión",
     "definicion": "Forma de comunicar ideas, sentimientos o hechos.",
     "categoria": "La libertad de expresión es importante.",
     "video": "Comunicación",
-    "imagen": "Comunicación, Manifestación, Declaración, Formulación",
+    "imagen": "",
     "variantes": "Una boca abierta o símbolos de comunicación saliendo",
     "senasugerida": "",
-    "": ""
+    "": "Comunicación, Manifestación, Declaración, Formulación"
   },
   {
     "palabra": "Fabricación",
     "definicion": "Proceso de hacer o producir algo en cantidad.",
     "categoria": "La fabricación de autos es un proceso complejo.",
     "video": "Trabajo",
-    "imagen": "Producción, Manufactura, Elaboración, Construcción",
+    "imagen": "",
     "variantes": "Una máquina produciendo objetos en una línea de producción",
     "senasugerida": "",
-    "": ""
+    "": "Producción, Manufactura, Elaboración, Construcción"
   },
   {
     "palabra": "Facultad",
     "definicion": "Capacidad o habilidad natural de una persona. También es una división de la universidad.",
     "categoria": "Estudié en la Facultad de Ingeniería.",
     "video": "Educación",
-    "imagen": "Capacidad, Habilidad, Aptitud, Departamento",
+    "imagen": "",
     "variantes": "Un edificio universitario o un símbolo de capacidad mental",
     "senasugerida": "",
-    "": ""
+    "": "Capacidad, Habilidad, Aptitud, Departamento"
   },
   {
     "palabra": "Falacia",
     "definicion": "Argumento falso que parece verdadero pero contiene un error.",
     "categoria": "Ese argumento es una falacia lógica.",
     "video": "Filosofía",
-    "imagen": "Engaño, Error lógico, Argumento falso, Sofisma",
+    "imagen": "",
     "variantes": "Una escalera que parece segura pero está rota, estilo ilusión óptica",
     "senasugerida": "",
-    "": ""
+    "": "Engaño, Error lógico, Argumento falso, Sofisma"
   },
   {
     "palabra": "Feedback",
     "definicion": "Información o comentario que recibes para mejorar.",
     "categoria": "El feedback del profesor me ayudó a mejorar.",
     "video": "Educación/Trabajo",
-    "imagen": "Retroalimentación, Comentario, Evaluación, Respuesta",
+    "imagen": "",
     "variantes": "Una flecha circular mostrando comunicación bidireccional",
     "senasugerida": "",
-    "": ""
+    "": "Retroalimentación, Comentario, Evaluación, Respuesta"
   },
   {
     "palabra": "Fenómeno",
     "definicion": "Hecho o evento observable en la naturaleza.",
     "categoria": "El eclipse solar es un fenómeno astronómico.",
     "video": "Ciencia",
-    "imagen": "Evento, Hecho, Acontecimiento, Manifestación",
+    "imagen": "",
     "variantes": "Un evento natural impresionante como un eclipse o aurora",
     "senasugerida": "",
-    "": ""
+    "": "Evento, Hecho, Acontecimiento, Manifestación"
   },
   {
     "palabra": "Filosofía",
     "definicion": "Estudio de los principios fundamentales sobre la vida, la verdad y el conocimiento.",
     "categoria": "La filosofía me ayuda a entender la vida.",
     "video": "Educación",
-    "imagen": "Sabiduría, Pensamiento, Reflexión, Ideología",
+    "imagen": "",
     "variantes": "Un pensador clásico o un símbolo de pregunta grande",
     "senasugerida": "",
-    "": ""
+    "": "Sabiduría, Pensamiento, Reflexión, Ideología"
   },
   {
     "palabra": "Financiero",
     "definicion": "Relacionado con dinero y recursos económicos.",
     "categoria": "Estoy en problemas financieros.",
     "video": "Economía",
-    "imagen": "Económico, Monetario, De dinero, Presupuestario",
+    "imagen": "",
     "variantes": "Monedas, billetes o gráficos de dinero, estilo económico",
     "senasugerida": "",
-    "": ""
+    "": "Económico, Monetario, De dinero, Presupuestario"
   },
   {
     "palabra": "Firma",
     "definicion": "Nombre escrito con tu propia letra única. También es una empresa.",
     "categoria": "Debes poner tu firma en el documento.",
     "video": "Trabajo",
-    "imagen": "Rúbrica, Autógrafo, Empresa, Compañía",
+    "imagen": "",
     "variantes": "Una firma manuscrita única o un edificio corporativo",
     "senasugerida": "",
-    "": ""
+    "": "Rúbrica, Autógrafo, Empresa, Compañía"
   },
   {
     "palabra": "Flexibilidad",
     "definicion": "Capacidad de adaptarse a cambios y ser flexible.",
     "categoria": "Necesito flexibilidad en mi horario de trabajo.",
     "video": "Habilidades",
-    "imagen": "Adaptabilidad, Elasticidad, Versatilidad, Capacidad de cambio",
+    "imagen": "",
     "variantes": "Una rama o cuerpo que se dobla sin romperse",
     "senasugerida": "",
-    "": ""
+    "": "Adaptabilidad, Elasticidad, Versatilidad, Capacidad de cambio"
   },
   {
     "palabra": "Flujo",
     "definicion": "Movimiento continuo de algo (líquido, energía, información).",
     "categoria": "El flujo de información es rápido en internet.",
     "video": "Ciencia/Tecnología",
-    "imagen": "Circulación, Movimiento, Corriente, Desplazamiento",
+    "imagen": "",
     "variantes": "Líneas de agua o energía fluyendo de un lado a otro",
     "senasugerida": "",
-    "": ""
+    "": "Circulación, Movimiento, Corriente, Desplazamiento"
   },
   {
     "palabra": "Fobia",
     "definicion": "Miedo intenso y irracional a algo específico.",
     "categoria": "Tengo fobia a las alturas.",
     "video": "Psicología",
-    "imagen": "Miedo patológico, Terror irracional, Pánico",
+    "imagen": "",
     "variantes": "Una persona asustada frente a algo que representa su miedo",
     "senasugerida": "",
-    "": ""
+    "": "Miedo patológico, Terror irracional, Pánico"
   },
   {
     "palabra": "Formato",
     "definicion": "Forma o estructura en que se presenta algo.",
     "categoria": "Envía el documento en formato PDF.",
     "video": "Tecnología",
-    "imagen": "Estructura, Disposición, Tipo, Presentación",
+    "imagen": "",
     "variantes": "Diferentes formas de presentación (documento, imagen, video)",
     "senasugerida": "",
-    "": ""
+    "": "Estructura, Disposición, Tipo, Presentación"
   },
   {
     "palabra": "Fórmula",
     "definicion": "Secuencia de símbolos que expresa una regla matemática o científica.",
     "categoria": "La fórmula E=mc² es famosa en física.",
     "video": "Ciencia",
-    "imagen": "Ecuación, Expresión matemática, Método probado",
+    "imagen": "",
     "variantes": "Símbolos matemáticos y ecuaciones en pizarra",
     "senasugerida": "",
-    "": ""
+    "": "Ecuación, Expresión matemática, Método probado"
   },
   {
     "palabra": "Fraude",
     "definicion": "Engaño intencional para obtener algo ilícitamente.",
     "categoria": "El fraude en línea es un crimen.",
     "video": "Ética/Legal",
-    "imagen": "Estafa, Engaño, Trampa, Delito",
+    "imagen": "",
     "variantes": "Un símbolo de advertencia con candado roto",
     "senasugerida": "",
-    "": ""
+    "": "Estafa, Engaño, Trampa, Delito"
   },
   {
     "palabra": "Frecuencia",
     "definicion": "Número de veces que algo ocurre en un período de tiempo.",
     "categoria": "Mi frecuencia de ejercicio es tres veces por semana.",
     "video": "Ciencia",
-    "imagen": "Regularidad, Repetición, Periodicidad, Cantidad de ocurrencias",
+    "imagen": "",
     "variantes": "Ondas repetidas mostrando regularidad y patrón",
     "senasugerida": "",
-    "": ""
+    "": "Regularidad, Repetición, Periodicidad, Cantidad de ocurrencias"
   },
   {
     "palabra": "Frustración",
     "definicion": "Sentimiento de estar decepcionado o insatisfecho cuando algo no sale como esperabas.",
     "categoria": "Sentí frustración cuando no pasé el examen.",
     "video": "Emociones",
-    "imagen": "Decepción, Insatisfacción, Desazón, Descontento",
+    "imagen": "",
     "variantes": "Una persona con expresión de decepción o puño apretado",
     "senasugerida": "",
-    "": ""
+    "": "Decepción, Insatisfacción, Desazón, Descontento"
   },
   {
     "palabra": "Función",
     "definicion": "Propósito o uso de algo. Acción que algo realiza.",
     "categoria": "La función principal de un microscopio es ampliar cosas pequeñas.",
     "video": "Educación",
-    "imagen": "Propósito, Rol, Tarea, Utilidad",
+    "imagen": "",
     "variantes": "Un objeto realizando su propósito específico",
     "senasugerida": "",
-    "": ""
+    "": "Propósito, Rol, Tarea, Utilidad"
   },
   {
     "palabra": "Funcionamiento",
     "definicion": "Manera en que algo trabaja o opera.",
     "categoria": "Entiendo el funcionamiento del motor.",
     "video": "Educación",
-    "imagen": "Operación, Mecanismo, Proceso, Trabajo",
+    "imagen": "",
     "variantes": "Engranajes o máquinas trabajando juntas en armonía",
     "senasugerida": "",
-    "": ""
+    "": "Operación, Mecanismo, Proceso, Trabajo"
   },
   {
     "palabra": "Fundación",
     "definicion": "Base o cimiento sobre el que se construye algo. También es una organización sin fines de lucro.",
     "categoria": "La fundación ayuda a niños necesitados.",
     "video": "Sociedad/Educación",
-    "imagen": "Base, Cimiento, Organización benéfica, Institución",
+    "imagen": "",
     "variantes": "Bloques de construcción formando una base sólida",
     "senasugerida": "",
-    "": ""
+    "": "Base, Cimiento, Organización benéfica, Institución"
   },
   {
     "palabra": "Fundamentación",
     "definicion": "Acción de establecer las bases o razones sólidas de algo.",
     "categoria": "La fundamentación teórica de mi investigación es sólida.",
     "video": "Educación",
-    "imagen": "Justificación, Argumentación, Sustentación, Apoyo",
+    "imagen": "",
     "variantes": "Columnas o pilares sosteniendo una estructura",
     "senasugerida": "",
-    "": ""
+    "": "Justificación, Argumentación, Sustentación, Apoyo"
   },
   {
     "palabra": "Fundamental",
     "definicion": "Que es esencial, básico e importante.",
     "categoria": "El agua es fundamental para la vida.",
     "video": "Descripción",
-    "imagen": "Esencial, Básico, Principal, Vital",
+    "imagen": "",
     "variantes": "Los cimientos de un edificio, la base más importante",
     "senasugerida": "",
-    "": ""
+    "": "Esencial, Básico, Principal, Vital"
   },
   {
     "palabra": "Generación",
     "definicion": "Grupo de personas nacidas en el mismo período histórico.",
     "categoria": "La generación de los millennials creció con internet.",
     "video": "Sociedad",
-    "imagen": "Cohorte, Grupo de edad, Período, Procreación",
+    "imagen": "",
     "variantes": "Personas de diferentes edades unidos por un tiempo común",
     "senasugerida": "",
-    "": ""
+    "": "Cohorte, Grupo de edad, Período, Procreación"
   },
   {
     "palabra": "Genérico",
     "definicion": "Que es general y no específico. Sin marca particular.",
     "categoria": "Compré un medicamento genérico más barato.",
     "video": "Descripción",
-    "imagen": "General, Sin especificar, Común, Ordinario",
+    "imagen": "",
     "variantes": "Un símbolo estándar o producto sin marca específica",
     "senasugerida": "",
-    "": ""
+    "": "General, Sin especificar, Común, Ordinario"
   },
   {
     "palabra": "Gestión",
     "definicion": "Administración y organización de recursos para lograr objetivos.",
     "categoria": "La gestión del proyecto fue exitosa.",
     "video": "Trabajo",
-    "imagen": "Administración, Dirección, Control, Manejo",
+    "imagen": "",
     "variantes": "Una persona organizando tareas en un tablero o calendario",
     "senasugerida": "",
-    "": ""
+    "": "Administración, Dirección, Control, Manejo"
   },
   {
     "palabra": "Globalización",
     "definicion": "Proceso de conectar al mundo a través del comercio, tecnología e ideas.",
     "categoria": "La globalización ha cambiado cómo hacemos negocios.",
     "video": "Sociedad",
-    "imagen": "Internacionalización, Conexión mundial, Expansión global",
+    "imagen": "",
     "variantes": "Un globo terraqueo con conexiones que lo rodean",
     "senasugerida": "",
-    "": ""
+    "": "Internacionalización, Conexión mundial, Expansión global"
   },
   {
     "palabra": "Gobierno",
     "definicion": "Sistema o grupo de personas que administra un país o región.",
     "categoria": "El gobierno implementó nuevas políticas.",
     "video": "Política",
-    "imagen": "Administración, Autoridad, Gestión pública, Estado",
+    "imagen": "",
     "variantes": "Un edificio de gobierno o símbolos de autoridad",
     "senasugerida": "",
-    "": ""
+    "": "Administración, Autoridad, Gestión pública, Estado"
   },
   {
     "palabra": "Grado",
     "definicion": "Nivel o escalón en una serie. Diploma o título educativo.",
     "categoria": "Obtuve mi grado universitario.",
     "video": "Educación",
-    "imagen": "Nivel, Rango, Título, Diploma",
+    "imagen": "",
     "variantes": "Una escalera o podio mostrando diferentes niveles de logro",
     "senasugerida": "",
-    "": ""
+    "": "Nivel, Rango, Título, Diploma"
   },
   {
     "palabra": "Grafo",
     "definicion": "Diagrama con puntos y líneas que muestra relaciones entre cosas.",
     "categoria": "Usamos un grafo para mostrar las conexiones de red.",
     "video": "Tecnología/Ciencia",
-    "imagen": "Diagrama, Red, Mapa de relaciones, Estructura visual",
+    "imagen": "",
     "variantes": "Puntos conectados con líneas mostrando una red o conexión",
     "senasugerida": "",
-    "": ""
+    "": "Diagrama, Red, Mapa de relaciones, Estructura visual"
   },
   {
     "palabra": "Gratificación",
     "definicion": "Recompensa o satisfacción que sientes cuando logras algo.",
     "categoria": "Siento gratificación al ayudar a otros.",
     "video": "Emociones",
-    "imagen": "Satisfacción, Recompensa, Placer, Alegría",
+    "imagen": "",
     "variantes": "Una persona sonriendo con una medalla o premio",
     "senasugerida": "",
-    "": ""
+    "": "Satisfacción, Recompensa, Placer, Alegría"
   },
   {
     "palabra": "Gravedad",
     "definicion": "Fuerza que atrae los objetos hacia el centro de la tierra. Seriedad de algo.",
     "categoria": "La gravedad mantiene nuestros pies en el suelo.",
     "video": "Ciencia",
-    "imagen": "Fuerza de atracción, Seriedad, Importancia, Severidad",
+    "imagen": "",
     "variantes": "Una manzana cayendo o una persona siendo atraída hacia abajo",
     "senasugerida": "",
-    "": ""
+    "": "Fuerza de atracción, Seriedad, Importancia, Severidad"
   },
   {
     "palabra": "Gregario",
     "definicion": "Que vive en grupo. Persona que sigue fácilmente a la multitud.",
     "categoria": "Los peces tienen instinto gregario.",
     "video": "Comportamiento",
-    "imagen": "Social, Conformista, De grupo, Colectivo",
+    "imagen": "",
     "variantes": "Un grupo de personas o animales moviéndose juntos",
     "senasugerida": "",
-    "": ""
+    "": "Social, Conformista, De grupo, Colectivo"
   },
   {
     "palabra": "Gremio",
     "definicion": "Asociación de personas que ejercen el mismo oficio o profesión.",
     "categoria": "Pertenezco al gremio de escritores.",
     "video": "Trabajo",
-    "imagen": "Asociación, Corporación, Sindicato, Unión",
+    "imagen": "",
     "variantes": "Personas de una profesión similar reunidas juntas",
     "senasugerida": "",
-    "": ""
+    "": "Asociación, Corporación, Sindicato, Unión"
   },
   {
     "palabra": "Gravamen",
     "definicion": "Carga o impuesto que se aplica sobre algo.",
     "categoria": "Los gravámenes arancelarios encarecen los productos.",
     "video": "Economía",
-    "imagen": "Impuesto, Arancel, Carga, Deuda",
+    "imagen": "",
     "variantes": "Monedas o dinero con un símbolo de carga",
     "senasugerida": "",
-    "": ""
+    "": "Impuesto, Arancel, Carga, Deuda"
   }
 ]
