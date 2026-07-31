@@ -1353,7 +1353,13 @@ body.nosotros-pantalla-completa-activa {
         grid-template-areas: "titulo avatar";
     }
     body.vista-temas-movil #colAvatarHero {
-        align-self: start;
+        align-self: center;
+    }
+    /* Avatar un poco más grande que en el resto de vistas móviles
+       (100px), para que se note más al costado del título, como en el
+       diseño de referencia. */
+    body.vista-temas-movil #colAvatarHero .avatar-hero-img {
+        height: 130px;
     }
 }
 
@@ -3289,7 +3295,7 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
         <div class="footer-bottom text-center">
             <p class="text-muted small mb-0">
                 © 2026 LSPedia — Nilton F. G. Todos los derechos reservados.
-                <a href="https://github.com/NiltonFG-PE/lspedia/blob/main/LICENSE.md" target="_blank" rel="noopener" class="text-muted">Ver licencia</a>
+                <a href="licencia.html" class="text-muted">Ver licencia</a>
             </p>
         </div>
     </div>
