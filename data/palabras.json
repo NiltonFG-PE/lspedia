@@ -1,11 +1,1071 @@
 [
   {
-    "palabra": "Abismo",
-    "definicion": "Abismo es una profundidad muy grande y difícil de medir. Puede referirse a un lugar físico, como un precipicio muy profundo, o usarse de forma figurada para describir una gran diferencia, un peligro o una situación muy difícil.\n\nEn pocas palabras, un abismo es algo tan profundo o tan grande que parece no tener fin o que es muy difícil de superar.",
-    "categoria": "Reflexión",
-    "video": "0J4ckIW6kaA",
-    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/abismo1.png",
-    "variantes": "abismo económico, al borde del abismo, caer en un abismo, un abismo de diferencia, Precipicio, Barranco",
+    "palabra": "Equilibrio",
+    "definicion": "Estado de estar en balance. Ni demasiado de un lado ni del otro.",
+    "categoria": "Bienestar",
+    "video": "",
+    "imagen": "Una balanza perfectamente equilibrada o una persona en postura armoniosa",
+    "variantes": "Balance, Armonía, Estabilidad, Proporción",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Semáforo",
+    "definicion": "Es una señal con luces de colores (rojo, amarillo y verde) que indica cuándo los carros y las personas pueden pasar o deben esperar.\n Ejemplo: Espera a que el semáforo esté en verde para cruzar la calle.",
+    "categoria": "Calle",
+    "video": "",
+    "imagen": "Ilustración plana de un semáforo con sus tres luces de colores junto a una calle, estilo flat design.",
+    "variantes": "Luz roja, Luz verde",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Policía",
+    "definicion": "Es la persona encargada de cuidar el orden y la seguridad de las personas en la calle.\n Ejemplo: Un policía nos ayudó a cruzar la avenida.",
+    "categoria": "Calle",
+    "video": "",
+    "imagen": "Ilustración plana de un oficial de policía con uniforme, de pie en una calle, estilo flat design, colores azul oscuro.",
+    "variantes": "Efectivo policial, Agente",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Mercado",
+    "definicion": "Es un lugar donde se venden alimentos y otros productos en varios puestos.\n Ejemplo: Mi mamá compra las verduras en el mercado los sábados.",
+    "categoria": "Calle",
+    "video": "",
+    "imagen": "Ilustración plana de puestos de frutas y verduras coloridas en un mercado, con personas comprando, estilo flat design.",
+    "variantes": "Mercadito, Mercado de abastos",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Transporte público",
+    "definicion": "Son los buses, combis o taxis que cualquier persona puede usar, pagando, para moverse por la ciudad.\n Ejemplo: Tomo el transporte público todos los días para ir al trabajo.",
+    "categoria": "Calle",
+    "video": "",
+    "imagen": "Ilustración plana de un bus urbano en una avenida con personas esperando en el paradero, estilo flat design.",
+    "variantes": "Combi, Bus, Micro, Movilidad",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Vecino",
+    "definicion": "Es una persona que vive cerca de tu casa, en el mismo barrio o edificio.\n Ejemplo: Mi vecino me ayudó a cargar las bolsas del mercado.",
+    "categoria": "Calle",
+    "video": "",
+    "imagen": "Ilustración plana de dos personas conversando frente a sus casas en un barrio, estilo flat design, colores cálidos.",
+    "variantes": "Vecina, Vecindario",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Tienda",
+    "definicion": "Es un local pequeño donde se venden productos como comida, útiles u otras cosas.\n Ejemplo: Fui a la tienda de la esquina a comprar pan.",
+    "categoria": "Calle",
+    "video": "",
+    "imagen": "Ilustración plana de una bodega de barrio con estantes de productos y un mostrador, estilo flat design.",
+    "variantes": "Bodega, Tiendita, Almacén",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Farmacia",
+    "definicion": "Es el lugar donde se venden medicinas y otros productos de salud.\n Ejemplo: Fui a la farmacia a comprar pastillas para el dolor de cabeza.",
+    "categoria": "Calle",
+    "video": "",
+    "imagen": "Ilustración plana de una farmacia con una cruz verde en la fachada y estantes con medicinas, estilo flat design.",
+    "variantes": "Botica",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Dinero",
+    "definicion": "Son los billetes y monedas que se usan para comprar cosas o pagar servicios.\n Ejemplo: No traje suficiente dinero para pagar el taxi.",
+    "categoria": "Calle",
+    "video": "",
+    "imagen": "Ilustración plana de billetes y monedas peruanas juntos sobre una mesa, estilo flat design, colores verdes y morados.",
+    "variantes": "Plata, Efectivo, Billetes, Monedas",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Hospital",
+    "definicion": "Es un lugar grande donde los médicos atienden y curan a las personas enfermas o heridas.\n Ejemplo: Llevaron a mi abuelo al hospital porque se sentía mal.",
+    "categoria": "Calle",
+    "video": "",
+    "imagen": "Ilustración plana de un edificio de hospital con una cruz roja en la entrada y una ambulancia al costado, estilo flat design.",
+    "variantes": "Clínica, Posta médica",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Emergencia",
+    "definicion": "Es una situación grave y urgente que necesita ayuda inmediata, como un accidente o una enfermedad repentina.\n Ejemplo: Llamamos a una ambulancia porque era una emergencia.",
+    "categoria": "Calle",
+    "video": "",
+    "imagen": "Ilustración plana de una ambulancia con luces encendidas circulando por una avenida, estilo flat design, colores rojo y blanco.",
+    "variantes": "Urgencia",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Ayuda",
+    "definicion": "Es lo que se pide o se da cuando alguien necesita apoyo para resolver un problema o hacer algo.\n Ejemplo: Pedí ayuda a un vecino porque mi carro no encendía.",
+    "categoria": "Calle",
+    "video": "",
+    "imagen": "Ilustración plana de una persona extendiendo la mano para ayudar a otra que está en el suelo o cargando algo pesado, estilo flat design.",
+    "variantes": "Apoyo, Auxilio",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Cita",
+    "definicion": "Es un momento acordado para encontrarse con alguien, por ejemplo con un médico o en una oficina, a una hora específica.\n Ejemplo: Tengo una cita con el dentista mañana a las tres.",
+    "categoria": "Calle",
+    "video": "",
+    "imagen": "Ilustración plana de un calendario con una hora marcada y un reloj al lado, estilo flat design, colores claros.",
+    "variantes": "Cita médica, Turno",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Mucho",
+    "definicion": "Indica una cantidad grande de algo.\n Ejemplo: Hay mucho tráfico hoy en la avenida.",
+    "categoria": "Cantidad",
+    "video": "",
+    "imagen": "Ilustración plana de un recipiente lleno hasta el borde, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": "git commit -m \"borrar botón oraciones\""
+  },
+  {
+    "palabra": "Poco",
+    "definicion": "Indica una cantidad pequeña de algo.\n Ejemplo: Tengo poco dinero esta semana.",
+    "categoria": "Cantidad",
+    "video": "",
+    "imagen": "Ilustración plana de un recipiente casi vacío con poco contenido, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Todo",
+    "definicion": "Indica la totalidad de algo, sin que falte nada.\n Ejemplo: Comí todo lo que había en mi plato.",
+    "categoria": "Cantidad",
+    "video": "",
+    "imagen": "Ilustración plana de un plato completamente vacío con un check, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Nada",
+    "definicion": "Indica la ausencia total de algo.\n Ejemplo: No queda nada de comida en la refrigeradora.",
+    "categoria": "Cantidad",
+    "video": "",
+    "imagen": "Ilustración plana de una refrigeradora abierta y vacía, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Igual",
+    "definicion": "Indica que dos cosas son lo mismo o parecidas.\n Ejemplo: Mi camisa es igual a la de mi hermano.",
+    "categoria": "Cantidad",
+    "video": "",
+    "imagen": "Ilustración plana de dos objetos idénticos uno al lado del otro, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Diferente",
+    "definicion": "Indica que dos cosas no son iguales.\n Ejemplo: Nuestros trabajos son muy diferentes.",
+    "categoria": "Cantidad",
+    "video": "",
+    "imagen": "Ilustración plana de dos objetos distintos, uno redondo y uno cuadrado, uno al lado del otro, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Mitad",
+    "definicion": "Es una de las dos partes iguales en que se divide algo.\n Ejemplo: Me comí la mitad del pan y guardé el resto.",
+    "categoria": "Cantidad",
+    "video": "",
+    "imagen": "Ilustración plana de un círculo dividido en dos partes iguales, una coloreada y otra no, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Doble",
+    "definicion": "Indica una cantidad dos veces mayor que otra.\n Ejemplo: Este mes gané el doble de lo normal.",
+    "categoria": "Cantidad",
+    "video": "",
+    "imagen": "Ilustración plana de un objeto pequeño junto a dos objetos iguales más grandes, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Primero",
+    "definicion": "Indica el lugar inicial en un orden.\n Ejemplo: Llegué primero a la reunión.",
+    "categoria": "Cantidad",
+    "video": "",
+    "imagen": "Ilustración plana de una fila de personas con la primera resaltada con una medalla, estilo flat design.",
+    "variantes": "Primera",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Último",
+    "definicion": "Indica el lugar final en un orden.\n Ejemplo: Fui el último en salir de la oficina.",
+    "categoria": "Cantidad",
+    "video": "",
+    "imagen": "Ilustración plana de una fila de personas con la última resaltada, estilo flat design.",
+    "variantes": "Última",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Cocina",
+    "definicion": "Es el lugar de la casa donde se prepara la comida.\n Ejemplo: Mi mamá está en la cocina preparando el almuerzo.",
+    "categoria": "Casa",
+    "video": "",
+    "imagen": "Ilustración plana de una cocina con estufa, ollas y estantes, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Dormitorio",
+    "definicion": "Es el lugar de la casa donde se duerme.\n Ejemplo: Mi dormitorio tiene una cama y un armario.",
+    "categoria": "Casa",
+    "video": "",
+    "imagen": "Ilustración plana de un dormitorio con una cama y una ventana, estilo flat design.",
+    "variantes": "Cuarto, Habitación",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Baño",
+    "definicion": "Es el lugar de la casa donde uno se ducha y usa el inodoro.\n Ejemplo: Voy a limpiar el baño esta tarde.",
+    "categoria": "Casa",
+    "video": "",
+    "imagen": "Ilustración plana de un baño con inodoro, lavamanos y ducha, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Sala",
+    "definicion": "Es el lugar de la casa donde la familia se reúne a conversar o ver televisión.\n Ejemplo: Vimos una película juntos en la sala.",
+    "categoria": "Casa",
+    "video": "",
+    "imagen": "Ilustración plana de una sala con sofá y televisor, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Puerta",
+    "definicion": "Es la parte de la casa que se abre y cierra para entrar o salir.\n Ejemplo: Cerré la puerta con llave antes de salir.",
+    "categoria": "Casa",
+    "video": "",
+    "imagen": "Ilustración plana de una puerta de madera con una manija, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Ventana",
+    "definicion": "Es la parte de la casa por donde entra la luz y el aire.\n Ejemplo: Abrí la ventana para que entre aire fresco.",
+    "categoria": "Casa",
+    "video": "",
+    "imagen": "Ilustración plana de una ventana abierta con cortinas y luz entrando, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Llave",
+    "definicion": "Es un objeto de metal que sirve para abrir y cerrar una puerta o candado.\n Ejemplo: Perdí la llave de mi casa.",
+    "categoria": "Casa",
+    "video": "",
+    "imagen": "Ilustración plana de una llave metálica sobre un llavero, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Limpieza",
+    "definicion": "Es la acción de dejar un lugar ordenado y sin suciedad.\n Ejemplo: Hicimos la limpieza de la casa el sábado.",
+    "categoria": "Casa",
+    "video": "",
+    "imagen": "Ilustración plana de una persona con una escoba y un balde limpiando, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Lavar",
+    "definicion": "Es limpiar algo con agua, como la ropa o los platos.\n Ejemplo: Voy a lavar la ropa esta tarde.",
+    "categoria": "Casa",
+    "video": "",
+    "imagen": "Ilustración plana de una persona lavando ropa en un lavadero, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Basura",
+    "definicion": "Son los residuos o cosas que ya no sirven y se botan.\n Ejemplo: Saqué la basura antes de que pase el camión.",
+    "categoria": "Casa",
+    "video": "",
+    "imagen": "Ilustración plana de una bolsa de basura junto a un tacho, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Electricidad",
+    "definicion": "Es la energía que hace funcionar las luces y los aparatos de la casa.\n Ejemplo: Se fue la electricidad en mi barrio anoche.",
+    "categoria": "Casa",
+    "video": "",
+    "imagen": "Ilustración plana de un foco encendido con un rayo simbolizando energía, estilo flat design.",
+    "variantes": "Luz",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Alquiler",
+    "definicion": "Es el pago que se hace cada mes por vivir en una casa que no es propia.\n Ejemplo: Pago el alquiler de mi departamento el primer día del mes.",
+    "categoria": "Casa",
+    "video": "",
+    "imagen": "Ilustración plana de una casa pequeña junto a monedas y un calendario, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Mudanza",
+    "definicion": "Es el proceso de cambiar de casa, llevando todas las cosas a un nuevo lugar.\n Ejemplo: Hicimos la mudanza a nuestra nueva casa el fin de semana.",
+    "categoria": "Casa",
+    "video": "",
+    "imagen": "Ilustración plana de cajas apiladas y un camión de mudanza, estilo flat design.",
+    "variantes": "Mudarse",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Muebles",
+    "definicion": "Son los objetos como la mesa, la silla o la cama que hay dentro de una casa.\n Ejemplo: Compramos muebles nuevos para la sala.",
+    "categoria": "Casa",
+    "video": "",
+    "imagen": "Ilustración plana de un sofá, una mesa y una silla juntos, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Techo",
+    "definicion": "Es la parte de arriba de la casa que la cubre y la protege de la lluvia.\n Ejemplo: Se filtra agua por el techo cuando llueve fuerte.",
+    "categoria": "Casa",
+    "video": "",
+    "imagen": "Ilustración plana de una casa vista desde afuera resaltando el techo, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Ciclo",
+    "definicion": "Serie de eventos o procesos que se repiten en el mismo orden.",
+    "categoria": "Ciencia",
+    "video": "",
+    "imagen": "Una rueda o círculo con flechas mostrando un proceso que se repite, colores vibrantes",
+    "variantes": "Circulación, Rotación, Secuencia repetida, Proceso cíclico",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Ecosistema",
+    "definicion": "Grupo de seres vivos y su ambiente que forman un sistema equilibrado.",
+    "categoria": "Ciencia",
+    "video": "",
+    "imagen": "Plantas, animales y elementos naturales interconectados en un sistema",
+    "variantes": "Ambiente, Hábitat, Comunidad biótica, Sistema natural",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Elemento",
+    "definicion": "Parte pequeña e importante de algo más grande.",
+    "categoria": "Ciencia",
+    "video": "",
+    "imagen": "Piezas pequeñas formando un todo, estilo construcción",
+    "variantes": "Componente, Parte, Sustancia, Ingrediente",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Espectro",
+    "definicion": "Rango completo de algo. En ciencia, es la descomposición de la luz en sus colores.",
+    "categoria": "Ciencia",
+    "video": "",
+    "imagen": "Los colores del arcoíris en una línea o espectro de luz",
+    "variantes": "Rango, Alcance, Escala, Gama",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Experimento",
+    "definicion": "Prueba científica realizada para verificar una teoría o hipótesis.",
+    "categoria": "Ciencia",
+    "video": "",
+    "imagen": "Un laboratorio con tubos de ensayo y equipos científicos",
+    "variantes": "Prueba, Test, Ensayo científico, Investigación",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Exploración",
+    "definicion": "Acción de investigar o descubrir cosas nuevas.",
+    "categoria": "Ciencia",
+    "video": "",
+    "imagen": "Un explorador o astronauta descubriendo territorios nuevos",
+    "variantes": "Investigación, Descubrimiento, Búsqueda, Aventura",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Fenómeno",
+    "definicion": "Hecho o evento observable en la naturaleza.",
+    "categoria": "Ciencia",
+    "video": "",
+    "imagen": "Un evento natural impresionante como un eclipse o aurora",
+    "variantes": "Evento, Hecho, Acontecimiento, Manifestación",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Fórmula",
+    "definicion": "Secuencia de símbolos que expresa una regla matemática o científica.",
+    "categoria": "Ciencia",
+    "video": "",
+    "imagen": "Símbolos matemáticos y ecuaciones en pizarra",
+    "variantes": "Ecuación, Expresión matemática, Método probado",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Frecuencia",
+    "definicion": "Número de veces que algo ocurre en un período de tiempo.",
+    "categoria": "Ciencia",
+    "video": "",
+    "imagen": "Ondas repetidas mostrando regularidad y patrón",
+    "variantes": "Regularidad, Repetición, Periodicidad, Cantidad de ocurrencias",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Gravedad",
+    "definicion": "Fuerza que atrae los objetos hacia el centro de la tierra. Seriedad de algo.",
+    "categoria": "Ciencia",
+    "video": "",
+    "imagen": "Una manzana cayendo o una persona siendo atraída hacia abajo",
+    "variantes": "Fuerza de atracción, Seriedad, Importancia, Severidad",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Flujo",
+    "definicion": "Movimiento continuo de algo (líquido, energía, información).",
+    "categoria": "Ciencia/Tecnología",
+    "video": "",
+    "imagen": "Líneas de agua o energía fluyendo de un lado a otro",
+    "variantes": "Circulación, Movimiento, Corriente, Desplazamiento",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Parque",
+    "definicion": "Es un lugar al aire libre con árboles y juegos donde las personas descansan o se divierten.\n Ejemplo: Fuimos al parque a pasear con mi familia.",
+    "categoria": "Ciudad",
+    "video": "",
+    "imagen": "Ilustración plana de un parque con árboles, bancas y juegos infantiles, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Plaza",
+    "definicion": "Es un espacio abierto en el centro de una ciudad o pueblo, donde la gente se reúne.\n Ejemplo: Nos encontramos en la plaza principal.",
+    "categoria": "Ciudad",
+    "video": "",
+    "imagen": "Ilustración plana de una plaza central con una fuente y bancas, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Iglesia",
+    "definicion": "Es un lugar donde las personas van a rezar o celebrar su religión.\n Ejemplo: Mi abuela va a la iglesia todos los domingos.",
+    "categoria": "Ciudad",
+    "video": "",
+    "imagen": "Ilustración plana de un edificio de iglesia con una torre y una cruz, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Municipalidad",
+    "definicion": "Es la oficina del gobierno de la ciudad donde se hacen trámites del distrito.\n Ejemplo: Fui a la municipalidad a pagar un impuesto.",
+    "categoria": "Ciudad",
+    "video": "",
+    "imagen": "Ilustración plana de un edificio municipal con una bandera peruana, estilo flat design.",
+    "variantes": "Municipio",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Correo",
+    "definicion": "Es el lugar donde se envían y reciben cartas o paquetes.\n Ejemplo: Fui al correo a enviar un paquete a mi familia.",
+    "categoria": "Ciudad",
+    "video": "",
+    "imagen": "Ilustración plana de una oficina de correos con un sobre y un paquete, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Cine",
+    "definicion": "Es un lugar donde se ven películas en una pantalla grande.\n Ejemplo: Fuimos al cine a ver una película el fin de semana.",
+    "categoria": "Ciudad",
+    "video": "",
+    "imagen": "Ilustración plana de una sala de cine con butacas y una pantalla grande, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Restaurante",
+    "definicion": "Es un lugar donde se puede comer comida preparada, pagando por ella.\n Ejemplo: Celebramos su cumpleaños en un restaurante.",
+    "categoria": "Ciudad",
+    "video": "",
+    "imagen": "Ilustración plana de una mesa de restaurante con platos servidos, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Hotel",
+    "definicion": "Es un lugar donde las personas pagan para dormir cuando están de viaje.\n Ejemplo: Nos quedamos en un hotel durante nuestro viaje a Cusco.",
+    "categoria": "Ciudad",
+    "video": "",
+    "imagen": "Ilustración plana de un edificio de hotel con una maleta al frente, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Playa",
+    "definicion": "Es un lugar cerca del mar con arena, donde las personas nadan y descansan.\n Ejemplo: Fuimos a la playa en verano.",
+    "categoria": "Ciudad",
+    "video": "",
+    "imagen": "Ilustración plana de una playa con sombrilla, mar y sol, estilo flat design, colores veraniegos.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Aeropuerto",
+    "definicion": "Es el lugar donde llegan y salen los aviones.\n Ejemplo: Llegamos temprano al aeropuerto para nuestro vuelo.",
+    "categoria": "Ciudad",
+    "video": "",
+    "imagen": "Ilustración plana de una terminal de aeropuerto con un avión despegando, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Estadio",
+    "definicion": "Es un lugar grande donde se juegan partidos deportivos frente a muchas personas.\n Ejemplo: Fuimos al estadio a ver un partido de fútbol.",
+    "categoria": "Ciudad",
+    "video": "",
+    "imagen": "Ilustración plana de un estadio de fútbol lleno de gente, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Museo",
+    "definicion": "Es un lugar donde se exhiben objetos históricos, arte u otras cosas importantes.\n Ejemplo: Visitamos un museo en el centro de la ciudad.",
+    "categoria": "Ciudad",
+    "video": "",
+    "imagen": "Ilustración plana de una sala de museo con cuadros y una escultura, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Universidad",
+    "definicion": "Es el lugar donde las personas estudian una carrera profesional después del colegio.\n Ejemplo: Estudio en la universidad los fines de semana.",
+    "categoria": "Ciudad",
+    "video": "",
+    "imagen": "Ilustración plana de un edificio universitario con estudiantes caminando, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Colegio",
+    "definicion": "Es el lugar donde los niños y jóvenes van a estudiar antes de la universidad.\n Ejemplo: Mi hijo va al colegio todas las mañanas.",
+    "categoria": "Ciudad",
+    "video": "",
+    "imagen": "Ilustración plana de un edificio escolar con niños entrando, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Barrio",
+    "definicion": "Es la parte de la ciudad donde vive una persona, junto con sus vecinos.\n Ejemplo: En mi barrio todos se conocen.",
+    "categoria": "Ciudad",
+    "video": "",
+    "imagen": "Ilustración plana de una calle con varias casas juntas y vecinos conversando, estilo flat design.",
+    "variantes": "Vecindario",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Profesor",
+    "definicion": "Es la persona que enseña en el colegio o la universidad. Explica los temas, corrige tareas y ayuda a los estudiantes a aprender.\n Ejemplo: El profesor de matemática explicó cómo sumar fracciones.",
+    "categoria": "Colegio",
+    "video": "",
+    "imagen": "Ilustración simple y colorida de un profesor de pie frente a una pizarra en un aula, estilo plano (flat design), fondo claro, sin texto.",
+    "variantes": "Profesora, Maestro, Maestra, Docente, Miss, Profe",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Examen",
+    "definicion": "Es una prueba con preguntas que el profesor da para saber cuánto ha aprendido el estudiante.\n Ejemplo: Mañana tengo examen de historia, tengo que estudiar hoy.",
+    "categoria": "Colegio",
+    "video": "",
+    "imagen": "Ilustración plana de una hoja de examen con preguntas y un lápiz al lado, sobre un pupitre escolar, colores suaves, sin texto legible.",
+    "variantes": "Prueba, Evaluación, Test, Parcial",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Tarea",
+    "definicion": "Es el trabajo que el profesor manda para hacer en casa, después de la clase.\n Ejemplo: Tengo que terminar la tarea de comunicación antes de dormir.",
+    "categoria": "Colegio",
+    "video": "",
+    "imagen": "Ilustración plana de un cuaderno abierto con ejercicios escritos y un lápiz, sobre una mesa en casa, estilo flat design, colores cálidos.",
+    "variantes": "Deberes, Trabajo escolar, Tarea de casa",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Recreo",
+    "definicion": "Es el tiempo corto de descanso entre clases, cuando los estudiantes salen a jugar o comer algo.\n Ejemplo: En el recreo jugué fútbol con mis amigos.",
+    "categoria": "Colegio",
+    "video": "",
+    "imagen": "Ilustración plana de niños jugando y corriendo en un patio escolar durante el recreo, colores alegres, estilo flat design.",
+    "variantes": "Descanso, Hora de recreo",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Aula",
+    "definicion": "Es el salón donde los estudiantes reciben las clases con el profesor.\n Ejemplo: Nuestra aula tiene veinte carpetas y una pizarra grande.",
+    "categoria": "Colegio",
+    "video": "",
+    "imagen": "Ilustración plana de un aula escolar con pizarra, carpetas ordenadas y un profesor al frente, estilo flat design, colores claros.",
+    "variantes": "Salón de clase, Clase",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Biblioteca",
+    "definicion": "Es un lugar donde hay muchos libros para leer o llevar prestados y estudiar.\n Ejemplo: Fui a la biblioteca a buscar un libro para mi tarea.",
+    "categoria": "Colegio",
+    "video": "",
+    "imagen": "Ilustración plana de estantes llenos de libros de colores y una persona leyendo en una mesa, estilo flat design, ambiente tranquilo.",
+    "variantes": "Biblioteca escolar, Sala de lectura",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Nota",
+    "definicion": "Es el número o letra que el profesor da para decir qué tan bien hizo el estudiante un examen o tarea.\n Ejemplo: Saqué una buena nota en el examen de ciencias.",
+    "categoria": "Colegio",
+    "video": "",
+    "imagen": "Ilustración plana de una hoja de examen con un número grande marcado con un check, colores suaves, estilo flat design, sin texto real.",
+    "variantes": "Calificación, Puntaje",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Compañero de clase",
+    "definicion": "Es un estudiante que estudia en la misma aula que tú.\n Ejemplo: Mi compañero de clase me prestó su lapicero.",
+    "categoria": "Colegio",
+    "video": "",
+    "imagen": "Ilustración plana de dos estudiantes sentados juntos en carpetas escolares, sonriendo, estilo flat design, colores alegres.",
+    "variantes": "Compañero, Compañera, Compañero de colegio",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Matrícula",
+    "definicion": "Es el trámite y el pago que se hace para inscribirse y poder estudiar en un colegio, instituto o universidad.\n Ejemplo: Mis papás pagaron mi matrícula para el próximo año escolar.",
+    "categoria": "Colegio",
+    "video": "",
+    "imagen": "Ilustración plana de una persona entregando un formulario y dinero en una ventanilla de secretaría escolar, estilo flat design.",
+    "variantes": "Inscripción, Matricularse",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Uniforme",
+    "definicion": "Es la ropa especial e igual que usan todos los estudiantes de un colegio.\n Ejemplo: Mi uniforme del colegio es azul con blanco.",
+    "categoria": "Colegio",
+    "video": "",
+    "imagen": "Ilustración plana de un uniforme escolar (polo, pantalón/falda) colgado en un perchero, colores azul y blanco, estilo flat design.",
+    "variantes": "Uniforme escolar",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Desayuno",
+    "definicion": "Es la primera comida del día, que se come en la mañana.\n Ejemplo: Mi desayuno favorito es pan con huevo.",
+    "categoria": "Comida",
+    "video": "",
+    "imagen": "Ilustración plana de un plato con pan, huevo y una taza de café, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Almuerzo",
+    "definicion": "Es la comida principal que se come al mediodía.\n Ejemplo: El almuerzo de hoy es arroz con pollo.",
+    "categoria": "Comida",
+    "video": "",
+    "imagen": "Ilustración plana de un plato de arroz con pollo y ensalada, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Cena",
+    "definicion": "Es la comida que se come en la noche.\n Ejemplo: Cenamos temprano porque mañana trabajo.",
+    "categoria": "Comida",
+    "video": "",
+    "imagen": "Ilustración plana de una familia sentada a la mesa cenando de noche, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Arroz",
+    "definicion": "Es un alimento hecho de granos blancos que se cocina y se come casi todos los días en Perú.\n Ejemplo: Comí arroz con lentejas en el almuerzo.",
+    "categoria": "Comida",
+    "video": "",
+    "imagen": "Ilustración plana de un plato lleno de arroz blanco, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Pollo",
+    "definicion": "Es la carne de esta ave, muy común en las comidas peruanas.\n Ejemplo: Mi comida favorita es el pollo a la brasa.",
+    "categoria": "Comida",
+    "video": "",
+    "imagen": "Ilustración plana de una pieza de pollo asado en un plato, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Pan",
+    "definicion": "Es un alimento hecho de harina que se come en el desayuno o la cena.\n Ejemplo: Compré pan fresco para el desayuno.",
+    "categoria": "Comida",
+    "video": "",
+    "imagen": "Ilustración plana de una canasta con panes redondos, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Fruta",
+    "definicion": "Es un alimento dulce que crece de las plantas, como la manzana o el plátano.\n Ejemplo: Como una fruta todos los días después del almuerzo.",
+    "categoria": "Comida",
+    "video": "",
+    "imagen": "Ilustración plana de un plato con manzana, plátano y naranja, estilo flat design, colores vivos.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Verdura",
+    "definicion": "Son alimentos como la lechuga o la zanahoria que se comen en las comidas.\n Ejemplo: Mi mamá siempre agrega verduras a la sopa.",
+    "categoria": "Comida",
+    "video": "",
+    "imagen": "Ilustración plana de zanahorias, lechuga y tomate juntos, estilo flat design, colores verdes.",
+    "variantes": "Vegetal, Hortaliza",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Agua",
+    "definicion": "Es el líquido que las personas toman para hidratarse; es esencial para vivir.\n Ejemplo: Tomo dos litros de agua al día.",
+    "categoria": "Comida",
+    "video": "",
+    "imagen": "Ilustración plana de un vaso lleno de agua con una gota al lado, estilo flat design, colores azules.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Jugo",
+    "definicion": "Es una bebida que se hace exprimiendo o licuando frutas.\n Ejemplo: Preparé jugo de naranja para el desayuno.",
+    "categoria": "Comida",
+    "video": "",
+    "imagen": "Ilustración plana de un vaso de jugo de naranja junto a naranjas cortadas, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Leche",
+    "definicion": "Es una bebida blanca que se toma sola o con otros alimentos, como el café.\n Ejemplo: Tomo un vaso de leche antes de dormir.",
+    "categoria": "Comida",
+    "video": "",
+    "imagen": "Ilustración plana de un vaso de leche junto a una jarra, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Huevo",
+    "definicion": "Es un alimento que ponen las gallinas, se cocina de varias formas.\n Ejemplo: Comí un huevo frito en el desayuno.",
+    "categoria": "Comida",
+    "video": "",
+    "imagen": "Ilustración plana de un huevo frito en un sartén, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Carne",
+    "definicion": "Es el alimento que viene de animales como la vaca o el chancho.\n Ejemplo: Compramos carne para hacer un guiso.",
+    "categoria": "Comida",
+    "video": "",
+    "imagen": "Ilustración plana de un trozo de carne roja sobre una tabla de cocina, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Pescado",
+    "definicion": "Es la carne que viene del mar o del río, muy usada en la comida peruana.\n Ejemplo: El ceviche se hace con pescado fresco.",
+    "categoria": "Comida",
+    "video": "",
+    "imagen": "Ilustración plana de un pescado entero sobre un plato, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Sopa",
+    "definicion": "Es una comida líquida con verduras, carne u otros ingredientes, que se sirve caliente.\n Ejemplo: En invierno me gusta comer sopa caliente.",
+    "categoria": "Comida",
+    "video": "",
+    "imagen": "Ilustración plana de un plato hondo de sopa humeante, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Postre",
+    "definicion": "Es un dulce que se come al final de la comida.\n Ejemplo: De postre comimos gelatina.",
+    "categoria": "Comida",
+    "video": "",
+    "imagen": "Ilustración plana de un pedazo de pastel o gelatina de colores, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Sal",
+    "definicion": "Es un condimento blanco que se usa para dar sabor a la comida.\n Ejemplo: Le puse un poco más de sal a la sopa.",
+    "categoria": "Comida",
+    "video": "",
+    "imagen": "Ilustración plana de un salero derramando pequeños granos blancos, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Azúcar",
+    "definicion": "Es un ingrediente dulce que se usa para endulzar bebidas y postres.\n Ejemplo: Le puse dos cucharadas de azúcar al café.",
+    "categoria": "Comida",
+    "video": "",
+    "imagen": "Ilustración plana de un azucarero con una cuchara junto a una taza de café, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Cocinar",
+    "definicion": "Es preparar la comida usando fuego u otros medios para que esté lista para comer.\n Ejemplo: Me gusta cocinar los domingos con mi familia.",
+    "categoria": "Comida",
+    "video": "",
+    "imagen": "Ilustración plana de una persona cocinando en una olla sobre una cocina, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Receta de cocina",
+    "definicion": "Es la lista de ingredientes y pasos para preparar una comida.\n Ejemplo: Seguí la receta de mi abuela para hacer el arroz con pollo.",
+    "categoria": "Comida",
+    "video": "",
+    "imagen": "Ilustración plana de una tarjeta con ingredientes dibujados junto a una olla, estilo flat design, sin texto real.",
+    "variantes": "Receta",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Gregario",
+    "definicion": "Que vive en grupo. Persona que sigue fácilmente a la multitud.",
+    "categoria": "Comportamiento",
+    "video": "",
+    "imagen": "Un grupo de personas o animales moviéndose juntos",
+    "variantes": "Social, Conformista, De grupo, Colectivo",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Conversar",
+    "definicion": "Es hablar o comunicarse con otra persona sobre algo.\n Ejemplo: Me gusta conversar con mis amigos después de clase.",
+    "categoria": "Comunicación",
+    "video": "",
+    "imagen": "Ilustración plana de dos personas conversando con burbujas de diálogo, estilo flat design.",
+    "variantes": "Charlar, Platicar",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Preguntar",
+    "definicion": "Es pedir información a otra persona sobre algo que no sabes.\n Ejemplo: Le pregunté al profesor sobre la tarea.",
+    "categoria": "Comunicación",
+    "video": "",
+    "imagen": "Ilustración plana de una persona con un signo de interrogación grande sobre la cabeza, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Responder",
+    "definicion": "Es dar una respuesta a una pregunta o mensaje.\n Ejemplo: Respondí el mensaje de mi jefe rápido.",
+    "categoria": "Comunicación",
+    "video": "",
+    "imagen": "Ilustración plana de una persona con un signo de exclamación sobre la cabeza respondiendo, estilo flat design.",
+    "variantes": "Contestar",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Explicar",
+    "definicion": "Es decir algo de manera clara para que otra persona lo entienda.\n Ejemplo: El profesor explicó el tema con un ejemplo fácil.",
+    "categoria": "Comunicación",
+    "video": "",
+    "imagen": "Ilustración plana de una persona señalando una pizarra con dibujos simples, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Entender",
+    "definicion": "Es comprender algo que se dijo, se explicó o se leyó.\n Ejemplo: Al fin entendí cómo resolver el problema.",
+    "categoria": "Comunicación",
+    "video": "",
+    "imagen": "Ilustración plana de una persona con un foco encendido sobre la cabeza, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Escuchar",
+    "definicion": "Es prestar atención a lo que alguien dice, o a un sonido.\n Ejemplo: Escuché con atención las instrucciones del profesor.",
+    "categoria": "Comunicación",
+    "video": "",
+    "imagen": "Ilustración plana de una persona con la mano en la oreja prestando atención, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Mirar",
+    "definicion": "Es dirigir la vista hacia algo o alguien.\n Ejemplo: Mira hacia la pizarra para ver el ejemplo.",
+    "categoria": "Comunicación",
+    "video": "",
+    "imagen": "Ilustración plana de un ojo grande mirando hacia un objeto, estilo flat design.",
+    "variantes": "Ver, Observar",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Lengua de señas",
+    "definicion": "Es el idioma que usan las personas sordas para comunicarse con las manos, gestos y expresiones.\n Ejemplo: Estoy aprendiendo lengua de señas peruana para comunicarme con mi vecino.",
+    "categoria": "Comunicación",
+    "video": "",
+    "imagen": "Ilustración plana de dos manos haciendo una seña de comunicación, estilo flat design.",
+    "variantes": "LSP, Señas",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Intérprete",
+    "definicion": "Es la persona que traduce entre la lengua de señas y el español hablado.\n Ejemplo: Un intérprete nos ayudó a entender la charla.",
+    "categoria": "Comunicación",
+    "video": "",
+    "imagen": "Ilustración plana de una persona haciendo señas junto a otra persona hablando, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Comunicación",
+    "definicion": "Es el proceso de compartir información, ideas o sentimientos con otra persona.\n Ejemplo: La comunicación con señas es muy importante para la comunidad sorda.",
+    "categoria": "Comunicación",
+    "video": "",
+    "imagen": "Ilustración plana de dos personas conectadas por burbujas de diálogo y manos haciendo señas, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Diálogo",
+    "definicion": "Conversación entre dos o más personas donde intercambian ideas y opiniones.",
+    "categoria": "Comunicación",
+    "video": "",
+    "imagen": "Dos personas hablando con burbujas de diálogo entre ellas, estilo chat",
+    "variantes": "Conversación, Intercambio, Comunicación, Charla",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Expresión",
+    "definicion": "Forma de comunicar ideas, sentimientos o hechos.",
+    "categoria": "Comunicación",
+    "video": "",
+    "imagen": "Una boca abierta o símbolos de comunicación saliendo",
+    "variantes": "Comunicación, Manifestación, Declaración, Formulación",
     "senasugerida": "",
     "": ""
   },
@@ -70,12 +1130,1452 @@
     "": ""
   },
   {
+    "palabra": "Fútbol",
+    "definicion": "Es un deporte donde dos equipos intentan meter la pelota en el arco contrario, usando los pies.\n Ejemplo: Jugamos fútbol todos los domingos en el parque.",
+    "categoria": "Deportes",
+    "video": "",
+    "imagen": "Ilustración plana de una pelota de fútbol y un arco, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Vóley",
+    "definicion": "Es un deporte donde dos equipos golpean una pelota por encima de una red, sin dejarla caer.\n Ejemplo: Mi hermana juega vóley en su colegio.",
+    "categoria": "Deportes",
+    "video": "",
+    "imagen": "Ilustración plana de una pelota de vóley cerca de una red de cancha, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Natación",
+    "definicion": "Es el deporte de nadar en una piscina o en el mar.\n Ejemplo: Practico natación dos veces por semana.",
+    "categoria": "Deportes",
+    "video": "",
+    "imagen": "Ilustración plana de una persona nadando en una piscina, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Gimnasio",
+    "definicion": "Es un lugar con máquinas y espacio para hacer ejercicio.\n Ejemplo: Voy al gimnasio después del trabajo.",
+    "categoria": "Deportes",
+    "video": "",
+    "imagen": "Ilustración plana de una persona levantando pesas en un gimnasio, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Partido",
+    "definicion": "Es un juego entre dos equipos o personas en un deporte.\n Ejemplo: Vimos el partido de fútbol en la televisión.",
+    "categoria": "Deportes",
+    "video": "",
+    "imagen": "Ilustración plana de dos equipos de fútbol enfrentándose en una cancha, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Equipo",
+    "definicion": "Es un grupo de personas que juega o trabaja junto para lograr algo.\n Ejemplo: Mi equipo ganó el campeonato del colegio.",
+    "categoria": "Deportes",
+    "video": "",
+    "imagen": "Ilustración plana de un grupo de personas con camisetas iguales, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Entrenar",
+    "definicion": "Es practicar un deporte o actividad para mejorar y estar preparado.\n Ejemplo: Entreno todas las tardes para el campeonato.",
+    "categoria": "Deportes",
+    "video": "",
+    "imagen": "Ilustración plana de una persona practicando ejercicios en una cancha, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Empate",
+    "definicion": "Es cuando dos equipos terminan un partido con el mismo puntaje, sin que nadie gane.\n Ejemplo: El partido terminó en empate, uno a uno.",
+    "categoria": "Deportes",
+    "video": "",
+    "imagen": "Ilustración plana de un marcador deportivo mostrando el mismo número en ambos lados, estilo flat design, sin texto real.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Árbitro",
+    "definicion": "Es la persona que dirige un partido y decide si algo está permitido o no.\n Ejemplo: El árbitro marcó una falta en el partido.",
+    "categoria": "Deportes",
+    "video": "",
+    "imagen": "Ilustración plana de un árbitro con silbato y tarjeta en la mano, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Juego",
+    "definicion": "Es una actividad divertida que se hace para pasar el tiempo o competir.\n Ejemplo: Jugamos un juego de mesa en familia.",
+    "categoria": "Deportes",
+    "video": "",
+    "imagen": "Ilustración plana de un tablero de juego con fichas de colores, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Música",
+    "definicion": "Es un arte hecho de sonidos y ritmos que se escucha o se siente.\n Ejemplo: Me gusta sentir la música a través de las vibraciones.",
+    "categoria": "Deportes",
+    "video": "",
+    "imagen": "Ilustración plana de notas musicales y un parlante, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Baile",
+    "definicion": "Es moverse al ritmo de la música.\n Ejemplo: Aprendí a bailar salsa con mis amigos.",
+    "categoria": "Deportes",
+    "video": "",
+    "imagen": "Ilustración plana de dos personas bailando juntas, estilo flat design, colores vivos.",
+    "variantes": "Bailar",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Película",
+    "definicion": "Es una historia que se ve en la televisión o el cine, con imágenes en movimiento.\n Ejemplo: Vimos una película de aventuras el sábado.",
+    "categoria": "Deportes",
+    "video": "",
+    "imagen": "Ilustración plana de una pantalla de cine con palomitas de maíz al frente, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Fiesta",
+    "definicion": "Es una reunión de personas para celebrar algo, con música y comida.\n Ejemplo: Hicimos una fiesta por mi cumpleaños.",
+    "categoria": "Deportes",
+    "video": "",
+    "imagen": "Ilustración plana de globos, serpentinas y personas celebrando, estilo flat design, colores vivos.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Campeonato",
+    "definicion": "Es una competencia donde varios equipos o personas compiten para ver quién gana.\n Ejemplo: Nuestro equipo ganó el campeonato de fútbol del barrio.",
+    "categoria": "Deportes",
+    "video": "",
+    "imagen": "Ilustración plana de una copa de trofeo dorada sobre un pedestal, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Errático",
+    "definicion": "Comportamiento impredecible y sin patrón claro. Que cambia sin razón.",
+    "categoria": "Descripción",
+    "video": "",
+    "imagen": "Una línea zigzagueante sin dirección clara, estilo caótico",
+    "variantes": "Impredecible, Inconsistente, Irregular, Caótico",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Específico",
+    "definicion": "Que es exacto y preciso. No general ni vago.",
+    "categoria": "Descripción",
+    "video": "",
+    "imagen": "Un objetivo con un punto rojo en el centro, muy preciso",
+    "variantes": "Preciso, Exacto, Determinado, Concreto",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Fundamental",
+    "definicion": "Que es esencial, básico e importante.",
+    "categoria": "Descripción",
+    "video": "",
+    "imagen": "Los cimientos de un edificio, la base más importante",
+    "variantes": "Esencial, Básico, Principal, Vital",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Genérico",
+    "definicion": "Que es general y no específico. Sin marca particular.",
+    "categoria": "Descripción",
+    "video": "",
+    "imagen": "Un símbolo estándar o producto sin marca específica",
+    "variantes": "General, Sin especificar, Común, Ordinario",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Financiero",
+    "definicion": "Relacionado con dinero y recursos económicos.",
+    "categoria": "Economía",
+    "video": "",
+    "imagen": "Monedas, billetes o gráficos de dinero, estilo económico",
+    "variantes": "Económico, Monetario, De dinero, Presupuestario",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Gravamen",
+    "definicion": "Carga o impuesto que se aplica sobre algo.",
+    "categoria": "Economía",
+    "video": "",
+    "imagen": "Monedas o dinero con un símbolo de carga",
+    "variantes": "Impuesto, Arancel, Carga, Deuda",
+    "senasugerida": "",
+    "": ""
+  },
+  {
     "palabra": "Hipótesis",
     "definicion": "Una suposición razonable que sirve como punto de partida para investigar.",
     "categoria": "Educación",
     "video": "wh99j8igQ54",
     "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Hip%C3%B3tesis.jpg",
     "variantes": "Suposición, conjetura, teoría, premisa, hipotesis",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Análisis",
+    "definicion": "Dividir algo en partes pequeñas para entenderlo mejor. Es examinar algo con cuidado y detalle.",
+    "categoria": "Educación",
+    "video": "",
+    "imagen": "Una persona mirando una pirámide de componentes descompuesta en bloques de colores, estilo flat design moderno",
+    "variantes": "Examen detallado, Revisión, Estudio profundo, Investigación",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Argumento",
+    "definicion": "Razón o prueba que usamos para demostrar que algo es verdadero o para convencer a otros.",
+    "categoria": "Educación",
+    "video": "",
+    "imagen": "Una persona sosteniendo un escudo con un símbolo de aprobación, defendiendo un punto de vista, estilo ilustración plana",
+    "variantes": "Razón, Prueba, Evidencia, Fundamento",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Bibliografía",
+    "definicion": "Lista de libros y fuentes que usaste para hacer un trabajo o investigación.",
+    "categoria": "Educación",
+    "video": "",
+    "imagen": "Una pila de libros abiertos con notas flotantes, estilo plano con colores tierra",
+    "variantes": "Referencias, Fuentes, Lista de libros, Citas",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Conclusión",
+    "definicion": "Idea final que se obtiene después de analizar algo.",
+    "categoria": "Educación",
+    "video": "",
+    "imagen": "Una ruta que termina en una bandera de llegada, estilo plano minimalista",
+    "variantes": "Resultado, Deducción, Cierre, Veredicto",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Contexto",
+    "definicion": "Las circunstancias o información que rodea algo y ayuda a entenderlo mejor.",
+    "categoria": "Educación",
+    "video": "",
+    "imagen": "Una palabra en el centro rodeada de símbolos que la explican, estilo conceptual",
+    "variantes": "Situación, Circunstancias, Marco, Ambiente",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Crítica",
+    "definicion": "Análisis de algo para señalar sus puntos buenos y malos.",
+    "categoria": "Educación",
+    "video": "",
+    "imagen": "Una persona analizando un objeto con lupa, mostrando aspectos positivos y negativos",
+    "variantes": "Evaluación, Análisis, Comentario, Valoración",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Cuestionario",
+    "definicion": "Serie de preguntas para obtener información de una persona.",
+    "categoria": "Educación",
+    "video": "",
+    "imagen": "Un formulario con casillas de verificación y preguntas, estilo flat design",
+    "variantes": "Encuesta, Formulario, Serie de preguntas, Sondeo",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Discrepancia",
+    "definicion": "Diferencia o desacuerdo entre dos cosas o entre lo que dicen dos personas.",
+    "categoria": "Educación",
+    "video": "",
+    "imagen": "Dos ecuaciones matemáticas con resultados diferentes, estilo matemático",
+    "variantes": "Diferencia, Desacuerdo, Contradicción, Inconsistencia",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Docencia",
+    "definicion": "Profesión y arte de enseñar. La actividad de ser profesor.",
+    "categoria": "Educación",
+    "video": "",
+    "imagen": "Un profesor de frente a estudiantes con símbolos de aprendizaje",
+    "variantes": "Enseñanza, Profesorado, Educación, Magisterio",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Enfoque",
+    "definicion": "Manera de ver o aproximarse a un problema o tema.",
+    "categoria": "Educación",
+    "video": "",
+    "imagen": "Una lupa enfocada en un objetivo, líneas de concentración",
+    "variantes": "Perspectiva, Punto de vista, Manera de abordar, Estrategia",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Enumeración",
+    "definicion": "Lista de cosas en orden, mencionando cada una.",
+    "categoria": "Educación",
+    "video": "",
+    "imagen": "Números del 1 al 5 con ítems al lado, estilo organizacional",
+    "variantes": "Lista, Conteo, Relación, Inventario numerado",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Error",
+    "definicion": "Equivocación o falta que se comete sin intención.",
+    "categoria": "Educación",
+    "video": "",
+    "imagen": "Una X roja sobre algo incorrecto, símbolo de error",
+    "variantes": "Equivocación, Falta, Fallo, Desacierto",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Escenario",
+    "definicion": "Situación o contexto donde ocurren los eventos.",
+    "categoria": "Educación",
+    "video": "",
+    "imagen": "Un escenario de teatro o un lugar donde ocurren eventos",
+    "variantes": "Situación, Contexto, Ambiente, Circunstancia",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Especialización",
+    "definicion": "Dedicarse profundamente a aprender sobre un área específica.",
+    "categoria": "Educación",
+    "video": "",
+    "imagen": "Un árbol que se divide en ramas especializadas diferentes",
+    "variantes": "Especialidad, Formación específica, Expertise",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Estructura",
+    "definicion": "Forma en que están organizados y conectados los elementos de algo.",
+    "categoria": "Educación",
+    "video": "",
+    "imagen": "Una construcción o esqueleto mostrando cómo están conectadas las partes",
+    "variantes": "Organización, Construcción, Esqueleto, Armazón",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Estudio",
+    "definicion": "Acción de aprender y entender un tema mediante investigación.",
+    "categoria": "Educación",
+    "video": "",
+    "imagen": "Libros abiertos y notas, alguien investigando con lupa",
+    "variantes": "Investigación, Análisis, Aprendizaje, Examen",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Evaluación",
+    "definicion": "Análisis de algo para determinar su valor o calidad.",
+    "categoria": "Educación",
+    "video": "",
+    "imagen": "Una lista de verificación o una rúbrica de evaluación",
+    "variantes": "Calificación, Valoración, Examen, Juicio",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Evidencia",
+    "definicion": "Prueba o demostración clara que algo es verdadero.",
+    "categoria": "Educación",
+    "video": "",
+    "imagen": "Piezas de un rompecabezas encajando o huella de investigación",
+    "variantes": "Prueba, Indicio, Demostración, Hecho verificado",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Exactitud",
+    "definicion": "Precisión completa. Estar correcto sin errores.",
+    "categoria": "Educación",
+    "video": "",
+    "imagen": "Un blanco con flecha perfectamente en el centro",
+    "variantes": "Precisión, Corrección, Exactitud, Certeza",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Examen",
+    "definicion": "Prueba para evaluar el conocimiento de alguien sobre un tema.",
+    "categoria": "Educación",
+    "video": "",
+    "imagen": "Un papel de examen con preguntas y espacios para responder",
+    "variantes": "Prueba, Test, Evaluación, Interrogatorio",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Explicación",
+    "definicion": "Acción de aclarar algo para que se entienda mejor.",
+    "categoria": "Educación",
+    "video": "",
+    "imagen": "Una bombilla encendida junto a un símbolo de comprensión",
+    "variantes": "Aclaración, Descripción, Interpretación, Exposición",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Exposición",
+    "definicion": "Presentación pública de ideas, trabajos o productos.",
+    "categoria": "Educación",
+    "video": "",
+    "imagen": "Una persona presentando ante una audiencia, estilo dinámico",
+    "variantes": "Presentación, Muestra, Demostración, Exhibición",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Facultad",
+    "definicion": "Capacidad o habilidad natural de una persona. También es una división de la universidad.",
+    "categoria": "Educación",
+    "video": "",
+    "imagen": "Un edificio universitario o un símbolo de capacidad mental",
+    "variantes": "Capacidad, Habilidad, Aptitud, Departamento",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Filosofía",
+    "definicion": "Estudio de los principios fundamentales sobre la vida, la verdad y el conocimiento.",
+    "categoria": "Educación",
+    "video": "",
+    "imagen": "Un pensador clásico o un símbolo de pregunta grande",
+    "variantes": "Sabiduría, Pensamiento, Reflexión, Ideología",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Función",
+    "definicion": "Propósito o uso de algo. Acción que algo realiza.",
+    "categoria": "Educación",
+    "video": "",
+    "imagen": "Un objeto realizando su propósito específico",
+    "variantes": "Propósito, Rol, Tarea, Utilidad",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Funcionamiento",
+    "definicion": "Manera en que algo trabaja o opera.",
+    "categoria": "Educación",
+    "video": "",
+    "imagen": "Engranajes o máquinas trabajando juntas en armonía",
+    "variantes": "Operación, Mecanismo, Proceso, Trabajo",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Fundamentación",
+    "definicion": "Acción de establecer las bases o razones sólidas de algo.",
+    "categoria": "Educación",
+    "video": "",
+    "imagen": "Columnas o pilares sosteniendo una estructura",
+    "variantes": "Justificación, Argumentación, Sustentación, Apoyo",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Grado",
+    "definicion": "Nivel o escalón en una serie. Diploma o título educativo.",
+    "categoria": "Educación",
+    "video": "",
+    "imagen": "Una escalera o podio mostrando diferentes niveles de logro",
+    "variantes": "Nivel, Rango, Título, Diploma",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Dominio",
+    "definicion": "Maestría o control total sobre algo. También es conocimiento profundo de un tema.",
+    "categoria": "Educación/Habilidades",
+    "video": "",
+    "imagen": "Una persona en la cima de una montaña controlando el territorio",
+    "variantes": "Maestría, Control, Experto, Competencia",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Democracia",
+    "definicion": "Sistema político donde el poder lo tiene el pueblo a través del voto.",
+    "categoria": "Educación/Política",
+    "video": "",
+    "imagen": "Personas votando en urnas, colores patrióticos, estilo ilustración cívica",
+    "variantes": "Gobierno del pueblo, Participación ciudadana",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Feedback",
+    "definicion": "Información o comentario que recibes para mejorar.",
+    "categoria": "Educación/Trabajo",
+    "video": "",
+    "imagen": "Una flecha circular mostrando comunicación bidireccional",
+    "variantes": "Retroalimentación, Comentario, Evaluación, Respuesta",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Feliz",
+    "definicion": "Es cuando una persona se siente muy contenta y alegre.\n Ejemplo: Estoy feliz porque aprobé mi examen.",
+    "categoria": "Emociones",
+    "video": "",
+    "imagen": "Ilustración plana de una persona sonriendo ampliamente con los brazos levantados, estilo flat design, colores brillantes.",
+    "variantes": "Contento, Alegre",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Triste",
+    "definicion": "Es cuando una persona se siente mal por algo que le dolió o le hizo daño.\n Ejemplo: Me sentí triste porque mi amigo se mudó a otra ciudad.",
+    "categoria": "Emociones",
+    "video": "",
+    "imagen": "Ilustración plana de una persona con expresión de tristeza, cabeza baja, estilo flat design, colores fríos.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Enojado",
+    "definicion": "Es cuando una persona se molesta mucho por algo que no le gustó.\n Ejemplo: Mi papá se puso enojado porque llegué tarde a casa.",
+    "categoria": "Emociones",
+    "video": "",
+    "imagen": "Ilustración plana de una persona con el ceño fruncido y brazos cruzados, estilo flat design, colores rojos.",
+    "variantes": "Molesto, Bravo, Furioso",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Asustado",
+    "definicion": "Es cuando una persona siente miedo por algo peligroso o desconocido.\n Ejemplo: Me asusté cuando escuché un ruido fuerte en la noche.",
+    "categoria": "Emociones",
+    "video": "",
+    "imagen": "Ilustración plana de una persona con ojos muy abiertos y manos cerca de la cara, estilo flat design.",
+    "variantes": "Con miedo",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Sorprendido",
+    "definicion": "Es cuando algo pasa de repente y no lo esperabas.\n Ejemplo: Me quedé sorprendido cuando mis amigos me organizaron una fiesta.",
+    "categoria": "Emociones",
+    "video": "",
+    "imagen": "Ilustración plana de una persona con la boca y los ojos muy abiertos, estilo flat design, colores vivos.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Nervioso",
+    "definicion": "Es cuando una persona se siente intranquila antes de algo importante.\n Ejemplo: Estaba nervioso antes de mi entrevista de trabajo.",
+    "categoria": "Emociones",
+    "video": "",
+    "imagen": "Ilustración plana de una persona sudando y con manos juntas esperando en una silla, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Tranquilo",
+    "definicion": "Es cuando una persona está calmada, sin preocupaciones.\n Ejemplo: Después de terminar la tarea, me sentí tranquilo.",
+    "categoria": "Emociones",
+    "video": "",
+    "imagen": "Ilustración plana de una persona sentada relajada con los ojos cerrados, estilo flat design, colores suaves.",
+    "variantes": "Calmado, En paz",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Cansado",
+    "definicion": "Es cuando el cuerpo o la mente están sin energía y necesitan descansar.\n Ejemplo: Estoy cansado porque trabajé todo el día.",
+    "categoria": "Emociones",
+    "video": "",
+    "imagen": "Ilustración plana de una persona bostezando con los hombros caídos, estilo flat design, colores apagados.",
+    "variantes": "Agotado",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Preocupado",
+    "definicion": "Es cuando una persona piensa mucho en un problema y siente inquietud.\n Ejemplo: Estoy preocupado porque mi hijo no ha llegado a casa.",
+    "categoria": "Emociones",
+    "video": "",
+    "imagen": "Ilustración plana de una persona con la mano en la frente y expresión pensativa, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Avergonzado",
+    "definicion": "Es cuando una persona siente vergüenza por algo que hizo o le pasó frente a otros.\n Ejemplo: Me sentí avergonzado cuando me equivoqué al hablar en público.",
+    "categoria": "Emociones",
+    "video": "",
+    "imagen": "Ilustración plana de una persona cubriéndose la cara con las manos, mejillas rojas, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Celoso",
+    "definicion": "Es cuando una persona siente envidia o inseguridad porque otra tiene algo o la atención de alguien.\n Ejemplo: Mi hermano se puso celoso porque le regalaron un juguete a mi otro hermano.",
+    "categoria": "Emociones",
+    "video": "",
+    "imagen": "Ilustración plana de una persona mirando de reojo con brazos cruzados hacia otra persona con un regalo, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Orgulloso",
+    "definicion": "Es cuando una persona se siente muy satisfecha por un logro propio o de alguien cercano.\n Ejemplo: Estoy orgulloso de mi hija porque terminó la universidad.",
+    "categoria": "Emociones",
+    "video": "",
+    "imagen": "Ilustración plana de una persona con el pecho en alto y una sonrisa segura, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Aburrido",
+    "definicion": "Es cuando una persona no tiene nada interesante que hacer y el tiempo pasa lento.\n Ejemplo: Me sentí aburrido en casa todo el domingo.",
+    "categoria": "Emociones",
+    "video": "",
+    "imagen": "Ilustración plana de una persona con la cabeza apoyada en la mano mirando un reloj, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Confundido",
+    "definicion": "Es cuando una persona no entiende bien algo y tiene dudas.\n Ejemplo: Me quedé confundido con las instrucciones del examen.",
+    "categoria": "Emociones",
+    "video": "",
+    "imagen": "Ilustración plana de una persona rascándose la cabeza con signos de interrogación alrededor, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Emocionado",
+    "definicion": "Es cuando una persona siente mucha ilusión y energía por algo que va a pasar.\n Ejemplo: Estoy emocionado porque mañana es mi cumpleaños.",
+    "categoria": "Emociones",
+    "video": "",
+    "imagen": "Ilustración plana de una persona saltando de alegría con los brazos extendidos, estilo flat design, colores vivos.",
+    "variantes": "Ilusionado",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Frustrado",
+    "definicion": "Es cuando una persona no logra algo que intentó varias veces y se siente mal por eso.\n Ejemplo: Me sentí frustrado porque no pude resolver el problema de matemática.",
+    "categoria": "Emociones",
+    "video": "",
+    "imagen": "Ilustración plana de una persona apretando los puños frente a un papel tachado, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Agradecido",
+    "definicion": "Es cuando una persona siente gratitud por algo bueno que recibió.\n Ejemplo: Estoy agradecido con mis papás por su apoyo.",
+    "categoria": "Emociones",
+    "video": "",
+    "imagen": "Ilustración plana de una persona con la mano en el pecho y una sonrisa cálida, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Solo",
+    "definicion": "Es cuando una persona está sin compañía, o siente que nadie la acompaña.\n Ejemplo: Me sentí solo cuando mis amigos no me invitaron.",
+    "categoria": "Emociones",
+    "video": "",
+    "imagen": "Ilustración plana de una persona sentada sola en una banca, estilo flat design, colores fríos.",
+    "variantes": "Solitario",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Enamorado",
+    "definicion": "Es cuando una persona siente amor romántico por otra persona.\n Ejemplo: Mi hermano está enamorado de su compañera de universidad.",
+    "categoria": "Emociones",
+    "video": "",
+    "imagen": "Ilustración plana de una persona con ojos en forma de corazón mirando a otra persona, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Estresado",
+    "definicion": "Es cuando una persona tiene mucha presión o trabajo y se siente agotada mentalmente.\n Ejemplo: Estoy estresado porque tengo tres exámenes esta semana.",
+    "categoria": "Emociones",
+    "video": "",
+    "imagen": "Ilustración plana de una persona rodeada de papeles y relojes, sosteniéndose la cabeza, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Frustración",
+    "definicion": "Sentimiento de estar decepcionado o insatisfecho cuando algo no sale como esperabas.",
+    "categoria": "Emociones",
+    "video": "",
+    "imagen": "Una persona con expresión de decepción o puño apretado",
+    "variantes": "Decepción, Insatisfacción, Desazón, Descontento",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Gratificación",
+    "definicion": "Recompensa o satisfacción que sientes cuando logras algo.",
+    "categoria": "Emociones",
+    "video": "",
+    "imagen": "Una persona sonriendo con una medalla o premio",
+    "variantes": "Satisfacción, Recompensa, Placer, Alegría",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Fraude",
+    "definicion": "Engaño intencional para obtener algo ilícitamente.",
+    "categoria": "Ética/Legal",
+    "video": "",
+    "imagen": "Un símbolo de advertencia con candado roto",
+    "variantes": "Estafa, Engaño, Trampa, Delito",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Diligencia",
+    "definicion": "Esfuerzo y cuidado que pones en hacer bien las cosas.",
+    "categoria": "Ética/Trabajo",
+    "video": "",
+    "imagen": "Una persona trabajando concentrada en detalles, con símbolos de calidad",
+    "variantes": "Esfuerzo, Dedicación, Atención, Responsabilidad",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Papá",
+    "definicion": "Es la palabra para llamar al padre, el hombre que es tu papá dentro de la familia.\n Ejemplo: Mi papá me lleva al colegio en las mañanas.",
+    "categoria": "Familia",
+    "video": "",
+    "imagen": "Ilustración plana de un padre sonriente con un niño de la mano, estilo flat design, colores cálidos.",
+    "variantes": "Padre, Pa",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Mamá",
+    "definicion": "Es la palabra para llamar a la madre, la mujer que es tu mamá dentro de la familia.\n Ejemplo: Mi mamá cocina muy rico los domingos.",
+    "categoria": "Familia",
+    "video": "",
+    "imagen": "Ilustración plana de una madre sonriente abrazando a un niño, estilo flat design, colores cálidos.",
+    "variantes": "Madre, Ma",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Hermano",
+    "definicion": "Es el hombre que tiene los mismos papás que tú, o uno de los dos.\n Ejemplo: Mi hermano y yo jugamos fútbol todas las tardes.",
+    "categoria": "Familia",
+    "video": "",
+    "imagen": "Ilustración plana de dos hermanos jugando juntos, estilo flat design, colores alegres.",
+    "variantes": "Hno",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Hermana",
+    "definicion": "Es la mujer que tiene los mismos papás que tú, o uno de los dos.\n Ejemplo: Mi hermana me ayuda con la tarea de matemática.",
+    "categoria": "Familia",
+    "video": "",
+    "imagen": "Ilustración plana de dos hermanas estudiando juntas en una mesa, estilo flat design.",
+    "variantes": "Hna",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Abuelo",
+    "definicion": "Es el papá de tu papá o de tu mamá.\n Ejemplo: Mi abuelo me cuenta historias de cuando era joven.",
+    "categoria": "Familia",
+    "video": "",
+    "imagen": "Ilustración plana de un abuelo sentado contando una historia a un niño, estilo flat design, colores cálidos.",
+    "variantes": "Abuelito",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Abuela",
+    "definicion": "Es la mamá de tu papá o de tu mamá.\n Ejemplo: Mi abuela prepara el mejor arroz con pollo.",
+    "categoria": "Familia",
+    "video": "",
+    "imagen": "Ilustración plana de una abuela cocinando en la cocina junto a un niño, estilo flat design.",
+    "variantes": "Abuelita",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Tío",
+    "definicion": "Es el hermano de tu papá o de tu mamá.\n Ejemplo: Mi tío vino a visitarnos el fin de semana.",
+    "categoria": "Familia",
+    "video": "",
+    "imagen": "Ilustración plana de un hombre adulto abrazando a un niño en una reunión familiar, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Tía",
+    "definicion": "Es la hermana de tu papá o de tu mamá.\n Ejemplo: Mi tía me regaló un libro por mi cumpleaños.",
+    "categoria": "Familia",
+    "video": "",
+    "imagen": "Ilustración plana de una mujer adulta entregando un regalo a un niño, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Primo",
+    "definicion": "Es el hijo de tu tío o tu tía.\n Ejemplo: Fui a la playa con mi primo el sábado.",
+    "categoria": "Familia",
+    "video": "",
+    "imagen": "Ilustración plana de dos niños jugando juntos en la playa, estilo flat design, colores veraniegos.",
+    "variantes": "Prima",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Hijo",
+    "definicion": "Es el niño o el hombre que es tuyo, como papá o mamá.\n Ejemplo: Tengo un hijo de cinco años.",
+    "categoria": "Familia",
+    "video": "",
+    "imagen": "Ilustración plana de unos padres cargando a un bebé sonriente, estilo flat design.",
+    "variantes": "Hija",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Esposo",
+    "definicion": "Es el hombre con quien una persona se casó.\n Ejemplo: Mi esposo trabaja en una fábrica.",
+    "categoria": "Familia",
+    "video": "",
+    "imagen": "Ilustración plana de una pareja adulta tomada de la mano con anillos de matrimonio visibles, estilo flat design.",
+    "variantes": "Marido",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Esposa",
+    "definicion": "Es la mujer con quien una persona se casó.\n Ejemplo: Mi esposa y yo nos conocimos en la universidad.",
+    "categoria": "Familia",
+    "video": "",
+    "imagen": "Ilustración plana de una pareja adulta sonriendo juntos, estilo flat design, colores cálidos.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Sobrino",
+    "definicion": "Es el hijo de tu hermano o tu hermana.\n Ejemplo: Mi sobrino cumple ocho años este mes.",
+    "categoria": "Familia",
+    "video": "",
+    "imagen": "Ilustración plana de un adulto jugando con un niño pequeño en un parque, estilo flat design.",
+    "variantes": "Sobrina",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Nieto",
+    "definicion": "Es el hijo de tu hijo o tu hija.\n Ejemplo: Mi abuela juega con su nieto todas las tardes.",
+    "categoria": "Familia",
+    "video": "",
+    "imagen": "Ilustración plana de una abuela jugando con un niño pequeño, estilo flat design, colores cálidos.",
+    "variantes": "Nieta",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Cuñado",
+    "definicion": "Es el hermano de tu esposo o tu esposa, o el esposo de tu hermana.\n Ejemplo: Mi cuñado nos invitó a su casa.",
+    "categoria": "Familia",
+    "video": "",
+    "imagen": "Ilustración plana de dos hombres adultos conversando en la puerta de una casa, estilo flat design.",
+    "variantes": "Cuñada",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Deducción",
+    "definicion": "Proceso de pensar que va de lo general a lo particular. Llegar a una conclusión basada en hechos conocidos.",
+    "categoria": "Filosofía",
+    "video": "",
+    "imagen": "Una flecha desde una idea grande hacia una idea pequeña específica",
+    "variantes": "Conclusión lógica, Inferencia, Razonamiento",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Epistemología",
+    "definicion": "Rama de la filosofía que estudia cómo conocemos las cosas.",
+    "categoria": "Filosofía",
+    "video": "",
+    "imagen": "Una cabeza pensante con símbolos de conocimiento alrededor",
+    "variantes": "Teoría del conocimiento, Estudio del saber",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Escepticismo",
+    "definicion": "Actitud de dudar y no creer fácilmente en cosas sin buena evidencia.",
+    "categoria": "Filosofía",
+    "video": "",
+    "imagen": "Una persona levantando una ceja con interrogante flotante",
+    "variantes": "Duda, Incredulidad, Desconfianza, Cuestionamiento",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Esencia",
+    "definicion": "Lo más importante o fundamental de algo.",
+    "categoria": "Filosofía",
+    "video": "",
+    "imagen": "El corazón o centro luminoso de algo, estilo simbólico",
+    "variantes": "Núcleo, Elemento vital, Lo fundamental, Naturaleza",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Ética",
+    "definicion": "Conjunto de principios sobre lo que es correcto e incorrecto.",
+    "categoria": "Filosofía",
+    "video": "",
+    "imagen": "Una balanza con valores positivos en un lado, estilo equilibrado",
+    "variantes": "Moral, Principios, Valores, Conducta correcta",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Falacia",
+    "definicion": "Argumento falso que parece verdadero pero contiene un error.",
+    "categoria": "Filosofía",
+    "video": "",
+    "imagen": "Una escalera que parece segura pero está rota, estilo ilusión óptica",
+    "variantes": "Engaño, Error lógico, Argumento falso, Sofisma",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Flexibilidad",
+    "definicion": "Capacidad de adaptarse a cambios y ser flexible.",
+    "categoria": "Habilidades",
+    "video": "",
+    "imagen": "Una rama o cuerpo que se dobla sin romperse",
+    "variantes": "Adaptabilidad, Elasticidad, Versatilidad, Capacidad de cambio",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Sol",
+    "definicion": "Es la estrella que da luz y calor durante el día.\n Ejemplo: Hoy hace mucho sol, lleva tus lentes de sol.",
+    "categoria": "Naturaleza",
+    "video": "",
+    "imagen": "Ilustración plana de un sol brillante con rayos, estilo flat design, colores amarillos.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Lluvia",
+    "definicion": "Es cuando el agua cae del cielo.\n Ejemplo: No salí porque estaba lloviendo mucho.",
+    "categoria": "Naturaleza",
+    "video": "",
+    "imagen": "Ilustración plana de una nube con gotas de lluvia cayendo, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Viento",
+    "definicion": "Es el aire que se mueve fuerte, a veces mueve las cosas.\n Ejemplo: El viento hizo volar mi sombrero.",
+    "categoria": "Naturaleza",
+    "video": "",
+    "imagen": "Ilustración plana de líneas curvas representando viento moviendo hojas, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Calor",
+    "definicion": "Es cuando la temperatura está muy alta y se siente incómodo.\n Ejemplo: Hace mucho calor en la costa en verano.",
+    "categoria": "Naturaleza",
+    "video": "",
+    "imagen": "Ilustración plana de un sol grande con una persona abanicándose, estilo flat design, colores cálidos.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Frío",
+    "definicion": "Es cuando la temperatura está muy baja.\n Ejemplo: Tengo frío, voy a ponerme una chompa.",
+    "categoria": "Naturaleza",
+    "video": "",
+    "imagen": "Ilustración plana de un copo de nieve y una persona con chompa, estilo flat design, colores fríos.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Nube",
+    "definicion": "Es una masa blanca o gris que se ve en el cielo, hecha de agua.\n Ejemplo: El cielo estaba lleno de nubes grises antes de llover.",
+    "categoria": "Naturaleza",
+    "video": "",
+    "imagen": "Ilustración plana de nubes blancas y grises en un cielo, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Mar",
+    "definicion": "Es una gran extensión de agua salada.\n Ejemplo: Fuimos a nadar en el mar durante las vacaciones.",
+    "categoria": "Naturaleza",
+    "video": "",
+    "imagen": "Ilustración plana de olas de mar azul con una gaviota, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Río",
+    "definicion": "Es una corriente de agua que va de las montañas hacia el mar.\n Ejemplo: Acampamos cerca de un río en la sierra.",
+    "categoria": "Naturaleza",
+    "video": "",
+    "imagen": "Ilustración plana de un río serpenteando entre piedras y árboles, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Montaña",
+    "definicion": "Es una elevación grande de tierra, más alta que una colina.\n Ejemplo: Subimos una montaña durante nuestro viaje a la sierra.",
+    "categoria": "Naturaleza",
+    "video": "",
+    "imagen": "Ilustración plana de montañas con picos nevados, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Árbol",
+    "definicion": "Es una planta grande con tronco, ramas y hojas.\n Ejemplo: Sembramos un árbol en el patio de mi casa.",
+    "categoria": "Naturaleza",
+    "video": "",
+    "imagen": "Ilustración plana de un árbol verde con hojas y tronco marrón, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Animal",
+    "definicion": "Es un ser vivo que se mueve, como el perro, el gato o el pájaro.\n Ejemplo: Mi hijo quiere tener un animal en casa.",
+    "categoria": "Naturaleza",
+    "video": "",
+    "imagen": "Ilustración plana de varios animales pequeños juntos, como un perro, un gato y un pájaro, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Perro",
+    "definicion": "Es un animal muy común que se tiene como mascota en la casa.\n Ejemplo: Mi perro me espera en la puerta cuando llego.",
+    "categoria": "Naturaleza",
+    "video": "",
+    "imagen": "Ilustración plana de un perro sentado moviendo la cola, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Gato",
+    "definicion": "Es un animal pequeño que también se tiene como mascota.\n Ejemplo: Mi gato duerme todo el día en el sillón.",
+    "categoria": "Naturaleza",
+    "video": "",
+    "imagen": "Ilustración plana de un gato durmiendo enroscado, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Terremoto",
+    "definicion": "Es cuando la tierra se mueve fuerte de repente, y puede ser peligroso.\n Ejemplo: Sentimos un terremoto anoche mientras dormíamos.",
+    "categoria": "Naturaleza",
+    "video": "",
+    "imagen": "Ilustración plana de líneas de grietas en el suelo y una casa temblando levemente, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Estación del año",
+    "definicion": "Son los cuatro periodos del año: verano, otoño, invierno y primavera, cada uno con un clima distinto.\n Ejemplo: Mi estación del año favorita es el verano.",
+    "categoria": "Naturaleza",
+    "video": "",
+    "imagen": "Ilustración plana dividida en cuatro partes mostrando sol, hojas cayendo, nieve y flores, estilo flat design.",
+    "variantes": "Estación",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Gobierno",
+    "definicion": "Sistema o grupo de personas que administra un país o región.",
+    "categoria": "Política",
+    "video": "",
+    "imagen": "Un edificio de gobierno o símbolos de autoridad",
+    "variantes": "Administración, Autoridad, Gestión pública, Estado",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Autonomía",
+    "definicion": "Capacidad de una persona para tomar sus propias decisiones sin depender de otros.",
+    "categoria": "Psicología",
+    "video": "",
+    "imagen": "Una persona de pie en una encrucijada eligiendo entre varios caminos, estilo flat design con colores vibrantes",
+    "variantes": "Independencia, Libertad de decisión, Autodeterminación",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Autenticidad",
+    "definicion": "Ser genuino, real y honesto. No ser falso ni pretender ser algo que no eres.",
+    "categoria": "Psicología",
+    "video": "",
+    "imagen": "Una persona con un símbolo de verificación brillante, reflejando autenticidad, estilo moderno minimalista",
+    "variantes": "Genuinidad, Sinceridad, Honestidad, Realidad",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Cognición",
+    "definicion": "Procesos mentales que usamos para pensar, aprender y entender cosas.",
+    "categoria": "Psicología",
+    "video": "",
+    "imagen": "Un cerebro abstracto con engranajes y símbolos de pensamiento iluminados, estilo moderno",
+    "variantes": "Pensamiento, Comprensión, Capacidad mental, Procesamiento",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Creatividad",
+    "definicion": "Capacidad de pensar en cosas nuevas e inventar soluciones originales.",
+    "categoria": "Psicología",
+    "video": "",
+    "imagen": "Una bombilla con colores arcoíris explotando en creatividad, estilo artístico",
+    "variantes": "Inventiva, Imaginación, Originalidad, Innovación",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Dependencia",
+    "definicion": "Necesidad de algo o alguien para poder funcionar o vivir.",
+    "categoria": "Psicología",
+    "video": "",
+    "imagen": "Una persona sostenida por una cadena o cordón, representando conexión",
+    "variantes": "Subordinación, Necesidad, Vínculo, Relación de poder",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Dilema",
+    "definicion": "Situación difícil donde debes elegir entre dos opciones y ambas tienen problemas.",
+    "categoria": "Psicología",
+    "video": "",
+    "imagen": "Una persona en una bifurcación de camino, sin saber cuál elegir",
+    "variantes": "Encrucijada, Problema, Conflicto, Difícil decisión",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Empatía",
+    "definicion": "Capacidad de entender y sentir las emociones de otra persona.",
+    "categoria": "Psicología",
+    "video": "",
+    "imagen": "Dos personas conectadas por un corazón, estilo emocional y caálido",
+    "variantes": "Comprensión, Solidaridad, Simpatía, Compasión",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Fobia",
+    "definicion": "Miedo intenso y irracional a algo específico.",
+    "categoria": "Psicología",
+    "video": "",
+    "imagen": "Una persona asustada frente a algo que representa su miedo",
+    "variantes": "Miedo patológico, Terror irracional, Pánico",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Abismo",
+    "definicion": "Abismo es una profundidad muy grande y difícil de medir. Puede referirse a un lugar físico, como un precipicio muy profundo, o usarse de forma figurada para describir una gran diferencia, un peligro o una situación muy difícil.\n\nEn pocas palabras, un abismo es algo tan profundo o tan grande que parece no tener fin o que es muy difícil de superar.",
+    "categoria": "Reflexión",
+    "video": "0J4ckIW6kaA",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/abismo1.png",
+    "variantes": "abismo económico, al borde del abismo, caer en un abismo, un abismo de diferencia, Precipicio, Barranco",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Trascender",
+    "definicion": "Transcender significa ir más allá de lo común o de los límites, dejando un impacto, una enseñanza o un cambio que continúa existiendo incluso después de que una persona, un hecho o un momento haya terminado.\n\nEn otras palabras, trascender es hacer algo que tenga un valor o una influencia duradera.",
+    "categoria": "Reflexión",
+    "video": "0bXC16BTNiA",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Trascender1.png, https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Trascender2.png",
+    "variantes": "transcender, perdurar, dejar huella, Tener impacto, impacto, Permanecer",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Dolor",
+    "definicion": "Es una sensación desagradable en el cuerpo que indica que algo no está bien.\n Ejemplo: Tengo dolor de cabeza desde la mañana.",
+    "categoria": "Salud",
+    "video": "",
+    "imagen": "Ilustración plana de una persona tocándose la cabeza con una expresión de molestia, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Fiebre",
+    "definicion": "Es cuando el cuerpo tiene una temperatura más alta de lo normal, por una enfermedad.\n Ejemplo: Mi hijo tiene fiebre, así que lo llevé al doctor.",
+    "categoria": "Salud",
+    "video": "",
+    "imagen": "Ilustración plana de un termómetro marcando temperatura alta junto a una persona en cama, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Enfermedad",
+    "definicion": "Es cuando el cuerpo no está funcionando bien y la persona se siente mal.\n Ejemplo: La gripe es una enfermedad muy común en invierno.",
+    "categoria": "Salud",
+    "video": "",
+    "imagen": "Ilustración plana de una persona en cama con una bolsa de agua caliente y un pañuelo, estilo flat design.",
+    "variantes": "Enfermo, Malestar",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Medicina",
+    "definicion": "Es un producto que ayuda a curar una enfermedad o aliviar un dolor.\n Ejemplo: El doctor me recetó una medicina para la tos.",
+    "categoria": "Salud",
+    "video": "",
+    "imagen": "Ilustración plana de un frasco de pastillas y una cuchara con jarabe, estilo flat design.",
+    "variantes": "Medicamento, Remedio, Pastilla",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Doctor",
+    "definicion": "Es la persona que estudió para curar enfermedades y cuidar la salud de las personas.\n Ejemplo: Fui al doctor porque me dolía el estómago.",
+    "categoria": "Salud",
+    "video": "",
+    "imagen": "Ilustración plana de un médico con mandil blanco y estetoscopio, estilo flat design.",
+    "variantes": "Médico, Doctora",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Enfermera",
+    "definicion": "Es la persona que ayuda al doctor y cuida a los pacientes en el hospital o posta.\n Ejemplo: La enfermera me puso una inyección.",
+    "categoria": "Salud",
+    "video": "",
+    "imagen": "Ilustración plana de una enfermera con uniforme atendiendo a un paciente, estilo flat design.",
+    "variantes": "Enfermero",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Vacuna",
+    "definicion": "Es una inyección que se pone para prevenir enfermedades.\n Ejemplo: Llevé a mi hija a ponerse su vacuna.",
+    "categoria": "Salud",
+    "video": "",
+    "imagen": "Ilustración plana de una jeringa y un frasco de vacuna sobre una mesa médica, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Receta médica",
+    "definicion": "Es el papel donde el doctor escribe qué medicina debe tomar el paciente.\n Ejemplo: El doctor me dio una receta médica para comprar mis pastillas.",
+    "categoria": "Salud",
+    "video": "",
+    "imagen": "Ilustración plana de un doctor entregando un papel de receta a un paciente, estilo flat design.",
+    "variantes": "Receta",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Análisis",
+    "definicion": "Es una prueba médica, como de sangre, para saber cómo está la salud de una persona.\n Ejemplo: Me hice un análisis de sangre la semana pasada.",
+    "categoria": "Salud",
+    "video": "",
+    "imagen": "Ilustración plana de un tubo de muestra de sangre y guantes médicos sobre una mesa, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Operación",
+    "definicion": "Es cuando un médico interviene el cuerpo de una persona para curarla de algo grave.\n Ejemplo: Mi papá tuvo una operación en la rodilla.",
+    "categoria": "Salud",
+    "video": "",
+    "imagen": "Ilustración plana de un equipo médico alrededor de una camilla en una sala de operaciones, estilo flat design.",
+    "variantes": "Cirugía",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Alergia",
+    "definicion": "Es cuando el cuerpo reacciona mal a algo, como un alimento o polvo, causando molestias.\n Ejemplo: Tengo alergia al polvo, por eso estornudo mucho.",
+    "categoria": "Salud",
+    "video": "",
+    "imagen": "Ilustración plana de una persona estornudando cerca de partículas de polvo, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Herida",
+    "definicion": "Es un daño en la piel o el cuerpo, como un corte o raspón.\n Ejemplo: Me hice una herida en la mano al cortar verduras.",
+    "categoria": "Salud",
+    "video": "",
+    "imagen": "Ilustración plana de una mano con una curita o vendaje, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Tos",
+    "definicion": "Es cuando el cuerpo expulsa aire fuerte por la garganta, generalmente por una enfermedad.\n Ejemplo: Tengo tos desde hace tres días.",
+    "categoria": "Salud",
+    "video": "",
+    "imagen": "Ilustración plana de una persona cubriéndose la boca al toser, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Gripe",
+    "definicion": "Es una enfermedad común que causa tos, fiebre y dolor de cuerpo.\n Ejemplo: Falté al trabajo porque tenía gripe.",
+    "categoria": "Salud",
+    "video": "",
+    "imagen": "Ilustración plana de una persona con pañuelos, bufanda y una taza caliente, estilo flat design.",
+    "variantes": "Resfrío",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Dieta",
+    "definicion": "Es la forma de comer que sigue una persona, a veces para cuidar su salud.\n Ejemplo: El doctor me recomendó una dieta con menos azúcar.",
+    "categoria": "Salud",
+    "video": "",
+    "imagen": "Ilustración plana de un plato con frutas y verduras balanceadas, estilo flat design, colores frescos.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Ejercicio",
+    "definicion": "Es una actividad física que se hace para mantener el cuerpo sano.\n Ejemplo: Hago ejercicio todas las mañanas antes de ir al trabajo.",
+    "categoria": "Salud",
+    "video": "",
+    "imagen": "Ilustración plana de una persona haciendo estiramientos o corriendo, estilo flat design, colores activos.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Descanso",
+    "definicion": "Es el tiempo en que el cuerpo se relaja y recupera energía.\n Ejemplo: Necesito descanso porque trabajé mucho esta semana.",
+    "categoria": "Salud",
+    "video": "",
+    "imagen": "Ilustración plana de una persona recostada tranquilamente en un sillón, estilo flat design, colores suaves.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Presión arterial",
+    "definicion": "Es la fuerza con la que la sangre se mueve dentro del cuerpo; se controla para cuidar el corazón.\n Ejemplo: Mi abuela se controla la presión arterial cada mes.",
+    "categoria": "Salud",
+    "video": "",
+    "imagen": "Ilustración plana de un tensiómetro en el brazo de una persona, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Diabetes",
+    "definicion": "Es una enfermedad relacionada con el nivel de azúcar en la sangre.\n Ejemplo: Mi tío tiene diabetes y cuida mucho lo que come.",
+    "categoria": "Salud",
+    "video": "",
+    "imagen": "Ilustración plana de un glucómetro y una gota de sangre simbólica junto a alimentos saludables, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Embarazo",
+    "definicion": "Es el proceso donde una mujer espera un bebé dentro de su cuerpo.\n Ejemplo: Mi hermana está de seis meses de embarazo.",
+    "categoria": "Salud",
+    "video": "",
+    "imagen": "Ilustración plana de una mujer embarazada sonriente tocándose el vientre, estilo flat design, colores cálidos.",
+    "variantes": "",
     "senasugerida": "",
     "": ""
   },
@@ -137,26 +2637,876 @@
     "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Bienvenido.jpg",
     "variantes": "Bienvenida, Bienvenidos,Bienvenidas,  Bienvenid@s",
     "senasugerida": "",
-    "": "git commit -m \"borrar botón oraciones\""
+    "": ""
   },
   {
-    "palabra": "Trascender",
-    "definicion": "Transcender significa ir más allá de lo común o de los límites, dejando un impacto, una enseñanza o un cambio que continúa existiendo incluso después de que una persona, un hecho o un momento haya terminado.\n\nEn otras palabras, trascender es hacer algo que tenga un valor o una influencia duradera.",
-    "categoria": "Reflexión",
-    "video": "0bXC16BTNiA",
-    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Trascender1.png, https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Trascender2.png",
-    "variantes": "transcender, perdurar, dejar huella, Tener impacto, impacto, Permanecer",
+    "palabra": "Diversidad",
+    "definicion": "Variedad de personas, ideas o cosas diferentes en un lugar.",
+    "categoria": "Sociedad",
+    "video": "",
+    "imagen": "Personas de diferentes colores, formas y tamaños juntas, estilo inclusivo",
+    "variantes": "Variedad, Pluralidad, Multiplicidad, Heterogeneidad",
     "senasugerida": "",
     "": ""
   },
   {
-    "palabra": "Patio",
-    "definicion": "Espacio abierto del colegio para recreo o actividades.",
-    "categoria": "Colegio: lugares y personas",
+    "palabra": "Generación",
+    "definicion": "Grupo de personas nacidas en el mismo período histórico.",
+    "categoria": "Sociedad",
     "video": "",
-    "imagen": "",
+    "imagen": "Personas de diferentes edades unidos por un tiempo común",
+    "variantes": "Cohorte, Grupo de edad, Período, Procreación",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Globalización",
+    "definicion": "Proceso de conectar al mundo a través del comercio, tecnología e ideas.",
+    "categoria": "Sociedad",
+    "video": "",
+    "imagen": "Un globo terraqueo con conexiones que lo rodean",
+    "variantes": "Internacionalización, Conexión mundial, Expansión global",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Fundación",
+    "definicion": "Base o cimiento sobre el que se construye algo. También es una organización sin fines de lucro.",
+    "categoria": "Sociedad/Educación",
+    "video": "",
+    "imagen": "Bloques de construcción formando una base sólida",
+    "variantes": "Base, Cimiento, Organización benéfica, Institución",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Celular",
+    "definicion": "Es un aparato pequeño que sirve para llamar, enviar mensajes y usar internet.\n Ejemplo: Se me quedó el celular en casa.",
+    "categoria": "Tecnología",
+    "video": "",
+    "imagen": "Ilustración plana de un teléfono celular con la pantalla iluminada, estilo flat design.",
+    "variantes": "Teléfono, Móvil",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Internet",
+    "definicion": "Es la red que conecta computadoras y celulares en todo el mundo para buscar información y comunicarse.\n Ejemplo: No tengo internet en mi casa hoy.",
+    "categoria": "Tecnología",
+    "video": "",
+    "imagen": "Ilustración plana de un globo terráqueo conectado por líneas a íconos de wifi, estilo flat design.",
     "variantes": "",
     "senasugerida": "",
-    "": "git push origin develop"
+    "": ""
+  },
+  {
+    "palabra": "Wifi",
+    "definicion": "Es una señal de internet sin cables que se usa en casas y lugares públicos.\n Ejemplo: La contraseña del wifi está pegada en la pared.",
+    "categoria": "Tecnología",
+    "video": "",
+    "imagen": "Ilustración plana del símbolo de wifi saliendo de un router, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Aplicación",
+    "definicion": "Es un programa que se instala en el celular o computadora para hacer algo específico.\n Ejemplo: Descargué una aplicación para aprender lengua de señas.",
+    "categoria": "Tecnología",
+    "video": "",
+    "imagen": "Ilustración plana de una mano tocando íconos de aplicaciones en la pantalla de un celular, estilo flat design.",
+    "variantes": "App",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Contraseña",
+    "definicion": "Es un conjunto de letras o números secreto que se usa para entrar a una cuenta o aparato.\n Ejemplo: Olvidé mi contraseña del correo.",
+    "categoria": "Tecnología",
+    "video": "",
+    "imagen": "Ilustración plana de un candado sobre una pantalla con puntos en un campo de texto, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Mensaje de texto",
+    "definicion": "Es un texto corto que se envía de un celular a otro.\n Ejemplo: Le envié un mensaje de texto a mi hermano.",
+    "categoria": "Tecnología",
+    "video": "",
+    "imagen": "Ilustración plana de una burbuja de chat saliendo de un celular, estilo flat design, sin texto real.",
+    "variantes": "SMS, Mensaje",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Videollamada",
+    "definicion": "Es una llamada donde las personas se ven y se escuchan por la pantalla.\n Ejemplo: Hicimos una videollamada con mi familia que vive en otra ciudad.",
+    "categoria": "Tecnología",
+    "video": "",
+    "imagen": "Ilustración plana de una persona hablando por videollamada en una laptop o celular, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Correo electrónico",
+    "definicion": "Es un mensaje que se envía por internet a otra persona, usando una cuenta especial.\n Ejemplo: Envié mi currículum por correo electrónico.",
+    "categoria": "Tecnología",
+    "video": "",
+    "imagen": "Ilustración plana de un sobre digital saliendo de una pantalla de computadora, estilo flat design.",
+    "variantes": "Email, Mail",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Cargador",
+    "definicion": "Es el aparato que se conecta al celular o laptop para darle energía.\n Ejemplo: Necesito mi cargador porque mi celular está descargado.",
+    "categoria": "Tecnología",
+    "video": "",
+    "imagen": "Ilustración plana de un cable cargador conectado a un celular con un rayo de energía, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Batería",
+    "definicion": "Es la parte del celular o de un aparato que guarda la energía.\n Ejemplo: La batería de mi celular se acabó rápido.",
+    "categoria": "Tecnología",
+    "video": "",
+    "imagen": "Ilustración plana de un ícono de batería con nivel bajo dentro de un celular, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Computadora",
+    "definicion": "Es una máquina que se usa para trabajar, estudiar o buscar información.\n Ejemplo: Hice mi tarea en la computadora del colegio.",
+    "categoria": "Tecnología",
+    "video": "",
+    "imagen": "Ilustración plana de una laptop abierta sobre un escritorio, estilo flat design.",
+    "variantes": "PC, Laptop, Ordenador",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Redes sociales",
+    "definicion": "Son aplicaciones donde las personas comparten fotos, videos y mensajes con otras personas.\n Ejemplo: Subí una foto de mi cumpleaños a mis redes sociales.",
+    "categoria": "Tecnología",
+    "video": "",
+    "imagen": "Ilustración plana de un celular con íconos de corazones y comentarios flotando alrededor, estilo flat design.",
+    "variantes": "Facebook, Instagram",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Descargar",
+    "definicion": "Es guardar en el celular o computadora un archivo o aplicación desde internet.\n Ejemplo: Descargué una película para ver en el bus.",
+    "categoria": "Tecnología",
+    "video": "",
+    "imagen": "Ilustración plana de una flecha apuntando hacia abajo entrando a un celular, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Actualizar",
+    "definicion": "Es poner la versión más nueva de una aplicación o programa.\n Ejemplo: Tengo que actualizar mi aplicación del banco.",
+    "categoria": "Tecnología",
+    "video": "",
+    "imagen": "Ilustración plana de una flecha circular girando sobre el ícono de una aplicación, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Usuario",
+    "definicion": "Es el nombre o cuenta con la que una persona entra a una aplicación o página.\n Ejemplo: Mi usuario del correo es mi nombre completo.",
+    "categoria": "Tecnología",
+    "video": "",
+    "imagen": "Ilustración plana de un ícono de perfil de persona dentro de un círculo, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Algoritmo",
+    "definicion": "Serie de pasos ordenados para resolver un problema o hacer una tarea. Como una receta que debe seguirse paso a paso.",
+    "categoria": "Tecnología",
+    "video": "",
+    "imagen": "Una cadena de bloques conectados con flechas mostrando flujo de pasos, colores azules y morados, estilo minimalista",
+    "variantes": "Procedimiento, Método, Pasos ordenados, Fórmula",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Buffer",
+    "definicion": "Espacio temporal donde se guardan datos o información para que fluya sin interrupciones.",
+    "categoria": "Tecnología",
+    "video": "",
+    "imagen": "Un recipiente recolectando gotitas de datos que luego fluyen hacia un destino, estilo animado",
+    "variantes": "Almacenamiento temporal, Espacio de espera, Cache",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Contraseña",
+    "definicion": "Código secreto que usas para acceder a tus cuentas y proteger tu información.",
+    "categoria": "Tecnología",
+    "video": "",
+    "imagen": "Un candado digital con un símbolo de contraseña, colores de seguridad (verde y azul)",
+    "variantes": "Clave, PIN, Código secreto, Password",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Dashboard",
+    "definicion": "Panel de control visual que muestra información importante de un sistema.",
+    "categoria": "Tecnología",
+    "video": "",
+    "imagen": "Un panel con gráficos, números y indicadores coloridos, estilo moderno tech",
+    "variantes": "Panel de control, Tablero, Interfaz",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Digital",
+    "definicion": "Relacionado con computadoras, internet y números. Lo opuesto a analógico.",
+    "categoria": "Tecnología",
+    "video": "",
+    "imagen": "Un símbolo de 1 y 0 formando una forma de onda o tecnología",
+    "variantes": "Electrónico, Numérico, En línea, Virtual",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Encriptación",
+    "definicion": "Proceso de convertir información en código secreto para protegerla.",
+    "categoria": "Tecnología",
+    "video": "",
+    "imagen": "Datos transformados en símbolos y códigos, candado digital",
+    "variantes": "Codificación, Cifrado, Protección de datos, Codificación de seguridad",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Escalabilidad",
+    "definicion": "Capacidad de un sistema para crecer y manejar más volumen sin perder calidad.",
+    "categoria": "Tecnología",
+    "video": "",
+    "imagen": "Escaleras ascendentes con un sistema creciendo de tamaño",
+    "variantes": "Crecimiento, Expansibilidad, Flexibilidad, Adaptabilidad",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Formato",
+    "definicion": "Forma o estructura en que se presenta algo.",
+    "categoria": "Tecnología",
+    "video": "",
+    "imagen": "Diferentes formas de presentación (documento, imagen, video)",
+    "variantes": "Estructura, Disposición, Tipo, Presentación",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Grafo",
+    "definicion": "Diagrama con puntos y líneas que muestra relaciones entre cosas.",
+    "categoria": "Tecnología/Ciencia",
+    "video": "",
+    "imagen": "Puntos conectados con líneas mostrando una red o conexión",
+    "variantes": "Diagrama, Red, Mapa de relaciones, Estructura visual",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Branding",
+    "definicion": "Crear la identidad y la imagen de una marca o empresa para que la gente la reconozca.",
+    "categoria": "Tecnología/Redes Sociales",
+    "video": "",
+    "imagen": "Un logotipo abstracto rodeado de símbolos de identidad visual, colores corporativos, estilo moderno",
+    "variantes": "Marca, Identidad visual, Posicionamiento",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Catálogo",
+    "definicion": "Lista organizada de productos o artículos con sus características y precios.",
+    "categoria": "Tecnología/Trabajo",
+    "video": "",
+    "imagen": "Una carpeta abierta con tarjetas de productos organizadas en filas, estilo flat design",
+    "variantes": "Listado, Inventario, Colección, Registro",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Jefe",
+    "definicion": "Es la persona que dirige el trabajo y da las órdenes en una empresa o negocio.\n Ejemplo: Mi jefe me pidió terminar el informe antes del viernes.",
+    "categoria": "Trabajo",
+    "video": "",
+    "imagen": "Ilustración plana de una persona con ropa formal dando indicaciones a un trabajador en una oficina, estilo flat design.",
+    "variantes": "Jefa, Encargado, Supervisor, Gerente",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Sueldo",
+    "definicion": "Es el dinero que una persona recibe por su trabajo, normalmente cada mes.\n Ejemplo: Recibo mi sueldo el último día de cada mes.",
+    "categoria": "Trabajo",
+    "video": "",
+    "imagen": "Ilustración plana de un sobre con billetes y monedas al lado de un calendario, estilo flat design, colores verdes y amarillos.",
+    "variantes": "Salario, Pago, Remuneración",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Contrato",
+    "definicion": "Es un papel que firman el trabajador y la empresa donde se acuerdan las condiciones del trabajo, como el sueldo y el horario.\n Ejemplo: Firmé mi contrato de trabajo por un año.",
+    "categoria": "Trabajo",
+    "video": "",
+    "imagen": "Ilustración plana de dos personas dándose la mano frente a un documento firmado sobre un escritorio, estilo flat design.",
+    "variantes": "Contrato de trabajo",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Reunión",
+    "definicion": "Es cuando varias personas se juntan para hablar de un tema o tomar decisiones sobre el trabajo.\n Ejemplo: Tenemos una reunión con el equipo a las diez de la mañana.",
+    "categoria": "Trabajo",
+    "video": "",
+    "imagen": "Ilustración plana de un grupo de personas sentadas alrededor de una mesa de oficina conversando, estilo flat design.",
+    "variantes": "Junta, Meeting",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Entrevista de trabajo",
+    "definicion": "Es la conversación entre una persona que busca empleo y la empresa, para ver si puede contratarla.\n Ejemplo: Mañana tengo una entrevista de trabajo en una empresa de ropa.",
+    "categoria": "Trabajo",
+    "video": "",
+    "imagen": "Ilustración plana de dos personas conversando frente a frente en una oficina, una con un currículum en la mano, estilo flat design.",
+    "variantes": "Entrevista laboral",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Renunciar",
+    "definicion": "Es dejar un trabajo por decisión propia, avisando a la empresa que ya no vas a trabajar más ahí.\n Ejemplo: Decidí renunciar a mi trabajo para estudiar una carrera.",
+    "categoria": "Trabajo",
+    "video": "",
+    "imagen": "Ilustración plana de una persona entregando una carta a otra persona en una oficina, ambas de pie, estilo flat design.",
+    "variantes": "Renuncia, Dejar el trabajo",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Horario",
+    "definicion": "Son las horas en las que una persona debe estar en el trabajo o en el colegio.\n Ejemplo: Mi horario de trabajo es de ocho de la mañana a cinco de la tarde.",
+    "categoria": "Trabajo",
+    "video": "",
+    "imagen": "Ilustración plana de un reloj grande junto a un calendario con horas marcadas, estilo flat design, colores claros.",
+    "variantes": "Horario de trabajo, Turno",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Compañero de trabajo",
+    "definicion": "Es una persona que trabaja en el mismo lugar que tú.\n Ejemplo: Almorcé con mi compañero de trabajo hoy.",
+    "categoria": "Trabajo",
+    "video": "",
+    "imagen": "Ilustración plana de dos trabajadores sonriendo y conversando en una oficina o taller, estilo flat design.",
+    "variantes": "Colega, Compañero laboral",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Currículum",
+    "definicion": "Es un documento donde una persona escribe sus estudios, experiencia y datos, para buscar trabajo.\n Ejemplo: Envié mi currículum a varias empresas esta semana.",
+    "categoria": "Trabajo",
+    "video": "",
+    "imagen": "Ilustración plana de una hoja de documento con secciones y una foto pequeña de perfil, junto a un lapicero, estilo flat design, sin texto real.",
+    "variantes": "CV, Hoja de vida",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Vacaciones",
+    "definicion": "Son los días de descanso que un trabajador o estudiante tiene, sin ir al trabajo ni al colegio.\n Ejemplo: En enero tengo vacaciones y voy a viajar con mi familia.",
+    "categoria": "Trabajo",
+    "video": "",
+    "imagen": "Ilustración plana de una persona relajada en la playa con una maleta al lado, estilo flat design, colores veraniegos.",
+    "variantes": "Descanso, Días libres",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Consenso",
+    "definicion": "Acuerdo general entre las personas. Cuando todos piensan lo mismo.",
+    "categoria": "Trabajo",
+    "video": "",
+    "imagen": "Un grupo de personas con las manos unidas en círculo, estilo ilustración amigable",
+    "variantes": "Acuerdo, Conformidad, Unanimidad",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Desempeño",
+    "definicion": "Forma en que alguien realiza un trabajo o tarea.",
+    "categoria": "Trabajo",
+    "video": "",
+    "imagen": "Una persona alcanzando una meta con un gráfico de progreso ascendente",
+    "variantes": "Rendimiento, Actuación, Ejecución, Resultado",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Eficiencia",
+    "definicion": "Capacidad de realizar un trabajo de la mejor manera posible con menos recursos.",
+    "categoria": "Trabajo",
+    "video": "",
+    "imagen": "Un reloj-engranaje funcionando perfectamente con energía fluyendo",
+    "variantes": "Efectividad, Rendimiento, Productividad, Optimización",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Ejecución",
+    "definicion": "Acción de realizar o llevar a cabo un plan o proyecto.",
+    "categoria": "Trabajo",
+    "video": "",
+    "imagen": "Una persona haciendo que un proyecto pase de idea a realidad",
+    "variantes": "Realización, Implementación, Cumplimiento, Desarrollo",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Equipo",
+    "definicion": "Grupo de personas trabajando juntas para un objetivo común.",
+    "categoria": "Trabajo",
+    "video": "",
+    "imagen": "Personas diferentes unidas en círculo con símbolo de trabajo conjunto",
+    "variantes": "Grupo, Conjunto, Cuadrilla, Banda",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Estándar",
+    "definicion": "Nivel de calidad o características que algo debe cumplir.",
+    "categoria": "Trabajo",
+    "video": "",
+    "imagen": "Una varilla de medida o un sello de aprobación de calidad",
+    "variantes": "Criterio, Norma, Patrón, Requisito",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Estrategia",
+    "definicion": "Plan general para alcanzar un objetivo.",
+    "categoria": "Trabajo",
+    "video": "",
+    "imagen": "Un tablero de ajedrez o un mapa de batalla, estilo estratégico",
+    "variantes": "Plan, Táctica, Método, Aproximación",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Experiencia",
+    "definicion": "Conocimiento adquirido a través de vivir situaciones.",
+    "categoria": "Trabajo",
+    "video": "",
+    "imagen": "Una línea de tiempo mostrando años de aprendizaje y crecimiento",
+    "variantes": "Vivencia, Práctica, Conocimiento práctico, Trayectoria",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Fabricación",
+    "definicion": "Proceso de hacer o producir algo en cantidad.",
+    "categoria": "Trabajo",
+    "video": "",
+    "imagen": "Una máquina produciendo objetos en una línea de producción",
+    "variantes": "Producción, Manufactura, Elaboración, Construcción",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Firma",
+    "definicion": "Nombre escrito con tu propia letra única. También es una empresa.",
+    "categoria": "Trabajo",
+    "video": "",
+    "imagen": "Una firma manuscrita única o un edificio corporativo",
+    "variantes": "Rúbrica, Autógrafo, Empresa, Compañía",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Gestión",
+    "definicion": "Administración y organización de recursos para lograr objetivos.",
+    "categoria": "Trabajo",
+    "video": "",
+    "imagen": "Una persona organizando tareas en un tablero o calendario",
+    "variantes": "Administración, Dirección, Control, Manejo",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Gremio",
+    "definicion": "Asociación de personas que ejercen el mismo oficio o profesión.",
+    "categoria": "Trabajo",
+    "video": "",
+    "imagen": "Personas de una profesión similar reunidas juntas",
+    "variantes": "Asociación, Corporación, Sindicato, Unión",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Envío",
+    "definicion": "Acción de mandar o transportar algo a otra persona o lugar.",
+    "categoria": "Trabajo/Comercio",
+    "video": "",
+    "imagen": "Un paquete con alas volando hacia un destino, estilo de entrega",
+    "variantes": "Remesa, Transporte, Distribución, Paquete",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Distribución",
+    "definicion": "Manera en que algo se reparte o se extiende en diferentes lugares.",
+    "categoria": "Trabajo/Economía",
+    "video": "",
+    "imagen": "Líneas y puntos mostrando como algo se extiende desde un centro",
+    "variantes": "Reparto, Dispersión, Circulación, Envío",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Banco",
+    "definicion": "Es una institución donde las personas guardan su dinero, sacan préstamos o hacen pagos.\n Ejemplo: Fui al banco a retirar dinero.",
+    "categoria": "Trámites",
+    "video": "",
+    "imagen": "Ilustración plana de un edificio de banco con columnas y un símbolo de dinero, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Tarjeta",
+    "definicion": "Es un objeto de plástico que se usa para pagar o sacar dinero del banco.\n Ejemplo: Pagué la compra con mi tarjeta.",
+    "categoria": "Trámites",
+    "video": "",
+    "imagen": "Ilustración plana de una mano sosteniendo una tarjeta bancaria, estilo flat design, sin texto real.",
+    "variantes": "Tarjeta de débito, Tarjeta de crédito",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Cuenta bancaria",
+    "definicion": "Es donde una persona guarda su dinero dentro de un banco.\n Ejemplo: Mi sueldo llega directamente a mi cuenta bancaria.",
+    "categoria": "Trámites",
+    "video": "",
+    "imagen": "Ilustración plana de una libreta bancaria con un símbolo de dinero al lado, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Préstamo",
+    "definicion": "Es dinero que un banco u otra persona te da, y que debes devolver después.\n Ejemplo: Pedí un préstamo para arreglar mi casa.",
+    "categoria": "Trámites",
+    "video": "",
+    "imagen": "Ilustración plana de una mano entregando billetes a otra persona sobre un escritorio de banco, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Deuda",
+    "definicion": "Es el dinero que una persona debe pagar porque lo pidió prestado.\n Ejemplo: Todavía tengo una deuda con el banco.",
+    "categoria": "Trámites",
+    "video": "",
+    "imagen": "Ilustración plana de una persona mirando una factura con signo de dinero y flecha hacia abajo, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Ahorro",
+    "definicion": "Es el dinero que una persona guarda sin gastar, para usarlo después.\n Ejemplo: Tengo un ahorro para comprar una laptop.",
+    "categoria": "Trámites",
+    "video": "",
+    "imagen": "Ilustración plana de una alcancía con monedas cayendo dentro, estilo flat design.",
+    "variantes": "Ahorrar",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Recibo",
+    "definicion": "Es un papel que confirma que se hizo un pago.\n Ejemplo: Guardé el recibo de la compra por si acaso.",
+    "categoria": "Trámites",
+    "video": "",
+    "imagen": "Ilustración plana de un papel de recibo con un check verde, estilo flat design, sin texto real.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Factura",
+    "definicion": "Es un documento que detalla lo que se compró y cuánto se pagó.\n Ejemplo: La tienda me dio la factura de mi compra.",
+    "categoria": "Trámites",
+    "video": "",
+    "imagen": "Ilustración plana de una hoja de factura con líneas y un símbolo de dinero, estilo flat design, sin texto real.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "DNI",
+    "definicion": "Es el documento que identifica a una persona en Perú, con su nombre, foto y número.\n Ejemplo: Necesito mi DNI para hacer cualquier trámite.",
+    "categoria": "Trámites",
+    "video": "",
+    "imagen": "Ilustración plana de una tarjeta de identidad con una foto de perfil genérica, estilo flat design, sin texto real.",
+    "variantes": "Documento de identidad, Carné",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Pasaporte",
+    "definicion": "Es el documento que se necesita para viajar a otro país.\n Ejemplo: Saqué mi pasaporte para viajar a Chile.",
+    "categoria": "Trámites",
+    "video": "",
+    "imagen": "Ilustración plana de una libreta de pasaporte junto a un avión pequeño, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Trámite",
+    "definicion": "Es un proceso con papeles o pasos que se hace en una oficina para conseguir algo.\n Ejemplo: Hice un trámite en la municipalidad para mi negocio.",
+    "categoria": "Trámites",
+    "video": "",
+    "imagen": "Ilustración plana de una persona entregando papeles en una ventanilla de oficina, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Firma",
+    "definicion": "Es el nombre escrito de forma especial que una persona pone para confirmar algo.\n Ejemplo: Puse mi firma en el contrato de trabajo.",
+    "categoria": "Trámites",
+    "video": "",
+    "imagen": "Ilustración plana de una mano firmando un documento con un lapicero, estilo flat design, sin texto real.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Cola",
+    "definicion": "Es la fila de personas que esperan su turno para algo.\n Ejemplo: Hice una cola larga en el banco.",
+    "categoria": "Trámites",
+    "video": "",
+    "imagen": "Ilustración plana de varias personas paradas una detrás de otra en línea, estilo flat design.",
+    "variantes": "Fila",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Impuesto",
+    "definicion": "Es el dinero que las personas o empresas pagan al Estado.\n Ejemplo: Mi papá paga impuestos por su negocio.",
+    "categoria": "Trámites",
+    "video": "",
+    "imagen": "Ilustración plana de un edificio de gobierno recibiendo monedas de una mano, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Presupuesto",
+    "definicion": "Es el plan de cuánto dinero se va a gastar en algo.\n Ejemplo: Hice un presupuesto para mi fiesta de cumpleaños.",
+    "categoria": "Trámites",
+    "video": "",
+    "imagen": "Ilustración plana de una calculadora junto a monedas y una lista, estilo flat design, sin texto real.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Taxi",
+    "definicion": "Es un carro que se puede contratar para llevarte a un lugar, pagando por el viaje.\n Ejemplo: Tomé un taxi porque se me hizo tarde.",
+    "categoria": "Transporte",
+    "video": "",
+    "imagen": "Ilustración plana de un auto amarillo de taxi con una persona subiendo, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Carro",
+    "definicion": "Es un vehículo con cuatro ruedas que se usa para trasladarse.\n Ejemplo: Mi papá compró un carro nuevo.",
+    "categoria": "Transporte",
+    "video": "",
+    "imagen": "Ilustración plana de un carro moderno visto de costado, estilo flat design, colores vivos.",
+    "variantes": "Auto, Automóvil",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Bicicleta",
+    "definicion": "Es un vehículo de dos ruedas que se mueve pedaleando.\n Ejemplo: Voy al trabajo en bicicleta todos los días.",
+    "categoria": "Transporte",
+    "video": "",
+    "imagen": "Ilustración plana de una persona pedaleando una bicicleta en la calle, estilo flat design.",
+    "variantes": "Bici",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Moto",
+    "definicion": "Es un vehículo de dos ruedas con motor, más rápido que la bicicleta.\n Ejemplo: Mi vecino se mueve en moto por la ciudad.",
+    "categoria": "Transporte",
+    "video": "",
+    "imagen": "Ilustración plana de una persona manejando una moto con casco, estilo flat design.",
+    "variantes": "Motocicleta",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Tren",
+    "definicion": "Es un vehículo largo que se mueve sobre rieles y transporta muchas personas.\n Ejemplo: Tomamos el tren para ir a Huancayo.",
+    "categoria": "Transporte",
+    "video": "",
+    "imagen": "Ilustración plana de un tren pasando por rieles, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Avión",
+    "definicion": "Es un vehículo que vuela por el aire y transporta personas a lugares lejanos.\n Ejemplo: Viajamos en avión para llegar a Cusco.",
+    "categoria": "Transporte",
+    "video": "",
+    "imagen": "Ilustración plana de un avión volando entre nubes, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Pasaje",
+    "definicion": "Es el pago o el ticket que se necesita para viajar en un transporte.\n Ejemplo: Compré mi pasaje de bus para el viaje.",
+    "categoria": "Transporte",
+    "video": "",
+    "imagen": "Ilustración plana de un boleto de bus o avión sostenido por una mano, estilo flat design, sin texto real.",
+    "variantes": "Boleto, Ticket",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Estación",
+    "definicion": "Es el lugar donde se espera o se sube a un tren o bus.\n Ejemplo: Nos encontramos en la estación del metro.",
+    "categoria": "Transporte",
+    "video": "",
+    "imagen": "Ilustración plana de personas esperando en un andén de una estación de tren, estilo flat design.",
+    "variantes": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Gasolina",
+    "definicion": "Es el combustible que usan los carros y motos para funcionar.\n Ejemplo: Mi papá llenó el tanque de gasolina antes del viaje.",
+    "categoria": "Transporte",
+    "video": "",
+    "imagen": "Ilustración plana de un surtidor de gasolina llenando un carro, estilo flat design.",
+    "variantes": "Combustible",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Licencia de conducir",
+    "definicion": "Es el documento que permite manejar un vehículo legalmente.\n Ejemplo: Saqué mi licencia de conducir el año pasado.",
+    "categoria": "Transporte",
+    "video": "",
+    "imagen": "Ilustración plana de una tarjeta de identificación con un volante dibujado, estilo flat design, sin texto real.",
+    "variantes": "Brevete",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Carrera",
+    "definicion": "Es lo que una persona estudia en la universidad o instituto para trabajar en eso después, como enfermería, ingeniería o diseño.\n Ejemplo: Mi carrera es contabilidad, estudio en la universidad hace dos años.",
+    "categoria": "Universidad",
+    "video": "",
+    "imagen": "Ilustración plana de un estudiante universitario con libros y un birrete de graduación al fondo, estilo flat design, colores suaves.",
+    "variantes": "Carrera profesional, Especialidad",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Semestre",
+    "definicion": "Es cada una de las dos partes en que se divide el año de estudios en la universidad.\n Ejemplo: Este semestre estoy llevando cinco cursos.",
+    "categoria": "Universidad",
+    "video": "",
+    "imagen": "Ilustración plana de un calendario dividido en dos mitades de colores diferentes, con libros al costado, estilo flat design.",
+    "variantes": "Ciclo académico, Ciclo",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Beca",
+    "definicion": "Es una ayuda de dinero que da una institución para que una persona pueda estudiar sin pagar todo o parte de su carrera.\n Ejemplo: Gané una beca y ahora no pago la universidad.",
+    "categoria": "Universidad",
+    "video": "",
+    "imagen": "Ilustración plana de una mano entregando un diploma o certificado junto a un símbolo de dinero, estilo flat design, colores cálidos.",
+    "variantes": "Beca de estudio, Media beca",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Tesis",
+    "definicion": "Es un trabajo largo de investigación que se escribe para terminar la carrera universitaria.\n Ejemplo: Estoy escribiendo mi tesis para graduarme este año.",
+    "categoria": "Universidad",
+    "video": "",
+    "imagen": "Ilustración plana de una persona escribiendo en una laptop rodeada de libros y hojas, estilo flat design, ambiente de estudio.",
+    "variantes": "Tesis de grado, Investigación final",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Práctica pre-profesional",
+    "definicion": "Es el tiempo en que un estudiante trabaja en una empresa para aprender su carrera antes de terminar de estudiar.\n Ejemplo: Empiezo mis prácticas pre-profesionales en un hospital el próximo mes.",
+    "categoria": "Universidad",
+    "video": "",
+    "imagen": "Ilustración plana de un joven practicante con chaleco o mandil trabajando en una oficina junto a un supervisor, estilo flat design.",
+    "variantes": "Prácticas, Practicante, Pasantía",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Facultad",
+    "definicion": "Es la parte de la universidad donde se estudia un grupo de carreras parecidas, como la Facultad de Ingeniería o de Medicina.\n Ejemplo: La Facultad de Educación está en el segundo piso.",
+    "categoria": "Universidad",
+    "video": "",
+    "imagen": "Ilustración plana de un edificio universitario con una entrada grande y estudiantes caminando, estilo flat design, colores institucionales.",
+    "variantes": "Escuela profesional",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Titulación",
+    "definicion": "Es el trámite final que se hace para recibir el título profesional después de terminar la carrera.\n Ejemplo: Después de mi tesis, sigue el proceso de titulación.",
+    "categoria": "Universidad",
+    "video": "",
+    "imagen": "Ilustración plana de una persona sosteniendo un diploma enrollado con cinta, vistiendo birrete de graduación, estilo flat design.",
+    "variantes": "Titularse, Graduación",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Aula virtual",
+    "definicion": "Es una clase que se da por internet, usando una computadora o celular, en vez de ir físicamente a un salón.\n Ejemplo: Hoy tengo clase en el aula virtual desde mi casa.",
+    "categoria": "Universidad",
+    "video": "",
+    "imagen": "Ilustración plana de una persona frente a una laptop con un profesor en pantalla, en videollamada, estilo flat design, colores claros.",
+    "variantes": "Clase virtual, Clase online",
+    "senasugerida": "",
+    "": ""
   }
 ]
