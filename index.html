@@ -4,15 +4,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>LSPedia - Diccionario de LSP</title>
+    <title>LSPedia - Diccionario de Lengua de Señas Peruana (LSP)</title>
     <meta name="description" content="LSPedia es el diccionario digital gratuito de Lengua de Señas Peruana (LSP). Aprende el significado de palabras en español con el apoyo de videos en señas.">
+    <link rel="canonical" href="https://lspedia.site/">
 
     <!-- Open Graph / vista previa al compartir en redes y WhatsApp -->
     <meta property="og:type" content="website">
+    <meta property="og:url" content="https://lspedia.site/">
     <meta property="og:title" content="LSPedia - Diccionario de Lengua de Señas Peruana">
     <meta property="og:description" content="Diccionario digital gratuito para aprender el significado de palabras en español con el apoyo de videos en Lengua de Señas Peruana (LSP).">
-    <meta property="og:image" content="https://niltonfg-pe.github.io/lspedia/img/lspedia.png">
+    <meta property="og:image" content="https://lspedia.site/img/lspedia.png">
     <meta property="og:locale" content="es_PE">
+
+    <!-- Twitter Card: misma vista previa que Open Graph, para cuando el
+         link se comparte en X/Twitter. -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="LSPedia - Diccionario de Lengua de Señas Peruana">
+    <meta name="twitter:description" content="Diccionario digital gratuito para aprender el significado de palabras en español con el apoyo de videos en Lengua de Señas Peruana (LSP).">
+    <meta name="twitter:image" content="https://lspedia.site/img/lspedia.png">
+
+    <!-- Datos estructurados (JSON-LD): le confirman a Google, de forma
+         explícita y sin ambigüedad, qué es LSPedia y de qué trata, lo que
+         ayuda a que aparezca con más precisión en los resultados de
+         búsqueda (por ejemplo, para consultas como "diccionario LSP" o
+         "lengua de señas peruana diccionario"). No afecta nada visible
+         en la página. -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "LSPedia",
+        "alternateName": "Diccionario de Lengua de Señas Peruana",
+        "url": "https://lspedia.site/",
+        "description": "Diccionario digital gratuito de Lengua de Señas Peruana (LSP) y Español, con videos en señas para cada palabra.",
+        "inLanguage": "es-PE",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://lspedia.site/?p={search_term_string}",
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
