@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "site.lspedia.twa",
+        "sha256_cert_fingerprints": ["CA:A9:1A:E7:50:82:53:57:55:D6:03:41:FD:3C:52:1A:62:54:B3:01:00:16:75:2F:AE:E8:BB:FA:07:A2:0F:C5"]
+      }
+    }]
