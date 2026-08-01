@@ -523,51 +523,6 @@
             line-height: 1.35;
         }
 
-        /* Tarjetas del modal "Hacer una donación": una por método de
-           pago (Yape, Binance, PayPal), cada una con su QR. */
-        .donacion-card {
-            background-color: #ffffff;
-            border: 1px solid #eef1f6;
-            border-radius: 14px;
-            padding: 16px 14px;
-            box-shadow: 0 3px 9px rgba(15, 23, 42, 0.06);
-        }
-        .donacion-card-marca {
-            font-weight: 800;
-            font-size: 1.05rem;
-            margin-bottom: 10px;
-        }
-        .donacion-qr {
-            width: 100%;
-            max-width: 170px;
-            aspect-ratio: 1 / 1;
-            object-fit: contain;
-            border-radius: 8px;
-            margin: 0 auto 10px;
-            display: block;
-        }
-        .donacion-card-dato {
-            font-weight: 700;
-            font-size: 0.85rem;
-            color: #0f172a;
-        }
-        .donacion-qr-link {
-            display: block;
-            border-radius: 8px;
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
-        }
-        .donacion-qr-link:hover,
-        .donacion-qr-link:focus-visible {
-            transform: scale(1.03);
-            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
-            outline: none;
-        }
-        .donacion-card-nota {
-            font-size: 0.7rem;
-            color: #94a3b8;
-            margin-top: 6px;
-        }
-
         /* Botones del modal "Contratar un intérprete": fila con ícono,
            nombre del medio de contacto y flecha, mismo lenguaje visual
            que el resto de tarjetas de Sobre Nosotros. */
@@ -2860,7 +2815,7 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
                     <div class="col-6 col-md-3">
                         <div class="nosotros-apoyo-card nosotros-apoyo-card-donacion h-100 text-center" role="button" tabindex="0" data-bs-toggle="modal" data-bs-target="#modalDonacion">
                             <div class="nosotros-apoyo-icono" aria-hidden="true">❤️</div>
-                            <div class="nosotros-apoyo-titulo">Hacer una donación</div>
+                            <div class="nosotros-apoyo-titulo">Apoyar LSPedia</div>
                             <div class="nosotros-apoyo-desc">Ayuda a mantener el proyecto gratuito y en crecimiento.</div>
                         </div>
                     </div>
@@ -2931,48 +2886,28 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
         </div>
     </div>
 
-    <!-- MODAL HACER UNA DONACIÓN (botón "Hacer una donación" de Sobre Nosotros) -->
+    <!-- MODAL APOYAR LSPEDIA (botón "Apoyar LSPedia" de Sobre Nosotros) -->
     <div class="modal fade" id="modalDonacion" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg">
                 <div class="modal-header py-3" style="background-color: #343a40 !important;">
-                    <h6 class="modal-title fw-bold d-flex align-items-center" style="color: #ffffff !important; font-size: 16px;"><span class="me-2">❤️</span> Hacer una donación</h6>
+                    <h6 class="modal-title fw-bold d-flex align-items-center" style="color: #ffffff !important; font-size: 16px;"><span class="me-2">❤️</span> ¿Quieres apoyar LSPedia?</h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-4">
-                    <p class="text-center text-secondary mb-4">Puedes donar de la forma que te sea más conveniente. ¡Gracias por ser parte de este proyecto!</p>
-                    <div class="row g-3">
-                        <div class="col-12 col-md-4">
-                            <div class="donacion-card text-center h-100">
-                                <div class="donacion-card-marca" style="color:#7c2d92;">Yape</div>
-                                <a href="intent://scan/#Intent;package=com.bcp.innovacxion.yapeapp;scheme=yape;S.browser_fallback_url=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.bcp.innovacxion.yapeapp;end" class="donacion-qr-link" aria-label="Abrir la app Yape para donar">
-                                    <img src="img/qr-yape.jpg" alt="Código QR de Yape" class="donacion-qr">
-                                </a>
-                                <div class="donacion-card-dato">Nilton Fer*</div>
-                                <div class="donacion-card-nota">Toca el QR para abrir Yape</div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-4">
-                            <div class="donacion-card text-center h-100">
-                                <div class="donacion-card-marca" style="color:#d4a017;">Binance</div>
-                                <img src="img/qr-binance.jpg" alt="Código QR de Binance Pay" class="donacion-qr">
-                                <div class="donacion-card-dato">Binance ID: 61018297</div>
-                                <div class="donacion-card-dato">Usuario: Legacype</div>
-                                <div class="donacion-card-nota">Escanea el QR desde la app Binance</div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-4">
-                            <div class="donacion-card text-center h-100">
-                                <div class="donacion-card-marca text-primary">PayPal</div>
-                                <a href="https://paypal.me/niltonfg" target="_blank" rel="noopener" class="donacion-qr-link" aria-label="Abrir PayPal para donar">
-                                    <img src="img/qr-paypal.png" alt="Código QR de PayPal" class="donacion-qr">
-                                </a>
-                                <div class="donacion-card-dato">@niltonfg</div>
-                                <div class="donacion-card-nota">Toca el QR para abrir PayPal</div>
-                            </div>
-                        </div>
+                    <p class="text-secondary mb-3" style="line-height: 1.7;">LSPedia es un proyecto independiente financiado con recursos propios.</p>
+                    <p class="text-secondary mb-4" style="line-height: 1.7;">Si deseas brindar un apoyo económico, escríbeme por WhatsApp y con gusto te compartiré los medios de pago disponibles.</p>
+                    <div class="d-grid gap-3 mb-4">
+                        <a href="https://wa.me/51928789623" target="_blank" rel="noopener" class="btn-contacto-interprete d-flex align-items-center text-decoration-none">
+                            <span class="btn-contacto-icono" style="background-color:#dcfce7; color:#16a34a;" aria-hidden="true">📱</span>
+                            <span class="flex-grow-1 text-start">
+                                <span class="d-block fw-bold text-dark">WhatsApp</span>
+                                <span class="d-block small text-muted">+51 928 789 623</span>
+                            </span>
+                            <span class="text-muted" aria-hidden="true">›</span>
+                        </a>
                     </div>
-                    <p class="text-center small text-muted mt-4 mb-0">Tu donación contribuye a crear más contenido, mejorar la plataforma y mantener LSPedia gratuita para todos.<br><strong class="text-primary">¡Gracias por tu generosidad!</strong></p>
+                    <p class="text-center small text-muted mb-0">Cada aporte, por pequeño que sea, contribuye a crear más contenido y mantener LSPedia gratuita para todos.</p>
                 </div>
             </div>
         </div>
