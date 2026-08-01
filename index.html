@@ -1957,7 +1957,7 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
 
                 <div class="position-relative" id="bloqueBuscador">
                     <div class="input-group input-group-lg shadow-sm" style="border-radius: 50px; border: 2px solid #ffc107; overflow: hidden; background-color: #fff;">
-                        <input id="buscar" type="text" class="form-control border-0 px-4 shadow-none text-secondary" placeholder="Busca una palabra o concepto..." style="font-size: 1.1rem; background: transparent;">
+                        <input id="buscar" type="text" class="form-control border-0 px-4 shadow-none text-secondary" placeholder="Buscar palabra y significado" style="font-size: 1.1rem; background: transparent;">
                         <button class="btn px-4 d-flex align-items-center justify-content-center" type="button" id="btnBuscar">
                             <span style="font-size: 1.3rem;">🔍</span>
                         </button>
@@ -2061,25 +2061,25 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
             </div>
         </div>
 
-        <!-- Vista "Vocabulario" (antes "Temas orden"): primero las etiquetas (tarjetas de categoría),
-             y debajo el buscador exclusivo de esta vista (reemplaza al
-             buscador general #bloqueBuscador mientras está activa). Los
-             resultados/sugerencias al escribir aparecen justo debajo del
-             buscador, en #resultadoCategorias. Mismo orden en escritorio y
+        <!-- Vista "Vocabulario" (antes "Temas orden"): primero el buscador
+             exclusivo de esta vista (reemplaza al buscador general
+             #bloqueBuscador mientras está activa), luego las tarjetas de
+             categoría, y al final los resultados/sugerencias de la
+             búsqueda en #resultadoCategorias. Mismo orden en escritorio y
              en móvil (se muestra/oculta por JS, ver mostrarBuscadorDeCategorias
              y el listener de btnCategorias en script.js). -->
-        <div id="panelCategorias" class="row g-2 mb-4 p-2"></div>
-
         <div class="row justify-content-center mb-3 d-none" id="bloqueBuscadorCategorias">
             <div class="col-lg-8 position-relative">
                 <div class="input-group input-group-lg shadow-sm" style="border-radius: 50px; border: 2px solid #0d6efd; overflow: hidden; background-color: #fff;">
-                    <input id="buscarCategorias" type="text" class="form-control border-0 px-4 shadow-none text-secondary" placeholder="Busca una palabra dentro de las categorías..." style="font-size: 1.1rem; background: transparent;">
+                    <input id="buscarCategorias" type="text" class="form-control border-0 px-4 shadow-none text-secondary" placeholder="Buscar palabra del vocabulario" style="font-size: 1.1rem; background: transparent;">
                     <button class="btn px-4 d-flex align-items-center justify-content-center" type="button" id="btnBuscarCategorias" style="background-color: #0d6efd; color: #fff;">
                         <span style="font-size: 1.3rem;">🔍</span>
                     </button>
                 </div>
             </div>
         </div>
+
+        <div id="panelCategorias" class="row g-2 mb-4 p-2"></div>
 
         <div id="resultadoCategorias" class="mb-4"></div>
 
