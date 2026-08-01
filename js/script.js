@@ -596,18 +596,11 @@ function mostrarSeccionNosotros(){
         seccion.classList.remove("d-none");
         seccion.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-    // Se difiere a dos frames de animación (no uno: en algunos navegadores
-    // móviles el primer rAF todavía cae dentro del mismo layout pass que
-    // el cambio de "d-none") para garantizar que el contenedor ya tiene
-    // su ancho/alto reales antes de que la API de YouTube los mida. Si el
-    // iframe se crea mientras la sección aún medía 0 (recién visible),
-    // quedaba con tamaño 0 y el video se veía en blanco, sobre todo en
-    // móvil, donde el reflow tiende a tardar un poco más.
-    requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-            iniciarReproductorNosotros();
-        });
-    });
+    // iniciarReproductorNosotros ya espera, cuadro a cuadro, a que el
+    // contenedor tenga su tamaño real antes de crear el reproductor de
+    // YouTube (ver crearReproductorNosotrosCuandoVisible más abajo), así
+    // que no hace falta ningún margen fijo de frames acá.
+    iniciarReproductorNosotros();
 }
 
 const btnSobreNosotros = document.getElementById("btnSobreNosotros");
@@ -795,6 +788,19 @@ const App = {
                     const btnSobreNosotros = document.getElementById("btnSobreNosotros");
                     if (btnSobreNosotros) btnSobreNosotros.click();
                 } else if (vistaEnUrl && vistaEnUrl.indexOf("herramientas") === 0) {
+                    // A diferencia de "temas" y "nosotros" (que restauran
+                    // simulando el clic real del botón del menú, y por lo
+                    // tanto ya pasan por activarBotonMenu), acá se llamaba
+                    // directo a mostrarSeccionHerramientas() sin marcar
+                    // "Herramientas" como botón activo del menú. Como
+                    // "Inicio" arranca con la clase "active" fija en el
+                    // HTML, tras un refresco en Herramientas ese botón
+                    // seguía figurando "activo", y el bloque de "Palabras
+                    // sugeridas" (que se calcula mirando si Inicio está
+                    // activo, ver el script de chips más abajo en
+                    // index.html) terminaba mostrándose también acá, cuando
+                    // debe verse solo en Diccionario.
+                    activarBotonMenu("btnHerramientas");
                     mostrarSeccionHerramientas();
                     // Si además había un módulo puntual abierto (selector móvil /
                     // modo escritorio forzado), lo reabre tal cual estaba.
@@ -897,12 +903,9 @@ function fusionarConHoja2(p) {
     if (!enHoja2) return p;
     return {
         ...p,
-        // El video de la Hoja 1 ya NO se reemplaza por el de la Hoja 2:
-        // cada uno se muestra en su propio bloque dentro del resultado
-        // (ver bloqueVideoSena en mostrarPalabra()).
+        video: (p.video && p.video.trim() !== "") ? p.video : enHoja2.video,
         nivel: p.nivel || enHoja2.nivel,
-        _tambienEnQuiz: true,
-        _videoQuiz: (enHoja2.video && enHoja2.video.trim() !== "") ? enHoja2.video : ""
+        _tambienEnQuiz: true
     };
 }
 
@@ -1200,29 +1203,6 @@ function mostrarPalabra(p, opciones = {}){
         ? `<span class="badge bg-warning text-dark mb-2 ms-1" style="font-size: 11px;">🎮 También en el Quiz${p.nivel ? " · " + p.nivel : ""}</span>`
         : "";
 
-    // --- BLOQUE "VIDEO SEÑA" ---
-    // Cuando la misma palabra también tiene un video propio en la Hoja 2
-    // (banco del Quiz), se muestra como una sección aparte dentro del
-    // mismo resultado, sin pisar el video/definición de la Hoja 1.
-    const idVideoQuiz = p._videoQuiz ? extraerIdYouTube(p._videoQuiz) : "";
-    const bloqueVideoSena = idVideoQuiz
-        ? `<div class="mt-4 pt-4 border-top">
-                <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider">🎮 VIDEO SEÑA <span class="text-normal">(Banco del Quiz${p.nivel ? " · " + p.nivel : ""})</span>:</span>
-                <div class="reproductor-palabra-wrap shadow-sm rounded overflow-hidden border mx-auto" id="reproductorPalabraQuizWrap" style="max-width: 480px;">
-                    <div id="reproductorPalabraQuiz"></div>
-                </div>
-                <div class="controles-video d-flex align-items-center justify-content-center gap-2 mt-2 flex-wrap">
-                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnRetroceder10Quiz" title="Retroceder 5 segundos" aria-label="Retroceder 5 segundos">⏪ 5s</button>
-                    <button type="button" class="btn btn-sm btn-primary" id="btnPlayPauseQuiz" title="Reproducir o pausar" aria-label="Reproducir o pausar">▶️ Reproducir</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnReiniciarPalabraQuiz" title="Reiniciar desde el principio" aria-label="Reiniciar desde el principio">↺ Reiniciar</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAvanzar10Quiz" title="Avanzar 10 segundos" aria-label="Avanzar 10 segundos">10s ⏩</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnPalabraVelocidadLentaQuiz" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
-                    <span class="small fw-bold text-muted" id="palabraVelocidadLabelQuiz">1x</span>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnPalabraVelocidadRapidaQuiz" title="Aumentar velocidad" aria-label="Aumentar velocidad">🐇</button>
-                </div>
-           </div>`
-        : "";
-
     const contenedorDestino = enCategorias ? resultadoCategorias : resultado;
     contenedorDestino.innerHTML = `
     ${enCategorias ? botonAtrasCategorias() : ""}
@@ -1254,7 +1234,6 @@ function mostrarPalabra(p, opciones = {}){
                     ${bloqueSenaSugerida}
                 </div>
             </div>
-            ${bloqueVideoSena}
         </div>
     </div>`;
     document.getElementById("btnFavorito").addEventListener("click", () => {
@@ -1269,11 +1248,6 @@ function mostrarPalabra(p, opciones = {}){
         inicializarReproductorPalabra(p.video);
     } else {
         ytPlayerPalabra = null;
-    }
-    if (idVideoQuiz) {
-        inicializarReproductorPalabraQuiz(idVideoQuiz);
-    } else {
-        ytPlayerPalabraQuiz = null;
     }
     if (idVideoSugerida) {
         inicializarReproductorSugerida(idVideoSugerida);
@@ -1368,13 +1342,11 @@ function mostrarPalabraSimplificada(p, opciones = {}){
 
 // --- REPRODUCTOR DE VIDEO CONTROLABLE (YouTube IFrame API) ---
 let ytPlayerPalabra = null;
-let ytPlayerPalabraQuiz = null;
 let ytApiListo = false;
 let ytVideoIdPendiente = null;
-let ytVideoIdPendienteQuiz = null;
 
 // --- REPRODUCTOR DE VIDEO CONTROLABLE PARA "SOBRE NOSOTROS" ---
-const ID_VIDEO_NOSOTROS = "nPf8pRDbkeM";
+const ID_VIDEO_NOSOTROS = "NLIEfLPdeGg";
 let ytPlayerNosotros = null;
 let ytVideoNosotrosPendiente = null;
 let nosotrosVelocidadIndex = VELOCIDADES_PALABRA.indexOf(1);
@@ -1387,20 +1359,32 @@ function onYouTubeIframeAPIReady() {
         crearReproductorPalabra(ytVideoIdPendiente);
         ytVideoIdPendiente = null;
     }
-    if (ytVideoIdPendienteQuiz) {
-        crearReproductorPalabraQuiz(ytVideoIdPendienteQuiz);
-        ytVideoIdPendienteQuiz = null;
-    }
     if (ytVideoIdSugeridaPendiente) {
         crearReproductorSugerida(ytVideoIdSugeridaPendiente);
         ytVideoIdSugeridaPendiente = null;
     }
     if (ytVideoNosotrosPendiente) {
-        crearReproductorNosotros(ytVideoNosotrosPendiente);
+        const videoPendiente = ytVideoNosotrosPendiente;
         ytVideoNosotrosPendiente = null;
+        // Ver crearReproductorNosotrosCuandoVisible: se espera a que el
+        // contenedor tenga tamaño real (no un número fijo de frames) antes
+        // de crear el reproductor, ya que la API de YouTube (script de
+        // terceros) suele quedar lista recién después de que la sección
+        // "Sobre Nosotros" ya se hizo visible -algo típico justo tras un
+        // refresco de la página con esa sección restaurada desde la URL-.
+        crearReproductorNosotrosCuandoVisible(videoPendiente);
     }
 }
+// index.html ya define un window.onYouTubeIframeAPIReady "temprano" (en el
+// <head>, antes de que este archivo cargue) para no perder el aviso de la
+// API si esta queda lista antes de que script.js termine de descargarse.
+// Acá se reemplaza esa función por la real, y si el aviso temprano ya
+// había llegado (window.__ytApiListoTemprano), se ejecuta de una vez.
 window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+window.__onYouTubeIframeAPIReadyReal = onYouTubeIframeAPIReady;
+if (window.__ytApiListoTemprano) {
+    onYouTubeIframeAPIReady();
+}
 
 // El video de "Sobre Nosotros" es fijo (no depende de datos del Sheet), así
 // que se intenta crear una sola vez, la primera vez que se abre la sección
@@ -1409,10 +1393,32 @@ window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
 function iniciarReproductorNosotros() {
     if (ytPlayerNosotros) return; // ya está creado, no se recrea
     if (ytApiListo) {
-        crearReproductorNosotros(ID_VIDEO_NOSOTROS);
+        crearReproductorNosotrosCuandoVisible(ID_VIDEO_NOSOTROS);
     } else {
         ytVideoNosotrosPendiente = ID_VIDEO_NOSOTROS;
     }
+}
+
+// El margen fijo de "2 frames" no siempre alcanzaba: si justo en ese
+// momento el navegador todavía estaba ocupado con otro trabajo pesado
+// (típico recién refrescada la página, con muchas cosas cargando a la
+// vez), el contenedor podía seguir midiendo 0 y el reproductor de
+// YouTube se creaba con tamaño 0, quedando en negro. Acá, en vez de
+// asumir que 2 frames alcanzan, se comprueba el tamaño real del
+// contenedor cuadro a cuadro y solo se crea el reproductor cuando ya
+// mide algo (o, como límite de seguridad, tras ~1 segundo igual se
+// crea, para no quedarse esperando para siempre si algo impide que el
+// contenedor llegue a tener tamaño).
+function crearReproductorNosotrosCuandoVisible(videoId, intentosRestantes) {
+    if (typeof intentosRestantes !== "number") intentosRestantes = 60; // tope de seguridad: ~1s a 60fps
+    const contenedor = document.getElementById("reproductorNosotros");
+    const rect = contenedor ? contenedor.getBoundingClientRect() : null;
+    const yaTieneTamano = rect && rect.width > 0 && rect.height > 0;
+    if (yaTieneTamano || intentosRestantes <= 0) {
+        crearReproductorNosotros(videoId);
+        return;
+    }
+    requestAnimationFrame(() => crearReproductorNosotrosCuandoVisible(videoId, intentosRestantes - 1));
 }
 
 function crearReproductorNosotros(videoId) {
@@ -1437,6 +1443,21 @@ function configurarControlesVideoNosotros() {
     const btnVelocidadRapida = document.getElementById("btnNosotrosVelocidadRapida");
     const btnPantallaCompleta = document.getElementById("btnNosotrosPantallaCompleta");
     if (!btnRetroceder || !btnAvanzar || !btnPlayPause || !btnReiniciar || !btnVelocidadLenta || !btnVelocidadRapida || !ytPlayerNosotros) return;
+
+    // Salvaguarda extra contra el video en negro: si aun con los 2 frames
+    // de margen (ver mostrarSeccionNosotros y onYouTubeIframeAPIReady) el
+    // reproductor se creó cuando el contenedor todavía no tenía su tamaño
+    // real, acá -ya en el evento onReady del propio reproductor- se le
+    // fuerza un resize con las dimensiones reales ya calculadas del
+    // contenedor, en vez de quedar congelado con el tamaño 0 con el que
+    // se haya creado.
+    const contenedorVideoNosotros = document.getElementById("nosotrosVideoRatio");
+    if (contenedorVideoNosotros && typeof ytPlayerNosotros.setSize === "function") {
+        const rectVideoNosotros = contenedorVideoNosotros.getBoundingClientRect();
+        if (rectVideoNosotros.width > 0 && rectVideoNosotros.height > 0) {
+            ytPlayerNosotros.setSize(rectVideoNosotros.width, rectVideoNosotros.height);
+        }
+    }
 
     btnRetroceder.addEventListener("click", () => {
         const tiempoActual = ytPlayerNosotros.getCurrentTime();
@@ -1632,115 +1653,6 @@ function actualizarLabelVelocidadPalabra() {
 
 function actualizarBotonPlayPause(evento) {
     const btnPlayPause = document.getElementById("btnPlayPause");
-    if (!btnPlayPause) return;
-    btnPlayPause.textContent = evento.data === YT.PlayerState.PLAYING ? "⏸ Pausar" : "▶️ Reproducir";
-}
-
-// --- REPRODUCTOR DEL BLOQUE "VIDEO SEÑA" (video de la Hoja 2 / banco del Quiz) ---
-// Mismo patrón y mismos controles que el reproductor principal de arriba,
-// pero completamente independiente: su propio id de DOM, su propio
-// reproductor (ytPlayerPalabraQuiz) y su propia velocidad, así ambos
-// videos se pueden reproducir y controlar por separado sin pisarse.
-let palabraVelocidadIndexQuiz = VELOCIDADES_PALABRA.indexOf(1);
-
-function inicializarReproductorPalabraQuiz(videoId) {
-    ajustarAspectoReproductorPalabraQuiz(videoId);
-    if (ytApiListo) {
-        crearReproductorPalabraQuiz(videoId);
-    } else {
-        ytVideoIdPendienteQuiz = videoId;
-    }
-}
-
-function ajustarAspectoReproductorPalabraQuiz(videoId) {
-    const wrap = document.getElementById("reproductorPalabraQuizWrap");
-    if (!wrap) return;
-    wrap.style.aspectRatio = "16 / 9";
-
-    fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent("https://www.youtube.com/watch?v=" + videoId)}&format=json`)
-        .then((res) => (res.ok ? res.json() : null))
-        .then((data) => {
-            const wrapActual = document.getElementById("reproductorPalabraQuizWrap");
-            if (!data || !wrapActual || !data.width || !data.height) return;
-            wrapActual.style.aspectRatio = `${data.width} / ${data.height}`;
-        })
-        .catch(() => { /* si falla la red, se mantiene el valor por defecto */ });
-}
-
-function crearReproductorPalabraQuiz(videoId) {
-    const contenedor = document.getElementById("reproductorPalabraQuiz");
-    if (!contenedor) return;
-    if (ytPlayerPalabraQuiz && typeof ytPlayerPalabraQuiz.destroy === "function") {
-        ytPlayerPalabraQuiz.destroy();
-    }
-    ytPlayerPalabraQuiz = new YT.Player("reproductorPalabraQuiz", {
-        videoId: videoId,
-        playerVars: { rel: 0, modestbranding: 1 },
-        events: {
-            onReady: configurarControlesVideoQuiz,
-            onStateChange: actualizarBotonPlayPauseQuiz
-        }
-    });
-}
-
-function configurarControlesVideoQuiz() {
-    const btnRetroceder = document.getElementById("btnRetroceder10Quiz");
-    const btnAvanzar = document.getElementById("btnAvanzar10Quiz");
-    const btnPlayPause = document.getElementById("btnPlayPauseQuiz");
-    const btnReiniciar = document.getElementById("btnReiniciarPalabraQuiz");
-    const btnVelocidadLenta = document.getElementById("btnPalabraVelocidadLentaQuiz");
-    const btnVelocidadRapida = document.getElementById("btnPalabraVelocidadRapidaQuiz");
-    if (!btnRetroceder || !btnAvanzar || !btnPlayPause || !btnReiniciar || !btnVelocidadLenta || !btnVelocidadRapida || !ytPlayerPalabraQuiz) return;
-
-    btnRetroceder.addEventListener("click", () => {
-        const tiempoActual = ytPlayerPalabraQuiz.getCurrentTime();
-        ytPlayerPalabraQuiz.seekTo(Math.max(0, tiempoActual - 5), true);
-    });
-
-    btnAvanzar.addEventListener("click", () => {
-        const tiempoActual = ytPlayerPalabraQuiz.getCurrentTime();
-        const duracion = ytPlayerPalabraQuiz.getDuration();
-        ytPlayerPalabraQuiz.seekTo(Math.min(duracion, tiempoActual + 10), true);
-    });
-
-    btnPlayPause.addEventListener("click", () => {
-        const estado = ytPlayerPalabraQuiz.getPlayerState();
-        if (estado === YT.PlayerState.PLAYING) {
-            ytPlayerPalabraQuiz.pauseVideo();
-        } else {
-            ytPlayerPalabraQuiz.playVideo();
-        }
-    });
-
-    btnReiniciar.addEventListener("click", () => {
-        ytPlayerPalabraQuiz.seekTo(0, true);
-        ytPlayerPalabraQuiz.playVideo();
-    });
-
-    // Cada video nuevo arranca en 1x, igual que el reproductor principal.
-    palabraVelocidadIndexQuiz = VELOCIDADES_PALABRA.indexOf(1);
-    ytPlayerPalabraQuiz.setPlaybackRate(1);
-    actualizarLabelVelocidadPalabraQuiz();
-
-    btnVelocidadLenta.addEventListener("click", () => cambiarVelocidadPalabraQuiz(-1));
-    btnVelocidadRapida.addEventListener("click", () => cambiarVelocidadPalabraQuiz(1));
-}
-
-function cambiarVelocidadPalabraQuiz(delta) {
-    if (!ytPlayerPalabraQuiz) return;
-    const max = VELOCIDADES_PALABRA.length - 1;
-    palabraVelocidadIndexQuiz = Math.min(max, Math.max(0, palabraVelocidadIndexQuiz + delta));
-    ytPlayerPalabraQuiz.setPlaybackRate(VELOCIDADES_PALABRA[palabraVelocidadIndexQuiz]);
-    actualizarLabelVelocidadPalabraQuiz();
-}
-
-function actualizarLabelVelocidadPalabraQuiz() {
-    const label = document.getElementById("palabraVelocidadLabelQuiz");
-    if (label) label.textContent = VELOCIDADES_PALABRA[palabraVelocidadIndexQuiz] + "x";
-}
-
-function actualizarBotonPlayPauseQuiz(evento) {
-    const btnPlayPause = document.getElementById("btnPlayPauseQuiz");
     if (!btnPlayPause) return;
     btnPlayPause.textContent = evento.data === YT.PlayerState.PLAYING ? "⏸ Pausar" : "▶️ Reproducir";
 }
