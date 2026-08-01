@@ -158,6 +158,7 @@ function irAlBuscador(){
     categoriaActualMostrada = null;
     document.body.classList.remove("vista-temas-movil");
     mostrarBloqueInicio();
+    mostrarSenalDelDia();
     actualizarTituloPrincipal("diccionario");
     activarBotonMenu("btnInicio");
     actualizarVistaUrl(null);
@@ -499,9 +500,12 @@ function mostrarBloqueInicio(){
     if(colAvatarHero) colAvatarHero.classList.remove("oculto-por-seccion");
     const statsHeader = document.querySelector(".stats-header");
     if(statsHeader) statsHeader.style.display = "";
-    // La seña del día no se vuelve a mostrar sola: igual que antes, una
-    // vez oculta (por ejemplo al ver una palabra) solo reaparece con
-    // una recarga de página real (btnInicio ya hace eso).
+    // La seña del día se vuelve a mostrar junto con el resto del bloque
+    // de inicio (antes se quedaba oculta para siempre tras la primera
+    // vez que se entraba a Vocabulario/Herramientas/Nosotros, porque
+    // ocultarBloqueInicio() la ocultaba pero nadie la revertía).
+    const senal = document.getElementById("senalDelDia");
+    if(senal) senal.style.display = "";
 }
 
 function mostrarSeccionHerramientas(){
@@ -592,7 +596,18 @@ function mostrarSeccionNosotros(){
         seccion.classList.remove("d-none");
         seccion.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-    iniciarReproductorNosotros();
+    // Se difiere a dos frames de animación (no uno: en algunos navegadores
+    // móviles el primer rAF todavía cae dentro del mismo layout pass que
+    // el cambio de "d-none") para garantizar que el contenedor ya tiene
+    // su ancho/alto reales antes de que la API de YouTube los mida. Si el
+    // iframe se crea mientras la sección aún medía 0 (recién visible),
+    // quedaba con tamaño 0 y el video se veía en blanco, sobre todo en
+    // móvil, donde el reflow tiende a tardar un poco más.
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            iniciarReproductorNosotros();
+        });
+    });
 }
 
 const btnSobreNosotros = document.getElementById("btnSobreNosotros");
@@ -736,10 +751,23 @@ const App = {
             renderCategoriasDiccionario();
             actualizarEstadisticas();
             mostrarFavoritos();
-            mostrarSenalDelDia();
-            
+
             const urlParams = new URLSearchParams(window.location.search);
             const palabraEnUrl = urlParams.get("p");
+            // La vista destino se lee ANTES de pintar la seña del día: si
+            // el usuario en realidad va a "Temas orden", "Herramientas" o
+            // "Sobre Nosotros", mostrarSenalDelDia() nunca llega a pintarse
+            // con el título "Diccionario" de por medio. Antes se pintaba
+            // siempre y recién después se simulaba el clic a la otra
+            // sección, lo que dejaba ver un parpadeo con contenido
+            // mezclado (título de Diccionario + tarjetas de Vocabulario).
+            const vistaEnUrlPrevia = urlParams.get("vista");
+            if (!palabraEnUrl && (vistaEnUrlPrevia === "temas" || vistaEnUrlPrevia === "nosotros" || (vistaEnUrlPrevia && vistaEnUrlPrevia.indexOf("herramientas") === 0))) {
+                ocultarBloqueInicio();
+            } else {
+                mostrarSenalDelDia();
+            }
+
             if (palabraEnUrl) {
                 restaurarPalabraDesdeUrl(palabraEnUrl);
             } else {
@@ -809,7 +837,19 @@ if (statCardPalabras) {
 const statCardCategorias = document.getElementById("statCardCategorias");
 if (statCardCategorias) {
     statCardCategorias.addEventListener("click", () => {
-        document.getElementById("btnCategorias").click();
+        // Antes llevaba a "Vocabulario" (btnCategorias.click()). Ahora se
+        // queda dentro de la misma sección "Diccionario": el panel de
+        // categorías (#filaCategoriasDiccionario, con las tarjetas
+        // Vivienda/Familia/Alimentos/etc.) ya vive arriba en esta misma
+        // pantalla, así que solo se hace scroll y un resalte breve para
+        // que la persona lo ubique, igual que hace la tarjeta "PALABRAS"
+        // con el índice A-Z.
+        const panel = document.getElementById("filaCategoriasDiccionario");
+        if (panel) {
+            panel.scrollIntoView({ behavior: "smooth", block: "center" });
+            panel.classList.add("highlight-anim");
+            setTimeout(() => panel.classList.remove("highlight-anim"), 2000);
+        }
     });
 }
 
