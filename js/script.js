@@ -897,9 +897,12 @@ function fusionarConHoja2(p) {
     if (!enHoja2) return p;
     return {
         ...p,
-        video: (p.video && p.video.trim() !== "") ? p.video : enHoja2.video,
+        // El video de la Hoja 1 ya NO se reemplaza por el de la Hoja 2:
+        // cada uno se muestra en su propio bloque dentro del resultado
+        // (ver bloqueVideoSena en mostrarPalabra()).
         nivel: p.nivel || enHoja2.nivel,
-        _tambienEnQuiz: true
+        _tambienEnQuiz: true,
+        _videoQuiz: (enHoja2.video && enHoja2.video.trim() !== "") ? enHoja2.video : ""
     };
 }
 
@@ -1197,6 +1200,29 @@ function mostrarPalabra(p, opciones = {}){
         ? `<span class="badge bg-warning text-dark mb-2 ms-1" style="font-size: 11px;">🎮 También en el Quiz${p.nivel ? " · " + p.nivel : ""}</span>`
         : "";
 
+    // --- BLOQUE "VIDEO SEÑA" ---
+    // Cuando la misma palabra también tiene un video propio en la Hoja 2
+    // (banco del Quiz), se muestra como una sección aparte dentro del
+    // mismo resultado, sin pisar el video/definición de la Hoja 1.
+    const idVideoQuiz = p._videoQuiz ? extraerIdYouTube(p._videoQuiz) : "";
+    const bloqueVideoSena = idVideoQuiz
+        ? `<div class="mt-4 pt-4 border-top">
+                <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider">🎮 VIDEO SEÑA <span class="text-normal">(Banco del Quiz${p.nivel ? " · " + p.nivel : ""})</span>:</span>
+                <div class="reproductor-palabra-wrap shadow-sm rounded overflow-hidden border mx-auto" id="reproductorPalabraQuizWrap" style="max-width: 480px;">
+                    <div id="reproductorPalabraQuiz"></div>
+                </div>
+                <div class="controles-video d-flex align-items-center justify-content-center gap-2 mt-2 flex-wrap">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnRetroceder10Quiz" title="Retroceder 5 segundos" aria-label="Retroceder 5 segundos">⏪ 5s</button>
+                    <button type="button" class="btn btn-sm btn-primary" id="btnPlayPauseQuiz" title="Reproducir o pausar" aria-label="Reproducir o pausar">▶️ Reproducir</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnReiniciarPalabraQuiz" title="Reiniciar desde el principio" aria-label="Reiniciar desde el principio">↺ Reiniciar</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAvanzar10Quiz" title="Avanzar 10 segundos" aria-label="Avanzar 10 segundos">10s ⏩</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnPalabraVelocidadLentaQuiz" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
+                    <span class="small fw-bold text-muted" id="palabraVelocidadLabelQuiz">1x</span>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnPalabraVelocidadRapidaQuiz" title="Aumentar velocidad" aria-label="Aumentar velocidad">🐇</button>
+                </div>
+           </div>`
+        : "";
+
     const contenedorDestino = enCategorias ? resultadoCategorias : resultado;
     contenedorDestino.innerHTML = `
     ${enCategorias ? botonAtrasCategorias() : ""}
@@ -1228,6 +1254,7 @@ function mostrarPalabra(p, opciones = {}){
                     ${bloqueSenaSugerida}
                 </div>
             </div>
+            ${bloqueVideoSena}
         </div>
     </div>`;
     document.getElementById("btnFavorito").addEventListener("click", () => {
@@ -1242,6 +1269,11 @@ function mostrarPalabra(p, opciones = {}){
         inicializarReproductorPalabra(p.video);
     } else {
         ytPlayerPalabra = null;
+    }
+    if (idVideoQuiz) {
+        inicializarReproductorPalabraQuiz(idVideoQuiz);
+    } else {
+        ytPlayerPalabraQuiz = null;
     }
     if (idVideoSugerida) {
         inicializarReproductorSugerida(idVideoSugerida);
@@ -1336,8 +1368,10 @@ function mostrarPalabraSimplificada(p, opciones = {}){
 
 // --- REPRODUCTOR DE VIDEO CONTROLABLE (YouTube IFrame API) ---
 let ytPlayerPalabra = null;
+let ytPlayerPalabraQuiz = null;
 let ytApiListo = false;
 let ytVideoIdPendiente = null;
+let ytVideoIdPendienteQuiz = null;
 
 // --- REPRODUCTOR DE VIDEO CONTROLABLE PARA "SOBRE NOSOTROS" ---
 const ID_VIDEO_NOSOTROS = "nPf8pRDbkeM";
@@ -1352,6 +1386,10 @@ function onYouTubeIframeAPIReady() {
     if (ytVideoIdPendiente) {
         crearReproductorPalabra(ytVideoIdPendiente);
         ytVideoIdPendiente = null;
+    }
+    if (ytVideoIdPendienteQuiz) {
+        crearReproductorPalabraQuiz(ytVideoIdPendienteQuiz);
+        ytVideoIdPendienteQuiz = null;
     }
     if (ytVideoIdSugeridaPendiente) {
         crearReproductorSugerida(ytVideoIdSugeridaPendiente);
@@ -1594,6 +1632,115 @@ function actualizarLabelVelocidadPalabra() {
 
 function actualizarBotonPlayPause(evento) {
     const btnPlayPause = document.getElementById("btnPlayPause");
+    if (!btnPlayPause) return;
+    btnPlayPause.textContent = evento.data === YT.PlayerState.PLAYING ? "⏸ Pausar" : "▶️ Reproducir";
+}
+
+// --- REPRODUCTOR DEL BLOQUE "VIDEO SEÑA" (video de la Hoja 2 / banco del Quiz) ---
+// Mismo patrón y mismos controles que el reproductor principal de arriba,
+// pero completamente independiente: su propio id de DOM, su propio
+// reproductor (ytPlayerPalabraQuiz) y su propia velocidad, así ambos
+// videos se pueden reproducir y controlar por separado sin pisarse.
+let palabraVelocidadIndexQuiz = VELOCIDADES_PALABRA.indexOf(1);
+
+function inicializarReproductorPalabraQuiz(videoId) {
+    ajustarAspectoReproductorPalabraQuiz(videoId);
+    if (ytApiListo) {
+        crearReproductorPalabraQuiz(videoId);
+    } else {
+        ytVideoIdPendienteQuiz = videoId;
+    }
+}
+
+function ajustarAspectoReproductorPalabraQuiz(videoId) {
+    const wrap = document.getElementById("reproductorPalabraQuizWrap");
+    if (!wrap) return;
+    wrap.style.aspectRatio = "16 / 9";
+
+    fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent("https://www.youtube.com/watch?v=" + videoId)}&format=json`)
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+            const wrapActual = document.getElementById("reproductorPalabraQuizWrap");
+            if (!data || !wrapActual || !data.width || !data.height) return;
+            wrapActual.style.aspectRatio = `${data.width} / ${data.height}`;
+        })
+        .catch(() => { /* si falla la red, se mantiene el valor por defecto */ });
+}
+
+function crearReproductorPalabraQuiz(videoId) {
+    const contenedor = document.getElementById("reproductorPalabraQuiz");
+    if (!contenedor) return;
+    if (ytPlayerPalabraQuiz && typeof ytPlayerPalabraQuiz.destroy === "function") {
+        ytPlayerPalabraQuiz.destroy();
+    }
+    ytPlayerPalabraQuiz = new YT.Player("reproductorPalabraQuiz", {
+        videoId: videoId,
+        playerVars: { rel: 0, modestbranding: 1 },
+        events: {
+            onReady: configurarControlesVideoQuiz,
+            onStateChange: actualizarBotonPlayPauseQuiz
+        }
+    });
+}
+
+function configurarControlesVideoQuiz() {
+    const btnRetroceder = document.getElementById("btnRetroceder10Quiz");
+    const btnAvanzar = document.getElementById("btnAvanzar10Quiz");
+    const btnPlayPause = document.getElementById("btnPlayPauseQuiz");
+    const btnReiniciar = document.getElementById("btnReiniciarPalabraQuiz");
+    const btnVelocidadLenta = document.getElementById("btnPalabraVelocidadLentaQuiz");
+    const btnVelocidadRapida = document.getElementById("btnPalabraVelocidadRapidaQuiz");
+    if (!btnRetroceder || !btnAvanzar || !btnPlayPause || !btnReiniciar || !btnVelocidadLenta || !btnVelocidadRapida || !ytPlayerPalabraQuiz) return;
+
+    btnRetroceder.addEventListener("click", () => {
+        const tiempoActual = ytPlayerPalabraQuiz.getCurrentTime();
+        ytPlayerPalabraQuiz.seekTo(Math.max(0, tiempoActual - 5), true);
+    });
+
+    btnAvanzar.addEventListener("click", () => {
+        const tiempoActual = ytPlayerPalabraQuiz.getCurrentTime();
+        const duracion = ytPlayerPalabraQuiz.getDuration();
+        ytPlayerPalabraQuiz.seekTo(Math.min(duracion, tiempoActual + 10), true);
+    });
+
+    btnPlayPause.addEventListener("click", () => {
+        const estado = ytPlayerPalabraQuiz.getPlayerState();
+        if (estado === YT.PlayerState.PLAYING) {
+            ytPlayerPalabraQuiz.pauseVideo();
+        } else {
+            ytPlayerPalabraQuiz.playVideo();
+        }
+    });
+
+    btnReiniciar.addEventListener("click", () => {
+        ytPlayerPalabraQuiz.seekTo(0, true);
+        ytPlayerPalabraQuiz.playVideo();
+    });
+
+    // Cada video nuevo arranca en 1x, igual que el reproductor principal.
+    palabraVelocidadIndexQuiz = VELOCIDADES_PALABRA.indexOf(1);
+    ytPlayerPalabraQuiz.setPlaybackRate(1);
+    actualizarLabelVelocidadPalabraQuiz();
+
+    btnVelocidadLenta.addEventListener("click", () => cambiarVelocidadPalabraQuiz(-1));
+    btnVelocidadRapida.addEventListener("click", () => cambiarVelocidadPalabraQuiz(1));
+}
+
+function cambiarVelocidadPalabraQuiz(delta) {
+    if (!ytPlayerPalabraQuiz) return;
+    const max = VELOCIDADES_PALABRA.length - 1;
+    palabraVelocidadIndexQuiz = Math.min(max, Math.max(0, palabraVelocidadIndexQuiz + delta));
+    ytPlayerPalabraQuiz.setPlaybackRate(VELOCIDADES_PALABRA[palabraVelocidadIndexQuiz]);
+    actualizarLabelVelocidadPalabraQuiz();
+}
+
+function actualizarLabelVelocidadPalabraQuiz() {
+    const label = document.getElementById("palabraVelocidadLabelQuiz");
+    if (label) label.textContent = VELOCIDADES_PALABRA[palabraVelocidadIndexQuiz] + "x";
+}
+
+function actualizarBotonPlayPauseQuiz(evento) {
+    const btnPlayPause = document.getElementById("btnPlayPauseQuiz");
     if (!btnPlayPause) return;
     btnPlayPause.textContent = evento.data === YT.PlayerState.PLAYING ? "⏸ Pausar" : "▶️ Reproducir";
 }
