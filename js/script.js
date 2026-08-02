@@ -145,6 +145,21 @@ function activarBotonMenu(idActivo){
     document.querySelectorAll(".navbar-nav .nav-link").forEach((link) => {
         link.classList.toggle("active", link.id === idActivo);
     });
+    // La barra de navegación inferior (solo móvil/tablet) tiene sus
+    // propios botones (.mbn-item), separados de los del menú de arriba,
+    // y cada uno apunta al enlace real mediante data-vinculado. Antes
+    // solo se sincronizaban cuando el usuario tocaba un .mbn-item
+    // directamente (ver el addEventListener más abajo); si la sección
+    // se activaba de otra forma —como al restaurar "Vocabulario" tras un
+    // refresco de página, que simula el clic del enlace de arriba en vez
+    // del botón de abajo— el botón inferior "Diccionario" se quedaba
+    // marcado como activo por error, mezclándose con la sección real
+    // (Vocabulario) que se estaba mostrando. Ahora, cada vez que se
+    // marca un enlace del menú como activo, la barra inferior se
+    // actualiza igual, venga de donde venga la navegación.
+    document.querySelectorAll(".mbn-item").forEach((boton) => {
+        boton.classList.toggle("active", boton.dataset.vinculado === idActivo);
+    });
 }
 
 function irAlBuscador(){
@@ -928,7 +943,19 @@ document.addEventListener("DOMContentLoaded", () => {
             // que el usuario tenga que volver a hacer clic.
             if (categoriaActualMostrada) {
                 mostrarCategoria(categoriaActualMostrada);
-            } else if (panelCategorias && panelCategorias.children.length > 0) {
+            } else if (document.body.classList.contains("vista-temas-movil")) {
+                // Antes se usaba "panelCategorias.children.length > 0" para
+                // decidir si tocaba refrescar. Pero justo al refrescar la
+                // página estando en Vocabulario, mostrarCategorias() corre
+                // ANTES de que la Hoja 2 (banco de QuizV2) termine de
+                // cargar, así que panelCategorias queda con 0 tarjetas — y
+                // esa condición nunca volvía a ser true cuando los datos
+                // sí llegaban, dejando "Vocabulario" sin categorías para
+                // siempre. La clase "vista-temas-movil" (agregada al
+                // <body> mientras esta sección está abierta, sin importar
+                // cuántas tarjetas tenga en un momento dado) es un
+                // indicador confiable de que seguimos en Vocabulario y hay
+                // que repintar apenas llegan los datos.
                 mostrarCategorias();
             }
         });
