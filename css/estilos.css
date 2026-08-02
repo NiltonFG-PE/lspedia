@@ -1004,3 +1004,62 @@ iframe {
         margin-top: 1rem;
     }
 }
+/* ============================================================
+   VOCABULARIO — Paneles de "Mis Favoritos" y "Mi Historial de
+   Búsqueda": antes Favoritos tenía un celeste plano y Historial no
+   tenía fondo propio (solo el gris general de la página). Ahora cada
+   uno tiene su propio degradado moderno, coherente con el resto de
+   la paleta del sitio (dorado para Favoritos, por la estrella ⭐;
+   azul-índigo para Historial, por el reloj 🕒).
+   ============================================================ */
+.panel-vocab-favoritos {
+    background: linear-gradient(135deg, #fff9e6 0%, #ffedc2 100%);
+    border: 1px solid #f3d888;
+    border-radius: 16px;
+}
+.panel-vocab-historial {
+    background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+    border: 1px solid #c7d2fe;
+    border-radius: 16px;
+}
+
+/* Encabezado de cada panel: título a la izquierda, acción (si la
+   tiene) a la derecha. Reemplaza al <h6> suelto de antes. */
+.panel-vocab-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* Botón "Borrar historial": ícono de borrador + texto. Se ve
+   discreto mientras no se usa, y en rojo suave al pasar el mouse o
+   tocarlo, para dejar claro que es una acción destructiva. */
+.btn-borrar-historial {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #ffffff;
+    border: 1px solid #c7d2fe;
+    color: #4338ca;
+    font-weight: 700;
+    font-size: 0.8rem;
+    padding: 6px 12px;
+    border-radius: 999px;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+.btn-borrar-historial:hover {
+    background: #fef2f2;
+    border-color: #fca5a5;
+    color: #b91c1c;
+    transform: translateY(-1px);
+}
+.btn-borrar-historial:active {
+    transform: translateY(0);
+}
+.btn-borrar-historial svg {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+}

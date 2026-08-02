@@ -2211,6 +2211,32 @@ function mostrarFavoritos(){
     });
 }
 function agregarAHistorial(n){ let h = JSON.parse(localStorage.getItem(CLAVE_HISTORIAL) || "[]"); h = h.filter(i=>i!==n); h.unshift(n); if(h.length>12) h.pop(); localStorage.setItem(CLAVE_HISTORIAL, JSON.stringify(h)); }
+
+// Vacía por completo el historial guardado (localStorage) y repinta el
+// panel al instante para que quede vacío sin necesidad de recargar.
+function borrarHistorial(){
+    localStorage.setItem(CLAVE_HISTORIAL, JSON.stringify([]));
+    renderizarListaHistorial();
+}
+
+function renderizarListaHistorial(){
+    if(!listaHistorial) return;
+    const historial = JSON.parse(localStorage.getItem(CLAVE_HISTORIAL) || "[]");
+    listaHistorial.innerHTML = historial.length === 0 ? '<p class="text-muted small mb-0">Aún no tienes búsquedas recientes.</p>' : "";
+    historial.forEach(nombre => {
+        const p = App.datos.find(i => i.palabra === nombre);
+        if(p){ const col = document.createElement("div"); col.className="col-6 col-md-3"; col.innerHTML=`<div class="card h-100 shadow-sm border-0" style="border-radius: 12px;"><div class="card-body text-center py-2"><h6 class="mb-0 fw-bold small text-primary">${p.palabra}</h6></div></div>`; col.onclick=()=>mostrarPalabra(p); listaHistorial.appendChild(col); }
+    });
+}
+
+const btnBorrarHistorial = document.getElementById("btnBorrarHistorial");
+if(btnBorrarHistorial){
+    btnBorrarHistorial.addEventListener("click", (e) => {
+        e.stopPropagation();
+        borrarHistorial();
+    });
+}
+
 function mostrarPantallaHistorialYFavoritos(){
     // Primero Favoritos, luego Historial — mismo orden en que aparecen
     // los bloques en el HTML. Cada uno sigue siendo un bloque
@@ -2219,11 +2245,7 @@ function mostrarPantallaHistorialYFavoritos(){
     if(seccionFavoritos) seccionFavoritos.classList.remove("d-none");
     mostrarFavoritos();
     seccionHistorial.classList.remove("d-none");
-    listaHistorial.innerHTML = "";
-    JSON.parse(localStorage.getItem(CLAVE_HISTORIAL) || "[]").forEach(nombre => {
-        const p = App.datos.find(i => i.palabra === nombre);
-        if(p){ const col = document.createElement("div"); col.className="col-6 col-md-3"; col.innerHTML=`<div class="card h-100 shadow-sm border-0" style="border-radius: 12px;"><div class="card-body text-center py-2"><h6 class="mb-0 fw-bold small text-primary">${p.palabra}</h6></div></div>`; col.onclick=()=>mostrarPalabra(p); listaHistorial.appendChild(col); }
-    });
+    renderizarListaHistorial();
 }
 document.addEventListener("click",(e)=>{ if(!buscar.contains(e.target) && !sugerencias.contains(e.target)) sugerencias.style.display="none"; });  
 let offsetSenalDelDia = 0;

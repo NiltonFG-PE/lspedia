@@ -2189,13 +2189,22 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
             </div>
         </div>
 
-        <section id="seccionFavoritos" class="mb-5 p-3 d-none" style="background-color: #f0f8ff; border-radius: 12px; border: 1px solid #dceefc;">
+        <section id="seccionFavoritos" class="mb-5 p-3 d-none panel-vocab-favoritos">
             <h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">⭐ Mis Favoritos</h6>
             <div id="listaFavoritos" class="row g-2"></div>
         </section>
 
-        <section id="seccionHistorial" class="mb-5 d-none p-3">
-            <h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">🕒 Mi Historial de Búsqueda</h6>
+        <section id="seccionHistorial" class="mb-5 d-none p-3 panel-vocab-historial">
+            <div class="panel-vocab-header mb-3">
+                <h6 class="text-muted uppercase fw-bold mb-0 tracking-wider">🕒 Mi Historial de Búsqueda</h6>
+                <button type="button" id="btnBorrarHistorial" class="btn-borrar-historial" title="Borrar todo el historial" aria-label="Borrar todo el historial de búsqueda">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <rect x="3.5" y="12.5" width="14" height="7" rx="1.5" transform="rotate(-40 3.5 12.5)" fill="#f472b6" stroke="#be185d" stroke-width="1.2"/>
+                        <path d="M9 6.5L15.5 13" stroke="#be185d" stroke-width="1.2"/>
+                    </svg>
+                    Borrar historial
+                </button>
+            </div>
             <div id="listaHistorial" class="row g-2"></div>
         </section>
 
