@@ -20,7 +20,12 @@ const QuizV2 = (function () {
         // 👉 Pega aquí la URL de tu Web App de Apps Script (termina en /exec)
         APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbw9d7br5C8C4gfk4dJAY6FHRKTKTMI23bNQvO58OQ5TlPe9z5awMWjNIlCLILNLH0t51w/exec",
 
-        CLAVE_CACHE: "lspedia_quiz_cache_v1",
+        // v2: se cambió el nombre de la clave a propósito para invalidar
+        // cualquier caché guardada ANTES de normalizar el campo "nivel"
+        // (ver normalizarNivel más abajo). Sin este cambio, quien ya
+        // había abierto el Quiz seguiría viendo el banco viejo (con
+        // "difícil" en minúscula) hasta que esa caché expirara sola.
+        CLAVE_CACHE: "lspedia_quiz_cache_v2",
         DURACION_CACHE_MS: 5 * 60 * 1000, // 5 minutos: evita golpear el Sheet en cada clic
         PREGUNTAS_POR_RONDA: 8,
         PARES_MEMORIA: 6,
