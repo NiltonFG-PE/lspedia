@@ -108,6 +108,23 @@ const QuizV2 = (function () {
         listenersBancoListo.push(cb);
     }
 
+    // La columna "nivel" de la Hoja 2 la llena la persona a mano, así que
+    // puede venir en cualquier combinación de mayúsculas/minúsculas (o sin
+    // tilde: "dificil" en vez de "difícil"). El resto del código compara
+    // este valor con las cadenas exactas "Fácil"/"Medio"/"Difícil" (para
+    // filtrar por nivel, elegir el color de la insignia, el tiempo del
+    // temporizador y los puntos de cada pregunta), así que si no se
+    // normaliza acá, una fila escrita como "difícil" en vez de "Difícil"
+    // termina invisible para el filtro por nivel: la persona SÍ agregó las
+    // palabras, pero el juego nunca las encuentra.
+    function normalizarNivel(nivel) {
+        const texto = (nivel || "").toString().trim().toLowerCase();
+        if (texto === "difícil" || texto === "dificil") return "Difícil";
+        if (texto === "medio") return "Medio";
+        if (texto === "fácil" || texto === "facil") return "Fácil";
+        return nivel; // valor no reconocido: se deja tal cual, sin forzarlo
+    }
+
     function cargarBanco(forzar) {
         mostrarBloque("quizCargando");
         el("quizError").classList.add("d-none");
@@ -150,7 +167,9 @@ const QuizV2 = (function () {
             limpiar();
             try {
                 if (!data.ok) throw new Error(data.error || "Respuesta inválida del servidor.");
-                estado.banco = data.preguntas.filter((p) => p.palabra && p.video);
+                estado.banco = data.preguntas
+                    .filter((p) => p.palabra && p.video)
+                    .map((p) => ({ ...p, nivel: normalizarNivel(p.nivel) }));
                 guardarCache(estado.banco);
                 if (!silencioso) mostrarIntro();
                 notificarBancoListo();
@@ -321,7 +340,7 @@ const QuizV2 = (function () {
         const btn = el("btnEmpezarQuiz");
         const minimoNecesario = estado.modo === "4" ? Math.min(CONFIG.PARES_MEMORIA, 3) : 4;
         if (disponibles < minimoNecesario) {
-            texto.innerHTML = `⚠️ Solo hay <strong>${disponibles}</strong> palabras disponibles en este nivel. Elige "Todos" o agrega más filas en la Hoja 2.`;
+            texto.innerHTML = `⚠️ Solo hay <strong>${disponibles}</strong> palabras disponibles en este nivel. Elige "Todos" o prueba con otro nivel.`;
             btn.disabled = true;
         } else {
             texto.innerHTML = `✅ <strong>${disponibles}</strong> palabras disponibles para esta partida.`;
@@ -400,16 +419,7 @@ const QuizV2 = (function () {
             </div>
             <div class="quiz-video-controles d-flex align-items-center justify-content-center flex-wrap gap-2 mb-3">
                 <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle quiz-video-btn" id="quizBtnRetroceder" title="Retroceder 1 segundo" aria-label="Retroceder 1 segundo">⏪</button>
-                <button type="button" class="btn btn-sm btn-primary rounded-circle quiz-video-btn" id="quizBtnPlayPause" title="Pausar / Repetir" aria-label="Pausar o repetir el video">⏸</button>
-                <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle quiz-video-btn" id="quizBtnAvanzar" title="Adelantar 2 segundos" aria-label="Adelantar 2 segundos">⏩</button>
-                <div class="quiz-video-velocidad-grupo">
-                    <button type="button" class="btn btn-sm btn-outline-secondary quiz-video-btn-velocidad" id="quizBtnLento" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
-                    <span class="small fw-bold text-muted" id="quizVelocidadLabel">1x</span>
-                    <button type="button" class="btn btn-sm btn-outline-secondary quiz-video-btn-velocidad" id="quizBtnRapido" title="Aumentar velocidad" aria-label="Aumentar velocidad">🐇</button>
-                </div>
-                <button type="button" class="btn btn-sm btn-outline-danger rounded-circle quiz-video-btn" id="quizBtnMeGusta" title="Me gusta" aria-label="Me gusta">🤍</button>
-            </div>
-            <p class="text-center fw-bold mb-3">¿Qué palabra representa esta seña?</p>
+                <button type="button" class="btn btn-sm btn-primary rounded-circle quiz-video-btn" id="quizBtnPlayPause" title="Reproducir / Pausar" aria-label="Reproducir o pausar el video">▶️</button>
             <div class="row g-2" id="quizOpcionesDinamicas"></div>
         `;
         const cont = contenedor.querySelector("#quizOpcionesDinamicas");
@@ -475,6 +485,11 @@ const QuizV2 = (function () {
                     estadoVideo.player.setPlaybackRate(estadoVideo.velocidades[estadoVideo.velocidadIndex]);
                     actualizarEtiquetaVelocidad();
                     enlazarControlesVideoQuiz();
+                    // El HTML ya arranca con el ícono "▶" (el video no se
+                    // reproduce solo), pero por si algún video sí llegara a
+                    // autorreproducirse, se confirma el ícono correcto
+                    // contra el estado real que reporta el reproductor.
+                    actualizarBotonPlayPauseQuiz();
                 },
                 onStateChange: actualizarBotonPlayPauseQuiz
             }
@@ -638,7 +653,7 @@ const QuizV2 = (function () {
             </div>
             <div class="quiz-video-controles d-flex align-items-center justify-content-center flex-wrap gap-2 mb-3">
                 <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle quiz-video-btn" id="quizBtnRetroceder" title="Retroceder 1 segundo" aria-label="Retroceder 1 segundo">⏪</button>
-                <button type="button" class="btn btn-sm btn-primary rounded-circle quiz-video-btn" id="quizBtnPlayPause" title="Pausar / Repetir" aria-label="Pausar o repetir el video">⏸</button>
+                <button type="button" class="btn btn-sm btn-primary rounded-circle quiz-video-btn" id="quizBtnPlayPause" title="Reproducir / Pausar" aria-label="Reproducir o pausar el video">▶️</button>
                 <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle quiz-video-btn" id="quizBtnAvanzar" title="Adelantar 2 segundos" aria-label="Adelantar 2 segundos">⏩</button>
                 <div class="quiz-video-velocidad-grupo">
                     <button type="button" class="btn btn-sm btn-outline-secondary quiz-video-btn-velocidad" id="quizBtnLento" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
