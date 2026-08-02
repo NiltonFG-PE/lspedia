@@ -1018,7 +1018,7 @@ function buscarPalabras(){
         const idVideoSugerencia = extraerIdYouTube(p.video);
         const miniatura = idVideoSugerencia
             ? `<div class="sugerencia-thumb-wrap">
-                   <img src="https://img.youtube.com/vi/${idVideoSugerencia}/mqdefault.jpg" alt="Seña de ${p.palabra}" loading="lazy">
+                   <img src="https://i.ytimg.com/vi/${idVideoSugerencia}/mqdefault.jpg" alt="Seña de ${p.palabra}" loading="lazy">
                    <span class="sugerencia-thumb-play">▶</span>
                </div>`
             : `<div class="sugerencia-thumb-wrap sin-video">🤟</div>`;
@@ -2102,7 +2102,7 @@ function buscarEnCategorias(){
     let html = botonAtrasCategorias() +
         `<h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">Resultados para "${textoOriginal}"</h6>`;
     coincidencias.forEach(p => {
-        html += `<div class="card mb-2 palabra-card shadow-sm animate-fade-in" style="border-radius: 10px;"><div class="card-body p-2 d-flex justify-content-between align-items-center"><div><h6 class="mb-0 fw-bold text-primary">${p.palabra}</h6><small class="text-muted">${p.categoria.trim()}</small></div><button class="btn btn-sm btn-primary py-1 px-3 fw-bold" onclick="mostrarPalabraPorNombreUnificado('${p.palabra.replace(/'/g, "\\'")}')">Ver Seña</button></div></div>`;
+        html += `<div class="card mb-2 palabra-card shadow-sm animate-fade-in" style="border-radius: 10px;"><div class="card-body p-2 d-flex justify-content-between align-items-center"><div class="sugerencia-fila">${generarMiniaturaVocabulario(p)}<div class="sugerencia-texto"><h6 class="mb-0 fw-bold text-primary">${p.palabra}</h6><small class="text-muted">${p.categoria.trim()}</small></div></div><button class="btn btn-sm btn-primary py-1 px-3 fw-bold" onclick="mostrarPalabraPorNombreUnificado('${p.palabra.replace(/'/g, "\\'")}')">Ver Seña</button></div></div>`;
     });
     resultadoCategorias.innerHTML = html;
 }
@@ -2116,12 +2116,26 @@ function obtenerDatosVocabulario(){
     return obtenerBancoHoja2().filter(p => p.palabra && p.categoria && p.categoria.trim() !== "");
 }
 
+// Genera el mismo bloque de miniatura (imagen de YouTube + ícono de
+// "play", o el emoji de respaldo si la palabra no tiene video) que ya
+// usa el buscador del Diccionario (#sugerencias, ver más arriba), para
+// que las tarjetas de Vocabulario se vean y se sientan igual.
+function generarMiniaturaVocabulario(p){
+    const idVideo = extraerIdYouTube(p.video);
+    return idVideo
+        ? `<div class="sugerencia-thumb-wrap">
+               <img src="https://i.ytimg.com/vi/${idVideo}/mqdefault.jpg" alt="Seña de ${p.palabra}" loading="lazy">
+               <span class="sugerencia-thumb-play">▶</span>
+           </div>`
+        : `<div class="sugerencia-thumb-wrap sin-video">🤟</div>`;
+}
+
 function mostrarCategoria(nombre){
     categoriaActualMostrada = nombre;
     if(buscarCategorias) buscarCategorias.value = "";
     let html = botonAtrasCategorias() + `<h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">Categoría: ${nombre}</h6>`;
     obtenerDatosVocabulario().filter(p => p.categoria.trim() === nombre).forEach(p=>{
-        html += `<div class="card mb-2 palabra-card shadow-sm animate-fade-in" style="border-radius: 10px;"><div class="card-body p-2 d-flex justify-content-between align-items-center"><div><h6 class="mb-0 fw-bold text-primary">${p.palabra}</h6></div><button class="btn btn-sm btn-primary py-1 px-3 fw-bold" onclick="mostrarPalabraPorNombreUnificado('${p.palabra.replace(/'/g, "\\'")}')">Ver Seña</button></div></div>`;
+        html += `<div class="card mb-2 palabra-card shadow-sm animate-fade-in" style="border-radius: 10px;"><div class="card-body p-2 d-flex justify-content-between align-items-center"><div class="sugerencia-fila">${generarMiniaturaVocabulario(p)}<div class="sugerencia-texto"><h6 class="mb-0 fw-bold text-primary">${p.palabra}</h6></div></div><button class="btn btn-sm btn-primary py-1 px-3 fw-bold" onclick="mostrarPalabraPorNombreUnificado('${p.palabra.replace(/'/g, "\\'")}')">Ver Seña</button></div></div>`;
     });
     resultadoCategorias.innerHTML = html;
 }
@@ -2252,7 +2266,14 @@ function mostrarSenalDelDia(offset = offsetSenalDelDia){
     if (miniaturaWrap && miniaturaImg) {
         const idVideoDelDia = extraerIdYouTube(palabra.video);
         if (idVideoDelDia) {
-            miniaturaImg.src = `https://img.youtube.com/vi/${idVideoDelDia}/mqdefault.jpg`;
+            // Se usa i.ytimg.com directo (y no img.youtube.com) porque ya
+            // hay un <link rel="preconnect"> a ese dominio en index.html.
+            // img.youtube.com termina redirigiendo internamente a
+            // i.ytimg.com, así que pedirle la miniatura a img.youtube.com
+            // obligaba al navegador a una conexión extra (DNS + TLS) antes
+            // de llegar al dominio ya precalentado, retrasando de forma
+            // visible la aparición de esta miniatura.
+            miniaturaImg.src = `https://i.ytimg.com/vi/${idVideoDelDia}/mqdefault.jpg`;
             miniaturaImg.alt = `Miniatura de la seña "${palabra.palabra}"`;
             miniaturaWrap.classList.remove("d-none");
             const abrirDesdeMiniatura = () => {
