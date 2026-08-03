@@ -394,7 +394,7 @@
     "definicion": "🌿 *Ecosistema (Naturaleza)*\n\n*Definición:*\nConjunto de seres vivos (personas, animales, plantas y otros organismos) y el lugar donde viven, que interactúan entre sí y con el ambiente.\n\n*Ejemplo:*\nUn bosque, un río o el mar son ecosistemas.\n\n💻 *Ecosistema (Tecnología)*\n\n*Definición:*\nConjunto de dispositivos, aplicaciones, servicios y personas que funcionan conectados entre sí para ofrecer una misma experiencia o cumplir un objetivo.\n\n*Ejemplo:*\nUn teléfono móvil, una computadora, el almacenamiento en la nube y las aplicaciones que trabajan juntas forman un ecosistema tecnológico.",
     "categoria": "Ciencia",
     "video": "m08xDPJdYzE",
-    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/ecosistema.png",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/diccionario/ecosistema.png",
     "variantes": "Ambiente, Hábitat, Comunidad biótica, Sistema natural",
     "senasugerida": "",
     "": ""
@@ -1074,7 +1074,7 @@
     "definicion": "Expresión general para agradecer un favor, un regalo o una atención.",
     "categoria": "Cortesía",
     "video": "5RqiA53IyuM",
-    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/gracias.png",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/diccionario/gracias.png",
     "variantes": "Muchas gracias, Muchísimas gracias, Mil gracias, Gracias totales, Grax, Grx, Muxas grax, Se agradece, Agradecer",
     "senasugerida": "W1l_3bt1UAM",
     "": ""
@@ -1084,7 +1084,7 @@
     "definicion": "Fórmula elemental para solicitar algo con respeto y sin imposición.",
     "categoria": "Cortesía",
     "video": "KVaWHQgz81A",
-    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Por%20favor.png",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/diccionario/Por%20favor.png",
     "variantes": "Porfa, Porfis, Por favorcito,Plis, Xfa,  Xfis, Pls, ",
     "senasugerida": "",
     "": ""
@@ -1094,7 +1094,7 @@
     "definicion": "Petición de perdón por una falta leve, o fórmula para interrumpir educadamente.",
     "categoria": "Cortesía",
     "video": "dQNpMmYbP9Y",
-    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Disculpa.jpg",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/diccionario/Disculpa.jpg",
     "variantes": "Disculpa, Disculpe, Disculpen, disculpas,  disculpaste, disculparás, Sorry, Perdón, Perdóname, Lo siento, pedir disculpas, disculpame",
     "senasugerida": "",
     "": ""
@@ -1104,7 +1104,7 @@
     "definicion": "Respuesta estándar y educada cuando alguien nos da las gracias.",
     "categoria": "Cortesía",
     "video": "aKL3ZbMrvts",
-    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/de%20nada.jpg",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/diccionario/de%20nada.jpg",
     "variantes": "",
     "senasugerida": "",
     "": ""
@@ -1114,7 +1114,7 @@
     "definicion": "Indicación formal y amable de que se hace un favor con placer.",
     "categoria": "Cortesía",
     "video": "biR1gIIGKfA",
-    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/con%20gusto.png",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/diccionario/con%20gusto.png",
     "variantes": "",
     "senasugerida": "",
     "": ""
@@ -1124,7 +1124,7 @@
     "definicion": "Expresión de alegría y reconocimiento por el éxito o celebración de alguien.",
     "categoria": "Cortesía",
     "video": "Kj7stDbuMrw",
-    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/felicitaciones.jpg",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/diccionario/felicitaciones.jpg",
     "variantes": "felicidades, Enhorabuena, Bravo, Bien hecho, felicito, Excelente, Muy bien, felicitaciones,Te felicito,Los felicito,Te felicitamos, Los felicitamos",
     "senasugerida": "",
     "": ""
@@ -1344,7 +1344,7 @@
     "definicion": "Una suposición razonable que sirve como punto de partida para investigar.",
     "categoria": "Educación",
     "video": "wh99j8igQ54",
-    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Hip%C3%B3tesis.jpg",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/diccionario/Hip%C3%B3tesis.jpg",
     "variantes": "Suposición, conjetura, teoría, premisa, hipotesis",
     "senasugerida": "",
     "": ""
@@ -1424,7 +1424,7 @@
     "definicion": "Cuando dos o más personas tienen ideas, opiniones o respuestas diferentes sobre un mismo tema.\n\n*Ejemplo:*\nAna dice que la reunión es a las 9. Luis dice que es a las 10. Hay una discrepancia.\n",
     "categoria": "Educación",
     "video": "-5o6RvevXMQ",
-    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/discrepancia.png ",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/diccionario/discrepancia.png ",
     "variantes": "Diferencia, Desacuerdo, Contradicción, Inconsistencia",
     "senasugerida": "",
     "": ""
@@ -2364,7 +2364,7 @@
     "definicion": "Abismo es una profundidad muy grande y difícil de medir. Puede referirse a un lugar físico, como un precipicio muy profundo, o usarse de forma figurada para describir una gran diferencia, un peligro o una situación muy difícil.\n\nEn pocas palabras, un abismo es algo tan profundo o tan grande que parece no tener fin o que es muy difícil de superar.",
     "categoria": "Reflexión",
     "video": "0J4ckIW6kaA",
-    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/abismo1.png",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/diccionario/abismo1.png",
     "variantes": "abismo económico, al borde del abismo, caer en un abismo, un abismo de diferencia, Precipicio, Barranco",
     "senasugerida": "",
     "": ""
@@ -2374,7 +2374,7 @@
     "definicion": "Transcender significa ir más allá de lo común o de los límites, dejando un impacto, una enseñanza o un cambio que continúa existiendo incluso después de que una persona, un hecho o un momento haya terminado.\n\nEn otras palabras, trascender es hacer algo que tenga un valor o una influencia duradera.",
     "categoria": "Reflexión",
     "video": "0bXC16BTNiA",
-    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Trascender1.png, https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Trascender2.png",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/diccionario/Trascender1.png, https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/diccionario/Trascender2.png",
     "variantes": "transcender, perdurar, dejar huella, Tener impacto, impacto, Permanecer",
     "senasugerida": "",
     "": ""
@@ -2584,7 +2584,7 @@
     "definicion": "Es la palabra que usamos para saludar a alguien cuando lo vemos o empezamos a hablar con él. No importa la hora que sea.",
     "categoria": "Saludos",
     "video": "rFuT5HVdUQ8",
-    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Hola.jpg",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/diccionario/Hola.jpg",
     "variantes": "Holi, Holis, Holiwi, Olas, Hi, Oli, Olis",
     "senasugerida": "",
     "": ""
@@ -2594,7 +2594,7 @@
     "definicion": "Expresión utilizada para despedirse de una persona.",
     "categoria": "Saludos",
     "video": "LYOezaHRvzo",
-    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Adi%C3%B3s.png",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/diccionario/Adi%C3%B3s.png",
     "variantes": "Adios, Chau, Hasta la vista, Chao",
     "senasugerida": "",
     "": ""
@@ -2604,7 +2604,7 @@
     "definicion": "Es la fórmula de cortesía más común para saludar a alguien en la mañana, pero solo desde que amanece hasta el mediodía (la hora de comer).",
     "categoria": "Saludos",
     "video": "X3RfXXj9H0s",
-    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Buenos%20d%C3%ADas.jpg",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/diccionario/Buenos%20d%C3%ADas.jpg",
     "variantes": "Buen día, Buenas, Bnas",
     "senasugerida": "",
     "": ""
@@ -2614,7 +2614,7 @@
     "definicion": "Es el saludo que usamos desde el mediodía hasta que se oculta el sol (cuando empieza a oscurecer).",
     "categoria": "Saludos",
     "video": "nXhQA4mAvHw",
-    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/buenas%20tardes.jpg",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/diccionario/buenas%20tardes.jpg",
     "variantes": "Buena tarde, Bnas, Bnas tardes ",
     "senasugerida": "",
     "": ""
@@ -2624,7 +2624,7 @@
     "definicion": "Es el saludo que usamos cuando ya está oscuro (de noche). También sirve para despedirte de alguien antes de irte a dormir.",
     "categoria": "Saludos",
     "video": "iE5EUuNcYiI",
-    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Buenas%20noches.jpg",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/diccionario/Buenas%20noches.jpg",
     "variantes": "Buenas noches, Bnas, Bnas noches",
     "senasugerida": "",
     "": ""
@@ -2634,7 +2634,7 @@
     "definicion": "Expresión de cortesía que se le da a una persona cuando llega a un lugar, a un grupo o a tu casa.",
     "categoria": "Saludos",
     "video": "-h387KYCmQQ",
-    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/Bienvenido.jpg",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/diccionario/Bienvenido.jpg",
     "variantes": "Bienvenida, Bienvenidos,Bienvenidas,  Bienvenid@s",
     "senasugerida": "",
     "": ""
@@ -2674,7 +2674,7 @@
     "definicion": "Persona o cosa que merece respeto, buen trato o reconocimiento por su valor o por actuar de forma correcta.\n\n*Ejemplos*\n\n👤 *Persona*\nTodas las personas son dignas y merecen respeto.\n\n🏠 *Cosas*\nUna familia merece una vivienda digna: limpia, segura y en buen estado.\n\n💼 *Trabajo*\nToda persona merece un salario digno para cubrir sus necesidades básicas.",
     "categoria": "Sociedad",
     "video": "U78CMVnDv1E",
-    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/digno.png",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/diccionario/digno.png",
     "variantes": "",
     "senasugerida": "",
     "": ""
