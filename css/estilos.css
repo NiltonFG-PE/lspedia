@@ -509,8 +509,16 @@ iframe {
 .apoyo-panel-caja {
     position: relative;
     width: 100%;
+    /* IMPORTANTE: antes solo tenía min/max-height (sin "height" real), así
+       que un flex-box sin altura fija dejaba que la imagen creciera a su
+       tamaño natural y se recortara contra ese max-height. Con "height"
+       fijado (aunque sea calculado con min()), .apoyo-visual-img SÍ tiene
+       un 100% real contra el cual escalar con object-fit:contain, y por
+       lo tanto jamás se recorta, solo se achica para entrar completa. El
+       "vh" hace que además se adapte al alto de la ventana, no solo al
+       ancho de la columna. */
+    height: min(420px, 55vh);
     min-height: 160px;
-    max-height: 420px;
     border-radius: 10px;
     overflow: hidden;
     background-color: #f1f5f9;
@@ -591,7 +599,7 @@ iframe {
        chico, para no alargar demasiado la ficha. */
     .apoyo-panel-caja {
         min-height: 140px;
-        max-height: 300px;
+        height: min(300px, 45vh);
     }
 }
 
@@ -647,6 +655,81 @@ iframe {
     .carrusel-apoyo-visual .carousel-control-next {
         opacity: 0.85;
     }
+}
+
+/* ============================================================
+   MODAL DE IMAGEN AMPLIADA CON ZOOM (ver abrirImagenAmpliada() e
+   inicializarZoomImagenAmpliada() en script.js). El contenedor
+   recorta (overflow:hidden) SOLO para permitir arrastrar la imagen
+   cuando está ampliada sin que se salga del modal; la imagen en sí
+   siempre entra completa al 100% al abrir (object-fit:contain), 
+   nunca se recorta por defecto.
+   ============================================================ */
+.zoom-imagen-contenedor {
+    position: relative;
+    width: 100%;
+    height: 75vh;
+    max-height: 720px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: none; /* evita que arrastrar/pellizcar la imagen scrollee la página de fondo */
+    cursor: zoom-in;
+}
+.zoom-imagen-contenedor.zoom-activo {
+    cursor: grab;
+}
+.zoom-imagen-contenedor.arrastrando {
+    cursor: grabbing;
+}
+.zoom-imagen-img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    user-select: none;
+    -webkit-user-drag: none;
+    transform-origin: center center;
+    transition: transform 0.15s ease;
+    will-change: transform;
+}
+.zoom-imagen-contenedor.arrastrando .zoom-imagen-img {
+    transition: none; /* mientras se arrastra, que siga al dedo/mouse sin demora */
+}
+.zoom-imagen-controles {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(15, 23, 42, 0.6);
+    padding: 6px 8px;
+    border-radius: 30px;
+    z-index: 3;
+}
+.zoom-imagen-controles .btn {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    line-height: 1;
+}
+.zoom-imagen-nivel {
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    min-width: 40px;
+    text-align: center;
+}
+@media (max-width: 576px) {
+    .zoom-imagen-contenedor { height: 60vh; }
 }
 
 /* Ventana del video principal de una palabra (Definición en Señas): en

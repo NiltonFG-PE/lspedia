@@ -1796,7 +1796,7 @@ function actualizarBotonPlayPauseSugerida(evento) {
     btnPlayPause.textContent = evento.data === YT.PlayerState.PLAYING ? "⏸ Pausar" : "▶️ Reproducir";
 }
 
-// --- AMPLIAR IMAGEN DE APOYO VISUAL ---
+// --- AMPLIAR IMAGEN DE APOYO VISUAL (con zoom) ---
 function abrirImagenAmpliada(url, palabra){
     const imgAmpliada = document.getElementById("imgAmpliadaContenido");
     const tituloAmpliada = document.getElementById("tituloImagenAmpliada");
@@ -1804,9 +1804,131 @@ function abrirImagenAmpliada(url, palabra){
     imgAmpliada.src = url;
     imgAmpliada.alt = `Imagen de apoyo visual para ${palabra}`;
     if(tituloAmpliada) tituloAmpliada.textContent = palabra;
+    inicializarZoomImagenAmpliada();
+    resetearZoomImagen();
     const modalEl = document.getElementById("modalImagenAmpliada");
     const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
     modal.show();
+}
+
+// --- ZOOM DE LA IMAGEN AMPLIADA ---
+// Estado del zoom del modal. Vive fuera de las funciones para persistir
+// entre aperturas, pero se resetea cada vez que se abre una imagen nueva
+// (ver resetearZoomImagen(), llamada desde abrirImagenAmpliada()).
+const estadoZoomImagen = {
+    nivel: 1,
+    minimo: 1,
+    maximo: 4,
+    paso: 0.6,
+    desplazX: 0,
+    desplazY: 0,
+    arrastrando: false,
+    inicioX: 0,
+    inicioY: 0,
+    inicioDesplazX: 0,
+    inicioDesplazY: 0,
+    listenersListos: false
+};
+
+function aplicarTransformZoomImagen(){
+    const img = document.getElementById("imgAmpliadaContenido");
+    if(!img) return;
+    img.style.transform = `translate(${estadoZoomImagen.desplazX}px, ${estadoZoomImagen.desplazY}px) scale(${estadoZoomImagen.nivel})`;
+    const etiqueta = document.getElementById("zoomImagenNivel");
+    if(etiqueta) etiqueta.textContent = Math.round(estadoZoomImagen.nivel * 100) + "%";
+    const contenedor = document.getElementById("zoomImagenContenedor");
+    if(contenedor) contenedor.classList.toggle("zoom-activo", estadoZoomImagen.nivel > 1);
+}
+
+function resetearZoomImagen(){
+    estadoZoomImagen.nivel = 1;
+    estadoZoomImagen.desplazX = 0;
+    estadoZoomImagen.desplazY = 0;
+    aplicarTransformZoomImagen();
+}
+
+function cambiarZoomImagen(delta){
+    const nuevoNivel = Math.min(estadoZoomImagen.maximo, Math.max(estadoZoomImagen.minimo, estadoZoomImagen.nivel + delta));
+    if(nuevoNivel === estadoZoomImagen.nivel) return;
+    estadoZoomImagen.nivel = nuevoNivel;
+    if(nuevoNivel === estadoZoomImagen.minimo){
+        // vuelve a 1x: se recentra, sin desplazamiento residual
+        estadoZoomImagen.desplazX = 0;
+        estadoZoomImagen.desplazY = 0;
+    }
+    aplicarTransformZoomImagen();
+}
+
+// Registra los listeners de zoom UNA sola vez (el modal es el mismo
+// elemento del DOM siempre, solo cambia la imagen que muestra).
+function inicializarZoomImagenAmpliada(){
+    if(estadoZoomImagen.listenersListos) return;
+    estadoZoomImagen.listenersListos = true;
+
+    const contenedor = document.getElementById("zoomImagenContenedor");
+    const btnMas = document.getElementById("btnZoomIn");
+    const btnMenos = document.getElementById("btnZoomOut");
+    const btnReset = document.getElementById("btnZoomReset");
+    if(!contenedor) return;
+
+    // Clic simple: alterna entre 1x y 2.5x (comportamiento típico de "lightbox").
+    contenedor.addEventListener("click", () => {
+        if(estadoZoomImagen.arrastrando) return; // que un arrastre no cuente como clic
+        if(estadoZoomImagen.nivel > 1){
+            resetearZoomImagen();
+        } else {
+            estadoZoomImagen.nivel = 2.5;
+            aplicarTransformZoomImagen();
+        }
+    });
+
+    // Rueda del mouse: zoom continuo, sin necesidad de mantener Ctrl.
+    contenedor.addEventListener("wheel", (ev) => {
+        ev.preventDefault();
+        cambiarZoomImagen(ev.deltaY < 0 ? 0.4 : -0.4);
+    }, { passive: false });
+
+    // Arrastrar para desplazar la imagen cuando está ampliada (mouse y táctil).
+    const empezarArrastre = (x, y) => {
+        if(estadoZoomImagen.nivel <= 1) return;
+        estadoZoomImagen.arrastrando = true;
+        estadoZoomImagen.inicioX = x;
+        estadoZoomImagen.inicioY = y;
+        estadoZoomImagen.inicioDesplazX = estadoZoomImagen.desplazX;
+        estadoZoomImagen.inicioDesplazY = estadoZoomImagen.desplazY;
+        contenedor.classList.add("arrastrando");
+    };
+    const moverArrastre = (x, y) => {
+        if(!estadoZoomImagen.arrastrando) return;
+        estadoZoomImagen.desplazX = estadoZoomImagen.inicioDesplazX + (x - estadoZoomImagen.inicioX);
+        estadoZoomImagen.desplazY = estadoZoomImagen.inicioDesplazY + (y - estadoZoomImagen.inicioY);
+        aplicarTransformZoomImagen();
+    };
+    const terminarArrastre = () => {
+        if(!estadoZoomImagen.arrastrando) return;
+        estadoZoomImagen.arrastrando = false;
+        contenedor.classList.remove("arrastrando");
+    };
+
+    contenedor.addEventListener("mousedown", (ev) => { ev.preventDefault(); empezarArrastre(ev.clientX, ev.clientY); });
+    window.addEventListener("mousemove", (ev) => moverArrastre(ev.clientX, ev.clientY));
+    window.addEventListener("mouseup", terminarArrastre);
+
+    contenedor.addEventListener("touchstart", (ev) => {
+        if(ev.touches.length === 1) empezarArrastre(ev.touches[0].clientX, ev.touches[0].clientY);
+    }, { passive: true });
+    contenedor.addEventListener("touchmove", (ev) => {
+        if(ev.touches.length === 1){ ev.preventDefault(); moverArrastre(ev.touches[0].clientX, ev.touches[0].clientY); }
+    }, { passive: false });
+    contenedor.addEventListener("touchend", terminarArrastre);
+
+    if(btnMas) btnMas.addEventListener("click", (ev) => { ev.stopPropagation(); cambiarZoomImagen(estadoZoomImagen.paso); });
+    if(btnMenos) btnMenos.addEventListener("click", (ev) => { ev.stopPropagation(); cambiarZoomImagen(-estadoZoomImagen.paso); });
+    if(btnReset) btnReset.addEventListener("click", (ev) => { ev.stopPropagation(); resetearZoomImagen(); });
+
+    // Al cerrar el modal, siempre se resetea el zoom para la próxima apertura.
+    const modalEl = document.getElementById("modalImagenAmpliada");
+    if(modalEl) modalEl.addEventListener("hidden.bs.modal", resetearZoomImagen);
 }
 
 // --- ESTADÍSTICAS ---

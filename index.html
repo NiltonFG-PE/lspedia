@@ -3013,8 +3013,16 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
                     </h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body p-0 text-center bg-dark">
-                    <img id="imgAmpliadaContenido" src="" alt="" class="img-fluid" style="max-height: 80vh;">
+                <div class="modal-body p-0 text-center bg-dark position-relative">
+                    <div class="zoom-imagen-contenedor" id="zoomImagenContenedor">
+                        <img id="imgAmpliadaContenido" src="" alt="" class="zoom-imagen-img">
+                    </div>
+                    <div class="zoom-imagen-controles">
+                        <button type="button" class="btn btn-sm btn-light" id="btnZoomOut" title="Alejar" aria-label="Alejar">➖</button>
+                        <span class="zoom-imagen-nivel" id="zoomImagenNivel">100%</span>
+                        <button type="button" class="btn btn-sm btn-light" id="btnZoomIn" title="Acercar" aria-label="Acercar">➕</button>
+                        <button type="button" class="btn btn-sm btn-light" id="btnZoomReset" title="Restablecer zoom" aria-label="Restablecer zoom">↺</button>
+                    </div>
                 </div>
             </div>
         </div>
