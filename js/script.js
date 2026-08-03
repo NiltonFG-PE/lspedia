@@ -1160,51 +1160,8 @@ function mostrarPalabra(p, opciones = {}){
     // mostrar más de un ejemplo por palabra. Con una sola imagen se
     // mantiene el comportamiento de siempre (clic para ampliar, sin
     // flechas); con dos o más se arma un carrusel deslizable.
-    const imagenesPalabra = (p.imagen || "")
-        .split(",")
-        .map(url => url.trim())
-        .filter(url => url !== "");
-    const escaparComillasImg = (texto) => texto.replace(/'/g, "\\'");
-    let bloqueImagen;
-    if(imagenesPalabra.length === 0){
-        bloqueImagen = `<div class="d-flex flex-column align-items-center justify-content-center text-muted text-center p-3 w-100 h-100">
-                <span class="fs-1 mb-2">🖼️</span>
-                <span class="small fw-bold">Imagen próximamente</span>
-           </div>`;
-    } else if(imagenesPalabra.length === 1){
-        bloqueImagen = `<div class="apoyo-visual-caja h-100 w-100" role="button" tabindex="0"
-                onclick="abrirImagenAmpliada('${imagenesPalabra[0]}', '${escaparComillasImg(p.palabra)}')"
-                onkeypress="if(event.key==='Enter') abrirImagenAmpliada('${imagenesPalabra[0]}', '${escaparComillasImg(p.palabra)}')">
-                <img src="${imagenesPalabra[0]}" class="apoyo-visual-img" alt="Imagen de apoyo visual para ${p.palabra}">
-                <span class="apoyo-visual-lupa">🔍 Ampliar</span>
-           </div>`;
-    } else {
-        const idCarrusel = "carruselImagenesPalabra";
-        const slides = imagenesPalabra.map((url, i) => `
-            <div class="carousel-item ${i === 0 ? "active" : ""}">
-                <div class="apoyo-visual-caja h-100 w-100" role="button" tabindex="0"
-                     onclick="abrirImagenAmpliada('${url}', '${escaparComillasImg(p.palabra)}')"
-                     onkeypress="if(event.key==='Enter') abrirImagenAmpliada('${url}', '${escaparComillasImg(p.palabra)}')">
-                    <img src="${url}" class="apoyo-visual-img" alt="Imagen de apoyo visual ${i + 1} de ${imagenesPalabra.length} para ${p.palabra}">
-                    <span class="apoyo-visual-lupa">🔍 Ampliar</span>
-                </div>
-            </div>`).join("");
-        const indicadores = imagenesPalabra.map((_, i) => `
-            <button type="button" data-bs-target="#${idCarrusel}" data-bs-slide-to="${i}" class="${i === 0 ? "active" : ""}" ${i === 0 ? 'aria-current="true"' : ''} aria-label="Imagen ${i + 1}"></button>`).join("");
-        bloqueImagen = `
-            <div id="${idCarrusel}" class="carousel slide carrusel-apoyo-visual h-100 w-100" data-bs-ride="false">
-                <div class="carousel-inner h-100">${slides}</div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#${idCarrusel}" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Imagen anterior</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#${idCarrusel}" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Imagen siguiente</span>
-                </button>
-                <div class="carousel-indicators carrusel-apoyo-visual-indicadores">${indicadores}</div>
-            </div>`;
-    }
+    const imagenesPalabra = obtenerImagenesDeApoyo(p);
+    const bloqueImagen = generarBloqueImagenApoyo(imagenesPalabra, p.palabra);
     const hayVideo = p.video && p.video.trim() !== "";
     const bloqueVideo = hayVideo
         ? `<div id="reproductorPalabra"></div>`
@@ -1367,6 +1324,9 @@ function mostrarPalabraSimplificada(p, opciones = {}){
            </div>`
         : "";
 
+    const imagenesPalabra = obtenerImagenesDeApoyo(p);
+    const bloqueImagen = generarBloqueImagenApoyo(imagenesPalabra, p.palabra);
+
     const contenedorDestino = enCategorias ? resultadoCategorias : resultado;
     contenedorDestino.innerHTML = `
     ${enCategorias ? botonAtrasCategorias() : ""}
@@ -1376,13 +1336,21 @@ function mostrarPalabraSimplificada(p, opciones = {}){
             ${p.categoria ? `<span class="badge bg-primary mb-2 ms-1" style="font-size: 11px;">${p.categoria.trim()}</span>` : ""}
             ${p.nivel ? `<span class="badge bg-secondary mb-2 ms-1" style="font-size: 11px;">${p.nivel}</span>` : ""}
             <h3 class="fw-bold mb-3" style="color: #0d6efd;">${p.palabra}</h3>
-            <div class="row g-4 justify-content-center">
-                <div class="col-lg-8 d-flex flex-column">
+            <div class="row g-4 justify-content-center align-items-stretch">
+                <div class="col-lg-7 d-flex flex-column">
                     <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider">🤟 Video de la seña:</span>
                     <div class="reproductor-palabra-wrap shadow-sm rounded overflow-hidden border" id="reproductorPalabraWrap">
                         ${bloqueVideo}
                     </div>
                     ${bloqueControlesVideo}
+                </div>
+                <div class="col-lg-5 d-flex flex-column justify-content-center gap-3">
+                    <div class="apoyo-panel">
+                        <span class="apoyo-panel-titulo">📸 Ejemplo</span>
+                        <div class="apoyo-panel-caja">
+                            ${bloqueImagen}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1906,6 +1874,79 @@ const COLORES_CATEGORIAS = [
     { fondo: "#fee2e2", borde: "#fecaca", texto: "#b91c1c" }, // rojo suave
     { fondo: "#ccfbf1", borde: "#99f6e4", texto: "#0f766e" }, // turquesa
 ];
+
+// --- IMAGEN DE RESPALDO POR CATEGORÍA (Vocabulario) ---
+// Si una palabra de Vocabulario (Hoja 2) todavía no tiene su propia
+// imagen, se usa la de su categoría aquí abajo (si existe) en vez de
+// dejar el hueco "Imagen próximamente". Para activarla, agrega la URL de
+// una imagen entre las comillas, con el nombre EXACTO de la categoría tal
+// como aparece en la Hoja 2 (columna "categoria"). Ejemplo:
+// "Saludos": "https://misitio.com/imagenes/saludos.jpg",
+const IMAGENES_CATEGORIA = {
+    // "Saludos": "",
+    // "Colores": "",
+};
+
+// Arma el bloque de "imagen de apoyo" (una sola imagen con clic para
+// ampliar, o carrusel si hay varias) a partir de una lista de URLs ya
+// separadas. La usan tanto mostrarPalabra() (Diccionario, Hoja 1) como
+// mostrarPalabraSimplificada() (Vocabulario, Hoja 2), para que ambas
+// vistas se vean y se comporten igual.
+function generarBloqueImagenApoyo(imagenesPalabra, nombrePalabra){
+    const escaparComillasImg = (texto) => texto.replace(/'/g, "\\'");
+    if(imagenesPalabra.length === 0){
+        return `<div class="d-flex flex-column align-items-center justify-content-center text-muted text-center p-3 w-100 h-100">
+                <span class="fs-1 mb-2">🖼️</span>
+                <span class="small fw-bold">Imagen próximamente</span>
+           </div>`;
+    }
+    if(imagenesPalabra.length === 1){
+        return `<div class="apoyo-visual-caja h-100 w-100" role="button" tabindex="0"
+                onclick="abrirImagenAmpliada('${imagenesPalabra[0]}', '${escaparComillasImg(nombrePalabra)}')"
+                onkeypress="if(event.key==='Enter') abrirImagenAmpliada('${imagenesPalabra[0]}', '${escaparComillasImg(nombrePalabra)}')">
+                <img src="${imagenesPalabra[0]}" class="apoyo-visual-img" alt="Imagen de apoyo visual para ${nombrePalabra}">
+                <span class="apoyo-visual-lupa">🔍 Ampliar</span>
+           </div>`;
+    }
+    const idCarrusel = "carruselImagenesPalabra";
+    const slides = imagenesPalabra.map((url, i) => `
+        <div class="carousel-item ${i === 0 ? "active" : ""}">
+            <div class="apoyo-visual-caja h-100 w-100" role="button" tabindex="0"
+                 onclick="abrirImagenAmpliada('${url}', '${escaparComillasImg(nombrePalabra)}')"
+                 onkeypress="if(event.key==='Enter') abrirImagenAmpliada('${url}', '${escaparComillasImg(nombrePalabra)}')">
+                <img src="${url}" class="apoyo-visual-img" alt="Imagen de apoyo visual ${i + 1} de ${imagenesPalabra.length} para ${nombrePalabra}">
+                <span class="apoyo-visual-lupa">🔍 Ampliar</span>
+            </div>
+        </div>`).join("");
+    const indicadores = imagenesPalabra.map((_, i) => `
+        <button type="button" data-bs-target="#${idCarrusel}" data-bs-slide-to="${i}" class="${i === 0 ? "active" : ""}" ${i === 0 ? 'aria-current="true"' : ''} aria-label="Imagen ${i + 1}"></button>`).join("");
+    return `
+        <div id="${idCarrusel}" class="carousel slide carrusel-apoyo-visual h-100 w-100" data-bs-ride="false">
+            <div class="carousel-inner h-100">${slides}</div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#${idCarrusel}" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Imagen anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#${idCarrusel}" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Imagen siguiente</span>
+            </button>
+            <div class="carousel-indicators carrusel-apoyo-visual-indicadores">${indicadores}</div>
+        </div>`;
+}
+
+// Lee la(s) imagen(es) propia(s) de una palabra (columna "imagen",
+// admite varias separadas por coma). Si no tiene ninguna, cae en la
+// imagen de respaldo de su categoría (IMAGENES_CATEGORIA) cuando exista.
+function obtenerImagenesDeApoyo(p){
+    const propias = (p.imagen || "")
+        .split(",")
+        .map(url => url.trim())
+        .filter(url => url !== "");
+    if(propias.length > 0) return propias;
+    const deCategoria = p.categoria ? IMAGENES_CATEGORIA[p.categoria.trim()] : null;
+    return deCategoria ? [deCategoria] : [];
+}
 
 // --- TARJETAS DE CATEGORÍAS DEL DICCIONARIO (Hoja 1, columna "categoria") ---
 // Estas tarjetas se arman con las categorías REALES que existen en
