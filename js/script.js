@@ -19,6 +19,35 @@ const seccionFavoritos = document.getElementById("seccionFavoritos");
 const listaHistorial = document.getElementById("listaHistorial");
 const listaFavoritos = document.getElementById("listaFavoritos");
 
+// Convierte el texto plano de la definición (tal como se escribe en el
+// Google Sheet) a HTML seguro para mostrar en la ficha de la palabra:
+//   - Escapa cualquier HTML que venga en el texto (evita romper el layout
+//     o inyectar markup si alguien pega algo raro en el Sheet).
+//   - *texto* -> <strong>texto</strong> (negrita simple estilo markdown).
+//   - Saltos de línea reales -> <br> (para que los \n del Sheet se vean).
+// Uso: en el <p> de la ficha con innerHTML, NUNCA insertar p.definicion
+// directo; siempre pasar por acá.
+function formatearDefinicion(texto){
+    if (!texto) return "";
+
+    const div = document.createElement("div");
+    div.textContent = texto;
+    let seguro = div.innerHTML; // texto ya escapado (sin HTML real)
+
+    seguro = seguro.replace(/\*(.+?)\*/g, "<strong>$1</strong>");
+    seguro = seguro.replace(/\n/g, "<br>");
+
+    return seguro;
+}
+
+// Versión para mostrar la definición como texto plano corto (ej. tarjeta
+// "Seña del día", que usa textContent y no debe llevar HTML). Solo quita
+// los asteriscos y cambia saltos de línea por espacio, sin generar <strong>.
+function limpiarDefinicionTextoPlano(texto){
+    if (!texto) return "";
+    return texto.replace(/\*/g, "").replace(/\n+/g, " ").trim();
+}
+
 // El botón de menú "Favoritos" se fusionó con "Historial": un solo
 // botón ("Historial") ahora abre ambos paneles, cada uno en su propio
 // bloque independiente (primero Favoritos, luego Historial). Esta
@@ -1241,7 +1270,7 @@ function mostrarPalabra(p, opciones = {}){
                 <h3 class="fw-bold mb-0" style="color: #0d6efd;">${p.palabra}</h3>
                 <button id="btnFavorito" class="btn btn-sm btn-outline-primary py-1 px-3 flex-shrink-0" style="border-radius: 15px; font-size: 12px; font-weight: bold;">${textoBoton}</button>
             </div>
-            <p class="mb-3 p-3 rounded" style="background-color: #eef6ff; border-left: 4px solid #0d6efd; font-size: 1rem; line-height: 1.5; color: #1e293b;">${p.definicion}</p>
+            <p class="mb-3 p-3 rounded" style="background-color: #eef6ff; border-left: 4px solid #0d6efd; font-size: 1rem; line-height: 1.5; color: #1e293b;">${formatearDefinicion(p.definicion)}</p>
             ${bloqueVariantes}
             <div class="row g-4 justify-content-center align-items-stretch">
                 <div class="col-lg-7 d-flex flex-column">
@@ -2274,10 +2303,11 @@ function mostrarSenalDelDia(offset = offsetSenalDelDia){
     document.getElementById("tituloDelDia").textContent =
         `"${palabra.palabra}"`;
 
+    const definicionPlanaDelDia = limpiarDefinicionTextoPlano(palabra.definicion);
     document.getElementById("descripcionDelDia").textContent =
-        palabra.definicion.length > 160
-            ? palabra.definicion.substring(0,160)+"..."
-            : palabra.definicion;
+        definicionPlanaDelDia.length > 160
+            ? definicionPlanaDelDia.substring(0,160)+"..."
+            : definicionPlanaDelDia;
 
     document.getElementById("categoriaDelDia").textContent =
         palabra.categoria;
