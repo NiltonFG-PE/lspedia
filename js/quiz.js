@@ -1129,13 +1129,37 @@ const QuizV2 = (function () {
         cargarBanco(false);
     }
 
+    // Precarga automática al abrir la página (no depende de que el
+    // usuario abra la sección Quiz): si hay una copia en caché (aunque
+    // esté vencida), la usamos de inmediato para que el buscador y el
+    // cuadro "Señas" de estadísticas muestren datos apenas carga la
+    // página, en vez de esperar a que termine la petición de red.
+    // NOTA: este bloque vive DENTRO del módulo (antes del cierre del
+    // IIFE) a propósito, porque necesita leerCache/estado/fetchRemoto,
+    // que son privados de QuizV2 y no existen fuera de este scope.
+    document.addEventListener("DOMContentLoaded", () => {
+        const cacheInicial = leerCache(true);
+        if (cacheInicial && cacheInicial.length) {
+            estado.banco = cacheInicial;
+            notificarBancoListo();
+        }
+
+        // Precargamos (o refrescamos) las preguntas desde Google Sheets en
+        // segundo plano. La petición usa JSONP (una etiqueta <script>), que
+        // no bloquea el renderizado de la página, así que no hace falta
+        // esperar a que el navegador esté "idle" ni retrasarla con un
+        // setTimeout: se dispara de una vez para que los datos reales
+        // lleguen lo antes posible.
+        fetchRemoto(true);
+    });
+
     // obtenerBanco() se usa desde script.js para que el buscador principal
     // del diccionario también pueda mostrar palabras de la Hoja 2 (las que
     // usa este Quiz). Devolvemos la referencia viva a estado.banco, así que
     // siempre refleja el dato más reciente (incluso si todavía se está
     // precargando en segundo plano cuando se llama por primera vez).
     // asegurarBancoCargado() y onBancoListo() existen para que el buscador
-    // no dependa únicamente de la precarga automática de más abajo: puede
+    // no dependa únicamente de la precarga automática de más arriba: puede
     // forzar la carga apenas el usuario lo necesite y enterarse cuando
     // termine, sin tener que sondear el arreglo a mano.
     return { iniciar, salir, obtenerBanco: () => estado.banco, asegurarBancoCargado, onBancoListo };
@@ -1145,23 +1169,3 @@ const QuizV2 = (function () {
 // superior NO se agrega automáticamente a window, así que sin esta línea
 // script.js nunca puede ver ni llamar a QuizV2 (causaba el bloqueo infinito).
 window.QuizV2 = QuizV2;
-
-document.addEventListener("DOMContentLoaded", () => {
-    // Si hay una copia en caché (aunque esté vencida), la usamos de
-    // inmediato para que el buscador y el cuadro "Señas" de estadísticas
-    // muestren datos apenas carga la página, en vez de esperar a que
-    // termine la petición de red.
-    const cacheInicial = leerCache(true);
-    if (cacheInicial && cacheInicial.length) {
-        estado.banco = cacheInicial;
-        notificarBancoListo();
-    }
-
-    // Precargamos (o refrescamos) las preguntas desde Google Sheets en
-    // segundo plano. La petición usa JSONP (una etiqueta <script>), que
-    // no bloquea el renderizado de la página, así que no hace falta
-    // esperar a que el navegador esté "idle" ni retrasarla con un
-    // setTimeout: se dispara de una vez para que los datos reales
-    // lleguen lo antes posible.
-    fetchRemoto(true);
-});
