@@ -232,7 +232,10 @@ const AlfabetizacionV2 = (function () {
         const separador = CONFIG.APPS_SCRIPT_URL.indexOf("?") > -1 ? "&" : "?";
         const script = document.createElement("script");
         script.id = nombreCallback;
-        script.src = CONFIG.APPS_SCRIPT_URL + separador + "callback=" + nombreCallback;
+        // "modo=alfabetizacion" le dice al doGet único del proyecto (en
+        // QuizAPI.gs, compartido con el Quiz) que debe responder con los
+        // datos de Alfabetización y no con el banco de preguntas del Quiz.
+        script.src = CONFIG.APPS_SCRIPT_URL + separador + "modo=alfabetizacion&callback=" + nombreCallback;
         script.onerror = () => {
             if (!resuelto) {
                 limpiar();
