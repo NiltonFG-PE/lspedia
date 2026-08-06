@@ -2379,6 +2379,40 @@ function mostrarBuscadorDeCategorias(){
 
 if(buscarCategorias){
     buscarCategorias.addEventListener("input", buscarEnCategorias);
+    buscarCategorias.addEventListener("keypress", (e) => { if (e.key === "Enter") { e.preventDefault(); ejecutarBusquedaDirectaCategorias(); } });
+}
+const btnBuscarCategorias = document.getElementById("btnBuscarCategorias");
+if(btnBuscarCategorias) btnBuscarCategorias.addEventListener("click", ejecutarBusquedaDirectaCategorias);
+
+// Igual que ejecutarBusquedaDirecta() del buscador principal: al presionar
+// Enter en el input o tocar la lupa, en vez de solo dejar la lista de
+// sugerencias abierta, navega directo al resultado (coincidencia exacta
+// primero -por nombre o por variante-, y si no hay, la primera coincidencia
+// parcial). Si no hay ninguna coincidencia, deja el input como estaba.
+function ejecutarBusquedaDirectaCategorias() {
+    if(!buscarCategorias) return;
+    const texto = buscarCategorias.value.trim().toLowerCase();
+    if(texto === "") return;
+
+    const datos = obtenerDatosVocabulario();
+
+    const exactos = datos.filter(p => {
+        const matchPrincipal = p.palabra.toLowerCase() === texto;
+        const matchVariantes = p.variantes ? p.variantes.toLowerCase().split(',').map(v=>v.trim()).includes(texto) : false;
+        return matchPrincipal || matchVariantes;
+    });
+
+    const encontrado = exactos[0] || datos.find(p => {
+        const matchPrincipal = p.palabra.toLowerCase().includes(texto);
+        const matchVariantes = p.variantes ? p.variantes.toLowerCase().includes(texto) : false;
+        return matchPrincipal || matchVariantes;
+    });
+
+    if(encontrado){
+        buscarCategorias.value = "";
+        if(sugerenciasCategorias){ sugerenciasCategorias.innerHTML = ""; sugerenciasCategorias.style.display = "none"; }
+        mostrarPalabraPorNombreUnificado(encontrado.palabra);
+    }
 }
 
 function botonAtrasCategorias(){
