@@ -773,15 +773,41 @@ const App = {
         if (window.QuizV2 && typeof QuizV2.asegurarBancoCargado === "function") {
             QuizV2.asegurarBancoCargado();
         }
+        cargarPalabrasJson();
+    }
+};
 
-        fetch("data/palabras.json")
-        .then(res => res.json())
-        .then(data => {
+// Carga data/palabras.json con reintentos automáticos. En datos móviles la
+// primera petición a veces falla o se corta (conexión inestable, cambio de
+// antena, etc.); antes eso dejaba "Seña del día" y "Categorías" vacíos para
+// siempre y sin avisar nada, porque el único manejo de error era un
+// console.error silencioso. Ahora se reintenta un par de veces con una
+// espera corta, y si aun así no carga, se muestra un aviso con botón
+// "Reintentar" en vez de dejar esos bloques en blanco.
+function cargarPalabrasJson(intentosRestantes = 2) {
+    fetch("data/palabras.json")
+        .then(res => {
+            if (!res.ok) throw new Error("HTTP " + res.status);
+            return res.json();
+        })
+        .then(data => procesarDatosApp(data))
+        .catch(error => {
+            console.error("Error al cargar LSPedia:", error);
+            if (intentosRestantes > 0) {
+                const espera = (3 - intentosRestantes) * 1200 + 800; // 800ms, luego 2000ms
+                setTimeout(() => cargarPalabrasJson(intentosRestantes - 1), espera);
+            } else {
+                mostrarErrorCargaInicial();
+            }
+        });
+}
+
+function procesarDatosApp(data) {
             // Solo se muestran en la web las palabras que YA tienen video
             // cargado. Si agregas una palabra nueva en la Hoja 1 y aún no
             // le pusiste el video, se queda oculta hasta que el campo
             // "video" tenga algo escrito.
-            this.datos = data.filter(p => p.palabra && p.categoria && p.video && p.video.trim());
+            App.datos = data.filter(p => p.palabra && p.categoria && p.video && p.video.trim());
             // Las categorías reales del diccionario (Hoja 1, columna C)
             // recién están disponibles acá, así que se pintan las tarjetas
             // en cuanto llegan las palabras.
@@ -857,10 +883,34 @@ const App = {
                     }
                 }
             }
-        })
-        .catch(error => console.error("Error al cargar LSPedia:", error));
+}
+
+// Aviso + botón "Reintentar" cuando, tras varios intentos, no se pudo
+// cargar data/palabras.json (típico de una conexión móvil inestable). Sin
+// esto, "Seña del día" se quedaba con el título/descripción vacíos (ver
+// captura reportada) y "Categorías" se quedaba con el encabezado pero sin
+// ninguna tarjeta debajo, sin ninguna pista de que algo había fallado.
+function mostrarErrorCargaInicial() {
+    const senal = document.getElementById("senalDelDia");
+    const cuerpoSenal = senal ? senal.querySelector(".dia-rect-body") : null;
+    if (cuerpoSenal) {
+        cuerpoSenal.innerHTML = `
+            <span class="dia-rect-label">⚠️ No se pudo cargar</span>
+            <p class="dia-rect-desc">Revisa tu conexión a internet e inténtalo de nuevo.</p>
+            <button type="button" class="btn dia-rect-btn" id="btnReintentarCargaInicial">🔄 Reintentar</button>`;
+        const btnReintentar = document.getElementById("btnReintentarCargaInicial");
+        if (btnReintentar) btnReintentar.onclick = () => location.reload();
     }
-};
+
+    const panelCategorias = document.getElementById("panelCategoriasDiccionario");
+    if (panelCategorias) {
+        panelCategorias.innerHTML = `
+            <div class="col-12 text-center text-muted small py-3">
+                No se pudieron cargar las categorías. Revisa tu conexión e
+                <button type="button" class="btn btn-sm btn-outline-primary ms-1" onclick="location.reload()">inténtalo de nuevo</button>.
+            </div>`;
+    }
+}
 // "const App = {...}" NO se agrega solo a window (a diferencia de "var"
 // o de una función declarada), así que hay que exponerlo a mano, igual
 // que QuizV2/AlfabetizacionV2/SubtitulosV2 — por si algún otro módulo
@@ -1181,7 +1231,6 @@ function mostrarPalabra(p, opciones = {}){
                     <span class="small fw-bold text-muted" id="palabraVelocidadLabel">1x</span>
                     <button type="button" class="btn btn-sm btn-outline-secondary" id="btnPalabraVelocidadRapida" title="Aumentar velocidad" aria-label="Aumentar velocidad">🐇</button>
                 </div>
-                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnPalabraPantallaCompleta" title="Ver en pantalla completa" aria-label="Ver en pantalla completa">⛶ Pantalla completa</button>
            </div>`
         : "";
     let bloqueVariantes = p.variantes && p.variantes.trim() !== "" ? `<div class="mb-3 p-2 bg-light rounded border"><span class="d-block fw-bold text-secondary mb-1" style="font-size: 10px; letter-spacing: 0.5px;">🔄 CONJUGACIONES O VARIANTES:</span><span class="text-muted small fst-italic">${p.variantes}</span></div>` : "";
@@ -1194,21 +1243,18 @@ function mostrarPalabra(p, opciones = {}){
     const bloqueSenaSugerida = idVideoSugerida
         ? `<div class="apoyo-panel mt-3 mt-lg-0">
                 <span class="apoyo-panel-titulo">💡 Seña</span>
-                <div class="video-palabra-contenedor" id="videoSugeridaContenedor">
-                    <div class="reproductor-palabra-wrap shadow-sm rounded overflow-hidden border mx-0" id="reproductorSugeridaWrap" style="max-width: none;">
-                        <div id="reproductorSugerida"></div>
-                    </div>
-                    <div class="controles-video controles-video-compactos d-flex align-items-center justify-content-center gap-2 mt-2 flex-wrap">
-                        <button type="button" class="btn btn-sm btn-outline-secondary" id="btnRetroceder10Sugerida" title="Retroceder 5 segundos" aria-label="Retroceder 5 segundos">⏪ 5s</button>
-                        <button type="button" class="btn btn-sm btn-primary" id="btnPlayPauseSugerida" title="Reproducir o pausar" aria-label="Reproducir o pausar">▶️ Reproducir</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" id="btnReiniciarSugerida" title="Reiniciar desde el principio" aria-label="Reiniciar desde el principio">↺ Reiniciar</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAvanzar10Sugerida" title="Avanzar 10 segundos" aria-label="Avanzar 10 segundos">10s ⏩</button>
-                        <div class="controles-video-velocidad">
-                            <button type="button" class="btn btn-sm btn-outline-secondary" id="btnVelocidadLentaSugerida" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
-                            <span class="small fw-bold text-muted" id="velocidadLabelSugerida">1x</span>
-                            <button type="button" class="btn btn-sm btn-outline-secondary" id="btnVelocidadRapidaSugerida" title="Aumentar velocidad" aria-label="Aumentar velocidad">🐇</button>
-                        </div>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" id="btnSugeridaPantallaCompleta" title="Ver en pantalla completa" aria-label="Ver en pantalla completa">⛶ Pantalla completa</button>
+                <div class="reproductor-palabra-wrap shadow-sm rounded overflow-hidden border mx-0" id="reproductorSugeridaWrap" style="max-width: none;">
+                    <div id="reproductorSugerida"></div>
+                </div>
+                <div class="controles-video controles-video-compactos d-flex align-items-center justify-content-center gap-2 mt-2 flex-wrap">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnRetroceder10Sugerida" title="Retroceder 5 segundos" aria-label="Retroceder 5 segundos">⏪ 5s</button>
+                    <button type="button" class="btn btn-sm btn-primary" id="btnPlayPauseSugerida" title="Reproducir o pausar" aria-label="Reproducir o pausar">▶️ Reproducir</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnReiniciarSugerida" title="Reiniciar desde el principio" aria-label="Reiniciar desde el principio">↺ Reiniciar</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAvanzar10Sugerida" title="Avanzar 10 segundos" aria-label="Avanzar 10 segundos">10s ⏩</button>
+                    <div class="controles-video-velocidad">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="btnVelocidadLentaSugerida" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
+                        <span class="small fw-bold text-muted" id="velocidadLabelSugerida">1x</span>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="btnVelocidadRapidaSugerida" title="Aumentar velocidad" aria-label="Aumentar velocidad">🐇</button>
                     </div>
                 </div>
            </div>`
@@ -1236,12 +1282,10 @@ function mostrarPalabra(p, opciones = {}){
             <div class="row g-4 justify-content-center align-items-stretch">
                 <div class="col-lg-7 d-flex flex-column">
                     <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider text-md-start">🤟 Significado:</span>
-                    <div class="video-palabra-contenedor" id="videoPalabraContenedor">
-                        <div class="reproductor-palabra-wrap shadow-sm rounded overflow-hidden border" id="reproductorPalabraWrap">
-                            ${bloqueVideo}
-                        </div>
-                        ${bloqueControlesVideo}
+                    <div class="reproductor-palabra-wrap shadow-sm rounded overflow-hidden border" id="reproductorPalabraWrap">
+                        ${bloqueVideo}
                     </div>
+                    ${bloqueControlesVideo}
                 </div>
                 <div class="col-lg-5 d-flex flex-column justify-content-center gap-3">
                     <div class="apoyo-panel">
@@ -1327,7 +1371,6 @@ function mostrarPalabraSimplificada(p, opciones = {}){
                     <span class="small fw-bold text-muted" id="palabraVelocidadLabel">1x</span>
                     <button type="button" class="btn btn-sm btn-outline-secondary" id="btnPalabraVelocidadRapida" title="Aumentar velocidad" aria-label="Aumentar velocidad">🐇</button>
                 </div>
-                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnPalabraPantallaCompleta" title="Ver en pantalla completa" aria-label="Ver en pantalla completa">⛶ Pantalla completa</button>
            </div>`
         : "";
 
@@ -1346,12 +1389,10 @@ function mostrarPalabraSimplificada(p, opciones = {}){
             <div class="row g-4 justify-content-center align-items-stretch">
                 <div class="col-lg-7 d-flex flex-column">
                     <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider">🤟 Video de la seña:</span>
-                    <div class="video-palabra-contenedor" id="videoPalabraContenedor">
-                        <div class="reproductor-palabra-wrap shadow-sm rounded overflow-hidden border" id="reproductorPalabraWrap">
-                            ${bloqueVideo}
-                        </div>
-                        ${bloqueControlesVideo}
+                    <div class="reproductor-palabra-wrap shadow-sm rounded overflow-hidden border" id="reproductorPalabraWrap">
+                        ${bloqueVideo}
                     </div>
+                    ${bloqueControlesVideo}
                 </div>
                 <div class="col-lg-5 d-flex flex-column justify-content-center gap-3">
                     <div class="apoyo-panel">
@@ -1635,7 +1676,6 @@ function configurarControlesVideo() {
     const btnReiniciar = document.getElementById("btnReiniciarPalabra");
     const btnVelocidadLenta = document.getElementById("btnPalabraVelocidadLenta");
     const btnVelocidadRapida = document.getElementById("btnPalabraVelocidadRapida");
-    const btnPantallaCompleta = document.getElementById("btnPalabraPantallaCompleta");
     if (!btnRetroceder || !btnAvanzar || !btnPlayPause || !btnReiniciar || !btnVelocidadLenta || !btnVelocidadRapida || !ytPlayerPalabra) return;
 
     btnRetroceder.addEventListener("click", () => {
@@ -1670,10 +1710,6 @@ function configurarControlesVideo() {
 
     btnVelocidadLenta.addEventListener("click", () => cambiarVelocidadPalabra(-1));
     btnVelocidadRapida.addEventListener("click", () => cambiarVelocidadPalabra(1));
-
-    if (btnPantallaCompleta) {
-        btnPantallaCompleta.addEventListener("click", () => toggleVideoPantallaCompleta("videoPalabraContenedor", "btnPalabraPantallaCompleta"));
-    }
 }
 
 function cambiarVelocidadPalabra(delta) {
@@ -1756,7 +1792,6 @@ function configurarControlesVideoSugerida() {
     const btnReiniciar = document.getElementById("btnReiniciarSugerida");
     const btnVelocidadLenta = document.getElementById("btnVelocidadLentaSugerida");
     const btnVelocidadRapida = document.getElementById("btnVelocidadRapidaSugerida");
-    const btnPantallaCompleta = document.getElementById("btnSugeridaPantallaCompleta");
     if (!btnRetroceder || !btnAvanzar || !btnPlayPause || !btnReiniciar || !btnVelocidadLenta || !btnVelocidadRapida || !ytPlayerSugerida) return;
 
     btnRetroceder.addEventListener("click", () => {
@@ -1790,10 +1825,6 @@ function configurarControlesVideoSugerida() {
 
     btnVelocidadLenta.addEventListener("click", () => cambiarVelocidadSugerida(-1));
     btnVelocidadRapida.addEventListener("click", () => cambiarVelocidadSugerida(1));
-
-    if (btnPantallaCompleta) {
-        btnPantallaCompleta.addEventListener("click", () => toggleVideoPantallaCompleta("videoSugeridaContenedor", "btnSugeridaPantallaCompleta"));
-    }
 }
 
 function cambiarVelocidadSugerida(delta) {
@@ -1813,47 +1844,6 @@ function actualizarBotonPlayPauseSugerida(evento) {
     const btnPlayPause = document.getElementById("btnPlayPauseSugerida");
     if (!btnPlayPause) return;
     btnPlayPause.textContent = evento.data === YT.PlayerState.PLAYING ? "⏸ Pausar" : "▶️ Reproducir";
-}
-
-// Vista "pantalla completa" reutilizable para el video principal
-// (videoPalabraContenedor) y el de "Seña sugerida" (videoSugeridaContenedor)
-// del Diccionario: mismo patrón overlay (no usa la Fullscreen API real, así
-// la barra de direcciones y el resto de la página siguen visibles) que ya
-// se usa en el video de "Sobre Nosotros". Se cierra con el mismo botón, con
-// Escape, o al mostrar otra palabra (mostrarPalabra()/mostrarPalabraSimplificada()
-// reconstruyen el HTML, así que el overlay desaparece solo).
-let pantallaCompletaVideoActiva = null; // { contenedorId, btnId } o null si no hay ninguna abierta
-
-function toggleVideoPantallaCompleta(idContenedor, idBoton, forzarCerrar) {
-    const contenedor = document.getElementById(idContenedor);
-    const btn = document.getElementById(idBoton);
-    if (!contenedor) return;
-
-    const estaActivo = pantallaCompletaVideoActiva && pantallaCompletaVideoActiva.contenedorId === idContenedor;
-    const cerrar = forzarCerrar === true || estaActivo;
-
-    contenedor.classList.toggle("video-pantalla-completa", !cerrar);
-    document.body.classList.toggle("video-pantalla-completa-activa", !cerrar);
-
-    if (btn) {
-        btn.innerHTML = cerrar ? "⛶ Pantalla completa" : "✕ Salir de pantalla completa";
-        btn.title = cerrar ? "Ver en pantalla completa" : "Salir de pantalla completa";
-        btn.setAttribute("aria-label", btn.title);
-    }
-
-    if (cerrar) {
-        pantallaCompletaVideoActiva = null;
-        document.removeEventListener("keydown", salirVideoPantallaCompletaConEscape);
-    } else {
-        pantallaCompletaVideoActiva = { contenedorId: idContenedor, btnId: idBoton };
-        document.addEventListener("keydown", salirVideoPantallaCompletaConEscape);
-    }
-}
-
-function salirVideoPantallaCompletaConEscape(evento) {
-    if (evento.key === "Escape" && pantallaCompletaVideoActiva) {
-        toggleVideoPantallaCompleta(pantallaCompletaVideoActiva.contenedorId, pantallaCompletaVideoActiva.btnId, true);
-    }
 }
 
 // --- AMPLIAR IMAGEN DE APOYO VISUAL (con zoom) ---
