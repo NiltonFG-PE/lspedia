@@ -6,6 +6,7 @@ const resultado = document.getElementById("resultado");
 const bloqueBuscador = document.getElementById("bloqueBuscador");
 const bloqueBuscadorCategorias = document.getElementById("bloqueBuscadorCategorias");
 const buscarCategorias = document.getElementById("buscarCategorias");
+const sugerenciasCategorias = document.getElementById("sugerenciasCategorias");
 const resultadoCategorias = document.getElementById("resultadoCategorias");
 
 const totalPalabras = document.getElementById("totalPalabras");
@@ -1182,6 +1183,7 @@ function mostrarPalabra(p, opciones = {}){
     // Si la misma palabra también existe en la Hoja 2 (banco del Quiz),
     // se fusiona el resultado en vez de tratarlas por separado.
     p = fusionarConHoja2(p);
+    cerrarPantallaCompletaVideoPalabra();
     const enCategorias = !!opciones.enCategorias;
     ocultarQuiz();
     ocultarAlfabetizacion();
@@ -1231,6 +1233,7 @@ function mostrarPalabra(p, opciones = {}){
                     <span class="small fw-bold text-muted" id="palabraVelocidadLabel">1x</span>
                     <button type="button" class="btn btn-sm btn-outline-secondary" id="btnPalabraVelocidadRapida" title="Aumentar velocidad" aria-label="Aumentar velocidad">🐇</button>
                 </div>
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnPalabraFullscreen" title="Ver en pantalla completa" aria-label="Ver en pantalla completa">⛶</button>
            </div>`
         : "";
     let bloqueVariantes = p.variantes && p.variantes.trim() !== "" ? `<div class="mb-3 p-2 bg-light rounded border"><span class="d-block fw-bold text-secondary mb-1" style="font-size: 10px; letter-spacing: 0.5px;">🔄 CONJUGACIONES O VARIANTES:</span><span class="text-muted small fst-italic">${p.variantes}</span></div>` : "";
@@ -1256,6 +1259,7 @@ function mostrarPalabra(p, opciones = {}){
                         <span class="small fw-bold text-muted" id="velocidadLabelSugerida">1x</span>
                         <button type="button" class="btn btn-sm btn-outline-secondary" id="btnVelocidadRapidaSugerida" title="Aumentar velocidad" aria-label="Aumentar velocidad">🐇</button>
                     </div>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnSugeridaFullscreen" title="Ver en pantalla completa" aria-label="Ver en pantalla completa">⛶</button>
                 </div>
            </div>`
         : "";
@@ -1333,6 +1337,7 @@ function mostrarPalabraSimplificada(p, opciones = {}){
     // video, y no se tocan el buscador principal ni las tarjetas de
     // categoría (ver mostrarPalabra() para la misma lógica en detalle).
     const enCategorias = !!opciones.enCategorias;
+    cerrarPantallaCompletaVideoPalabra();
     ocultarQuiz();
     ocultarAlfabetizacion();
     if(!enCategorias){
@@ -1371,6 +1376,7 @@ function mostrarPalabraSimplificada(p, opciones = {}){
                     <span class="small fw-bold text-muted" id="palabraVelocidadLabel">1x</span>
                     <button type="button" class="btn btn-sm btn-outline-secondary" id="btnPalabraVelocidadRapida" title="Aumentar velocidad" aria-label="Aumentar velocidad">🐇</button>
                 </div>
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnPalabraFullscreen" title="Ver en pantalla completa" aria-label="Ver en pantalla completa">⛶</button>
            </div>`
         : "";
 
@@ -1623,6 +1629,57 @@ function salirNosotrosPantallaCompletaConEscape(evento) {
     }
 }
 
+// Vista "pantalla completa" reutilizable para los videos del diccionario
+// (video principal "Significado" y "Seña sugerida"): mismo patrón que
+// toggleNosotrosPantallaCompleta (overlay dentro de la misma ventana, sin
+// requestFullscreen, así la barra de direcciones se mantiene visible).
+// Se cierra con el mismo botón, con Escape, o automáticamente al mostrar
+// otra palabra (ver cerrarPantallaCompletaVideoPalabra()).
+let wrapIdPantallaCompletaActiva = null;
+
+function toggleVideoPalabraPantallaCompleta(wrapId, btnId, forzarCerrar) {
+    const wrap = document.getElementById(wrapId);
+    const btn = document.getElementById(btnId);
+    if (!wrap) return;
+
+    const cerrar = forzarCerrar === true || wrapIdPantallaCompletaActiva === wrapId;
+    const activar = !cerrar;
+
+    wrap.classList.toggle("video-palabra-pantalla-completa", activar);
+    document.body.classList.toggle("video-palabra-pantalla-completa-activa", activar);
+
+    if (btn) {
+        btn.innerHTML = activar ? "✕ Salir" : "⛶";
+        btn.title = activar ? "Salir de pantalla completa" : "Ver en pantalla completa";
+        btn.setAttribute("aria-label", btn.title);
+    }
+
+    if (activar) {
+        wrapIdPantallaCompletaActiva = wrapId;
+        wrapIdBtnPantallaCompletaActiva = btnId;
+        document.addEventListener("keydown", salirVideoPalabraPantallaCompletaConEscape);
+    } else {
+        wrapIdPantallaCompletaActiva = null;
+        wrapIdBtnPantallaCompletaActiva = null;
+        document.removeEventListener("keydown", salirVideoPalabraPantallaCompletaConEscape);
+    }
+}
+let wrapIdBtnPantallaCompletaActiva = null;
+
+function salirVideoPalabraPantallaCompletaConEscape(evento) {
+    if (evento.key === "Escape" && wrapIdPantallaCompletaActiva) {
+        toggleVideoPalabraPantallaCompleta(wrapIdPantallaCompletaActiva, wrapIdBtnPantallaCompletaActiva, true);
+    }
+}
+
+// Se llama al mostrar cualquier palabra nueva (o su versión simplificada),
+// para no dejar un video "pegado" en pantalla completa al navegar a otra ficha.
+function cerrarPantallaCompletaVideoPalabra() {
+    if (wrapIdPantallaCompletaActiva) {
+        toggleVideoPalabraPantallaCompleta(wrapIdPantallaCompletaActiva, wrapIdBtnPantallaCompletaActiva, true);
+    }
+}
+
 function inicializarReproductorPalabra(videoId) {
     ajustarAspectoReproductorPalabra(videoId);
     if (ytApiListo) {
@@ -1676,7 +1733,12 @@ function configurarControlesVideo() {
     const btnReiniciar = document.getElementById("btnReiniciarPalabra");
     const btnVelocidadLenta = document.getElementById("btnPalabraVelocidadLenta");
     const btnVelocidadRapida = document.getElementById("btnPalabraVelocidadRapida");
+    const btnPantallaCompleta = document.getElementById("btnPalabraFullscreen");
     if (!btnRetroceder || !btnAvanzar || !btnPlayPause || !btnReiniciar || !btnVelocidadLenta || !btnVelocidadRapida || !ytPlayerPalabra) return;
+
+    if (btnPantallaCompleta) {
+        btnPantallaCompleta.addEventListener("click", () => toggleVideoPalabraPantallaCompleta("reproductorPalabraWrap", "btnPalabraFullscreen"));
+    }
 
     btnRetroceder.addEventListener("click", () => {
         const tiempoActual = ytPlayerPalabra.getCurrentTime();
@@ -1792,7 +1854,12 @@ function configurarControlesVideoSugerida() {
     const btnReiniciar = document.getElementById("btnReiniciarSugerida");
     const btnVelocidadLenta = document.getElementById("btnVelocidadLentaSugerida");
     const btnVelocidadRapida = document.getElementById("btnVelocidadRapidaSugerida");
+    const btnPantallaCompleta = document.getElementById("btnSugeridaFullscreen");
     if (!btnRetroceder || !btnAvanzar || !btnPlayPause || !btnReiniciar || !btnVelocidadLenta || !btnVelocidadRapida || !ytPlayerSugerida) return;
+
+    if (btnPantallaCompleta) {
+        btnPantallaCompleta.addEventListener("click", () => toggleVideoPalabraPantallaCompleta("reproductorSugeridaWrap", "btnSugeridaFullscreen"));
+    }
 
     btnRetroceder.addEventListener("click", () => {
         const tiempoActual = ytPlayerSugerida.getCurrentTime();
@@ -2322,32 +2389,68 @@ function botonAtrasCategorias(){
 function limpiarResultadoCategorias(){
     if(resultadoCategorias) resultadoCategorias.innerHTML = "";
     if(buscarCategorias) buscarCategorias.value = "";
+    if(sugerenciasCategorias){ sugerenciasCategorias.innerHTML = ""; sugerenciasCategorias.style.display = "none"; }
     categoriaActualMostrada = null;
 }
 window.limpiarResultadoCategorias = limpiarResultadoCategorias;
 
+// Igual que buscarPalabras() (buscador principal del Diccionario): al
+// escribir se muestra un panel flotante oscuro con las coincidencias
+// (miniatura + nombre + categoría), en vez de tarjetas completas debajo
+// del buscador. Al elegir una, se limpia el buscador y se abre la ficha
+// completa de la palabra en #resultadoCategorias (mismo comportamiento
+// que antes, vía mostrarPalabraPorNombreUnificado).
 function buscarEnCategorias(){
-    if(!resultadoCategorias || !buscarCategorias) return;
+    if(!sugerenciasCategorias || !buscarCategorias) return;
     const textoOriginal = buscarCategorias.value.trim();
     const texto = textoOriginal.toLowerCase();
-    categoriaActualMostrada = null;
+    sugerenciasCategorias.innerHTML = "";
+
     if(!texto){
-        resultadoCategorias.innerHTML = "";
+        sugerenciasCategorias.style.display = "none";
         return;
     }
-    const coincidencias = obtenerDatosVocabulario().filter(p => p.palabra.toLowerCase().includes(texto));
+
+    const coincidencias = obtenerDatosVocabulario()
+        .filter(p => p.palabra.toLowerCase().includes(texto))
+        .slice(0, 10);
+
+    sugerenciasCategorias.style.display = "block";
+
     if(coincidencias.length === 0){
-        resultadoCategorias.innerHTML = botonAtrasCategorias() +
-            `<div class="alert alert-light border text-center text-muted small py-3" style="border-radius: 12px;">No hay palabras que coincidan con "${textoOriginal}".</div>`;
+        sugerenciasCategorias.innerHTML = `
+            <div class="list-group-item text-center py-3" style="background-color: #343a40; border: none;">
+                <span class="text-white d-block small">No hay resultados para "${textoOriginal}"</span>
+            </div>`;
         return;
     }
-    let html = botonAtrasCategorias() +
-        `<h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">Resultados para "${textoOriginal}"</h6>`;
+
     coincidencias.forEach(p => {
-        html += `<div class="card mb-2 palabra-card shadow-sm animate-fade-in" style="border-radius: 10px;"><div class="card-body p-2 d-flex justify-content-between align-items-center"><div class="sugerencia-fila">${generarMiniaturaVocabulario(p)}<div class="sugerencia-texto"><h6 class="mb-0 fw-bold text-primary">${p.palabra}</h6><small class="text-muted">${p.categoria.trim()}</small></div></div><button class="btn btn-sm btn-primary py-1 px-3 fw-bold" onclick="mostrarPalabraPorNombreUnificado('${p.palabra.replace(/'/g, "\\'")}')">Ver Seña</button></div></div>`;
+        const boton = document.createElement("button");
+        boton.className = "list-group-item list-group-item-action text-start";
+        boton.innerHTML = `
+            <div class="sugerencia-fila">
+                ${generarMiniaturaVocabulario(p)}
+                <div class="sugerencia-texto">
+                    <strong>${p.palabra}</strong>
+                    <span class="badge" style="font-size: 10px;">${p.categoria.trim()}</span>
+                </div>
+            </div>`;
+        boton.onclick = () => {
+            buscarCategorias.value = "";
+            sugerenciasCategorias.innerHTML = "";
+            sugerenciasCategorias.style.display = "none";
+            mostrarPalabraPorNombreUnificado(p.palabra);
+        };
+        sugerenciasCategorias.appendChild(boton);
     });
-    resultadoCategorias.innerHTML = html;
 }
+
+document.addEventListener("click", (e) => {
+    if (sugerenciasCategorias && buscarCategorias && !buscarCategorias.contains(e.target) && !sugerenciasCategorias.contains(e.target)) {
+        sugerenciasCategorias.style.display = "none";
+    }
+});
 
 // --- DATOS DE VOCABULARIO (solo Hoja 2) ---
 // La sección "Vocabulario" (antes "Temas orden") ahora toma sus categorías
@@ -2375,6 +2478,7 @@ function generarMiniaturaVocabulario(p){
 function mostrarCategoria(nombre){
     categoriaActualMostrada = nombre;
     if(buscarCategorias) buscarCategorias.value = "";
+    if(sugerenciasCategorias){ sugerenciasCategorias.innerHTML = ""; sugerenciasCategorias.style.display = "none"; }
     let html = botonAtrasCategorias() + `<h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">Categoría: ${nombre}</h6>`;
     obtenerDatosVocabulario().filter(p => p.categoria.trim() === nombre).forEach(p=>{
         html += `<div class="card mb-2 palabra-card shadow-sm animate-fade-in" style="border-radius: 10px;"><div class="card-body p-2 d-flex justify-content-between align-items-center"><div class="sugerencia-fila">${generarMiniaturaVocabulario(p)}<div class="sugerencia-texto"><h6 class="mb-0 fw-bold text-primary">${p.palabra}</h6></div></div><button class="btn btn-sm btn-primary py-1 px-3 fw-bold" onclick="mostrarPalabraPorNombreUnificado('${p.palabra.replace(/'/g, "\\'")}')">Ver Seña</button></div></div>`;

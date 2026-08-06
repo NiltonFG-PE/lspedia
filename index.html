@@ -1050,17 +1050,21 @@
             }
         }
 
-        /* Cuadro de Sugerencias en Plomo Oscuro */
-        #sugerencias .list-group-item {
+        /* Cuadro de Sugerencias en Plomo Oscuro (buscador principal y
+           buscador de Vocabulario comparten el mismo look) */
+        #sugerencias .list-group-item,
+        #sugerenciasCategorias .list-group-item {
             background-color: #343a40 !important; 
             color: #ffffff !important;
             border-bottom: 1px solid #495057 !important;
             transition: background-color 0.2s ease;
         }
-        #sugerencias .list-group-item:hover {
+        #sugerencias .list-group-item:hover,
+        #sugerenciasCategorias .list-group-item:hover {
             background-color: #495057 !important; 
         }
-        #sugerencias .badge {
+        #sugerencias .badge,
+        #sugerenciasCategorias .badge {
             background-color: #6c757d !important; 
             color: #fff !important;
         }
@@ -2125,6 +2129,7 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
                         <span style="font-size: 1.3rem;">🔍</span>
                     </button>
                 </div>
+                <div id="sugerenciasCategorias" class="list-group mt-2 shadow-sm position-absolute w-100 z-3" style="border-radius: 15px; overflow: hidden; display: none;"></div>
             </div>
         </div>
 
