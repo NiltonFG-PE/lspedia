@@ -811,6 +811,39 @@ iframe {
 body.video-palabra-pantalla-completa-activa {
     overflow: hidden;
 }
+/* La barra de controles (donde vive el botón "Salir de pantalla completa")
+   queda detrás del video al activarse .video-palabra-pantalla-completa
+   arriba, porque ese overlay es position:fixed con z-index alto y cubre
+   toda la pantalla. Por eso, mientras el video esté en pantalla completa,
+   la barra de controles que le sigue justo después en el HTML también pasa
+   a position:fixed, flotando sobre el video con un z-index mayor, para que
+   el botón de salir (y el resto de controles) sigan siendo alcanzables.
+   El selector de hermano adyacente (+) hace que esto solo aplique a la
+   barra que corresponde al video que está realmente en pantalla completa
+   (video principal o "Seña sugerida"), nunca a la otra. */
+#reproductorPalabraWrap.video-palabra-pantalla-completa + .controles-video,
+#reproductorSugeridaWrap.video-palabra-pantalla-completa + .controles-video {
+    position: fixed !important;
+    left: 0;
+    right: 0;
+    bottom: 24px;
+    z-index: 1085;
+    margin: 0 auto !important;
+    max-width: 96vw;
+    padding: 8px 14px;
+    background-color: rgba(0, 0, 0, 0.55);
+    border-radius: 50px;
+    backdrop-filter: blur(4px);
+}
+@media (max-width: 576px) {
+    #reproductorPalabraWrap.video-palabra-pantalla-completa + .controles-video,
+    #reproductorSugeridaWrap.video-palabra-pantalla-completa + .controles-video {
+        bottom: 12px;
+        border-radius: 20px;
+        gap: 6px;
+        padding: 6px 10px;
+    }
+}
 
 /* Modo "pantalla completa" del video de "Sobre Nosotros" (mismo overlay
    que .video-palabra-pantalla-completa arriba, pero con su propia clase
