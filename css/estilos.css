@@ -754,6 +754,37 @@ iframe {
     border: 0;
 }
 
+/* Vista "pantalla completa" del video principal y de la seña sugerida:
+   overlay dentro de la misma ventana (no usa la Fullscreen API real), para
+   que la barra de direcciones y el resto de la página sigan visibles.
+   Mismo patrón que ya se usa en el video de "Sobre Nosotros" (ver
+   .nosotros-video-wrap en index.html) y en el reproductor del Quiz. */
+.video-palabra-contenedor.video-pantalla-completa {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    background-color: rgba(15, 23, 42, 0.97);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    margin: 0;
+    overflow-y: auto;
+}
+.video-palabra-contenedor.video-pantalla-completa .reproductor-palabra-wrap {
+    max-width: min(700px, 92vw);
+    max-height: 80vh;
+}
+.video-palabra-contenedor.video-pantalla-completa .controles-video {
+    background-color: rgba(255, 255, 255, 0.95);
+    width: 100%;
+    max-width: min(700px, 92vw);
+}
+body.video-pantalla-completa-activa {
+    overflow: hidden;
+}
+
 /* Ventana del video de "Sobre Nosotros": además de la clase .ratio
    .ratio-16x9 de Bootstrap (que ya pone el iframe en position:absolute
    con width/height 100%), se fija un aspect-ratio propio en el
