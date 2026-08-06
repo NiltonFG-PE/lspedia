@@ -611,7 +611,7 @@ const QuizV2 = (function () {
 
         contenedor.innerHTML = `
             <div class="text-center mb-3">
-                <span class="badge bg-dark fs-5 px-3 py-2">${pregunta.palabra}</span>
+                <span class="badge bg-dark quiz-palabra-destacada px-4 py-2">${pregunta.palabra}</span>
                 <p class="text-muted small mt-2">¿Cuál video representa esta palabra?</p>
             </div>
             <div class="row g-2" id="quizOpcionesDinamicas"></div>
@@ -622,7 +622,7 @@ const QuizV2 = (function () {
             col.className = "col-6";
             const div = document.createElement("div");
             div.className = "quiz-video-opcion";
-            div.innerHTML = `<img src="https://img.youtube.com/vi/${op.video}/hqdefault.jpg" alt="Opción de video"><span class="play-overlay">▶</span>`;
+            div.innerHTML = `<img src="https://img.youtube.com/vi/${op.video}/hqdefault.jpg" alt="Opción de video">`;
             div.onclick = () => responderVideo(div, op.palabra === pregunta.palabra, pregunta);
             col.appendChild(div);
             cont.appendChild(col);
