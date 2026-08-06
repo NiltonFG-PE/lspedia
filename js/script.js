@@ -253,7 +253,7 @@ document.getElementById("btnCategorias").addEventListener("click", (e) => {
     mostrarBuscadorDeCategorias();
     mostrarCategorias();
     mostrarPantallaHistorialYFavoritos();
-    actualizarVistaUrl("temas");
+    actualizarVistaUrl("vocabulario");
     panelCategorias.scrollIntoView({ behavior: 'smooth', block: 'center' });
     panelCategorias.classList.add("highlight-anim");
     seccionFavoritos.classList.add("highlight-anim");
@@ -306,7 +306,7 @@ document.querySelectorAll(".mbn-item").forEach(boton => {
 // abajo) y deja a la persona tal como estaba antes del refresco.
 function refrescarSeccionConservandoEstado(idVinculado){
     if (idVinculado === "btnCategorias") {
-        let nuevaUrl = window.location.pathname + "?vista=temas";
+        let nuevaUrl = window.location.pathname + "?vista=vocabulario";
         const textoBusqueda = buscarCategorias ? buscarCategorias.value.trim() : "";
         if (textoBusqueda) {
             // Si hay algo escrito en el buscador de Vocabulario, eso manda:
@@ -826,7 +826,7 @@ function procesarDatosApp(data) {
             // sección, lo que dejaba ver un parpadeo con contenido
             // mezclado (título de Diccionario + tarjetas de Vocabulario).
             const vistaEnUrlPrevia = urlParams.get("vista");
-            if (!palabraEnUrl && (vistaEnUrlPrevia === "temas" || vistaEnUrlPrevia === "nosotros" || (vistaEnUrlPrevia && vistaEnUrlPrevia.indexOf("herramientas") === 0))) {
+            if (!palabraEnUrl && (vistaEnUrlPrevia === "vocabulario" || vistaEnUrlPrevia === "temas" || vistaEnUrlPrevia === "nosotros" || (vistaEnUrlPrevia && vistaEnUrlPrevia.indexOf("herramientas") === 0))) {
                 ocultarBloqueInicio();
             } else {
                 mostrarSenalDelDia();
@@ -840,7 +840,7 @@ function procesarDatosApp(data) {
                 // del refresh (ver actualizarVistaUrl) y lo deja ahí mismo
                 // en vez de mandarlo siempre a Inicio.
                 const vistaEnUrl = urlParams.get("vista");
-                if (vistaEnUrl === "temas") {
+                if (vistaEnUrl === "vocabulario" || vistaEnUrl === "temas") {
                     const btnCategorias = document.getElementById("btnCategorias");
                     if (btnCategorias) btnCategorias.click();
                     // Si el refresco vino de un segundo toque en "Vocabulario"
