@@ -1382,6 +1382,7 @@ function mostrarPalabraSimplificada(p, opciones = {}){
 
     const imagenesPalabra = obtenerImagenesDeApoyo(p);
     const bloqueImagen = generarBloqueImagenApoyo(imagenesPalabra, p.palabra);
+    let bloqueVariantes = p.variantes && p.variantes.trim() !== "" ? `<div class="mb-3 p-2 bg-light rounded border"><span class="d-block fw-bold text-secondary mb-1" style="font-size: 10px; letter-spacing: 0.5px;">🔄 CONJUGACIONES O VARIANTES:</span><span class="text-muted small fst-italic">${p.variantes}</span></div>` : "";
 
     const contenedorDestino = enCategorias ? resultadoCategorias : resultado;
     contenedorDestino.innerHTML = `
@@ -1392,6 +1393,7 @@ function mostrarPalabraSimplificada(p, opciones = {}){
             ${p.categoria ? `<span class="badge bg-primary mb-2 ms-1" style="font-size: 11px;">${p.categoria.trim()}</span>` : ""}
             ${p.nivel ? `<span class="badge bg-secondary mb-2 ms-1" style="font-size: 11px;">${p.nivel}</span>` : ""}
             <h3 class="fw-bold mb-3" style="color: #0d6efd;">${p.palabra}</h3>
+            ${bloqueVariantes}
             <div class="row g-4 justify-content-center align-items-stretch">
                 <div class="col-lg-7 d-flex flex-column">
                     <span class="text-muted d-block small fw-bold mb-2 uppercase tracking-wider">🤟 Video de la seña:</span>
@@ -2412,7 +2414,11 @@ function buscarEnCategorias(){
     }
 
     const coincidencias = obtenerDatosVocabulario()
-        .filter(p => p.palabra.toLowerCase().includes(texto))
+        .filter(p => {
+            const matchPrincipal = p.palabra.toLowerCase().includes(texto);
+            const matchVariantes = p.variantes ? p.variantes.toLowerCase().includes(texto) : false;
+            return matchPrincipal || matchVariantes;
+        })
         .slice(0, 10);
 
     sugerenciasCategorias.style.display = "block";
@@ -2428,11 +2434,15 @@ function buscarEnCategorias(){
     coincidencias.forEach(p => {
         const boton = document.createElement("button");
         boton.className = "list-group-item list-group-item-action text-start";
+        let textoMatch = `<strong>${p.palabra}</strong>`;
+        if(p.variantes && p.variantes.toLowerCase().includes(texto) && !p.palabra.toLowerCase().includes(texto)){
+            textoMatch += ` <small class="text-primary ms-2 fw-bold" style="font-size: 11px;">(Variante: ${texto})</small>`;
+        }
         boton.innerHTML = `
             <div class="sugerencia-fila">
                 ${generarMiniaturaVocabulario(p)}
                 <div class="sugerencia-texto">
-                    <strong>${p.palabra}</strong>
+                    ${textoMatch}
                     <span class="badge" style="font-size: 10px;">${p.categoria.trim()}</span>
                 </div>
             </div>`;
