@@ -2051,20 +2051,66 @@ function inicializarZoomImagenAmpliada(){
 }
 
 // --- ESTADÍSTICAS ---
+// Ahora son "generales": combinan el Diccionario (Hoja 1, App.datos, ya
+// filtrado a solo palabras con video) y el Vocabulario (Hoja 2, el mismo
+// banco que usa el Quiz), no solo el Diccionario como antes. El número
+// grande de cada tarjeta es el total sin repetir (una palabra o categoría
+// que exista en ambas cuenta una sola vez); el texto pequeño de abajo
+// muestra cuánto aporta cada sección por separado.
 function actualizarEstadisticas(){
-    totalPalabras.textContent = App.datos.length;
-    totalCategorias.textContent = [...new Set(App.datos.map(p => p.categoria.trim()))].length;
+    const bancoHoja2 = obtenerBancoHoja2();
+    const normalizar = (s) => (s || "").trim().toLowerCase();
 
-    // "Videos": suma de archivos de video reales de la Hoja 1, sin
-    // deduplicar por nombre de palabra, porque son archivos distintos
-    // aunque pertenezcan a la misma palabra: 1) video principal
-    // (columna D, "video") y 2) seña sugerida (columna G, "senasugerida").
-    // Ya NO se suman los videos del banco del Quiz (Hoja 2): son un banco
-    // de práctica aparte y sumarlos inflaba el total por encima de la
-    // cantidad real de videos que tiene el diccionario.
+    // --- Palabras ---
+    const palabrasDiccionario = App.datos.map(p => normalizar(p.palabra));
+    const palabrasVocabulario = bancoHoja2
+        .filter(p => p.palabra && p.video && p.video.trim() !== "")
+        .map(p => normalizar(p.palabra));
+    const totalPalabrasUnicas = new Set(palabrasDiccionario.concat(palabrasVocabulario)).size;
+
+    totalPalabras.textContent = totalPalabrasUnicas;
+    const detallePalabras = document.getElementById("detallePalabrasStats");
+    if (detallePalabras) {
+        const elPalDic = document.getElementById("detallePalabrasDic");
+        const elPalVoc = document.getElementById("detallePalabrasVoc");
+        if (elPalDic) elPalDic.textContent = palabrasDiccionario.length;
+        if (elPalVoc) elPalVoc.textContent = palabrasVocabulario.length;
+    }
+
+    // --- Categorías ---
+    const categoriasDiccionario = App.datos.map(p => normalizar(p.categoria));
+    const categoriasVocabulario = bancoHoja2
+        .filter(p => p.categoria && p.categoria.trim() !== "")
+        .map(p => normalizar(p.categoria));
+    const totalCategoriasUnicas = new Set(categoriasDiccionario.concat(categoriasVocabulario)).size;
+
+    totalCategorias.textContent = totalCategoriasUnicas;
+    const detalleCategorias = document.getElementById("detalleCategoriasStats");
+    if (detalleCategorias) {
+        const elCatDic = document.getElementById("detalleCategoriasDic");
+        const elCatVoc = document.getElementById("detalleCategoriasVoc");
+        if (elCatDic) elCatDic.textContent = new Set(categoriasDiccionario).size;
+        if (elCatVoc) elCatVoc.textContent = new Set(categoriasVocabulario).size;
+    }
+
+    // --- Videos ---
+    // Acá NO se deduplica: cada archivo de video cuenta, aunque dos
+    // palabras compartan el mismo texto entre secciones. Diccionario:
+    // video principal (columna "video") + seña sugerida (columna
+    // "senasugerida"). Vocabulario: un video por palabra.
     const videosHoja1 = App.datos.filter(p => p.video && p.video.trim() !== "").length;
     const senasSugeridas = App.datos.filter(p => p.senasugerida && p.senasugerida.trim() !== "").length;
-    totalVideos.textContent = videosHoja1 + senasSugeridas;
+    const videosDiccionario = videosHoja1 + senasSugeridas;
+    const videosVocabulario = bancoHoja2.filter(p => p.video && p.video.trim() !== "").length;
+
+    totalVideos.textContent = videosDiccionario + videosVocabulario;
+    const detalleVideos = document.getElementById("detalleVideosStats");
+    if (detalleVideos) {
+        const elVidDic = document.getElementById("detalleVideosDic");
+        const elVidVoc = document.getElementById("detalleVideosVoc");
+        if (elVidDic) elVidDic.textContent = videosDiccionario;
+        if (elVidVoc) elVidVoc.textContent = videosVocabulario;
+    }
 }
 
 // --- FILTRO ABC ---

@@ -465,6 +465,33 @@
         /* Íconos que acompañan "Diccionario" y "Vocabulario" dentro del
            desglose (.stat2-completo / .stat2-pill), como apoyo visual
            para personas sordas. */
+        /* Mini-íconos de máscara PNG usados dentro de los pills de desglose */
+        .stat2-desglose-icon-img {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            background-color: currentColor;
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-position: center;
+            -webkit-mask-size: contain;
+            mask-size: contain;
+            vertical-align: middle;
+            flex-shrink: 0;
+        }
+        .stat2-desglose-sep {
+            color: inherit;
+            opacity: 0.4;
+            font-size: 0.75em;
+            margin: 0 1px;
+        }
+        /* Texto "Diccionario"/"Vocabulario": visible en escritorio,
+           oculto en móvil (donde solo se muestran los íconos porque
+           el ancho de pantalla no alcanza para el texto completo). */
+        .stat2-desglose-label {
+            margin-left: 3px;
+        }
         .stat2-completo .stat2-desglose-icono,
         .stat2-pill .stat2-desglose-icono {
             font-size: 1em;
@@ -518,6 +545,9 @@
             .stat2-card-ancha .stat2-icono-wrap { width: 54px; height: 54px; font-size: 24px; }
             .stat2-card-ancha .stat2-numero { font-size: 1.9rem; }
             .stat2-confetti, .stat2-grid-icono, .stat2-clapper { display: none; }
+            /* En móvil el pill solo muestra íconos + números, sin texto,
+               porque la tarjeta es angosta (2 columnas). */
+            .stat2-desglose-label { display: none; }
         }
 
         /* ============================================================
@@ -2163,7 +2193,7 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
                         <div class="stat2-icono-wrap stat2-icono-azul" aria-hidden="true">📚</div>
                         <div class="stat2-titulo">PALABRAS</div>
                         <div class="stat2-numero" id="totalPalabras">0</div>
-                        <span class="stat2-pill stat2-pill-azul" id="detallePalabrasStats"><span class="stat2-desglose-icono" aria-hidden="true">📖</span>0 Diccionario · <span class="stat2-desglose-icono" aria-hidden="true">📂</span>0 Vocabulario</span>
+                        <span class="stat2-pill stat2-pill-azul" id="detallePalabrasStats"><span class="stat2-desglose-icon-img" aria-hidden="true" style="-webkit-mask-image:url('img/icons/nav/icono-diccionario.png'); mask-image:url('img/icons/nav/icono-diccionario.png');"></span><span class="stat2-desglose-num" id="detallePalabrasDic">0</span><span class="stat2-desglose-label">Diccionario</span><span class="stat2-desglose-sep">·</span><span class="stat2-desglose-icon-img" aria-hidden="true" style="-webkit-mask-image:url('img/icons/nav/icono-vocabulario.png'); mask-image:url('img/icons/nav/icono-vocabulario.png');"></span><span class="stat2-desglose-num" id="detallePalabrasVoc">0</span><span class="stat2-desglose-label">Vocabulario</span></span>
                     </div>
                 </div>
                 <div class="col-6 col-md-6">
@@ -2173,7 +2203,7 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
                         <div class="stat2-icono-wrap stat2-icono-ambar" aria-hidden="true">📁</div>
                         <div class="stat2-titulo">CATEGORÍAS</div>
                         <div class="stat2-numero" id="totalCategorias">0</div>
-                        <span class="stat2-pill stat2-pill-ambar" id="detalleCategoriasStats"><span class="stat2-desglose-icono" aria-hidden="true">📖</span>0 Diccionario · <span class="stat2-desglose-icono" aria-hidden="true">📂</span>0 Vocabulario</span>
+                        <span class="stat2-pill stat2-pill-ambar" id="detalleCategoriasStats"><span class="stat2-desglose-icon-img" aria-hidden="true" style="-webkit-mask-image:url('img/icons/nav/icono-diccionario.png'); mask-image:url('img/icons/nav/icono-diccionario.png');"></span><span class="stat2-desglose-num" id="detalleCategoriasDic">0</span><span class="stat2-desglose-label">Diccionario</span><span class="stat2-desglose-sep">·</span><span class="stat2-desglose-icon-img" aria-hidden="true" style="-webkit-mask-image:url('img/icons/nav/icono-vocabulario.png'); mask-image:url('img/icons/nav/icono-vocabulario.png');"></span><span class="stat2-desglose-num" id="detalleCategoriasVoc">0</span><span class="stat2-desglose-label">Vocabulario</span></span>
                     </div>
                 </div>
                 <div class="col-12">
@@ -2184,8 +2214,7 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
                         <div class="stat2-icono-wrap stat2-icono-morada" aria-hidden="true">🎥</div>
                         <div class="stat2-titulo">VIDEOS</div>
                         <div class="stat2-numero" id="totalVideos">0</div>
-                        <span class="stat2-pill stat2-pill-morada"><span class="stat2-pill-play" aria-hidden="true">▶</span> HD de YouTube</span>
-                        <div class="stat2-completo mt-1" id="detalleVideosStats"><span class="stat2-desglose-icono" aria-hidden="true">📖</span>0 Diccionario · <span class="stat2-desglose-icono" aria-hidden="true">📂</span>0 Vocabulario</div>
+                        <div class="stat2-pill stat2-pill-morada" id="detalleVideosStats"><span class="stat2-desglose-icon-img" aria-hidden="true" style="-webkit-mask-image:url('img/icons/nav/icono-diccionario.png'); mask-image:url('img/icons/nav/icono-diccionario.png');"></span><span class="stat2-desglose-num" id="detalleVideosDic">0</span><span class="stat2-desglose-label">Diccionario</span><span class="stat2-desglose-sep">·</span><span class="stat2-desglose-icon-img" aria-hidden="true" style="-webkit-mask-image:url('img/icons/nav/icono-vocabulario.png'); mask-image:url('img/icons/nav/icono-vocabulario.png');"></span><span class="stat2-desglose-num" id="detalleVideosVoc">0</span><span class="stat2-desglose-label">Vocabulario</span></div>
                     </div>
                 </div>
             </div>
