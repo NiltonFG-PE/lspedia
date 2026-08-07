@@ -457,11 +457,19 @@
         .stat2-completo {
             position: relative;
             z-index: 1;
-            font-size: 0.85rem;
+            font-size: 0.98rem;
             font-weight: 600;
             color: #94a3b8;
         }
         .stat2-completo strong { color: #16a34a; font-weight: 800; }
+        /* Íconos que acompañan "Diccionario" y "Vocabulario" dentro del
+           desglose (.stat2-completo / .stat2-pill), como apoyo visual
+           para personas sordas. */
+        .stat2-completo .stat2-desglose-icono,
+        .stat2-pill .stat2-desglose-icono {
+            font-size: 1em;
+            margin-right: 2px;
+        }
         .stat2-pill {
             position: relative;
             z-index: 1;
@@ -471,10 +479,11 @@
             padding: 6px 14px;
             border-radius: 50px;
             font-weight: 700;
-            font-size: 0.85rem;
+            font-size: 0.98rem;
         }
         .stat2-pill-ambar { background-color: #fef3c7; color: #b45309; }
         .stat2-pill-morada { background-color: #ede9fe; color: #6d28d9; }
+        .stat2-pill-azul { background-color: #dbeafe; color: #1d4ed8; }
         .stat2-pill-play {
             width: 19px;
             height: 19px;
@@ -2154,11 +2163,7 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
                         <div class="stat2-icono-wrap stat2-icono-azul" aria-hidden="true">📚</div>
                         <div class="stat2-titulo">PALABRAS</div>
                         <div class="stat2-numero" id="totalPalabras">0</div>
-                        <div class="stat2-progreso-fila">
-                            <span class="stat2-progreso-wrap"><span class="stat2-progreso-barra"></span></span>
-                            <span class="stat2-check" aria-hidden="true">✓</span>
-                        </div>
-                        <div class="stat2-completo"><strong>100%</strong> Completo</div>
+                        <span class="stat2-pill stat2-pill-azul" id="detallePalabrasStats"><span class="stat2-desglose-icono" aria-hidden="true">📖</span>0 Diccionario · <span class="stat2-desglose-icono" aria-hidden="true">📂</span>0 Vocabulario</span>
                     </div>
                 </div>
                 <div class="col-6 col-md-6">
@@ -2168,7 +2173,7 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
                         <div class="stat2-icono-wrap stat2-icono-ambar" aria-hidden="true">📁</div>
                         <div class="stat2-titulo">CATEGORÍAS</div>
                         <div class="stat2-numero" id="totalCategorias">0</div>
-                        <span class="stat2-pill stat2-pill-ambar">📍 Ubicadas</span>
+                        <span class="stat2-pill stat2-pill-ambar" id="detalleCategoriasStats"><span class="stat2-desglose-icono" aria-hidden="true">📖</span>0 Diccionario · <span class="stat2-desglose-icono" aria-hidden="true">📂</span>0 Vocabulario</span>
                     </div>
                 </div>
                 <div class="col-12">
@@ -2180,6 +2185,7 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
                         <div class="stat2-titulo">VIDEOS</div>
                         <div class="stat2-numero" id="totalVideos">0</div>
                         <span class="stat2-pill stat2-pill-morada"><span class="stat2-pill-play" aria-hidden="true">▶</span> HD de YouTube</span>
+                        <div class="stat2-completo mt-1" id="detalleVideosStats"><span class="stat2-desglose-icono" aria-hidden="true">📖</span>0 Diccionario · <span class="stat2-desglose-icono" aria-hidden="true">📂</span>0 Vocabulario</div>
                     </div>
                 </div>
             </div>
