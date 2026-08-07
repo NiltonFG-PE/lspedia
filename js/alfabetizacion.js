@@ -66,15 +66,20 @@ const AlfabetizacionV2 = (function () {
         },
 
         // Juego "Completar la palabra": banco de preguntas con las
-        // palabras de ejemplo del abecedario (con imagen) y los números
-        // (sin imagen, se muestra el número grande). "letrasFaltantes"
-        // define cuántas letras hay que completar por palabra según el
-        // nivel elegido.
+        // palabras de ejemplo del abecedario (con imagen), los números
+        // (sin imagen, se muestra el número grande) y ahora también
+        // palabras del Diccionario/Vocabulario con imagen real cargada.
+        // "letrasFaltantes" define cuántas letras hay que completar por
+        // nivel. El tiempo YA NO es fijo: "tiempoBaseSeg" + "segPorLetra"
+        // por cada letra de la palabra (ver renderPreguntaCompletar), para
+        // que una palabra larga del Diccionario (ej. "Ecosistema") no
+        // tenga el mismo tiempo ajustado que una corta ("Casa").
         NIVELES_COMPLETAR: [
-            { id: "facil", nombre: "Fácil", icono: "🙂", opciones: 3, tiempoSeg: 25, letrasFaltantes: 1, badgeClase: "badge-nivel-facil" },
-            { id: "medio", nombre: "Medio", icono: "😐", opciones: 4, tiempoSeg: 18, letrasFaltantes: 2, badgeClase: "badge-nivel-medio" },
-            { id: "dificil", nombre: "Difícil", icono: "🔥", opciones: 5, tiempoSeg: 12, letrasFaltantes: 3, badgeClase: "badge-nivel-dificil" }
+            { id: "facil", nombre: "Fácil", icono: "🙂", opciones: 3, tiempoBaseSeg: 25, segPorLetra: 1.0, letrasFaltantes: 1, badgeClase: "badge-nivel-facil" },
+            { id: "medio", nombre: "Medio", icono: "😐", opciones: 4, tiempoBaseSeg: 20, segPorLetra: 1.1, letrasFaltantes: 2, badgeClase: "badge-nivel-medio" },
+            { id: "dificil", nombre: "Difícil", icono: "🔥", opciones: 5, tiempoBaseSeg: 15, segPorLetra: 1.3, letrasFaltantes: 3, badgeClase: "badge-nivel-dificil" }
         ],
+        TIEMPO_MAXIMO_COMPLETAR_SEG: 50,
         PREGUNTAS_POR_RONDA_COMPLETAR: 10,
         LETRAS_DISPONIBLES: "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ".split(""),
 
@@ -713,7 +718,58 @@ const AlfabetizacionV2 = (function () {
             numero: n
         }));
 
-        return deLetras.concat(deNumeros);
+        // Diccionario (Hoja 1, window.App.datos, ver js/script.js) y
+        // Vocabulario (Hoja 2, mismo banco que usa el Quiz) suman al pool
+        // toda palabra que ya tenga una imagen de apoyo REAL cargada (no
+        // la descripción en texto que se usa como prompt para generarla
+        // más adelante). Hoy la Hoja 2 normalmente no trae columna
+        // "imagen" (solo video), así que por ahora esto solo suma
+        // palabras del Diccionario; en cuanto la Hoja 2 tenga imagen
+        // cargada empiezan a aparecer también sin tocar este archivo.
+        const deDiccionario = obtenerPalabrasConImagenDe(window.App && window.App.datos);
+        const bancoHoja2 = (window.QuizV2 && typeof QuizV2.obtenerBanco === "function") ? QuizV2.obtenerBanco() : [];
+        const deVocabulario = obtenerPalabrasConImagenDe(bancoHoja2);
+
+        // Una misma palabra puede repetirse entre fuentes (p.ej. estar en
+        // los ejemplos del abecedario Y en el Diccionario); se prioriza
+        // el primer origen en el que aparece (abecedario > números >
+        // Diccionario > Vocabulario) y se descarta el resto para no
+        // repetirla dos veces en una misma ronda.
+        const combinado = deLetras.concat(deNumeros, deDiccionario, deVocabulario);
+        const vistas = new Set();
+        return combinado.filter((p) => {
+            const clave = p.palabra.trim().toUpperCase();
+            if (vistas.has(clave)) return false;
+            vistas.add(clave);
+            return true;
+        });
+    }
+
+    // Palabras de una lista del Diccionario o del Vocabulario que ya
+    // tengan una imagen de apoyo real cargada en la columna "imagen" del
+    // Sheet (admite varias separadas por coma, se usa solo la primera;
+    // mismo criterio que obtenerImagenesDeApoyo() en js/script.js). Se
+    // filtran también por longitud para que la palabra sea jugable: ni
+    // muy corta, ni una frase tan larga que no entre bien en pantalla.
+    function obtenerPalabrasConImagenDe(lista) {
+        if (!Array.isArray(lista)) return [];
+        return lista
+            .map((p) => ({ palabra: p.palabra, imagenUrl: primeraImagenUsable(p.imagen) }))
+            .filter((p) => p.palabra && p.imagenUrl && p.palabra.trim().length >= 3 && p.palabra.trim().length <= 22)
+            .map((p) => ({ palabra: p.palabra.toUpperCase(), imagen: p.imagenUrl, numero: null }));
+    }
+
+    // Distingue una URL/ruta de imagen real de una descripción en texto
+    // (el "prompt" que se usa para generar la imagen más adelante y que
+    // todavía no se ha convertido en un archivo real). Si el campo no
+    // parece una URL/ruta, se descarta en vez de intentar mostrarla como
+    // <img>, que rompería la tarjeta.
+    function primeraImagenUsable(campoImagen) {
+        if (!campoImagen) return null;
+        const primera = String(campoImagen).split(",")[0].trim();
+        if (!primera) return null;
+        const pareceUrl = /^https?:\/\//i.test(primera) || primera.indexOf("/") > -1;
+        return pareceUrl ? primera : null;
     }
 
     function nivelCompletarActual() {
@@ -747,7 +803,7 @@ const AlfabetizacionV2 = (function () {
         }
 
         const totalEl = el("alfabCompletarTotalDisponibles");
-        if (totalEl) totalEl.textContent = bancoPalabrasCompletar().length + " palabras disponibles (abecedario + números)";
+        if (totalEl) totalEl.textContent = bancoPalabrasCompletar().length + " palabras disponibles (abecedario + números + diccionario + vocabulario)";
 
         const intro = el("alfabCompletarIntro");
         const activo = el("alfabCompletarActivo");
@@ -792,10 +848,14 @@ const AlfabetizacionV2 = (function () {
 
         // Cuántas y cuáles letras faltan, según el nivel (Fácil=1, Medio=2,
         // Difícil=3 letras). Nunca se deja la palabra 100% en blanco: si es
-        // muy corta, se limita para que quede al menos 1 letra visible.
+        // muy corta, se limita para que quede al menos 1 letra visible. Los
+        // espacios (frases del Diccionario/Vocabulario, ej. "Buenos días")
+        // nunca se eligen como blanco: no hay ficha de "espacio" entre las
+        // opciones, así que dejarlo en blanco sería imposible de completar.
         const letras = pregunta.palabra.split("");
-        const cantidadBlancos = Math.min(nivel.letrasFaltantes, Math.max(1, letras.length - 1));
-        const indicesBlanco = barajar(letras.map((_, i) => i)).slice(0, cantidadBlancos).sort((a, b) => a - b);
+        const indicesCandidatos = letras.map((_, i) => i).filter((i) => letras[i].trim() !== "");
+        const cantidadBlancos = Math.min(nivel.letrasFaltantes, Math.max(1, indicesCandidatos.length - 1));
+        const indicesBlanco = barajar(indicesCandidatos).slice(0, cantidadBlancos).sort((a, b) => a - b);
         pregunta._indicesBlanco = indicesBlanco;
         pregunta._letrasCorrectas = indicesBlanco.map((i) => normalizarLetra(letras[i]));
 
@@ -827,11 +887,20 @@ const AlfabetizacionV2 = (function () {
         const filaPalabra = document.createElement("div");
         filaPalabra.className = "completar-palabra mb-2";
         letras.forEach((letra, i) => {
+            const esEspacio = letra.trim() === "";
             const esBlanco = indicesBlanco.includes(i);
             const casilla = document.createElement("span");
             casilla.className = "completar-letra-casilla" + (esBlanco ? " blank" : "");
             casilla.textContent = esBlanco ? "" : letra;
             casilla.id = "completarCasilla" + i;
+            if (esEspacio) {
+                // Espacio entre palabras de una frase: se ve como un hueco,
+                // no como una casilla de letra (sin borde ni fondo).
+                casilla.style.border = "none";
+                casilla.style.background = "transparent";
+                casilla.style.width = "0.6em";
+                casilla.style.minWidth = "0.6em";
+            }
             filaPalabra.appendChild(casilla);
         });
         cont.appendChild(filaPalabra);
@@ -845,7 +914,11 @@ const AlfabetizacionV2 = (function () {
         cont.appendChild(filaOpciones);
 
         renderOpcionesBlancoActual();
-        iniciarTimerCompletar(nivel.tiempoSeg);
+        const segundosParaEstaPalabra = Math.min(
+            CONFIG.TIEMPO_MAXIMO_COMPLETAR_SEG,
+            Math.round(nivel.tiempoBaseSeg + pregunta.palabra.length * nivel.segPorLetra)
+        );
+        iniciarTimerCompletar(segundosParaEstaPalabra);
     }
 
     // Dibuja las opciones de letra para la letra faltante actual
