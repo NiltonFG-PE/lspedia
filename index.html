@@ -1122,6 +1122,111 @@
             background-color: #ffca2c !important; 
             transform: scale(1.05); 
         }
+        /* ============================================================
+           BUSCADOR PRINCIPAL: estilo animado y llamativo para que sea
+           el centro de atención de la portada. Combina un halo dorado
+           que respira, un destello de luz que recorre la caja y un
+           pequeño rebote de la lupa. Se detiene al enfocar el campo
+           (ya logró la atención) y respeta prefers-reduced-motion.
+           ============================================================ */
+        #bloqueBuscador .input-group {
+            position: relative;
+            animation: buscadorPulso 2.4s ease-in-out infinite;
+        }
+        #bloqueBuscador .input-group::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -60%;
+            width: 35%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.65), transparent);
+            transform: skewX(-20deg);
+            animation: buscadorDestello 3.4s ease-in-out infinite;
+            pointer-events: none;
+        }
+        #bloqueBuscador .input-group:focus-within {
+            animation: none;
+            box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.28), 0 10px 24px rgba(255, 193, 7, 0.32) !important;
+        }
+        #bloqueBuscador .input-group:focus-within::after {
+            animation: none;
+            opacity: 0;
+        }
+        #btnBuscar span {
+            display: inline-block;
+            animation: lupaRebote 2.4s ease-in-out infinite;
+        }
+        @keyframes buscadorPulso {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.45), 0 4px 14px rgba(15, 23, 42, 0.08);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 0 0 9px rgba(255, 193, 7, 0.14), 0 8px 22px rgba(255, 193, 7, 0.38);
+                transform: scale(1.012);
+            }
+        }
+        @keyframes buscadorDestello {
+            0% { left: -60%; }
+            40% { left: 130%; }
+            100% { left: 130%; }
+        }
+        @keyframes lupaRebote {
+            0%, 78%, 100% { transform: rotate(0deg) scale(1); }
+            86% { transform: rotate(-14deg) scale(1.18); }
+            93% { transform: rotate(10deg) scale(1.1); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            #bloqueBuscador .input-group,
+            #bloqueBuscador .input-group::after,
+            #btnBuscar span,
+            #bloqueBuscadorCategorias .input-group,
+            #bloqueBuscadorCategorias .input-group::after,
+            #btnBuscarCategorias span {
+                animation: none !important;
+            }
+        }
+        /* Mismo efecto (halo + destello + lupa con rebote) para el
+           buscador de la sección VOCABULARIO, en su color azul. */
+        #bloqueBuscadorCategorias .input-group {
+            position: relative;
+            animation: buscadorPulsoAzul 2.4s ease-in-out infinite;
+        }
+        #bloqueBuscadorCategorias .input-group::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -60%;
+            width: 35%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.65), transparent);
+            transform: skewX(-20deg);
+            animation: buscadorDestello 3.4s ease-in-out infinite;
+            pointer-events: none;
+        }
+        #bloqueBuscadorCategorias .input-group:focus-within {
+            animation: none;
+            box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.28), 0 10px 24px rgba(13, 110, 253, 0.32) !important;
+        }
+        #bloqueBuscadorCategorias .input-group:focus-within::after {
+            animation: none;
+            opacity: 0;
+        }
+        #btnBuscarCategorias span {
+            display: inline-block;
+            animation: lupaRebote 2.4s ease-in-out infinite;
+        }
+        @keyframes buscadorPulsoAzul {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.45), 0 4px 14px rgba(15, 23, 42, 0.08);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 0 0 9px rgba(13, 110, 253, 0.14), 0 8px 22px rgba(13, 110, 253, 0.38);
+                transform: scale(1.012);
+            }
+        }
 /* El efecto hover de los botones del menu ahora vive en la pildora
    del propio .nav-link (ver bloque "MENU SUPERIOR" mas arriba), asi
    que ya no se resalta el .nav-item contenedor. */
