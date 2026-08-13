@@ -1065,7 +1065,27 @@
     "definicion": "Forma de comunicar ideas, sentimientos o hechos.",
     "categoria": "Comunicación",
     "video": "",
-    "imagen": "Una boca abierta o símbolos de comunicación saliendo",
+    "imagen": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Diccionario",
+    "variantes": "",
+    "definicion": "Obra de consulta en la que se recogen, definen y explican de forma ordenada —generalmente alfabética— las palabras o términos de una lengua, una materia específica, una ciencia o un ámbito técnico, indicando su significado, ortografía y, en muchos casos, su origen o uso.",
+    "categoria": "Comunicación",
+    "video": "_5xK5iiIPCs",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/diccionario/diccionario.png",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Vocabulario",
+    "variantes": "",
+    "definicion": "Conjunto de palabras que forman parte de una lengua determinada, que pertenecen al uso de una comunidad lingüística, o que son empleadas por un individuo, una disciplina o un ámbito técnico específico.",
+    "categoria": "Comunicación",
+    "video": "",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/diccionario/vocabulario.png",
     "senasugerida": "",
     "": ""
   },
