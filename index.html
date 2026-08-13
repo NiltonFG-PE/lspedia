@@ -2276,6 +2276,16 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
                         Cargando categorías…
                     </div>
                 </div>
+
+                <!-- Resultados al tocar una tarjeta de Categoría (Diccionario):
+                     antes se pintaban en #resultado (arriba de las tarjetas),
+                     lo que obligaba a un scroll hacia ARRIBA y hacía que la
+                     atención se quedara en las tarjetas de abajo. Ahora se
+                     pintan acá, justo debajo de las tarjetas, para que el
+                     scroll sea siempre hacia abajo y el bloque de resultados
+                     quede completo a la vista (ver filtrarPorCategoriaDiccionario()
+                     en script.js). -->
+                <div id="resultadoCategoriasDiccionario" class="mb-4 animate-fade-in"></div>
             </div>
         </div>
 
