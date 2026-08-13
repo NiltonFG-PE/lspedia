@@ -199,6 +199,7 @@ function irAlBuscador(){
     resultado.innerHTML = "";
     panelCategorias.innerHTML = "";
     resultadoCategorias.innerHTML = "";
+    resultadoCategoriasDiccionario.innerHTML = "";
     ultimasPalabras.innerHTML = "";
     categoriaActualMostrada = null;
     document.body.classList.remove("vista-temas-movil");
@@ -557,6 +558,7 @@ function mostrarSeccionHerramientas(){
     resultado.innerHTML = "";
     panelCategorias.innerHTML = "";
     resultadoCategorias.innerHTML = "";
+    resultadoCategoriasDiccionario.innerHTML = "";
     categoriaActualMostrada = null;
     ultimasPalabras.innerHTML = "";
     ocultarPanelesGuardados();
@@ -628,6 +630,7 @@ function mostrarSeccionNosotros(){
     resultado.innerHTML = "";
     panelCategorias.innerHTML = "";
     resultadoCategorias.innerHTML = "";
+    resultadoCategoriasDiccionario.innerHTML = "";
     categoriaActualMostrada = null;
     ultimasPalabras.innerHTML = "";
     ocultarPanelesGuardados();
@@ -666,6 +669,7 @@ function abrirJugarDirecto(){
     resultado.innerHTML = "";
     panelCategorias.innerHTML = "";
     resultadoCategorias.innerHTML = "";
+    resultadoCategoriasDiccionario.innerHTML = "";
     categoriaActualMostrada = null;
     ultimasPalabras.innerHTML = "";
     ocultarPanelesGuardados();
@@ -1036,9 +1040,16 @@ if (statCardCategorias) {
         // con el índice A-Z.
         const panel = document.getElementById("filaCategoriasDiccionario");
         if (panel) {
-            panel.scrollIntoView({ behavior: "smooth", block: "center" });
+            // Antes usaba block:"center": como el panel es alto (header +
+            // grid de tarjetas + #resultadoCategoriasDiccionario), centrarlo
+            // dejaba la mitad de arriba fuera de pantalla en móvil y el
+            // bloque quedaba "cortado". Con scrollAlPrimerResultado (la
+            // misma función que usa filtrarPorCategoriaDiccionario) el
+            // panel queda anclado arriba, con su encabezado y sus tarjetas
+            // visibles desde la primera hasta donde entre en pantalla.
             panel.classList.add("highlight-anim");
             setTimeout(() => panel.classList.remove("highlight-anim"), 2000);
+            scrollAlPrimerResultado(panel);
         }
     });
 }
@@ -1252,6 +1263,7 @@ function ejecutarBusquedaDirecta() {
 
     buscar.blur();
     panelCategorias.innerHTML = "";
+    resultadoCategoriasDiccionario.innerHTML = "";
     categoriaActualMostrada = null;
     ultimasPalabras.innerHTML = "";
     ocultarPanelesGuardados();
@@ -2232,6 +2244,7 @@ function filtrarPorLetra(letra) {
     sugerencias.style.display = "none";
     resultado.innerHTML = "";
     panelCategorias.innerHTML = "";
+    resultadoCategoriasDiccionario.innerHTML = "";
     categoriaActualMostrada = null;
     ultimasPalabras.innerHTML = ""; 
     ocultarPanelesGuardados();
@@ -2353,6 +2366,11 @@ function obtenerImagenesDeApoyo(p){
 // color de la paleta genérica (COLORES_CATEGORIAS) con un ícono de
 // carpeta por defecto, para que nunca se quede sin tarjeta.
 const panelCategoriasDiccionario = document.getElementById("panelCategoriasDiccionario");
+// Contenedor de resultados exclusivo para las tarjetas de Categoría del
+// Diccionario, ubicado justo DEBAJO de #panelCategoriasDiccionario en el
+// HTML (a diferencia de #resultado, que está arriba de las tarjetas). Ver
+// filtrarPorCategoriaDiccionario() más abajo.
+const resultadoCategoriasDiccionario = document.getElementById("resultadoCategoriasDiccionario");
 
 const CATEGORIAS_DICCIONARIO_INFO = {
     "ciencia": {
@@ -2558,25 +2576,51 @@ function scrollAlPrimerResultado(el){
     // espera a que el alto total del documento deje de cambiar entre dos
     // frames seguidos (con un tope de intentos) antes de calcular a dónde
     // hacer scroll.
+    //
+    // Además, si el teclado móvil sigue cerrándose (animación) en este
+    // momento, el alto VISIBLE de la pantalla (window.visualViewport.height)
+    // también sigue cambiando aunque el alto del documento ya se haya
+    // estabilizado; se espera a que ambos se calmen antes de scrollear,
+    // porque un cambio de altura del viewport después de nuestro scroll es
+    // justo lo que hace que "el scroll se quede en la tarjeta".
     let altoAnterior = -1;
+    let altoViewportAnterior = -1;
     let intentos = 0;
 
     function medirYEsperar(){
         const altoActual = document.documentElement.scrollHeight;
+        const altoViewportActual = window.visualViewport ? window.visualViewport.height : -1;
         intentos++;
-        if (altoActual === altoAnterior || intentos > 15) {
+        const documentoEstable = altoActual === altoAnterior;
+        const viewportEstable = altoViewportActual === altoViewportAnterior;
+        if ((documentoEstable && viewportEstable) || intentos > 20) {
             hacerScroll();
             return;
         }
         altoAnterior = altoActual;
+        altoViewportAnterior = altoViewportActual;
         requestAnimationFrame(medirYEsperar);
     }
 
     function calcularDestino(){
         const yDestino = el.getBoundingClientRect().top + (window.pageYOffset || document.documentElement.scrollTop || 0);
+        // En móvil/tablet (ver estilos.css, media max-width: 1199.98px)
+        // "nav.navbar" pasa a position:fixed y flota con z-index alto
+        // sobre el contenido. Si no se descuenta su alto acá, el destino
+        // calculado deja el heading "Categoría: X" y la primera tarjeta
+        // asomando justo DETRÁS del navbar (tapados), aunque el scroll
+        // haya llegado exactamente a donde se pidió: se ve como si el
+        // resultado hubiera "aterrizado" más abajo (en la 2da o 3ra
+        // tarjeta), que es justo el bug reportado.
+        const navbarEl = document.querySelector("nav.navbar");
+        let altoNavbarFijo = 0;
+        if (navbarEl && getComputedStyle(navbarEl).position === "fixed") {
+            altoNavbarFijo = navbarEl.getBoundingClientRect().height;
+        }
         // Pequeño margen arriba (16px) para que la tarjeta no quede
-        // pegada al borde superior de la pantalla.
-        return Math.max(yDestino - 16, 0);
+        // pegada al borde superior de la pantalla (o al borde inferior
+        // del navbar fijo, si lo hay).
+        return Math.max(yDestino - altoNavbarFijo - 16, 0);
     }
 
     function hacerScroll(){
@@ -2593,34 +2637,68 @@ function scrollAlPrimerResultado(el){
         // para eliminar el reajuste automático de raíz).
         window.scrollTo({ top: calcularDestino(), behavior: "auto" });
 
-        // Primer refuerzo (150ms): si por lo que sea el salto instantáneo
-        // no dejó el resultado a la vista, se reintenta con un toque
-        // "smooth" ya sin el riesgo de la primera pelea.
-        setTimeout(() => {
-            const bounds = el.getBoundingClientRect();
-            if (bounds.top < -5 || bounds.top > 120) {
-                window.scrollTo({ top: calcularDestino(), behavior: "smooth" });
-            }
-        }, 150);
+        // En vez de revisar solo en 3 momentos puntuales (150/500/900ms),
+        // se vigila el scroll frame a frame durante ~1.2s después del
+        // salto inicial. El problema real es que el "arrastre" hacia
+        // abajo (fuentes/íconos terminando de cargar, el teclado móvil
+        // cerrándose, reflows tardíos) puede ocurrir en cualquier
+        // instante intermedio, no solo en los 3 momentos que se
+        // chequeaban antes; con revisiones puntuales el desvío se cuela
+        // en las ventanas sin vigilar y el scroll termina asentado sobre
+        // las tarjetas de categorías, que es justo el bug reportado. Con
+        // vigilancia continua, apenas el resultado se sale de la franja
+        // válida (top entre -5 y 120px) se corrige de inmediato, sin
+        // esperar al próximo chequeo fijo.
+        const inicioVigilancia = performance.now();
+        const DURACION_VIGILANCIA_MS = 1200;
 
-        // Segundo refuerzo (500ms), instantáneo: por si íconos o fuentes
-        // que siguen cargando después del primer chequeo volvieron a
-        // mover el layout y el resultado quedó otra vez fuera de vista.
-        setTimeout(() => {
+        function vigilarYCorregir(){
+            const transcurrido = performance.now() - inicioVigilancia;
             const bounds = el.getBoundingClientRect();
-            if (bounds.top < -5 || bounds.top > 120) {
+            // El límite superior de la franja válida ya no es un número
+            // fijo (120px): con el navbar fijo de móvil descontado en
+            // calcularDestino(), "el.top" en reposo puede quedar bastante
+            // más abajo que 120px (justo debajo del navbar). Se calcula
+            // ese margen dinámicamente (con 40px extra de tolerancia)
+            // para no disparar correcciones de más en móvil.
+            const navbarEl = document.querySelector("nav.navbar");
+            const altoNavbarFijo = (navbarEl && getComputedStyle(navbarEl).position === "fixed")
+                ? navbarEl.getBoundingClientRect().height
+                : 0;
+            if (bounds.top < -5 || bounds.top > 120 + altoNavbarFijo) {
                 window.scrollTo({ top: calcularDestino(), behavior: "auto" });
             }
-        }, 500);
+            if (transcurrido < DURACION_VIGILANCIA_MS) {
+                requestAnimationFrame(vigilarYCorregir);
+            }
+        }
+        requestAnimationFrame(vigilarYCorregir);
     }
 
     requestAnimationFrame(medirYEsperar);
 }
 
 // Filtra las palabras del diccionario (Hoja 1, App.datos) por el nombre
-// de la categoría tocada y las pinta en #resultado, igual que hace
-// filtrarPorLetra() con el índice A-Z.
+// de la categoría tocada y las pinta en #resultadoCategoriasDiccionario,
+// que está DEBAJO de las tarjetas de categoría (a diferencia de
+// filtrarPorLetra(), que sigue usando #resultado, arriba del índice A-Z).
+//
+// Antes esto pintaba en #resultado (arriba de las tarjetas): al tocar una
+// tarjeta más abajo, el resultado aparecía fuera de pantalla por ENCIMA
+// del punto donde estaba el usuario, y había que forzar un scroll hacia
+// arriba (ver el historial de scrollAlPrimerResultado más abajo) que
+// competía con el "scroll anchoring" del navegador. Resultado: a veces la
+// pantalla se quedaba quieta sobre las tarjetas y el bloque de resultados
+// no se notaba como una unidad. Pintando acá abajo, el resultado aparece
+// justo donde el usuario ya está mirando y el scroll es siempre hacia
+// abajo, sin pelear contra nada.
 function filtrarPorCategoriaDiccionario(nombre){
+    // Si el teclado móvil está abierto (el usuario venía de buscar), se
+    // cierra ANTES de medir/scrollear, para que su animación de cierre no
+    // desacomode el cálculo del scroll.
+    if (document.activeElement && typeof document.activeElement.blur === "function") {
+        document.activeElement.blur();
+    }
     ocultarQuiz();
     ocultarAlfabetizacion();
     buscar.value = "";
@@ -2629,33 +2707,41 @@ function filtrarPorCategoriaDiccionario(nombre){
     resultado.innerHTML = "";
     panelCategorias.innerHTML = "";
     resultadoCategorias.innerHTML = "";
+    resultadoCategoriasDiccionario.innerHTML = "";
     categoriaActualMostrada = null;
     ultimasPalabras.innerHTML = "";
     ocultarPanelesGuardados();
     window.history.pushState({}, '', window.location.pathname);
     const filtradas = App.datos.filter(p => p.categoria.trim().toLowerCase() === nombre.trim().toLowerCase());
     if (filtradas.length === 0) {
-        resultado.innerHTML = `<div class="alert alert-light border text-center text-muted small py-3" style="border-radius: 12px;">No hay palabras en la categoría <strong>${nombre}</strong> todavía.</div>`;
-        scrollAlPrimerResultado(resultado);
+        resultadoCategoriasDiccionario.innerHTML = `<div class="alert alert-light border text-center text-muted small py-3" style="border-radius: 12px;">No hay palabras en la categoría <strong>${nombre}</strong> todavía.</div>`;
+        scrollAlPrimerResultado(resultadoCategoriasDiccionario);
         return;
     }
     // Se arma todo el HTML en una sola variable y se asigna de una vez
-    // (en vez de "resultado.innerHTML += ..." dentro del forEach) para
-    // evitar múltiples reflujos/reflows mientras se insertan las tarjetas:
-    // eso ayudaba a que el navegador reajustara el scroll a medias y el
-    // autoscroll terminara "a mitad de camino" o al final de la lista.
+    // (en vez de "...innerHTML += ..." dentro del forEach) para evitar
+    // múltiples reflujos/reflows mientras se insertan las tarjetas.
+    // Mismo formato de fila que usa la sección Vocabulario en
+    // mostrarCategoria() (miniatura del video + nombre + botón "Ver
+    // Seña", todo en una fila), en vez del formato anterior sin
+    // miniatura, para que ambas secciones se vean y se sientan igual.
     let htmlResultado = `<h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">Categoría: ${nombre}</h6>`;
     filtradas.forEach(p => {
         htmlResultado += `
         <div class="card mb-2 palabra-card shadow-sm animate-fade-in" style="border-radius: 10px;">
             <div class="card-body p-2 d-flex justify-content-between align-items-center">
-                <div><h6 class="mb-0 fw-bold text-primary">${p.palabra}</h6><small class="text-muted">${p.categoria.trim()}</small></div>
+                <div class="sugerencia-fila">
+                    ${generarMiniaturaVocabulario(p)}
+                    <div class="sugerencia-texto">
+                        <h6 class="mb-0 fw-bold text-primary">${p.palabra}</h6>
+                    </div>
+                </div>
                 <button class="btn btn-sm btn-primary py-1 px-3 fw-bold" onclick="mostrarPalabraPorNombre('${p.palabra.replace(/'/g, "\\'")}')">Ver Seña</button>
             </div>
         </div>`;
     });
-    resultado.innerHTML = htmlResultado;
-    scrollAlPrimerResultado(resultado);
+    resultadoCategoriasDiccionario.innerHTML = htmlResultado;
+    scrollAlPrimerResultado(resultadoCategoriasDiccionario);
 }
 window.filtrarPorCategoriaDiccionario = filtrarPorCategoriaDiccionario;
 
@@ -2672,7 +2758,7 @@ const ICONOS_CATEGORIA_VOCABULARIO = {
 };
 
 function mostrarCategorias(){
-    resultado.innerHTML=""; panelCategorias.innerHTML=""; ultimasPalabras.innerHTML = ""; ocultarPanelesGuardados();
+    resultado.innerHTML=""; panelCategorias.innerHTML=""; resultadoCategoriasDiccionario.innerHTML=""; ultimasPalabras.innerHTML = ""; ocultarPanelesGuardados();
     if (window.QuizV2 && typeof QuizV2.asegurarBancoCargado === "function") {
         QuizV2.asegurarBancoCargado();
     }
