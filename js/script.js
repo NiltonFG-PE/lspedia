@@ -778,29 +778,118 @@ const App = {
     }
 };
 
+// Guarda en el dispositivo la última copia de palabras.json que sí se pudo
+// cargar con éxito. Es el respaldo que se usa cuando, tras varios
+// reintentos, la red sigue sin responder: en vez de dejar "Seña del día" y
+// "Categorías" vacíos (o con el aviso de error), se muestra igual el
+// diccionario con los datos de la última visita, aunque no sean los más
+// recientes.
+const CLAVE_CACHE_PALABRAS = "lspedia_cache_palabras_v1";
+
+function guardarCachePalabras(data) {
+    try {
+        localStorage.setItem(CLAVE_CACHE_PALABRAS, JSON.stringify({ datos: data, guardadoEn: Date.now() }));
+    } catch (e) {
+        // localStorage lleno, en modo privado, o no disponible: no es
+        // crítico, simplemente no habrá respaldo la próxima vez.
+    }
+}
+
+function leerCachePalabras() {
+    try {
+        const crudo = localStorage.getItem(CLAVE_CACHE_PALABRAS);
+        if (!crudo) return null;
+        const parsed = JSON.parse(crudo);
+        return (parsed && Array.isArray(parsed.datos) && parsed.datos.length) ? parsed.datos : null;
+    } catch (e) {
+        return null;
+    }
+}
+
+// Avisa al resto de la página (ver index.html, splash screen) que ya se
+// sabe si hay datos para mostrar o no, sea porque llegaron de la red, de
+// la copia guardada, o porque definitivamente no se pudo conseguir
+// ninguna. El splash usa este aviso para no ocultarse antes de tiempo.
+function avisarDatosListos() {
+    document.dispatchEvent(new Event("lspedia:datosListos"));
+}
+
 // Carga data/palabras.json con reintentos automáticos. En datos móviles la
-// primera petición a veces falla o se corta (conexión inestable, cambio de
-// antena, etc.); antes eso dejaba "Seña del día" y "Categorías" vacíos para
-// siempre y sin avisar nada, porque el único manejo de error era un
-// console.error silencioso. Ahora se reintenta un par de veces con una
-// espera corta, y si aun así no carga, se muestra un aviso con botón
-// "Reintentar" en vez de dejar esos bloques en blanco.
-function cargarPalabrasJson(intentosRestantes = 2) {
-    fetch("data/palabras.json")
+// primera petición a veces falla, se corta o queda "colgada" sin
+// respuesta (conexión inestable, cambio de antena, etc.); antes eso dejaba
+// "Seña del día" y "Categorías" vacíos para siempre y sin avisar nada,
+// porque el único manejo de error era un console.error silencioso.
+// Ahora: (1) cada intento tiene un límite de tiempo (AbortController) para
+// no quedarse esperando indefinidamente si la conexión se queda muda;
+// (2) se reintenta varias veces con una espera creciente; (3) si aun así
+// no se consigue nada, se usa la última copia guardada en el dispositivo
+// (ver guardarCachePalabras) en vez de dejar la pantalla vacía; y (4) solo
+// si tampoco hay copia guardada se muestra el aviso con botón "Reintentar".
+function cargarPalabrasJson(intentosRestantes = 3) {
+    const controlador = new AbortController();
+    const timeoutIntento = setTimeout(() => controlador.abort(), 9000);
+
+    fetch("data/palabras.json", { signal: controlador.signal })
         .then(res => {
+            clearTimeout(timeoutIntento);
             if (!res.ok) throw new Error("HTTP " + res.status);
             return res.json();
         })
-        .then(data => procesarDatosApp(data))
+        .then(data => {
+            guardarCachePalabras(data);
+            procesarDatosApp(data);
+            avisarDatosListos();
+        })
         .catch(error => {
+            clearTimeout(timeoutIntento);
             console.error("Error al cargar LSPedia:", error);
             if (intentosRestantes > 0) {
-                const espera = (3 - intentosRestantes) * 1200 + 800; // 800ms, luego 2000ms
+                const espera = (4 - intentosRestantes) * 1200 + 800; // 800ms, 2000ms, luego 3200ms
                 setTimeout(() => cargarPalabrasJson(intentosRestantes - 1), espera);
             } else {
-                mostrarErrorCargaInicial();
+                const cache = leerCachePalabras();
+                if (cache) {
+                    console.warn("No se pudo conectar: mostrando la última copia guardada de palabras.json.");
+                    procesarDatosApp(cache);
+                    mostrarAvisoUsandoCopiaGuardada();
+                    avisarDatosListos();
+                    // Reintenta en segundo plano, sin bloquear ni volver a
+                    // mostrar avisos: si la red vuelve, la próxima
+                    // recarga ya trae datos frescos guardados.
+                    setTimeout(() => cargarPalabrasJsonSilencioso(), 15000);
+                } else {
+                    mostrarErrorCargaInicial();
+                    avisarDatosListos();
+                }
             }
         });
+}
+
+// Reintento silencioso en segundo plano tras haber mostrado la copia
+// guardada: si consigue datos nuevos los guarda para la próxima visita,
+// pero no interrumpe ni repinta lo que la persona ya está viendo.
+function cargarPalabrasJsonSilencioso() {
+    fetch("data/palabras.json")
+        .then(res => (res.ok ? res.json() : null))
+        .then(data => { if (data) guardarCachePalabras(data); })
+        .catch(() => { /* seguirá usando la copia guardada hasta la próxima visita */ });
+}
+
+// Aviso discreto (no bloquea nada) cuando se está mostrando la copia
+// guardada en el dispositivo en vez de la versión más reciente, para que
+// quede claro que la página SÍ está mostrando contenido, solo que podría
+// no ser el más actualizado.
+function mostrarAvisoUsandoCopiaGuardada() {
+    const senal = document.getElementById("senalDelDia");
+    if (!senal) return;
+    const existente = document.getElementById("avisoCopiaGuardada");
+    if (existente) return;
+    const aviso = document.createElement("div");
+    aviso.id = "avisoCopiaGuardada";
+    aviso.className = "alert alert-warning text-center small py-2 px-3 mb-3";
+    aviso.style.borderRadius = "10px";
+    aviso.innerHTML = "📶 Sin conexión: mostrando la última versión guardada del diccionario.";
+    senal.parentElement.insertBefore(aviso, senal.parentElement.firstChild);
 }
 
 function procesarDatosApp(data) {
@@ -2353,7 +2442,7 @@ function renderCategoriasDiccionario(){
         const cantidad = (App.datos || []).filter(p => p.categoria && p.categoria.trim().toLowerCase() === nombre.toLowerCase()).length;
         const cantidadTexto = cantidad === 1 ? "1 palabra" : `${cantidad} palabras`;
         const card = document.createElement("div");
-        card.className = "col-6 col-md-4 col-lg-2 animate-fade-in";
+        card.className = "col-4 col-md-4 col-lg-2 animate-fade-in";
         card.innerHTML = `
             <div class="card h-100 categoria-dicc-card" style="border-color: ${info.borde}; background-color: ${info.fondo};">
                 ${iconoHtml}
@@ -2374,7 +2463,7 @@ function renderCategoriasDiccionario(){
     // navega a otra vista); si no hay ninguna escondida, sigue visible
     // pero no hace nada al tocarla (ya se ven todas).
     const cardVerTodas = document.createElement("div");
-    cardVerTodas.className = "col-6 col-md-4 col-lg-2 animate-fade-in";
+    cardVerTodas.className = "col-4 col-md-4 col-lg-2 animate-fade-in";
     const texto = categoriasDiccionarioExpandido ? "Ver menos" : "Ver todas las categorías";
     const rotacionFlecha = categoriasDiccionarioExpandido ? "transform: rotate(-90deg);" : "";
     cardVerTodas.innerHTML = `
@@ -2388,6 +2477,36 @@ function renderCategoriasDiccionario(){
         renderCategoriasDiccionario();
     };
     panelCategoriasDiccionario.appendChild(cardVerTodas);
+}
+
+// Hace scroll hasta el elemento indicado, esperando primero a que el
+// navegador termine de acomodar (layout) el contenido recién insertado.
+//
+// OJO: antes esto usaba el.scrollIntoView({behavior:'smooth'}), pero en
+// varios navegadores móviles (sobre todo Safari/iOS y algunos Chrome
+// Android) ese scroll terminaba cancelado o "peleaba" contra el "scroll
+// anchoring" del navegador: al insertar contenido en #resultado, que
+// está MÁS ARRIBA que las tarjetas que el usuario está tocando, el
+// navegador reajusta el scroll solo para "compensar" el cambio de
+// altura fuera de la vista, y ese reajuste automático puede ganarle o
+// anular al scrollIntoView() disparado por JS, dejando la pantalla
+// completamente quieta.
+//
+// Por eso ahora se calcula la posición absoluta del elemento (respecto
+// al documento) y se hace window.scrollTo() directamente, en vez de
+// depender de scrollIntoView(). Esto evita el conflicto con el "scroll
+// anchoring" y funciona igual sin importar en qué elemento viva el
+// scroll real (body, html, o el "scrollingElement" del navegador).
+function scrollAlPrimerResultado(el){
+    if(!el) return;
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            const yDestino = el.getBoundingClientRect().top + window.pageYOffset;
+            // Pequeño margen arriba (16px) para que la tarjeta no quede
+            // pegada al borde superior de la pantalla.
+            window.scrollTo({ top: Math.max(yDestino - 16, 0), behavior: "smooth" });
+        });
+    });
 }
 
 // Filtra las palabras del diccionario (Hoja 1, App.datos) por el nombre
@@ -2409,11 +2528,17 @@ function filtrarPorCategoriaDiccionario(nombre){
     const filtradas = App.datos.filter(p => p.categoria.trim().toLowerCase() === nombre.trim().toLowerCase());
     if (filtradas.length === 0) {
         resultado.innerHTML = `<div class="alert alert-light border text-center text-muted small py-3" style="border-radius: 12px;">No hay palabras en la categoría <strong>${nombre}</strong> todavía.</div>`;
+        scrollAlPrimerResultado(resultado);
         return;
     }
-    resultado.innerHTML = `<h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">Categoría: ${nombre}</h6>`;
+    // Se arma todo el HTML en una sola variable y se asigna de una vez
+    // (en vez de "resultado.innerHTML += ..." dentro del forEach) para
+    // evitar múltiples reflujos/reflows mientras se insertan las tarjetas:
+    // eso ayudaba a que el navegador reajustara el scroll a medias y el
+    // autoscroll terminara "a mitad de camino" o al final de la lista.
+    let htmlResultado = `<h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">Categoría: ${nombre}</h6>`;
     filtradas.forEach(p => {
-        resultado.innerHTML += `
+        htmlResultado += `
         <div class="card mb-2 palabra-card shadow-sm animate-fade-in" style="border-radius: 10px;">
             <div class="card-body p-2 d-flex justify-content-between align-items-center">
                 <div><h6 class="mb-0 fw-bold text-primary">${p.palabra}</h6><small class="text-muted">${p.categoria.trim()}</small></div>
@@ -2421,7 +2546,8 @@ function filtrarPorCategoriaDiccionario(nombre){
             </div>
         </div>`;
     });
-    resultado.scrollIntoView({ behavior: "smooth", block: "start" });
+    resultado.innerHTML = htmlResultado;
+    scrollAlPrimerResultado(resultado);
 }
 window.filtrarPorCategoriaDiccionario = filtrarPorCategoriaDiccionario;
 
@@ -2642,6 +2768,7 @@ function mostrarCategoria(nombre){
         html += `<div class="card mb-2 palabra-card shadow-sm animate-fade-in" style="border-radius: 10px;"><div class="card-body p-2 d-flex justify-content-between align-items-center"><div class="sugerencia-fila">${generarMiniaturaVocabulario(p)}<div class="sugerencia-texto"><h6 class="mb-0 fw-bold text-primary">${p.palabra}</h6></div></div><button class="btn btn-sm btn-primary py-1 px-3 fw-bold" onclick="mostrarPalabraPorNombreUnificado('${p.palabra.replace(/'/g, "\\'")}')">Ver Seña</button></div></div>`;
     });
     resultadoCategorias.innerHTML = html;
+    scrollAlPrimerResultado(resultadoCategorias);
 }
 
 // Igual que mostrarPalabraPorNombre(), pero también busca en el banco

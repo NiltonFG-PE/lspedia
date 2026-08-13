@@ -1975,31 +1975,47 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
 </style>
 
 <script>
-    // Se oculta cuando la página termina de cargar (window.load), con un
-    // mínimo de 250ms visible para que no sea un parpadeo si todo carga
-    // muy rápido, y un máximo de 2s por si algo tarda de más (para que
-    // nunca se quede trabado tapando el sitio, ni en escritorio ni en
-    // móvil).
+    // Se oculta cuando se cumplen DOS condiciones: (1) la página terminó de
+    // cargar sus recursos (window.load) y (2) script.js ya sabe si hay
+    // datos para mostrar o no (evento "lspedia:datosListos", disparado en
+    // cargarPalabrasJson tras cargar de la red, de la copia guardada, o
+    // tras agotar los reintentos). Antes el splash se ocultaba solo con
+    // window.load + un máximo fijo de 2s, SIN esperar a esos datos: en
+    // conexiones lentas eso hacía que el splash desapareciera antes de que
+    // "Seña del día" y "Categorías" tuvieran contenido, dejándolos vacíos
+    // (o mostrando el aviso de error) a la vista.
+    //
+    // Se mantiene un mínimo de 250ms (para que no sea un parpadeo si todo
+    // carga muy rápido) y un máximo de seguridad más generoso que antes
+    // (8s: cubre los reintentos automáticos de cargarPalabrasJson), para
+    // que el splash nunca se quede trabado tapando el sitio para siempre.
     (function () {
         const inicio = Date.now();
         const MINIMO_MS = 250;
-        const MAXIMO_MS = 2000;
+        const MAXIMO_MS = 8000;
+        let paginaCargada = false;
+        let datosListos = false;
+        let yaOculto = false;
 
         function ocultarSplash() {
+            if (yaOculto) return;
             const splash = document.getElementById("splashScreen");
             if (!splash || splash.classList.contains("splash-oculto")) return;
+            yaOculto = true;
             splash.classList.add("splash-oculto");
             setTimeout(() => splash.remove(), 260);
         }
 
         function intentarOcultar() {
+            if (!paginaCargada || !datosListos) return;
             const transcurrido = Date.now() - inicio;
             const espera = Math.max(0, MINIMO_MS - transcurrido);
             setTimeout(ocultarSplash, espera);
         }
 
-        window.addEventListener("load", intentarOcultar);
-        setTimeout(ocultarSplash, MAXIMO_MS); // respaldo de seguridad
+        window.addEventListener("load", () => { paginaCargada = true; intentarOcultar(); });
+        document.addEventListener("lspedia:datosListos", () => { datosListos = true; intentarOcultar(); });
+        setTimeout(ocultarSplash, MAXIMO_MS); // respaldo de seguridad: nunca se queda trabado
     })();
 </script>
     <nav class="navbar navbar-expand-xl navbar-dark bg-primary shadow-sm py-2 d-flex">
@@ -2117,9 +2133,9 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
                             <span class="dia-rect-label" id="labelSenalDelDia">✨ Seña de hoy</span>
                             <button type="button" class="dia-rect-nav-btn d-none" id="btnSenalSiguiente" title="Volver a hoy" aria-label="Volver a la seña de hoy">▶</button>
                         </div>
-                        <span class="badge dia-rect-badge" id="categoriaDelDia"></span>
-                        <h4 class="dia-rect-titulo" id="tituloDelDia"></h4>
-                        <p class="dia-rect-desc" id="descripcionDelDia"></p>
+                        <span class="badge dia-rect-badge" id="categoriaDelDia">Cargando...</span>
+                        <h4 class="dia-rect-titulo" id="tituloDelDia">Cargando la palabra de hoy…</h4>
+                        <p class="dia-rect-desc" id="descripcionDelDia">Un momento, estamos trayendo el contenido.</p>
                         <button class="btn dia-rect-btn" id="btnVerDelDia">Ver ahora</button>
                     </div>
                 </div>
@@ -2254,7 +2270,12 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
                     <span class="categorias-seccion-icono">📁</span>
                     <span class="categorias-seccion-titulo">Categorías</span>
                 </div>
-                <div id="panelCategoriasDiccionario" class="row g-2 mb-4"></div>
+                <div id="panelCategoriasDiccionario" class="row g-2 mb-4">
+                    <div class="col-12 text-center text-muted small py-3" id="categoriasCargandoPlaceholder">
+                        <div class="spinner-border spinner-border-sm text-primary me-2" role="status" aria-hidden="true"></div>
+                        Cargando categorías…
+                    </div>
+                </div>
             </div>
         </div>
 

@@ -12,6 +12,20 @@
     --radius-main: 8px;
 }
 
+/* Evita el "scroll anchoring" del navegador en TODO el documento: al
+   tocar una tarjeta de Categorías, el contenido se inserta en
+   #resultado, que está MÁS ARRIBA que las tarjetas que el usuario está
+   viendo en pantalla. Sin esto, el navegador detecta ese cambio de
+   altura fuera de vista y reajusta el scroll solo para "compensarlo" y
+   que nada se mueva visualmente, lo que cancelaba (o desviaba) el
+   scroll hecho en JS (scrollAlPrimerResultado en script.js). Se aplica
+   a html Y body (no solo a body) porque, según el navegador y el modo
+   de renderizado, el elemento que realmente scrollea la página puede
+   ser cualquiera de los dos. */
+html, body {
+    overflow-anchor: none;
+}
+
 body {
     background-color: var(--background-color);
     color: var(--text-main);
@@ -344,7 +358,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Categorías */
-.categoria-card { cursor: pointer; }
+.categoria-card { cursor: pointer; transition: transform 0.22s ease-in-out, box-shadow 0.22s ease-in-out, filter 0.22s ease-in-out; }
 .categoria-card h6 { font-size: 0.9rem; margin: 0; font-weight: 600; }
 .categoria-card p { font-size: 11px; margin: 0; color: var(--text-muted); }
 .categoria-card:hover { background: #f1f5f9; }
@@ -1266,4 +1280,135 @@ body.nosotros-pantalla-completa-activa {
     width: 15px;
     height: 15px;
     flex-shrink: 0;
+}
+
+/* ============================================================
+   Tarjetas de CATEGORÍAS en escritorio: ocultar descripción,
+   mantener el contador de palabras.
+   ============================================================ */
+@media (min-width: 577px) {
+    .categoria-dicc-desc {
+        display: none !important;
+    }
+}
+
+/* ============================================================
+   Tarjetas de CATEGORÍAS en móvil: 3 por fila, más compactas,
+   sin descripción (el contador de palabras sigue visible).
+   ============================================================ */
+@media (max-width: 576px) {
+    /* 3 columnas en móvil (sobreescribe col-6 que da JS) */
+    #panelCategoriasDiccionario > div {
+        width: 33.3333% !important;
+        flex: 0 0 33.3333% !important;
+        max-width: 33.3333% !important;
+    }
+
+    /* Tarjeta más compacta */
+    .categoria-dicc-card {
+        padding: 10px 8px;
+        min-height: 100px;
+        border-radius: 12px;
+    }
+
+    /* Ícono más pequeño */
+    .categoria-dicc-icono {
+        font-size: 1.6rem;
+        margin-bottom: 4px;
+    }
+    .categoria-dicc-icono-img {
+        width: 34px;
+        height: 34px;
+        margin-bottom: 4px;
+    }
+
+    /* Nombre ligeramente más pequeño */
+    .categoria-dicc-nombre {
+        font-size: 0.78rem;
+    }
+
+    /* Ocultar solo la descripción (el contador de palabras sigue visible) */
+    .categoria-dicc-desc {
+        display: none !important;
+    }
+
+    /* Flecha más pequeña */
+    .categoria-dicc-flecha {
+        width: 20px;
+        height: 20px;
+        font-size: 11px;
+        right: 7px;
+        bottom: 7px;
+    }
+}
+/* ============================================================
+   Animación de entrada escalonada para tarjetas de categorías
+   (diccionario y vocabulario): cada tarjeta aparece desde abajo
+   con un leve retraso según su posición en el grid.
+   ============================================================ */
+.categoria-dicc-card,
+.categoria-card {
+    animation: catCardEntrada 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Retrasos escalonados: nth-child sobre el col wrapper */
+#panelCategoriasDiccionario > div:nth-child(1)  .categoria-dicc-card,
+#panelCategorias            > div:nth-child(1)  .categoria-card { animation-delay: 0.03s; }
+#panelCategoriasDiccionario > div:nth-child(2)  .categoria-dicc-card,
+#panelCategorias            > div:nth-child(2)  .categoria-card { animation-delay: 0.07s; }
+#panelCategoriasDiccionario > div:nth-child(3)  .categoria-dicc-card,
+#panelCategorias            > div:nth-child(3)  .categoria-card { animation-delay: 0.11s; }
+#panelCategoriasDiccionario > div:nth-child(4)  .categoria-dicc-card,
+#panelCategorias            > div:nth-child(4)  .categoria-card { animation-delay: 0.15s; }
+#panelCategoriasDiccionario > div:nth-child(5)  .categoria-dicc-card,
+#panelCategorias            > div:nth-child(5)  .categoria-card { animation-delay: 0.19s; }
+#panelCategoriasDiccionario > div:nth-child(6)  .categoria-dicc-card,
+#panelCategorias            > div:nth-child(6)  .categoria-card { animation-delay: 0.23s; }
+#panelCategoriasDiccionario > div:nth-child(7)  .categoria-dicc-card,
+#panelCategorias            > div:nth-child(7)  .categoria-card { animation-delay: 0.27s; }
+#panelCategoriasDiccionario > div:nth-child(8)  .categoria-dicc-card,
+#panelCategorias            > div:nth-child(8)  .categoria-card { animation-delay: 0.31s; }
+#panelCategoriasDiccionario > div:nth-child(9)  .categoria-dicc-card,
+#panelCategorias            > div:nth-child(9)  .categoria-card { animation-delay: 0.34s; }
+#panelCategoriasDiccionario > div:nth-child(n+10) .categoria-dicc-card,
+#panelCategorias            > div:nth-child(n+10) .categoria-card { animation-delay: 0.37s; }
+
+@keyframes catCardEntrada {
+    from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Hover: elevación + sombra de color + rebote del ícono */
+.categoria-dicc-card:hover,
+.categoria-card:hover {
+    transform: translateY(-5px) scale(1.03) !important;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.13) !important;
+    filter: saturate(1.15) brightness(1.02);
+}
+
+/* El ícono sube un poco más que la tarjeta (efecto "flotante") */
+.categoria-dicc-card:hover .categoria-dicc-icono,
+.categoria-dicc-card:hover .categoria-dicc-icono-img {
+    animation: catIconoFlotante 0.6s ease-in-out;
+}
+
+@keyframes catIconoFlotante {
+    0%   { transform: translateY(0); }
+    40%  { transform: translateY(-7px); }
+    70%  { transform: translateY(-3px); }
+    100% { transform: translateY(0); }
+}
+
+/* Clic: pequeño "press" táctil */
+.categoria-dicc-card:active,
+.categoria-card:active {
+    transform: translateY(-1px) scale(0.98) !important;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.10) !important;
+    transition-duration: 0.1s;
 }
