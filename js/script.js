@@ -2407,6 +2407,54 @@ function infoCategoriaDiccionario(nombre, indiceFallback){
 // Cuántas categorías se muestran de entrada (el resto queda oculto detrás
 // de la tarjeta "Ver todas las categorías", que SIEMPRE se muestra al
 // final del panel, aunque ya quepan todas de entrada).
+// ============================================================
+// ANIMACIÓN DE ENTRADA POR SCROLL (IntersectionObserver)
+// ------------------------------------------------------------
+// Antes, las tarjetas de categorías (Diccionario/Vocabulario)
+// se animaban una sola vez, apenas se creaban en el DOM. Eso
+// funcionaba bien en escritorio (donde se ven casi todas de
+// entrada) pero en móvil la animación terminaba mientras la
+// tarjeta seguía fuera de pantalla, así que el usuario nunca
+// llegaba a verla.
+//
+// Ahora cada tarjeta arranca oculta (ver estilos.css) y
+// observarEntradaAnimada() la observa; cuando entra en el
+// viewport se le agrega la clase ".en-vista", que dispara la
+// animación vía CSS. Se usa el mismo mecanismo para Diccionario,
+// Vocabulario, Herramientas (menú móvil) y Sobre Nosotros.
+// ============================================================
+const observerEntradaAnimada = ("IntersectionObserver" in window)
+    ? new IntersectionObserver((entradas) => {
+        entradas.forEach((entrada) => {
+            if (entrada.isIntersecting) {
+                entrada.target.classList.add("en-vista");
+                observerEntradaAnimada.unobserve(entrada.target);
+            }
+        });
+    }, { threshold: 0.15, rootMargin: "0px 0px -8% 0px" })
+    : null;
+
+function observarEntradaAnimada(el){
+    if (!el) return;
+    if (observerEntradaAnimada) {
+        observerEntradaAnimada.observe(el);
+    } else {
+        // Navegador sin soporte: mostrar directamente, sin animación.
+        el.classList.add("en-vista");
+    }
+}
+
+// Herramientas (menú móvil) y Sobre Nosotros ya están en el HTML desde
+// el inicio (no se crean por JS), así que sus tarjetas se observan una
+// sola vez apenas carga la página.
+function observarTarjetasEstaticas(){
+    document.querySelectorAll("#herramientasMenuMovilRow .herr-movil-btn")
+        .forEach(observarEntradaAnimada);
+    document.querySelectorAll("#nosotrosApoyoRow .nosotros-apoyo-card")
+        .forEach(observarEntradaAnimada);
+}
+document.addEventListener("DOMContentLoaded", observarTarjetasEstaticas);
+
 const LIMITE_CATEGORIAS_DICCIONARIO = 5;
 
 // Recuerda si el panel está expandido (mostrando TODAS las categorías) o
@@ -2455,6 +2503,7 @@ function renderCategoriasDiccionario(){
             </div>`;
         card.querySelector(".categoria-dicc-card").onclick = () => filtrarPorCategoriaDiccionario(nombre);
         panelCategoriasDiccionario.appendChild(card);
+        observarEntradaAnimada(card.querySelector(".categoria-dicc-card"));
     });
 
     // Tarjeta "Ver todas las categorías" / "Ver menos": SIEMPRE se
@@ -2477,6 +2526,7 @@ function renderCategoriasDiccionario(){
         renderCategoriasDiccionario();
     };
     panelCategoriasDiccionario.appendChild(cardVerTodas);
+    observarEntradaAnimada(cardVerTodas.querySelector(".categoria-dicc-card"));
 }
 
 // Hace scroll hasta el elemento indicado, esperando primero a que el
@@ -2522,24 +2572,46 @@ function scrollAlPrimerResultado(el){
         requestAnimationFrame(medirYEsperar);
     }
 
-    function hacerScroll(){
+    function calcularDestino(){
         const yDestino = el.getBoundingClientRect().top + (window.pageYOffset || document.documentElement.scrollTop || 0);
         // Pequeño margen arriba (16px) para que la tarjeta no quede
         // pegada al borde superior de la pantalla.
-        window.scrollTo({ top: Math.max(yDestino - 16, 0), behavior: "smooth" });
+        return Math.max(yDestino - 16, 0);
+    }
 
-        // Refuerzo: en algunos navegadores móviles (sobre todo iOS Safari)
-        // un scroll "smooth" pedido muy pegado al toque/clic que lo originó
-        // puede quedar cancelado o "absorbido" sin que la pantalla se mueva.
-        // Se verifica un poco después si el resultado realmente quedó a la
-        // vista y, si no, se reintenta una vez más.
+    function hacerScroll(){
+        // El salto inicial va con behavior:"auto" (instantáneo), no
+        // "smooth". #resultado está antes que las tarjetas de categorías
+        // en el HTML: al tocar una tarjeta, #resultado cambia de alto
+        // estando arriba/fuera de pantalla, y eso dispara el "scroll
+        // anchoring" del navegador (el navegador reajusta el scroll solo
+        // para compensar ese cambio de alto). Un scroll "smooth" pedido en
+        // ese instante queda peleando cuadro a cuadro contra ese reajuste
+        // automático y termina cancelado o sin notarse. Uno instantáneo no
+        // deja ventana para esa pelea: la posición queda fijada de una vez
+        // (además, en estilos.css se desactivó overflow-anchor en <html>
+        // para eliminar el reajuste automático de raíz).
+        window.scrollTo({ top: calcularDestino(), behavior: "auto" });
+
+        // Primer refuerzo (150ms): si por lo que sea el salto instantáneo
+        // no dejó el resultado a la vista, se reintenta con un toque
+        // "smooth" ya sin el riesgo de la primera pelea.
         setTimeout(() => {
             const bounds = el.getBoundingClientRect();
             if (bounds.top < -5 || bounds.top > 120) {
-                const yDestino2 = bounds.top + (window.pageYOffset || document.documentElement.scrollTop || 0);
-                window.scrollTo({ top: Math.max(yDestino2 - 16, 0), behavior: "smooth" });
+                window.scrollTo({ top: calcularDestino(), behavior: "smooth" });
             }
-        }, 300);
+        }, 150);
+
+        // Segundo refuerzo (500ms), instantáneo: por si íconos o fuentes
+        // que siguen cargando después del primer chequeo volvieron a
+        // mover el layout y el resultado quedó otra vez fuera de vista.
+        setTimeout(() => {
+            const bounds = el.getBoundingClientRect();
+            if (bounds.top < -5 || bounds.top > 120) {
+                window.scrollTo({ top: calcularDestino(), behavior: "auto" });
+            }
+        }, 500);
     }
 
     requestAnimationFrame(medirYEsperar);
@@ -2618,6 +2690,7 @@ function mostrarCategorias(){
         card.innerHTML = `<div class="card h-100 shadow-sm categoria-card" style="border-radius: 16px; border: 2px solid ${color.borde}; background-color: ${color.fondo};"><div class="card-body text-center py-4">${iconoHtml}<h5 class="mb-2 fw-bold" style="color: ${color.texto}; font-size: 1.25rem;">${nombre}</h5><p class="mb-0 fw-semibold" style="color: ${color.texto}; opacity: 0.85; font-size: 1rem;">${cantidad} palabras</p></div></div>`;
         card.onclick = () => mostrarCategoria(nombre);
         panelCategorias.appendChild(card);
+        observarEntradaAnimada(card.querySelector(".categoria-card"));
     });
     categoriaActualMostrada = null;
 }

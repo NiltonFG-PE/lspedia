@@ -1343,13 +1343,45 @@ body.nosotros-pantalla-completa-activa {
 }
 /* ============================================================
    Animación de entrada escalonada para tarjetas de categorías
-   (diccionario y vocabulario): cada tarjeta aparece desde abajo
-   con un leve retraso según su posición en el grid.
+   (diccionario y vocabulario), Herramientas (menú móvil) y
+   Sobre Nosotros: cada tarjeta aparece desde abajo con un leve
+   retraso según su posición en el grid.
+
+   A diferencia de la versión anterior (que animaba SIEMPRE al
+   crear la tarjeta), ahora la tarjeta arranca oculta y solo se
+   dispara la animación cuando entra en pantalla (clase ".en-vista",
+   agregada por un IntersectionObserver en script.js). Esto es lo
+   que hace que también se vea en móvil: antes, si la tarjeta se
+   creaba fuera de la vista (más abajo del scroll), la animación
+   ya había terminado para cuando el usuario llegaba a esa sección.
    ============================================================ */
 .categoria-dicc-card,
-.categoria-card {
+.categoria-card,
+.herr-movil-btn,
+.nosotros-apoyo-card {
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+}
+.categoria-dicc-card.en-vista,
+.categoria-card.en-vista,
+.herr-movil-btn.en-vista,
+.nosotros-apoyo-card.en-vista {
     animation: catCardEntrada 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+/* Nota: si el navegador no soporta IntersectionObserver, script.js
+   agrega ".en-vista" de inmediato al crear cada tarjeta (ver
+   observarEntradaAnimada), así nunca quedan invisibles. */
+
+/* Retrasos escalonados para Herramientas (3 botones, menú móvil) */
+#herramientasMenuMovilRow > div:nth-child(1) .herr-movil-btn { animation-delay: 0.04s; }
+#herramientasMenuMovilRow > div:nth-child(2) .herr-movil-btn { animation-delay: 0.10s; }
+#herramientasMenuMovilRow > div:nth-child(3) .herr-movil-btn { animation-delay: 0.16s; }
+
+/* Retrasos escalonados para Sobre Nosotros (4 tarjetas de apoyo) */
+#nosotrosApoyoRow > div:nth-child(1) .nosotros-apoyo-card { animation-delay: 0.03s; }
+#nosotrosApoyoRow > div:nth-child(2) .nosotros-apoyo-card { animation-delay: 0.08s; }
+#nosotrosApoyoRow > div:nth-child(3) .nosotros-apoyo-card { animation-delay: 0.13s; }
+#nosotrosApoyoRow > div:nth-child(4) .nosotros-apoyo-card { animation-delay: 0.18s; }
 
 /* Retrasos escalonados: nth-child sobre el col wrapper */
 #panelCategoriasDiccionario > div:nth-child(1)  .categoria-dicc-card,
@@ -1411,4 +1443,16 @@ body.nosotros-pantalla-completa-activa {
     transform: translateY(-1px) scale(0.98) !important;
     box-shadow: 0 4px 10px rgba(15, 23, 42, 0.10) !important;
     transition-duration: 0.1s;
+}
+
+/* Fix autoscroll movil: el navegador (sobre todo Chrome/Android) reajusta
+   el scroll solo cuando cambia el alto de un elemento que esta arriba o
+   cerca del viewport (CSS "scroll anchoring"). Como #resultado esta antes
+   que las tarjetas de categorias en el HTML, al tocar una tarjeta el
+   contenido de #resultado cambia de alto mientras esta fuera de pantalla
+   (arriba), y el navegador "compensa" el scroll automaticamente peleando
+   contra el scrollTo() manual de scrollAlPrimerResultado() en script.js.
+   Desactivarlo aqui evita ese conflicto. */
+html {
+    overflow-anchor: none;
 }
