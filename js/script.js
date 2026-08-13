@@ -2248,6 +2248,21 @@ function obtenerImagenesDeApoyo(p){
 const panelCategoriasDiccionario = document.getElementById("panelCategoriasDiccionario");
 
 const CATEGORIAS_DICCIONARIO_INFO = {
+    "ciencia": {
+        icono: "img/categorias/ciencia.png",
+        descripcion: "Explora estas palabras",
+        fondo: "#e0f2fe", borde: "#bae6fd", texto: "#0369a1"
+    },
+    "comunicación": {
+        icono: "img/categorias/comunicacion.png",
+        descripcion: "Explora estas palabras",
+        fondo: "#fce7f3", borde: "#fbcfe8", texto: "#be185d"
+    },
+    "sociedad": {
+        icono: "img/categorias/sociedad.png",
+        descripcion: "Explora estas palabras",
+        fondo: "#e0e7ff", borde: "#c7d2fe", texto: "#4338ca"
+    },
     "cortesía": {
         icono: "img/categorias/cortesia.png",
         descripcion: "Palabras para usar a diario",
