@@ -1064,13 +1064,31 @@ function buscarPalabras(){
         return;
     }document.getElementById("senalDelDia").style.display = "none";
 
-    const encontrados = App.datos
-    .filter(p => {
-        const matchPrincipal = p.palabra.toLowerCase().includes(texto);
-        const matchVariantes = p.variantes ? p.variantes.toLowerCase().includes(texto) : false;
-        return matchPrincipal || matchVariantes;
-    })
-    .slice(0,10);
+    // Prioriza las palabras que EMPIEZAN con el texto escrito (ej. "ab" ->
+    // "Abismo" antes que "Vocabulario"), y dentro de cada grupo, ordena
+    // alfabéticamente. Las que solo contienen el texto en otra parte de la
+    // palabra (o en una variante) van después, como respaldo.
+    const empiezanConTexto = [];
+    const contienenTexto = [];
+    App.datos.forEach(p => {
+        const palabraLower = p.palabra.toLowerCase();
+        const variantesLower = p.variantes ? p.variantes.toLowerCase() : "";
+        const empiezaPalabra = palabraLower.startsWith(texto);
+        const empiezaVariante = variantesLower.split(',').map(v => v.trim()).some(v => v.startsWith(texto));
+        const contienePalabra = palabraLower.includes(texto);
+        const contieneVariante = variantesLower.includes(texto);
+
+        if (empiezaPalabra || empiezaVariante) {
+            empiezanConTexto.push(p);
+        } else if (contienePalabra || contieneVariante) {
+            contienenTexto.push(p);
+        }
+    });
+    const ordenarAlfabetico = (a, b) => a.palabra.localeCompare(b.palabra, "es");
+    empiezanConTexto.sort(ordenarAlfabetico);
+    contienenTexto.sort(ordenarAlfabetico);
+
+    const encontrados = empiezanConTexto.concat(contienenTexto).slice(0, 10);
 
     sugerencias.style.display = "block";
 
@@ -2332,6 +2350,8 @@ function renderCategoriasDiccionario(){
         const iconoHtml = info.icono
             ? `<img src="${info.icono}" class="categoria-dicc-icono-img" alt="${nombre}" loading="lazy">`
             : `<span class="categoria-dicc-icono">📁</span>`;
+        const cantidad = (App.datos || []).filter(p => p.categoria && p.categoria.trim().toLowerCase() === nombre.toLowerCase()).length;
+        const cantidadTexto = cantidad === 1 ? "1 palabra" : `${cantidad} palabras`;
         const card = document.createElement("div");
         card.className = "col-6 col-md-4 col-lg-2 animate-fade-in";
         card.innerHTML = `
@@ -2340,6 +2360,7 @@ function renderCategoriasDiccionario(){
                 <div>
                     <div class="categoria-dicc-nombre" style="color: ${info.texto};">${nombre}</div>
                     <div class="categoria-dicc-desc">${info.descripcion}</div>
+                    <div class="categoria-dicc-cantidad" style="color: ${info.texto};">${cantidadTexto}</div>
                 </div>
                 <span class="categoria-dicc-flecha" style="color: ${info.texto};">›</span>
             </div>`;
@@ -2404,6 +2425,18 @@ function filtrarPorCategoriaDiccionario(nombre){
 }
 window.filtrarPorCategoriaDiccionario = filtrarPorCategoriaDiccionario;
 
+// --- ICONOS DE CATEGORÍAS DE VOCABULARIO ---
+// Igual que CATEGORIAS_DICCIONARIO_INFO, pero solo para el ícono: las
+// categorías de Vocabulario (Hoja 2) ya usan la paleta de colores
+// genérica (COLORES_CATEGORIAS) según su posición, así que aquí solo se
+// mapea el nombre -> ruta de imagen. Cualquier categoría nueva que
+// todavía no tenga ícono cae en un emoji de libro por defecto.
+const ICONOS_CATEGORIA_VOCABULARIO = {
+    "adjetivos": "img/categorias/adjetivos.png",
+    "emociones": "img/categorias/emociones.png",
+    "verbos": "img/categorias/verbos.png"
+};
+
 function mostrarCategorias(){
     resultado.innerHTML=""; panelCategorias.innerHTML=""; ultimasPalabras.innerHTML = ""; ocultarPanelesGuardados();
     if (window.QuizV2 && typeof QuizV2.asegurarBancoCargado === "function") {
@@ -2414,9 +2447,13 @@ function mostrarCategorias(){
     categories.forEach((nombre, indice)=>{
         const cantidad = datosVocabulario.filter(p => p.categoria.trim() === nombre).length;
         const color = COLORES_CATEGORIAS[indice % COLORES_CATEGORIAS.length];
+        const icono = ICONOS_CATEGORIA_VOCABULARIO[nombre.trim().toLowerCase()];
+        const iconoHtml = icono
+            ? `<img src="${icono}" alt="${nombre}" loading="lazy" style="width: 48px; height: 48px; object-fit: contain; margin-bottom: 8px;">`
+            : `<span style="font-size: 2rem; display: block; margin-bottom: 8px;">📖</span>`;
         const card = document.createElement("div");
         card.className = "col-6 col-md-3 animate-fade-in";
-        card.innerHTML = `<div class="card h-100 shadow-sm categoria-card" style="border-radius: 16px; border: 2px solid ${color.borde}; background-color: ${color.fondo};"><div class="card-body text-center py-4"><h5 class="mb-2 fw-bold" style="color: ${color.texto}; font-size: 1.25rem;">${nombre}</h5><p class="mb-0 fw-semibold" style="color: ${color.texto}; opacity: 0.85; font-size: 1rem;">${cantidad} palabras</p></div></div>`;
+        card.innerHTML = `<div class="card h-100 shadow-sm categoria-card" style="border-radius: 16px; border: 2px solid ${color.borde}; background-color: ${color.fondo};"><div class="card-body text-center py-4">${iconoHtml}<h5 class="mb-2 fw-bold" style="color: ${color.texto}; font-size: 1.25rem;">${nombre}</h5><p class="mb-0 fw-semibold" style="color: ${color.texto}; opacity: 0.85; font-size: 1rem;">${cantidad} palabras</p></div></div>`;
         card.onclick = () => mostrarCategoria(nombre);
         panelCategorias.appendChild(card);
     });
@@ -2508,13 +2545,29 @@ function buscarEnCategorias(){
         return;
     }
 
-    const coincidencias = obtenerDatosVocabulario()
-        .filter(p => {
-            const matchPrincipal = p.palabra.toLowerCase().includes(texto);
-            const matchVariantes = p.variantes ? p.variantes.toLowerCase().includes(texto) : false;
-            return matchPrincipal || matchVariantes;
-        })
-        .slice(0, 10);
+    // Misma prioridad que buscarPalabras(): primero las que EMPIEZAN con
+    // el texto, luego las que solo lo contienen en otra parte.
+    const empiezanConTextoCat = [];
+    const contienenTextoCat = [];
+    obtenerDatosVocabulario().forEach(p => {
+        const palabraLower = p.palabra.toLowerCase();
+        const variantesLower = p.variantes ? p.variantes.toLowerCase() : "";
+        const empiezaPalabra = palabraLower.startsWith(texto);
+        const empiezaVariante = variantesLower.split(',').map(v => v.trim()).some(v => v.startsWith(texto));
+        const contienePalabra = palabraLower.includes(texto);
+        const contieneVariante = variantesLower.includes(texto);
+
+        if (empiezaPalabra || empiezaVariante) {
+            empiezanConTextoCat.push(p);
+        } else if (contienePalabra || contieneVariante) {
+            contienenTextoCat.push(p);
+        }
+    });
+    const ordenarAlfabeticoCat = (a, b) => a.palabra.localeCompare(b.palabra, "es");
+    empiezanConTextoCat.sort(ordenarAlfabeticoCat);
+    contienenTextoCat.sort(ordenarAlfabeticoCat);
+
+    const coincidencias = empiezanConTextoCat.concat(contienenTextoCat).slice(0, 10);
 
     sugerenciasCategorias.style.display = "block";
 
