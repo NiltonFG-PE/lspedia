@@ -1435,7 +1435,7 @@
     "definicion": "Profesión y arte de enseñar. La actividad de ser profesor.",
     "categoria": "Educación",
     "video": "",
-    "imagen": "Un profesor de frente a estudiantes con símbolos de aprendizaje",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1445,7 +1445,7 @@
     "definicion": "Manera de ver o aproximarse a un problema o tema.",
     "categoria": "Educación",
     "video": "",
-    "imagen": "Una lupa enfocada en un objetivo, líneas de concentración",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1455,7 +1455,7 @@
     "definicion": "Lista de cosas en orden, mencionando cada una.",
     "categoria": "Educación",
     "video": "",
-    "imagen": "Números del 1 al 5 con ítems al lado, estilo organizacional",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1465,7 +1465,7 @@
     "definicion": "Equivocación o falta que se comete sin intención.",
     "categoria": "Educación",
     "video": "",
-    "imagen": "Una X roja sobre algo incorrecto, símbolo de error",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1475,7 +1475,7 @@
     "definicion": "Situación o contexto donde ocurren los eventos.",
     "categoria": "Educación",
     "video": "",
-    "imagen": "Un escenario de teatro o un lugar donde ocurren eventos",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1485,7 +1485,7 @@
     "definicion": "Dedicarse profundamente a aprender sobre un área específica.",
     "categoria": "Educación",
     "video": "",
-    "imagen": "Un árbol que se divide en ramas especializadas diferentes",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1495,7 +1495,7 @@
     "definicion": "Forma en que están organizados y conectados los elementos de algo.",
     "categoria": "Educación",
     "video": "",
-    "imagen": "Una construcción o esqueleto mostrando cómo están conectadas las partes",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1505,7 +1505,7 @@
     "definicion": "Acción de aprender y entender un tema mediante investigación.",
     "categoria": "Educación",
     "video": "",
-    "imagen": "Libros abiertos y notas, alguien investigando con lupa",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1515,7 +1515,7 @@
     "definicion": "Análisis de algo para determinar su valor o calidad.",
     "categoria": "Educación",
     "video": "",
-    "imagen": "Una lista de verificación o una rúbrica de evaluación",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1525,7 +1525,7 @@
     "definicion": "Prueba o demostración clara que algo es verdadero.",
     "categoria": "Educación",
     "video": "",
-    "imagen": "Piezas de un rompecabezas encajando o huella de investigación",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1535,7 +1535,7 @@
     "definicion": "Precisión completa. Estar correcto sin errores.",
     "categoria": "Educación",
     "video": "",
-    "imagen": "Un blanco con flecha perfectamente en el centro",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1545,7 +1545,7 @@
     "definicion": "Prueba para evaluar el conocimiento de alguien sobre un tema.",
     "categoria": "Educación",
     "video": "",
-    "imagen": "Un papel de examen con preguntas y espacios para responder",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1555,7 +1555,7 @@
     "definicion": "Acción de aclarar algo para que se entienda mejor.",
     "categoria": "Educación",
     "video": "",
-    "imagen": "Una bombilla encendida junto a un símbolo de comprensión",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1565,7 +1565,7 @@
     "definicion": "Presentación pública de ideas, trabajos o productos.",
     "categoria": "Educación",
     "video": "",
-    "imagen": "Una persona presentando ante una audiencia, estilo dinámico",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1575,7 +1575,7 @@
     "definicion": "Capacidad o habilidad natural de una persona. También es una división de la universidad.",
     "categoria": "Educación",
     "video": "",
-    "imagen": "Un edificio universitario o un símbolo de capacidad mental",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1585,7 +1585,7 @@
     "definicion": "Estudio de los principios fundamentales sobre la vida, la verdad y el conocimiento.",
     "categoria": "Educación",
     "video": "",
-    "imagen": "Un pensador clásico o un símbolo de pregunta grande",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1595,7 +1595,7 @@
     "definicion": "Propósito o uso de algo. Acción que algo realiza.",
     "categoria": "Educación",
     "video": "",
-    "imagen": "Un objeto realizando su propósito específico",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1605,7 +1605,7 @@
     "definicion": "Manera en que algo trabaja o opera.",
     "categoria": "Educación",
     "video": "",
-    "imagen": "Engranajes o máquinas trabajando juntas en armonía",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1615,7 +1615,7 @@
     "definicion": "Acción de establecer las bases o razones sólidas de algo.",
     "categoria": "Educación",
     "video": "",
-    "imagen": "Columnas o pilares sosteniendo una estructura",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1625,7 +1625,17 @@
     "definicion": "Nivel o escalón en una serie. Diploma o título educativo.",
     "categoria": "Educación",
     "video": "",
-    "imagen": "Una escalera o podio mostrando diferentes niveles de logro",
+    "imagen": "",
+    "senasugerida": "",
+    "": ""
+  },
+  {
+    "palabra": "Uniformidad",
+    "variantes": "Homogeneidad, Regularidad, Igualdad, Consistencia, Estandarizació",
+    "definicion": "Cualidad de mantener las mismas características, forma o manera, sin cambios ni diferencias entre sus partes.\r\n*Ejemplo:*\r\n*-En un colegio:* Todos los estudiantes llevan el mismo uniforme, lo que da uniformidad al grupo.\r\n*-Las reglas de un juego:* Si una regla aplica igual para todos los jugadores y en todo momento del juego, hay uniformidad. Nadie tiene ventajas ni excepciones.\r\n*-Ciencia, Industria, Cocina:* Distribución igualitaria de una propiedad o material en una superficie o producto. \r\nMezcla uniforme es aquella en la que todos sus ingredientes quedan distribuidos de manera pareja, de modo que cualquier parte de la mezcla tiene una composición muy similar.\r\n",
+    "categoria": "Educación",
+    "video": "W9rQ1fRonOw",
+    "imagen": "https://raw.githubusercontent.com/NiltonFG-PE/lspedia/refs/heads/develop/img/diccionario/uniformidad.png",
     "senasugerida": "",
     "": ""
   },
@@ -1665,7 +1675,7 @@
     "definicion": "Es cuando una persona se siente muy contenta y alegre.\n Ejemplo: Estoy feliz porque aprobé mi examen.",
     "categoria": "Emociones",
     "video": "",
-    "imagen": "Ilustración plana de una persona sonriendo ampliamente con los brazos levantados, estilo flat design, colores brillantes.",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1675,7 +1685,7 @@
     "definicion": "Es cuando una persona se siente mal por algo que le dolió o le hizo daño.\n Ejemplo: Me sentí triste porque mi amigo se mudó a otra ciudad.",
     "categoria": "Emociones",
     "video": "",
-    "imagen": "Ilustración plana de una persona con expresión de tristeza, cabeza baja, estilo flat design, colores fríos.",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1685,7 +1695,7 @@
     "definicion": "Es cuando una persona se molesta mucho por algo que no le gustó.\n Ejemplo: Mi papá se puso enojado porque llegué tarde a casa.",
     "categoria": "Emociones",
     "video": "",
-    "imagen": "Ilustración plana de una persona con el ceño fruncido y brazos cruzados, estilo flat design, colores rojos.",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1695,7 +1705,7 @@
     "definicion": "Es cuando una persona siente miedo por algo peligroso o desconocido.\n Ejemplo: Me asusté cuando escuché un ruido fuerte en la noche.",
     "categoria": "Emociones",
     "video": "",
-    "imagen": "Ilustración plana de una persona con ojos muy abiertos y manos cerca de la cara, estilo flat design.",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1705,7 +1715,7 @@
     "definicion": "Es cuando algo pasa de repente y no lo esperabas.\n Ejemplo: Me quedé sorprendido cuando mis amigos me organizaron una fiesta.",
     "categoria": "Emociones",
     "video": "",
-    "imagen": "Ilustración plana de una persona con la boca y los ojos muy abiertos, estilo flat design, colores vivos.",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1715,7 +1725,7 @@
     "definicion": "Es cuando una persona se siente intranquila antes de algo importante.\n Ejemplo: Estaba nervioso antes de mi entrevista de trabajo.",
     "categoria": "Emociones",
     "video": "",
-    "imagen": "Ilustración plana de una persona sudando y con manos juntas esperando en una silla, estilo flat design.",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1725,7 +1735,7 @@
     "definicion": "Es cuando una persona está calmada, sin preocupaciones.\n Ejemplo: Después de terminar la tarea, me sentí tranquilo.",
     "categoria": "Emociones",
     "video": "",
-    "imagen": "Ilustración plana de una persona sentada relajada con los ojos cerrados, estilo flat design, colores suaves.",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1735,7 +1745,7 @@
     "definicion": "Es cuando el cuerpo o la mente están sin energía y necesitan descansar.\n Ejemplo: Estoy cansado porque trabajé todo el día.",
     "categoria": "Emociones",
     "video": "",
-    "imagen": "Ilustración plana de una persona bostezando con los hombros caídos, estilo flat design, colores apagados.",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1745,7 +1755,7 @@
     "definicion": "Es cuando una persona piensa mucho en un problema y siente inquietud.\n Ejemplo: Estoy preocupado porque mi hijo no ha llegado a casa.",
     "categoria": "Emociones",
     "video": "",
-    "imagen": "Ilustración plana de una persona con la mano en la frente y expresión pensativa, estilo flat design.",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1755,7 +1765,7 @@
     "definicion": "Es cuando una persona siente vergüenza por algo que hizo o le pasó frente a otros.\n Ejemplo: Me sentí avergonzado cuando me equivoqué al hablar en público.",
     "categoria": "Emociones",
     "video": "",
-    "imagen": "Ilustración plana de una persona cubriéndose la cara con las manos, mejillas rojas, estilo flat design.",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1765,7 +1775,7 @@
     "definicion": "Es cuando una persona siente envidia o inseguridad porque otra tiene algo o la atención de alguien.\n Ejemplo: Mi hermano se puso celoso porque le regalaron un juguete a mi otro hermano.",
     "categoria": "Emociones",
     "video": "",
-    "imagen": "Ilustración plana de una persona mirando de reojo con brazos cruzados hacia otra persona con un regalo, estilo flat design.",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1775,7 +1785,7 @@
     "definicion": "Es cuando una persona se siente muy satisfecha por un logro propio o de alguien cercano.\n Ejemplo: Estoy orgulloso de mi hija porque terminó la universidad.",
     "categoria": "Emociones",
     "video": "",
-    "imagen": "Ilustración plana de una persona con el pecho en alto y una sonrisa segura, estilo flat design.",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1785,7 +1795,7 @@
     "definicion": "Es cuando una persona no tiene nada interesante que hacer y el tiempo pasa lento.\n Ejemplo: Me sentí aburrido en casa todo el domingo.",
     "categoria": "Emociones",
     "video": "",
-    "imagen": "Ilustración plana de una persona con la cabeza apoyada en la mano mirando un reloj, estilo flat design.",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1795,7 +1805,7 @@
     "definicion": "Es cuando una persona no entiende bien algo y tiene dudas.\n Ejemplo: Me quedé confundido con las instrucciones del examen.",
     "categoria": "Emociones",
     "video": "",
-    "imagen": "Ilustración plana de una persona rascándose la cabeza con signos de interrogación alrededor, estilo flat design.",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1805,7 +1815,7 @@
     "definicion": "Es cuando una persona siente mucha ilusión y energía por algo que va a pasar.\n Ejemplo: Estoy emocionado porque mañana es mi cumpleaños.",
     "categoria": "Emociones",
     "video": "",
-    "imagen": "Ilustración plana de una persona saltando de alegría con los brazos extendidos, estilo flat design, colores vivos.",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1815,7 +1825,7 @@
     "definicion": "Es cuando una persona no logra algo que intentó varias veces y se siente mal por eso.\n Ejemplo: Me sentí frustrado porque no pude resolver el problema de matemática.",
     "categoria": "Emociones",
     "video": "",
-    "imagen": "Ilustración plana de una persona apretando los puños frente a un papel tachado, estilo flat design.",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1825,7 +1835,7 @@
     "definicion": "Es cuando una persona siente gratitud por algo bueno que recibió.\n Ejemplo: Estoy agradecido con mis papás por su apoyo.",
     "categoria": "Emociones",
     "video": "",
-    "imagen": "Ilustración plana de una persona con la mano en el pecho y una sonrisa cálida, estilo flat design.",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1835,7 +1845,7 @@
     "definicion": "Es cuando una persona está sin compañía, o siente que nadie la acompaña.\n Ejemplo: Me sentí solo cuando mis amigos no me invitaron.",
     "categoria": "Emociones",
     "video": "",
-    "imagen": "Ilustración plana de una persona sentada sola en una banca, estilo flat design, colores fríos.",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1845,7 +1855,7 @@
     "definicion": "Es cuando una persona siente amor romántico por otra persona.\n Ejemplo: Mi hermano está enamorado de su compañera de universidad.",
     "categoria": "Emociones",
     "video": "",
-    "imagen": "Ilustración plana de una persona con ojos en forma de corazón mirando a otra persona, estilo flat design.",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1855,7 +1865,7 @@
     "definicion": "Es cuando una persona tiene mucha presión o trabajo y se siente agotada mentalmente.\n Ejemplo: Estoy estresado porque tengo tres exámenes esta semana.",
     "categoria": "Emociones",
     "video": "",
-    "imagen": "Ilustración plana de una persona rodeada de papeles y relojes, sosteniéndose la cabeza, estilo flat design.",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1865,7 +1875,7 @@
     "definicion": "Sentimiento de estar decepcionado o insatisfecho cuando algo no sale como esperabas.",
     "categoria": "Emociones",
     "video": "",
-    "imagen": "Una persona con expresión de decepción o puño apretado",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1875,7 +1885,7 @@
     "definicion": "Recompensa o satisfacción que sientes cuando logras algo.",
     "categoria": "Emociones",
     "video": "",
-    "imagen": "Una persona sonriendo con una medalla o premio",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1885,7 +1895,7 @@
     "definicion": "Engaño intencional para obtener algo ilícitamente.",
     "categoria": "Ética/Legal",
     "video": "",
-    "imagen": "Un símbolo de advertencia con candado roto",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1895,7 +1905,7 @@
     "definicion": "Esfuerzo y cuidado que pones en hacer bien las cosas.",
     "categoria": "Ética/Trabajo",
     "video": "",
-    "imagen": "Una persona trabajando concentrada en detalles, con símbolos de calidad",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1905,7 +1915,7 @@
     "definicion": "Es la palabra para llamar al padre, el hombre que es tu papá dentro de la familia.\n Ejemplo: Mi papá me lleva al colegio en las mañanas.",
     "categoria": "Familia",
     "video": "",
-    "imagen": "Ilustración plana de un padre sonriente con un niño de la mano, estilo flat design, colores cálidos.",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1915,7 +1925,7 @@
     "definicion": "Es la palabra para llamar a la madre, la mujer que es tu mamá dentro de la familia.\n Ejemplo: Mi mamá cocina muy rico los domingos.",
     "categoria": "Familia",
     "video": "",
-    "imagen": "Ilustración plana de una madre sonriente abrazando a un niño, estilo flat design, colores cálidos.",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1925,7 +1935,7 @@
     "definicion": "Es el hombre que tiene los mismos papás que tú, o uno de los dos.\n Ejemplo: Mi hermano y yo jugamos fútbol todas las tardes.",
     "categoria": "Familia",
     "video": "",
-    "imagen": "Ilustración plana de dos hermanos jugando juntos, estilo flat design, colores alegres.",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1935,7 +1945,7 @@
     "definicion": "Es la mujer que tiene los mismos papás que tú, o uno de los dos.\n Ejemplo: Mi hermana me ayuda con la tarea de matemática.",
     "categoria": "Familia",
     "video": "",
-    "imagen": "Ilustración plana de dos hermanas estudiando juntas en una mesa, estilo flat design.",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1945,7 +1955,7 @@
     "definicion": "Es el papá de tu papá o de tu mamá.\n Ejemplo: Mi abuelo me cuenta historias de cuando era joven.",
     "categoria": "Familia",
     "video": "",
-    "imagen": "Ilustración plana de un abuelo sentado contando una historia a un niño, estilo flat design, colores cálidos.",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1955,7 +1965,7 @@
     "definicion": "Es la mamá de tu papá o de tu mamá.\n Ejemplo: Mi abuela prepara el mejor arroz con pollo.",
     "categoria": "Familia",
     "video": "",
-    "imagen": "Ilustración plana de una abuela cocinando en la cocina junto a un niño, estilo flat design.",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1965,7 +1975,7 @@
     "definicion": "Es el hermano de tu papá o de tu mamá.\n Ejemplo: Mi tío vino a visitarnos el fin de semana.",
     "categoria": "Familia",
     "video": "",
-    "imagen": "Ilustración plana de un hombre adulto abrazando a un niño en una reunión familiar, estilo flat design.",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1975,7 +1985,7 @@
     "definicion": "Es la hermana de tu papá o de tu mamá.\n Ejemplo: Mi tía me regaló un libro por mi cumpleaños.",
     "categoria": "Familia",
     "video": "",
-    "imagen": "Ilustración plana de una mujer adulta entregando un regalo a un niño, estilo flat design.",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1985,7 +1995,7 @@
     "definicion": "Es el hijo de tu tío o tu tía.\n Ejemplo: Fui a la playa con mi primo el sábado.",
     "categoria": "Familia",
     "video": "",
-    "imagen": "Ilustración plana de dos niños jugando juntos en la playa, estilo flat design, colores veraniegos.",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -1995,7 +2005,7 @@
     "definicion": "Es el niño o el hombre que es tuyo, como papá o mamá.\n Ejemplo: Tengo un hijo de cinco años.",
     "categoria": "Familia",
     "video": "",
-    "imagen": "Ilustración plana de unos padres cargando a un bebé sonriente, estilo flat design.",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
@@ -2005,7 +2015,7 @@
     "definicion": "Es el hombre con quien una persona se casó.\n Ejemplo: Mi esposo trabaja en una fábrica.",
     "categoria": "Familia",
     "video": "",
-    "imagen": "Ilustración plana de una pareja adulta tomada de la mano con anillos de matrimonio visibles, estilo flat design.",
+    "imagen": "",
     "senasugerida": "",
     "": ""
   },
