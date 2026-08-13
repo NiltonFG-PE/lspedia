@@ -2499,14 +2499,50 @@ function renderCategoriasDiccionario(){
 // scroll real (body, html, o el "scrollingElement" del navegador).
 function scrollAlPrimerResultado(el){
     if(!el) return;
-    requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-            const yDestino = el.getBoundingClientRect().top + window.pageYOffset;
-            // Pequeño margen arriba (16px) para que la tarjeta no quede
-            // pegada al borde superior de la pantalla.
-            window.scrollTo({ top: Math.max(yDestino - 16, 0), behavior: "smooth" });
-        });
-    });
+
+    // En móvil, 2 frames fijos (el requestAnimationFrame doble de antes) a
+    // veces no alcanzaban a esperar que el layout terminara de acomodarse
+    // (fuentes/iconos recién cargando la primera vez, etc.): el cálculo se
+    // hacía con la página todavía "a medio pintar" y el scroll salía mal
+    // calculado o, en la práctica, no se notaba ningún movimiento. Ahora se
+    // espera a que el alto total del documento deje de cambiar entre dos
+    // frames seguidos (con un tope de intentos) antes de calcular a dónde
+    // hacer scroll.
+    let altoAnterior = -1;
+    let intentos = 0;
+
+    function medirYEsperar(){
+        const altoActual = document.documentElement.scrollHeight;
+        intentos++;
+        if (altoActual === altoAnterior || intentos > 15) {
+            hacerScroll();
+            return;
+        }
+        altoAnterior = altoActual;
+        requestAnimationFrame(medirYEsperar);
+    }
+
+    function hacerScroll(){
+        const yDestino = el.getBoundingClientRect().top + (window.pageYOffset || document.documentElement.scrollTop || 0);
+        // Pequeño margen arriba (16px) para que la tarjeta no quede
+        // pegada al borde superior de la pantalla.
+        window.scrollTo({ top: Math.max(yDestino - 16, 0), behavior: "smooth" });
+
+        // Refuerzo: en algunos navegadores móviles (sobre todo iOS Safari)
+        // un scroll "smooth" pedido muy pegado al toque/clic que lo originó
+        // puede quedar cancelado o "absorbido" sin que la pantalla se mueva.
+        // Se verifica un poco después si el resultado realmente quedó a la
+        // vista y, si no, se reintenta una vez más.
+        setTimeout(() => {
+            const bounds = el.getBoundingClientRect();
+            if (bounds.top < -5 || bounds.top > 120) {
+                const yDestino2 = bounds.top + (window.pageYOffset || document.documentElement.scrollTop || 0);
+                window.scrollTo({ top: Math.max(yDestino2 - 16, 0), behavior: "smooth" });
+            }
+        }, 300);
+    }
+
+    requestAnimationFrame(medirYEsperar);
 }
 
 // Filtra las palabras del diccionario (Hoja 1, App.datos) por el nombre
