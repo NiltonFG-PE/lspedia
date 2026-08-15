@@ -474,6 +474,13 @@ function esVistaMovilHerramientas(){
     // de 3 botones grandes (Subtítulos / Jugar / Alfabetización), igual
     // que en móvil, sin importar el ancho de la ventana.
     if (document.documentElement.classList.contains("modo-escritorio-forzado")) return true;
+    // Celular/tablet real (ver el script que agrega "modo-movil-real" en
+    // index.html): siempre debe verse el selector de 3 botones grandes,
+    // incluso en horizontal, aunque en ese momento el ancho de la
+    // ventana llegue a superar los 1200px (antes, en tablets grandes
+    // horizontales, esto hacía que Herramientas abriera directo en
+    // Subtítulos en vez de mostrar el selector).
+    if (document.documentElement.classList.contains("modo-movil-real")) return true;
     return window.innerWidth < 1200;
 }
 

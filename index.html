@@ -1920,6 +1920,65 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
     display: block !important;
 }
 
+/* ============================================================
+   TABLET REAL EN HORIZONTAL: caso contrario al de "modo-escritorio-
+   forzado" de arriba. Acá el user-agent SÍ confirma que es un
+   celular/tablet real (se agregó la clase "modo-movil-real" más
+   abajo), pero su ancho en horizontal puede superar igual los 1200px
+   del breakpoint "xl" de Bootstrap. Sin estas reglas, pasado ese
+   ancho el sitio saltaba al diseño de escritorio completo (menú
+   superior en una fila, sin barra inferior, sin el selector de 3
+   botones de Herramientas) apenas se giraba el dispositivo, aunque se
+   lo siguiera usando con el dedo. Estas reglas repiten, sin depender
+   del ancho, las mismas reglas que ya existen arriba para
+   "@media (max-width: 1199.98px)", así el diseño móvil (barra
+   superior fija solo con el logo, navegación real en la barra
+   inferior) se mantiene siempre en un dispositivo táctil real. */
+html.modo-movil-real .navbar-toggler {
+    display: none !important;
+}
+html.modo-movil-real #menuPrincipal {
+    display: none !important;
+}
+html.modo-movil-real nav.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1030;
+}
+html.modo-movil-real nav.navbar .container {
+    justify-content: center !important;
+}
+html.modo-movil-real .navbar-brand {
+    margin: 0 !important;
+}
+html.modo-movil-real .navbar-brand img {
+    height: 64px !important;
+}
+html.modo-movil-real .mobile-bottom-nav {
+    display: flex !important;
+}
+html.modo-movil-real body {
+    padding-top: 80px !important;
+    padding-bottom: 74px !important;
+}
+html.modo-movil-real body.vista-temas-movil #senalDelDia,
+html.modo-movil-real body.vista-temas-movil .stats-header,
+html.modo-movil-real body.vista-temas-movil .stats-panel-destacado {
+    display: none !important;
+}
+/* El selector de 3 botones grandes de Herramientas trae la clase
+   Bootstrap "d-xl-none", que lo esconde apenas el ancho llega a
+   1200px, sin importar que script.js le haya sacado el "d-none". Acá
+   se anula ese "d-xl-none" para que, en un dispositivo táctil real,
+   pueda mostrarse a cualquier ancho una vez que script.js decide
+   mostrarlo (mismo criterio que ya existe arriba para
+   "modo-escritorio-forzado"). */
+html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
+    display: block !important;
+}
+
     </style>
 </head>
 
@@ -1937,6 +1996,17 @@ html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
             var esMovilReal = /Mobi|Android|iPhone|iPad|iPod/i.test(ua);
             if (!esMovilReal) {
                 document.documentElement.classList.add("modo-escritorio-forzado");
+            } else {
+                // Celular/tablet real (el user-agent lo confirma): se marca
+                // con esta otra clase para que, más abajo, el diseño móvil
+                // (menú ☰, barra inferior tipo app, selector de Herramientas)
+                // se mantenga SIEMPRE, incluso al girar el dispositivo a
+                // horizontal y que el ancho de pantalla supere los 1200px
+                // (el breakpoint "xl" de Bootstrap que activa el diseño de
+                // escritorio). Sin esto, tablets grandes en horizontal caían
+                // en el diseño de escritorio "por ancho", aunque sean un
+                // dispositivo táctil real.
+                document.documentElement.classList.add("modo-movil-real");
             }
         } catch (e) {}
     })();
