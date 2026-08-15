@@ -616,6 +616,7 @@ const SubtitulosV2 = (function () {
         actualizarModoInmersivo();
         intentarBloquearHorizontal();
         window.scrollTo({ top: 0, behavior: "smooth" });
+        aplicarEspacioAvisoNativoFullscreen(seccion, true);
     }
 
     function salirDePantallaCompleta() {
@@ -625,10 +626,31 @@ const SubtitulosV2 = (function () {
         document.body.classList.remove("subtitulos-bloquear-scroll");
         actualizarModoInmersivo();
         intentarLiberarOrientacion();
+        aplicarEspacioAvisoNativoFullscreen(seccion, false);
 
         const salirFn = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
         if (elementoPantallaCompletaActivo() && salirFn) {
             salirFn.call(document);
+        }
+    }
+
+    // Al entrar a la pantalla completa NATIVA (no la simulada), Chrome
+    // en Android muestra unos segundos su propio aviso ("Para salir de
+    // pantalla completa, arrastra desde la parte superior...") pegado a
+    // la parte de abajo de la pantalla, que puede tapar controles si
+    // quedan al fondo. Mientras dura ese aviso, le damos un margen extra
+    // abajo a la sección para que no quede tapado ningún control (mismo
+    // patrón que quiz.js/alfabetizacion.js).
+    function aplicarEspacioAvisoNativoFullscreen(seccion, activo) {
+        if (!seccion) return;
+        clearTimeout(estado._timeoutAvisoFullscreen);
+        if (activo) {
+            seccion.style.paddingBottom = "110px";
+            estado._timeoutAvisoFullscreen = setTimeout(() => {
+                seccion.style.paddingBottom = "";
+            }, 3500);
+        } else {
+            seccion.style.paddingBottom = "";
         }
     }
 
@@ -661,6 +683,7 @@ const SubtitulosV2 = (function () {
             if (seccion) seccion.classList.remove("quiz-fullscreen");
             document.body.classList.remove("subtitulos-bloquear-scroll");
             actualizarModoInmersivo();
+            aplicarEspacioAvisoNativoFullscreen(seccion, false);
         }
     }
 

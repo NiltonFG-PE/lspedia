@@ -1038,6 +1038,27 @@ const QuizV2 = (function () {
         estado.pantallaCompleta = activo;
         if (seccion) seccion.classList.toggle("quiz-fullscreen", activo);
         actualizarIconoPantallaCompleta();
+        aplicarEspacioAvisoNativoFullscreen(seccion, activo);
+    }
+
+    // Al entrar a la pantalla completa NATIVA (no la simulada), Chrome
+    // en Android muestra unos segundos su propio aviso ("Para salir de
+    // pantalla completa, arrastra desde la parte superior...") pegado a
+    // la parte de abajo de la pantalla, que puede tapar botones como
+    // "Empezar" si quedan al fondo de la tarjeta. Mientras dura ese
+    // aviso, le damos un margen extra abajo a la sección para que ningún
+    // botón quede tapado.
+    function aplicarEspacioAvisoNativoFullscreen(seccion, activo) {
+        if (!seccion) return;
+        clearTimeout(estado._timeoutAvisoFullscreen);
+        if (activo) {
+            seccion.style.paddingBottom = "110px";
+            estado._timeoutAvisoFullscreen = setTimeout(() => {
+                seccion.style.paddingBottom = "";
+            }, 3500);
+        } else {
+            seccion.style.paddingBottom = "";
+        }
     }
 
     // ---------------------------------------------------------
