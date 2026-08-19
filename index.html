@@ -238,6 +238,11 @@
                 left: 0;
                 right: 0;
                 z-index: 1030;
+                /* Barra superior semitransparente solo en móvil, conservando
+                   el mismo color base (slate oscuro), tamaño y diseño. */
+                background-color: rgba(15, 23, 42, 0.85) !important;
+                -webkit-backdrop-filter: blur(6px);
+                backdrop-filter: blur(6px);
             }
             nav.navbar .container {
                 justify-content: center !important;
