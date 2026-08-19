@@ -167,13 +167,13 @@ h1, h2, h3, h4, h5, h6 {
     background-color: #febd0f;
     transform: translateY(-1px);
 }
-/* Letra seleccionada: degradado azul → amarillo, los dos colores del
-   logo, en vez del azul liso que se usaba antes. */
+/* Letra seleccionada: amarillo sólido (#febd0f), el mismo color que se
+   usa en el hover, para que sea claramente visible en escritorio. */
 .indice-alfabetico .btn-abc.active {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color) 45%, #f5b400 135%);
+    background: #febd0f;
     border-color: transparent;
     color: #ffffff;
-    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.25);
+    box-shadow: 0 4px 10px rgba(245, 180, 0, 0.35);
 }
 
 /* Encabezado "Índice alfabético": insignia A-Z + título, con la flecha
