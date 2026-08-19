@@ -1277,7 +1277,11 @@ function ejecutarBusquedaDirecta() {
     resultado.innerHTML = `
     <div class="card shadow-sm mb-4 border-0 animate-fade-in" style="border-radius: 15px; background-color: #f8f9fa;">
         <div class="card-body p-5 text-center">
-            <div style="font-size: 3rem; margin-bottom: 15px;">🔍🤷‍♂️</div>
+            <div style="width: 140px; height: 140px; margin: 0 auto 10px;">
+                <video autoplay muted loop playsinline disablepictureinpicture poster="img/avatar_duda_sin_fondo.png" aria-label="Personaje de LSPedia buscando con una lupa, sin encontrar resultados" style="width: 100%; height: 100%; object-fit: contain;">
+                    <source src="img/avatar_duda.webm" type="video/webm">
+                </video>
+            </div>
             <h4 class="fw-bold mb-3 text-primary">No encontramos "${buscar.value}"</h4>
             <button class="btn btn-warning px-4 py-2 rounded-pill fw-bold text-dark" data-bs-toggle="modal" data-bs-target="#modalSugerencia">Sugerir esta palabra</button>
         </div>
