@@ -677,10 +677,22 @@
             box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
             overflow: hidden;
             text-align: left;
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            transition: transform 0.15s ease, box-shadow 0.2s ease;
         }
         .herr-movil-btn:active {
             transform: scale(0.98);
+        }
+        /* Animación al pasar el mouse (escritorio) o al tocar (móvil):
+           la tarjeta se eleva un poco y aparece un resplandor de color
+           alrededor, a la vez que el icono se agranda ligeramente. El
+           color del resplandor cambia según la herramienta (ver los
+           bloques --glow de cada variante más abajo). */
+        .herr-movil-btn:hover,
+        .herr-movil-btn:focus-visible {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08),
+                        0 0 0 4px var(--herr-glow, rgba(15, 23, 42, 0.08)),
+                        0 8px 24px var(--herr-glow-fuerte, rgba(15, 23, 42, 0.18));
         }
         .herr-movil-icono {
             flex: 0 0 auto;
@@ -694,6 +706,11 @@
             line-height: 1;
             position: relative;
             z-index: 2;
+            transition: transform 0.2s ease;
+        }
+        .herr-movil-btn:hover .herr-movil-icono,
+        .herr-movil-btn:focus-visible .herr-movil-icono {
+            transform: scale(1.12);
         }
         .herr-movil-textos {
             position: relative;
@@ -744,16 +761,19 @@
         .herr-movil-btn-subtitulos .herr-movil-texto { color: #ea7f0e; }
         .herr-movil-btn-subtitulos .herr-movil-ola { background: linear-gradient(135deg, #fbbf5c, #ea7f0e); }
         .herr-movil-btn-subtitulos .herr-movil-flecha { color: #ea7f0e; }
+        .herr-movil-btn-subtitulos { --herr-glow: rgba(234, 127, 14, 0.18); --herr-glow-fuerte: rgba(234, 127, 14, 0.28); }
 
         .herr-movil-btn-jugar .herr-movil-icono { background-color: #e3daf9; color: #7c3aed; }
         .herr-movil-btn-jugar .herr-movil-texto { color: #7c3aed; }
         .herr-movil-btn-jugar .herr-movil-ola { background: linear-gradient(135deg, #a78bfa, #6d28d9); }
         .herr-movil-btn-jugar .herr-movil-flecha { color: #7c3aed; }
+        .herr-movil-btn-jugar { --herr-glow: rgba(124, 58, 237, 0.18); --herr-glow-fuerte: rgba(124, 58, 237, 0.28); }
 
         .herr-movil-btn-alfabetizacion .herr-movil-icono { background-color: #c7f0dd; color: #047857; font-weight: 800; font-size: 18px; }
         .herr-movil-btn-alfabetizacion .herr-movil-texto { color: #059669; }
         .herr-movil-btn-alfabetizacion .herr-movil-ola { background: linear-gradient(135deg, #34d399, #059669); }
         .herr-movil-btn-alfabetizacion .herr-movil-flecha { color: #059669; }
+        .herr-movil-btn-alfabetizacion { --herr-glow: rgba(5, 150, 105, 0.18); --herr-glow-fuerte: rgba(5, 150, 105, 0.28); }
 
         /* ============================================================
            BLOQUE "SUGERIR PALABRA": tarjeta azul oscuro con foco (halo),
