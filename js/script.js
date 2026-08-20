@@ -930,20 +930,38 @@ function cargarPalabrasJson() {
 // tarden en llegar el resto de recursos de la página.
 setTimeout(() => {
     const senal = document.getElementById("senalDelDia");
-    const sigueCargando = senal && senal.textContent && senal.textContent.indexOf("Cargando") !== -1;
-    if (sigueCargando && (!App.datos || App.datos.length === 0)) {
-        console.warn("Red de seguridad: la carga inicial nunca terminó, forzando aviso de error.");
+    const panel = document.getElementById("panelCategoriasDiccionario");
+    // Antes esto solo miraba "App.datos.length === 0": si un error a
+    // mitad de procesarDatosApp dejaba App.datos ya asignado pero el resto
+    // de la función sin terminar (ver el try/catch de ahí), esta condición
+    // nunca era verdadera y el aviso de error nunca se mostraba. Ahora se
+    // fija en lo que el usuario realmente sigue viendo en pantalla.
+    const senalSigueCargando = senal && senal.textContent && senal.textContent.indexOf("Cargando") !== -1;
+    const panelSigueCargando = panel && panel.textContent && panel.textContent.indexOf("Cargando") !== -1;
+    if (senalSigueCargando || panelSigueCargando) {
+        console.warn("Red de seguridad: una sección quedó colgada, forzando aviso de error.");
         mostrarErrorCargaInicial();
         avisarDatosListos();
     }
 }, 15000);
 
 function procesarDatosApp(data) {
+          // Todo el cuerpo va envuelto en try/catch a propósito: si CUALQUIER
+          // línea de acá abajo lanza una excepción (por ejemplo, un dato mal
+          // escrito en el Google Sheet de origen que rompe alguna de estas
+          // funciones), antes la función se detenía en silencio ahí mismo.
+          // Como App.datos ya se había asignado en la primera línea, la "red
+          // de seguridad" de más abajo (que solo revisa si App.datos sigue
+          // vacío) nunca se activaba, y "Seña del día"/"Categorías" se
+          // quedaban en "Cargando…" para siempre sin ningún aviso. Con el
+          // catch, cualquier error futuro termina mostrando el aviso de
+          // error + botón "Reintentar" en vez de un spinner mudo.
+          try {
             // Solo se muestran en la web las palabras que YA tienen video
             // cargado. Si agregas una palabra nueva en la Hoja 1 y aún no
             // le pusiste el video, se queda oculta hasta que el campo
             // "video" tenga algo escrito.
-            App.datos = data.filter(p => p.palabra && p.categoria && p.video && p.video.trim());
+            App.datos = data.filter(p => p.palabra && p.categoria && p.video && String(p.video).trim());
             // Las categorías reales del diccionario (Hoja 1, columna C)
             // recién están disponibles acá, así que se pintan las tarjetas
             // en cuanto llegan las palabras.
@@ -1019,6 +1037,10 @@ function procesarDatosApp(data) {
                     }
                 }
             }
+          } catch (error) {
+            console.error("Error al procesar los datos del diccionario:", error);
+            mostrarErrorCargaInicial();
+          }
 }
 
 // Aviso + botón "Reintentar" cuando, tras varios intentos, no se pudo
@@ -1189,8 +1211,62 @@ document.addEventListener("DOMContentLoaded", () => {
 // --- BUSCADOR INTELIGENTE (solo Hoja 1) ---
 buscar.addEventListener("input", buscarPalabras);
 
+// Normaliza texto para comparar sin importar tildes (adios === Adiós) ni
+// mayúsculas/minúsculas. Se usa en ambos lados de cada comparación para
+// que el buscador tolere errores comunes de escritura.
+const norm = (s) => (s || "").toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+// Distancia de Levenshtein: cuántas ediciones (insertar/borrar/cambiar una
+// letra) hacen falta para convertir "a" en "b". Se usa para detectar
+// errores de escritura (ej. "adioz" está a 1 edición de "adios") y poder
+// ofrecer "¿Quisiste decir...?" cuando la búsqueda normal no encuentra nada.
+function levenshtein(a, b) {
+    if (a === b) return 0;
+    const la = a.length, lb = b.length;
+    if (la === 0) return lb;
+    if (lb === 0) return la;
+    let prev = new Array(lb + 1);
+    let curr = new Array(lb + 1);
+    for (let j = 0; j <= lb; j++) prev[j] = j;
+    for (let i = 1; i <= la; i++) {
+        curr[0] = i;
+        for (let j = 1; j <= lb; j++) {
+            const costo = a[i - 1] === b[j - 1] ? 0 : 1;
+            curr[j] = Math.min(
+                prev[j] + 1,      // borrar
+                curr[j - 1] + 1,  // insertar
+                prev[j - 1] + costo // cambiar (o igual)
+            );
+        }
+        [prev, curr] = [curr, prev];
+    }
+    return prev[lb];
+}
+
+// Busca en "datos" palabras (o variantes) que estén a exactamente 1 error
+// de "texto". Solo tiene sentido cuando el texto ya tiene al menos 3
+// letras (con 1-2 letras casi cualquier palabra "cabe" a distancia 1 y el
+// resultado sería puro ruido). Devuelve como máximo 3 candidatas.
+function buscarCercanos(texto, datos) {
+    if (texto.length < 3) return [];
+    const candidatos = [];
+    datos.forEach(p => {
+        let dist = levenshtein(texto, norm(p.palabra));
+        if (p.variantes) {
+            p.variantes.split(',').forEach(v => {
+                const d = levenshtein(texto, norm(v.trim()));
+                if (d < dist) dist = d;
+            });
+        }
+        if (dist === 1) candidatos.push(p);
+    });
+    candidatos.sort((a, b) => a.palabra.localeCompare(b.palabra, "es"));
+    return candidatos.slice(0, 3);
+}
+
 function buscarPalabras(){
-    const texto = buscar.value.trim().toLowerCase();
+    const texto = norm(buscar.value.trim());
     ocultarQuiz();
     ocultarAlfabetizacion();
     document.querySelectorAll(".btn-abc.active").forEach(boton => boton.classList.remove("active"));
@@ -1213,8 +1289,8 @@ function buscarPalabras(){
     const empiezanConTexto = [];
     const contienenTexto = [];
     App.datos.forEach(p => {
-        const palabraLower = p.palabra.toLowerCase();
-        const variantesLower = p.variantes ? p.variantes.toLowerCase() : "";
+        const palabraLower = norm(p.palabra);
+        const variantesLower = p.variantes ? norm(p.variantes) : "";
         const empiezaPalabra = palabraLower.startsWith(texto);
         const empiezaVariante = variantesLower.split(',').map(v => v.trim()).some(v => v.startsWith(texto));
         const contienePalabra = palabraLower.includes(texto);
@@ -1235,6 +1311,21 @@ function buscarPalabras(){
     sugerencias.style.display = "block";
 
     if(encontrados.length===0){
+        const cercanos = buscarCercanos(texto, App.datos);
+        if(cercanos.length > 0){
+            sugerencias.innerHTML = `
+                <div class="list-group-item text-center py-2" style="background-color: #343a40; border: none;">
+                    <span class="text-white d-block small">¿Quisiste decir...?</span>
+                </div>`;
+            cercanos.forEach(p => {
+                const boton = document.createElement("button");
+                boton.className = "list-group-item list-group-item-action text-start";
+                boton.innerHTML = `<strong>${p.palabra}</strong> <span class="badge" style="font-size: 10px;">${p.categoria.trim()}</span>`;
+                boton.onclick = () => mostrarPalabra(p);
+                sugerencias.appendChild(boton);
+            });
+            return;
+        }
         sugerencias.innerHTML = `
             <div class="list-group-item text-center py-3" style="background-color: #343a40; border: none;">
                 <span class="text-white d-block mb-2 small">No hay resultados para "${texto}"</span>
@@ -1249,7 +1340,7 @@ function buscarPalabras(){
         const boton=document.createElement("button");
         boton.className="list-group-item list-group-item-action text-start";
         let textoMatch = `<strong>${p.palabra}</strong>`;
-        if(p.variantes && p.variantes.toLowerCase().includes(texto) && !p.palabra.toLowerCase().includes(texto)){
+        if(p.variantes && norm(p.variantes).includes(texto) && !norm(p.palabra).includes(texto)){
             textoMatch += ` <small class="text-primary ms-2 fw-bold" style="font-size: 11px;">(Variante: ${texto})</small>`;
         }
 
@@ -1281,14 +1372,14 @@ if(btnBuscar) btnBuscar.addEventListener("click", ejecutarBusquedaDirecta);
 buscar.addEventListener("keypress", (e) => { if (e.key === "Enter") { e.preventDefault(); ejecutarBusquedaDirecta(); } });
 
 function ejecutarBusquedaDirecta() {
-    const texto = buscar.value.trim().toLowerCase();
+    const texto = norm(buscar.value.trim());
     if(texto === "") return;
     sugerencias.innerHTML = "";
     sugerencias.style.display = "none";
 
     const encontrados = App.datos.filter(p => {
-        const matchPrincipal = p.palabra.toLowerCase() === texto;
-        const matchVariantes = p.variantes ? p.variantes.toLowerCase().split(',').map(v=>v.trim()).includes(texto) : false;
+        const matchPrincipal = norm(p.palabra) === texto;
+        const matchVariantes = p.variantes ? norm(p.variantes).split(',').map(v=>v.trim()).includes(texto) : false;
         return matchPrincipal || matchVariantes;
     });
 
@@ -1297,7 +1388,7 @@ function ejecutarBusquedaDirecta() {
         return;
     }
 
-    const parciales = App.datos.filter(p => p.palabra.toLowerCase().includes(texto) || (p.variantes && p.variantes.toLowerCase().includes(texto)));
+    const parciales = App.datos.filter(p => norm(p.palabra).includes(texto) || (p.variantes && norm(p.variantes).includes(texto)));
     if(parciales.length > 0) {
         mostrarPalabra(parciales[0]);
         return;
@@ -2531,10 +2622,15 @@ function renderCategoriasDiccionario(){
     panelCategoriasDiccionario.innerHTML = "";
     // Categorías reales, tomadas de la columna "categoria" de cada palabra
     // (Hoja 1 de Sheets), sin duplicados y ordenadas alfabéticamente.
+    // String(p.categoria) en vez de p.categoria.trim() directo: así, si
+    // algún dato llega desde el Sheet como número, booleano u otro tipo
+    // que no sea texto, no se rompe con ".trim() is not a function" y
+    // tumba a toda la función (lo que dejaba el panel pegado en
+    // "Cargando categorías…" para siempre).
     const nombresCategorias = [...new Set(
         (App.datos || [])
-            .filter(p => p.categoria && p.categoria.trim())
-            .map(p => p.categoria.trim())
+            .filter(p => p.categoria && String(p.categoria).trim())
+            .map(p => String(p.categoria).trim())
     )].sort((a, b) => a.localeCompare(b, "es"));
 
     const hayCategoriasOcultas = nombresCategorias.length > LIMITE_CATEGORIAS_DICCIONARIO;
@@ -2856,20 +2952,20 @@ if(btnBuscarCategorias) btnBuscarCategorias.addEventListener("click", ejecutarBu
 // parcial). Si no hay ninguna coincidencia, deja el input como estaba.
 function ejecutarBusquedaDirectaCategorias() {
     if(!buscarCategorias) return;
-    const texto = buscarCategorias.value.trim().toLowerCase();
+    const texto = norm(buscarCategorias.value.trim());
     if(texto === "") return;
 
     const datos = obtenerDatosVocabulario();
 
     const exactos = datos.filter(p => {
-        const matchPrincipal = p.palabra.toLowerCase() === texto;
-        const matchVariantes = p.variantes ? p.variantes.toLowerCase().split(',').map(v=>v.trim()).includes(texto) : false;
+        const matchPrincipal = norm(p.palabra) === texto;
+        const matchVariantes = p.variantes ? norm(p.variantes).split(',').map(v=>v.trim()).includes(texto) : false;
         return matchPrincipal || matchVariantes;
     });
 
     const encontrado = exactos[0] || datos.find(p => {
-        const matchPrincipal = p.palabra.toLowerCase().includes(texto);
-        const matchVariantes = p.variantes ? p.variantes.toLowerCase().includes(texto) : false;
+        const matchPrincipal = norm(p.palabra).includes(texto);
+        const matchVariantes = p.variantes ? norm(p.variantes).includes(texto) : false;
         return matchPrincipal || matchVariantes;
     });
 
@@ -2904,7 +3000,7 @@ window.limpiarResultadoCategorias = limpiarResultadoCategorias;
 function buscarEnCategorias(){
     if(!sugerenciasCategorias || !buscarCategorias) return;
     const textoOriginal = buscarCategorias.value.trim();
-    const texto = textoOriginal.toLowerCase();
+    const texto = norm(textoOriginal);
     sugerenciasCategorias.innerHTML = "";
 
     if(!texto){
@@ -2917,8 +3013,8 @@ function buscarEnCategorias(){
     const empiezanConTextoCat = [];
     const contienenTextoCat = [];
     obtenerDatosVocabulario().forEach(p => {
-        const palabraLower = p.palabra.toLowerCase();
-        const variantesLower = p.variantes ? p.variantes.toLowerCase() : "";
+        const palabraLower = norm(p.palabra);
+        const variantesLower = p.variantes ? norm(p.variantes) : "";
         const empiezaPalabra = palabraLower.startsWith(texto);
         const empiezaVariante = variantesLower.split(',').map(v => v.trim()).some(v => v.startsWith(texto));
         const contienePalabra = palabraLower.includes(texto);
@@ -2939,6 +3035,26 @@ function buscarEnCategorias(){
     sugerenciasCategorias.style.display = "block";
 
     if(coincidencias.length === 0){
+        const cercanos = buscarCercanos(texto, obtenerDatosVocabulario());
+        if(cercanos.length > 0){
+            sugerenciasCategorias.innerHTML = `
+                <div class="list-group-item text-center py-2" style="background-color: #343a40; border: none;">
+                    <span class="text-white d-block small">¿Quisiste decir...?</span>
+                </div>`;
+            cercanos.forEach(p => {
+                const boton = document.createElement("button");
+                boton.className = "list-group-item list-group-item-action text-start";
+                boton.innerHTML = `<strong>${p.palabra}</strong> <span class="badge" style="font-size: 10px;">${p.categoria.trim()}</span>`;
+                boton.onclick = () => {
+                    buscarCategorias.value = "";
+                    sugerenciasCategorias.innerHTML = "";
+                    sugerenciasCategorias.style.display = "none";
+                    mostrarPalabraPorNombreUnificado(p.palabra);
+                };
+                sugerenciasCategorias.appendChild(boton);
+            });
+            return;
+        }
         sugerenciasCategorias.innerHTML = `
             <div class="list-group-item text-center py-3" style="background-color: #343a40; border: none;">
                 <span class="text-white d-block small">No hay resultados para "${textoOriginal}"</span>
@@ -2950,7 +3066,7 @@ function buscarEnCategorias(){
         const boton = document.createElement("button");
         boton.className = "list-group-item list-group-item-action text-start";
         let textoMatch = `<strong>${p.palabra}</strong>`;
-        if(p.variantes && p.variantes.toLowerCase().includes(texto) && !p.palabra.toLowerCase().includes(texto)){
+        if(p.variantes && norm(p.variantes).includes(texto) && !norm(p.palabra).includes(texto)){
             textoMatch += ` <small class="text-primary ms-2 fw-bold" style="font-size: 11px;">(Variante: ${texto})</small>`;
         }
         boton.innerHTML = `
