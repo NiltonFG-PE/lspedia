@@ -917,17 +917,26 @@ function cargarPalabrasJson() {
 // página "Seña del día" sigue mostrando "Cargando..." y no hay datos, se
 // fuerza el aviso con botón "Reintentar" en vez de dejarlo así para
 // siempre.
-window.addEventListener("load", () => {
-    setTimeout(() => {
-        const senal = document.getElementById("senalDelDia");
-        const sigueCargando = senal && senal.textContent && senal.textContent.indexOf("Cargando") !== -1;
-        if (sigueCargando && (!App.datos || App.datos.length === 0)) {
-            console.warn("Red de seguridad: la carga inicial nunca terminó, forzando aviso de error.");
-            mostrarErrorCargaInicial();
-            avisarDatosListos();
-        }
-    }, 15000);
-});
+// IMPORTANTE: este temporizador NO depende de "window.load" a propósito.
+// window.load solo se dispara cuando TODA la página terminó de cargar
+// (imágenes, miniaturas de YouTube, fuentes, etc.), no solo el JSON de
+// palabras. Con señal débil, window.load puede tardar mucho más que estos
+// 15s (o no llegar nunca si algún recurso de terceros nunca responde),
+// dejando "Seña del día" y "Categorías" en "Cargando..." para siempre, sin
+// que este aviso de error/Reintentar llegue a mostrarse nunca. Al colgar
+// el contador directamente del momento en que este script se ejecuta (ya
+// va casi al final del <body>, así que el HTML relevante ya existe),
+// queda garantizado que el aviso aparece sí o sí, sin importar cuánto
+// tarden en llegar el resto de recursos de la página.
+setTimeout(() => {
+    const senal = document.getElementById("senalDelDia");
+    const sigueCargando = senal && senal.textContent && senal.textContent.indexOf("Cargando") !== -1;
+    if (sigueCargando && (!App.datos || App.datos.length === 0)) {
+        console.warn("Red de seguridad: la carga inicial nunca terminó, forzando aviso de error.");
+        mostrarErrorCargaInicial();
+        avisarDatosListos();
+    }
+}, 15000);
 
 function procesarDatosApp(data) {
             // Solo se muestran en la web las palabras que YA tienen video
