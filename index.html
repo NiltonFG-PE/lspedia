@@ -238,11 +238,15 @@
                 left: 0;
                 right: 0;
                 z-index: 1030;
-                /* Barra superior semitransparente solo en móvil, conservando
-                   el mismo color base (slate oscuro), tamaño y diseño. */
-                background-color: rgba(15, 23, 42, 0.85) !important;
-                -webkit-backdrop-filter: blur(6px);
-                backdrop-filter: blur(6px);
+                /* Barra superior semitransparente solo en móvil. Antes de
+                   mezclarse con el color navy, oscurecemos (brightness)
+                   y saturamos lo que se ve detrás (backdrop-filter), así
+                   se puede bajar la opacidad para que sea más
+                   transparente sin que el navy se vea lavado/grisáceo
+                   al superponerse a fondos claros. */
+                background-color: rgba(15, 23, 42, 0.72) !important;
+                -webkit-backdrop-filter: blur(6px) brightness(0.55) saturate(1.4);
+                backdrop-filter: blur(6px) brightness(0.55) saturate(1.4);
             }
             nav.navbar .container {
                 justify-content: center !important;
@@ -250,7 +254,8 @@
             .navbar-brand {
                 margin: 0 !important;
             }
-            .navbar-brand img {
+            .navbar-brand img,
+            .navbar-brand video {
                 height: 64px !important;
             }
             /* Empuja el contenido hacia abajo para que la barra fija de
@@ -745,35 +750,33 @@
             top: 50%;
             right: 18px;
             transform: translateY(-50%);
-            width: 38px;
-            height: 38px;
+            width: 52px;
+            height: 52px;
             border-radius: 50%;
-            background-color: #ffffff;
+            background-color: var(--herr-flecha-color, #0f172a);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 24px;
             font-weight: 800;
+            color: #ffffff;
             z-index: 2;
-            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.12);
+            box-shadow: 0 6px 14px rgba(15, 23, 42, 0.22);
         }
         .herr-movil-btn-subtitulos .herr-movil-icono { background-color: #fde3b8; color: #d97706; }
         .herr-movil-btn-subtitulos .herr-movil-texto { color: #ea7f0e; }
         .herr-movil-btn-subtitulos .herr-movil-ola { background: linear-gradient(135deg, #fbbf5c, #ea7f0e); }
-        .herr-movil-btn-subtitulos .herr-movil-flecha { color: #ea7f0e; }
-        .herr-movil-btn-subtitulos { --herr-glow: rgba(234, 127, 14, 0.18); --herr-glow-fuerte: rgba(234, 127, 14, 0.28); }
+        .herr-movil-btn-subtitulos { --herr-flecha-color: #ea7f0e; --herr-glow: rgba(234, 127, 14, 0.18); --herr-glow-fuerte: rgba(234, 127, 14, 0.28); }
 
         .herr-movil-btn-jugar .herr-movil-icono { background-color: #e3daf9; color: #7c3aed; }
         .herr-movil-btn-jugar .herr-movil-texto { color: #7c3aed; }
         .herr-movil-btn-jugar .herr-movil-ola { background: linear-gradient(135deg, #a78bfa, #6d28d9); }
-        .herr-movil-btn-jugar .herr-movil-flecha { color: #7c3aed; }
-        .herr-movil-btn-jugar { --herr-glow: rgba(124, 58, 237, 0.18); --herr-glow-fuerte: rgba(124, 58, 237, 0.28); }
+        .herr-movil-btn-jugar { --herr-flecha-color: #7c3aed; --herr-glow: rgba(124, 58, 237, 0.18); --herr-glow-fuerte: rgba(124, 58, 237, 0.28); }
 
         .herr-movil-btn-alfabetizacion .herr-movil-icono { background-color: #c7f0dd; color: #047857; font-weight: 800; font-size: 18px; }
         .herr-movil-btn-alfabetizacion .herr-movil-texto { color: #059669; }
         .herr-movil-btn-alfabetizacion .herr-movil-ola { background: linear-gradient(135deg, #34d399, #059669); }
-        .herr-movil-btn-alfabetizacion .herr-movil-flecha { color: #059669; }
-        .herr-movil-btn-alfabetizacion { --herr-glow: rgba(5, 150, 105, 0.18); --herr-glow-fuerte: rgba(5, 150, 105, 0.28); }
+        .herr-movil-btn-alfabetizacion { --herr-flecha-color: #059669; --herr-glow: rgba(5, 150, 105, 0.18); --herr-glow-fuerte: rgba(5, 150, 105, 0.28); }
 
         /* ============================================================
            BLOQUE "SUGERIR PALABRA": tarjeta azul oscuro con foco (halo),
@@ -1914,7 +1917,8 @@ html.modo-escritorio-forzado #menuPrincipal.show {
         flex-basis: auto;
     }
 }
-html.modo-escritorio-forzado .navbar-brand img {
+html.modo-escritorio-forzado .navbar-brand img,
+html.modo-escritorio-forzado .navbar-brand video {
     height: 85px !important;
 }
 html.modo-escritorio-forzado .mobile-bottom-nav {
@@ -1978,7 +1982,8 @@ html.modo-movil-real nav.navbar .container {
 html.modo-movil-real .navbar-brand {
     margin: 0 !important;
 }
-html.modo-movil-real .navbar-brand img {
+html.modo-movil-real .navbar-brand img,
+html.modo-movil-real .navbar-brand video {
     height: 64px !important;
 }
 html.modo-movil-real .mobile-bottom-nav {
@@ -2147,7 +2152,7 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
     <nav class="navbar navbar-expand-xl navbar-dark bg-primary shadow-sm py-2 d-flex">
         <div class="container">
             <a class="navbar-brand fw-bold d-flex align-items-center" href="#" id="btnLogo">
-                <img src="img/lspedia.png" alt="Logo LSPedia" height="85" style="object-fit: contain;">
+                <video src="video/lspedia_transparente.webm" poster="img/lspedia_poster_transparente.png" height="85" style="width:auto; object-fit: contain;" autoplay loop muted playsinline disablepictureinpicture aria-label="Logo LSPedia animado"></video>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal">
                 <span class="navbar-toggler-icon"></span>
@@ -2530,7 +2535,7 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                         <span class="herr-movil-textos">
                             <span class="herr-movil-texto">SUBTÍTULOS</span>
                         </span>
-                        <span class="herr-movil-flecha" aria-hidden="true">›</span>
+                        <span class="herr-movil-flecha" aria-hidden="true">→</span>
                     </button>
                 </div>
                 <div class="col-12">
@@ -2540,7 +2545,7 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                         <span class="herr-movil-textos">
                             <span class="herr-movil-texto">JUGAR</span>
                         </span>
-                        <span class="herr-movil-flecha" aria-hidden="true">›</span>
+                        <span class="herr-movil-flecha" aria-hidden="true">→</span>
                     </button>
                 </div>
                 <div class="col-12">
@@ -2550,7 +2555,7 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                         <span class="herr-movil-textos">
                             <span class="herr-movil-texto">ALFABETIZACIÓN</span>
                         </span>
-                        <span class="herr-movil-flecha" aria-hidden="true">›</span>
+                        <span class="herr-movil-flecha" aria-hidden="true">→</span>
                     </button>
                 </div>
             </div>
