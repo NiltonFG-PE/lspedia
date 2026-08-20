@@ -825,83 +825,109 @@ function avisarDatosListos() {
     document.dispatchEvent(new Event("lspedia:datosListos"));
 }
 
-// Carga data/palabras.json con reintentos automáticos. En datos móviles la
-// primera petición a veces falla, se corta o queda "colgada" sin
-// respuesta (conexión inestable, cambio de antena, etc.); antes eso dejaba
-// "Seña del día" y "Categorías" vacíos para siempre y sin avisar nada,
-// porque el único manejo de error era un console.error silencioso.
-// Ahora: (1) cada intento tiene un límite de tiempo (AbortController) para
-// no quedarse esperando indefinidamente si la conexión se queda muda;
-// (2) se reintenta varias veces con una espera creciente; (3) si aun así
-// no se consigue nada, se usa la última copia guardada en el dispositivo
-// (ver guardarCachePalabras) en vez de dejar la pantalla vacía; y (4) solo
-// si tampoco hay copia guardada se muestra el aviso con botón "Reintentar".
-function cargarPalabrasJson(intentosRestantes = 3) {
-    const controlador = new AbortController();
-    const timeoutIntento = setTimeout(() => controlador.abort(), 9000);
+// --- CARGA DE data/palabras.json: RÁPIDO PRIMERO, CONFIABLE DESPUÉS ---
+//
+// Estrategia "caché primero" (igual a como se sentía la página antes de
+// que la conexión del operador empezara a dar problemas puntuales):
+//   1) Si ya hay una copia guardada en este dispositivo de una visita
+//      anterior (ver guardarCachePalabras), se pinta TODO el contenido
+//      de inmediato, sin esperar nada a la red. La persona ve la página
+//      completa al instante, como antes.
+//   2) En paralelo, y sin bloquear ni mostrar ningún aviso, se pide la
+//      versión más reciente en segundo plano. Si llega, se guarda para
+//      la próxima carga; si falla o tarda, no importa, ya se está
+//      viendo contenido completo y no hace falta molestar con errores.
+//   3) Solo en la PRIMERA visita de un dispositivo (todavía sin ninguna
+//      copia guardada) hace falta esperar a la red sí o sí. Ahí se usan
+//      tiempos cortos (6s por intento, máximo 2 intentos) para no dejar
+//      a la persona esperando mucho: si de verdad no hay conexión, se
+//      avisa con un botón "Reintentar" en vez de quedarse pegado.
+const TIMEOUT_INTENTO_PALABRAS_MS = 6000;
 
-    fetch("data/palabras.json", { signal: controlador.signal })
+// Un intento de red con límite de tiempo "duro": el timeout es un
+// temporizador independiente (Promise.race), no depende de que
+// AbortController.abort() logre cancelar el fetch. En algunos
+// navegadores móviles (o cuando el Service Worker intercepta la
+// petición, ver sw.js) abort() no propaga bien y el fetch original se
+// queda colgado; con Promise.race el límite de tiempo se cumple igual y
+// el código sigue adelante pase lo que pase con esa petición.
+function unIntentoDeCargaPalabras() {
+    const controlador = (typeof AbortController !== "undefined") ? new AbortController() : null;
+    const promesaFetch = fetch("data/palabras.json", controlador ? { signal: controlador.signal } : undefined)
         .then(res => {
-            clearTimeout(timeoutIntento);
             if (!res.ok) throw new Error("HTTP " + res.status);
             return res.json();
-        })
-        .then(data => {
-            guardarCachePalabras(data);
-            procesarDatosApp(data);
-            avisarDatosListos();
-        })
+        });
+    const promesaTimeout = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error("Tiempo de espera agotado")), TIMEOUT_INTENTO_PALABRAS_MS);
+    });
+    return Promise.race([promesaFetch, promesaTimeout]).catch(error => {
+        if (controlador) { try { controlador.abort(); } catch (e) { /* no crítico */ } }
+        throw error;
+    });
+}
+
+// Reintenta unos pocos intentos rápidos, sin esperas largas entre ellos.
+function cargarPalabrasConReintentos(intentosRestantes, alExito, alFallar) {
+    unIntentoDeCargaPalabras()
+        .then(alExito)
         .catch(error => {
-            clearTimeout(timeoutIntento);
             console.error("Error al cargar LSPedia:", error);
-            if (intentosRestantes > 0) {
-                const espera = (4 - intentosRestantes) * 1200 + 800; // 800ms, 2000ms, luego 3200ms
-                setTimeout(() => cargarPalabrasJson(intentosRestantes - 1), espera);
+            if (intentosRestantes > 1) {
+                setTimeout(() => cargarPalabrasConReintentos(intentosRestantes - 1, alExito, alFallar), 1000);
             } else {
-                const cache = leerCachePalabras();
-                if (cache) {
-                    console.warn("No se pudo conectar: mostrando la última copia guardada de palabras.json.");
-                    procesarDatosApp(cache);
-                    mostrarAvisoUsandoCopiaGuardada();
-                    avisarDatosListos();
-                    // Reintenta en segundo plano, sin bloquear ni volver a
-                    // mostrar avisos: si la red vuelve, la próxima
-                    // recarga ya trae datos frescos guardados.
-                    setTimeout(() => cargarPalabrasJsonSilencioso(), 15000);
-                } else {
-                    mostrarErrorCargaInicial();
-                    avisarDatosListos();
-                }
+                alFallar(error);
             }
         });
 }
 
-// Reintento silencioso en segundo plano tras haber mostrado la copia
-// guardada: si consigue datos nuevos los guarda para la próxima visita,
-// pero no interrumpe ni repinta lo que la persona ya está viendo.
-function cargarPalabrasJsonSilencioso() {
-    fetch("data/palabras.json")
-        .then(res => (res.ok ? res.json() : null))
-        .then(data => { if (data) guardarCachePalabras(data); })
-        .catch(() => { /* seguirá usando la copia guardada hasta la próxima visita */ });
+function cargarPalabrasJson() {
+    const cache = leerCachePalabras();
+
+    if (cache && cache.length) {
+        // Contenido completo al instante con lo último guardado.
+        procesarDatosApp(cache);
+        avisarDatosListos();
+        // Actualiza en segundo plano y en silencio (sin reintentos
+        // largos ni avisos de error): si hay datos nuevos, quedan
+        // guardados para la próxima visita.
+        cargarPalabrasConReintentos(2, (data) => guardarCachePalabras(data), () => {
+            // Sin conexión ahora mismo: no importa, ya se está viendo
+            // el contenido guardado. Se reintentará en la próxima visita.
+        });
+    } else {
+        // Primera vez en este dispositivo: no hay nada guardado
+        // todavía, así que sí hace falta esperar a la red, pero con
+        // límites cortos para no dejar a la persona esperando mucho.
+        cargarPalabrasConReintentos(2, (data) => {
+            guardarCachePalabras(data);
+            procesarDatosApp(data);
+            avisarDatosListos();
+        }, () => {
+            mostrarErrorCargaInicial();
+            avisarDatosListos();
+        });
+    }
 }
 
-// Aviso discreto (no bloquea nada) cuando se está mostrando la copia
-// guardada en el dispositivo en vez de la versión más reciente, para que
-// quede claro que la página SÍ está mostrando contenido, solo que podría
-// no ser el más actualizado.
-function mostrarAvisoUsandoCopiaGuardada() {
-    const senal = document.getElementById("senalDelDia");
-    if (!senal) return;
-    const existente = document.getElementById("avisoCopiaGuardada");
-    if (existente) return;
-    const aviso = document.createElement("div");
-    aviso.id = "avisoCopiaGuardada";
-    aviso.className = "alert alert-warning text-center small py-2 px-3 mb-3";
-    aviso.style.borderRadius = "10px";
-    aviso.innerHTML = "📶 Sin conexión: mostrando la última versión guardada del diccionario.";
-    senal.parentElement.insertBefore(aviso, senal.parentElement.firstChild);
-}
+// --- RED DE SEGURIDAD FINAL ---
+// Último resguardo por si algún error no contemplado (por ejemplo, una
+// excepción dentro de procesarDatosApp) impide que se llegue a mostrar
+// contenido o el aviso de error. Si 15 segundos después de cargar la
+// página "Seña del día" sigue mostrando "Cargando..." y no hay datos, se
+// fuerza el aviso con botón "Reintentar" en vez de dejarlo así para
+// siempre.
+window.addEventListener("load", () => {
+    setTimeout(() => {
+        const senal = document.getElementById("senalDelDia");
+        const sigueCargando = senal && senal.textContent && senal.textContent.indexOf("Cargando") !== -1;
+        if (sigueCargando && (!App.datos || App.datos.length === 0)) {
+            console.warn("Red de seguridad: la carga inicial nunca terminó, forzando aviso de error.");
+            mostrarErrorCargaInicial();
+            avisarDatosListos();
+        }
+    }, 15000);
+});
 
 function procesarDatosApp(data) {
             // Solo se muestran en la web las palabras que YA tienen video
