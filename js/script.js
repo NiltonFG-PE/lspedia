@@ -15,6 +15,7 @@ const totalVideos = document.getElementById("totalVideos");
 
 const panelCategorias = document.getElementById("panelCategorias");
 const ultimasPalabras = document.getElementById("ultimasPalabras");
+const ultimasPalabrasCategorias = document.getElementById("ultimasPalabrasCategorias");
 const seccionHistorial = document.getElementById("seccionHistorial");
 const seccionFavoritos = document.getElementById("seccionFavoritos");
 const listaHistorial = document.getElementById("listaHistorial");
@@ -1451,12 +1452,16 @@ function mostrarPalabra(p, opciones = {}){
         panelCategorias.innerHTML = ""; 
         categoriaActualMostrada = null;
         resultado.innerHTML = "";
+        ultimasPalabras.innerHTML = "";
     } else {
         // No tocamos el buscador principal ni las tarjetas de categoría
         // (siguen visibles arriba, igual que al buscar dentro de una
-        // categoría o con el buscador de "Temas orden").
+        // categoría o con el buscador de "Temas orden"). Las sugerencias
+        // en este modo se pintan en #ultimasPalabrasCategorias (justo
+        // debajo de #resultadoCategorias), no en #ultimasPalabras (que
+        // queda arriba, lejos de la tarjeta, y no debe tocarse acá).
         resultado.innerHTML = "";
-        ultimasPalabras.innerHTML = "";
+        if(ultimasPalabrasCategorias) ultimasPalabrasCategorias.innerHTML = "";
     }
     ocultarPanelesGuardados();
     const nuevaUrl = window.location.pathname + "?p=" + encodeURIComponent(p.palabra);
@@ -1565,7 +1570,9 @@ function mostrarPalabra(p, opciones = {}){
         mostrarFavoritos();
     });
     if (!enCategorias) {
-        mostrarSugerenciasRelacionadas(p);
+        mostrarSugerenciasRelacionadas(p, ultimasPalabras);
+    } else {
+        mostrarSugerenciasRelacionadas(p, ultimasPalabrasCategorias, { clickAbreEnCategorias: true });
     }
     if (hayVideo) {
         inicializarReproductorPalabra(p.video);
@@ -1607,7 +1614,7 @@ function mostrarPalabraSimplificada(p, opciones = {}){
         resultado.innerHTML = "";
     } else {
         resultado.innerHTML = "";
-        ultimasPalabras.innerHTML = "";
+        if(ultimasPalabrasCategorias) ultimasPalabrasCategorias.innerHTML = "";
     }
     ocultarPanelesGuardados();
     document.getElementById("senalDelDia").style.display = "none";
@@ -1659,7 +1666,7 @@ function mostrarPalabraSimplificada(p, opciones = {}){
                     ${bloqueControlesVideo}
                 </div>
                 <div class="col-lg-5 d-flex flex-column justify-content-center gap-3">
-                    <div class="apoyo-panel">
+                    <div class="apoyo-panel apoyo-panel-vocabulario">
                         <span class="apoyo-panel-titulo">📸 Ejemplo</span>
                         <div class="apoyo-panel-caja">
                             ${bloqueImagen}
@@ -1670,6 +1677,11 @@ function mostrarPalabraSimplificada(p, opciones = {}){
         </div>
     </div>`;
 
+    if (!enCategorias) {
+        mostrarSugerenciasRelacionadasVocabulario(p, ultimasPalabras);
+    } else {
+        mostrarSugerenciasRelacionadasVocabulario(p, ultimasPalabrasCategorias, { clickAbreEnCategorias: true });
+    }
     if (idVideo) {
         inicializarReproductorPalabra(idVideo, { autoreproducirEnBucle: true });
     } else {
@@ -3192,26 +3204,64 @@ function restaurarPalabraDesdeUrl(nombre){
     }
 }
 
-function mostrarSugerenciasRelacionadas(palabraActual){
-    if(!ultimasPalabras) return;
-    ultimasPalabras.innerHTML = "";
+// Miniatura de 70x70 para las tarjetas de "Puede que también te interese"
+// (Diccionario y Vocabulario). Antes usaba via.placeholder.com como
+// respaldo cuando la palabra no tiene columna "imagen", pero ese servicio
+// dejó de responder y se veía como ícono roto. Se reemplaza por el mismo
+// mini-bloque "🖼️" ya usado en otras partes del sitio para "sin imagen
+// todavía", en vez de depender de un servicio externo.
+function generarMiniaturaSugerencia(p){
+    const primeraImagen = (p.imagen || "").split(",")[0].trim();
+    if(primeraImagen){
+        return `<img src="${primeraImagen}" class="img-fluid rounded" style="height: 70px; width: 70px; object-fit: cover;" alt="Imagen de apoyo visual para ${p.palabra}">`;
+    }
+    return `<div class="rounded d-flex align-items-center justify-content-center bg-light text-muted" style="height: 70px; width: 70px; font-size: 1.3rem;">🖼️</div>`;
+}
+
+function mostrarSugerenciasRelacionadas(palabraActual, contenedor, opciones = {}){
+    if(!contenedor) return;
+    contenedor.innerHTML = "";
     const relacionadas = App.datos.filter(p => p.categoria.trim() === palabraActual.categoria.trim() && p.palabra !== palabraActual.palabra);
     if (relacionadas.length === 0) return;
     // Todo el bloque (título + tarjetas) va dentro de un único "col-12"
     // con fondo amarillo claro (.sugerencias-panel-destacado), así el
     // panel de color solo aparece cuando realmente hay sugerencias que
-    // mostrar (si no hay, ultimasPalabras queda vacío y no se ve ninguna
-    // caja de color de más).
-    ultimasPalabras.innerHTML = `<div class="col-12"><div class="sugerencias-panel-destacado"><h5 class="fw-bold mb-3">Puede que también te interese</h5><div class="row g-2" id="sugerenciasPanelFilas"></div></div></div>`;
-    const filas = document.getElementById("sugerenciasPanelFilas");
+    // mostrar (si no hay, el contenedor queda vacío y no se ve ninguna
+    // caja de color de más). El id interno de las filas se busca dentro
+    // de "contenedor" (querySelector), no con getElementById global, para
+    // que esta misma función sirva tanto para #ultimasPalabras (búsqueda
+    // normal) como para #ultimasPalabrasCategorias (vista Categorías).
+    contenedor.innerHTML = `<div class="col-12"><div class="sugerencias-panel-destacado"><h5 class="fw-bold mb-3">Puede que también te interese</h5><div class="row g-2 sugerenciasPanelFilas"></div></div></div>`;
+    const filas = contenedor.querySelector(".sugerenciasPanelFilas");
     relacionadas.slice(-4).reverse().forEach(p => {
         const col = document.createElement("div"); col.className = "col-12 col-md-6 mb-2";
-        const primeraImagen = (p.imagen || "").split(",")[0].trim();
-        col.innerHTML = `<div class="card h-100 border-0 shadow-sm" style="border-radius: 12px; background-color: #ffffff;"><div class="row g-0 align-items-center"><div class="col-3 p-2"><img src="${primeraImagen || 'https://via.placeholder.com/150'}" class="img-fluid rounded" style="height: 70px; width: 70px; object-fit: cover;"></div><div class="col-9"><div class="card-body py-2 px-2"><h6 class="mb-0 fw-bold text-primary">${p.palabra}</h6></div></div></div></div>`;
-        col.onclick = () => { window.scrollTo({ top: 0, behavior: 'smooth' }); mostrarPalabra(p); };
+        col.innerHTML = `<div class="card h-100 border-0 shadow-sm" style="border-radius: 12px; background-color: #ffffff;"><div class="row g-0 align-items-center"><div class="col-3 p-2">${generarMiniaturaSugerencia(p)}</div><div class="col-9"><div class="card-body py-2 px-2"><h6 class="mb-0 fw-bold text-primary">${p.palabra}</h6></div></div></div></div>`;
+        col.onclick = () => { window.scrollTo({ top: 0, behavior: 'smooth' }); mostrarPalabra(p, { enCategorias: !!opciones.clickAbreEnCategorias }); };
         filas.appendChild(col);
     });
 }
+
+// Igual que mostrarSugerenciasRelacionadas(), pero para palabras de
+// Vocabulario (Hoja 2, banco del Quiz): usa obtenerBancoHoja2() en vez
+// de App.datos, y al hacer clic en una sugerencia abre con
+// mostrarPalabraSimplificada() en vez de mostrarPalabra(). La Hoja 2 no
+// trae columna "imagen", así que las tarjetas siempre caen en el
+// placeholder (igual que el resto de tarjetas de Vocabulario).
+function mostrarSugerenciasRelacionadasVocabulario(palabraActual, contenedor, opciones = {}){
+    if(!contenedor) return;
+    contenedor.innerHTML = "";
+    const relacionadas = obtenerBancoHoja2().filter(p => p.categoria && palabraActual.categoria && p.categoria.trim() === palabraActual.categoria.trim() && p.palabra !== palabraActual.palabra);
+    if (relacionadas.length === 0) return;
+    contenedor.innerHTML = `<div class="col-12"><div class="sugerencias-panel-destacado"><h5 class="fw-bold mb-3">Puede que también te interese</h5><div class="row g-2 sugerenciasPanelFilas"></div></div></div>`;
+    const filas = contenedor.querySelector(".sugerenciasPanelFilas");
+    relacionadas.slice(-4).reverse().forEach(p => {
+        const col = document.createElement("div"); col.className = "col-12 col-md-6 mb-2";
+        col.innerHTML = `<div class="card h-100 border-0 shadow-sm" style="border-radius: 12px; background-color: #ffffff;"><div class="row g-0 align-items-center"><div class="col-3 p-2">${generarMiniaturaSugerencia(p)}</div><div class="col-9"><div class="card-body py-2 px-2"><h6 class="mb-0 fw-bold text-primary">${p.palabra}</h6></div></div></div></div>`;
+        col.onclick = () => { window.scrollTo({ top: 0, behavior: 'smooth' }); mostrarPalabraSimplificada(p, { enCategorias: !!opciones.clickAbreEnCategorias }); };
+        filas.appendChild(col);
+    });
+}
+
 
 // --- FAVORITOS Y HISTORIAL ---
 function obtenerFavoritos(){ return JSON.parse(localStorage.getItem(CLAVE_FAVORITOS) || "[]"); }

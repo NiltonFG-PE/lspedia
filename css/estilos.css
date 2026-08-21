@@ -502,7 +502,7 @@ iframe {
     border-radius: var(--radius-main);
     border: 1px solid rgba(0,0,0,0.05);
 }
-#resultado img {
+#resultado img:not(.apoyo-visual-img) {
     max-width: 100%;
     max-height: 160px;
     object-fit: contain;
@@ -544,7 +544,7 @@ iframe {
     min-height: 160px;
     border-radius: 10px;
     overflow: hidden;
-    background-color: #f1f5f9;
+    background-color: #cbd5e1;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -630,22 +630,38 @@ iframe {
    a diferencia de la regla genérica de .apoyo-visual-img de más arriba
    (que se usa también en Alfabetización y SÍ debe mostrar la imagen
    completa sin recortar, aunque quede espacio vacío alrededor), acá la
-   imagen debe llenar todo el recuadro. Se recorta lo mínimo necesario
-   (object-fit: cover) en vez de dejar franjas vacías arriba/abajo o a
-   los costados. Selector específico ".apoyo-panel" para no afectar
-   Alfabetización, que usa las mismas clases .apoyo-visual-caja/
-   .apoyo-visual-img pero con sus propios ids (#alfabBocaCaja,
-   #alfabTrazoCaja, #alfabEjemploImagenCaja), fuera de .apoyo-panel. */
+   imagen debe llenar todo el recuadro.
+   IMPORTANTE: en vez de depender de que height:100% se propague bien a
+   través de varios niveles de flexbox anidados (.apoyo-panel-caja >
+   .apoyo-visual-caja > img), lo cual resultó frágil en la práctica
+   (la imagen se veía chica y centrada, como si object-fit:cover no se
+   aplicara), se usa position:absolute con inset:0 directamente contra
+   .apoyo-panel-caja (que ya es position:relative). Así la imagen SIEMPRE
+   mide el 100% real de la caja, sin importar el layout de los padres. */
 .apoyo-panel .apoyo-visual-caja {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
 }
 .apoyo-panel .apoyo-visual-img {
+    position: absolute;
+    inset: 0;
+    display: block;
     width: 100%;
     height: 100%;
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: cover;
+    object-fit: contain;
+}
+
+/* Panel "Ejemplo" de Vocabulario (.apoyo-panel-vocabulario, ver
+   mostrarPalabraSimplificada() en script.js): a diferencia del
+   Diccionario de arriba, acá la imagen NO debe recortarse nunca.
+   Se muestra completa dentro de la caja (object-fit: contain),
+   ocupando como máximo el ancho/alto disponible; si su proporción
+   no coincide con la de la caja, queda espacio de fondo arriba/abajo
+   o a los costados en vez de perder contenido de la imagen. */
+.apoyo-panel-vocabulario .apoyo-visual-img {
+    object-fit: contain;
 }
 
 /* Carrusel de varias imágenes de ejemplo dentro de la caja de Apoyo
