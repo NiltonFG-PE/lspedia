@@ -1671,7 +1671,7 @@ function mostrarPalabraSimplificada(p, opciones = {}){
     </div>`;
 
     if (idVideo) {
-        inicializarReproductorPalabra(idVideo);
+        inicializarReproductorPalabra(idVideo, { autoreproducirEnBucle: true });
     } else {
         ytPlayerPalabra = null;
     }
@@ -1682,6 +1682,10 @@ function mostrarPalabraSimplificada(p, opciones = {}){
 let ytPlayerPalabra = null;
 let ytApiListo = false;
 let ytVideoIdPendiente = null;
+// Igual que ytVideoIdPendiente: recuerda si, cuando se cree el reproductor
+// de la palabra pendiente, debe hacerlo en modo autoreproducción + bucle
+// (ver inicializarReproductorPalabra / crearReproductorPalabra más abajo).
+let ytOpcionesReproductorPalabraPendiente = {};
 // Declarada acá (y no junto al resto del reproductor "Seña sugerida" más
 // abajo) a propósito: onYouTubeIframeAPIReady, justo debajo, ya la usa. Si
 // la API de YouTube carga muy rápido, el aviso "temprano" (ver
@@ -1702,8 +1706,9 @@ let nosotrosPantallaCompletaActiva = false;
 function onYouTubeIframeAPIReady() {
     ytApiListo = true;
     if (ytVideoIdPendiente) {
-        crearReproductorPalabra(ytVideoIdPendiente);
+        crearReproductorPalabra(ytVideoIdPendiente, ytOpcionesReproductorPalabraPendiente);
         ytVideoIdPendiente = null;
+        ytOpcionesReproductorPalabraPendiente = {};
     }
     if (ytVideoIdSugeridaPendiente) {
         crearReproductorSugerida(ytVideoIdSugeridaPendiente);
@@ -1946,13 +1951,15 @@ function cerrarPantallaCompletaVideoPalabra() {
     }
 }
 
-function inicializarReproductorPalabra(videoId) {
+function inicializarReproductorPalabra(videoId, opciones = {}) {
     ajustarAspectoReproductorPalabra(videoId);
     if (ytApiListo) {
-        crearReproductorPalabra(videoId);
+        crearReproductorPalabra(videoId, opciones);
     } else {
-        // La API todavía no cargó: guardamos el video y se crea en cuanto esté lista.
+        // La API todavía no cargó: guardamos el video (y estas opciones) y
+        // se crea en cuanto esté lista.
         ytVideoIdPendiente = videoId;
+        ytOpcionesReproductorPalabraPendiente = opciones;
     }
 }
 
@@ -1976,15 +1983,25 @@ function ajustarAspectoReproductorPalabra(videoId) {
         .catch(() => { /* si falla la red, se mantiene el valor por defecto */ });
 }
 
-function crearReproductorPalabra(videoId) {
+function crearReproductorPalabra(videoId, opciones = {}) {
     const contenedor = document.getElementById("reproductorPalabra");
     if (!contenedor) return;
     if (ytPlayerPalabra && typeof ytPlayerPalabra.destroy === "function") {
         ytPlayerPalabra.destroy();
     }
+    const autoreproducirEnBucle = !!opciones.autoreproducirEnBucle;
+    // "loop" solo funciona en un video suelto (sin playlist real) si además
+    // se le pasa "playlist" con ese mismo id — así lo exige la API de
+    // YouTube. "mute" es obligatorio: los navegadores bloquean la
+    // autoreproducción con sonido si la persona no interactuó antes con la
+    // página; el video igual se puede desmutear a mano desde sus propios
+    // controles.
+    const playerVars = autoreproducirEnBucle
+        ? { rel: 0, modestbranding: 1, autoplay: 1, mute: 1, loop: 1, playlist: videoId }
+        : { rel: 0, modestbranding: 1 };
     ytPlayerPalabra = new YT.Player("reproductorPalabra", {
         videoId: videoId,
-        playerVars: { rel: 0, modestbranding: 1 },
+        playerVars: playerVars,
         events: {
             onReady: configurarControlesVideo,
             onStateChange: actualizarBotonPlayPause
