@@ -10,7 +10,7 @@
 # (cópialas ahi a mano primero, como ya vienes haciendo).
 
 param(
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory=$true, ValueFromRemainingArguments=$true)]
     [string[]]$NombresImagen
 )
 

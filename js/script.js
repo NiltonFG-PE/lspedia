@@ -1682,6 +1682,14 @@ function mostrarPalabraSimplificada(p, opciones = {}){
 let ytPlayerPalabra = null;
 let ytApiListo = false;
 let ytVideoIdPendiente = null;
+// Declarada acá (y no junto al resto del reproductor "Seña sugerida" más
+// abajo) a propósito: onYouTubeIframeAPIReady, justo debajo, ya la usa. Si
+// la API de YouTube carga muy rápido, el aviso "temprano" (ver
+// window.__ytApiListoTemprano un poco más abajo) puede llamar a esa función
+// ANTES de que el script llegue a la línea original de esta declaración,
+// lo que rompía todo el resto de la carga (incluyendo Categorías) con un
+// "Cannot access 'ytVideoIdSugeridaPendiente' before initialization".
+let ytVideoIdSugeridaPendiente = null;
 
 // --- REPRODUCTOR DE VIDEO CONTROLABLE PARA "SOBRE NOSOTROS" ---
 const ID_VIDEO_NOSOTROS = "NLIEfLPdeGg";
@@ -2058,7 +2066,9 @@ function actualizarBotonPlayPause(evento) {
 // propios IDs, para poder mostrarse al mismo tiempo que el video principal
 // sin que ambos reproductores se pisen entre sí. ---
 let ytPlayerSugerida = null;
-let ytVideoIdSugeridaPendiente = null;
+// ytVideoIdSugeridaPendiente ahora se declara más arriba, junto a
+// ytVideoIdPendiente (ver comentario ahí) — la usa onYouTubeIframeAPIReady,
+// que puede llamarse antes de llegar hasta acá.
 const VELOCIDADES_SUGERIDA = VELOCIDADES_PALABRA;
 let velocidadSugeridaIndex = VELOCIDADES_SUGERIDA.indexOf(1);
 
