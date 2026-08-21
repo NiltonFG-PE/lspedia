@@ -3059,7 +3059,15 @@ window.filtrarPorCategoriaDiccionario = filtrarPorCategoriaDiccionario;
 const ICONOS_CATEGORIA_VOCABULARIO = {
     "adjetivos": "img/categorias/adjetivos.png",
     "emociones": "img/categorias/emociones.png",
-    "verbos": "img/categorias/verbos.png"
+    "verbos": "img/categorias/verbos.png",
+    "tiempo": "img/categorias/tiempo.png"
+};
+
+// Emoji de respaldo por categoría, para cuando todavía no hay una imagen
+// en ICONOS_CATEGORIA_VOCABULARIO. Si la categoría no está aquí tampoco,
+// se usa el 📖 por defecto.
+const EMOJIS_CATEGORIA_VOCABULARIO = {
+    "tiempo": "⏰"
 };
 
 function mostrarCategorias(){
@@ -3072,10 +3080,12 @@ function mostrarCategorias(){
     categories.forEach((nombre, indice)=>{
         const cantidad = datosVocabulario.filter(p => p.categoria.trim() === nombre).length;
         const color = COLORES_CATEGORIAS[indice % COLORES_CATEGORIAS.length];
-        const icono = ICONOS_CATEGORIA_VOCABULARIO[nombre.trim().toLowerCase()];
+        const nombreClave = nombre.trim().toLowerCase();
+        const icono = ICONOS_CATEGORIA_VOCABULARIO[nombreClave];
+        const emoji = EMOJIS_CATEGORIA_VOCABULARIO[nombreClave] || "📖";
         const iconoHtml = icono
             ? `<img src="${icono}" alt="${nombre}" loading="lazy" style="width: 48px; height: 48px; object-fit: contain; margin-bottom: 8px;">`
-            : `<span style="font-size: 2rem; display: block; margin-bottom: 8px;">📖</span>`;
+            : `<span style="font-size: 2rem; display: block; margin-bottom: 8px;">${emoji}</span>`;
         const card = document.createElement("div");
         card.className = "col-6 col-md-3 animate-fade-in";
         card.innerHTML = `<div class="card h-100 shadow-sm categoria-card" style="border-radius: 16px; border: 2px solid ${color.borde}; background-color: ${color.fondo};"><div class="card-body text-center py-4">${iconoHtml}<h5 class="mb-2 fw-bold" style="color: ${color.texto}; font-size: 1.25rem;">${nombre}</h5><p class="mb-0 fw-semibold" style="color: ${color.texto}; opacity: 0.85; font-size: 1rem;">${cantidad} palabras</p></div></div>`;

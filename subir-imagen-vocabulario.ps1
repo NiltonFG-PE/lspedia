@@ -1,38 +1,49 @@
 # subir-imagen-vocabulario.ps1
 # Uso: .\subir-imagen-vocabulario.ps1 nombre-de-la-imagen.png
+#      .\subir-imagen-vocabulario.ps1 lunes.png,martes.png,miercoles.png
 #
 # Igual que subir-imagen.ps1 (diccionario), pero para las imágenes de la
-# sección Vocabulario: la imagen debe estar dentro de img/vocabulario/
-# ANTES de correr este script (cópiala ahí a mano primero).
+# sección Vocabulario: las imágenes deben estar dentro de img/vocabulario/
+# ANTES de correr este script (cópialas ahí a mano primero).
 
 param(
     [Parameter(Mandatory=$true)]
-    [string]$NombreImagen
+    [string[]]$NombreImagen
 )
 
 $ErrorActionPreference = "Stop"
 
 Write-Host "==========================================" -ForegroundColor Cyan
-Write-Host " Subir imagen de Vocabulario a LSPedia (rama develop)" -ForegroundColor Cyan
+Write-Host " Subir imagen(es) de Vocabulario a LSPedia (rama develop)" -ForegroundColor Cyan
 Write-Host "==========================================" -ForegroundColor Cyan
 
-# 1. Verificar que el archivo existe en img/vocabulario/
-$rutaImagen = "img/vocabulario/$NombreImagen"
-
-if (-Not (Test-Path $rutaImagen)) {
-    Write-Host "ERROR: No se encontró el archivo '$rutaImagen'." -ForegroundColor Red
-    Write-Host "Verifica que la imagen esté dentro de la carpeta img/vocabulario/ y que el nombre sea correcto." -ForegroundColor Yellow
-    exit 1
+# 1. Verificar que todos los archivos existen en img/vocabulario/
+$rutasImagenes = @()
+foreach ($nombre in $NombreImagen) {
+    $ruta = "img/vocabulario/$nombre"
+    if (-Not (Test-Path $ruta)) {
+        Write-Host "ERROR: No se encontró el archivo '$ruta'." -ForegroundColor Red
+        Write-Host "Verifica que la imagen esté dentro de la carpeta img/vocabulario/ y que el nombre sea correcto." -ForegroundColor Yellow
+        exit 1
+    }
+    $rutasImagenes += $ruta
 }
 
 Write-Host "`n[1/5] Cambiando a la rama develop..." -ForegroundColor Green
 git checkout develop
 
-Write-Host "`n[2/5] Agregando la imagen: $rutaImagen" -ForegroundColor Green
-git add $rutaImagen
+Write-Host "`n[2/5] Agregando $($rutasImagenes.Count) imagen(es):" -ForegroundColor Green
+foreach ($ruta in $rutasImagenes) {
+    Write-Host "   - $ruta" -ForegroundColor Green
+    git add $ruta
+}
 
 Write-Host "`n[3/5] Creando commit..." -ForegroundColor Green
-$mensaje = "Agrega imagen de vocabulario $NombreImagen"
+if ($NombreImagen.Count -eq 1) {
+    $mensaje = "Agrega imagen de vocabulario $($NombreImagen[0])"
+} else {
+    $mensaje = "Agrega imagenes de vocabulario: $($NombreImagen -join ', ')"
+}
 git commit -m "$mensaje"
 
 Write-Host "`n[4/5] Trayendo cambios remotos (git pull)..." -ForegroundColor Green
