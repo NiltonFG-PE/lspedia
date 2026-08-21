@@ -104,105 +104,218 @@
    grande). Interacción por toque: se elige la ficha de letra y se
    coloca sola en el espacio en blanco.
    ============================================================ */
+/* ============================================================
+   Rediseño visual del juego "Completar la palabra": tarjeta con
+   fondo degradado animado, imagen con marco flotante, casillas
+   estilo "tarjeta de juego" 3D, fichas de letra tipo dado y
+   racha de aciertos con fuego. Todo sigue usando los mismos IDs
+   y la misma lógica de alfabetizacion.js — solo cambia el look.
+   ============================================================ */
+
+/* Tarjeta contenedora del juego activo: fondo degradado sutil y
+   animado en vez del blanco plano anterior. */
+#alfabCompletarActivo {
+    background: linear-gradient(135deg, #eef2ff 0%, #f0fdfa 50%, #fff7ed 100%);
+    background-size: 200% 200%;
+    animation: completarFondoDegradado 12s ease infinite;
+    border-radius: 22px !important;
+    position: relative;
+    overflow: hidden;
+}
+@keyframes completarFondoDegradado {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Racha de aciertos consecutivos: aparece junto al puntaje */
+.completar-racha {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 800;
+    font-size: 0.85rem;
+    color: #ea580c;
+    background: #fff7ed;
+    border: 1.5px solid #fb923c;
+    border-radius: 999px;
+    padding: 2px 10px;
+    transition: transform 0.2s ease;
+}
+.completar-racha.pulso {
+    animation: completarRachaPulso 0.45s ease;
+}
+@keyframes completarRachaPulso {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.25); }
+    100% { transform: scale(1); }
+}
+
+/* Caja de imagen / número: marco flotante con brillo, más grande
+   y con leve rotación en hover para sentirse "tocable". */
 .completar-imagen-caja {
-    width: 160px;
-    height: 160px;
+    width: 190px;
+    height: 190px;
     max-width: 100%;
-    background: #eef2ff;
-    border-radius: 18px;
+    background: #ffffff;
+    border-radius: 26px;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    box-shadow: 0 12px 28px -8px rgba(15, 23, 42, 0.18), 0 0 0 6px rgba(255, 255, 255, 0.6), 0 0 0 8px rgba(2, 132, 199, 0.12);
+    animation: completarImagenFlotar 3.2s ease-in-out infinite;
+    position: relative;
+}
+@keyframes completarImagenFlotar {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-6px) rotate(-1.2deg); }
 }
 .completar-imagen-caja img {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    padding: 12px;
+    padding: 14px;
 }
 .completar-numero-grande {
-    font-size: 3rem;
+    font-size: 3.4rem;
     font-weight: 800;
-    color: var(--accent-color, #0284c7);
+    background: linear-gradient(135deg, #0284c7, #7c3aed);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
 
+/* Palabra a completar: fichas con más aire y sombra tipo "tarjeta" */
 .completar-palabra {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 8px;
+    margin-top: 4px;
 }
 .completar-letra-casilla {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 34px;
-    height: 44px;
-    padding: 0 2px;
-    font-size: 1.6rem;
+    min-width: 42px;
+    height: 52px;
+    padding: 0 4px;
+    font-size: 1.75rem;
     font-weight: 800;
     color: var(--primary-color, #0f172a);
-    border-bottom: 3px solid transparent;
+    background: #ffffff;
+    border-radius: 10px;
+    border-bottom: 4px solid #e2e8f0;
+    box-shadow: 0 3px 0 rgba(15, 23, 42, 0.04), 0 4px 10px -4px rgba(15, 23, 42, 0.12);
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
 }
 .completar-letra-casilla.blank {
-    border-bottom: 3px dashed #f59e0b;
-    background: #fffbeb;
-    border-radius: 6px;
+    border-bottom: 4px dashed #f59e0b;
+    background: repeating-linear-gradient(135deg, #fffbeb, #fffbeb 8px, #fef3c7 8px, #fef3c7 16px);
+    color: transparent;
 }
 /* Cuando faltan 2 o 3 letras (nivel Medio/Difícil), esta marca cuál de
    los espacios en blanco toca llenar en este momento. */
 .completar-letra-casilla.blank.activa {
     border-bottom-color: #d97706;
-    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25);
-    animation: completarBlancoActivo 1.1s ease-in-out infinite;
+    background: #fffbeb;
+    box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.22), 0 6px 14px -4px rgba(217, 119, 6, 0.35);
+    animation: completarBlancoActivo 1s ease-in-out infinite;
 }
 @keyframes completarBlancoActivo {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-3px); }
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-5px) scale(1.06); }
 }
 .completar-letra-casilla.correcta {
-    color: #16a34a;
+    color: #166534;
     border-bottom-color: #16a34a;
-    background: #f0fdf4;
-    border-radius: 6px;
+    background: #dcfce7;
+    animation: completarCasillaAcierto 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .completar-letra-casilla.incorrecta {
-    color: #dc2626;
+    color: #991b1b;
     border-bottom-color: #dc2626;
-    background: #fef2f2;
-    border-radius: 6px;
+    background: #fee2e2;
+    animation: quizTiemble 0.4s ease;
+}
+@keyframes completarCasillaAcierto {
+    0% { transform: scale(1) rotate(0deg); }
+    45% { transform: scale(1.22) rotate(-6deg); }
+    75% { transform: scale(0.95) rotate(3deg); }
+    100% { transform: scale(1) rotate(0deg); }
 }
 
+/* Fichas de letra tipo "dado": más grandes, con relieve 3D falso
+   (borde inferior grueso) y un rebote más vivo al pasar el mouse
+   o tocar. */
 .completar-opcion-letra {
-    width: 64px;
-    height: 64px;
-    border-radius: 14px;
-    border: 2px solid var(--border-color, #cbd5e1);
+    width: 68px;
+    height: 68px;
+    border-radius: 16px;
+    border: none;
     background: #ffffff;
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     font-weight: 800;
     color: var(--text-main, #0f172a);
-    transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+    box-shadow: 0 4px 0 #cbd5e1, 0 8px 14px -6px rgba(15, 23, 42, 0.25);
+    transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s ease, background 0.15s ease;
 }
 .completar-opcion-letra:not(:disabled):hover {
-    border-color: var(--accent-color, #0284c7);
-    transform: translateY(-2px);
+    background: #eaf6ff;
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 7px 0 #38bdf8, 0 14px 18px -8px rgba(2, 132, 199, 0.35);
+}
+.completar-opcion-letra:not(:disabled):active {
+    transform: translateY(1px) scale(0.97);
+    box-shadow: 0 2px 0 #cbd5e1;
 }
 .completar-opcion-letra:disabled {
-    opacity: 0.6;
+    opacity: 0.55;
 }
 .completar-opcion-letra.correcta {
     background: #dcfce7;
-    border-color: #16a34a;
     color: #166534;
+    box-shadow: 0 4px 0 #16a34a, 0 10px 18px -6px rgba(22, 163, 74, 0.4);
     animation: quizPulso 0.5s ease;
 }
 .completar-opcion-letra.incorrecta {
-    background: #fef2f2;
-    border-color: #dc2626;
+    background: #fee2e2;
     color: #991b1b;
+    box-shadow: 0 4px 0 #dc2626;
     animation: quizTiemble 0.4s ease;
+}
+
+/* El contenido del juego necesita position:relative para que el
+   confeti (position:absolute) caiga dentro de esta caja y no se
+   desborde sobre el resto de la página. */
+#alfabCompletarContenido {
+    position: relative;
+}
+
+/* Confeti simple con divs al completar una palabra sin errores */
+.completar-confeti-pieza {
+    position: absolute;
+    top: -12px;
+    width: 9px;
+    height: 14px;
+    border-radius: 2px;
+    opacity: 0.95;
+    animation: completarConfetiCaer 1.1s ease-in forwards;
+    pointer-events: none;
+    z-index: 5;
+}
+@keyframes completarConfetiCaer {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(220px) rotate(340deg); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #alfabCompletarActivo { animation: none; }
+    .completar-imagen-caja { animation: none; }
+    .completar-letra-casilla.blank.activa { animation: none; }
+    .completar-letra-casilla.correcta { animation: none; }
+    .completar-confeti-pieza { animation: none; display: none; }
 }
 
 /* Caja de grafía: la letra/video se muestra grande, similar a la referencia */
@@ -239,14 +352,45 @@
    (mismas reglas box-sizing/width/height suelen funcionar igual). */
 
 /* ============================================================
-   Juego "Unir con flechas": dos columnas de ítems tocables +
-   un <svg> superpuesto que dibuja una línea por cada conexión
-   (gris = pendiente de comprobar, verde = correcta y bloqueada,
-   rojo = recién marcada incorrecta, se libera sola en un momento).
+   Juego "Unir con flechas" — versión moderna e interactiva.
+   Dos columnas de ítems tocables ("pastillas" con un conector
+   circular en el borde interno) + un <svg> superpuesto que dibuja
+   una CURVA (no línea recta) por cada conexión: gris punteada y
+   "viva" (dashoffset animado) = pendiente de comprobar, verde con
+   brillo = correcta y bloqueada, roja = recién marcada incorrecta
+   (se libera sola en un momento). Pensado para mouse Y para dedo:
+   áreas de toque grandes, sin depender de :hover para entender el
+   estado, con feedback de color/forma/tamaño simultáneo.
    ============================================================ */
+
+/* Tarjeta contenedora del juego activo: mismo fondo degradado
+   animado que "Completar la palabra", para que ambos juegos se
+   sientan parte de la misma familia visual. */
+#alfabUnirActivo {
+    background: linear-gradient(135deg, #eef2ff 0%, #f0fdfa 50%, #fff7ed 100%);
+    background-size: 200% 200%;
+    animation: completarFondoDegradado 12s ease infinite;
+    border-radius: 22px !important;
+}
+
 .alfab-unir-tablero {
     min-height: 260px;
-    padding-top: 4px;
+    padding: 18px 6px 10px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.55);
+    box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.05);
+}
+
+/* Etiquetas discretas encima de cada columna ("Imágenes" / "Palabras")
+   para orientar de un vistazo qué se conecta con qué. */
+.alfab-unir-col-titulo {
+    text-align: center;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #64748b;
+    margin-bottom: 10px;
 }
 
 /* El SVG cubre todo el tablero pero no intercepta clics: los botones
@@ -261,73 +405,190 @@
     overflow: visible;
 }
 .alfab-unir-linea {
-    stroke-width: 3;
+    fill: none;
+    stroke-width: 4;
     stroke-linecap: round;
+    filter: drop-shadow(0 2px 3px rgba(15, 23, 42, 0.18));
+    transition: stroke 0.2s ease;
 }
-.alfab-unir-linea.pendiente { stroke: #94a3b8; stroke-dasharray: 6 5; }
-.alfab-unir-linea.correcta { stroke: #16a34a; }
-.alfab-unir-linea.incorrecta { stroke: #dc2626; }
+.alfab-unir-linea.pendiente {
+    stroke: #94a3b8;
+    stroke-dasharray: 9 7;
+    animation: alfabUnirLineaViva 0.9s linear infinite;
+}
+.alfab-unir-linea.correcta {
+    stroke: #16a34a;
+    filter: drop-shadow(0 0 5px rgba(22, 163, 74, 0.55));
+}
+.alfab-unir-linea.incorrecta {
+    stroke: #dc2626;
+    filter: drop-shadow(0 0 5px rgba(220, 38, 38, 0.5));
+}
+@keyframes alfabUnirLineaViva {
+    to { stroke-dashoffset: -32; }
+}
 
-/* Ítem de cualquiera de las dos columnas (imagen o palabra) */
+/* Puntos "conector" en el SVG, dibujados en cada extremo de la curva:
+   dan la sensación de un cable que se enchufa en cada ficha. */
+.alfab-unir-punto {
+    transition: fill 0.2s ease, r 0.2s ease;
+}
+.alfab-unir-punto.pendiente { fill: #94a3b8; }
+.alfab-unir-punto.correcta { fill: #16a34a; }
+.alfab-unir-punto.incorrecta { fill: #dc2626; }
+
+/* Ítem de cualquiera de las dos columnas (imagen o palabra): pastilla
+   con relieve, borde de color según estado y un pequeño "nodo"
+   circular en el borde interno (derecho para imágenes, izquierdo
+   para palabras) que marca visualmente de dónde nace la curva. */
 .alfab-unir-item {
+    position: relative;
     width: 100%;
-    min-height: 64px;
+    min-height: 72px;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    margin-bottom: 10px;
-    padding: 8px 12px;
-    border-radius: 12px;
-    border: 2px solid var(--border-color, #cbd5e1);
+    margin-bottom: 12px;
+    padding: 10px 16px;
+    border-radius: 16px;
+    border: 2.5px solid var(--border-color, #cbd5e1);
     background: #ffffff;
     font-weight: 700;
+    font-size: 1.02rem;
     color: var(--text-main, #0f172a);
     cursor: pointer;
-    transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 3px 0 #e2e8f0, 0 6px 14px -6px rgba(15, 23, 42, 0.18);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    user-select: none;
+    transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
 }
+
+/* Nodo conector: un pequeño círculo que sobresale del borde interno
+   de la ficha, alineado con el punto exacto donde nace la curva
+   dibujada en dibujarLineasUnir() (ver ALFAB_UNIR_OFFSET_NODO en JS). */
+.alfab-unir-item::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2.5px solid var(--border-color, #cbd5e1);
+    transform: translateY(-50%);
+    transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+    z-index: 1;
+}
+.alfab-unir-imagen::after { right: -9px; }
+.alfab-unir-palabra::after { left: -9px; }
+
 .alfab-unir-item:hover:not(:disabled) {
     border-color: var(--accent-color, #0284c7);
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 0 #bae6fd, 0 10px 18px -6px rgba(2, 132, 199, 0.28);
+}
+.alfab-unir-item:active:not(:disabled) {
+    transform: translateY(1px) scale(0.98);
+    box-shadow: 0 1px 0 #e2e8f0;
 }
 .alfab-unir-item:disabled {
     cursor: default;
 }
 
 .alfab-unir-imagen img {
-    width: 48px;
-    height: 48px;
+    width: 50px;
+    height: 50px;
     object-fit: contain;
     pointer-events: none;
 }
 .alfab-unir-numero {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     font-weight: 800;
     color: var(--accent-color, #0284c7);
     pointer-events: none;
 }
 
-/* Seleccionado: primer toque, esperando su pareja */
+/* Seleccionado: primer toque, esperando su pareja. Pulso continuo
+   en el nodo conector para invitar a tocar la otra columna. */
 .alfab-unir-item.seleccionado {
     border-color: #0d6efd;
     background: #eaf2ff;
-    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.18);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.18), 0 10px 18px -6px rgba(13, 110, 253, 0.3);
 }
-/* Conectado: ya tiene línea pendiente de comprobar */
+.alfab-unir-item.seleccionado::after {
+    border-color: #0d6efd;
+    background: #0d6efd;
+    animation: alfabUnirNodoPulso 1s ease-in-out infinite;
+}
+@keyframes alfabUnirNodoPulso {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.45); }
+    50% { box-shadow: 0 0 0 7px rgba(13, 110, 253, 0); }
+}
+
+/* Conectado: ya tiene una curva pendiente de comprobar */
 .alfab-unir-item.conectado {
-    border-color: #94a3b8;
+    border-color: #64748b;
     background: #f8fafc;
 }
-/* Acertada: pareja confirmada, queda bloqueada */
+.alfab-unir-item.conectado::after {
+    border-color: #64748b;
+    background: #94a3b8;
+}
+
+/* Acertada: pareja confirmada, queda bloqueada. Aparece un check y
+   un "pop" satisfactorio, similar al de las casillas de Completar. */
 .alfab-unir-item.acertada {
     border-color: #16a34a;
-    background: #dcfce7;
+    background: linear-gradient(135deg, #dcfce7, #f0fdf4);
     color: #166534;
-    opacity: 0.9;
+    opacity: 0.95;
+    animation: completarCasillaAcierto 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
+.alfab-unir-item.acertada::after {
+    border-color: #16a34a;
+    background: #16a34a;
+}
+.alfab-unir-item.acertada::before {
+    content: "✓";
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #16a34a;
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(22, 163, 74, 0.5);
+}
+.alfab-unir-palabra.acertada::before { left: -8px; right: auto; }
+
 /* Marcada incorrecta al comprobar (se libera sola tras la animación) */
 .alfab-unir-item.error-temp {
     border-color: #dc2626;
     background: #fef2f2;
     animation: quizTiemble 0.4s ease;
+}
+.alfab-unir-item.error-temp::after {
+    border-color: #dc2626;
+    background: #dc2626;
+}
+
+@media (max-width: 576px) {
+    .alfab-unir-item { min-height: 60px; padding: 8px 10px; font-size: 0.92rem; }
+    .alfab-unir-imagen img { width: 42px; height: 42px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #alfabUnirActivo { animation: none; }
+    .alfab-unir-linea.pendiente { animation: none; }
+    .alfab-unir-item.seleccionado::after { animation: none; }
+    .alfab-unir-item.acertada { animation: none; }
 }

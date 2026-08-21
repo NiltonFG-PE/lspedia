@@ -2696,7 +2696,7 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                 <h4 class="fw-bold mb-0">🎮 Jugar - LSPedia</h4>
                 <div class="d-flex gap-2">
                     <button id="btnQuizFullscreen" class="btn btn-outline-secondary quiz-btn-fullscreen" title="Pantalla completa" aria-label="Pantalla completa">⛶</button>
-                    <button id="btnQuizSalir" class="btn btn-outline-danger btn-sm rounded-pill">Salir</button>
+                    <button id="btnQuizSalir" class="btn quiz-btn-salir btn-sm">⏻ Salir</button>
                 </div>
             </div>
 
@@ -2773,7 +2773,7 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                             <span class="badge bg-primary" id="quizProgreso">Pregunta 1</span>
                             <span class="badge badge-nivel-facil" id="quizNivelBadge">Fácil</span>
                             <span class="fw-bold small text-muted" id="quizPuntaje">⭐ 0</span>
-                            <button id="btnQuizMenuActivo" class="btn btn-outline-secondary btn-sm rounded-pill ms-auto" title="Volver al menú del juego">↩ Menú</button>
+                            <button id="btnQuizMenuActivo" class="btn quiz-btn-menu btn-sm ms-auto" title="Volver al menú del juego">↩ Menú</button>
                         </div>
                         <div class="quiz-progreso-wrap mb-2"><div class="quiz-progreso-barra" id="quizBarraProgreso" style="width:0%"></div></div>
                         <div class="quiz-timer-wrap"><div class="quiz-timer-barra" id="quizBarraTiempo" style="width:100%"></div></div>
@@ -2795,7 +2795,7 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                         <div class="d-flex justify-content-between mb-3 flex-wrap gap-2">
                             <span class="small fw-bold text-muted" id="quizMemoriaIntentos">Intentos: 0</span>
                             <span class="small fw-bold text-muted" id="quizMemoriaTiempo">⏱ 00:00</span>
-                            <button id="btnQuizMenuMemoria" class="btn btn-outline-secondary btn-sm rounded-pill" title="Volver al menú del juego">↩ Menú</button>
+                            <button id="btnQuizMenuMemoria" class="btn quiz-btn-menu btn-sm" title="Volver al menú del juego">↩ Menú</button>
                         </div>
                         <div class="quiz-memoria-grid" id="quizMemoriaGrid"></div>
                     </div>
@@ -2823,7 +2823,7 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
 
                         <div class="d-flex justify-content-center gap-2 flex-wrap">
                             <button id="btnReiniciarQuiz" class="btn btn-warning fw-bold py-2 px-4 rounded-pill">🔁 Jugar de nuevo</button>
-                            <button id="btnQuizSalirResultados" class="btn btn-outline-secondary fw-bold py-2 px-4 rounded-pill">Salir</button>
+                            <button id="btnQuizSalirResultados" class="btn quiz-btn-salir fw-bold py-2 px-4">⏻ Salir</button>
                         </div>
                     </div>
                 </div>
@@ -2855,7 +2855,8 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                             <span class="badge bg-primary" id="alfabCompletarProgreso">Palabra 1</span>
                             <span class="badge badge-nivel-facil" id="alfabCompletarNivelBadge">Fácil</span>
                             <span class="fw-bold small text-muted" id="alfabCompletarPuntaje">⭐ 0</span>
-                            <button id="btnAlfabCompletarMenu" class="btn btn-outline-secondary btn-sm rounded-pill ms-auto" title="Volver al menú del juego">↩ Menú</button>
+                            <span class="completar-racha d-none" id="alfabCompletarRacha">🔥 0</span>
+                            <button id="btnAlfabCompletarMenu" class="btn quiz-btn-menu btn-sm ms-auto" title="Volver al menú del juego">↩ Menú</button>
                         </div>
                         <div class="quiz-progreso-wrap mb-2"><div class="quiz-progreso-barra" id="alfabCompletarBarraProgreso" style="width:0%"></div></div>
                         <div class="quiz-timer-wrap"><div class="quiz-timer-barra" id="alfabCompletarBarraTiempo" style="width:100%"></div></div>
@@ -2898,15 +2899,20 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                             <span class="badge bg-primary" id="alfabUnirProgreso">Ronda 1</span>
                             <span class="badge badge-nivel-facil" id="alfabUnirNivelBadge">Fácil</span>
                             <span class="fw-bold small text-muted" id="alfabUnirPuntaje">⭐ 0</span>
-                            <button id="btnAlfabUnirComprobar" class="btn btn-success btn-sm rounded-pill">✔ Comprobar</button>
-                            <button id="btnAlfabUnirMenu" class="btn btn-outline-secondary btn-sm rounded-pill" title="Volver al menú del juego">↩ Menú</button>
+                            <button id="btnAlfabUnirMenu" class="btn quiz-btn-menu btn-sm" title="Volver al menú del juego">↩ Menú</button>
                         </div>
 
                         <!-- JS: columna de imágenes vs columna de palabras + SVG superpuesto para trazar líneas (mouse y touch) -->
                         <div class="alfab-unir-tablero position-relative" id="alfabUnirTablero">
                             <div class="row">
-                                <div class="col-6" id="alfabUnirColumnaImagenes"></div>
-                                <div class="col-6" id="alfabUnirColumnaPalabras"></div>
+                                <div class="col-6">
+                                    <p class="alfab-unir-col-titulo">🖼️ Imágenes</p>
+                                    <div id="alfabUnirColumnaImagenes"></div>
+                                </div>
+                                <div class="col-6">
+                                    <p class="alfab-unir-col-titulo">🔤 Palabras</p>
+                                    <div id="alfabUnirColumnaPalabras"></div>
+                                </div>
                             </div>
                             <svg id="alfabUnirLineas" class="alfab-unir-lineas-svg"></svg>
                         </div>
@@ -2938,7 +2944,7 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
 
                         <div class="d-flex justify-content-center gap-2 flex-wrap">
                             <button id="btnAlfabReiniciar" class="btn btn-warning fw-bold py-2 px-4 rounded-pill">🔁 Jugar de nuevo</button>
-                            <button id="btnAlfabSalirResultados" class="btn btn-outline-secondary fw-bold py-2 px-4 rounded-pill">Salir</button>
+                            <button id="btnAlfabSalirResultados" class="btn quiz-btn-salir fw-bold py-2 px-4">⏻ Salir</button>
                         </div>
                     </div>
                 </div>
@@ -3024,7 +3030,7 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                 <h4 class="fw-bold mb-0">🔤 Alfabetización - LSPedia</h4>
                 <div class="d-flex gap-2">
                     <button id="btnAlfabFullscreen" class="btn btn-outline-secondary quiz-btn-fullscreen" title="Pantalla completa" aria-label="Pantalla completa">⛶</button>
-                    <button id="btnAlfabSalir" class="btn btn-outline-danger btn-sm rounded-pill">Salir</button>
+                    <button id="btnAlfabSalir" class="btn quiz-btn-salir btn-sm">⏻ Salir</button>
                 </div>
             </div>
 

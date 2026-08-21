@@ -126,7 +126,8 @@ const AlfabetizacionV2 = (function () {
             tiempoRestante: 0,
             subIndice: 0,           // qué letra faltante (dentro de la palabra actual) se está resolviendo
             palabraTuvoError: false, // si alguna letra de la palabra actual salió mal
-            blancoRespondido: false  // evita doble clic mientras se pasa a la siguiente letra faltante
+            blancoRespondido: false, // evita doble clic mientras se pasa a la siguiente letra faltante
+            racha: 0                // aciertos consecutivos (letra por letra), para el indicador 🔥
         },
 
         unir: {
@@ -264,7 +265,27 @@ const AlfabetizacionV2 = (function () {
     }
 
     function alTerminarCarga() {
-        cambiarModulo(estado.moduloActivo || "aprender");
+        // OJO: esta función se puede llamar dos veces por el patrón de
+        // "cascarón" de cargarDatos() -> primero cuando pinta el mock
+        // local, y luego otra vez cuando llega el dato real de Google
+        // Sheets (que puede tardar varios segundos). Antes, la segunda
+        // llamada volvía a ejecutar cambiarModulo() SIEMPRE, y eso
+        // reinicia la pantalla al render "intro" del módulo activo
+        // (renderUnirIntro/renderCompletarIntro) sin importar en qué
+        // parte del juego estaba el usuario. Si el dato real llegaba
+        // justo cuando alguien acababa de pulsar "Empezar", se veía
+        // como si el juego "se regresara solo" al menú de niveles.
+        //
+        // Por eso: solo la PRIMERA vez que hay datos disponibles se usa
+        // cambiarModulo() para pintar el bloque correspondiente. Las
+        // actualizaciones posteriores (el dato real reemplazando al
+        // mock) quedan guardadas en estado.datos en silencio, y se
+        // usarán la próxima vez que se arme una ronda nueva, sin tocar
+        // la pantalla que el usuario esté viendo en este momento.
+        if (!estado._alfabDatosListos) {
+            estado._alfabDatosListos = true;
+            cambiarModulo(estado.moduloActivo || "aprender");
+        }
     }
 
     function manejarErrorCarga(err) {
@@ -718,24 +739,25 @@ const AlfabetizacionV2 = (function () {
             numero: n
         }));
 
-        // Diccionario (Hoja 1, window.App.datos, ver js/script.js) y
-        // Vocabulario (Hoja 2, mismo banco que usa el Quiz) suman al pool
+        // Vocabulario (Hoja 2, mismo banco que usa el Quiz) suma al pool
         // toda palabra que ya tenga una imagen de apoyo REAL cargada (no
         // la descripción en texto que se usa como prompt para generarla
         // más adelante). Hoy la Hoja 2 normalmente no trae columna
-        // "imagen" (solo video), así que por ahora esto solo suma
-        // palabras del Diccionario; en cuanto la Hoja 2 tenga imagen
-        // cargada empiezan a aparecer también sin tocar este archivo.
-        const deDiccionario = obtenerPalabrasConImagenDe(window.App && window.App.datos);
+        // "imagen" (solo video), así que por ahora esto casi no suma
+        // palabras; en cuanto la Hoja 2 tenga imagen cargada empiezan a
+        // aparecer también sin tocar este archivo.
+        // A propósito NO se usa el Diccionario (Hoja 1, window.App.datos):
+        // Completar solo debe salir de Alfabetización (abecedario/números)
+        // y Vocabulario (Hoja 2).
         const bancoHoja2 = (window.QuizV2 && typeof QuizV2.obtenerBanco === "function") ? QuizV2.obtenerBanco() : [];
         const deVocabulario = obtenerPalabrasConImagenDe(bancoHoja2);
 
         // Una misma palabra puede repetirse entre fuentes (p.ej. estar en
-        // los ejemplos del abecedario Y en el Diccionario); se prioriza
-        // el primer origen en el que aparece (abecedario > números >
-        // Diccionario > Vocabulario) y se descarta el resto para no
-        // repetirla dos veces en una misma ronda.
-        const combinado = deLetras.concat(deNumeros, deDiccionario, deVocabulario);
+        // los ejemplos del abecedario Y en Vocabulario); se prioriza el
+        // primer origen en el que aparece (abecedario > números >
+        // Vocabulario) y se descarta el resto para no repetirla dos veces
+        // en una misma ronda.
+        const combinado = deLetras.concat(deNumeros, deVocabulario);
         const vistas = new Set();
         return combinado.filter((p) => {
             const clave = p.palabra.trim().toUpperCase();
@@ -803,7 +825,7 @@ const AlfabetizacionV2 = (function () {
         }
 
         const totalEl = el("alfabCompletarTotalDisponibles");
-        if (totalEl) totalEl.textContent = bancoPalabrasCompletar().length + " palabras disponibles (abecedario + números + diccionario + vocabulario)";
+        if (totalEl) totalEl.textContent = bancoPalabrasCompletar().length + " palabras disponibles (abecedario + números + vocabulario)";
 
         const intro = el("alfabCompletarIntro");
         const activo = el("alfabCompletarActivo");
@@ -822,6 +844,7 @@ const AlfabetizacionV2 = (function () {
         estado.completar.incorrectas = 0;
         estado.completar.revision = [];
         estado.completar.respondida = false;
+        estado.completar.racha = 0;
 
         el("alfabCompletarIntro").classList.add("d-none");
         el("alfabCompletarActivo").classList.remove("d-none");
@@ -845,6 +868,7 @@ const AlfabetizacionV2 = (function () {
         el("alfabCompletarBarraProgreso").style.width = (estado.completar.indice / estado.completar.preguntas.length * 100) + "%";
         el("btnAlfabCompletarSiguiente").classList.add("d-none");
         el("alfabCompletarFeedback").innerHTML = "";
+        actualizarRachaCompletar();
 
         // Cuántas y cuáles letras faltan, según el nivel (Fácil=1, Medio=2,
         // Difícil=3 letras). Nunca se deja la palabra 100% en blanco: si es
@@ -981,12 +1005,15 @@ const AlfabetizacionV2 = (function () {
 
         if (esCorrecta) {
             estado.completar.puntaje += 10;
+            estado.completar.racha++;
             reproducirSonidoCorrecto();
         } else {
             estado.completar.palabraTuvoError = true;
+            estado.completar.racha = 0;
             reproducirSonidoIncorrecto();
         }
         el("alfabCompletarPuntaje").textContent = "⭐ " + estado.completar.puntaje;
+        actualizarRachaCompletar();
 
         const quedanLetrasFaltantes = subIndice + 1 < pregunta._indicesBlanco.length;
         if (quedanLetrasFaltantes) {
@@ -1019,9 +1046,47 @@ const AlfabetizacionV2 = (function () {
         document.querySelectorAll(".completar-opcion-letra").forEach((b) => { b.disabled = true; });
 
         estado.completar.palabraTuvoError = true;
+        estado.completar.racha = 0;
+        actualizarRachaCompletar();
         reproducirSonidoIncorrecto();
         el("alfabCompletarFeedback").innerHTML = '<span class="text-danger">⏱ Se acabó el tiempo.</span>';
         finalizarPreguntaCompletar(false);
+    }
+
+    // Muestra/oculta el indicador de racha 🔥 junto al puntaje. Solo se
+    // hace visible a partir de 2 aciertos seguidos, para no distraer
+    // en cada letra.
+    function actualizarRachaCompletar() {
+        const badge = el("alfabCompletarRacha");
+        if (!badge) return;
+        const racha = estado.completar.racha;
+        if (racha >= 2) {
+            badge.textContent = "🔥 " + racha;
+            badge.classList.remove("d-none");
+            badge.classList.remove("pulso");
+            void badge.offsetWidth; // reinicia la animación aunque el texto cambie
+            badge.classList.add("pulso");
+        } else {
+            badge.classList.add("d-none");
+        }
+    }
+
+    // Confeti sencillo con <div> (sin librerías): unas piezas de color
+    // caen desde arriba de la tarjeta de imagen al acertar una palabra
+    // completa sin errores.
+    function lanzarConfetiCompletar() {
+        const caja = el("alfabCompletarContenido");
+        if (!caja) return;
+        const colores = ["#f59e0b", "#16a34a", "#0284c7", "#dc2626", "#9333ea"];
+        for (let i = 0; i < 14; i++) {
+            const pieza = document.createElement("div");
+            pieza.className = "completar-confeti-pieza";
+            pieza.style.left = (10 + Math.random() * 80) + "%";
+            pieza.style.background = colores[i % colores.length];
+            pieza.style.animationDelay = (Math.random() * 0.2) + "s";
+            caja.appendChild(pieza);
+            setTimeout(() => pieza.remove(), 1400);
+        }
     }
 
     // Cierra la palabra actual (todas sus letras faltantes ya respondidas
@@ -1035,6 +1100,7 @@ const AlfabetizacionV2 = (function () {
         if (fueCorrecta) {
             estado.completar.correctas++;
             el("alfabCompletarFeedback").innerHTML = '<span class="text-success">¡Muy bien! 🎉</span>';
+            lanzarConfetiCompletar();
         } else {
             estado.completar.incorrectas++;
             if (!el("alfabCompletarFeedback").innerHTML) {
@@ -1127,7 +1193,11 @@ const AlfabetizacionV2 = (function () {
     // ===========================================================
 
     // Mismo banco de imágenes que "Completar" (ejemplos con imagen del
-    // abecedario), más los números (sin imagen, número grande).
+    // abecedario), más los números (sin imagen, número grande) y las
+    // palabras de Vocabulario (Hoja 2, mismo banco que usa el Quiz) que
+    // ya tengan imagen de apoyo real. A propósito NO se usa el
+    // Diccionario (Hoja 1, window.App.datos): Unir solo debe salir de
+    // Alfabetización y Vocabulario, igual que Completar.
     function bancoParesUnir() {
         const deLetras = (estado.datos.ejemplos || [])
             .filter((e) => e.palabra && e.imagen)
@@ -1139,7 +1209,17 @@ const AlfabetizacionV2 = (function () {
             numero: n
         }));
 
-        return deLetras.concat(deNumeros);
+        const bancoHoja2 = (window.QuizV2 && typeof QuizV2.obtenerBanco === "function") ? QuizV2.obtenerBanco() : [];
+        const deVocabulario = obtenerPalabrasConImagenDe(bancoHoja2);
+
+        const combinado = deLetras.concat(deNumeros, deVocabulario);
+        const vistas = new Set();
+        return combinado.filter((p) => {
+            const clave = p.palabra.trim().toUpperCase();
+            if (vistas.has(clave)) return false;
+            vistas.add(clave);
+            return true;
+        });
     }
 
     function nivelUnirActual() {
@@ -1172,7 +1252,7 @@ const AlfabetizacionV2 = (function () {
         }
 
         const totalEl = el("alfabUnirTotalDisponibles");
-        if (totalEl) totalEl.textContent = bancoParesUnir().length + " parejas disponibles (abecedario + números)";
+        if (totalEl) totalEl.textContent = bancoParesUnir().length + " parejas disponibles (abecedario + números + vocabulario)";
 
         const intro = el("alfabUnirIntro");
         const activo = el("alfabUnirActivo");
@@ -1207,6 +1287,8 @@ const AlfabetizacionV2 = (function () {
         estado.unir.conexiones = {};
         estado.unir.resueltos = new Set();
         estado.unir.seleccion = null;
+        if (estado.unir._timerAutoComprobar) clearTimeout(estado.unir._timerAutoComprobar);
+        estado.unir._timerAutoComprobar = null;
 
         renderTableroUnir();
     }
@@ -1309,6 +1391,15 @@ const AlfabetizacionV2 = (function () {
 
         actualizarClasesConectadosUnir();
         dibujarLineasUnir();
+
+        // Autocomprobación: ya no hace falta pulsar un botón "Comprobar"
+        // aparte. En cuanto el usuario conecta una pareja, se valida
+        // sola. Se da un pequeño respiro (450ms) para que se alcance a
+        // ver la línea recién trazada antes de que cambie a verde/rojo,
+        // y si el usuario conecta otra pareja mientras tanto, se reinicia
+        // la espera para comprobar todo junto.
+        if (estado.unir._timerAutoComprobar) clearTimeout(estado.unir._timerAutoComprobar);
+        estado.unir._timerAutoComprobar = setTimeout(comprobarUnir, 450);
     }
 
     // Pinta los estados visuales de cada ítem: "acertada" (bloqueado,
@@ -1340,11 +1431,20 @@ const AlfabetizacionV2 = (function () {
         });
     }
 
-    // Dibuja (o redibuja) todas las líneas del tablero como <line> de SVG,
-    // calculando las coordenadas a partir de la posición real en pantalla
-    // de cada ítem conectado (borde derecho de la imagen -> borde
-    // izquierdo de la palabra). "resultados", si viene, sirve solo para
-    // pintar en rojo/verde las líneas recién comprobadas.
+    // Distancia (px) a la que sobresale el "nodo" conector del borde de
+    // cada ficha (debe coincidir con el ::after de .alfab-unir-item en
+    // alfabetizacion.css: right:-9px / left:-9px con 14px de diámetro,
+    // así la curva nace justo del centro del nodo, no del borde de la
+    // ficha).
+    const ALFAB_UNIR_OFFSET_NODO = 9;
+
+    // Dibuja (o redibuja) todas las conexiones del tablero como curvas
+    // Bézier de SVG (más vivas y "de juego" que una línea recta), con un
+    // punto en cada extremo que simula el nodo conector de la ficha.
+    // Las coordenadas se calculan a partir de la posición real en
+    // pantalla de cada ítem conectado (borde derecho de la imagen ->
+    // borde izquierdo de la palabra). "resultados", si viene, sirve
+    // solo para pintar en rojo/verde las curvas recién comprobadas.
     function dibujarLineasUnir(resultados) {
         const svg = el("alfabUnirLineas");
         const tablero = el("alfabUnirTablero");
@@ -1353,6 +1453,7 @@ const AlfabetizacionV2 = (function () {
         const rTablero = tablero.getBoundingClientRect();
         svg.setAttribute("viewBox", "0 0 " + rTablero.width + " " + rTablero.height);
         svg.innerHTML = "";
+        const ns = "http://www.w3.org/2000/svg";
 
         Object.keys(estado.unir.conexiones).forEach((key) => {
             const imgIdx = Number(key);
@@ -1364,18 +1465,54 @@ const AlfabetizacionV2 = (function () {
             const rImg = elImg.getBoundingClientRect();
             const rPal = elPal.getBoundingClientRect();
 
-            let clase = "alfab-unir-linea pendiente";
-            if (estado.unir.resueltos.has(imgIdx)) clase = "alfab-unir-linea correcta";
-            else if (resultados && resultados[imgIdx] === false) clase = "alfab-unir-linea incorrecta";
+            let estadoLinea = "pendiente";
+            if (estado.unir.resueltos.has(imgIdx)) estadoLinea = "correcta";
+            else if (resultados && resultados[imgIdx] === false) estadoLinea = "incorrecta";
 
-            const linea = document.createElementNS("http://www.w3.org/2000/svg", "line");
-            linea.setAttribute("x1", rImg.right - rTablero.left);
-            linea.setAttribute("y1", rImg.top + rImg.height / 2 - rTablero.top);
-            linea.setAttribute("x2", rPal.left - rTablero.left);
-            linea.setAttribute("y2", rPal.top + rPal.height / 2 - rTablero.top);
-            linea.setAttribute("class", clase);
-            svg.appendChild(linea);
+            const x1 = rImg.right - rTablero.left + ALFAB_UNIR_OFFSET_NODO;
+            const y1 = rImg.top + rImg.height / 2 - rTablero.top;
+            const x2 = rPal.left - rTablero.left - ALFAB_UNIR_OFFSET_NODO;
+            const y2 = rPal.top + rPal.height / 2 - rTablero.top;
+
+            // Curva en "S": los puntos de control salen horizontalmente
+            // de cada nodo, así la curva siempre entra y sale recta de
+            // la ficha aunque las dos columnas tengan alturas distintas.
+            const dx = Math.max(Math.abs(x2 - x1) * 0.5, 40);
+            const curva = document.createElementNS(ns, "path");
+            curva.setAttribute(
+                "d",
+                "M " + x1 + " " + y1 + " C " + (x1 + dx) + " " + y1 + ", " + (x2 - dx) + " " + y2 + ", " + x2 + " " + y2
+            );
+            curva.setAttribute("class", "alfab-unir-linea " + estadoLinea);
+            svg.appendChild(curva);
+
+            [[x1, y1], [x2, y2]].forEach(([cx, cy]) => {
+                const punto = document.createElementNS(ns, "circle");
+                punto.setAttribute("cx", cx);
+                punto.setAttribute("cy", cy);
+                punto.setAttribute("r", 5);
+                punto.setAttribute("class", "alfab-unir-punto " + estadoLinea);
+                svg.appendChild(punto);
+            });
         });
+    }
+
+    // Confeti sencillo con <div>, reutilizando las mismas piezas y
+    // animación de "Completar la palabra" pero dentro del tablero de
+    // Unir, para celebrar cuando se completa una ronda entera.
+    function lanzarConfetiUnir() {
+        const caja = el("alfabUnirTablero");
+        if (!caja) return;
+        const colores = ["#f59e0b", "#16a34a", "#0284c7", "#dc2626", "#9333ea"];
+        for (let i = 0; i < 18; i++) {
+            const pieza = document.createElement("div");
+            pieza.className = "completar-confeti-pieza";
+            pieza.style.left = (5 + Math.random() * 90) + "%";
+            pieza.style.background = colores[i % colores.length];
+            pieza.style.animationDelay = (Math.random() * 0.2) + "s";
+            caja.appendChild(pieza);
+            setTimeout(() => pieza.remove(), 1400);
+        }
     }
 
     // Valida todas las conexiones pendientes (no las ya confirmadas).
@@ -1386,10 +1523,7 @@ const AlfabetizacionV2 = (function () {
             .map(Number)
             .filter((imgIdx) => !estado.unir.resueltos.has(imgIdx));
 
-        if (!pendientes.length) {
-            el("alfabUnirFeedback").innerHTML = '<span class="text-muted">Conecta al menos una pareja antes de comprobar.</span>';
-            return;
-        }
+        if (!pendientes.length) return; // nada nuevo que autocomprobar
 
         const resultados = {};
         pendientes.forEach((imgIdx) => {
@@ -1412,9 +1546,6 @@ const AlfabetizacionV2 = (function () {
         dibujarLineasUnir(resultados);
         el("alfabUnirPuntaje").textContent = "⭐ " + estado.unir.puntaje;
 
-        const btnComprobar = el("btnAlfabUnirComprobar");
-        if (btnComprobar) btnComprobar.disabled = true;
-
         const huboErrores = pendientes.some((idx) => !resultados[idx]);
         const rondaCompleta = estado.unir.resueltos.size === estado.unir.pares.length;
 
@@ -1422,6 +1553,7 @@ const AlfabetizacionV2 = (function () {
 
         if (rondaCompleta) {
             el("alfabUnirFeedback").innerHTML = '<span class="text-success">¡Ronda completada! 🎉</span>';
+            lanzarConfetiUnir();
         } else if (huboErrores) {
             el("alfabUnirFeedback").innerHTML = '<span class="text-danger">Revisa las líneas en rojo e inténtalo de nuevo.</span>';
         } else {
@@ -1436,7 +1568,6 @@ const AlfabetizacionV2 = (function () {
             });
             actualizarClasesConectadosUnir();
             dibujarLineasUnir();
-            if (btnComprobar) btnComprobar.disabled = false;
 
             if (rondaCompleta) avanzarRondaUnir();
         }, rondaCompleta ? 900 : 1100);
@@ -1653,11 +1784,13 @@ const AlfabetizacionV2 = (function () {
         const btnUnirEmpezar = el("btnAlfabUnirEmpezar");
         if (btnUnirEmpezar) btnUnirEmpezar.addEventListener("click", iniciarJuegoUnir);
 
-        const btnUnirComprobar = el("btnAlfabUnirComprobar");
-        if (btnUnirComprobar) btnUnirComprobar.addEventListener("click", comprobarUnir);
-
         const btnUnirMenu = el("btnAlfabUnirMenu");
-        if (btnUnirMenu) btnUnirMenu.addEventListener("click", renderUnirIntro);
+        if (btnUnirMenu) {
+            btnUnirMenu.addEventListener("click", () => {
+                if (estado.unir._timerAutoComprobar) clearTimeout(estado.unir._timerAutoComprobar);
+                renderUnirIntro();
+            });
+        }
 
         // Las líneas del SVG se calculan con getBoundingClientRect(), así
         // que hay que recalcularlas si cambia el tamaño/orientación de la
