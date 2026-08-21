@@ -228,23 +228,47 @@
 /* --- Botones modernos "Menú" y "Salir" (reemplazan los
    btn-outline-secondary / btn-outline-danger planos de Bootstrap) --- */
 .quiz-btn-menu {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
     border: none;
-    background-color: #eef2ff;
-    color: #4338ca;
-    font-weight: 600;
+    background: linear-gradient(135deg, #6366f1, #4338ca);
+    color: #ffffff;
+    font-weight: 700;
+    letter-spacing: 0.01em;
     border-radius: 999px;
-    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
-    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+    padding: 8px 18px;
+    isolation: isolate;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+    box-shadow: 0 2px 8px rgba(67, 56, 202, 0.35);
+}
+/* Brillo diagonal que "barre" el botón al pasar el mouse */
+.quiz-btn-menu::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.35) 48%, transparent 66%);
+    transform: translateX(-120%);
+    transition: transform 0.55s ease;
+    z-index: -1;
 }
 .quiz-btn-menu:hover {
-    background-color: #e0e7ff;
-    color: #3730a3;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 14px rgba(67, 56, 202, 0.20);
+    color: #ffffff;
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 10px 22px -4px rgba(67, 56, 202, 0.5);
+}
+.quiz-btn-menu:hover::before {
+    transform: translateX(120%);
 }
 .quiz-btn-menu:active {
-    transform: translateY(0);
-    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 2px 8px rgba(67, 56, 202, 0.35);
+}
+.quiz-btn-menu:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.35), 0 10px 22px -4px rgba(67, 56, 202, 0.5);
 }
 
 .quiz-btn-salir {
@@ -265,6 +289,41 @@
 .quiz-btn-salir:active {
     transform: translateY(0);
     box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+}
+
+/* --- Botón "↩ Elegir otro juego": pastilla flotante tipo "chip",
+   con borde de degradado y relleno de color solo al interactuar
+   (reemplaza el btn-outline-secondary plano de Bootstrap). --- */
+.btn-volver-menu-juegos {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid transparent;
+    background:
+        linear-gradient(#f8fafc, #f8fafc) padding-box,
+        linear-gradient(120deg, #38bdf8, #6366f1) border-box;
+    color: #4338ca;
+    font-weight: 700;
+    border-radius: 999px;
+    padding: 7px 16px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+.btn-volver-menu-juegos:hover {
+    color: #ffffff;
+    background:
+        linear-gradient(120deg, #38bdf8, #6366f1) padding-box,
+        linear-gradient(120deg, #38bdf8, #6366f1) border-box;
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 10px 20px -6px rgba(56, 189, 248, 0.45);
+}
+.btn-volver-menu-juegos:active {
+    transform: translateY(0) scale(0.98);
+}
+.btn-volver-menu-juegos:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.3);
 }
 
 /* --- Botón de pantalla completa --- */
@@ -401,4 +460,9 @@
     .menu-juego-btn .icono,
     .menu-juego-btn:hover .icono,
     .menu-juego-btn:focus-visible .icono { animation: none; }
+    .quiz-btn-menu,
+    .quiz-btn-menu::before,
+    .btn-volver-menu-juegos { transition: none; }
+    .quiz-btn-menu:hover,
+    .btn-volver-menu-juegos:hover { transform: none; }
 }
