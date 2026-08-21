@@ -444,7 +444,7 @@
 .alfab-unir-item {
     position: relative;
     width: 100%;
-    min-height: 72px;
+    min-height: 92px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -497,10 +497,16 @@
     cursor: default;
 }
 
+.alfab-unir-imagen {
+    padding-left: 8px;
+    padding-right: 8px;
+}
 .alfab-unir-imagen img {
-    width: 50px;
-    height: 50px;
-    object-fit: contain;
+    width: 100%;
+    max-width: 84px;
+    height: 72px;
+    object-fit: cover;
+    border-radius: 10px;
     pointer-events: none;
 }
 .alfab-unir-numero {
@@ -582,8 +588,8 @@
 }
 
 @media (max-width: 576px) {
-    .alfab-unir-item { min-height: 60px; padding: 8px 10px; font-size: 0.92rem; }
-    .alfab-unir-imagen img { width: 42px; height: 42px; }
+    .alfab-unir-item { min-height: 76px; padding: 8px 10px; font-size: 0.92rem; }
+    .alfab-unir-imagen img { max-width: 64px; height: 56px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
