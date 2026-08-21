@@ -290,3 +290,73 @@
     border-color: #dc2626;
     color: #fff;
 }
+
+/* ============================================================
+   MENÚ "¿A qué quieres jugar?" (Completar / Unir / Quiz /
+   Matemáticas): entrada animada en cascada + micro-interacciones
+   para que se sienta más vivo e invitante al abrir Jugar.
+   ============================================================ */
+
+/* Cada tarjeta arranca invisible; JS agrega .menu-juego-anim cada
+   vez que se muestra el menú (incluso si ya se había visto antes,
+   al volver desde otro juego), para repetir la entrada siempre. */
+.menu-juego-col {
+    opacity: 0;
+}
+.menu-juego-col.menu-juego-anim {
+    animation: menuJuegoEntrada 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.menu-juego-col:nth-child(1) { animation-delay: 0.02s; }
+.menu-juego-col:nth-child(2) { animation-delay: 0.10s; }
+.menu-juego-col:nth-child(3) { animation-delay: 0.18s; }
+.menu-juego-col:nth-child(4) { animation-delay: 0.26s; }
+
+@keyframes menuJuegoEntrada {
+    from { opacity: 0; transform: translateY(24px) scale(0.9); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Los íconos "flotan" suavemente todo el tiempo (con un pequeño
+   desfase por tarjeta) para llamar la atención sin ser invasivos. */
+.menu-juego-btn .icono {
+    display: inline-block;
+    animation: menuJuegoFlotar 2.6s ease-in-out infinite;
+}
+.menu-juego-col:nth-child(2) .menu-juego-btn .icono { animation-delay: 0.35s; }
+.menu-juego-col:nth-child(3) .menu-juego-btn .icono { animation-delay: 0.70s; }
+.menu-juego-col:nth-child(4) .menu-juego-btn .icono { animation-delay: 1.05s; }
+
+@keyframes menuJuegoFlotar {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50%      { transform: translateY(-5px) rotate(-4deg); }
+}
+
+/* Al pasar el mouse (o enfocar con teclado): además del "levante" que
+   ya trae .quiz-selector-btn:hover, sumamos brillo de color y un
+   rebote más marcado del ícono. */
+.menu-juego-btn:hover,
+.menu-juego-btn:focus-visible {
+    box-shadow: 0 12px 26px rgba(13, 110, 253, 0.20);
+}
+.menu-juego-btn:hover .icono,
+.menu-juego-btn:focus-visible .icono {
+    animation: menuJuegoRebote 0.5s ease;
+}
+@keyframes menuJuegoRebote {
+    0%   { transform: scale(1) rotate(0deg); }
+    35%  { transform: scale(1.28) rotate(-10deg); }
+    65%  { transform: scale(1.05) rotate(7deg); }
+    100% { transform: scale(1.15) rotate(0deg); }
+}
+.menu-juego-btn:active {
+    transform: scale(0.97);
+}
+
+/* Quienes prefieren menos movimiento no reciben las animaciones
+   continuas ni la entrada en cascada. */
+@media (prefers-reduced-motion: reduce) {
+    .menu-juego-col.menu-juego-anim { animation: none; opacity: 1; }
+    .menu-juego-btn .icono,
+    .menu-juego-btn:hover .icono,
+    .menu-juego-btn:focus-visible .icono { animation: none; }
+}

@@ -43,8 +43,7 @@ const QuizV2 = (function () {
         ronda: { preguntas: [], indice: 0, puntaje: 0, respuestas: [] },
         temporizador: { id: null, restante: 0, total: 0 },
         memoria: { cartas: [], primeraSeleccion: null, bloqueado: false, intentos: 0, aciertos: 0, inicio: 0, cronoId: null },
-        audioCtx: null,
-        pantallaCompleta: false
+        audioCtx: null
     };
 
     // ---------------------------------------------------------
@@ -981,85 +980,13 @@ const QuizV2 = (function () {
     }
 
     // ---------------------------------------------------------
-    // PANTALLA COMPLETA (pseudo-fullscreen compatible con móviles)
+    // NOTA: la lógica de "pantalla completa" del botón ⛶ vivía antes
+    // acá, pero ese botón (#btnQuizFullscreen) es compartido por TODOS
+    // los juegos de la sección Jugar (Quiz, Completar, Unir, Matemáticas),
+    // no solo por este módulo. Ahora vive centralizada en script.js
+    // (alternarPantallaCompletaJugar / salirDePantallaCompletaJugar),
+    // para que el botón funcione sin importar qué juego esté activo.
     // ---------------------------------------------------------
-    function elementoPantallaCompletaActivo() {
-        return document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement || null;
-    }
-
-    function alternarPantallaCompleta() {
-        const seccion = el("seccionQuiz");
-        if (!seccion) return;
-
-        // Si ya estamos en pantalla completa (real o simulada), salimos.
-        if (elementoPantallaCompletaActivo() || estado.pantallaCompleta) {
-            const salirFn = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
-            if (elementoPantallaCompletaActivo() && salirFn) {
-                salirFn.call(document);
-            } else {
-                estado.pantallaCompleta = false;
-                seccion.classList.remove("quiz-fullscreen");
-                actualizarIconoPantallaCompleta();
-            }
-            return;
-        }
-
-        // Intentamos la API real de pantalla completa del navegador.
-        const solicitarFn = seccion.requestFullscreen || seccion.webkitRequestFullscreen || seccion.msRequestFullscreen;
-        if (solicitarFn) {
-            Promise.resolve(solicitarFn.call(seccion)).catch(activarPantallaCompletaSimulada);
-        } else {
-            activarPantallaCompletaSimulada();
-        }
-    }
-
-    // Alternativa para navegadores que no soportan pantalla completa en
-    // este elemento (por ejemplo, Safari en iOS): simulamos el efecto
-    // con estilos a pantalla completa dentro de la propia página.
-    function activarPantallaCompletaSimulada() {
-        const seccion = el("seccionQuiz");
-        if (!seccion) return;
-        estado.pantallaCompleta = true;
-        seccion.classList.add("quiz-fullscreen");
-        actualizarIconoPantallaCompleta();
-        window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    function actualizarIconoPantallaCompleta() {
-        const btn = el("btnQuizFullscreen");
-        if (btn) btn.textContent = estado.pantallaCompleta ? "⤢" : "⛶";
-    }
-
-    // Mantiene el ícono y el estado sincronizados si el usuario sale de
-    // pantalla completa con Esc, el gesto del navegador, etc.
-    function manejarCambioPantallaCompleta() {
-        const seccion = el("seccionQuiz");
-        const activo = !!elementoPantallaCompletaActivo();
-        estado.pantallaCompleta = activo;
-        if (seccion) seccion.classList.toggle("quiz-fullscreen", activo);
-        actualizarIconoPantallaCompleta();
-        aplicarEspacioAvisoNativoFullscreen(seccion, activo);
-    }
-
-    // Al entrar a la pantalla completa NATIVA (no la simulada), Chrome
-    // en Android muestra unos segundos su propio aviso ("Para salir de
-    // pantalla completa, arrastra desde la parte superior...") pegado a
-    // la parte de abajo de la pantalla, que puede tapar botones como
-    // "Empezar" si quedan al fondo de la tarjeta. Mientras dura ese
-    // aviso, le damos un margen extra abajo a la sección para que ningún
-    // botón quede tapado.
-    function aplicarEspacioAvisoNativoFullscreen(seccion, activo) {
-        if (!seccion) return;
-        clearTimeout(estado._timeoutAvisoFullscreen);
-        if (activo) {
-            seccion.style.paddingBottom = "110px";
-            estado._timeoutAvisoFullscreen = setTimeout(() => {
-                seccion.style.paddingBottom = "";
-            }, 3500);
-        } else {
-            seccion.style.paddingBottom = "";
-        }
-    }
 
     // ---------------------------------------------------------
     // VOLVER AL MENÚ (sin salir de la sección Quiz)
@@ -1085,7 +1012,6 @@ const QuizV2 = (function () {
         detenerTemporizador();
         detenerCronoMemoria();
         destruirReproductorQuizVideo();
-        if (estado.pantallaCompleta || elementoPantallaCompletaActivo()) alternarPantallaCompleta();
     }
 
     function reiniciar() {
@@ -1127,17 +1053,10 @@ const QuizV2 = (function () {
             if (seccion) seccion.classList.add("d-none");
         });
 
-        const btnFullscreen = el("btnQuizFullscreen");
-        if (btnFullscreen) btnFullscreen.addEventListener("click", alternarPantallaCompleta);
-
-        // iniciar() se llama cada vez que se abre la sección Quiz: nos
-        // aseguramos de registrar estos listeners globales una sola vez.
-        if (!estado._listenersFullscreenListos) {
-            ["fullscreenchange", "webkitfullscreenchange", "MSFullscreenChange"].forEach((evt) => {
-                document.addEventListener(evt, manejarCambioPantallaCompleta);
-            });
-            estado._listenersFullscreenListos = true;
-        }
+        // El botón de pantalla completa (#btnQuizFullscreen) y sus
+        // listeners de fullscreenchange ahora se manejan de forma
+        // centralizada en script.js (ver alternarPantallaCompletaJugar),
+        // porque ese botón es compartido por todos los juegos de Jugar.
     }
 
     // ---------------------------------------------------------

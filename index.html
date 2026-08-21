@@ -54,6 +54,7 @@
     <link rel="stylesheet" href="css/estilos.css">
     <link rel="stylesheet" href="css/quiz.css">
     <link rel="stylesheet" href="css/alfabetizacion.css">
+    <link rel="stylesheet" href="css/matematicas.css">
     <link rel="stylesheet" href="css/subtitulos.css">
 
     <!-- Preconnect: adelanta la conexión a Google para que el Quiz cargue más rápido -->
@@ -2701,25 +2702,31 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
 
             <!-- MENÚ: elegir a qué juego jugar -->
             <div id="quizMenuJuegos" class="row justify-content-center">
-                <div class="col-lg-9">
+                <div class="col-lg-10">
                     <p class="text-muted small text-center mb-4">Elige a qué quieres jugar.</p>
                     <div class="row g-3">
-                        <div class="col-12 col-md-4">
+                        <div class="col-6 col-md-3 menu-juego-col">
                             <button type="button" class="quiz-selector-btn menu-juego-btn w-100 h-100" id="btnMenuJuegoCompletar">
                                 <span class="icono">🧩</span>
                                 <span class="fw-bold">Completar la palabra</span>
                             </button>
                         </div>
-                        <div class="col-12 col-md-4">
+                        <div class="col-6 col-md-3 menu-juego-col">
                             <button type="button" class="quiz-selector-btn menu-juego-btn w-100 h-100" id="btnMenuJuegoUnir">
                                 <span class="icono">🔗</span>
                                 <span class="fw-bold">Unir con flechas</span>
                             </button>
                         </div>
-                        <div class="col-12 col-md-4">
+                        <div class="col-6 col-md-3 menu-juego-col">
                             <button type="button" class="quiz-selector-btn menu-juego-btn w-100 h-100" id="btnMenuJuegoQuiz">
                                 <span class="icono">🎲</span>
                                 <span class="fw-bold">Quiz</span>
+                            </button>
+                        </div>
+                        <div class="col-6 col-md-3 menu-juego-col">
+                            <button type="button" class="quiz-selector-btn menu-juego-btn w-100 h-100" id="btnMenuJuegoMatematicas">
+                                <span class="icono">🔢</span>
+                                <span class="fw-bold">Matemáticas</span>
                             </button>
                         </div>
                     </div>
@@ -2935,6 +2942,71 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- ============================================================ -->
+            <!-- JUEGO "MATEMÁTICAS VISUALES" (suma/resta/multiplicación/
+                 división con escenas ilustradas, para niños que aún no
+                 saben leer). Módulo independiente: js/matematicas.js
+                 (namespace MatematicasV2), css/matematicas.css.
+                 El markup interno (#matMenu / #matJuego) es el mismo del
+                 prototipo matematicas-visuales.html; aquí solo se agrega
+                 el botón "↩ Elegir otro juego" para volver a
+                 #quizMenuJuegos, igual que los demás juegos de esta
+                 sección. ============================================================ -->
+            <div id="matApp" class="mat-app d-none">
+                <div class="text-center mb-2">
+                    <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill btn-volver-menu-juegos">↩ Elegir otro juego</button>
+                </div>
+
+                <!-- PANTALLA 1: MENÚ — elegir operación por ícono grande -->
+                <section id="matMenu" class="mat-pantalla mat-pantalla-activa">
+                    <div class="mat-menu-mascota" aria-hidden="true">🦊</div>
+                    <div class="mat-menu-titulo-icono" aria-hidden="true">· · ·</div>
+
+                    <div class="mat-menu-grid">
+                        <button type="button" class="mat-tarjeta-op" data-op="suma"
+                            style="--color-op: var(--mat-suma); --color-op-suave: var(--mat-suma-suave);"
+                            aria-label="Sumar">
+                            <div class="mat-tarjeta-circulo"><span class="mat-tarjeta-simbolo">➕</span></div>
+                            <span class="mat-tarjeta-emoji" aria-hidden="true">🍎</span>
+                        </button>
+
+                        <button type="button" class="mat-tarjeta-op" data-op="resta"
+                            style="--color-op: var(--mat-resta); --color-op-suave: var(--mat-resta-suave);"
+                            aria-label="Restar">
+                            <div class="mat-tarjeta-circulo"><span class="mat-tarjeta-simbolo">➖</span></div>
+                            <span class="mat-tarjeta-emoji" aria-hidden="true">🍖</span>
+                        </button>
+
+                        <button type="button" class="mat-tarjeta-op" data-op="multiplicacion"
+                            style="--color-op: var(--mat-mult); --color-op-suave: var(--mat-mult-suave);"
+                            aria-label="Multiplicar">
+                            <div class="mat-tarjeta-circulo"><span class="mat-tarjeta-simbolo">✖️</span></div>
+                            <span class="mat-tarjeta-emoji" aria-hidden="true">🚂</span>
+                        </button>
+
+                        <button type="button" class="mat-tarjeta-op" data-op="division"
+                            style="--color-op: var(--mat-div); --color-op-suave: var(--mat-div-suave);"
+                            aria-label="Dividir">
+                            <div class="mat-tarjeta-circulo"><span class="mat-tarjeta-simbolo">➗</span></div>
+                            <span class="mat-tarjeta-emoji" aria-hidden="true">🐧</span>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- PANTALLA 2: JUEGO -->
+                <section id="matJuego" class="mat-pantalla">
+                    <div class="mat-juego-barra">
+                        <button type="button" id="matBtnVolver" class="mat-btn-icono" aria-label="Volver al menú">⬅️</button>
+                        <div id="matEstrellas" class="mat-estrellas" aria-hidden="true"></div>
+                        <div id="matMascotaMini" class="mat-mascota-mini" aria-hidden="true">🙂</div>
+                    </div>
+
+                    <div id="matEscena" class="mat-escena"></div>
+                </section>
+
+                <div class="mat-overlay-confeti" id="matOverlayConfeti" aria-hidden="true"></div>
             </div>
 
         </section>
@@ -3354,6 +3426,7 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
 </script>
     <script src="js/quiz.js"></script>
     <script src="js/alfabetizacion.js"></script>
+    <script src="js/matematicas.js"></script>
     <script src="js/subtitulos.js"></script>
 
     <!-- Chips "Ejemplos" debajo del buscador: al tocar una palabra, la

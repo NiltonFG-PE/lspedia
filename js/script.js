@@ -344,6 +344,102 @@ if(btnAccesoJugar){
     });
 }
 
+// --- PANTALLA COMPLETA DE LA SECCIÓN "JUGAR" (compartida por TODOS los
+// juegos: Quiz, Completar la palabra, Unir con flechas y Matemáticas) ---
+// El botón #btnQuizFullscreen vive en el encabezado de #seccionQuiz, por
+// fuera de cada juego individual, así que su lógica no puede depender de
+// qué módulo (QuizV2, AlfabetizacionV2, MatematicasV2) esté activo en ese
+// momento: antes vivía solo dentro de js/quiz.js y por eso el botón no
+// hacía nada si se entraba a otro juego sin haber abierto el Quiz primero.
+let jugarPantallaCompletaActiva = false;
+let jugarTimeoutAvisoFullscreen = null;
+
+function jugarElementoPantallaCompletaActivo(){
+    return document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement || null;
+}
+
+function jugarActualizarIconoPantallaCompleta(){
+    const btn = document.getElementById("btnQuizFullscreen");
+    if(btn) btn.textContent = jugarPantallaCompletaActiva ? "⤢" : "⛶";
+}
+
+// Al entrar a la pantalla completa NATIVA (no la simulada), Chrome en
+// Android muestra unos segundos su propio aviso pegado a la parte de
+// abajo de la pantalla, que puede tapar botones al fondo de la tarjeta.
+// Mientras dura ese aviso, le damos un margen extra abajo a la sección.
+function jugarAplicarEspacioAvisoNativoFullscreen(seccion, activo){
+    if(!seccion) return;
+    clearTimeout(jugarTimeoutAvisoFullscreen);
+    if(activo){
+        seccion.style.paddingBottom = "110px";
+        jugarTimeoutAvisoFullscreen = setTimeout(() => { seccion.style.paddingBottom = ""; }, 3500);
+    } else {
+        seccion.style.paddingBottom = "";
+    }
+}
+
+// Alternativa para navegadores que no soportan pantalla completa en este
+// elemento (por ejemplo, Safari en iOS): simulamos el efecto con estilos
+// a pantalla completa dentro de la propia página.
+function jugarActivarPantallaCompletaSimulada(){
+    const seccion = document.getElementById("seccionQuiz");
+    if(!seccion) return;
+    jugarPantallaCompletaActiva = true;
+    seccion.classList.add("quiz-fullscreen");
+    jugarActualizarIconoPantallaCompleta();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function alternarPantallaCompletaJugar(){
+    const seccion = document.getElementById("seccionQuiz");
+    if(!seccion) return;
+
+    // Si ya estamos en pantalla completa (real o simulada), salimos.
+    if(jugarElementoPantallaCompletaActivo() || jugarPantallaCompletaActiva){
+        const salirFn = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+        if(jugarElementoPantallaCompletaActivo() && salirFn){
+            salirFn.call(document);
+        } else {
+            jugarPantallaCompletaActiva = false;
+            seccion.classList.remove("quiz-fullscreen");
+            jugarActualizarIconoPantallaCompleta();
+        }
+        return;
+    }
+
+    // Intentamos la API real de pantalla completa del navegador.
+    const solicitarFn = seccion.requestFullscreen || seccion.webkitRequestFullscreen || seccion.msRequestFullscreen;
+    if(solicitarFn){
+        Promise.resolve(solicitarFn.call(seccion)).catch(jugarActivarPantallaCompletaSimulada);
+    } else {
+        jugarActivarPantallaCompletaSimulada();
+    }
+}
+
+// Mantiene el ícono y el estado sincronizados si el usuario sale de
+// pantalla completa con Esc, el gesto del navegador, etc.
+function jugarManejarCambioPantallaCompleta(){
+    const seccion = document.getElementById("seccionQuiz");
+    const activo = !!jugarElementoPantallaCompletaActivo();
+    jugarPantallaCompletaActiva = activo;
+    if(seccion) seccion.classList.toggle("quiz-fullscreen", activo);
+    jugarActualizarIconoPantallaCompleta();
+    jugarAplicarEspacioAvisoNativoFullscreen(seccion, activo);
+}
+
+// Se llama al volver al menú de juegos o al cerrar toda la sección
+// Jugar, sin importar qué módulo estuviera activo.
+function salirDePantallaCompletaJugar(){
+    if(jugarPantallaCompletaActiva || jugarElementoPantallaCompletaActivo()) alternarPantallaCompletaJugar();
+}
+
+const btnQuizFullscreen = document.getElementById("btnQuizFullscreen");
+if(btnQuizFullscreen) btnQuizFullscreen.addEventListener("click", alternarPantallaCompletaJugar);
+
+["fullscreenchange", "webkitfullscreenchange", "MSFullscreenChange"].forEach((evt) => {
+    document.addEventListener(evt, jugarManejarCambioPantallaCompleta);
+});
+
 // --- PANTALLAS DENTRO DE "JUGAR" ---
 // La sección Jugar ahora arranca siempre en un menú (#quizMenuJuegos)
 // para elegir "Completar la palabra", "Unir con flechas" o "Quiz".
@@ -353,8 +449,9 @@ if(btnAccesoJugar){
 // antes de mostrar la que corresponde, sin importar de qué módulo venga.
 const PANTALLAS_SECCION_JUEGOS = [
     "quizMenuJuegos", "quizCargando", "quizIntro", "quizActivo", "quizMemoria", "quizResultados",
-    "alfabCompletar", "alfabUnir", "alfabResultados"
+    "alfabCompletar", "alfabUnir", "alfabResultados", "matApp"
 ];
+
 
 function ocultarPantallasJuegos(){
     PANTALLAS_SECCION_JUEGOS.forEach((id) => {
@@ -367,11 +464,27 @@ function mostrarPantallaJuegos(id){
     ocultarPantallasJuegos();
     const n = document.getElementById(id);
     if(n) n.classList.remove("d-none");
+    if(id === "quizMenuJuegos") reproducirAnimacionMenuJuegos();
+}
+
+// Reinicia la animación de entrada en cascada de las 4 tarjetas del
+// menú "¿A qué quieres jugar?" cada vez que se muestra (no solo la
+// primera vez): quitamos y volvemos a poner la clase forzando un
+// reflow en el medio, porque solo re-agregar la misma clase no
+// reinicia una animación CSS ya terminada.
+function reproducirAnimacionMenuJuegos(){
+    document.querySelectorAll("#quizMenuJuegos .menu-juego-col").forEach((col) => {
+        col.classList.remove("menu-juego-anim");
+        void col.offsetWidth;
+        col.classList.add("menu-juego-anim");
+    });
 }
 
 function mostrarMenuJuegos(){
     if(window.QuizV2 && typeof QuizV2.salir === "function") QuizV2.salir();
     if(window.AlfabetizacionV2 && typeof AlfabetizacionV2.detenerJuegosActivos === "function") AlfabetizacionV2.detenerJuegosActivos();
+    if(window.MatematicasV2 && typeof MatematicasV2.salir === "function") MatematicasV2.salir();
+    salirDePantallaCompletaJugar();
     mostrarPantallaJuegos("quizMenuJuegos");
 }
 
@@ -390,6 +503,11 @@ function abrirJuegoQuiz(){
     if(window.QuizV2 && typeof QuizV2.iniciar === "function") QuizV2.iniciar();
 }
 
+function abrirJuegoMatematicas(){
+    mostrarPantallaJuegos("matApp");
+    if(window.MatematicasV2 && typeof MatematicasV2.iniciar === "function") MatematicasV2.iniciar();
+}
+
 const btnMenuJuegoCompletar = document.getElementById("btnMenuJuegoCompletar");
 if(btnMenuJuegoCompletar) btnMenuJuegoCompletar.addEventListener("click", abrirJuegoCompletar);
 
@@ -398,6 +516,9 @@ if(btnMenuJuegoUnir) btnMenuJuegoUnir.addEventListener("click", abrirJuegoUnir);
 
 const btnMenuJuegoQuiz = document.getElementById("btnMenuJuegoQuiz");
 if(btnMenuJuegoQuiz) btnMenuJuegoQuiz.addEventListener("click", abrirJuegoQuiz);
+
+const btnMenuJuegoMatematicas = document.getElementById("btnMenuJuegoMatematicas");
+if(btnMenuJuegoMatematicas) btnMenuJuegoMatematicas.addEventListener("click", abrirJuegoMatematicas);
 
 document.querySelectorAll(".btn-volver-menu-juegos").forEach((btn) => {
     btn.addEventListener("click", mostrarMenuJuegos);
@@ -409,6 +530,9 @@ function ocultarQuiz(){
     if(window.QuizV2 && typeof QuizV2.salir === "function") QuizV2.salir();
     // "Completar la palabra" y "Unir con flechas" (AlfabetizacionV2) también viven aquí ahora.
     if(window.AlfabetizacionV2 && typeof AlfabetizacionV2.detenerJuegosActivos === "function") AlfabetizacionV2.detenerJuegosActivos();
+    // "Matemáticas Visuales" (MatematicasV2) también vive aquí.
+    if(window.MatematicasV2 && typeof MatematicasV2.salir === "function") MatematicasV2.salir();
+    salirDePantallaCompletaJugar();
 }
 
 // --- SECCIÓN ALFABETIZACIÓN (ahora solo el módulo "Aprender") ---

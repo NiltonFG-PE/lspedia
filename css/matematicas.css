@@ -1,0 +1,598 @@
+/* ============================================================
+   LSPedia - Estilos de "Matemáticas Visuales" (Jugar)
+   Archivo independiente, con prefijo mat- en todas sus clases.
+   No modifica estilos.css/quiz.css/alfabetizacion.css.
+   Todo queda scoped dentro de .mat-app (no toca html/body/*).
+   ============================================================ */
+
+:root{
+    --mat-fondo: #FFF7ED;
+    --mat-fondo-2: #FFEFE0;
+    --mat-tarjeta: #FFFFFF;
+    --mat-texto: #334155;
+
+    --mat-suma: #3B82F6;
+    --mat-suma-suave: #DBEAFE;
+    --mat-resta: #FB7185;
+    --mat-resta-suave: #FFE4E6;
+    --mat-mult: #F59E0B;
+    --mat-mult-suave: #FEF3C7;
+    --mat-div: #10B981;
+    --mat-div-suave: #D1FAE5;
+
+    --mat-exito: #16A34A;
+    --mat-error: #DC2626;
+    --mat-sombra: 0 10px 28px rgba(51,65,85,0.14);
+    --mat-sombra-sm: 0 4px 12px rgba(51,65,85,0.10);
+    --mat-radius-xl: 28px;
+    --mat-radius-lg: 20px;
+    --mat-radius-md: 14px;
+}
+
+.mat-app{
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 12% 8%, var(--mat-fondo-2) 0%, transparent 45%),
+        radial-gradient(circle at 90% 85%, #E0F2FE 0%, transparent 40%),
+        var(--mat-fondo);
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: var(--mat-texto);
+    overflow-x: hidden;
+}
+
+.mat-app{
+    max-width: 720px;
+    margin: 0 auto;
+    min-height: 100vh;
+    padding: 18px 16px 60px;
+    position: relative;
+}
+
+.mat-pantalla{ display: none; }
+.mat-pantalla-activa{ display: block; animation: matAparecer .35s ease-out; }
+
+@keyframes matAparecer{
+    from{ opacity: 0; transform: translateY(8px); }
+    to{ opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   PANTALLA DE MENÚ
+   ============================================================ */
+.mat-menu-mascota{
+    text-align: center;
+    font-size: 4.2rem;
+    margin: 6px 0 4px;
+    animation: matRebote 2.4s ease-in-out infinite;
+    filter: drop-shadow(0 6px 10px rgba(51,65,85,0.18));
+}
+
+.mat-menu-titulo-icono{
+    text-align: center;
+    font-size: 1.6rem;
+    margin-bottom: 22px;
+    opacity: .55;
+    letter-spacing: 6px;
+}
+
+.mat-menu-grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+@media (min-width: 560px){
+    .mat-menu-grid{ grid-template-columns: repeat(4, 1fr); }
+}
+
+.mat-tarjeta-op{
+    --color-op: #999;
+    --color-op-suave: #eee;
+    background: var(--mat-tarjeta);
+    border: 3px solid var(--color-op-suave);
+    border-radius: var(--mat-radius-xl);
+    box-shadow: var(--mat-sombra-sm);
+    padding: 22px 10px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    touch-action: manipulation;
+}
+.mat-tarjeta-op:hover,
+.mat-tarjeta-op:focus-visible{
+    transform: translateY(-4px) scale(1.02);
+    border-color: var(--color-op);
+    box-shadow: var(--mat-sombra);
+    outline: none;
+}
+.mat-tarjeta-op:active{ transform: translateY(-1px) scale(.98); }
+
+.mat-tarjeta-simbolo{
+    font-size: 2.6rem;
+    font-weight: 900;
+    color: var(--color-op);
+    line-height: 1;
+}
+.mat-tarjeta-circulo{
+    width: 78px;
+    height: 78px;
+    border-radius: 50%;
+    background: var(--color-op-suave);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.mat-tarjeta-emoji{ font-size: 1.8rem; margin-top: 2px; }
+
+/* ============================================================
+   PANTALLA DE JUEGO — barra superior
+   ============================================================ */
+.mat-juego-barra{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+.mat-btn-icono{
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: none;
+    background: var(--mat-tarjeta);
+    box-shadow: var(--mat-sombra-sm);
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    touch-action: manipulation;
+}
+.mat-btn-icono:active{ transform: scale(.92); }
+
+.mat-estrellas{
+    display: flex;
+    gap: 4px;
+    background: var(--mat-tarjeta);
+    padding: 8px 14px;
+    border-radius: 999px;
+    box-shadow: var(--mat-sombra-sm);
+    font-size: 1.15rem;
+}
+.mat-estrella{ transition: transform .25s ease; display:inline-block; }
+.mat-estrella.mat-estrella-nueva{ animation: matPop .4s ease; }
+
+.mat-mascota-mini{
+    font-size: 1.8rem;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--mat-tarjeta);
+    box-shadow: var(--mat-sombra-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform .25s ease;
+}
+
+/* ============================================================
+   ESCENA (contenedor general del problema actual)
+   ============================================================ */
+.mat-escena{
+    position: relative;
+    background: var(--mat-tarjeta);
+    border-radius: var(--mat-radius-xl);
+    box-shadow: var(--mat-sombra);
+    padding: 26px 16px 22px;
+    min-height: 60vh;
+    overflow: visible;
+}
+
+.mat-zona{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding-bottom: 10px;
+}
+
+/* Objeto arrastrable genérico (manzana, caramelo, bloque, pez) */
+.mat-objeto{
+    font-size: 2.15rem;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+    filter: drop-shadow(0 3px 5px rgba(51,65,85,.20));
+    transition: transform .12s ease;
+}
+.mat-objeto:active{ cursor: grabbing; }
+.mat-objeto.mat-arrastrando{
+    transform: scale(1.18) rotate(-4deg);
+    filter: drop-shadow(0 10px 14px rgba(51,65,85,.30));
+    z-index: 500;
+}
+.mat-objeto.mat-objeto-colocado{ animation: matPop .35s ease; }
+.mat-objeto.mat-bloqueado{ cursor: default; }
+
+@keyframes matPop{
+    0%{ transform: scale(.4); opacity: 0; }
+    70%{ transform: scale(1.15); opacity: 1; }
+    100%{ transform: scale(1); }
+}
+
+/* --- Contenedores tipo "recipiente" reutilizados en varias escenas --- */
+.mat-recipiente{
+    min-width: 130px;
+    min-height: 96px;
+    border-radius: var(--mat-radius-lg);
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px;
+    transition: box-shadow .2s ease, transform .1s ease;
+}
+.mat-recipiente.mat-recipiente-hover{
+    box-shadow: 0 0 0 5px rgba(59,130,246,.30) inset;
+}
+
+/* Cestas (suma) */
+.mat-cesta{
+    background: var(--mat-suma-suave);
+    border: 3px dashed var(--mat-suma);
+}
+.mat-cesta-central{
+    background: #FFFFFF;
+    border: 4px solid var(--mat-suma);
+    box-shadow: 0 0 0 6px var(--mat-suma-suave);
+    min-width: 160px;
+    min-height: 110px;
+}
+.mat-cesta-central.mat-recipiente-vacio::before{
+    content: "";
+}
+
+/* Bandeja (resta) */
+.mat-bandeja{
+    background: var(--mat-resta-suave);
+    border: 3px dashed var(--mat-resta);
+    min-width: 220px;
+}
+
+/* León (resta) */
+.mat-leon{
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background: var(--mat-resta-suave);
+    border: 4px solid var(--mat-resta);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4.4rem;
+    position: relative;
+    transition: transform .12s ease;
+    animation: matRebote 2.8s ease-in-out infinite;
+}
+.mat-leon.mat-recipiente-hover{ box-shadow: 0 0 0 6px rgba(251,113,133,.35); }
+.mat-leon.mat-leon-masticando{ animation: matMordisco .3s ease; }
+.mat-leon.mat-leon-lleno{ filter: saturate(.6); }
+@keyframes matMordisco{
+    0%{ transform: scale(1); }
+    40%{ transform: scale(1.22) rotate(-6deg); }
+    100%{ transform: scale(1); }
+}
+
+/* ============================================================
+   NÚMEROS VISIBLES (insignias) — para que el niño asocie
+   cada cantidad con su dígito mientras juega.
+   ============================================================ */
+.mat-contenedor-numerado{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+.mat-badge-numero{
+    min-width: 38px;
+    height: 38px;
+    padding: 0 10px;
+    border-radius: 999px;
+    background: #FFFFFF;
+    border: 3px solid #CBD5E1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 1.2rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--mat-texto);
+    box-shadow: var(--mat-sombra-sm);
+    transition: transform .18s ease, background .18s ease, color .18s ease, border-color .18s ease;
+}
+.mat-badge-numero.mat-badge-cambio{ animation: matPop .35s ease; }
+.mat-badge-numero.mat-badge-completo{
+    background: var(--mat-exito);
+    border-color: var(--mat-exito);
+    color: #fff;
+}
+
+/* Encabezado con la "cuenta" de la operación en números grandes */
+.mat-encabezado-cuenta{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+}
+.mat-encabezado-numero{
+    min-width: 54px;
+    height: 54px;
+    padding: 0 10px;
+    border-radius: var(--mat-radius-md);
+    background: var(--mat-tarjeta);
+    border: 3px solid #CBD5E1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 1.7rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--mat-texto);
+    box-shadow: var(--mat-sombra-sm);
+}
+.mat-encabezado-simbolo{
+    font-size: 1.6rem;
+    font-weight: 900;
+    opacity: .55;
+}
+.mat-encabezado-numero.mat-encabezado-completo{
+    background: var(--mat-exito);
+    border-color: var(--mat-exito);
+    color: #fff;
+    animation: matPop .4s ease;
+}
+
+/* Dígito dentro de cada estante de resultado */
+.mat-estante-numero{
+    font-weight: 900;
+    font-size: 1.05rem;
+    color: var(--mat-texto);
+    margin-top: 4px;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Vagones (multiplicación) */
+.mat-tren-fila{
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.mat-tren-motor{
+    font-size: 3.2rem;
+    margin-bottom: 6px;
+    filter: drop-shadow(0 4px 6px rgba(51,65,85,.2));
+}
+.mat-vagon{
+    background: var(--mat-mult-suave);
+    border: 3px solid var(--mat-mult);
+    border-radius: var(--mat-radius-md) var(--mat-radius-md) 6px 6px;
+    min-width: 92px;
+    min-height: 84px;
+    padding: 8px 6px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.mat-vagon::after{
+    content: "";
+    position: absolute;
+    left: 14px; right: 14px; bottom: -9px;
+    height: 9px;
+    background:
+        radial-gradient(circle, #334155 40%, transparent 42%) 0 0 / 16px 16px repeat-x;
+}
+.mat-vagon-slots{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+.mat-vagon.mat-recipiente-hover{ box-shadow: 0 0 0 5px rgba(245,158,11,.35); }
+.mat-vagon.mat-vagon-lleno{ background: #FDE68A; }
+.mat-vagon-slot-vacio{
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 3px dashed #D97706;
+    opacity: .45;
+}
+.mat-vagon-slots .mat-objeto{ font-size: 1.6rem; width: 30px; height: 30px; }
+
+/* Pila de suministro (bloques / peces) */
+.mat-pila{
+    background: #F1F5F9;
+    border: 3px dashed #94A3B8;
+    min-width: 220px;
+}
+
+/* Pingüinos (división) */
+.mat-pinguinos-fila{
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+.mat-pinguino-unidad{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+.mat-pinguino-cara{
+    font-size: 2.6rem;
+    transition: transform .2s ease;
+}
+.mat-pinguino-unidad.mat-pinguino-lleno .mat-pinguino-cara{ transform: scale(1.15); }
+.mat-pinguino-plato{
+    width: 96px;
+    min-height: 62px;
+    background: var(--mat-div-suave);
+    border: 3px solid var(--mat-div);
+    border-radius: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 6px;
+}
+.mat-pinguino-plato .mat-objeto{ font-size: 1.5rem; width: 28px; height: 28px; }
+.mat-pinguino-plato.mat-recipiente-hover{ box-shadow: 0 0 0 5px rgba(16,185,129,.35); }
+.mat-pinguino-unidad.mat-pinguino-nudge .mat-pinguino-plato{
+    animation: matBrilloNudge 1s ease-in-out infinite;
+}
+.mat-pinguino-unidad.mat-pinguino-elegido .mat-pinguino-plato{
+    box-shadow: 0 0 0 5px #FCD34D;
+}
+@keyframes matBrilloNudge{
+    0%, 100%{ box-shadow: 0 0 0 0 rgba(16,185,129,.5); }
+    50%{ box-shadow: 0 0 0 8px rgba(16,185,129,.15); }
+}
+
+/* ============================================================
+   PISTA VISUAL (manita animada + brillo en el objetivo)
+   ============================================================ */
+.mat-pista-mano{
+    position: absolute;
+    font-size: 2.1rem;
+    pointer-events: none;
+    animation: matFlotarMano 1.1s ease-in-out infinite;
+    z-index: 50;
+    filter: drop-shadow(0 4px 6px rgba(51,65,85,.25));
+}
+@keyframes matFlotarMano{
+    0%, 100%{ transform: translateY(0) rotate(0deg); }
+    50%{ transform: translateY(-10px) rotate(-8deg); }
+}
+.mat-pista-brillo{
+    animation: matBrilloPulso 1.3s ease-in-out infinite;
+}
+@keyframes matBrilloPulso{
+    0%, 100%{ box-shadow: 0 0 0 0 rgba(59,130,246,.45); }
+    50%{ box-shadow: 0 0 0 10px rgba(59,130,246,.10); }
+}
+
+/* ============================================================
+   FASE DE RESULTADO (estantes para comparar cantidades)
+   ============================================================ */
+.mat-fase-resultado{
+    margin-top: 26px;
+    padding-top: 18px;
+    border-top: 3px dotted #E2E8F0;
+}
+.mat-estante-fila{
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+.mat-estante-hueco{
+    background: #F8FAFC;
+    border: 3px solid #CBD5E1;
+    border-radius: var(--mat-radius-md);
+    min-width: 90px;
+    min-height: 74px;
+    max-width: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    transition: box-shadow .15s ease, border-color .15s ease;
+}
+.mat-estante-hueco.mat-recipiente-hover{
+    border-color: #64748B;
+    box-shadow: 0 0 0 5px rgba(100,116,139,.20);
+}
+.mat-estante-hueco.mat-estante-error{ animation: matTiemble .4s ease; border-color: var(--mat-error); }
+.mat-estante-hueco.mat-estante-acertado{ border-color: var(--mat-exito); background: #F0FDF4; }
+.mat-estante-preview{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    max-width: 120px;
+    opacity: .8;
+}
+.mat-punto-preview{ font-size: 1.15rem; line-height: 1; }
+
+@keyframes matTiemble{
+    0%, 100%{ transform: translateX(0); }
+    25%{ transform: translateX(-7px); }
+    75%{ transform: translateX(7px); }
+}
+@keyframes matRebote{
+    0%, 100%{ transform: translateY(0); }
+    50%{ transform: translateY(-8px); }
+}
+
+/* ============================================================
+   CONFETI
+   ============================================================ */
+.mat-overlay-confeti{
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 9999;
+}
+.mat-confeti-part{
+    position: fixed;
+    font-size: 1.4rem;
+    transform: translate(-50%,-50%);
+    animation-name: matConfetiExplosion;
+    animation-timing-function: cubic-bezier(.2,.7,.3,1);
+    animation-fill-mode: forwards;
+    will-change: transform, opacity;
+}
+@keyframes matConfetiExplosion{
+    0%{ transform: translate(-50%,-50%) scale(.5) rotate(0deg); opacity: 1; }
+    100%{ transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1) rotate(220deg); opacity: 0; }
+}
+
+/* ============================================================
+   Accesibilidad: respeta "reducir movimiento"
+   ============================================================ */
+@media (prefers-reduced-motion: reduce){
+    .mat-menu-mascota, .mat-leon, .mat-pista-mano,
+    .mat-pinguino-unidad.mat-pinguino-nudge .mat-pinguino-plato,
+    .mat-pista-brillo{ animation: none !important; }
+}
+
+@media (max-width: 380px){
+    .mat-objeto{ width: 44px; height: 44px; font-size: 1.85rem; }
+    .mat-leon{ width: 108px; height: 108px; font-size: 3.6rem; }
+}
