@@ -598,3 +598,239 @@
     .alfab-unir-item.seleccionado::after { animation: none; }
     .alfab-unir-item.acertada { animation: none; }
 }
+
+/* ==========================================================================
+   REDISEÑO VISUAL — Módulo "Aprender" de Alfabetización
+   Look moderno e interactivo alineado con la línea visual de los juegos.
+   No toca IDs ni lógica de alfabetizacion.js, solo aspecto.
+   ========================================================================== */
+
+/* --- Hero de encabezado con degradado --- */
+.alfab-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 20px;
+    padding: 22px 26px;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #0c4a6e 0%, #075985 50%, #0369a1 100%);
+    box-shadow: 0 10px 30px -12px rgba(12, 74, 110, 0.55);
+}
+.alfab-hero-orbe {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.14);
+    pointer-events: none;
+}
+.alfab-hero-orbe-1 { width: 160px; height: 160px; top: -70px; right: -40px; }
+.alfab-hero-orbe-2 { width: 90px; height: 90px; bottom: -40px; right: 90px; background: rgba(255, 255, 255, 0.1); }
+.alfab-hero-fila {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.alfab-hero-titulo-wrap { display: flex; align-items: center; gap: 14px; }
+.alfab-hero-icono {
+    font-size: 30px;
+    width: 54px;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 14px;
+    flex-shrink: 0;
+}
+.alfab-hero-titulo { color: #fff; letter-spacing: -0.01em; }
+.alfab-hero-subtitulo { color: rgba(255, 255, 255, 0.85); font-size: 0.9rem; }
+.alfab-hero-btn {
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    color: #fff;
+    backdrop-filter: blur(2px);
+}
+.alfab-hero-btn:hover { background: rgba(255, 255, 255, 0.28); color: #fff; }
+
+/* Botón "Salir" en rojo, distinto del resto de botones translúcidos del hero */
+#btnAlfabSalir.alfab-hero-btn {
+    background: #ef4444;
+    border-color: #ef4444;
+    color: #fff;
+    font-weight: 600;
+}
+#btnAlfabSalir.alfab-hero-btn:hover {
+    background: #dc2626;
+    border-color: #dc2626;
+    color: #fff;
+}
+
+/* --- Toggle tipo píldora Abecedario / Números --- */
+.alfab-toggle-pildora {
+    display: inline-flex;
+    padding: 5px;
+    gap: 4px;
+    background: #eef2f7;
+    border-radius: 999px;
+    box-shadow: inset 0 1px 3px rgba(15, 23, 42, 0.08);
+}
+.alfab-toggle-btn {
+    border: none;
+    background: transparent;
+    color: #475569;
+    font-weight: 600;
+    font-size: 0.88rem;
+    padding: 9px 20px;
+    border-radius: 999px;
+    transition: all 0.25s ease;
+}
+.alfab-toggle-btn:hover:not(.active) { background: rgba(2, 132, 199, 0.08); color: #0284c7; }
+.alfab-toggle-btn.active {
+    background: linear-gradient(135deg, #0c4a6e, #0369a1);
+    color: #fff;
+    box-shadow: 0 4px 12px -3px rgba(12, 74, 110, 0.55);
+}
+
+/* --- Índice rápido de caracteres --- */
+.alfab-indice-caracteres {
+    padding: 10px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 10px -4px rgba(15, 23, 42, 0.12);
+    border: 1px solid #eef2f7;
+}
+.alfab-indice-caracteres .btn-abc {
+    border-radius: 10px;
+    transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.alfab-indice-caracteres .btn-abc:hover {
+    transform: translateY(-2px);
+    border-color: #febd0f;
+    color: #b45309;
+    background-color: #fff8e1;
+}
+.alfab-indice-caracteres .btn-abc.active {
+    background: #febd0f;
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 4px 12px -3px rgba(245, 180, 0, 0.55);
+}
+.alfab-indice-caracteres .btn-abc:active {
+    background: #febd0f;
+    color: #fff;
+    border-color: transparent;
+}
+
+/* --- Tarjeta principal --- */
+.alfab-card-principal {
+    border-radius: 22px !important;
+    background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+}
+
+/* --- Navegación de carácter con círculo protagonista --- */
+.alfab-nav-caracter { gap: 10px; }
+.alfab-caracter-circulo {
+    width: 92px;
+    height: 92px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0c4a6e, #0369a1);
+    border: 3px solid #fff;
+    box-shadow: 0 8px 22px -8px rgba(12, 74, 110, 0.55), 0 0 0 3px rgba(254, 189, 15, 0.18);
+}
+.alfab-caracter-circulo h2 {
+    font-size: 2.2rem;
+    color: #ffffff;
+}
+.alfab-nav-flecha {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    color: #0284c7;
+    box-shadow: 0 2px 8px -3px rgba(15, 23, 42, 0.15);
+    transition: all 0.2s ease;
+}
+.alfab-nav-flecha:hover { background: #febd0f; border-color: transparent; color: #fff; transform: scale(1.08); }
+.alfab-nav-flecha:active { background: #febd0f; border-color: transparent; color: #fff; }
+.alfab-nav-flecha-sm { width: 38px; height: 38px; }
+
+/* --- Cajas de apoyo visual (fonética / grafía / ejemplo) --- */
+.alfab-visual-caja { border-radius: 16px !important; overflow: hidden; border-color: #e2e8f0 !important; }
+.alfab-etiqueta-panel {
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: #059669;
+    margin-bottom: 8px;
+}
+
+/* --- Controles de velocidad del video de grafía --- */
+.alfab-controles-video { flex-wrap: wrap; }
+.alfab-velocidad-pildora {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f1f5f9;
+    padding: 6px 12px;
+    border-radius: 999px;
+}
+.alfab-velocidad-pildora span { color: #334155; min-width: 24px; text-align: center; }
+.alfab-btn-control {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+.alfab-btn-control:hover { background: #e0f2fe; }
+.alfab-btn-reiniciar {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-weight: 600;
+}
+.alfab-btn-reiniciar:hover { filter: brightness(1.05); color: #fff; }
+
+/* --- Ejemplos de palabras --- */
+.alfab-ejemplos-card {
+    background: linear-gradient(135deg, #f0fdf4 0%, #eff6ff 100%);
+    border-radius: 18px;
+}
+.alfab-ejemplo-palabra { color: #0f172a; font-size: 1.05rem; }
+.alfab-ejemplo-contador { color: #64748b; }
+
+/* --- Micro-interacción al cambiar de carácter --- */
+@keyframes alfabCaracterEntra {
+    from { opacity: 0; transform: scale(0.85); }
+    to { opacity: 1; transform: scale(1); }
+}
+#alfabCaracterActual { animation: alfabCaracterEntra 0.28s ease; }
+
+@media (prefers-reduced-motion: reduce) {
+    #alfabCaracterActual { animation: none; }
+}
+
+@media (max-width: 576px) {
+    .alfab-hero { padding: 18px; border-radius: 16px; }
+    .alfab-hero-icono { width: 44px; height: 44px; font-size: 24px; }
+    .alfab-caracter-circulo { width: 76px; height: 76px; }
+    .alfab-caracter-circulo h2 { font-size: 1.8rem; }
+    .alfab-toggle-btn { padding: 8px 14px; font-size: 0.82rem; }
+}

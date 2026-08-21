@@ -3026,11 +3026,21 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
              ================================================================ -->
         <section id="seccionAlfabetizacion" class="mb-5 d-none">
 
-            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-                <h4 class="fw-bold mb-0">🔤 Alfabetización - LSPedia</h4>
-                <div class="d-flex gap-2">
-                    <button id="btnAlfabFullscreen" class="btn btn-outline-secondary quiz-btn-fullscreen" title="Pantalla completa" aria-label="Pantalla completa">⛶</button>
-                    <button id="btnAlfabSalir" class="btn quiz-btn-salir btn-sm">⏻ Salir</button>
+            <div class="alfab-hero">
+                <span class="alfab-hero-orbe alfab-hero-orbe-1" aria-hidden="true"></span>
+                <span class="alfab-hero-orbe alfab-hero-orbe-2" aria-hidden="true"></span>
+                <div class="alfab-hero-fila">
+                    <div class="alfab-hero-titulo-wrap">
+                        <span class="alfab-hero-icono" aria-hidden="true">🔤</span>
+                        <div>
+                            <h4 class="fw-bold mb-0 alfab-hero-titulo">Alfabetización</h4>
+                            <p class="alfab-hero-subtitulo mb-0">Aprende el abecedario y los números en LSP</p>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button id="btnAlfabFullscreen" class="btn quiz-btn-fullscreen alfab-hero-btn" title="Pantalla completa" aria-label="Pantalla completa">⛶</button>
+                        <button id="btnAlfabSalir" class="btn quiz-btn-salir btn-sm alfab-hero-btn">⏻ Salir</button>
+                    </div>
                 </div>
             </div>
 
@@ -3051,24 +3061,26 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
 
                     <!-- Selector Abecedario / Números -->
                     <div class="d-flex justify-content-center mb-3">
-                        <div class="btn-group" role="group" aria-label="Tipo de contenido">
-                            <button type="button" class="btn btn-sm btn-outline-secondary active" data-alfab-tipo="letra" id="btnAlfabTipoLetras">Abecedario A-Z</button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary" data-alfab-tipo="numero" id="btnAlfabTipoNumeros">Números 0-19</button>
+                        <div class="alfab-toggle-pildora" role="group" aria-label="Tipo de contenido">
+                            <button type="button" class="alfab-toggle-btn active" data-alfab-tipo="letra" id="btnAlfabTipoLetras">🔡 Abecedario A-Z</button>
+                            <button type="button" class="alfab-toggle-btn" data-alfab-tipo="numero" id="btnAlfabTipoNumeros">🔢 Números 0-19</button>
                         </div>
                     </div>
 
                     <!-- Navegación rápida de caracteres: mismo estilo .btn-abc del índice alfabético del diccionario -->
-                    <div class="indice-alfabetico d-flex justify-content-between flex-wrap gap-1 p-2 bg-white rounded shadow-sm border mb-4" id="alfabIndiceCaracteres">
+                    <div class="alfab-indice-caracteres d-flex justify-content-between flex-wrap gap-1 mb-4" id="alfabIndiceCaracteres">
                         <!-- JS (alfabetizacion.js) genera aquí: <button class="btn btn-abc" data-caracter="A">A</button> -->
                     </div>
 
-                    <div class="card quiz-card border-0 shadow-sm p-4">
+                    <div class="card quiz-card alfab-card-principal border-0 shadow-sm p-4">
 
                         <!-- Navegación entre caracteres: anterior / actual / siguiente -->
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <button type="button" class="btn btn-outline-secondary rounded-circle" id="btnAlfabCaracterAnterior" title="Anterior" aria-label="Carácter anterior">◀</button>
-                            <h2 class="fw-bold mb-0" id="alfabCaracterActual">A</h2>
-                            <button type="button" class="btn btn-outline-secondary rounded-circle" id="btnAlfabCaracterSiguiente" title="Siguiente" aria-label="Carácter siguiente">▶</button>
+                        <div class="d-flex justify-content-between align-items-center mb-4 alfab-nav-caracter">
+                            <button type="button" class="btn alfab-nav-flecha" id="btnAlfabCaracterAnterior" title="Anterior" aria-label="Carácter anterior">◀</button>
+                            <div class="alfab-caracter-circulo">
+                                <h2 class="fw-bold mb-0" id="alfabCaracterActual">A</h2>
+                            </div>
+                            <button type="button" class="btn alfab-nav-flecha" id="btnAlfabCaracterSiguiente" title="Siguiente" aria-label="Carácter siguiente">▶</button>
                         </div>
 
                         <!-- Los 4 estilos tipográficos: ahora son chips flotantes seleccionables.
@@ -3105,8 +3117,8 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                                  muestra una tira desplazable con la boca de cada letra de la palabra,
                                  reutilizando las imágenes boca/{LETRA}.png que ya existen. -->
                             <div class="col-md-6">
-                                <p class="text-uppercase small fw-bold mb-2" style="color:#64748b; letter-spacing:0.05em;">🔊👄 Fonética</p>
-                                <div class="apoyo-visual-caja rounded border" id="alfabBocaCaja">
+                                <p class="alfab-etiqueta-panel">🔊👄 Fonética</p>
+                                <div class="apoyo-visual-caja alfab-visual-caja rounded border" id="alfabBocaCaja">
                                     <img id="alfabBocaImg" src="" alt="Imagen de fonética" class="apoyo-visual-img">
                                     <span class="apoyo-visual-lupa">Ampliar 🔍</span>
                                 </div>
@@ -3120,17 +3132,17 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                             <!-- Video de grafía: cambia según el chip tipográfico activo (mayúscula
                                  por defecto), con control de velocidad real vía playbackRate -->
                             <div class="col-md-6">
-                                <p class="text-uppercase small fw-bold mb-2" style="color:#64748b; letter-spacing:0.05em;">✏️ Grafía</p>
-                                <div class="apoyo-visual-caja alfab-grafia-caja rounded border mb-2" id="alfabTrazoCaja">
+                                <p class="alfab-etiqueta-panel">✏️ Grafía</p>
+                                <div class="apoyo-visual-caja alfab-visual-caja alfab-grafia-caja rounded border mb-2" id="alfabTrazoCaja">
                                     <video id="alfabTrazoVideo" class="apoyo-visual-img" muted loop playsinline preload="auto"></video>
                                 </div>
-                                <div class="controles-video d-flex align-items-center justify-content-center gap-2">
-                                    <div class="controles-video-velocidad">
-                                        <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAlfabTrazoLento" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
-                                        <span class="small fw-bold text-muted" id="alfabTrazoVelocidadLabel">1x</span>
-                                        <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAlfabTrazoRapido" title="Aumentar velocidad" aria-label="Aumentar velocidad">🐇</button>
+                                <div class="controles-video alfab-controles-video d-flex align-items-center justify-content-center gap-2">
+                                    <div class="controles-video-velocidad alfab-velocidad-pildora">
+                                        <button type="button" class="btn btn-sm alfab-btn-control" id="btnAlfabTrazoLento" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
+                                        <span class="small fw-bold" id="alfabTrazoVelocidadLabel">1x</span>
+                                        <button type="button" class="btn btn-sm alfab-btn-control" id="btnAlfabTrazoRapido" title="Aumentar velocidad" aria-label="Aumentar velocidad">🐇</button>
                                     </div>
-                                    <button type="button" class="btn btn-sm btn-warning ms-2" id="btnAlfabTrazoReiniciar" title="Repetir animación" aria-label="Repetir animación">🔁</button>
+                                    <button type="button" class="btn btn-sm alfab-btn-reiniciar ms-2" id="btnAlfabTrazoReiniciar" title="Repetir animación" aria-label="Repetir animación">🔁</button>
                                 </div>
                             </div>
                         </div>
@@ -3139,18 +3151,18 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                              Solo aplica al Abecedario: los Números no usan ejemplos,
                              por eso todo el bloque tiene id para poder ocultarlo. -->
                         <div id="alfabEjemplosSeccion">
-                            <p class="text-uppercase small fw-bold mb-2" style="color:#64748b; letter-spacing:0.05em;">📚 Ejemplos de palabras</p>
-                            <div class="card border-0 bg-light">
+                            <p class="alfab-etiqueta-panel">📚 Ejemplos de palabras</p>
+                            <div class="card border-0 alfab-ejemplos-card">
                                 <div class="d-flex align-items-center justify-content-between p-3">
-                                    <button type="button" class="btn btn-outline-secondary rounded-circle flex-shrink-0" id="btnAlfabEjemploAnterior" title="Ejemplo anterior" aria-label="Ejemplo anterior">◀</button>
+                                    <button type="button" class="btn alfab-nav-flecha alfab-nav-flecha-sm flex-shrink-0" id="btnAlfabEjemploAnterior" title="Ejemplo anterior" aria-label="Ejemplo anterior">◀</button>
                                     <div class="text-center flex-grow-1 px-3">
-                                        <div class="apoyo-visual-caja rounded border mx-auto mb-2" style="max-width: 220px;" id="alfabEjemploImagenCaja">
+                                        <div class="apoyo-visual-caja alfab-visual-caja rounded border mx-auto mb-2" style="max-width: 220px;" id="alfabEjemploImagenCaja">
                                             <img id="alfabEjemploImagen" src="" alt="" class="apoyo-visual-img">
                                         </div>
-                                        <div class="fw-bold" id="alfabEjemploPalabra">—</div>
-                                        <div class="small text-muted" id="alfabEjemploContador">1 / 1</div>
+                                        <div class="fw-bold alfab-ejemplo-palabra" id="alfabEjemploPalabra">—</div>
+                                        <div class="small alfab-ejemplo-contador" id="alfabEjemploContador">1 / 1</div>
                                     </div>
-                                    <button type="button" class="btn btn-outline-secondary rounded-circle flex-shrink-0" id="btnAlfabEjemploSiguiente" title="Ejemplo siguiente" aria-label="Ejemplo siguiente">▶</button>
+                                    <button type="button" class="btn alfab-nav-flecha alfab-nav-flecha-sm flex-shrink-0" id="btnAlfabEjemploSiguiente" title="Ejemplo siguiente" aria-label="Ejemplo siguiente">▶</button>
                                 </div>
                             </div>
                         </div>
