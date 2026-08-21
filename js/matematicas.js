@@ -312,6 +312,54 @@ const MatematicasV2 = (function () {
         }
     }
 
+    /* ============================================================
+       SONIDOS (sintetizados con Web Audio API, sin archivos externos)
+       Y VIBRACIÓN — mismo patrón que QuizV2 (js/quiz.js), para que
+       Matemáticas suene y vibre igual que los demás juegos.
+       ============================================================ */
+    var audioCtx = null;
+
+    function obtenerAudioCtx(){
+        if (!audioCtx){
+            var AC = window.AudioContext || window.webkitAudioContext;
+            if (AC) audioCtx = new AC();
+        }
+        return audioCtx;
+    }
+
+    function tono(frecuencia, duracionMs, retrasoMs, tipo){
+        var ctx = obtenerAudioCtx();
+        if (!ctx) return;
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+        osc.type = tipo || 'sine';
+        osc.frequency.value = frecuencia;
+        gain.gain.setValueAtTime(0.15, ctx.currentTime + (retrasoMs / 1000));
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + (retrasoMs / 1000) + (duracionMs / 1000));
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + (retrasoMs / 1000));
+        osc.stop(ctx.currentTime + (retrasoMs / 1000) + (duracionMs / 1000) + 0.05);
+    }
+
+    function reproducirSonidoCorrecto(){
+        tono(587, 120, 0, 'triangle');
+        tono(880, 160, 110, 'triangle');
+    }
+
+    function reproducirSonidoIncorrecto(){
+        tono(220, 220, 0, 'sawtooth');
+        vibrarError();
+    }
+
+    // Vibración corta al equivocarse (si el dispositivo/navegador lo
+    // permite). Safari/iOS no soporta navigator.vibrate: falla en silencio.
+    function vibrarError(){
+        if (navigator.vibrate){
+            try { navigator.vibrate(200); } catch (e) { /* no soportado o bloqueado */ }
+        }
+    }
+
     function registrarAcierto(){
         state.puntaje++;
         state.aciertosSeguidos++;
@@ -319,6 +367,7 @@ const MatematicasV2 = (function () {
         if (state.aciertosSeguidos % 3 === 0 && state.dificultad < 3) state.dificultad++;
         actualizarEstrellas();
         reaccionarMascota('bien');
+        reproducirSonidoCorrecto();
         if (state.puntaje % 5 === 0){
             var c = centroDe(elEscena);
             setTimeout(function(){ lanzarConfeti(c.x, c.y); }, 250);
@@ -333,6 +382,7 @@ const MatematicasV2 = (function () {
             state.fallosSeguidos = 0;
         }
         reaccionarMascota('mal');
+        reproducirSonidoIncorrecto();
     }
 
     /* ============================================================
