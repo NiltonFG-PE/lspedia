@@ -77,6 +77,51 @@
     letter-spacing: 6px;
 }
 
+/* ---- Selector de nivel (Básico / Medio / Difícil) ---- */
+.mat-nivel-selector{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 0 0 22px;
+}
+.mat-nivel-btn{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--mat-tarjeta);
+    border: 3px solid #E2E8F0;
+    border-radius: 999px;
+    padding: 8px 16px;
+    font-weight: 700;
+    font-size: .92rem;
+    color: var(--mat-texto);
+    cursor: pointer;
+    transition: transform .15s ease, border-color .15s ease, background .15s ease;
+    touch-action: manipulation;
+}
+.mat-nivel-btn .mat-nivel-emoji{ font-size: 1.1rem; }
+.mat-nivel-btn:hover, .mat-nivel-btn:focus-visible{ border-color: #94A3B8; outline: none; }
+.mat-nivel-btn:active{ transform: scale(.96); }
+.mat-nivel-btn.mat-nivel-btn-activo{ box-shadow: var(--mat-sombra-sm); }
+.mat-nivel-btn[data-nivel="1"].mat-nivel-btn-activo{ border-color: #22C55E; background: #DCFCE7; }
+.mat-nivel-btn[data-nivel="2"].mat-nivel-btn-activo{ border-color: #F59E0B; background: #FEF3C7; }
+.mat-nivel-btn[data-nivel="3"].mat-nivel-btn-activo{ border-color: #EF4444; background: #FEE2E2; }
+
+/* ---- Chip de nivel actual, visible dentro de la partida ---- */
+.mat-nivel-barra-wrap{ text-align: center; }
+.mat-nivel-barra{
+    display: inline-block;
+    margin: 0 auto 14px;
+    padding: 6px 14px;
+    font-size: .85rem;
+    font-weight: 700;
+    color: #64748B;
+    background: var(--mat-tarjeta);
+    border-radius: 999px;
+    box-shadow: var(--mat-sombra-sm);
+}
+
 .mat-menu-grid{
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -226,6 +271,35 @@
 }
 .mat-objeto.mat-objeto-colocado{ animation: matPop .35s ease; }
 .mat-objeto.mat-bloqueado{ cursor: default; }
+
+/* Piezas "bloque" (valen 10 o 100) para números de 2-3 cifras en
+   suma y resta: mismo emoji pero agrupado, con una etiqueta de
+   valor, para poder representar cifras grandes sin arrastrar
+   cientos de objetos sueltos. */
+.mat-objeto.mat-objeto-bloque{
+    flex-direction: column;
+    gap: 0;
+    width: auto;
+    min-width: 54px;
+    height: 58px;
+    padding: 3px 7px;
+    border-radius: 12px;
+    background: #FFFFFF;
+}
+.mat-objeto-bloque-emoji{ font-size: 1.3rem; line-height: 1; }
+.mat-objeto-bloque-numero{
+    font-size: .62rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-top: 3px;
+    padding: 1px 6px;
+    border-radius: 999px;
+    color: #fff;
+}
+.mat-objeto-bloque-10{ border: 2px solid #94A3B8; }
+.mat-objeto-bloque-10 .mat-objeto-bloque-numero{ background: #64748B; }
+.mat-objeto-bloque-100{ border: 2px solid #475569; }
+.mat-objeto-bloque-100 .mat-objeto-bloque-numero{ background: #334155; }
 
 @keyframes matPop{
     0%{ transform: scale(.4); opacity: 0; }
@@ -530,14 +604,23 @@
     align-items: center;
     justify-content: center;
     padding: 8px;
-    transition: box-shadow .15s ease, border-color .15s ease;
+    cursor: pointer;
+    touch-action: manipulation;
+    transition: box-shadow .15s ease, border-color .15s ease, transform .1s ease;
 }
+/* El estante también responde al toque/clic directo (además de
+   soltar la pieza arrastrada encima): esto es el "modo tocar". */
+.mat-estante-hueco:hover, .mat-estante-hueco:focus-visible{
+    border-color: #94A3B8;
+    outline: none;
+}
+.mat-estante-hueco:active{ transform: scale(.96); }
 .mat-estante-hueco.mat-recipiente-hover{
     border-color: #64748B;
     box-shadow: 0 0 0 5px rgba(100,116,139,.20);
 }
 .mat-estante-hueco.mat-estante-error{ animation: matTiemble .4s ease; border-color: var(--mat-error); }
-.mat-estante-hueco.mat-estante-acertado{ border-color: var(--mat-exito); background: #F0FDF4; }
+.mat-estante-hueco.mat-estante-acertado{ border-color: var(--mat-exito); background: #F0FDF4; cursor: default; }
 .mat-estante-preview{
     display: flex;
     flex-wrap: wrap;
@@ -548,6 +631,7 @@
     opacity: .8;
 }
 .mat-punto-preview{ font-size: 1.15rem; line-height: 1; }
+.mat-punto-preview-mas{ font-size: 1rem; font-weight: 800; color: #64748B; line-height: 1; }
 
 @keyframes matTiemble{
     0%, 100%{ transform: translateX(0); }

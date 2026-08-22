@@ -19,10 +19,29 @@ const MatematicasV2 = (function () {
     var state = {
         operacion: null,
         dificultad: 1,
-        puntaje: 0,
-        aciertosSeguidos: 0,
-        fallosSeguidos: 0
+        // Nivel elegido a mano por el usuario en el menú (1=Básico,
+        // 2=Medio, 3=Difícil). Reemplaza al ajuste automático por
+        // rachas de aciertos/fallos: ahora el nivel lo controla el
+        // jugador y se mantiene fijo durante la partida.
+        nivelElegido: 1,
+        puntaje: 0
     };
+
+    var NIVEL_NOMBRE = { 1: 'Básico', 2: 'Medio', 3: 'Difícil' };
+    var NIVEL_EMOJI = { 1: '🌱', 2: '🌿', 3: '🌳' };
+    var LS_KEY_NIVEL = 'lspedia_mat_nivel';
+
+    function obtenerNivelGuardado(){
+        try {
+            var v = parseInt(localStorage.getItem(LS_KEY_NIVEL), 10);
+            if (v >= 1 && v <= 3) return v;
+        } catch (e) { /* localStorage no disponible: usar valor por defecto */ }
+        return 1;
+    }
+
+    function guardarNivel(n){
+        try { localStorage.setItem(LS_KEY_NIVEL, n); } catch (e) { /* ignorar */ }
+    }
 
     var movimientoReducido = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -62,6 +81,67 @@ const MatematicasV2 = (function () {
         el.className = 'mat-objeto';
         el.textContent = emoji;
         return el;
+    }
+
+    /* ============================================================
+       PIEZAS CON VALOR (1, 10 o 100) — para representar números de
+       2-3 cifras en suma/resta sin tener que arrastrar cientos de
+       objetos sueltos uno por uno. Cada pieza "vale" lo que indica
+       su etiqueta y se arrastra como una sola unidad (igual que un
+       objeto normal), pero se cuenta por su valor, no por 1.
+       ============================================================ */
+    function crearObjetoValor(valor, emoji){
+        var el = document.createElement('div');
+        el.className = 'mat-objeto';
+        el.dataset.valor = valor;
+        if (valor === 1){
+            el.textContent = emoji;
+        } else {
+            el.classList.add('mat-objeto-bloque');
+            el.classList.add(valor === 100 ? 'mat-objeto-bloque-100' : 'mat-objeto-bloque-10');
+            var ic = document.createElement('span');
+            ic.className = 'mat-objeto-bloque-emoji';
+            ic.textContent = emoji;
+            var lbl = document.createElement('span');
+            lbl.className = 'mat-objeto-bloque-numero';
+            lbl.textContent = valor;
+            el.appendChild(ic);
+            el.appendChild(lbl);
+        }
+        return el;
+    }
+
+    /* Descompone un número en piezas de 100/10/1 según sus cifras.
+       Ej. 234 -> [100,100,10,10,10,1,1,1,1] */
+    function desglosarValor(n){
+        var piezas = [];
+        var c = Math.floor(n / 100); n -= c * 100;
+        var d = Math.floor(n / 10); n -= d * 10;
+        var u = n;
+        for (var i = 0; i < c; i++) piezas.push(100);
+        for (var i = 0; i < d; i++) piezas.push(10);
+        for (var i = 0; i < u; i++) piezas.push(1);
+        return piezas;
+    }
+
+    /* ¿Se puede formar exactamente "objetivo" combinando piezas
+       disponibles de valor 100/10/1 (respetando cuántas hay de cada
+       una)? Se usa para evitar que, en la resta, el jugador deje al
+       "monstruito" sin forma de completar exactamente la cuenta
+       (p.ej. si ya comió todas las piezas sueltas de 1 y solo le
+       quedan piezas de 10 pero necesita comer menos de 10 más). */
+    function factible(conteo, objetivo){
+        if (objetivo < 0) return false;
+        var maxH = Math.min(conteo[100], Math.floor(objetivo / 100));
+        for (var h = 0; h <= maxH; h++){
+            var restoH = objetivo - h * 100;
+            var maxT = Math.min(conteo[10], Math.floor(restoH / 10));
+            for (var t = 0; t <= maxT; t++){
+                var restoT = restoH - t * 10;
+                if (restoT <= conteo[1]) return true;
+            }
+        }
+        return false;
     }
 
     /* ============================================================
@@ -362,9 +442,6 @@ const MatematicasV2 = (function () {
 
     function registrarAcierto(){
         state.puntaje++;
-        state.aciertosSeguidos++;
-        state.fallosSeguidos = 0;
-        if (state.aciertosSeguidos % 3 === 0 && state.dificultad < 3) state.dificultad++;
         actualizarEstrellas();
         reaccionarMascota('bien');
         reproducirSonidoCorrecto();
@@ -375,12 +452,6 @@ const MatematicasV2 = (function () {
     }
 
     function registrarFallo(){
-        state.aciertosSeguidos = 0;
-        state.fallosSeguidos++;
-        if (state.fallosSeguidos >= 3 && state.dificultad > 1){
-            state.dificultad--;
-            state.fallosSeguidos = 0;
-        }
         reaccionarMascota('mal');
         reproducirSonidoIncorrecto();
     }
@@ -388,12 +459,42 @@ const MatematicasV2 = (function () {
     /* ============================================================
        GENERACIÓN DE PROBLEMAS
        ============================================================ */
+    // Nivel 1 = Básico (1 cifra), Nivel 2 = Medio (2 cifras),
+    // Nivel 3 = Difícil (3 cifras). En suma y resta los números en
+    // sí crecen a 2-3 cifras (se representan con piezas de
+    // valor 1/10/100, ver desglosarValor). En multiplicación y
+    // división los factores se mantienen chicos a propósito —
+    // el juego dibuja un objeto arrastrable por cada unidad del
+    // resultado, así que números de 2-3 cifras completos ahí
+    // significarían arrastrar cientos de piezas sueltas, poco
+    // práctico para un niño — pero el resultado sí crece de forma
+    // notoria entre niveles.
     var RANGOS = {
-        suma: [ {min:1,max:3}, {min:2,max:5}, {min:3,max:7} ],
-        resta: [ {min:3,max:5,qmin:1,qmax:2}, {min:5,max:8,qmin:2,qmax:4}, {min:8,max:12,qmin:3,qmax:6} ],
-        multiplicacion: [ {kmin:2,kmax:2,jmin:1,jmax:2}, {kmin:2,kmax:3,jmin:2,jmax:3}, {kmin:3,kmax:4,jmin:2,jmax:4} ],
-        division: [ {dmin:2,dmax:2,cmin:1,cmax:2}, {dmin:2,dmax:3,cmin:2,cmax:3}, {dmin:3,dmax:4,cmin:2,cmax:4} ]
+        suma: [ {min:1,max:9}, {min:10,max:40}, {min:100,max:250} ],
+        resta: [ {min:4,max:9,qmin:1,qmax:4}, {min:20,max:60}, {min:100,max:300} ],
+        multiplicacion: [ {kmin:2,kmax:3,jmin:1,jmax:3}, {kmin:2,kmax:4,jmin:3,jmax:6}, {kmin:3,kmax:5,jmin:5,jmax:8} ],
+        division: [ {dmin:2,dmax:2,cmin:1,cmax:3}, {dmin:2,dmax:4,cmin:3,cmax:6}, {dmin:3,dmax:5,cmin:5,cmax:8} ]
     };
+
+    /* Genera una resta de 2-3 cifras "sin préstamo": cada cifra de q
+       es como máximo igual a la cifra correspondiente de total. Así,
+       al desglosar total en piezas de 100/10/1, siempre existe una
+       combinación exacta de esas piezas que suma q (ver factible()). */
+    function generarQSinPrestamo(total){
+        var c = Math.floor(total / 100) % 10, d = Math.floor(total / 10) % 10, u = total % 10;
+        for (var intento = 0; intento < 20; intento++){
+            var qc = randInt(0, c), qd = randInt(0, d), qu = randInt(0, u);
+            var q = qc * 100 + qd * 10 + qu;
+            if (q >= 1 && q < total) return q;
+        }
+        // Salvaguarda determinista (muy raro llegar aquí): bajar en 1
+        // la cifra de menor orden disponible sigue siendo digit-wise
+        // válido, porque las demás cifras quedan iguales a las de total.
+        if (u > 0) return total - 1;
+        if (d > 0) return total - 10;
+        if (c > 0) return total - 100;
+        return Math.max(1, total - 1);
+    }
 
     function generarProblema(tipo, dificultad){
         var r = RANGOS[tipo][dificultad - 1];
@@ -403,7 +504,14 @@ const MatematicasV2 = (function () {
         }
         if (tipo === 'resta'){
             var total = randInt(r.min, r.max);
-            var q = randInt(r.qmin, Math.min(r.qmax, total - 1));
+            // Un total "redondo" (decenas y unidades en 0, p.ej. 100,
+            // 200) no admite ninguna resta sin préstamo real (solo 0 o
+            // el total completo). Se ajustan sus cifras bajas para
+            // que siempre haya una resta válida que representar.
+            if (total > 9 && Math.floor(total / 10) % 10 === 0 && total % 10 === 0){
+                total += randInt(1, 9);
+            }
+            var q = total <= 9 ? randInt(r.qmin, Math.min(r.qmax, total - 1)) : generarQSinPrestamo(total);
             return { tipo: tipo, total: total, q: q, resultado: total - q, emoji: '🍖' };
         }
         if (tipo === 'multiplicacion'){
@@ -421,11 +529,15 @@ const MatematicasV2 = (function () {
         candidatos[correcto] = true;
         var valores = [correcto];
         var intentos = 0;
-        while (valores.length < 3 && intentos < 50){
+        // El tamaño de los señuelos escala según la cantidad de
+        // cifras del resultado correcto (no tendría sentido ofrecer
+        // "1004" como distractor de "12").
+        var escala = correcto < 10 ? 3 : (correcto < 100 ? 8 : 25);
+        while (valores.length < 3 && intentos < 60){
             intentos++;
-            var delta = (randInt(1,3)) * (Math.random() < 0.5 ? -1 : 1);
+            var delta = (randInt(1, escala)) * (Math.random() < 0.5 ? -1 : 1);
             var val = correcto + delta;
-            if (val >= 1 && val <= 20 && !candidatos[val]){
+            if (val >= 1 && !candidatos[val]){
                 candidatos[val] = true;
                 valores.push(val);
             }
@@ -447,13 +559,29 @@ const MatematicasV2 = (function () {
             var hueco = document.createElement('div');
             hueco.className = 'mat-estante-hueco';
             hueco.dataset.cantidad = cant;
+            // Accesible y "tocable": además de recibir la pieza
+            // arrastrada, el propio hueco responde a un toque/clic
+            // directo (modo toque) o a Enter/Espacio con teclado.
+            hueco.setAttribute('role', 'button');
+            hueco.setAttribute('tabindex', '0');
+            hueco.setAttribute('aria-label', 'Responder ' + cant);
             var preview = document.createElement('div');
             preview.className = 'mat-estante-preview';
-            for (var i = 0; i < cant; i++){
+            // Con resultados de 2-3 cifras no tiene sentido dibujar un
+            // emoji por unidad: se limita la vista previa y se apoya
+            // en el número grande de abajo, que es exacto.
+            var iconos = Math.min(cant, 6);
+            for (var i = 0; i < iconos; i++){
                 var d = document.createElement('span');
                 d.className = 'mat-punto-preview';
                 d.textContent = problema.emoji;
                 preview.appendChild(d);
+            }
+            if (cant > iconos){
+                var mas = document.createElement('span');
+                mas.className = 'mat-punto-preview mat-punto-preview-mas';
+                mas.textContent = '+';
+                preview.appendChild(mas);
             }
             var numero = document.createElement('div');
             numero.className = 'mat-estante-numero';
@@ -470,6 +598,34 @@ const MatematicasV2 = (function () {
         var hoverMgr = crearManejadorHover(huecos);
         var resuelto = false;
 
+        // Lógica compartida por ambos modos de responder: soltar la
+        // pieza arrastrada sobre un hueco, o tocar/clicar el hueco
+        // directamente sin arrastrar nada.
+        function resolverConHueco(hueco){
+            if (resuelto) return true;
+            if (parseInt(hueco.dataset.cantidad, 10) === problema.resultado){
+                resuelto = true;
+                hueco.classList.add('mat-estante-acertado');
+                colocarEnDestino(elResultadoContenedor, hueco);
+                elResultadoContenedor.style.transform = 'scale(0.55)';
+                var centro = centroDe(hueco);
+                lanzarConfeti(centro.x, centro.y);
+                registrarAcierto();
+                if (elCajaPregunta){
+                    elCajaPregunta.textContent = problema.resultado;
+                    elCajaPregunta.classList.add('mat-encabezado-completo');
+                }
+                setTimeout(function(){ generarNuevoProblema(); }, 1300);
+                return true;
+            } else {
+                hueco.classList.remove('mat-estante-error');
+                void hueco.offsetWidth;
+                hueco.classList.add('mat-estante-error');
+                registrarFallo();
+                return false;
+            }
+        }
+
         activarArrastre(elResultadoContenedor, elEscena, {
             onMover: function(ev){
                 hoverMgr.actualizar(ev.clientX, ev.clientY);
@@ -482,31 +638,23 @@ const MatematicasV2 = (function () {
                     var hueco = huecos[i];
                     if (puntoEnRect(c.x, c.y, hueco.getBoundingClientRect())){
                         hoverMgr.limpiar();
-                        if (parseInt(hueco.dataset.cantidad, 10) === problema.resultado){
-                            resuelto = true;
-                            hueco.classList.add('mat-estante-acertado');
-                            colocarEnDestino(el, hueco);
-                            el.style.transform = 'scale(0.55)';
-                            var centro = centroDe(hueco);
-                            lanzarConfeti(centro.x, centro.y);
-                            registrarAcierto();
-                            if (elCajaPregunta){
-                                elCajaPregunta.textContent = problema.resultado;
-                                elCajaPregunta.classList.add('mat-encabezado-completo');
-                            }
-                            setTimeout(function(){ generarNuevoProblema(); }, 1300);
-                            return true;
-                        } else {
-                            hueco.classList.remove('mat-estante-error');
-                            void hueco.offsetWidth;
-                            hueco.classList.add('mat-estante-error');
-                            registrarFallo();
-                            return false;
-                        }
+                        return resolverConHueco(hueco);
                     }
                 }
                 return false;
             }
+        });
+
+        // MODO TOQUE: tocar/clicar un hueco directamente también
+        // responde, sin necesidad de arrastrar la pieza hasta él.
+        huecos.forEach(function(hueco){
+            hueco.addEventListener('click', function(){ resolverConHueco(hueco); });
+            hueco.addEventListener('keydown', function(ev){
+                if (ev.key === 'Enter' || ev.key === ' '){
+                    ev.preventDefault();
+                    resolverConHueco(hueco);
+                }
+            });
         });
     }
 
@@ -537,8 +685,8 @@ const MatematicasV2 = (function () {
         elEscena.appendChild(zona);
 
         var objetos = [];
-        for (var i = 0; i < problema.a; i++){ var o = crearObjeto(problema.emoji); cestaA.appendChild(o); objetos.push(o); }
-        for (var j = 0; j < problema.b; j++){ var o2 = crearObjeto(problema.emoji); cestaB.appendChild(o2); objetos.push(o2); }
+        desglosarValor(problema.a).forEach(function(v){ var o = crearObjetoValor(v, problema.emoji); cestaA.appendChild(o); objetos.push(o); });
+        desglosarValor(problema.b).forEach(function(v){ var o2 = crearObjetoValor(v, problema.emoji); cestaB.appendChild(o2); objetos.push(o2); });
 
         var destinos = [cestaCentral];
         var hoverMgr = crearManejadorHover(destinos);
@@ -554,7 +702,7 @@ const MatematicasV2 = (function () {
                     if (puntoEnRect(c.x, c.y, cestaCentral.getBoundingClientRect())){
                         colocarEnDestino(el, cestaCentral);
                         el.dataset.bloqueado = '1';
-                        enCentral++;
+                        enCentral += parseInt(el.dataset.valor, 10);
                         actualizarBadge(numCentral.badge, enCentral, enCentral === problema.resultado);
                         if (cestaA.children.length === 0 && cestaB.children.length === 0){
                             quitarPista && quitarPista();
@@ -594,10 +742,15 @@ const MatematicasV2 = (function () {
         elEscena.appendChild(zona);
 
         var objetos = [];
-        for (var i = 0; i < problema.total; i++){ var o = crearObjeto(problema.emoji); bandeja.appendChild(o); objetos.push(o); }
+        var conteo = { 100: 0, 10: 0, 1: 0 };
+        desglosarValor(problema.total).forEach(function(v){
+            var o = crearObjetoValor(v, problema.emoji);
+            bandeja.appendChild(o);
+            objetos.push(o);
+            conteo[v]++;
+        });
 
-        var comidos = 0;
-        var enBandeja = problema.total;
+        var comidosValor = 0;
         var hoverMgr = crearManejadorHover([leon]);
 
         objetos.forEach(function(obj){
@@ -607,30 +760,39 @@ const MatematicasV2 = (function () {
                 onSoltar: function(ev, el){
                     var c = centroDe(el);
                     hoverMgr.limpiar();
-                    if (comidos >= problema.q) return false;
-                    if (puntoEnRect(c.x, c.y, leon.getBoundingClientRect())){
-                        comidos++;
-                        enBandeja--;
-                        leon.classList.remove('mat-leon-masticando');
-                        void leon.offsetWidth;
-                        leon.classList.add('mat-leon-masticando');
-                        actualizarBadge(numLeon.badge, comidos, comidos === problema.q);
-                        actualizarBadge(numBandeja.badge, enBandeja, false);
-                        el.classList.add('mat-objeto-colocado');
-                        el.style.transition = 'transform .2s ease, opacity .2s ease';
-                        el.style.transform = 'scale(0)';
-                        el.style.opacity = '0';
-                        setTimeout(function(){ el.remove(); }, 200);
-                        if (comidos === problema.q){
-                            leon.classList.add('mat-leon-lleno');
-                            var restantes = bandeja.querySelectorAll('.mat-objeto');
-                            restantes.forEach(function(r){ r.dataset.bloqueado = '1'; });
-                            quitarPista && quitarPista();
-                            setTimeout(function(){ iniciarFaseResultado(problema, bandeja, encabezado.cajaPregunta); }, 300);
-                        }
-                        return true;
+                    if (!puntoEnRect(c.x, c.y, leon.getBoundingClientRect())) return false;
+                    if (comidosValor >= problema.q) return false;
+                    var v = parseInt(el.dataset.valor, 10);
+                    var nuevoComido = comidosValor + v;
+                    if (nuevoComido > problema.q) return false;
+                    // Antes de aceptar, comprobamos que con las piezas
+                    // que quedarían (sin esta) todavía se pueda llegar
+                    // exacto a la cuenta pedida, para que el monstruito
+                    // nunca se quede sin forma de terminar la resta.
+                    var restante = { 100: conteo[100], 10: conteo[10], 1: conteo[1] };
+                    restante[v] = restante[v] - 1;
+                    if (!factible(restante, problema.q - nuevoComido)) return false;
+
+                    conteo[v]--;
+                    comidosValor = nuevoComido;
+                    leon.classList.remove('mat-leon-masticando');
+                    void leon.offsetWidth;
+                    leon.classList.add('mat-leon-masticando');
+                    actualizarBadge(numLeon.badge, comidosValor, comidosValor === problema.q);
+                    actualizarBadge(numBandeja.badge, problema.total - comidosValor, false);
+                    el.classList.add('mat-objeto-colocado');
+                    el.style.transition = 'transform .2s ease, opacity .2s ease';
+                    el.style.transform = 'scale(0)';
+                    el.style.opacity = '0';
+                    setTimeout(function(){ el.remove(); }, 200);
+                    if (comidosValor === problema.q){
+                        leon.classList.add('mat-leon-lleno');
+                        var restantes = bandeja.querySelectorAll('.mat-objeto');
+                        restantes.forEach(function(r){ r.dataset.bloqueado = '1'; });
+                        quitarPista && quitarPista();
+                        setTimeout(function(){ iniciarFaseResultado(problema, bandeja, encabezado.cajaPregunta); }, 300);
                     }
-                    return false;
+                    return true;
                 }
             });
         });
@@ -821,6 +983,21 @@ const MatematicasV2 = (function () {
     /* ============================================================
        CONTROL DE FLUJO DEL JUEGO
        ============================================================ */
+    function actualizarChipNivel(){
+        var chip = document.getElementById('matNivelBarra');
+        if (chip) chip.textContent = NIVEL_EMOJI[state.nivelElegido] + ' Nivel: ' + NIVEL_NOMBRE[state.nivelElegido];
+    }
+
+    function seleccionarNivel(n){
+        state.nivelElegido = n;
+        guardarNivel(n);
+        var botones = document.querySelectorAll('#matApp .mat-nivel-btn');
+        botones.forEach(function(b){
+            b.classList.toggle('mat-nivel-btn-activo', parseInt(b.dataset.nivel, 10) === n);
+        });
+        actualizarChipNivel();
+    }
+
     function construirEscena(tipo, problema){
         if (tipo === 'suma') armarEscenaSuma(problema);
         else if (tipo === 'resta') armarEscenaResta(problema);
@@ -836,14 +1013,13 @@ const MatematicasV2 = (function () {
 
     function iniciarJuego(operacion){
         state.operacion = operacion;
-        state.dificultad = 1;
+        state.dificultad = state.nivelElegido;
         state.puntaje = 0;
-        state.aciertosSeguidos = 0;
-        state.fallosSeguidos = 0;
         inicializarEstrellas();
         reaccionarMascota('normal');
         elMenu.classList.remove('mat-pantalla-activa');
         elJuego.classList.add('mat-pantalla-activa');
+        actualizarChipNivel();
         generarNuevoProblema();
     }
 
@@ -867,8 +1043,15 @@ const MatematicasV2 = (function () {
                 iniciarJuego(btn.dataset.op);
             });
         });
+        var botonesNivel = document.querySelectorAll('#matApp .mat-nivel-btn');
+        botonesNivel.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                seleccionarNivel(parseInt(btn.dataset.nivel, 10));
+            });
+        });
         var btnVolver = document.getElementById('matBtnVolver');
         if (btnVolver) btnVolver.addEventListener('click', volverAlMenu);
+        seleccionarNivel(obtenerNivelGuardado());
         _listenersListos = true;
     }
 

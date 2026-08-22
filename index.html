@@ -3052,6 +3052,24 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                     <div class="mat-menu-mascota" aria-hidden="true">🦊</div>
                     <div class="mat-menu-titulo-icono" aria-hidden="true">· · ·</div>
 
+                    <!-- Selector de nivel manual: define cuántas cifras tienen
+                         los números del problema (1/2/3 cifras). Se aplica a
+                         las 4 operaciones y se recuerda entre visitas. -->
+                    <div class="mat-nivel-selector" role="group" aria-label="Elegir nivel">
+                        <button type="button" class="mat-nivel-btn" data-nivel="1">
+                            <span class="mat-nivel-emoji" aria-hidden="true">🌱</span>
+                            <span>Básico</span>
+                        </button>
+                        <button type="button" class="mat-nivel-btn" data-nivel="2">
+                            <span class="mat-nivel-emoji" aria-hidden="true">🌿</span>
+                            <span>Medio</span>
+                        </button>
+                        <button type="button" class="mat-nivel-btn" data-nivel="3">
+                            <span class="mat-nivel-emoji" aria-hidden="true">🌳</span>
+                            <span>Difícil</span>
+                        </button>
+                    </div>
+
                     <div class="mat-menu-grid">
                         <button type="button" class="mat-tarjeta-op" data-op="suma"
                             style="--color-op: var(--mat-suma); --color-op-suave: var(--mat-suma-suave);"
@@ -3089,6 +3107,10 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                         <button type="button" id="matBtnVolver" class="mat-btn-icono" aria-label="Volver al menú">⬅️</button>
                         <div id="matEstrellas" class="mat-estrellas" aria-hidden="true"></div>
                         <div id="matMascotaMini" class="mat-mascota-mini" aria-hidden="true">🙂</div>
+                    </div>
+
+                    <div class="mat-nivel-barra-wrap">
+                        <span id="matNivelBarra" class="mat-nivel-barra" aria-hidden="true"></span>
                     </div>
 
                     <div id="matEscena" class="mat-escena"></div>
