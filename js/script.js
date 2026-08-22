@@ -1601,7 +1601,7 @@ function mostrarPalabra(p, opciones = {}){
     const bloqueImagen = generarBloqueImagenApoyo(imagenesPalabra, p.palabra);
     const hayVideo = p.video && p.video.trim() !== "";
     const bloqueVideo = hayVideo
-        ? `<div id="reproductorPalabra"></div>`
+        ? `<div id="reproductorPalabra"></div><div class="video-toque-overlay" id="overlayPalabra"></div>`
         : `<div class="d-flex flex-column align-items-center justify-content-center h-100 bg-light text-muted text-center p-3">
                 <span class="fs-1 mb-2">🤟</span>
                 <span class="small fw-bold">Video próximamente</span>
@@ -1633,6 +1633,7 @@ function mostrarPalabra(p, opciones = {}){
                 <span class="apoyo-panel-titulo">💡 Seña</span>
                 <div class="reproductor-palabra-wrap shadow-sm rounded overflow-hidden border mx-0" id="reproductorSugeridaWrap" style="max-width: none;">
                     <div id="reproductorSugerida"></div>
+                    <div class="video-toque-overlay" id="overlaySugerida"></div>
                 </div>
                 <div class="controles-video controles-video-compactos d-flex align-items-center justify-content-center gap-2 mt-2 flex-wrap">
                     <button type="button" class="btn btn-sm btn-outline-secondary" id="btnRetroceder10Sugerida" title="Retroceder 5 segundos" aria-label="Retroceder 5 segundos">⏪ 5s</button>
@@ -1747,7 +1748,7 @@ function mostrarPalabraSimplificada(p, opciones = {}){
 
     const idVideo = extraerIdYouTube(p.video);
     const bloqueVideo = idVideo
-        ? `<div id="reproductorPalabra"></div>`
+        ? `<div id="reproductorPalabra"></div><div class="video-toque-overlay" id="overlayPalabra"></div>`
         : `<div class="d-flex flex-column align-items-center justify-content-center h-100 bg-light text-muted text-center p-3">
                 <span class="fs-1 mb-2">🤟</span>
                 <span class="small fw-bold">Video próximamente</span>
@@ -1913,7 +1914,7 @@ function crearReproductorNosotros(videoId) {
     if (!contenedor) return;
     ytPlayerNosotros = new YT.Player("reproductorNosotros", {
         videoId: videoId,
-        playerVars: { rel: 0, modestbranding: 1 },
+        playerVars: { rel: 0, modestbranding: 1, controls: 0, disablekb: 1, fs: 0, iv_load_policy: 3 },
         events: {
             onReady: configurarControlesVideoNosotros,
             onStateChange: actualizarBotonPlayPauseNosotros
@@ -1944,6 +1945,11 @@ function configurarControlesVideoNosotros() {
         if (rectVideoNosotros.width > 0 && rectVideoNosotros.height > 0) {
             ytPlayerNosotros.setSize(rectVideoNosotros.width, rectVideoNosotros.height);
         }
+    }
+
+    const overlayNosotros = document.getElementById("overlayNosotros");
+    if (overlayNosotros) {
+        overlayNosotros.addEventListener("click", () => btnPlayPause.click());
     }
 
     btnRetroceder.addEventListener("click", () => {
@@ -2132,9 +2138,14 @@ function crearReproductorPalabra(videoId, opciones = {}) {
     // autoreproducción con sonido si la persona no interactuó antes con la
     // página; el video igual se puede desmutear a mano desde sus propios
     // controles.
+    // controls:0 quita la barra/botones nativos de YouTube (los reemplazan
+    // los botones propios de abajo); disablekb, fs e iv_load_policy apagan
+    // atajos de teclado, el botón de pantalla completa nativo y las
+    // anotaciones de YouTube, para que no aparezca nada de su UI encima
+    // del video (ver también .video-toque-overlay en estilos.css).
     const playerVars = autoreproducirEnBucle
-        ? { rel: 0, modestbranding: 1, autoplay: 1, mute: 1, loop: 1, playlist: videoId }
-        : { rel: 0, modestbranding: 1 };
+        ? { rel: 0, modestbranding: 1, controls: 0, disablekb: 1, fs: 0, iv_load_policy: 3, autoplay: 1, mute: 1, loop: 1, playlist: videoId }
+        : { rel: 0, modestbranding: 1, controls: 0, disablekb: 1, fs: 0, iv_load_policy: 3 };
     ytPlayerPalabra = new YT.Player("reproductorPalabra", {
         videoId: videoId,
         playerVars: playerVars,
@@ -2157,6 +2168,13 @@ function configurarControlesVideo() {
 
     if (btnPantallaCompleta) {
         btnPantallaCompleta.addEventListener("click", () => toggleVideoPalabraPantallaCompleta("reproductorPalabraWrap", "btnPalabraFullscreen"));
+    }
+
+    // Toca la capa transparente sobre el video (en vez del iframe directo)
+    // -> se redirige al mismo botón Reproducir/Pausar de siempre.
+    const overlayPalabra = document.getElementById("overlayPalabra");
+    if (overlayPalabra) {
+        overlayPalabra.addEventListener("click", () => btnPlayPause.click());
     }
 
     btnRetroceder.addEventListener("click", () => {
@@ -2260,7 +2278,7 @@ function crearReproductorSugerida(videoId) {
     }
     ytPlayerSugerida = new YT.Player("reproductorSugerida", {
         videoId: videoId,
-        playerVars: { rel: 0, modestbranding: 1 },
+        playerVars: { rel: 0, modestbranding: 1, controls: 0, disablekb: 1, fs: 0, iv_load_policy: 3 },
         events: {
             onReady: configurarControlesVideoSugerida,
             onStateChange: actualizarBotonPlayPauseSugerida
@@ -2280,6 +2298,11 @@ function configurarControlesVideoSugerida() {
 
     if (btnPantallaCompleta) {
         btnPantallaCompleta.addEventListener("click", () => toggleVideoPalabraPantallaCompleta("reproductorSugeridaWrap", "btnSugeridaFullscreen"));
+    }
+
+    const overlaySugerida = document.getElementById("overlaySugerida");
+    if (overlaySugerida) {
+        overlaySugerida.addEventListener("click", () => btnPlayPause.click());
     }
 
     btnRetroceder.addEventListener("click", () => {
