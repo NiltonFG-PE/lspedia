@@ -889,6 +889,14 @@ const AlfabetizacionV2 = (function () {
         const cont = el("alfabCompletarContenido");
         cont.innerHTML = "";
 
+        // Capa para la cuenta regresiva "3, 2, 1, ¡fin!" (transparente,
+        // superpuesta sobre el juego). Se crea vacía y oculta; el
+        // temporizador la llena solo cuando quedan pocos segundos.
+        const capaCuenta = document.createElement("div");
+        capaCuenta.id = "alfabCompletarCuentaRegresiva";
+        capaCuenta.className = "completar-cuenta-regresiva d-none";
+        cont.appendChild(capaCuenta);
+
         // Imagen (letras del abecedario) o número grande (números, sin
         // imagen de ejemplo).
         const cajaImagen = document.createElement("div");
@@ -1089,12 +1097,19 @@ const AlfabetizacionV2 = (function () {
         }
     }
 
+    // Cuánto se espera (en ms) antes de pasar solo a la siguiente palabra,
+    // una vez que la actual queda resuelta (correcta o con error), para que
+    // la persona alcance a ver el resultado antes del cambio de pantalla.
+    const PAUSA_AUTOAVANCE_COMPLETAR_MS = 1400;
+
     // Cierra la palabra actual (todas sus letras faltantes ya respondidas
-    // o el tiempo se acabó): registra el puntaje, la revisión final y
-    // habilita el botón "Siguiente →".
+    // o el tiempo se acabó): registra el puntaje y la revisión final, y
+    // pasa automáticamente a la siguiente palabra tras una breve pausa
+    // (ya no depende de que la persona toque "Siguiente →").
     function finalizarPreguntaCompletar(fueCorrecta) {
         estado.completar.respondida = true;
         detenerTimerCompletar();
+        ocultarCuentaRegresivaCompletar();
 
         const pregunta = estado.completar.preguntas[estado.completar.indice];
         if (fueCorrecta) {
@@ -1109,10 +1124,17 @@ const AlfabetizacionV2 = (function () {
         }
         estado.completar.revision.push({ ok: fueCorrecta, texto: pregunta.palabra + " (" + pregunta._letrasCorrectas.join(", ") + ")" });
 
-        el("btnAlfabCompletarSiguiente").classList.remove("d-none");
+        // El botón "Siguiente →" queda oculto: el avance ahora es
+        // automático. Se deja de referencia por si se necesita reactivar.
+        if (estado.completar._timerAutoAvance) clearTimeout(estado.completar._timerAutoAvance);
+        estado.completar._timerAutoAvance = setTimeout(avanzarCompletar, PAUSA_AUTOAVANCE_COMPLETAR_MS);
     }
 
     function avanzarCompletar() {
+        if (estado.completar._timerAutoAvance) {
+            clearTimeout(estado.completar._timerAutoAvance);
+            estado.completar._timerAutoAvance = null;
+        }
         estado.completar.indice++;
         if (estado.completar.indice >= estado.completar.preguntas.length) {
             mostrarResultadosCompletar();
@@ -1128,6 +1150,7 @@ const AlfabetizacionV2 = (function () {
             barra.style.width = "100%";
             barra.classList.remove("tiempo-medio", "tiempo-critico");
         }
+        ocultarCuentaRegresivaCompletar();
         estado.completar.timerId = setInterval(() => {
             estado.completar.tiempoRestante--;
             const pct = Math.max(0, (estado.completar.tiempoRestante / segundos) * 100);
@@ -1136,7 +1159,13 @@ const AlfabetizacionV2 = (function () {
                 barra.classList.toggle("tiempo-medio", pct <= 50 && pct > 25);
                 barra.classList.toggle("tiempo-critico", pct <= 25);
             }
+            // Últimos 3 segundos: "3, 2, 1" y, al llegar a 0, "¡Fin!" antes
+            // de que tiempoAgotadoCompletar() tome el control.
+            if (estado.completar.tiempoRestante <= 3 && estado.completar.tiempoRestante >= 1) {
+                mostrarCuentaRegresivaCompletar(estado.completar.tiempoRestante);
+            }
             if (estado.completar.tiempoRestante <= 0) {
+                mostrarCuentaRegresivaCompletar("¡Fin!");
                 detenerTimerCompletar();
                 tiempoAgotadoCompletar();
             }
@@ -1148,6 +1177,36 @@ const AlfabetizacionV2 = (function () {
             clearInterval(estado.completar.timerId);
             estado.completar.timerId = null;
         }
+        // También cancela el avance automático a la siguiente palabra: si
+        // se sale del juego (menú, cambiar de módulo, etc.) justo después
+        // de responder, no debe saltar solo a otra pantalla.
+        if (estado.completar._timerAutoAvance) {
+            clearTimeout(estado.completar._timerAutoAvance);
+            estado.completar._timerAutoAvance = null;
+        }
+    }
+
+    // Muestra el número (o "¡Fin!") grande y transparente superpuesto
+    // sobre el juego, con una pequeña animación de pulso. Se reinicia la
+    // animación en cada llamada aunque el texto cambie de "3" a "2", etc.
+    function mostrarCuentaRegresivaCompletar(texto) {
+        const capa = el("alfabCompletarCuentaRegresiva");
+        if (!capa) return;
+        capa.innerHTML = '<span class="numero">' + texto + "</span>";
+        capa.classList.remove("d-none");
+        const span = capa.querySelector(".numero");
+        if (span) {
+            span.classList.remove("numero");
+            void span.offsetWidth; // reinicia la animación CSS
+            span.classList.add("numero");
+        }
+    }
+
+    function ocultarCuentaRegresivaCompletar() {
+        const capa = el("alfabCompletarCuentaRegresiva");
+        if (!capa) return;
+        capa.classList.add("d-none");
+        capa.innerHTML = "";
     }
 
     function mostrarResultadosCompletar() {

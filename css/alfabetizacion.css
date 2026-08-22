@@ -254,15 +254,18 @@
     height: 68px;
     border-radius: 16px;
     border: none;
-    background: #ffffff;
+    /* Color propio (azul suave) para distinguirlas de un vistazo de las
+       casillas de la palabra de arriba (.completar-letra-casilla, blancas):
+       estas son las fichas para "tocar", no la palabra en sí. */
+    background: #dbeafe;
     font-size: 1.5rem;
     font-weight: 800;
-    color: var(--text-main, #0f172a);
-    box-shadow: 0 4px 0 #cbd5e1, 0 8px 14px -6px rgba(15, 23, 42, 0.25);
+    color: #1e3a8a;
+    box-shadow: 0 4px 0 #93c5fd, 0 8px 14px -6px rgba(15, 23, 42, 0.25);
     transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s ease, background 0.15s ease;
 }
 .completar-opcion-letra:not(:disabled):hover {
-    background: #eaf6ff;
+    background: #bfdbfe;
     transform: translateY(-3px) scale(1.05);
     box-shadow: 0 7px 0 #38bdf8, 0 14px 18px -8px rgba(2, 132, 199, 0.35);
 }
@@ -291,6 +294,34 @@
    desborde sobre el resto de la página. */
 #alfabCompletarContenido {
     position: relative;
+}
+
+/* Cuenta regresiva "3, 2, 1, ¡fin!" cuando quedan pocos segundos:
+   número grande, semitransparente, centrado sobre el juego, para
+   avisar sin tapar del todo la palabra ni las opciones. */
+.completar-cuenta-regresiva {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 5;
+}
+.completar-cuenta-regresiva .numero {
+    font-size: 5.5rem;
+    font-weight: 900;
+    color: rgba(220, 38, 38, 0.35);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+    animation: completarCuentaPulso 1s ease-out;
+}
+@keyframes completarCuentaPulso {
+    0% { transform: scale(0.5); opacity: 0; }
+    30% { transform: scale(1.15); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.85; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .completar-cuenta-regresiva .numero { animation: none; opacity: 0.85; }
 }
 
 /* Confeti simple con divs al completar una palabra sin errores */

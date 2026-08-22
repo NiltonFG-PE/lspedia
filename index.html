@@ -671,6 +671,31 @@
            módulo elegido al tocar su tarjeta. En escritorio no se usa
            (d-xl-none).
            ============================================================ */
+        .herr-titulo-icono-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            font-size: 1.7rem;
+            margin-bottom: 20px !important;
+        }
+        .herr-titulo-icono {
+            width: 52px;
+            height: 52px;
+            object-fit: contain;
+            animation: herrTituloFlotar 2.6s ease-in-out infinite;
+        }
+        @keyframes herrTituloFlotar {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-6px) rotate(-6deg); }
+        }
+        @media (max-width: 576px) {
+            .herr-titulo-icono-wrap { font-size: 1.4rem; gap: 10px; }
+            .herr-titulo-icono { width: 40px; height: 40px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .herr-titulo-icono { animation: none; }
+        }
         .herr-movil-btn {
             position: relative;
             display: flex;
@@ -684,7 +709,19 @@
             overflow: hidden;
             text-align: left;
             transition: transform 0.15s ease, box-shadow 0.2s ease;
+            /* Entrada en cascada: cada tarjeta aparece deslizándose desde
+               abajo con un pequeño rebote, con un poco de retraso entre
+               una y otra (ver los nth-child más abajo), cada vez que el
+               menú deja de estar oculto (d-none -> visible). */
+            animation: herrMovilBtnEntrada 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
         }
+        @keyframes herrMovilBtnEntrada {
+            from { opacity: 0; transform: translateY(22px) scale(0.94); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .col-12:nth-child(1) .herr-movil-btn { animation-delay: 0.02s; }
+        .col-12:nth-child(2) .herr-movil-btn { animation-delay: 0.12s; }
+        .col-12:nth-child(3) .herr-movil-btn { animation-delay: 0.22s; }
         .herr-movil-btn:active {
             transform: scale(0.98);
         }
@@ -713,11 +750,44 @@
             position: relative;
             z-index: 2;
             transition: transform 0.2s ease;
+            overflow: hidden;
+        }
+        /* Los iconos ahora son ilustraciones 3D a color (img/categorias/),
+           no emojis ni texto: se ajustan al badge sin recortarse y
+           "flotan" suavemente todo el tiempo para dar vida a la tarjeta,
+           incluso sin interacción (desfasadas entre sí, ver los
+           nth-child de abajo). */
+        .herr-movil-icono img {
+            width: 68%;
+            height: 68%;
+            object-fit: contain;
+            animation: herrIconoFlotar 3s ease-in-out infinite;
         }
         .herr-movil-btn:hover .herr-movil-icono,
         .herr-movil-btn:focus-visible .herr-movil-icono {
             transform: scale(1.12);
         }
+        /* Al pasar el mouse o tocar: además del zoom del badge, un
+           rebote más marcado del icono, para que la tarjeta se sienta
+           "atrayente" al interactuar. */
+        .herr-movil-btn:hover .herr-movil-icono img,
+        .herr-movil-btn:focus-visible .herr-movil-icono img {
+            animation: herrIconoRebote 0.6s ease;
+        }
+        @keyframes herrIconoFlotar {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-4px) rotate(-3deg); }
+        }
+        @keyframes herrIconoRebote {
+            0%   { transform: scale(1) rotate(0deg); }
+            35%  { transform: scale(1.22) rotate(-8deg); }
+            65%  { transform: scale(1.05) rotate(6deg); }
+            100% { transform: scale(1.1) rotate(0deg); }
+        }
+        /* Pequeño desfase entre tarjetas para que no floten "al mismo
+           compás" y se vea más natural. */
+        .col-12:nth-child(2) .herr-movil-icono img { animation-delay: 0.4s; }
+        .col-12:nth-child(3) .herr-movil-icono img { animation-delay: 0.8s; }
         .herr-movil-textos {
             position: relative;
             z-index: 2;
@@ -774,10 +844,19 @@
         .herr-movil-btn-jugar .herr-movil-ola { background: linear-gradient(135deg, #a78bfa, #6d28d9); }
         .herr-movil-btn-jugar { --herr-flecha-color: #7c3aed; --herr-glow: rgba(124, 58, 237, 0.18); --herr-glow-fuerte: rgba(124, 58, 237, 0.28); }
 
-        .herr-movil-btn-alfabetizacion .herr-movil-icono { background-color: #c7f0dd; color: #047857; font-weight: 800; font-size: 18px; }
+        .herr-movil-btn-alfabetizacion .herr-movil-icono { background-color: #c7f0dd; color: #047857; }
         .herr-movil-btn-alfabetizacion .herr-movil-texto { color: #059669; }
         .herr-movil-btn-alfabetizacion .herr-movil-ola { background: linear-gradient(135deg, #34d399, #059669); }
         .herr-movil-btn-alfabetizacion { --herr-flecha-color: #059669; --herr-glow: rgba(5, 150, 105, 0.18); --herr-glow-fuerte: rgba(5, 150, 105, 0.28); }
+
+        /* Quienes prefieren menos movimiento no reciben las animaciones
+           continuas de flotación ni la entrada en cascada. */
+        @media (prefers-reduced-motion: reduce) {
+            .herr-movil-btn { animation: none; opacity: 1; }
+            .herr-movil-icono img,
+            .herr-movil-btn:hover .herr-movil-icono img,
+            .herr-movil-btn:focus-visible .herr-movil-icono img { animation: none; }
+        }
 
         /* ============================================================
            BLOQUE "SUGERIR PALABRA": tarjeta azul oscuro con foco (halo),
@@ -2529,14 +2608,17 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
              siguen mostrando juntos, uno debajo del otro, como antes.
              ============================================================ -->
         <div id="herramientasMenuMovil" class="d-none d-xl-none mb-4">
-            <h4 class="fw-bold mb-3 text-center">🛠️ Herramientas</h4>
+            <h4 class="fw-bold mb-3 text-center herr-titulo-icono-wrap">
+                <img src="img/categorias/Herramientas.png" alt="" loading="lazy" class="herr-titulo-icono">
+                HERRAMIENTAS
+            </h4>
             <div class="row g-3" id="herramientasMenuMovilRow">
                 <div class="col-12">
-                    <button type="button" id="btnHerrMovilSubtitulos" class="herr-movil-btn herr-movil-btn-subtitulos w-100">
+                    <button type="button" id="btnHerrMovilAlfabetizacion" class="herr-movil-btn herr-movil-btn-alfabetizacion w-100">
                         <span class="herr-movil-ola" aria-hidden="true"></span>
-                        <span class="herr-movil-icono" aria-hidden="true">💬</span>
+                        <span class="herr-movil-icono" aria-hidden="true"><img src="img/categorias/alfabeto_y_números.png" alt="" loading="lazy"></span>
                         <span class="herr-movil-textos">
-                            <span class="herr-movil-texto">SUBTÍTULOS</span>
+                            <span class="herr-movil-texto">Alfabeto y números</span>
                         </span>
                         <span class="herr-movil-flecha" aria-hidden="true">→</span>
                     </button>
@@ -2544,19 +2626,19 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                 <div class="col-12">
                     <button type="button" id="btnHerrMovilJugar" class="herr-movil-btn herr-movil-btn-jugar w-100">
                         <span class="herr-movil-ola" aria-hidden="true"></span>
-                        <span class="herr-movil-icono" aria-hidden="true">🎮</span>
+                        <span class="herr-movil-icono" aria-hidden="true"><img src="img/categorias/juegos.png" alt="" loading="lazy"></span>
                         <span class="herr-movil-textos">
-                            <span class="herr-movil-texto">JUGAR</span>
+                            <span class="herr-movil-texto">Jugar</span>
                         </span>
                         <span class="herr-movil-flecha" aria-hidden="true">→</span>
                     </button>
                 </div>
                 <div class="col-12">
-                    <button type="button" id="btnHerrMovilAlfabetizacion" class="herr-movil-btn herr-movil-btn-alfabetizacion w-100">
+                    <button type="button" id="btnHerrMovilSubtitulos" class="herr-movil-btn herr-movil-btn-subtitulos w-100">
                         <span class="herr-movil-ola" aria-hidden="true"></span>
-                        <span class="herr-movil-icono" aria-hidden="true">abc</span>
+                        <span class="herr-movil-icono" aria-hidden="true"><img src="img/categorias/Subtítulos.png" alt="" loading="lazy"></span>
                         <span class="herr-movil-textos">
-                            <span class="herr-movil-texto">ALFABETIZACIÓN</span>
+                            <span class="herr-movil-texto">Subtítulos</span>
                         </span>
                         <span class="herr-movil-flecha" aria-hidden="true">→</span>
                     </button>
@@ -3033,8 +3115,7 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                     <div class="alfab-hero-titulo-wrap">
                         <span class="alfab-hero-icono" aria-hidden="true">🔤</span>
                         <div>
-                            <h4 class="fw-bold mb-0 alfab-hero-titulo">Alfabetización</h4>
-                            <p class="alfab-hero-subtitulo mb-0">Aprende el abecedario y los números en LSP</p>
+                            <h4 class="fw-bold mb-0 alfab-hero-titulo">Alfabeto y Números</h4>
                         </div>
                     </div>
                     <div class="d-flex gap-2">

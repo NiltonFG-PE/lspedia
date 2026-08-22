@@ -126,8 +126,54 @@
 }
 .quiz-video-opcion:hover { transform: scale(1.02); }
 .quiz-video-opcion.seleccionada { border-color: #0d6efd; }
-.quiz-video-opcion.correcta { border-color: #16a34a; }
-.quiz-video-opcion.incorrecta { border-color: #dc2626; }
+
+/* Opción correcta: se resalta con borde grueso, brillo verde y un pulso
+   animado, para que se note claramente cuál era la respuesta correcta
+   sin necesitar un texto aparte debajo repitiendo la palabra. */
+.quiz-video-opcion.correcta {
+    border-color: #16a34a;
+    border-width: 5px;
+    box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.25), 0 10px 22px -6px rgba(22, 163, 74, 0.45);
+    animation: quizVideoOpcionCorrecta 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.quiz-video-opcion.correcta::after {
+    content: "✔";
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #16a34a;
+    color: #fff;
+    font-weight: 900;
+    font-size: 1.1rem;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    animation: quizVideoOpcionCheck 0.4s ease-out 0.1s both;
+}
+@keyframes quizVideoOpcionCorrecta {
+    0% { transform: scale(0.94); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+@keyframes quizVideoOpcionCheck {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+.quiz-video-opcion.incorrecta {
+    border-color: #dc2626;
+    animation: quizTiemble 0.4s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+    .quiz-video-opcion.correcta,
+    .quiz-video-opcion.incorrecta,
+    .quiz-video-opcion.correcta::after {
+        animation: none;
+    }
+}
 
 /* --- Palabra a adivinar (Modo 2: palabra -> video), grande y notoria --- */
 .quiz-palabra-destacada {
@@ -465,4 +511,62 @@
     .btn-volver-menu-juegos { transition: none; }
     .quiz-btn-menu:hover,
     .btn-volver-menu-juegos:hover { transform: none; }
+}
+/* ============================================================
+   CUENTA REGRESIVA "5, 4, 3, 2, 1, ¡Fin!" (Modos Video→Palabra y
+   Verdadero/Falso): número grande y semitransparente superpuesto
+   sobre la pregunta en los últimos 5 segundos del temporizador.
+   Mismo patrón que la cuenta regresiva del juego "Completar la
+   palabra" en alfabetizacion.css.
+   ============================================================ */
+#quizContenidoPregunta {
+    position: relative;
+}
+.quiz-cuenta-regresiva {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 5;
+}
+.quiz-cuenta-regresiva .numero {
+    font-size: 5.5rem;
+    font-weight: 900;
+    color: rgba(220, 38, 38, 0.35);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+    animation: quizCuentaPulso 1s ease-out;
+}
+@keyframes quizCuentaPulso {
+    0% { transform: scale(0.5); opacity: 0; }
+    30% { transform: scale(1.15); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.85; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .quiz-cuenta-regresiva .numero { animation: none; opacity: 0.85; }
+}
+
+/* --- Modo Verdadero/Falso: la pregunta "¿Esta seña significa...?"
+   debe notarse más — más grande y con más presencia visual que un
+   párrafo normal. --- */
+.quiz-pregunta-vof {
+    font-size: 1.35rem;
+    line-height: 1.35;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 14px 18px;
+}
+.quiz-pregunta-vof .quiz-palabra-vof {
+    font-size: 1.5rem;
+}
+@media (max-width: 576px) {
+    .quiz-pregunta-vof {
+        font-size: 1.15rem;
+        padding: 12px 14px;
+    }
+    .quiz-pregunta-vof .quiz-palabra-vof {
+        font-size: 1.3rem;
+    }
 }

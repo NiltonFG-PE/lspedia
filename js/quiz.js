@@ -418,6 +418,7 @@ const QuizV2 = (function () {
         const opciones = mezclar([pregunta, ...distractores]);
 
         contenedor.innerHTML = `
+            <div id="quizCuentaRegresiva" class="quiz-cuenta-regresiva d-none"></div>
             <div class="quiz-video-wrap mb-2" id="quizVideoWrap">
                 <div id="quizReproductorVideo"></div>
             </div>
@@ -482,20 +483,32 @@ const QuizV2 = (function () {
         destruirReproductorQuizVideo();
         estadoVideo.player = new YT.Player("quizReproductorVideo", {
             videoId: videoId,
-            playerVars: { rel: 0, modestbranding: 1, playsinline: 1 },
+            // autoplay: el video arranca solo apenas está listo. Los
+            // navegadores solo permiten autoplay con sonido si el video
+            // arranca silenciado, así que se muestra sin audio (el
+            // contenido es una seña, se entiende igual sin sonido).
+            // loop + playlist (con el mismo videoId): truco necesario de la
+            // API de YouTube para que un solo video se repita en bucle; sin
+            // "playlist" el parámetro "loop" no tiene efecto.
+            playerVars: { rel: 0, modestbranding: 1, playsinline: 1, autoplay: 1, mute: 1, loop: 1, playlist: videoId },
             events: {
-                onReady: () => {
+                onReady: (evento) => {
                     if (!estadoVideo.player) return;
                     estadoVideo.player.setPlaybackRate(estadoVideo.velocidades[estadoVideo.velocidadIndex]);
                     actualizarEtiquetaVelocidad();
                     enlazarControlesVideoQuiz();
-                    // El HTML ya arranca con el ícono "▶" (el video no se
-                    // reproduce solo), pero por si algún video sí llegara a
-                    // autorreproducirse, se confirma el ícono correcto
-                    // contra el estado real que reporta el reproductor.
+                    try { evento.target.mute(); evento.target.playVideo(); } catch (e) { /* autoplay puede estar bloqueado por el navegador */ }
                     actualizarBotonPlayPauseQuiz();
                 },
-                onStateChange: actualizarBotonPlayPauseQuiz
+                onStateChange: (evento) => {
+                    actualizarBotonPlayPauseQuiz(evento);
+                    // Respaldo por si "loop" de la API no repite el video en
+                    // algún navegador: al terminar, se reinicia a mano.
+                    if (evento.data === YT.PlayerState.ENDED && estadoVideo.player) {
+                        estadoVideo.player.seekTo(0, true);
+                        estadoVideo.player.playVideo();
+                    }
+                }
             }
         });
     }
@@ -609,6 +622,7 @@ const QuizV2 = (function () {
         const opciones = mezclar([pregunta, ...distractores]);
 
         contenedor.innerHTML = `
+            <div id="quizCuentaRegresiva" class="quiz-cuenta-regresiva d-none"></div>
             <div class="text-center mb-3">
                 <span class="badge bg-dark quiz-palabra-destacada px-4 py-2">${pregunta.palabra}</span>
                 <p class="text-muted small mt-2">¿Cuál video representa esta palabra?</p>
@@ -638,7 +652,7 @@ const QuizV2 = (function () {
                 if (d.querySelector("img").src.indexOf(pregunta.video) > -1) d.classList.add("correcta");
             });
         }
-        finalizarPregunta(esCorrecta, pregunta.palabra);
+        finalizarPregunta(esCorrecta, pregunta.palabra, { ocultarTextoRespuesta: true });
     }
 
     // ---------------------------------------------------------
@@ -652,6 +666,7 @@ const QuizV2 = (function () {
             if (distractores.length) palabraMostrada = mezclar(distractores)[0].palabra;
         }
         contenedor.innerHTML = `
+            <div id="quizCuentaRegresiva" class="quiz-cuenta-regresiva d-none"></div>
             <div class="quiz-video-wrap mb-2" id="quizVideoWrap">
                 <div id="quizReproductorVideo"></div>
             </div>
@@ -666,7 +681,7 @@ const QuizV2 = (function () {
                 </div>
                 <button type="button" class="btn btn-sm btn-outline-danger rounded-circle quiz-video-btn" id="quizBtnMeGusta" title="Me gusta" aria-label="Me gusta">🤍</button>
             </div>
-            <p class="text-center fw-bold mb-3">¿Esta seña significa <span class="text-primary">"${palabraMostrada}"</span>?</p>
+            <p class="text-center fw-bold mb-3 quiz-pregunta-vof">¿Esta seña significa <span class="text-primary quiz-palabra-vof">"${palabraMostrada}"</span>?</p>
             <div class="row g-2" id="quizOpcionesDinamicas">
                 <div class="col-6"><button class="btn btn-outline-success w-100 quiz-opcion-btn" id="btnQuizVerdadero">✅ Verdadero</button></div>
                 <div class="col-6"><button class="btn btn-outline-danger w-100 quiz-opcion-btn" id="btnQuizFalso">❌ Falso</button></div>
@@ -701,10 +716,12 @@ const QuizV2 = (function () {
         finalizarPregunta(esCorrecta, palabraCorrecta);
     }
 
-    function finalizarPregunta(esCorrecta, palabraCorrecta) {
+    function finalizarPregunta(esCorrecta, palabraCorrecta, opciones) {
         detenerTemporizador();
+        ocultarCuentaRegresivaQuiz();
         const pregunta = estado.ronda.preguntas[estado.ronda.indice];
         const tiempoUsado = estado.temporizador.total - estado.temporizador.restante;
+        const ocultarTextoRespuesta = opciones && opciones.ocultarTextoRespuesta;
 
         if (esCorrecta) {
             estado.ronda.puntaje += calcularPuntos(pregunta.nivel, tiempoUsado, estado.temporizador.total);
@@ -725,6 +742,12 @@ const QuizV2 = (function () {
         if (esCorrecta) {
             feedback.textContent = "✅ ¡Correcto!";
             feedback.style.color = "#16a34a";
+        } else if (ocultarTextoRespuesta) {
+            // Modo Palabra→Video: la palabra objetivo ya está visible arriba
+            // y el video correcto queda resaltado con el check verde, así
+            // que repetir "la respuesta correcta era..." es redundante.
+            feedback.textContent = "❌ Ese no era el video correcto.";
+            feedback.style.color = "#dc2626";
         } else {
             feedback.textContent = `❌ La respuesta correcta era "${palabraCorrecta}".`;
             feedback.style.color = "#dc2626";
@@ -749,19 +772,35 @@ const QuizV2 = (function () {
         const barra = el("quizBarraTiempo");
         barra.style.width = "100%";
         barra.className = "quiz-timer-barra";
+        ocultarCuentaRegresivaQuiz();
 
         estado.temporizador.id = setInterval(() => {
             estado.temporizador.restante--;
             const pct = Math.max(0, (estado.temporizador.restante / segundos) * 100);
             barra.style.width = pct + "%";
             barra.className = "quiz-timer-barra" + (pct <= 25 ? " tiempo-critico" : pct <= 50 ? " tiempo-medio" : "");
+            // Últimos 5 segundos: "5, 4, 3, 2, 1" y, al llegar a 0, "¡Fin!"
+            // antes de que finalizarPregunta() tome el control.
+            if (estado.temporizador.restante <= 5 && estado.temporizador.restante >= 1) {
+                mostrarCuentaRegresivaQuiz(estado.temporizador.restante);
+            }
             if (estado.temporizador.restante <= 0) {
+                mostrarCuentaRegresivaQuiz("¡Fin!");
                 detenerTemporizador();
                 const pregunta = estado.ronda.preguntas[estado.ronda.indice];
                 document.querySelectorAll("#quizContenidoPregunta button, .quiz-video-opcion").forEach((b) => {
                     b.disabled = true; b.style.pointerEvents = "none";
                 });
-                finalizarPregunta(false, pregunta.palabra);
+                if (pregunta.modoPregunta === "2") {
+                    // Modo Palabra→Video: si se acaba el tiempo sin elegir,
+                    // igual se resalta cuál era la miniatura correcta.
+                    document.querySelectorAll(".quiz-video-opcion").forEach((d) => {
+                        if (d.querySelector("img").src.indexOf(pregunta.video) > -1) d.classList.add("correcta");
+                    });
+                    finalizarPregunta(false, pregunta.palabra, { ocultarTextoRespuesta: true });
+                } else {
+                    finalizarPregunta(false, pregunta.palabra);
+                }
             }
         }, 1000);
     }
@@ -771,6 +810,32 @@ const QuizV2 = (function () {
             clearInterval(estado.temporizador.id);
             estado.temporizador.id = null;
         }
+    }
+
+    // Muestra el número (o "¡Fin!") grande y transparente superpuesto
+    // sobre la pregunta, con una pequeña animación de pulso. Se reinicia
+    // la animación en cada llamada aunque el texto cambie de "5" a "4", etc.
+    // Solo existe en los modos que usan #quizCuentaRegresiva (Video→Palabra
+    // y Verdadero/Falso); en los demás modos el elemento no existe y no
+    // pasa nada.
+    function mostrarCuentaRegresivaQuiz(texto) {
+        const capa = el("quizCuentaRegresiva");
+        if (!capa) return;
+        capa.innerHTML = '<span class="numero">' + texto + "</span>";
+        capa.classList.remove("d-none");
+        const span = capa.querySelector(".numero");
+        if (span) {
+            span.classList.remove("numero");
+            void span.offsetWidth; // reinicia la animación CSS
+            span.classList.add("numero");
+        }
+    }
+
+    function ocultarCuentaRegresivaQuiz() {
+        const capa = el("quizCuentaRegresiva");
+        if (!capa) return;
+        capa.classList.add("d-none");
+        capa.innerHTML = "";
     }
 
     function siguientePregunta() {

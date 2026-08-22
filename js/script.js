@@ -693,6 +693,12 @@ function mostrarSeccionHerramientas(){
     resultadoCategoriasDiccionario.innerHTML = "";
     categoriaActualMostrada = null;
     ultimasPalabras.innerHTML = "";
+    // Bug: faltaba limpiar también #ultimasPalabrasCategorias (donde se
+    // pintan las tarjetas de "Puede que también te interese" cuando se
+    // abrió una palabra desde la vista Categorías). Sin esto, ese panel
+    // se quedaba visible al pasar a Herramientas, aunque no tenga nada
+    // que ver con esta sección.
+    if(ultimasPalabrasCategorias) ultimasPalabrasCategorias.innerHTML = "";
     ocultarPanelesGuardados();
     ocultarBloqueInicio();
     ocultarSeccionNosotros();
@@ -765,6 +771,9 @@ function mostrarSeccionNosotros(){
     resultadoCategoriasDiccionario.innerHTML = "";
     categoriaActualMostrada = null;
     ultimasPalabras.innerHTML = "";
+    // Mismo bug que en mostrarSeccionHerramientas(): faltaba limpiar
+    // #ultimasPalabrasCategorias.
+    if(ultimasPalabrasCategorias) ultimasPalabrasCategorias.innerHTML = "";
     ocultarPanelesGuardados();
     ocultarSeccionHerramientas();
     ocultarBloqueInicio();
@@ -2006,6 +2015,18 @@ function actualizarBotonPlayPauseNosotros(evento) {
     const btnPlayPause = document.getElementById("btnPlayPauseNosotros");
     if (!btnPlayPause) return;
     btnPlayPause.textContent = evento.data === YT.PlayerState.PLAYING ? "⏸ Pausar" : "▶️ Reproducir";
+    alternarTapaPausaYoutube("nosotrosVideoRatio", evento);
+}
+
+// Ver comentario en estilos.css (junto a .yt-pausado): agrega/quita la
+// clase que muestra los dos parches negros que tapan la barra "Compartir /
+// Ver más tarde" y el logo de YouTube que aparecen solos al pausar,
+// aunque el reproductor tenga controls:0.
+function alternarTapaPausaYoutube(wrapId, evento) {
+    const wrap = document.getElementById(wrapId);
+    if (!wrap) return;
+    const enPausaOTerminado = evento.data === YT.PlayerState.PAUSED || evento.data === YT.PlayerState.ENDED;
+    wrap.classList.toggle("yt-pausado", enPausaOTerminado);
 }
 
 // Vista "pantalla completa" del video de Sobre Nosotros: es un overlay
@@ -2228,6 +2249,7 @@ function actualizarBotonPlayPause(evento) {
     const btnPlayPause = document.getElementById("btnPlayPause");
     if (!btnPlayPause) return;
     btnPlayPause.textContent = evento.data === YT.PlayerState.PLAYING ? "⏸ Pausar" : "▶️ Reproducir";
+    alternarTapaPausaYoutube("reproductorPalabraWrap", evento);
 }
 
 // --- REPRODUCTOR DE VIDEO CONTROLABLE PARA "SEÑA SUGERIDA" (columna G,
@@ -2355,6 +2377,7 @@ function actualizarBotonPlayPauseSugerida(evento) {
     const btnPlayPause = document.getElementById("btnPlayPauseSugerida");
     if (!btnPlayPause) return;
     btnPlayPause.textContent = evento.data === YT.PlayerState.PLAYING ? "⏸ Pausar" : "▶️ Reproducir";
+    alternarTapaPausaYoutube("reproductorSugeridaWrap", evento);
 }
 
 // --- AMPLIAR IMAGEN DE APOYO VISUAL (con zoom) ---

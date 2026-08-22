@@ -831,6 +831,37 @@ iframe {
     background: transparent;
 }
 
+/* Cuando el video queda en PAUSA, YouTube dibuja su propia "tarjeta de
+   pausa" completa: ícono/nombre del canal arriba, botón grande de pausa al
+   centro, compartir + ver más tarde + video sugerido + su logo abajo -- es
+   una marca de agua obligatoria que YouTube no permite apagar por
+   parámetro (ni con controls:0, ni con rel:0). No hay forma de tapar solo
+   una parte, así que se cubre el video COMPLETO con un fondo sólido azul
+   marino (color de marca de LSPedia) y encima el ícono PWA
+   img/icon-192.png (con transparencia real) centrado. Solo se ve mientras
+   la clase "yt-pausado" está activa en el wrap (ver
+   alternarTapaPausaYoutube() en script.js), y desaparece apenas se
+   reanuda la reproducción. */
+.reproductor-palabra-wrap::before,
+#nosotrosVideoRatio::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    background-color: #00356f;
+    background-image: url("img/icon-192.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 30% auto;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .15s ease;
+}
+.reproductor-palabra-wrap.yt-pausado::before,
+#nosotrosVideoRatio.yt-pausado::before {
+    opacity: 1;
+}
+
 /* Ventana del video de "Sobre Nosotros": además de la clase .ratio
    .ratio-16x9 de Bootstrap (que ya pone el iframe en position:absolute
    con width/height 100%), se fija un aspect-ratio propio en el
