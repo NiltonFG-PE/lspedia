@@ -1346,10 +1346,53 @@ document.addEventListener("DOMContentLoaded", () => {
 buscar.addEventListener("input", buscarPalabras);
 
 // Normaliza texto para comparar sin importar tildes (adios === Adiós) ni
-// mayúsculas/minúsculas. Se usa en ambos lados de cada comparación para
-// que el buscador tolere errores comunes de escritura.
+// mayúsculas/minúsculas, y tratando "ñ" como "n" para que la búsqueda
+// también funcione si el usuario escribe sin tilde de la eñe (ano ~ año).
+// Se usa en ambos lados de cada comparación para que el buscador tolere
+// errores comunes de escritura.
 const norm = (s) => (s || "").toLowerCase()
     .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+// Dado el texto de variantes tal como está en los datos (con tildes/ñ
+// originales) y el texto normalizado que escribió el usuario, devuelve
+// la variante ORIGINAL que hizo match (para mostrarla tal cual, no la
+// versión normalizada de lo que escribió el usuario).
+function obtenerVarianteQueCoincide(variantesStr, textoNormalizado) {
+    if (!variantesStr) return null;
+    const variantesOriginales = variantesStr.split(',').map(v => v.trim());
+    const encontrada = variantesOriginales.find(v => norm(v).includes(textoNormalizado));
+    return encontrada || null;
+}
+
+// Clasifica qué tan buena es la coincidencia de "p" contra "texto"
+// (ya normalizado). Menor número = más relevante. -1 = no hay match.
+// Se usa para que los resultados se ordenen SIEMPRE de lo más exacto
+// a lo más aproximado, sin importar el orden alfabético.
+function clasificarCoincidencia(p, texto) {
+    const palabraNorm = norm(p.palabra);
+    const variantesNorm = p.variantes ? p.variantes.split(',').map(v => norm(v.trim())) : [];
+
+    if (palabraNorm === texto) return 0;                                  // la palabra es exactamente lo buscado
+    if (variantesNorm.includes(texto)) return 1;                          // una variante es exactamente lo buscado
+    if (palabraNorm.startsWith(texto)) return 2;                          // la palabra empieza así
+    if (variantesNorm.some(v => v.startsWith(texto))) return 3;           // una variante empieza así
+    if (palabraNorm.includes(texto)) return 4;                            // la palabra lo contiene en otra parte
+    if (variantesNorm.some(v => v.includes(texto))) return 5;             // una variante lo contiene en otra parte
+    return -1;
+}
+
+// Ordena una lista de {p, rango} de más exacto a más aproximado, y
+// dentro de cada nivel de exactitud, alfabéticamente. Los niveles 0-3
+// (coincidencias exactas o que empiezan con el texto) NUNCA se recortan;
+// solo se limita cuántos resultados "de relleno" (nivel 4-5, que solo
+// contienen el texto en otra parte) se agregan al final, hasta el tope.
+function ordenarYLimitarCoincidencias(coincidencias, tope) {
+    const ordenarAlfabetico = (a, b) => a.p.palabra.localeCompare(b.p.palabra, "es");
+    const prioritarios = coincidencias.filter(c => c.rango <= 3).sort((a, b) => a.rango - b.rango || ordenarAlfabetico(a, b));
+    const secundarios = coincidencias.filter(c => c.rango >= 4).sort((a, b) => a.rango - b.rango || ordenarAlfabetico(a, b));
+    const cupoRestante = Math.max(0, tope - prioritarios.length);
+    return prioritarios.concat(secundarios.slice(0, cupoRestante)).map(c => c.p);
+}
 
 // Distancia de Levenshtein: cuántas ediciones (insertar/borrar/cambiar una
 // letra) hacen falta para convertir "a" en "b". Se usa para detectar
@@ -1416,31 +1459,18 @@ function buscarPalabras(){
         return;
     }document.getElementById("senalDelDia").style.display = "none";
 
-    // Prioriza las palabras que EMPIEZAN con el texto escrito (ej. "ab" ->
-    // "Abismo" antes que "Vocabulario"), y dentro de cada grupo, ordena
-    // alfabéticamente. Las que solo contienen el texto en otra parte de la
-    // palabra (o en una variante) van después, como respaldo.
-    const empiezanConTexto = [];
-    const contienenTexto = [];
+    // Ordena de lo más exacto a lo más aproximado (ver clasificarCoincidencia
+    // y ordenarYLimitarCoincidencias más arriba). Las coincidencias exactas
+    // o que empiezan con el texto escrito nunca se recortan; solo se
+    // limita cuántas coincidencias "de relleno" (que solo contienen el
+    // texto en otra parte) se agregan al final.
+    const coincidencias = [];
     App.datos.forEach(p => {
-        const palabraLower = norm(p.palabra);
-        const variantesLower = p.variantes ? norm(p.variantes) : "";
-        const empiezaPalabra = palabraLower.startsWith(texto);
-        const empiezaVariante = variantesLower.split(',').map(v => v.trim()).some(v => v.startsWith(texto));
-        const contienePalabra = palabraLower.includes(texto);
-        const contieneVariante = variantesLower.includes(texto);
-
-        if (empiezaPalabra || empiezaVariante) {
-            empiezanConTexto.push(p);
-        } else if (contienePalabra || contieneVariante) {
-            contienenTexto.push(p);
-        }
+        const rango = clasificarCoincidencia(p, texto);
+        if (rango >= 0) coincidencias.push({ p, rango });
     });
-    const ordenarAlfabetico = (a, b) => a.palabra.localeCompare(b.palabra, "es");
-    empiezanConTexto.sort(ordenarAlfabetico);
-    contienenTexto.sort(ordenarAlfabetico);
 
-    const encontrados = empiezanConTexto.concat(contienenTexto).slice(0, 10);
+    const encontrados = ordenarYLimitarCoincidencias(coincidencias, 15);
 
     sugerencias.style.display = "block";
 
@@ -1474,8 +1504,9 @@ function buscarPalabras(){
         const boton=document.createElement("button");
         boton.className="list-group-item list-group-item-action text-start";
         let textoMatch = `<strong>${p.palabra}</strong>`;
-        if(p.variantes && norm(p.variantes).includes(texto) && !norm(p.palabra).includes(texto)){
-            textoMatch += ` <small class="text-primary ms-2 fw-bold" style="font-size: 11px;">(Variante: ${texto})</small>`;
+        const varianteCoincidente = obtenerVarianteQueCoincide(p.variantes, texto);
+        if(varianteCoincidente && !norm(p.palabra).includes(texto)){
+            textoMatch += ` <small class="text-primary ms-2 fw-bold" style="font-size: 11px;">(Variante: ${varianteCoincidente})</small>`;
         }
 
         // Video-first: miniatura de la seña junto a cada sugerencia,
@@ -3227,29 +3258,15 @@ function buscarEnCategorias(){
         return;
     }
 
-    // Misma prioridad que buscarPalabras(): primero las que EMPIEZAN con
-    // el texto, luego las que solo lo contienen en otra parte.
-    const empiezanConTextoCat = [];
-    const contienenTextoCat = [];
+    // Misma prioridad que buscarPalabras(): de lo más exacto a lo más
+    // aproximado (ver clasificarCoincidencia / ordenarYLimitarCoincidencias).
+    const coincidenciasClasificadas = [];
     obtenerDatosVocabulario().forEach(p => {
-        const palabraLower = norm(p.palabra);
-        const variantesLower = p.variantes ? norm(p.variantes) : "";
-        const empiezaPalabra = palabraLower.startsWith(texto);
-        const empiezaVariante = variantesLower.split(',').map(v => v.trim()).some(v => v.startsWith(texto));
-        const contienePalabra = palabraLower.includes(texto);
-        const contieneVariante = variantesLower.includes(texto);
-
-        if (empiezaPalabra || empiezaVariante) {
-            empiezanConTextoCat.push(p);
-        } else if (contienePalabra || contieneVariante) {
-            contienenTextoCat.push(p);
-        }
+        const rango = clasificarCoincidencia(p, texto);
+        if (rango >= 0) coincidenciasClasificadas.push({ p, rango });
     });
-    const ordenarAlfabeticoCat = (a, b) => a.palabra.localeCompare(b.palabra, "es");
-    empiezanConTextoCat.sort(ordenarAlfabeticoCat);
-    contienenTextoCat.sort(ordenarAlfabeticoCat);
 
-    const coincidencias = empiezanConTextoCat.concat(contienenTextoCat).slice(0, 10);
+    const coincidencias = ordenarYLimitarCoincidencias(coincidenciasClasificadas, 15);
 
     sugerenciasCategorias.style.display = "block";
 
@@ -3285,8 +3302,9 @@ function buscarEnCategorias(){
         const boton = document.createElement("button");
         boton.className = "list-group-item list-group-item-action text-start";
         let textoMatch = `<strong>${p.palabra}</strong>`;
-        if(p.variantes && norm(p.variantes).includes(texto) && !norm(p.palabra).includes(texto)){
-            textoMatch += ` <small class="text-primary ms-2 fw-bold" style="font-size: 11px;">(Variante: ${texto})</small>`;
+        const varianteCoincidenteCat = obtenerVarianteQueCoincide(p.variantes, texto);
+        if(varianteCoincidenteCat && !norm(p.palabra).includes(texto)){
+            textoMatch += ` <small class="text-primary ms-2 fw-bold" style="font-size: 11px;">(Variante: ${varianteCoincidenteCat})</small>`;
         }
         boton.innerHTML = `
             <div class="sugerencia-fila">
