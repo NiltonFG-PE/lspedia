@@ -99,13 +99,29 @@ const MatematicasV2 = (function () {
         } else {
             el.classList.add('mat-objeto-bloque');
             el.classList.add(valor === 100 ? 'mat-objeto-bloque-100' : 'mat-objeto-bloque-10');
-            var ic = document.createElement('span');
-            ic.className = 'mat-objeto-bloque-emoji';
-            ic.textContent = emoji;
+            // Un bloque de 10/100 se dibuja como una caja de madera con
+            // la fruta/comida asomando arriba (representa un cajón
+            // cerrado con esa cantidad adentro), en vez de repetir el
+            // ícono suelto con una etiqueta de número encima.
+            var caja = document.createElement('div');
+            caja.className = 'mat-caja';
+            caja.innerHTML =
+                '<span class="mat-caja-frutas">' + emoji + emoji + '</span>' +
+                '<svg class="mat-caja-svg" viewBox="0 0 64 46" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+                    '<rect x="2" y="2" width="60" height="13" rx="3"></rect>' +
+                    '<rect x="2" y="16.5" width="60" height="13" rx="3"></rect>' +
+                    '<rect x="2" y="31" width="60" height="13" rx="3"></rect>' +
+                    '<circle class="mat-caja-remache" cx="11" cy="8.5" r="2.1"></circle>' +
+                    '<circle class="mat-caja-remache" cx="53" cy="8.5" r="2.1"></circle>' +
+                    '<circle class="mat-caja-remache" cx="11" cy="23" r="2.1"></circle>' +
+                    '<circle class="mat-caja-remache" cx="53" cy="23" r="2.1"></circle>' +
+                    '<circle class="mat-caja-remache" cx="11" cy="37.5" r="2.1"></circle>' +
+                    '<circle class="mat-caja-remache" cx="53" cy="37.5" r="2.1"></circle>' +
+                '</svg>';
             var lbl = document.createElement('span');
             lbl.className = 'mat-objeto-bloque-numero';
             lbl.textContent = valor;
-            el.appendChild(ic);
+            el.appendChild(caja);
             el.appendChild(lbl);
         }
         return el;
@@ -732,7 +748,13 @@ const MatematicasV2 = (function () {
         bandeja.className = 'mat-recipiente mat-bandeja';
         var leon = document.createElement('div');
         leon.className = 'mat-recipiente mat-leon';
-        leon.textContent = '🦁';
+        var leonCara = document.createElement('span');
+        leonCara.className = 'mat-leon-cara';
+        leonCara.textContent = '🦁';
+        var leonBoca = document.createElement('span');
+        leonBoca.className = 'mat-leon-boca';
+        leon.appendChild(leonCara);
+        leon.appendChild(leonBoca);
 
         var numBandeja = envolverConNumero(bandeja, problema.total);
         var numLeon = envolverConNumero(leon, 0);
