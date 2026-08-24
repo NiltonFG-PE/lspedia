@@ -831,37 +831,6 @@ iframe {
     background: transparent;
 }
 
-/* Cuando el video queda en PAUSA, YouTube dibuja su propia "tarjeta de
-   pausa" completa: ícono/nombre del canal arriba, botón grande de pausa al
-   centro, compartir + ver más tarde + video sugerido + su logo abajo -- es
-   una marca de agua obligatoria que YouTube no permite apagar por
-   parámetro (ni con controls:0, ni con rel:0). No hay forma de tapar solo
-   una parte, así que se cubre el video COMPLETO con un fondo sólido azul
-   marino (color de marca de LSPedia) y encima el ícono PWA
-   img/icon-192.png (con transparencia real) centrado. Solo se ve mientras
-   la clase "yt-pausado" está activa en el wrap (ver
-   alternarTapaPausaYoutube() en script.js), y desaparece apenas se
-   reanuda la reproducción. */
-.reproductor-palabra-wrap::before,
-#nosotrosVideoRatio::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 3;
-    background-color: #00356f;
-    background-image: url("img/icon-192.png");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 30% auto;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity .15s ease;
-}
-.reproductor-palabra-wrap.yt-pausado::before,
-#nosotrosVideoRatio.yt-pausado::before {
-    opacity: 1;
-}
-
 /* Ventana del video de "Sobre Nosotros": además de la clase .ratio
    .ratio-16x9 de Bootstrap (que ya pone el iframe en position:absolute
    con width/height 100%), se fija un aspect-ratio propio en el
@@ -976,6 +945,60 @@ body.video-palabra-pantalla-completa-activa {
 .nosotros-pantalla-completa #nosotrosVideoLeyenda {
     display: none;
 }
+
+/* Línea de tiempo (barra de progreso) del video de "Sobre Nosotros":
+   permite ver cuánto lleva el video y arrastrar para saltar a otra
+   parte (ver configurarProgresoNosotros() en script.js). Solo existe
+   en esta sección; los otros reproductores (Palabra, Sugerida) no la
+   llevan. */
+.nosotros-progreso-wrap {
+    max-width: 100%;
+}
+.nosotros-progreso-barra {
+    width: 100%;
+    height: 6px;
+    cursor: pointer;
+}
+.nosotros-progreso-barra::-webkit-slider-runnable-track {
+    background-color: #dde3ee;
+    border-radius: 999px;
+    height: 6px;
+}
+.nosotros-progreso-barra::-moz-range-track {
+    background-color: #dde3ee;
+    border-radius: 999px;
+    height: 6px;
+}
+.nosotros-progreso-barra::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    margin-top: -5px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: #0f172a;
+    border: 2px solid #ffc107;
+    cursor: pointer;
+}
+.nosotros-progreso-barra::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: #0f172a;
+    border: 2px solid #ffc107;
+    cursor: pointer;
+}
+.nosotros-progreso-tiempos {
+    margin-top: 2px;
+    font-variant-numeric: tabular-nums;
+}
+.nosotros-pantalla-completa .nosotros-progreso-wrap {
+    padding: 0 12px;
+}
+.nosotros-pantalla-completa .nosotros-progreso-tiempos {
+    color: #e5e7eb !important;
+}
+
 .nosotros-pantalla-completa .controles-video {
     background-color: rgba(0, 0, 0, 0.55);
     padding: 8px 12px;

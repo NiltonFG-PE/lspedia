@@ -3355,11 +3355,19 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                     </div>
                     <p class="text-center small text-muted mt-2 mb-0" id="nosotrosVideoLeyenda">🤟 Traducción en Lengua de Señas Peruana (LSP) de este contenido</p>
 
+                    <div class="nosotros-progreso-wrap mt-2" id="nosotrosProgresoWrap">
+                        <input type="range" class="form-range nosotros-progreso-barra" id="nosotrosProgresoBarra" min="0" max="100" step="0.1" value="0" aria-label="Progreso del video">
+                        <div class="d-flex justify-content-between small text-muted nosotros-progreso-tiempos">
+                            <span id="nosotrosTiempoActual">0:00</span>
+                            <span id="nosotrosTiempoTotal">0:00</span>
+                        </div>
+                    </div>
+
                     <div class="controles-video d-flex align-items-center justify-content-center gap-2 mt-2 flex-wrap">
-                        <button type="button" class="btn btn-sm btn-outline-secondary" id="btnRetroceder10Nosotros" title="Retroceder 5 segundos" aria-label="Retroceder 5 segundos">⏪ 5s</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="btnRetroceder10Nosotros" title="Retroceder 3 segundos" aria-label="Retroceder 3 segundos">⏪ 3s</button>
                         <button type="button" class="btn btn-sm btn-primary" id="btnPlayPauseNosotros" title="Reproducir o pausar" aria-label="Reproducir o pausar">▶️ Reproducir</button>
                         <button type="button" class="btn btn-sm btn-outline-secondary" id="btnReiniciarNosotros" title="Reiniciar desde el principio" aria-label="Reiniciar desde el principio">↺ Reiniciar</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAvanzar10Nosotros" title="Avanzar 10 segundos" aria-label="Avanzar 10 segundos">10s ⏩</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAvanzar10Nosotros" title="Avanzar 5 segundos" aria-label="Avanzar 5 segundos">5s ⏩</button>
                         <div class="controles-video-velocidad">
                             <button type="button" class="btn btn-sm btn-outline-secondary" id="btnNosotrosVelocidadLenta" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
                             <span class="small fw-bold text-muted" id="nosotrosVelocidadLabel">1x</span>

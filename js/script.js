@@ -1649,10 +1649,10 @@ function mostrarPalabra(p, opciones = {}){
            </div>`;
     const bloqueControlesVideo = hayVideo
             ? `<div class="controles-video d-flex align-items-center justify-content-center gap-2 mt-2 flex-wrap">
-                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnRetroceder10" title="Retroceder 5 segundos" aria-label="Retroceder 5 segundos">⏪ 5s</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnRetroceder10" title="Retroceder 1 segundo" aria-label="Retroceder 1 segundo">⏪ 1s</button>
                 <button type="button" class="btn btn-sm btn-primary" id="btnPlayPause" title="Reproducir o pausar" aria-label="Reproducir o pausar">▶️ Reproducir</button>
                 <button type="button" class="btn btn-sm btn-outline-secondary" id="btnReiniciarPalabra" title="Reiniciar desde el principio" aria-label="Reiniciar desde el principio">↺ Reiniciar</button>
-                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAvanzar10" title="Avanzar 10 segundos" aria-label="Avanzar 10 segundos">10s ⏩</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAvanzar10" title="Avanzar 3 segundos" aria-label="Avanzar 3 segundos">3s ⏩</button>
                 <div class="controles-video-velocidad">
                     <button type="button" class="btn btn-sm btn-outline-secondary" id="btnPalabraVelocidadLenta" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
                     <span class="small fw-bold text-muted" id="palabraVelocidadLabel">1x</span>
@@ -1676,10 +1676,10 @@ function mostrarPalabra(p, opciones = {}){
                     <div class="video-toque-overlay" id="overlaySugerida"></div>
                 </div>
                 <div class="controles-video controles-video-compactos d-flex align-items-center justify-content-center gap-2 mt-2 flex-wrap">
-                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnRetroceder10Sugerida" title="Retroceder 5 segundos" aria-label="Retroceder 5 segundos">⏪ 5s</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnRetroceder10Sugerida" title="Retroceder 1 segundo" aria-label="Retroceder 1 segundo">⏪ 1s</button>
                     <button type="button" class="btn btn-sm btn-primary" id="btnPlayPauseSugerida" title="Reproducir o pausar" aria-label="Reproducir o pausar">▶️ Reproducir</button>
                     <button type="button" class="btn btn-sm btn-outline-secondary" id="btnReiniciarSugerida" title="Reiniciar desde el principio" aria-label="Reiniciar desde el principio">↺ Reiniciar</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAvanzar10Sugerida" title="Avanzar 10 segundos" aria-label="Avanzar 10 segundos">10s ⏩</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAvanzar10Sugerida" title="Avanzar 3 segundos" aria-label="Avanzar 3 segundos">3s ⏩</button>
                     <div class="controles-video-velocidad">
                         <button type="button" class="btn btn-sm btn-outline-secondary" id="btnVelocidadLentaSugerida" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
                         <span class="small fw-bold text-muted" id="velocidadLabelSugerida">1x</span>
@@ -1795,10 +1795,10 @@ function mostrarPalabraSimplificada(p, opciones = {}){
            </div>`;
     const bloqueControlesVideo = idVideo
         ? `<div class="controles-video d-flex align-items-center justify-content-center gap-2 mt-2 flex-wrap">
-                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnRetroceder10" title="Retroceder 5 segundos" aria-label="Retroceder 5 segundos">⏪ 5s</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnRetroceder10" title="Retroceder 1 segundo" aria-label="Retroceder 1 segundo">⏪ 1s</button>
                 <button type="button" class="btn btn-sm btn-primary" id="btnPlayPause" title="Reproducir o pausar" aria-label="Reproducir o pausar">▶️ Reproducir</button>
                 <button type="button" class="btn btn-sm btn-outline-secondary" id="btnReiniciarPalabra" title="Reiniciar desde el principio" aria-label="Reiniciar desde el principio">↺ Reiniciar</button>
-                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAvanzar10" title="Avanzar 10 segundos" aria-label="Avanzar 10 segundos">10s ⏩</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAvanzar10" title="Avanzar 3 segundos" aria-label="Avanzar 3 segundos">3s ⏩</button>
                 <div class="controles-video-velocidad">
                     <button type="button" class="btn btn-sm btn-outline-secondary" id="btnPalabraVelocidadLenta" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
                     <span class="small fw-bold text-muted" id="palabraVelocidadLabel">1x</span>
@@ -1994,13 +1994,13 @@ function configurarControlesVideoNosotros() {
 
     btnRetroceder.addEventListener("click", () => {
         const tiempoActual = ytPlayerNosotros.getCurrentTime();
-        ytPlayerNosotros.seekTo(Math.max(0, tiempoActual - 5), true);
+        ytPlayerNosotros.seekTo(Math.max(0, tiempoActual - 3), true);
     });
 
     btnAvanzar.addEventListener("click", () => {
         const tiempoActual = ytPlayerNosotros.getCurrentTime();
         const duracion = ytPlayerNosotros.getDuration();
-        ytPlayerNosotros.seekTo(Math.min(duracion, tiempoActual + 10), true);
+        ytPlayerNosotros.seekTo(Math.min(duracion, tiempoActual + 5), true);
     });
 
     btnPlayPause.addEventListener("click", () => {
@@ -2027,6 +2027,57 @@ function configurarControlesVideoNosotros() {
     if (btnPantallaCompleta) {
         btnPantallaCompleta.addEventListener("click", toggleNosotrosPantallaCompleta);
     }
+
+    configurarProgresoNosotros();
+}
+
+// Línea de tiempo (barra de progreso) del video de "Sobre Nosotros": un
+// <input type="range"> que se actualiza sola mientras el video avanza
+// (sondeando getCurrentTime cada 250ms) y que, al arrastrarla el
+// usuario, hace seekTo() a la posición elegida. Mientras se arrastra
+// se pausa el sondeo para que no "pelee" con el dedo/mouse del
+// usuario. Solo existe para este reproductor.
+let nosotrosProgresoIntervalo = null;
+let nosotrosArrastrandoProgreso = false;
+
+function formatearTiempoNosotros(segundos) {
+    if (!isFinite(segundos) || segundos < 0) segundos = 0;
+    const min = Math.floor(segundos / 60);
+    const seg = Math.floor(segundos % 60);
+    return `${min}:${String(seg).padStart(2, "0")}`;
+}
+
+function configurarProgresoNosotros() {
+    const barra = document.getElementById("nosotrosProgresoBarra");
+    const tiempoActualEl = document.getElementById("nosotrosTiempoActual");
+    const tiempoTotalEl = document.getElementById("nosotrosTiempoTotal");
+    if (!barra || !tiempoActualEl || !tiempoTotalEl || !ytPlayerNosotros) return;
+
+    if (nosotrosProgresoIntervalo) {
+        clearInterval(nosotrosProgresoIntervalo);
+    }
+
+    nosotrosProgresoIntervalo = setInterval(() => {
+        if (nosotrosArrastrandoProgreso || typeof ytPlayerNosotros.getCurrentTime !== "function") return;
+        const duracion = ytPlayerNosotros.getDuration() || 0;
+        const actual = ytPlayerNosotros.getCurrentTime() || 0;
+        if (duracion > 0) {
+            barra.max = duracion;
+            barra.value = actual;
+        }
+        tiempoActualEl.textContent = formatearTiempoNosotros(actual);
+        tiempoTotalEl.textContent = formatearTiempoNosotros(duracion);
+    }, 250);
+
+    barra.addEventListener("input", () => {
+        nosotrosArrastrandoProgreso = true;
+        tiempoActualEl.textContent = formatearTiempoNosotros(Number(barra.value));
+    });
+
+    barra.addEventListener("change", () => {
+        ytPlayerNosotros.seekTo(Number(barra.value), true);
+        nosotrosArrastrandoProgreso = false;
+    });
 }
 
 function cambiarVelocidadNosotros(delta) {
@@ -2231,13 +2282,13 @@ function configurarControlesVideo() {
 
     btnRetroceder.addEventListener("click", () => {
         const tiempoActual = ytPlayerPalabra.getCurrentTime();
-        ytPlayerPalabra.seekTo(Math.max(0, tiempoActual - 5), true);
+        ytPlayerPalabra.seekTo(Math.max(0, tiempoActual - 1), true);
     });
 
     btnAvanzar.addEventListener("click", () => {
         const tiempoActual = ytPlayerPalabra.getCurrentTime();
         const duracion = ytPlayerPalabra.getDuration();
-        ytPlayerPalabra.seekTo(Math.min(duracion, tiempoActual + 10), true);
+        ytPlayerPalabra.seekTo(Math.min(duracion, tiempoActual + 3), true);
     });
 
     btnPlayPause.addEventListener("click", () => {
@@ -2360,13 +2411,13 @@ function configurarControlesVideoSugerida() {
 
     btnRetroceder.addEventListener("click", () => {
         const tiempoActual = ytPlayerSugerida.getCurrentTime();
-        ytPlayerSugerida.seekTo(Math.max(0, tiempoActual - 5), true);
+        ytPlayerSugerida.seekTo(Math.max(0, tiempoActual - 1), true);
     });
 
     btnAvanzar.addEventListener("click", () => {
         const tiempoActual = ytPlayerSugerida.getCurrentTime();
         const duracion = ytPlayerSugerida.getDuration();
-        ytPlayerSugerida.seekTo(Math.min(duracion, tiempoActual + 10), true);
+        ytPlayerSugerida.seekTo(Math.min(duracion, tiempoActual + 3), true);
     });
 
     btnPlayPause.addEventListener("click", () => {
