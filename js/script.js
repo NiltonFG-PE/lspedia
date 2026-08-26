@@ -1709,17 +1709,17 @@ function mostrarPalabra(p, opciones = {}){
     const bloqueImagen = generarBloqueImagenApoyo(imagenesPalabra, p.palabra);
     const hayVideo = p.video && p.video.trim() !== "";
     const bloqueVideo = hayVideo
-        ? `<div id="reproductorPalabra"></div><div class="video-toque-overlay" id="overlayPalabra"></div>`
+        ? `<div id="reproductorPalabra"></div>`
         : `<div class="d-flex flex-column align-items-center justify-content-center h-100 bg-light text-muted text-center p-3">
                 <span class="fs-1 mb-2">🤟</span>
                 <span class="small fw-bold">Video próximamente</span>
                 <span class="small">Todavía no hemos grabado la seña de esta palabra.</span>
            </div>`;
     const bloqueControlesVideo = hayVideo
-            ? `<div class="controles-video d-flex align-items-center justify-content-center gap-2 mt-2 flex-wrap">
+            ? `<div class="controles-video d-flex align-items-center justify-content-center gap-2 mt-2 flex-nowrap">
                 <button type="button" class="btn btn-sm btn-outline-secondary" id="btnRetroceder10" title="Retroceder 1 segundo" aria-label="Retroceder 1 segundo">⏪ 1s</button>
-                <button type="button" class="btn btn-sm btn-primary" id="btnPlayPause" title="Reproducir o pausar" aria-label="Reproducir o pausar">▶️ Reproducir</button>
-                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnReiniciarPalabra" title="Reiniciar desde el principio" aria-label="Reiniciar desde el principio">↺ Reiniciar</button>
+                <button type="button" class="btn btn-sm btn-primary" id="btnPlayPause" title="Reproducir o pausar" aria-label="Reproducir o pausar">▶️ Iniciar</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnReiniciarPalabra" title="Reiniciar desde el principio" aria-label="Reiniciar desde el principio">↺ Más</button>
                 <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAvanzar10" title="Avanzar 3 segundos" aria-label="Avanzar 3 segundos">3s ⏩</button>
                 <div class="controles-video-velocidad">
                     <button type="button" class="btn btn-sm btn-outline-secondary" id="btnPalabraVelocidadLenta" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
@@ -1743,10 +1743,10 @@ function mostrarPalabra(p, opciones = {}){
                     <div id="reproductorSugerida"></div>
                     <div class="video-toque-overlay" id="overlaySugerida"></div>
                 </div>
-                <div class="controles-video controles-video-compactos d-flex align-items-center justify-content-center gap-2 mt-2 flex-wrap">
+                <div class="controles-video controles-video-compactos d-flex align-items-center justify-content-center gap-2 mt-2 flex-nowrap">
                     <button type="button" class="btn btn-sm btn-outline-secondary" id="btnRetroceder10Sugerida" title="Retroceder 1 segundo" aria-label="Retroceder 1 segundo">⏪ 1s</button>
-                    <button type="button" class="btn btn-sm btn-primary" id="btnPlayPauseSugerida" title="Reproducir o pausar" aria-label="Reproducir o pausar">▶️ Reproducir</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnReiniciarSugerida" title="Reiniciar desde el principio" aria-label="Reiniciar desde el principio">↺ Reiniciar</button>
+                    <button type="button" class="btn btn-sm btn-primary" id="btnPlayPauseSugerida" title="Reproducir o pausar" aria-label="Reproducir o pausar">▶️ Iniciar</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnReiniciarSugerida" title="Reiniciar desde el principio" aria-label="Reiniciar desde el principio">↺ Más</button>
                     <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAvanzar10Sugerida" title="Avanzar 3 segundos" aria-label="Avanzar 3 segundos">3s ⏩</button>
                     <div class="controles-video-velocidad">
                         <button type="button" class="btn btn-sm btn-outline-secondary" id="btnVelocidadLentaSugerida" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
@@ -1808,7 +1808,7 @@ function mostrarPalabra(p, opciones = {}){
         mostrarSugerenciasRelacionadas(p, ultimasPalabrasCategorias, { clickAbreEnCategorias: true });
     }
     if (hayVideo) {
-        inicializarReproductorPalabra(p.video);
+        inicializarReproductorPalabra(p.video, { autoreproducir: true });
     } else {
         ytPlayerPalabra = null;
     }
@@ -1856,16 +1856,16 @@ function mostrarPalabraSimplificada(p, opciones = {}){
 
     const idVideo = extraerIdYouTube(p.video);
     const bloqueVideo = idVideo
-        ? `<div id="reproductorPalabra"></div><div class="video-toque-overlay" id="overlayPalabra"></div>`
+        ? `<div id="reproductorPalabra"></div>`
         : `<div class="d-flex flex-column align-items-center justify-content-center h-100 bg-light text-muted text-center p-3">
                 <span class="fs-1 mb-2">🤟</span>
                 <span class="small fw-bold">Video próximamente</span>
            </div>`;
     const bloqueControlesVideo = idVideo
-        ? `<div class="controles-video d-flex align-items-center justify-content-center gap-2 mt-2 flex-wrap">
+        ? `<div class="controles-video d-flex align-items-center justify-content-center gap-2 mt-2 flex-nowrap">
                 <button type="button" class="btn btn-sm btn-outline-secondary" id="btnRetroceder10" title="Retroceder 1 segundo" aria-label="Retroceder 1 segundo">⏪ 1s</button>
-                <button type="button" class="btn btn-sm btn-primary" id="btnPlayPause" title="Reproducir o pausar" aria-label="Reproducir o pausar">▶️ Reproducir</button>
-                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnReiniciarPalabra" title="Reiniciar desde el principio" aria-label="Reiniciar desde el principio">↺ Reiniciar</button>
+                <button type="button" class="btn btn-sm btn-primary" id="btnPlayPause" title="Reproducir o pausar" aria-label="Reproducir o pausar">▶️ Iniciar</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnReiniciarPalabra" title="Reiniciar desde el principio" aria-label="Reiniciar desde el principio">↺ Más</button>
                 <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAvanzar10" title="Avanzar 3 segundos" aria-label="Avanzar 3 segundos">3s ⏩</button>
                 <div class="controles-video-velocidad">
                     <button type="button" class="btn btn-sm btn-outline-secondary" id="btnPalabraVelocidadLenta" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
@@ -1941,7 +1941,7 @@ let ytOpcionesReproductorPalabraPendiente = {};
 let ytVideoIdSugeridaPendiente = null;
 
 // --- REPRODUCTOR DE VIDEO CONTROLABLE PARA "SOBRE NOSOTROS" ---
-const ID_VIDEO_NOSOTROS = "NLIEfLPdeGg";
+const ID_VIDEO_NOSOTROS = "L4KdbBKuEYU";
 let ytPlayerNosotros = null;
 let ytVideoNosotrosPendiente = null;
 let nosotrosVelocidadIndex = VELOCIDADES_PALABRA.indexOf(1);
@@ -2022,7 +2022,7 @@ function crearReproductorNosotros(videoId) {
     if (!contenedor) return;
     ytPlayerNosotros = new YT.Player("reproductorNosotros", {
         videoId: videoId,
-        playerVars: { rel: 0, modestbranding: 1, controls: 0, disablekb: 1, fs: 0, iv_load_policy: 3 },
+        playerVars: { rel: 0, modestbranding: 1, controls: 1, disablekb: 1, fs: 0, iv_load_policy: 3, autoplay: 1 },
         events: {
             onReady: configurarControlesVideoNosotros,
             onStateChange: actualizarBotonPlayPauseNosotros
@@ -2053,11 +2053,6 @@ function configurarControlesVideoNosotros() {
         if (rectVideoNosotros.width > 0 && rectVideoNosotros.height > 0) {
             ytPlayerNosotros.setSize(rectVideoNosotros.width, rectVideoNosotros.height);
         }
-    }
-
-    const overlayNosotros = document.getElementById("overlayNosotros");
-    if (overlayNosotros) {
-        overlayNosotros.addEventListener("click", () => btnPlayPause.click());
     }
 
     btnRetroceder.addEventListener("click", () => {
@@ -2095,57 +2090,6 @@ function configurarControlesVideoNosotros() {
     if (btnPantallaCompleta) {
         btnPantallaCompleta.addEventListener("click", toggleNosotrosPantallaCompleta);
     }
-
-    configurarProgresoNosotros();
-}
-
-// Línea de tiempo (barra de progreso) del video de "Sobre Nosotros": un
-// <input type="range"> que se actualiza sola mientras el video avanza
-// (sondeando getCurrentTime cada 250ms) y que, al arrastrarla el
-// usuario, hace seekTo() a la posición elegida. Mientras se arrastra
-// se pausa el sondeo para que no "pelee" con el dedo/mouse del
-// usuario. Solo existe para este reproductor.
-let nosotrosProgresoIntervalo = null;
-let nosotrosArrastrandoProgreso = false;
-
-function formatearTiempoNosotros(segundos) {
-    if (!isFinite(segundos) || segundos < 0) segundos = 0;
-    const min = Math.floor(segundos / 60);
-    const seg = Math.floor(segundos % 60);
-    return `${min}:${String(seg).padStart(2, "0")}`;
-}
-
-function configurarProgresoNosotros() {
-    const barra = document.getElementById("nosotrosProgresoBarra");
-    const tiempoActualEl = document.getElementById("nosotrosTiempoActual");
-    const tiempoTotalEl = document.getElementById("nosotrosTiempoTotal");
-    if (!barra || !tiempoActualEl || !tiempoTotalEl || !ytPlayerNosotros) return;
-
-    if (nosotrosProgresoIntervalo) {
-        clearInterval(nosotrosProgresoIntervalo);
-    }
-
-    nosotrosProgresoIntervalo = setInterval(() => {
-        if (nosotrosArrastrandoProgreso || typeof ytPlayerNosotros.getCurrentTime !== "function") return;
-        const duracion = ytPlayerNosotros.getDuration() || 0;
-        const actual = ytPlayerNosotros.getCurrentTime() || 0;
-        if (duracion > 0) {
-            barra.max = duracion;
-            barra.value = actual;
-        }
-        tiempoActualEl.textContent = formatearTiempoNosotros(actual);
-        tiempoTotalEl.textContent = formatearTiempoNosotros(duracion);
-    }, 250);
-
-    barra.addEventListener("input", () => {
-        nosotrosArrastrandoProgreso = true;
-        tiempoActualEl.textContent = formatearTiempoNosotros(Number(barra.value));
-    });
-
-    barra.addEventListener("change", () => {
-        ytPlayerNosotros.seekTo(Number(barra.value), true);
-        nosotrosArrastrandoProgreso = false;
-    });
 }
 
 function cambiarVelocidadNosotros(delta) {
@@ -2164,7 +2108,7 @@ function actualizarLabelVelocidadNosotros() {
 function actualizarBotonPlayPauseNosotros(evento) {
     const btnPlayPause = document.getElementById("btnPlayPauseNosotros");
     if (!btnPlayPause) return;
-    btnPlayPause.textContent = evento.data === YT.PlayerState.PLAYING ? "⏸ Pausar" : "▶️ Reproducir";
+    btnPlayPause.textContent = evento.data === YT.PlayerState.PLAYING ? "⏸ Pausar" : "▶️ Iniciar";
     alternarTapaPausaYoutube("nosotrosVideoRatio", evento);
 }
 
@@ -2303,20 +2247,20 @@ function crearReproductorPalabra(videoId, opciones = {}) {
         ytPlayerPalabra.destroy();
     }
     const autoreproducirEnBucle = !!opciones.autoreproducirEnBucle;
+    const autoreproducir = autoreproducirEnBucle || !!opciones.autoreproducir;
     // "loop" solo funciona en un video suelto (sin playlist real) si además
     // se le pasa "playlist" con ese mismo id — así lo exige la API de
     // YouTube. "mute" es obligatorio: los navegadores bloquean la
     // autoreproducción con sonido si la persona no interactuó antes con la
     // página; el video igual se puede desmutear a mano desde sus propios
     // controles.
-    // controls:0 quita la barra/botones nativos de YouTube (los reemplazan
-    // los botones propios de abajo); disablekb, fs e iv_load_policy apagan
-    // atajos de teclado, el botón de pantalla completa nativo y las
-    // anotaciones de YouTube, para que no aparezca nada de su UI encima
-    // del video (ver también .video-toque-overlay en estilos.css).
+    // controls:1 deja los controles nativos de YouTube (más videos, ver en
+    // YouTube, etc.), que conviven con los botones propios de abajo.
     const playerVars = autoreproducirEnBucle
-        ? { rel: 0, modestbranding: 1, controls: 0, disablekb: 1, fs: 0, iv_load_policy: 3, autoplay: 1, mute: 1, loop: 1, playlist: videoId }
-        : { rel: 0, modestbranding: 1, controls: 0, disablekb: 1, fs: 0, iv_load_policy: 3 };
+        ? { rel: 0, modestbranding: 1, controls: 1, disablekb: 1, fs: 0, iv_load_policy: 3, autoplay: 1, mute: 1, loop: 1, playlist: videoId }
+        : autoreproducir
+            ? { rel: 0, modestbranding: 1, controls: 1, disablekb: 1, fs: 0, iv_load_policy: 3, autoplay: 1, mute: 1 }
+            : { rel: 0, modestbranding: 1, controls: 1, disablekb: 1, fs: 0, iv_load_policy: 3 };
     ytPlayerPalabra = new YT.Player("reproductorPalabra", {
         videoId: videoId,
         playerVars: playerVars,
@@ -2339,13 +2283,6 @@ function configurarControlesVideo() {
 
     if (btnPantallaCompleta) {
         btnPantallaCompleta.addEventListener("click", () => toggleVideoPalabraPantallaCompleta("reproductorPalabraWrap", "btnPalabraFullscreen"));
-    }
-
-    // Toca la capa transparente sobre el video (en vez del iframe directo)
-    // -> se redirige al mismo botón Reproducir/Pausar de siempre.
-    const overlayPalabra = document.getElementById("overlayPalabra");
-    if (overlayPalabra) {
-        overlayPalabra.addEventListener("click", () => btnPlayPause.click());
     }
 
     btnRetroceder.addEventListener("click", () => {
@@ -2398,7 +2335,7 @@ function actualizarLabelVelocidadPalabra() {
 function actualizarBotonPlayPause(evento) {
     const btnPlayPause = document.getElementById("btnPlayPause");
     if (!btnPlayPause) return;
-    btnPlayPause.textContent = evento.data === YT.PlayerState.PLAYING ? "⏸ Pausar" : "▶️ Reproducir";
+    btnPlayPause.textContent = evento.data === YT.PlayerState.PLAYING ? "⏸ Pausar" : "▶️ Iniciar";
     alternarTapaPausaYoutube("reproductorPalabraWrap", evento);
 }
 
@@ -2526,7 +2463,7 @@ function actualizarLabelVelocidadSugerida() {
 function actualizarBotonPlayPauseSugerida(evento) {
     const btnPlayPause = document.getElementById("btnPlayPauseSugerida");
     if (!btnPlayPause) return;
-    btnPlayPause.textContent = evento.data === YT.PlayerState.PLAYING ? "⏸ Pausar" : "▶️ Reproducir";
+    btnPlayPause.textContent = evento.data === YT.PlayerState.PLAYING ? "⏸ Pausar" : "▶️ Iniciar";
     alternarTapaPausaYoutube("reproductorSugeridaWrap", evento);
 }
 
@@ -3789,6 +3726,10 @@ function mostrarSenalDelDia(offset = offsetSenalDelDia){
     if(btnCerrarDelDia){
         btnCerrarDelDia.onclick = () => {
             document.getElementById("senalDelDia").style.display = "none";
+            // El avatar se achica y se acomoda al costado del título (en
+            // vez de quedar solo y grande arriba, empujando el título
+            // debajo): ver la regla "body.senal-cerrada" en index.html.
+            document.body.classList.add("senal-cerrada");
         };
     }
 

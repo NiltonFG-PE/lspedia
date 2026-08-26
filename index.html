@@ -1409,23 +1409,180 @@
 
 
 
-/* Controles personalizados del reproductor de video (LSP) */
+/* Controles personalizados del reproductor de video (LSP): barra en los
+   colores de marca de LSPedia (amarillo del logo de fondo, botones en el
+   mismo azul que ya se usa en la barra de menú/buscador del sitio), con
+   botones "abultados" (sombra + borde inferior más grueso, como una
+   tecla física) al estilo control de videojuego, para que resalten y
+   se sientan más táctiles. */
 .controles-video {
-    background-color: #f8f9fa;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 8px 10px;
+    background: linear-gradient(180deg, #ffc94d, #f5a623);
+    border: 1px solid #d18a1b;
+    border-radius: 14px;
+    padding: 10px 12px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 4px 12px rgba(180, 116, 11, 0.35);
+    /* Que la barra ocupe el ancho real del video (nunca más). Antes tenía
+       "flex-wrap" (clase de Bootstrap en el HTML): cuando los 8 botones no
+       entraban en una sola fila, el último caía a una segunda línea, y
+       según el ancho exacto de la ventana ese salto aparecía o
+       desaparecía, dando la sensación de que los botones "se movían". Se
+       cambió esa clase a "flex-nowrap" (ver script.js/index.html) y acá se
+       deja como respaldo un scroll horizontal: la fila nunca se parte en
+       dos, y si de verdad no entra completa en pantallas muy angostas, se
+       desliza hacia los costados en vez de reacomodarse. */
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+.controles-video::-webkit-scrollbar {
+    height: 4px;
+}
+.controles-video::-webkit-scrollbar-thumb {
+    background-color: rgba(15, 23, 42, 0.35);
+    border-radius: 999px;
+}
+.controles-video .btn,
+.controles-video-velocidad {
+    /* Con flex-nowrap, sin esto los botones se irían achicando entre sí
+       para intentar entrar todos; se fijan a su ancho natural y es la
+       barra la que scrollea si hace falta, no los botones los que se
+       deforman. */
+    flex-shrink: 0;
+}
+/* En el reproductor principal de la palabra, el video (#reproductorPalabraWrap)
+   está centrado y topeado a 480px de ancho (ver .reproductor-palabra-wrap en
+   css/estilos.css); la barra de controles, en cambio, ocupaba el 100% de la
+   columna y quedaba más ancha que el propio video. Al ser el siguiente
+   hermano de ese wrap en el HTML, se le pone el mismo tope y centrado acá
+   para que calcen exactamente. */
+#reproductorPalabraWrap + .controles-video {
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
 }
 .controles-video .btn {
-    border-radius: 20px;
+    border-radius: 999px;
     font-weight: bold;
     font-size: 13px;
+    color: #ffffff;
+    background-color: #0f172a;
+    border: 1px solid #1e293b;
+    border-bottom: 3px solid #020617;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    transition: transform 0.12s ease, border-bottom-width 0.08s ease, background-color 0.15s ease, box-shadow 0.12s ease;
+}
+.controles-video .btn:hover {
+    background-color: #1e293b;
+    color: #ffffff;
+    /* Pequeño "salto" al pasar el mouse, para que se sientan más vivos. */
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.3);
+}
+.controles-video .btn:active {
+    transform: translateY(2px) scale(0.97);
+    border-bottom-width: 1px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+/* El botón Reproducir/Pausar es la acción principal: mismo azul marino
+   oscuro que el resto de botones (para que combinen igual que en la
+   referencia), y "respira" con un pulso suave y constante para llamar la
+   atención hacia él. */
+.controles-video .btn.btn-primary {
+    background-color: #0f172a;
+    border-color: #1e293b;
+    border-bottom: 3px solid #020617;
+    color: #ffffff;
+    animation: pulsoBotonPrincipal 2.2s ease-in-out infinite;
+}
+.controles-video .btn.btn-primary:hover {
+    background-color: #1e293b;
+    animation-play-state: paused;
+}
+.controles-video .btn.btn-primary:active {
+    border-bottom-width: 1px;
+}
+@keyframes pulsoBotonPrincipal {
+    0%, 100% { box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 0 0 0 rgba(15, 23, 42, 0.55); }
+    50% { box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 0 0 6px rgba(15, 23, 42, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .controles-video .btn.btn-primary {
+        animation: none;
+    }
+}
+/* Animaciones propias por ícono, para que cada botón "actúe" lo que hace
+   en vez de solo agrandarse: retroceder/avanzar se deslizan hacia su
+   lado, reiniciar gira como el ícono ↺, y pantalla completa se expande
+   un poco más que el resto. */
+.controles-video [id^="btnRetroceder10"]:hover {
+    transform: translateY(-2px) scale(1.05) translateX(-3px);
+}
+.controles-video [id^="btnAvanzar10"]:hover {
+    transform: translateY(-2px) scale(1.05) translateX(3px);
+}
+.controles-video [id^="btnReiniciar"]:hover {
+    transform: translateY(-2px) scale(1.05) rotate(-45deg);
+}
+.controles-video [id$="Fullscreen"]:hover {
+    transform: translateY(-2px) scale(1.18);
+}
+.controles-video [id^="btnPalabraVelocidadLenta"]:hover,
+.controles-video [id^="btnVelocidadLentaSugerida"]:hover,
+.controles-video [id^="btnVelocidadLentaNosotros"]:hover {
+    transform: translateY(-2px) scale(1.15) rotate(-8deg);
+}
+.controles-video [id^="btnPalabraVelocidadRapida"]:hover,
+.controles-video [id^="btnVelocidadRapidaSugerida"]:hover,
+.controles-video [id^="btnVelocidadRapidaNosotros"]:hover {
+    transform: translateY(-2px) scale(1.15) rotate(8deg);
+}
+/* Pantallas angostas (celulares chicos): botones más compactos para que
+   la barra completa (1s, Iniciar, Más, 3s, velocidad, loop, pantalla
+   completa) se adapte al ancho disponible sin desbordarse. */
+@media (max-width: 480px) {
+    .controles-video {
+        gap: 4px !important;
+        padding: 8px 6px;
+    }
+    .controles-video .btn {
+        font-size: 11px;
+        padding: 0.25rem 0.5rem;
+    }
+    /* En vez de forzar los 8 controles completos (con texto) a entrar a
+       la fuerza o depender del scroll horizontal, se oculta la palabra y
+       se deja solo el ícono (▶️/⏸️/↺) en pantallas de celular: así todo
+       entra en una sola fila sin recortarse ni necesitar deslizar. El
+       title/aria-label del botón sigue explicando qué hace para quien
+       use lector de pantalla. */
+    .controles-video-texto {
+        display: none;
+    }
+    .controles-video .btn {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}
+.controles-video-velocidad {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background-color: rgba(15, 23, 42, 0.08);
+    border: 1px solid #0f172a;
+    border-radius: 999px;
+    padding: 2px 8px;
+}
+.controles-video-velocidad .small {
+    color: #0f172a !important;
 }
 .controles-video #selectVelocidad {
     border-radius: 20px;
     font-weight: bold;
     font-size: 13px;
     min-width: 92px;
+    background-color: #0f172a;
+    color: #ffffff;
+    border: 1px solid #1e293b;
 }
 
 /* Vista "pantalla completa" del video de Sobre Nosotros: es un overlay
@@ -1453,12 +1610,22 @@
     color: #e2e8f0 !important;
 }
 .nosotros-video-wrap.nosotros-pantalla-completa .controles-video {
-    background-color: rgba(255, 255, 255, 0.95);
+    background: linear-gradient(180deg, #ffc94d, #f5a623);
     width: 100%;
     max-width: 1100px;
 }
 body.nosotros-pantalla-completa-activa {
     overflow: hidden;
+}
+
+/* En pantalla completa del video de la palabra (o de la seña sugerida),
+   la barra de controles se ve mejor flotando sobre el video sin su
+   fondo amarillo de siempre, como una capa de controles transparente
+   (estilo reproductor de video nativo) en vez de una tarjeta aparte. */
+body.video-palabra-pantalla-completa-activa .controles-video {
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
 }
 
 /* Tarjeta "Seña del día" / "de ayer" — formato rectangular horizontal */
@@ -1682,6 +1849,25 @@ body.nosotros-pantalla-completa-activa {
        (100px), para que se note más al costado del título, como en el
        diseño de referencia. */
     body.vista-temas-movil #colAvatarHero .avatar-hero-img {
+        height: 130px;
+    }
+
+    /* Al cerrar la tarjeta "Seña del día" con la X (btnCerrarDelDia en
+       script.js, que agrega la clase "senal-cerrada" al body), el
+       avatar quedaba solo, grande, en su fila de arriba, con el título
+       empujado debajo (fila vacía donde antes estaba la tarjeta). Se
+       reutiliza el mismo layout de una sola fila "título + avatar al
+       costado" que ya existe para "vista-temas-movil" más arriba, para
+       que el avatar se achique y se acomode al lado del título en vez
+       de quedar solo y grande arriba. */
+    body.senal-cerrada #filaHeroPrincipal {
+        grid-template-columns: 3fr 2fr;
+        grid-template-areas: "titulo avatar";
+    }
+    body.senal-cerrada #colAvatarHero {
+        align-self: center;
+    }
+    body.senal-cerrada #colAvatarHero .avatar-hero-img {
         height: 130px;
     }
 }
@@ -3427,22 +3613,13 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                 <div class="nosotros-video-wrap mb-4" id="nosotrosVideoWrap">
                     <div class="ratio ratio-16x9 rounded-4 overflow-hidden shadow-sm" id="nosotrosVideoRatio">
                         <div id="reproductorNosotros"></div>
-                        <div class="video-toque-overlay" id="overlayNosotros"></div>
                     </div>
                     <p class="text-center small text-muted mt-2 mb-0" id="nosotrosVideoLeyenda">🤟 Traducción en Lengua de Señas Peruana (LSP) de este contenido</p>
 
-                    <div class="nosotros-progreso-wrap mt-2" id="nosotrosProgresoWrap">
-                        <input type="range" class="form-range nosotros-progreso-barra" id="nosotrosProgresoBarra" min="0" max="100" step="0.1" value="0" aria-label="Progreso del video">
-                        <div class="d-flex justify-content-between small text-muted nosotros-progreso-tiempos">
-                            <span id="nosotrosTiempoActual">0:00</span>
-                            <span id="nosotrosTiempoTotal">0:00</span>
-                        </div>
-                    </div>
-
-                    <div class="controles-video d-flex align-items-center justify-content-center gap-2 mt-2 flex-wrap">
+                    <div class="controles-video d-flex align-items-center justify-content-center gap-2 mt-2 flex-nowrap">
                         <button type="button" class="btn btn-sm btn-outline-secondary" id="btnRetroceder10Nosotros" title="Retroceder 3 segundos" aria-label="Retroceder 3 segundos">⏪ 3s</button>
-                        <button type="button" class="btn btn-sm btn-primary" id="btnPlayPauseNosotros" title="Reproducir o pausar" aria-label="Reproducir o pausar">▶️ Reproducir</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" id="btnReiniciarNosotros" title="Reiniciar desde el principio" aria-label="Reiniciar desde el principio">↺ Reiniciar</button>
+                        <button type="button" class="btn btn-sm btn-primary" id="btnPlayPauseNosotros" title="Reproducir o pausar" aria-label="Reproducir o pausar">▶️ <span class="controles-video-texto">Iniciar</span></button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="btnReiniciarNosotros" title="Reiniciar desde el principio" aria-label="Reiniciar desde el principio">↺ <span class="controles-video-texto">Más</span></button>
                         <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAvanzar10Nosotros" title="Avanzar 5 segundos" aria-label="Avanzar 5 segundos">5s ⏩</button>
                         <div class="controles-video-velocidad">
                             <button type="button" class="btn btn-sm btn-outline-secondary" id="btnNosotrosVelocidadLenta" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
