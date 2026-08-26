@@ -202,6 +202,11 @@ function irAlBuscador(){
     resultadoCategorias.innerHTML = "";
     resultadoCategoriasDiccionario.innerHTML = "";
     ultimasPalabras.innerHTML = "";
+    // Mismo bug que en mostrarSeccionHerramientas()/mostrarSeccionNosotros():
+    // faltaba limpiar #ultimasPalabrasCategorias (las sugerencias "Puede que
+    // también te interese" de la vista Vocabulario), así que se quedaban
+    // visibles al volver al Diccionario.
+    if(ultimasPalabrasCategorias) ultimasPalabrasCategorias.innerHTML = "";
     categoriaActualMostrada = null;
     document.body.classList.remove("vista-temas-movil");
     mostrarBloqueInicio();
@@ -3199,7 +3204,12 @@ const EMOJIS_CATEGORIA_VOCABULARIO = {
 };
 
 function mostrarCategorias(){
-    resultado.innerHTML=""; panelCategorias.innerHTML=""; resultadoCategoriasDiccionario.innerHTML=""; ultimasPalabras.innerHTML = ""; ocultarPanelesGuardados();
+    resultado.innerHTML=""; panelCategorias.innerHTML=""; resultadoCategoriasDiccionario.innerHTML=""; ultimasPalabras.innerHTML = "";
+    // Mismo bug que en irAlBuscador(): faltaba limpiar #ultimasPalabrasCategorias
+    // al entrar a Vocabulario, así que la sugerencia de la última palabra vista
+    // (en esta misma vista, en una visita anterior) se quedaba pegada.
+    if(ultimasPalabrasCategorias) ultimasPalabrasCategorias.innerHTML = "";
+    ocultarPanelesGuardados();
     if (window.QuizV2 && typeof QuizV2.asegurarBancoCargado === "function") {
         QuizV2.asegurarBancoCargado();
     }
@@ -3288,6 +3298,10 @@ function limpiarResultadoCategorias(){
     if(resultadoCategorias) resultadoCategorias.innerHTML = "";
     if(buscarCategorias) buscarCategorias.value = "";
     if(sugerenciasCategorias){ sugerenciasCategorias.innerHTML = ""; sugerenciasCategorias.style.display = "none"; }
+    // Mismo bug: al volver de una palabra a las tarjetas de categoría con
+    // "⬅ Atrás", las sugerencias "Puede que también te interese" de esa
+    // palabra se quedaban pegadas debajo de las tarjetas.
+    if(ultimasPalabrasCategorias) ultimasPalabrasCategorias.innerHTML = "";
     categoriaActualMostrada = null;
 }
 window.limpiarResultadoCategorias = limpiarResultadoCategorias;
