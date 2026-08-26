@@ -140,6 +140,7 @@
             padding-bottom: 6px; /* deja lugar visible al subrayado del activo */
         }
 
+        #menuPrincipal.navbar-nav .nav-link,
         .navbar-nav .nav-link {
             font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             font-weight: 700 !important;
@@ -147,7 +148,7 @@
             letter-spacing: 0.5px;
             font-size: 15px;
             color: #ffffff !important;
-            transition: background-color 0.25s ease, color 0.25s ease;
+            transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
             display: flex;
             align-items: center;
             gap: 9px;
@@ -174,41 +175,36 @@
         .navbar-nav .nav-link:hover {
             background-color: rgba(255, 255, 255, 0.12);
             color: #ffffff !important;
+            transform: translateY(-1px);
         }
 
-        /* Ítem activo: mismo color de fondo que el resto de los botones
-           (transparente). El fondo solo cambia al pasar el mouse, igual
-           que en los botones inactivos. */
+        /* Ítem activo (solo escritorio, xl en adelante): en vez del
+           subrayado ámbar de antes, ahora el botón activo se rellena por
+           completo con la píldora ámbar de la marca (mismo color que ya
+           se usa en "Seña del día" y en los botones destacados del
+           sitio), con el ícono y el texto en blanco encima. El cambio
+           entre inactivo <-> activo anima el fondo y un pequeño "pop" de
+           escala, en vez de aparecer de golpe. */
+        #menuPrincipal .navbar-nav .nav-link.active,
         .navbar-nav .nav-link.active {
-            background-color: transparent;
-            color: #ffffff !important;
-        }
-        .navbar-nav .nav-link.active:hover {
-            background-color: rgba(255, 255, 255, 0.12);
-        }
-
-        /* Subrayado ámbar debajo del botón: en vez de una sola barra
-           deslizante calculada por JS (que se rompía en el menú móvil
-           desplegado, apareciendo como una franja gigante), cada botón
-           tiene su propio subrayado con ::after. Siempre queda bien
-           ubicado sin importar el ancho de pantalla ni si el menú está
-           en fila (escritorio) o apilado (menú móvil desplegado). */
-        .navbar-nav .nav-link::after {
-            content: "";
-            position: absolute;
-            left: 20px;
-            right: 20px;
-            bottom: -6px;
-            height: 4px;
-            border-radius: 4px;
             background-color: #ffc107;
-            opacity: 0;
-            transition: opacity 0.2s ease;
-            pointer-events: none;
+            color: var(--primary-color) !important;
+            box-shadow: 0 6px 14px rgba(146, 103, 11, 0.35);
+            animation: navPillPop 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .navbar-nav .nav-link:hover::after,
-        .navbar-nav .nav-link.active::after {
-            opacity: 1;
+        #menuPrincipal .navbar-nav .nav-link.active .nav-icono,
+        .navbar-nav .nav-link.active .nav-icono {
+            background-color: var(--primary-color) !important;
+        }
+        #menuPrincipal .navbar-nav .nav-link.active:hover,
+        .navbar-nav .nav-link.active:hover {
+            background-color: #ffca2c;
+            transform: translateY(-1px);
+        }
+        @keyframes navPillPop {
+            0% { transform: scale(0.9); }
+            60% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
 
         /* El avatar del hero usa clases Bootstrap (d-none d-lg-flex) que
@@ -219,6 +215,15 @@
             display: none !important;
         }
 
+        /* Título principal ("Vocabulario/Diccionario de Lengua de Señas
+           Peruana (LSP)..."): antes usaba el tamaño h1 por defecto de
+           Bootstrap, que se veía demasiado grande. Se reduce un poco acá
+           (clamp para que también achique de forma proporcional en
+           pantallas angostas, no solo en escritorio). */
+        #tituloPrincipal {
+            font-size: clamp(1.7rem, 1.32rem + 1.5vw, 2.32rem);
+        }
+
         @media (max-width: 1199.98px) {
             .navbar-nav .nav-link {
                 font-size: 17px;
@@ -227,6 +232,42 @@
             .navbar-nav .nav-link .nav-icono {
                 width: 21px;
                 height: 21px;
+            }
+        }
+
+        /* Barra superior fija en ESCRITORIO (xl en adelante): igual que ya
+           pasaba en móvil, la barra con el logo y el menú se queda quieta
+           arriba al hacer scroll, y el contenido se desliza debajo de
+           ella. El padding-top del body deja el espacio exacto (85px del
+           logo + los 16px de padding vertical "py-2" del navbar) para que
+           nada quede tapado al cargar la página. */
+        @media (min-width: 1200px) {
+            nav.navbar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 1030;
+            }
+            body {
+                padding-top: 101px;
+            }
+            /* Al cambiar de sección (Diccionario/Vocabulario/Herramientas/
+               Sobre Nosotros), script.js hace scrollIntoView() sobre estos
+               bloques. scrollIntoView por sí solo no sabe que el navbar de
+               arriba es "fixed": deja el bloque pegado al borde superior
+               del viewport, y el navbar (101px) queda flotando ENCIMA,
+               tapando ese primer tramo de contenido (título, tarjetas,
+               video, etc. se ven "cortados" arriba). scroll-margin-top le
+               indica al navegador que reserve ese mismo espacio como
+               margen antes de considerar el scroll terminado, así el
+               contenido siempre asoma completo debajo del navbar. */
+            #buscar,
+            #panelCategorias,
+            #herramientasMenuMovil,
+            #seccionSubtitulos,
+            #seccionNosotros {
+                scroll-margin-top: 117px;
             }
         }
 
@@ -274,6 +315,17 @@
                abajo, para dejar lugar a la barra inferior). */
             body {
                 padding-top: 80px;
+            }
+            /* Mismo motivo que el bloque "scroll-margin-top" de escritorio
+               (ver comentario ahí): en móvil/tablet el navbar fijo mide
+               80px, así que el margen de scroll debe ser ese valor y no
+               los 117px de escritorio. */
+            #buscar,
+            #panelCategorias,
+            #herramientasMenuMovil,
+            #seccionSubtitulos,
+            #seccionNosotros {
+                scroll-margin-top: 96px;
             }
         }
 
@@ -2016,10 +2068,24 @@ html.modo-escritorio-forzado .mobile-bottom-nav {
 }
 html.modo-escritorio-forzado body {
     padding-bottom: 0 !important;
-    padding-top: 0 !important;
+    padding-top: 101px !important;
+}
+/* Mismo motivo que el "scroll-margin-top" del media query real de
+   escritorio: acá se repite porque "modo-escritorio-forzado" puede
+   activarse aunque el ancho real de la ventana no sea >=1200px. */
+html.modo-escritorio-forzado #buscar,
+html.modo-escritorio-forzado #panelCategorias,
+html.modo-escritorio-forzado #herramientasMenuMovil,
+html.modo-escritorio-forzado #seccionSubtitulos,
+html.modo-escritorio-forzado #seccionNosotros {
+    scroll-margin-top: 117px !important;
 }
 html.modo-escritorio-forzado nav.navbar {
-    position: static !important;
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1030;
 }
 html.modo-escritorio-forzado nav.navbar .container {
     justify-content: space-between !important;
@@ -2082,6 +2148,16 @@ html.modo-movil-real .mobile-bottom-nav {
 html.modo-movil-real body {
     padding-top: 80px !important;
     padding-bottom: 74px !important;
+}
+/* Mismo motivo que el "scroll-margin-top" del media query real de
+   móvil/tablet: acá se repite porque "modo-movil-real" puede
+   activarse con un ancho de ventana horizontal que supere 1200px. */
+html.modo-movil-real #buscar,
+html.modo-movil-real #panelCategorias,
+html.modo-movil-real #herramientasMenuMovil,
+html.modo-movil-real #seccionSubtitulos,
+html.modo-movil-real #seccionNosotros {
+    scroll-margin-top: 96px !important;
 }
 html.modo-movil-real body.vista-temas-movil #senalDelDia,
 html.modo-movil-real body.vista-temas-movil .stats-header,

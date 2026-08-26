@@ -1,3 +1,16 @@
+// El navegador (Chrome sobre todo) recuerda por su cuenta la posición de
+// scroll de cada entrada del historial y la vuelve a aplicar solo al
+// recargar la página, incluso si el JS de acá nunca pidió ese scroll.
+// Eso es justo lo que seguía cortando el encabezado de "Vocabulario" al
+// entrar directo por "?vista=vocabulario": el scroll automático del
+// propio navegador ganaba por encima del window.scrollTo({top:0}) de
+// abajo. Con "manual" apagamos esa restauración automática, y dejamos
+// que sea siempre nuestro propio código (más abajo) el que decida dónde
+// arranca la página.
+if ("scrollRestoration" in history) {
+    history.scrollRestoration = "manual";
+}
+
 const buscar = document.getElementById("buscar");
 const btnBuscar = document.getElementById("btnBuscar");
 const sugerencias = document.getElementById("sugerencias");
@@ -223,6 +236,18 @@ function irAlBuscador(){
     }
 }
 
+// Cuando "Vocabulario" se abre solo (sin que la persona haya tocado el
+// botón), como al cargar la página directo en "?vista=vocabulario", no
+// queremos el scroll automático que centra el panel de categorías: eso
+// dejaba la pantalla a mitad de camino, con el encabezado ("Vocabulario
+// de Lengua de Señas Peruana") y parte de las tarjetas cortados fuera de
+// vista (ver captura reportada). En cambio, cuando la persona SÍ toca el
+// botón del menú, ese scroll ayuda a llevarla directo al contenido. Esta
+// bandera distingue ambos casos: se activa justo antes de simular el
+// clic durante la restauración inicial y el handler la apaga después de
+// leerla.
+let saltarScrollAlAbrirVocabulario = false;
+
 // El botón "Historial" del menú se fusionó dentro de "Temas orden":
 // un solo clic ahora muestra Categorías, Favoritos e Historial juntos
 // (cada uno sigue siendo su propio bloque independiente en el HTML).
@@ -238,6 +263,21 @@ document.getElementById("btnCategorias").addEventListener("click", (e) => {
     // el CSS (@media max-width 1199.98px) para ocultar la seña del
     // día/ayer y el panel de Estadísticas; también aplica en escritorio.
     document.body.classList.add("vista-temas-movil");
+    // Los 3 bloques de arriba (seña del día, cabecera de stats y panel de
+    // stats) solo se ocultaban vía CSS con la clase "vista-temas-movil"
+    // dentro de "@media (max-width: 1199.98px)". En escritorio ancho
+    // (>=1200px) esa regla no aplica y nada más los tapaba, así que
+    // mostrarBloqueInicio() los volvía a mostrar sin condición y
+    // descuadraban el layout de tarjetas de Vocabulario/Temas (bug
+    // reportado: la tarjeta reaparecía arriba de las categorías en
+    // escritorio). Se ocultan acá explícitamente, sin depender del ancho
+    // de pantalla, igual que ya se hace más abajo con el índice A-Z.
+    const senalTemas = document.getElementById("senalDelDia");
+    if (senalTemas) senalTemas.style.display = "none";
+    const statsHeaderTemas = document.querySelector(".stats-header");
+    if (statsHeaderTemas) statsHeaderTemas.style.display = "none";
+    const statsPanelTemas = document.querySelector(".stats-panel-destacado");
+    if (statsPanelTemas) statsPanelTemas.style.display = "none";
     colapsarIndiceAlfabetico();
     // El botón "A-Z | Índice alfabético" no debe verse dentro de "Temas
     // orden" (ahí ya se navega por las tarjetas de categoría y por el
@@ -261,15 +301,33 @@ document.getElementById("btnCategorias").addEventListener("click", (e) => {
     mostrarCategorias();
     mostrarPantallaHistorialYFavoritos();
     actualizarVistaUrl("vocabulario");
-    panelCategorias.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    panelCategorias.classList.add("highlight-anim");
-    seccionFavoritos.classList.add("highlight-anim");
-    seccionHistorial.classList.add("highlight-anim");
-    setTimeout(() => {
-        panelCategorias.classList.remove("highlight-anim");
-        seccionFavoritos.classList.remove("highlight-anim");
-        seccionHistorial.classList.remove("highlight-anim");
-    }, 2000);
+    if (saltarScrollAlAbrirVocabulario) {
+        // Carga directa en "?vista=vocabulario": se deja la pantalla arriba
+        // del todo, como una visita normal a la página, en vez de saltar a
+        // mitad de camino.
+        saltarScrollAlAbrirVocabulario = false;
+        // Antes este scrollTo(top:0) se disparaba una sola vez y de
+        // inmediato. En ese momento el avatar del héroe y las tarjetas de
+        // categoría todavía se están acomodando (animación de entrada por
+        // IntersectionObserver, imágenes/fuentes terminando de cargar), así
+        // que el alto del documento sigue cambiando justo después: el
+        // "scroll anchoring" del navegador compensa ese cambio arriba del
+        // scroll y termina arrastrando la pantalla de nuevo a mitad de
+        // camino (el "cortado" reportado). Se reutiliza la misma estrategia
+        // de espera + vigilancia que ya usa scrollAlPrimerResultado(), pero
+        // apuntando al techo de la página (top:0) en vez de a un elemento.
+        scrollArribaEstable();
+    } else {
+        panelCategorias.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        panelCategorias.classList.add("highlight-anim");
+        seccionFavoritos.classList.add("highlight-anim");
+        seccionHistorial.classList.add("highlight-anim");
+        setTimeout(() => {
+            panelCategorias.classList.remove("highlight-anim");
+            seccionFavoritos.classList.remove("highlight-anim");
+            seccionHistorial.classList.remove("highlight-anim");
+        }, 2000);
+    }
 });
 
 // --- BARRA DE NAVEGACIÓN INFERIOR (solo móvil/tablet) ---
@@ -1134,6 +1192,11 @@ function procesarDatosApp(data) {
                 const vistaEnUrl = urlParams.get("vista");
                 if (vistaEnUrl === "vocabulario" || vistaEnUrl === "temas") {
                     const btnCategorias = document.getElementById("btnCategorias");
+                    // Evita que el clic simulado dispare el scroll que centra
+                    // el panel de categorías: acá se está restaurando la
+                    // vista tras cargar la página directo, así que debe verse
+                    // desde arriba (ver bandera "saltarScrollAlAbrirVocabulario").
+                    saltarScrollAlAbrirVocabulario = true;
                     if (btnCategorias) btnCategorias.click();
                     // Si el refresco vino de un segundo toque en "Vocabulario"
                     // (ver refrescarSeccionConservandoEstado), acá se restaura
@@ -3105,6 +3168,56 @@ function scrollAlPrimerResultado(el){
                 : 0;
             if (bounds.top < -5 || bounds.top > 120 + altoNavbarFijo) {
                 window.scrollTo({ top: calcularDestino(), behavior: "auto" });
+            }
+            if (transcurrido < DURACION_VIGILANCIA_MS) {
+                requestAnimationFrame(vigilarYCorregir);
+            }
+        }
+        requestAnimationFrame(vigilarYCorregir);
+    }
+
+    requestAnimationFrame(medirYEsperar);
+}
+
+// Misma estrategia que scrollAlPrimerResultado() de arriba (esperar a que
+// el alto del documento y del viewport se estabilicen, saltar sin
+// animación, y vigilar/corregir unos instantes más) pero apuntando siempre
+// al techo de la página. Se usa al restaurar "?vista=vocabulario" desde una
+// carga directa, donde un solo window.scrollTo({top:0}) disparado de
+// inmediato quedaba peleando contra el "scroll anchoring" mientras el
+// avatar y las tarjetas de categoría todavía se acomodaban (animación de
+// entrada por IntersectionObserver), dejando la pantalla a mitad de camino
+// (el "cortado" reportado).
+function scrollArribaEstable(){
+    let altoAnterior = -1;
+    let altoViewportAnterior = -1;
+    let intentos = 0;
+
+    function medirYEsperar(){
+        const altoActual = document.documentElement.scrollHeight;
+        const altoViewportActual = window.visualViewport ? window.visualViewport.height : -1;
+        intentos++;
+        const documentoEstable = altoActual === altoAnterior;
+        const viewportEstable = altoViewportActual === altoViewportAnterior;
+        if ((documentoEstable && viewportEstable) || intentos > 20) {
+            hacerScroll();
+            return;
+        }
+        altoAnterior = altoActual;
+        altoViewportAnterior = altoViewportActual;
+        requestAnimationFrame(medirYEsperar);
+    }
+
+    function hacerScroll(){
+        window.scrollTo({ top: 0, behavior: "auto" });
+
+        const inicioVigilancia = performance.now();
+        const DURACION_VIGILANCIA_MS = 1200;
+
+        function vigilarYCorregir(){
+            const transcurrido = performance.now() - inicioVigilancia;
+            if ((window.pageYOffset || document.documentElement.scrollTop || 0) > 5) {
+                window.scrollTo({ top: 0, behavior: "auto" });
             }
             if (transcurrido < DURACION_VIGILANCIA_MS) {
                 requestAnimationFrame(vigilarYCorregir);
