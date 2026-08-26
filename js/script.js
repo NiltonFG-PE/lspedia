@@ -652,6 +652,8 @@ function ocultarSeccionHerramientas(){
     ocultarAlfabetizacion();
     const menuMovil = document.getElementById("herramientasMenuMovil");
     if(menuMovil) menuMovil.classList.add("d-none");
+    const seccionApoyoHerramientas = document.getElementById("seccionApoyoHerramientas");
+    if(seccionApoyoHerramientas) seccionApoyoHerramientas.classList.add("d-none");
 }
 
 // Mismo punto de corte que usa el resto de la barra inferior móvil
@@ -782,6 +784,8 @@ function mostrarSeccionHerramientas(){
         ocultarQuiz();
         ocultarAlfabetizacion();
         menuMovil.classList.remove("d-none");
+        const seccionApoyoHerramientasMovil = document.getElementById("seccionApoyoHerramientas");
+        if(seccionApoyoHerramientasMovil) seccionApoyoHerramientasMovil.classList.remove("d-none");
         menuMovil.scrollIntoView({ behavior: 'smooth', block: 'start' });
         return;
     }
@@ -815,6 +819,9 @@ function mostrarSeccionHerramientas(){
             }
         } catch(err){ console.error("No se pudo iniciar Alfabetización:", err); }
     }
+
+    const seccionApoyoHerramientas = document.getElementById("seccionApoyoHerramientas");
+    if(seccionApoyoHerramientas) seccionApoyoHerramientas.classList.remove("d-none");
 
     if(seccionSubtitulos) seccionSubtitulos.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
@@ -2897,11 +2904,19 @@ function observarEntradaAnimada(el){
 
 // Herramientas (menú móvil) y Sobre Nosotros ya están en el HTML desde
 // el inicio (no se crean por JS), así que sus tarjetas se observan una
-// sola vez apenas carga la página.
+// sola vez apenas carga la página. Lo mismo aplica a las tarjetas de
+// apoyo reutilizadas en Diccionario/Vocabulario (#seccionSugerencias) y
+// en Herramientas (#seccionApoyoHerramientas): si no se observan acá,
+// se quedan con opacity:0 para siempre (ver ".nosotros-apoyo-card" en
+// estilos.css), aunque sigan funcionando al clic — quedan invisibles.
 function observarTarjetasEstaticas(){
     document.querySelectorAll("#herramientasMenuMovilRow .herr-movil-btn")
         .forEach(observarEntradaAnimada);
     document.querySelectorAll("#nosotrosApoyoRow .nosotros-apoyo-card")
+        .forEach(observarEntradaAnimada);
+    document.querySelectorAll("#seccionSugerencias .nosotros-apoyo-card")
+        .forEach(observarEntradaAnimada);
+    document.querySelectorAll("#seccionApoyoHerramientas .nosotros-apoyo-card")
         .forEach(observarEntradaAnimada);
 }
 document.addEventListener("DOMContentLoaded", observarTarjetasEstaticas);
@@ -3209,25 +3224,25 @@ function filtrarPorCategoriaDiccionario(nombre){
     // Se arma todo el HTML en una sola variable y se asigna de una vez
     // (en vez de "...innerHTML += ..." dentro del forEach) para evitar
     // múltiples reflujos/reflows mientras se insertan las tarjetas.
-    // Mismo formato de fila que usa la sección Vocabulario en
-    // mostrarCategoria() (miniatura del video + nombre + botón "Ver
-    // Seña", todo en una fila), en vez del formato anterior sin
-    // miniatura, para que ambas secciones se vean y se sientan igual.
-    let htmlResultado = `<h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">Categoría: ${nombre}</h6>`;
-    filtradas.forEach(p => {
+    // A diferencia de Vocabulario (mostrarCategoria), acá se usa una
+    // cuadrícula de tarjetas una al lado de otra; cada tarjeta entera
+    // es un <button> (clic o toque en cualquier parte abre la seña), y
+    // el "Ver Seña" de adentro (con ícono de ojo) es solo visual. El
+    // animation-delay escalonado (ver .categoria-resultado-item en
+    // estilos.css) hace que las tarjetas vayan apareciendo en cascada,
+    // como si "salieran" de la tarjeta de categoría que se tocó.
+    let htmlResultado = `<h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">Categoría: ${nombre}</h6>
+    <div class="categoria-resultados-grid">`;
+    filtradas.forEach((p, i) => {
+        const nombreEscapado = p.palabra.replace(/'/g, "\\'");
         htmlResultado += `
-        <div class="card mb-2 palabra-card shadow-sm animate-fade-in" style="border-radius: 10px;">
-            <div class="card-body p-2 d-flex justify-content-between align-items-center">
-                <div class="sugerencia-fila">
-                    ${generarMiniaturaVocabulario(p)}
-                    <div class="sugerencia-texto">
-                        <h6 class="mb-0 fw-bold text-primary">${p.palabra}</h6>
-                    </div>
-                </div>
-                <button class="btn btn-sm btn-primary py-1 px-3 fw-bold" onclick="mostrarPalabraPorNombre('${p.palabra.replace(/'/g, "\\'")}')">Ver Seña</button>
-            </div>
-        </div>`;
+        <button type="button" class="categoria-resultado-item shadow-sm" style="animation-delay: ${Math.min(i, 20) * 0.04}s" onclick="mostrarPalabraPorNombre('${nombreEscapado}')">
+            ${generarMiniaturaVocabulario(p)}
+            <span class="categoria-resultado-titulo">${p.palabra}</span>
+            <span class="btn btn-sm btn-primary fw-bold categoria-resultado-boton">${ICONO_OJO_SVG} Ver Seña</span>
+        </button>`;
     });
+    htmlResultado += `</div>`;
     resultadoCategoriasDiccionario.innerHTML = htmlResultado;
     scrollAlPrimerResultado(resultadoCategoriasDiccionario);
 }
@@ -3275,7 +3290,7 @@ function mostrarCategorias(){
             ? `<img src="${icono}" alt="${nombre}" loading="lazy" style="width: 48px; height: 48px; object-fit: contain; margin-bottom: 8px;">`
             : `<span style="font-size: 2rem; display: block; margin-bottom: 8px;">${emoji}</span>`;
         const card = document.createElement("div");
-        card.className = "col-6 col-md-3 animate-fade-in";
+        card.className = "col-4 col-md-3 animate-fade-in";
         card.innerHTML = `<div class="card h-100 shadow-sm categoria-card" style="border-radius: 16px; border: 2px solid ${color.borde}; background-color: ${color.fondo};"><div class="card-body text-center py-4">${iconoHtml}<h5 class="mb-2 fw-bold" style="color: ${color.texto}; font-size: 1.25rem;">${nombre}</h5><p class="mb-0 fw-semibold" style="color: ${color.texto}; opacity: 0.85; font-size: 1rem;">${cantidad} palabras</p></div></div>`;
         card.onclick = () => mostrarCategoria(nombre);
         panelCategorias.appendChild(card);
@@ -3458,6 +3473,12 @@ function obtenerDatosVocabulario(){
 // "play", o el emoji de respaldo si la palabra no tiene video) que ya
 // usa el buscador del Diccionario (#sugerencias, ver más arriba), para
 // que las tarjetas de Vocabulario se vean y se sientan igual.
+// Ícono de "ojo con pestaña" (estilo Feather/outline) para el botón
+// visual "Ver Seña" de las tarjetas de categoría del Diccionario (ver
+// filtrarPorCategoriaDiccionario). Es un SVG simple en vez de una
+// librería de íconos completa, ya que el sitio no carga ninguna.
+const ICONO_OJO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>`;
+
 function generarMiniaturaVocabulario(p){
     const idVideo = extraerIdYouTube(p.video);
     return idVideo
@@ -3472,10 +3493,17 @@ function mostrarCategoria(nombre){
     categoriaActualMostrada = nombre;
     if(buscarCategorias) buscarCategorias.value = "";
     if(sugerenciasCategorias){ sugerenciasCategorias.innerHTML = ""; sugerenciasCategorias.style.display = "none"; }
-    let html = botonAtrasCategorias() + `<h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">Categoría: ${nombre}</h6>`;
-    obtenerDatosVocabulario().filter(p => p.categoria.trim() === nombre).forEach(p=>{
-        html += `<div class="card mb-2 palabra-card shadow-sm animate-fade-in" style="border-radius: 10px;"><div class="card-body p-2 d-flex justify-content-between align-items-center"><div class="sugerencia-fila">${generarMiniaturaVocabulario(p)}<div class="sugerencia-texto"><h6 class="mb-0 fw-bold text-primary">${p.palabra}</h6></div></div><button class="btn btn-sm btn-primary py-1 px-3 fw-bold" onclick="mostrarPalabraPorNombreUnificado('${p.palabra.replace(/'/g, "\\'")}')">Ver Seña</button></div></div>`;
+    let html = botonAtrasCategorias() + `<h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">Categoría: ${nombre}</h6>
+    <div class="categoria-resultados-grid">`;
+    obtenerDatosVocabulario().filter(p => p.categoria.trim() === nombre).forEach((p, i) => {
+        const nombreEscapado = p.palabra.replace(/'/g, "\\'");
+        html += `<button type="button" class="categoria-resultado-item shadow-sm" style="animation-delay: ${Math.min(i, 20) * 0.04}s" onclick="mostrarPalabraPorNombreUnificado('${nombreEscapado}')">
+            ${generarMiniaturaVocabulario(p)}
+            <span class="categoria-resultado-titulo">${p.palabra}</span>
+            <span class="btn btn-sm btn-primary fw-bold categoria-resultado-boton">${ICONO_OJO_SVG} Ver Seña</span>
+        </button>`;
     });
+    html += `</div>`;
     resultadoCategorias.innerHTML = html;
     scrollAlPrimerResultado(resultadoCategorias);
 }

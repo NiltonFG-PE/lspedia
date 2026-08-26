@@ -315,6 +315,130 @@ h1, h2, h3, h4, h5, h6 {
     margin-top: 2px;
 }
 
+/* Resultados de una categoría (Diccionario y Vocabulario): cuadrícula
+   de tarjetas una al lado de otra, con una animación de aparición al
+   tocar la tarjeta de categoría (como si los resultados "salieran" de
+   ella), en vez de la lista de filas de antes. Cada tarjeta entera es
+   tocable/clicable para abrir la seña; el "botón" Ver Seña de adentro
+   es solo visual (ver filtrarPorCategoriaDiccionario y mostrarCategoria
+   en script.js). Mismas clases para ambas secciones. */
+.categoria-resultados-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 12px;
+}
+@keyframes categoriaResultadoAparece {
+    from {
+        opacity: 0;
+        transform: scale(0.55) translateY(-16px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+.categoria-resultado-item {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 12px;
+    background-color: #fff;
+    text-align: center;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    /* animation-delay se fija inline por tarjeta (ver script.js) para
+       que aparezcan en cascada, no todas de golpe. "both" mantiene el
+       estado inicial (opacity:0) durante ese delay, en vez de
+       mostrarse ya visibles antes de que le toque el turno. */
+    animation: categoriaResultadoAparece 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.categoria-resultado-item:hover,
+.categoria-resultado-item:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
+}
+.categoria-resultado-item .sugerencia-thumb-wrap {
+    width: 100%;
+    height: 100px;
+    border-radius: 0;
+}
+.categoria-resultado-titulo {
+    display: block;
+    padding: 8px 8px 0;
+    font-weight: 700;
+    color: #0d6efd;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.categoria-resultado-boton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    margin: 8px;
+}
+
+/* Versión móvil: 3 columnas fijas y tarjetas más chicas/compactas en
+   vez de dejar que se acomoden solas por ancho disponible. */
+@media (max-width: 576px) {
+    .categoria-resultados-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+    .categoria-resultado-item .sugerencia-thumb-wrap {
+        height: 62px;
+    }
+    .categoria-resultado-titulo {
+        padding: 5px 4px 0;
+        font-size: 0.68rem;
+    }
+    .categoria-resultado-boton {
+        margin: 5px;
+        gap: 3px;
+        font-size: 0.6rem;
+        padding: 0.2rem 0.3rem !important;
+    }
+    .categoria-resultado-boton svg {
+        width: 11px;
+        height: 11px;
+    }
+}
+
+/* Tarjetas de categorías de Vocabulario (#panelCategorias, generadas
+   en script.js con col-4 col-md-3): en móvil van 3 por fila en vez de
+   2, así que se achican padding/ícono/texto para que no se vean
+   apretadas, igual que se hizo con .categoria-resultados-grid. */
+@media (max-width: 576px) {
+    #panelCategorias .categoria-card .card-body {
+        padding-top: 14px !important;
+        padding-bottom: 14px !important;
+        padding-left: 6px !important;
+        padding-right: 6px !important;
+    }
+    #panelCategorias .categoria-card img {
+        width: 34px !important;
+        height: 34px !important;
+        margin-bottom: 4px !important;
+    }
+    #panelCategorias .categoria-card span[style*="font-size: 2rem"] {
+        font-size: 1.4rem !important;
+        margin-bottom: 4px !important;
+    }
+    #panelCategorias .categoria-card h5 {
+        font-size: 0.85rem !important;
+        margin-bottom: 2px !important;
+    }
+    #panelCategorias .categoria-card p {
+        font-size: 0.7rem !important;
+    }
+}
+
 /* ==========================================
    3. BLOQUES DE ESTADÍSTICAS DELGADAS
 ========================================== */

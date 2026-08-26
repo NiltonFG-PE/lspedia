@@ -628,17 +628,28 @@
            al proyecto (sugerir palabra, enviar idea, donar, contratar
            intérprete). Mismo lenguaje visual que las tarjetas de
            estadísticas: ícono circular arriba, texto centrado.
-           ============================================================ */
+           Rediseño: antes el color de acento (--nosotros-acento) solo
+           aparecía al pasar el mouse (fondo blanco puro + borde casi del
+           mismo tono que el fondo), así que en reposo se veían casi sin
+           color. Ahora cada tarjeta lleva su tinte visible todo el
+           tiempo (degradado sutil + borde + sombra con ese color), la
+           franja superior queda fija en vez de aparecer solo al hover,
+           y el ícono va en una insignia circular con una animación de
+           "respiración" continua para que se sientan vivas incluso sin
+           tocarlas. */
         .nosotros-apoyo-card {
             position: relative;
-            background-color: #ffffff;
-            border: 1.5px solid #eef1f6;
+            background: #fffaf0;
+            background: linear-gradient(160deg, color-mix(in srgb, var(--nosotros-acento, #cbd5e1) 12%, #ffffff), #ffffff 65%);
+            border: 1.5px solid #e2c98a;
+            border: 1.5px solid color-mix(in srgb, var(--nosotros-acento, #cbd5e1) 35%, #ffffff);
             border-radius: 14px;
-            padding: 18px 12px;
-            box-shadow: 0 3px 9px rgba(15, 23, 42, 0.06);
+            padding: 20px 12px 18px;
+            box-shadow: 0 3px 10px rgba(15, 23, 42, 0.08), 0 1px 0 rgba(255, 255, 255, 0.6) inset;
+            box-shadow: 0 3px 10px color-mix(in srgb, var(--nosotros-acento, #cbd5e1) 18%, transparent), 0 1px 0 rgba(255, 255, 255, 0.6) inset;
             cursor: pointer;
             overflow: hidden;
-            transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
         }
         .nosotros-apoyo-card::before {
             content: "";
@@ -647,45 +658,59 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: var(--nosotros-acento, #cbd5e1);
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.2s ease;
+            background: linear-gradient(90deg, var(--nosotros-acento, #cbd5e1), color-mix(in srgb, var(--nosotros-acento, #cbd5e1) 55%, #ffffff));
         }
         .nosotros-apoyo-card:hover,
         .nosotros-apoyo-card:focus-visible {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 22px rgba(15, 23, 42, 0.13);
+            transform: translateY(-6px) scale(1.015);
+            box-shadow: 0 14px 28px color-mix(in srgb, var(--nosotros-acento, #cbd5e1) 35%, transparent);
             border-color: var(--nosotros-acento, #cbd5e1);
             outline: none;
         }
-        .nosotros-apoyo-card:hover::before,
-        .nosotros-apoyo-card:focus-visible::before {
-            transform: scaleX(1);
-        }
         .nosotros-apoyo-card:hover .nosotros-apoyo-icono,
         .nosotros-apoyo-card:focus-visible .nosotros-apoyo-icono {
-            transform: scale(1.18) rotate(-4deg);
+            animation-play-state: paused;
+            transform: scale(1.15) rotate(-6deg);
+            background: color-mix(in srgb, var(--nosotros-acento, #cbd5e1) 28%, #ffffff);
         }
         .nosotros-apoyo-card:hover .nosotros-apoyo-titulo,
         .nosotros-apoyo-card:focus-visible .nosotros-apoyo-titulo {
             color: var(--nosotros-acento, #0f172a);
         }
-        .nosotros-apoyo-card-idea { --nosotros-acento: #f59e0b; }
+        .nosotros-apoyo-card-idea { --nosotros-acento: #0d6efd; }
         .nosotros-apoyo-card-sugerencia { --nosotros-acento: #f59e0b; }
         .nosotros-apoyo-card-donacion { --nosotros-acento: #e11d48; }
         .nosotros-apoyo-card-interprete { --nosotros-acento: #7c3aed; }
         .nosotros-apoyo-icono {
-            font-size: 28px;
-            margin-bottom: 8px;
-            display: inline-block;
-            transition: transform 0.2s ease;
+            font-size: 26px;
+            width: 52px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            border-radius: 50%;
+            background: #f4f0fb;
+            background: color-mix(in srgb, var(--nosotros-acento, #cbd5e1) 16%, #ffffff);
+            box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--nosotros-acento, #cbd5e1) 30%, #ffffff);
+            transition: transform 0.2s ease, background-color 0.2s ease;
+            animation: nosotrosApoyoRespira 2.6s ease-in-out infinite;
+        }
+        @keyframes nosotrosApoyoRespira {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .nosotros-apoyo-icono {
+                animation: none;
+            }
         }
         .nosotros-apoyo-titulo {
             font-weight: 800;
             color: #0f172a;
             font-size: 0.9rem;
             margin-bottom: 4px;
+            transition: color 0.2s ease;
         }
         .nosotros-apoyo-desc {
             font-size: 0.78rem;
@@ -1409,27 +1434,25 @@
 
 
 
-/* Controles personalizados del reproductor de video (LSP): barra en los
-   colores de marca de LSPedia (amarillo del logo de fondo, botones en el
-   mismo azul que ya se usa en la barra de menú/buscador del sitio), con
-   botones "abultados" (sombra + borde inferior más grueso, como una
-   tecla física) al estilo control de videojuego, para que resalten y
-   se sientan más táctiles. */
+/* Controles personalizados del reproductor de video (LSP): barra amarilla
+   clara y semitransparente (look "vidrio esmerilado" moderno), con
+   botones en el mismo azul marino que ya se usa en el resto del sitio,
+   "abultados" (sombra + borde inferior más grueso, como una tecla
+   física) al estilo control de videojuego, para que resalten y se
+   sientan más táctiles. */
 .controles-video {
-    background: linear-gradient(180deg, #ffc94d, #f5a623);
-    border: 1px solid #d18a1b;
+    background: rgba(255, 205, 87, 0.32);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid rgba(209, 138, 27, 0.45);
     border-radius: 14px;
     padding: 10px 12px;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 4px 12px rgba(180, 116, 11, 0.35);
-    /* Que la barra ocupe el ancho real del video (nunca más). Antes tenía
-       "flex-wrap" (clase de Bootstrap en el HTML): cuando los 8 botones no
-       entraban en una sola fila, el último caía a una segunda línea, y
-       según el ancho exacto de la ventana ese salto aparecía o
-       desaparecía, dando la sensación de que los botones "se movían". Se
-       cambió esa clase a "flex-nowrap" (ver script.js/index.html) y acá se
-       deja como respaldo un scroll horizontal: la fila nunca se parte en
-       dos, y si de verdad no entra completa en pantallas muy angostas, se
-       desliza hacia los costados en vez de reacomodarse. */
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 4px 12px rgba(180, 116, 11, 0.18);
+    /* Que la barra ocupe el ancho real del video (nunca más). En pantallas
+       normales los botones caben en una sola fila (flex-nowrap, ver
+       script.js/index.html); en celulares angostos se permite pasar a
+       "wrap" (ver media query más abajo) para que ningún botón quede
+       cortado ni haga falta deslizar para verlos todos. */
     width: 100%;
     box-sizing: border-box;
     overflow-x: auto;
@@ -1537,11 +1560,16 @@
 .controles-video [id^="btnVelocidadRapidaNosotros"]:hover {
     transform: translateY(-2px) scale(1.15) rotate(8deg);
 }
-/* Pantallas angostas (celulares chicos): botones más compactos para que
-   la barra completa (1s, Iniciar, Más, 3s, velocidad, loop, pantalla
-   completa) se adapte al ancho disponible sin desbordarse. */
+/* Pantallas angostas (celulares chicos): botones más compactos y, si aun
+   así no entran todos en una sola fila, se permite que pasen a una
+   segunda línea (flex-wrap) en vez de recortarse o quedar escondidos
+   detrás de un scroll horizontal poco visible. Así se ve la barra
+   completa siempre, sin que ningún botón quede cortado. */
 @media (max-width: 480px) {
     .controles-video {
+        flex-wrap: wrap !important;
+        overflow-x: visible;
+        row-gap: 6px;
         gap: 4px !important;
         padding: 8px 6px;
     }
@@ -1610,7 +1638,9 @@
     color: #e2e8f0 !important;
 }
 .nosotros-video-wrap.nosotros-pantalla-completa .controles-video {
-    background: linear-gradient(180deg, #ffc94d, #f5a623);
+    background: rgba(255, 205, 87, 0.32);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     width: 100%;
     max-width: 1100px;
 }
@@ -3548,58 +3578,84 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
 
         </section>
 
-        <!-- BLOQUE "SUGERIR PALABRA": tarjeta azul oscuro con foco, chispas
-             decorativas y botón píldora en degradado amarillo. -->
-        <section id="seccionSugerencias" class="mt-5 pt-4 border-top text-center">
-            <div class="sugerencia-card">
-                <span class="sugerencia-puntos sugerencia-puntos-tl" aria-hidden="true"></span>
-                <span class="sugerencia-puntos sugerencia-puntos-br" aria-hidden="true"></span>
-                <svg class="sugerencia-silueta sugerencia-silueta-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true">
-                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-                </svg>
-                <svg class="sugerencia-silueta sugerencia-silueta-libro" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true">
-                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2Z"/>
-                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7Z"/>
-                </svg>
-
-                <div class="sugerencia-contenido">
-                    <div class="sugerencia-icono-wrap">
-                        <span class="sugerencia-icono" aria-hidden="true">💡</span>
+        <!-- BLOQUE DE APOYO para Herramientas: mismas 4 tarjetas que en
+             Diccionario/Vocabulario (#seccionSugerencias) y en Sobre
+             Nosotros (#nosotrosApoyoRow). Se muestra/oculta junto con
+             el resto de Herramientas (ver mostrarSeccionHerramientas y
+             ocultarSeccionHerramientas en script.js). -->
+        <section id="seccionApoyoHerramientas" class="mb-5 mt-4 pt-4 border-top d-none">
+            <div class="row g-3">
+                <div class="col-6 col-md-3">
+                    <div class="nosotros-apoyo-card nosotros-apoyo-card-sugerencia h-100 text-center" role="button" tabindex="0" data-bs-toggle="modal" data-bs-target="#modalSugerencia">
+                        <div class="nosotros-apoyo-icono" aria-hidden="true">💡</div>
+                        <div class="nosotros-apoyo-titulo">Sugerir palabra</div>
+                        <div class="nosotros-apoyo-desc">¿Falta un término? Envíanos tu propuesta.</div>
                     </div>
-
-                    <div class="sugerencia-titulo-wrap">
-                        <svg class="sugerencia-spark sugerencia-spark-izq" viewBox="0 0 20 34" fill="none" stroke="#fbbf24" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">
-                            <line x1="5" y1="4" x2="12" y2="10"/>
-                            <line x1="2" y1="17" x2="11" y2="17"/>
-                            <line x1="5" y1="30" x2="12" y2="24"/>
-                        </svg>
-                        <h6 class="sugerencia-titulo">¿Falta alguna <span class="resaltado">palabra</span> en el diccionario?</h6>
-                        <svg class="sugerencia-spark sugerencia-spark-der" viewBox="0 0 20 34" fill="none" stroke="#fbbf24" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">
-                            <line x1="15" y1="4" x2="8" y2="10"/>
-                            <line x1="18" y1="17" x2="9" y2="17"/>
-                            <line x1="15" y1="30" x2="8" y2="24"/>
-                        </svg>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="nosotros-apoyo-card nosotros-apoyo-card-idea h-100 text-center" role="button" tabindex="0" data-bs-toggle="modal" data-bs-target="#modalEnviarIdea">
+                        <div class="nosotros-apoyo-icono" aria-hidden="true">💬</div>
+                        <div class="nosotros-apoyo-titulo">Enviar una idea</div>
+                        <div class="nosotros-apoyo-desc">Comparte sugerencias para mejorar LSPedia.</div>
                     </div>
-
-                    <p class="sugerencia-subtitulo">Ayúdanos sugiriendo términos para expandir la plataforma.</p>
-
-                    <button type="button" class="sugerencia-btn" data-bs-toggle="modal" data-bs-target="#modalSugerencia">
-                        <span class="sugerencia-btn-icono" aria-hidden="true">✏️</span>
-                        Sugerir Palabra
-                        <span class="sugerencia-btn-mas" aria-hidden="true">+</span>
-                    </button>
                 </div>
-
-                <div class="sugerencia-ilustracion" aria-hidden="true">
-                    <span class="sugerencia-ilus-libro">📖</span>
-                    <span class="sugerencia-ilus-burbuja">🤟</span>
-                    <span class="sugerencia-ilus-spark s1">✨</span>
-                    <span class="sugerencia-ilus-spark s2">✨</span>
+                <div class="col-6 col-md-3">
+                    <div class="nosotros-apoyo-card nosotros-apoyo-card-donacion h-100 text-center" role="button" tabindex="0" data-bs-toggle="modal" data-bs-target="#modalDonacion">
+                        <div class="nosotros-apoyo-icono" aria-hidden="true">❤️</div>
+                        <div class="nosotros-apoyo-titulo">Apoyar LSPedia</div>
+                        <div class="nosotros-apoyo-desc">Ayuda a mantener el proyecto gratuito y en crecimiento.</div>
+                    </div>
                 </div>
-
-                <span class="sugerencia-glow" aria-hidden="true"></span>
+                <div class="col-6 col-md-3">
+                    <div class="nosotros-apoyo-card nosotros-apoyo-card-interprete h-100 text-center" role="button" tabindex="0" data-bs-toggle="modal" data-bs-target="#modalInterprete">
+                        <div class="nosotros-apoyo-icono" aria-hidden="true">🎤</div>
+                        <div class="nosotros-apoyo-titulo">Contratar un intérprete</div>
+                        <div class="nosotros-apoyo-desc">Solicita servicios de interpretación en LSP.</div>
+                    </div>
+                </div>
             </div>
         </section>
+
+        <!-- BLOQUE DE APOYO: mismas 4 tarjetas (Sugerir palabra / Enviar
+             una idea / Apoyar LSPedia / Contratar un intérprete) que ya
+             usa la sección "Sobre Nosotros" (ver #nosotrosApoyoRow), acá
+             reutilizadas en Diccionario y Vocabulario. Mantiene el id
+             "seccionSugerencias" para que mostrarBloqueInicio() /
+             ocultarBloqueInicio() (script.js) lo sigan mostrando/
+             ocultando igual que antes, sin tocar esa lógica. -->
+        <section id="seccionSugerencias" class="mt-5 pt-4 border-top">
+            <div class="row g-3">
+                <div class="col-6 col-md-3">
+                    <div class="nosotros-apoyo-card nosotros-apoyo-card-sugerencia h-100 text-center" role="button" tabindex="0" data-bs-toggle="modal" data-bs-target="#modalSugerencia">
+                        <div class="nosotros-apoyo-icono" aria-hidden="true">💡</div>
+                        <div class="nosotros-apoyo-titulo">Sugerir palabra</div>
+                        <div class="nosotros-apoyo-desc">¿Falta un término? Envíanos tu propuesta.</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="nosotros-apoyo-card nosotros-apoyo-card-idea h-100 text-center" role="button" tabindex="0" data-bs-toggle="modal" data-bs-target="#modalEnviarIdea">
+                        <div class="nosotros-apoyo-icono" aria-hidden="true">💬</div>
+                        <div class="nosotros-apoyo-titulo">Enviar una idea</div>
+                        <div class="nosotros-apoyo-desc">Comparte sugerencias para mejorar LSPedia.</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="nosotros-apoyo-card nosotros-apoyo-card-donacion h-100 text-center" role="button" tabindex="0" data-bs-toggle="modal" data-bs-target="#modalDonacion">
+                        <div class="nosotros-apoyo-icono" aria-hidden="true">❤️</div>
+                        <div class="nosotros-apoyo-titulo">Apoyar LSPedia</div>
+                        <div class="nosotros-apoyo-desc">Ayuda a mantener el proyecto gratuito y en crecimiento.</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="nosotros-apoyo-card nosotros-apoyo-card-interprete h-100 text-center" role="button" tabindex="0" data-bs-toggle="modal" data-bs-target="#modalInterprete">
+                        <div class="nosotros-apoyo-icono" aria-hidden="true">🎤</div>
+                        <div class="nosotros-apoyo-titulo">Contratar un intérprete</div>
+                        <div class="nosotros-apoyo-desc">Solicita servicios de interpretación en LSP.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
 
         <!-- ================================================================
              SECCIÓN "SOBRE NOSOTROS": reemplaza el antiguo modal. Se
