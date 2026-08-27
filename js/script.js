@@ -652,8 +652,6 @@ function ocultarSeccionHerramientas(){
     ocultarAlfabetizacion();
     const menuMovil = document.getElementById("herramientasMenuMovil");
     if(menuMovil) menuMovil.classList.add("d-none");
-    const seccionApoyoHerramientas = document.getElementById("seccionApoyoHerramientas");
-    if(seccionApoyoHerramientas) seccionApoyoHerramientas.classList.add("d-none");
 }
 
 // Mismo punto de corte que usa el resto de la barra inferior móvil
@@ -784,8 +782,6 @@ function mostrarSeccionHerramientas(){
         ocultarQuiz();
         ocultarAlfabetizacion();
         menuMovil.classList.remove("d-none");
-        const seccionApoyoHerramientasMovil = document.getElementById("seccionApoyoHerramientas");
-        if(seccionApoyoHerramientasMovil) seccionApoyoHerramientasMovil.classList.remove("d-none");
         menuMovil.scrollIntoView({ behavior: 'smooth', block: 'start' });
         return;
     }
@@ -820,9 +816,6 @@ function mostrarSeccionHerramientas(){
         } catch(err){ console.error("No se pudo iniciar Alfabetización:", err); }
     }
 
-    const seccionApoyoHerramientas = document.getElementById("seccionApoyoHerramientas");
-    if(seccionApoyoHerramientas) seccionApoyoHerramientas.classList.remove("d-none");
-
     if(seccionSubtitulos) seccionSubtitulos.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
@@ -855,6 +848,12 @@ function mostrarSeccionNosotros(){
         seccion.classList.remove("d-none");
         seccion.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+    // El texto arranca justo debajo del video (que ahora "flota" fijo
+    // sobre la página, ver .nosotros-video-wrap.nosotros-fijo en el
+    // CSS). Como el alto real del video+leyenda+controles varía según
+    // el ancho de pantalla, se mide después de que el layout se asiente
+    // (por eso el pequeño delay) en vez de usar un valor fijo adivinado.
+    setTimeout(ajustarEspacioVideoNosotros, 60);
     // iniciarReproductorNosotros ya espera, cuadro a cuadro, a que el
     // contenedor tenga su tamaño real antes de crear el reproductor de
     // YouTube (ver crearReproductorNosotrosCuandoVisible más abajo), así
@@ -1314,7 +1313,7 @@ if (statCardCategorias) {
         const panel = document.getElementById("filaCategoriasDiccionario");
         if (panel) {
             // Antes usaba block:"center": como el panel es alto (header +
-            // grid de tarjetas + #resultadoCategoriasDiccionario), centrarlo
+            // grid de tarjetas), centrarlo
             // dejaba la mitad de arriba fuera de pantalla en móvil y el
             // bloque quedaba "cortado". Con scrollAlPrimerResultado (la
             // misma función que usa filtrarPorCategoriaDiccionario) el
@@ -1336,14 +1335,10 @@ if (statCardVideos) {
 
 const indiceAlfabetico = document.getElementById("indiceAlfabetico");
 if(indiceAlfabetico){
-    indiceAlfabetico.addEventListener("show.bs.collapse", () => {
-        const flecha = document.getElementById("flechaAbc");
-        if(flecha) flecha.style.transform = "rotate(180deg)";
-    });
-    indiceAlfabetico.addEventListener("hide.bs.collapse", () => {
-        const flecha = document.getElementById("flechaAbc");
-        if(flecha) flecha.style.transform = "rotate(0deg)";
-    });
+    // El diseño actual ya no usa una flecha giratoria: el propio botón
+    // #btnToggleAbc alterna su texto ("Mostrar todas" / "Ocultar") solo
+    // con CSS, en base al atributo aria-expanded que Bootstrap actualiza
+    // por su cuenta al abrir/cerrar el collapse (ver estilos.css).
     // En escritorio el índice alfabético arranca desplegado (en móvil
     // sigue arrancando colapsado, como antes).
     desplegarIndiceAlfabetico();
@@ -1640,6 +1635,12 @@ function ejecutarBusquedaDirecta() {
     categoriaActualMostrada = null;
     ultimasPalabras.innerHTML = "";
     ocultarPanelesGuardados();
+    const filaCategoriasDiccBusq = document.getElementById("filaCategoriasDiccionario");
+    if(filaCategoriasDiccBusq) filaCategoriasDiccBusq.style.display = "none";
+    const statsPanelBusq = document.querySelector(".stats-panel-destacado");
+    if(statsPanelBusq) statsPanelBusq.style.display = "none";
+    const statsHeaderBusq = document.querySelector(".stats-header");
+    if(statsHeaderBusq) statsHeaderBusq.style.display = "none";
     resultado.innerHTML = `
     <div class="card shadow-sm mb-4 border-0 animate-fade-in" style="border-radius: 15px; background-color: #f8f9fa;">
         <div class="card-body p-5 text-center">
@@ -1692,6 +1693,17 @@ function mostrarPalabra(p, opciones = {}){
         categoriaActualMostrada = null;
         resultado.innerHTML = "";
         ultimasPalabras.innerHTML = "";
+        // Al mostrar el resultado de una palabra (búsqueda o categoría)
+        // en Diccionario, se ocultan las tarjetas de Categorías y el
+        // panel de Estadísticas que quedan arriba del buscador: no
+        // aportan nada mientras se está viendo una ficha, y vuelven a
+        // aparecer al regresar al inicio (ver mostrarBloqueInicio()).
+        const filaCategoriasDicc = document.getElementById("filaCategoriasDiccionario");
+        if(filaCategoriasDicc) filaCategoriasDicc.style.display = "none";
+        const statsPanelResultado = document.querySelector(".stats-panel-destacado");
+        if(statsPanelResultado) statsPanelResultado.style.display = "none";
+        const statsHeaderResultado = document.querySelector(".stats-header");
+        if(statsHeaderResultado) statsHeaderResultado.style.display = "none";
     } else {
         // No tocamos el buscador principal ni las tarjetas de categoría
         // (siguen visibles arriba, igual que al buscar dentro de una
@@ -1948,7 +1960,7 @@ let ytOpcionesReproductorPalabraPendiente = {};
 let ytVideoIdSugeridaPendiente = null;
 
 // --- REPRODUCTOR DE VIDEO CONTROLABLE PARA "SOBRE NOSOTROS" ---
-const ID_VIDEO_NOSOTROS = "L4KdbBKuEYU";
+const ID_VIDEO_NOSOTROS = "CTzPj2deb3M";
 let ytPlayerNosotros = null;
 let ytVideoNosotrosPendiente = null;
 let nosotrosVelocidadIndex = VELOCIDADES_PALABRA.indexOf(1);
@@ -2037,6 +2049,72 @@ function crearReproductorNosotros(videoId) {
     });
 }
 
+// Al tocar el título o cualquier párrafo de un bloque del texto de
+// "Sobre Nosotros" (ver [data-tiempo-nosotros] en el HTML), el video
+// salta directo a la parte donde se explica ese tema, igual que el
+// comportamiento de la Watchtower Online (wol.jw.org): el video queda
+// fijo arriba (ver .nosotros-video-wrap.nosotros-fijo en el CSS) y el
+// texto se desplaza debajo, así siempre se ve mientras se lee. Si el
+// reproductor todavía no existe (la sección no se abrió antes), se crea
+// primero y se guarda el segundo pedido para saltarlo apenas esté listo.
+let nosotrosSegundoPendiente = null;
+function saltarVideoNosotros(segundos) {
+    const wrap = document.getElementById("nosotrosVideoWrap");
+    if (wrap) wrap.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (!ytPlayerNosotros || typeof ytPlayerNosotros.seekTo !== "function") {
+        nosotrosSegundoPendiente = segundos;
+        iniciarReproductorNosotros();
+        return;
+    }
+    ytPlayerNosotros.seekTo(segundos, true);
+    ytPlayerNosotros.playVideo();
+}
+window.saltarVideoNosotros = saltarVideoNosotros;
+
+// El video de "Sobre Nosotros" es position:fixed (ver .nosotros-fijo en
+// el CSS), así que no ocupa espacio real en el flujo del documento. El
+// texto que sigue (#nosotrosTextoBajoVideo) necesita un padding-top
+// exactamente del alto del video+leyenda+controles para que, al entrar
+// a la sección, arranque justo debajo de él en vez de escondido detrás
+// desde el principio. Se mide el alto real (no un número fijo) porque
+// cambia según el ancho de pantalla (el video es 16:9 dentro de un
+// contenedor de ancho variable) y según si el texto de los botones se
+// oculta en celulares chicos (ver los estilos de .controles-video).
+function ajustarEspacioVideoNosotros() {
+    const video = document.getElementById("nosotrosVideoWrap");
+    const texto = document.getElementById("nosotrosTextoBajoVideo");
+    if (!video || !texto) return;
+    const alturaVideo = video.getBoundingClientRect().height;
+    if (alturaVideo > 0) {
+        texto.style.paddingTop = (alturaVideo + 24) + "px";
+    }
+}
+window.addEventListener("resize", () => {
+    const seccion = document.getElementById("seccionNosotros");
+    if (seccion && !seccion.classList.contains("d-none")) {
+        ajustarEspacioVideoNosotros();
+    }
+});
+
+// Un solo listener delegado (en vez de uno por título/párrafo) alcanza
+// para los 4 bloques del texto de "Sobre Nosotros": cualquier clic
+// dentro de un elemento [data-tiempo-nosotros] (o alguno de sus hijos,
+// como los <li> de la lista) hace saltar el video a ese segundo.
+document.addEventListener("click", (e) => {
+    const elClicable = e.target.closest("[data-tiempo-nosotros]");
+    if (!elClicable) return;
+    const segundos = parseInt(elClicable.getAttribute("data-tiempo-nosotros"), 10);
+    if (!isNaN(segundos)) saltarVideoNosotros(segundos);
+});
+document.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    const elClicable = e.target.closest("[data-tiempo-nosotros]");
+    if (!elClicable) return;
+    e.preventDefault();
+    const segundos = parseInt(elClicable.getAttribute("data-tiempo-nosotros"), 10);
+    if (!isNaN(segundos)) saltarVideoNosotros(segundos);
+});
+
 function configurarControlesVideoNosotros() {
     const btnRetroceder = document.getElementById("btnRetroceder10Nosotros");
     const btnAvanzar = document.getElementById("btnAvanzar10Nosotros");
@@ -2061,6 +2139,17 @@ function configurarControlesVideoNosotros() {
             ytPlayerNosotros.setSize(rectVideoNosotros.width, rectVideoNosotros.height);
         }
     }
+
+    // Si se tocó un título/párrafo del texto ANTES de que el reproductor
+    // terminara de crearse (ver saltarVideoNosotros), el salto quedó
+    // pendiente acá: se aplica apenas el reproductor ya está listo.
+    if (nosotrosSegundoPendiente !== null) {
+        const segundoPendiente = nosotrosSegundoPendiente;
+        nosotrosSegundoPendiente = null;
+        ytPlayerNosotros.seekTo(segundoPendiente, true);
+        ytPlayerNosotros.playVideo();
+    }
+    ajustarEspacioVideoNosotros();
 
     btnRetroceder.addEventListener("click", () => {
         const tiempoActual = ytPlayerNosotros.getCurrentTime();
@@ -2087,8 +2176,7 @@ function configurarControlesVideoNosotros() {
         ytPlayerNosotros.playVideo();
     });
 
-    nosotrosVelocidadIndex = VELOCIDADES_PALABRA.indexOf(1);
-    ytPlayerNosotros.setPlaybackRate(1);
+    nosotrosVelocidadIndex = VELOCIDADES_PALABRA.indexOf(1);    ytPlayerNosotros.setPlaybackRate(1);
     actualizarLabelVelocidadNosotros();
 
     btnVelocidadLenta.addEventListener("click", () => cambiarVelocidadNosotros(-1));
@@ -2115,7 +2203,10 @@ function actualizarLabelVelocidadNosotros() {
 function actualizarBotonPlayPauseNosotros(evento) {
     const btnPlayPause = document.getElementById("btnPlayPauseNosotros");
     if (!btnPlayPause) return;
-    btnPlayPause.textContent = evento.data === YT.PlayerState.PLAYING ? "⏸ Pausar" : "▶️ Iniciar";
+    const reproduciendo = evento.data === YT.PlayerState.PLAYING;
+    btnPlayPause.innerHTML = reproduciendo
+        ? '⏸ <span class="controles-video-texto">Pausar</span>'
+        : '<span class="nosotros-icono-iniciar">▶</span> <span class="controles-video-texto">Iniciar</span>';
     alternarTapaPausaYoutube("nosotrosVideoRatio", evento);
 }
 
@@ -2129,6 +2220,91 @@ function alternarTapaPausaYoutube(wrapId, evento) {
     const enPausaOTerminado = evento.data === YT.PlayerState.PAUSED || evento.data === YT.PlayerState.ENDED;
     wrap.classList.toggle("yt-pausado", enPausaOTerminado);
 }
+
+// Ventana flotante y arrastrable del video de "Sobre Nosotros": el usuario
+// mantiene presionada la barrita superior (#nosotrosArrastre, ver HTML) y
+// la mueve a cualquier parte de la pantalla. Se usan Pointer Events porque
+// funcionan igual con mouse, lápiz o dedo, sin necesitar código aparte
+// para touch. La posición queda guardada en nosotrosPosicionGuardada para
+// poder restaurarla al salir de pantalla completa (ver
+// toggleNosotrosPantallaCompleta), que mientras tanto la desactiva porque
+// ahí el video ocupa toda la pantalla y no tiene sentido arrastrarlo.
+let nosotrosArrastrando = false;
+let nosotrosArrastreOffsetX = 0;
+let nosotrosArrastreOffsetY = 0;
+let nosotrosPosicionGuardada = null;
+
+function configurarArrastreNosotros() {
+    const wrap = document.getElementById("nosotrosVideoWrap");
+    const manija = document.getElementById("nosotrosArrastre");
+    const barraControles = wrap ? wrap.querySelector(".controles-video") : null;
+    if (!wrap || !manija) return;
+
+    function moverA(x, y) {
+        const margen = 4;
+        const maxX = Math.max(margen, window.innerWidth - wrap.offsetWidth - margen);
+        const maxY = Math.max(margen, window.innerHeight - wrap.offsetHeight - margen);
+        const nuevoX = Math.max(margen, Math.min(x, maxX));
+        const nuevoY = Math.max(margen, Math.min(y, maxY));
+        wrap.style.left = nuevoX + "px";
+        wrap.style.top = nuevoY + "px";
+        wrap.style.transform = "none";
+        nosotrosPosicionGuardada = { left: nuevoX, top: nuevoY };
+    }
+
+    function empezarArrastre(e, elemento) {
+        if (wrap.classList.contains("nosotros-pantalla-completa")) return;
+        const rect = wrap.getBoundingClientRect();
+        nosotrosArrastreOffsetX = e.clientX - rect.left;
+        nosotrosArrastreOffsetY = e.clientY - rect.top;
+        nosotrosArrastrando = true;
+        wrap.classList.add("nosotros-arrastrando");
+        elemento.setPointerCapture(e.pointerId);
+        e.preventDefault();
+    }
+
+    function soltar(e, elemento) {
+        if (!nosotrosArrastrando) return;
+        nosotrosArrastrando = false;
+        wrap.classList.remove("nosotros-arrastrando");
+        try { elemento.releasePointerCapture(e.pointerId); } catch (err) { /* ya liberado */ }
+    }
+
+    // Mango dedicado (la barrita "⠿ ⠿ ⠿"): arrastra desde cualquier punto.
+    manija.addEventListener("pointerdown", (e) => empezarArrastre(e, manija));
+    manija.addEventListener("pointermove", (e) => {
+        if (nosotrosArrastrando) moverA(e.clientX - nosotrosArrastreOffsetX, e.clientY - nosotrosArrastreOffsetY);
+    });
+    manija.addEventListener("pointerup", (e) => soltar(e, manija));
+    manija.addEventListener("pointercancel", (e) => soltar(e, manija));
+
+    // Barra de controles: también arrastra desde cualquier parte de ella,
+    // EXCEPTO si el toque cae justo sobre un botón (o la píldora de
+    // velocidad), para no interferir con sus clics normales. closest()
+    // sube desde el punto exacto tocado, así que un toque en el "aire"
+    // entre botones (o en su padding) sigue iniciando el arrastre.
+    if (barraControles) {
+        barraControles.addEventListener("pointerdown", (e) => {
+            if (e.target.closest("button, .controles-video-velocidad")) return;
+            empezarArrastre(e, barraControles);
+        });
+        barraControles.addEventListener("pointermove", (e) => {
+            if (nosotrosArrastrando) moverA(e.clientX - nosotrosArrastreOffsetX, e.clientY - nosotrosArrastreOffsetY);
+        });
+        barraControles.addEventListener("pointerup", (e) => soltar(e, barraControles));
+        barraControles.addEventListener("pointercancel", (e) => soltar(e, barraControles));
+    }
+
+    // Si la ventana del navegador cambia de tamaño (o gira el celular) y
+    // la posición guardada queda fuera del área visible, se reubica
+    // dentro de los límites en vez de dejarla cortada fuera de pantalla.
+    window.addEventListener("resize", () => {
+        if (nosotrosPosicionGuardada && !wrap.classList.contains("nosotros-pantalla-completa")) {
+            moverA(nosotrosPosicionGuardada.left, nosotrosPosicionGuardada.top);
+        }
+    });
+}
+document.addEventListener("DOMContentLoaded", configurarArrastreNosotros);
 
 // Vista "pantalla completa" del video de Sobre Nosotros: es un overlay
 // dentro de la misma ventana (no usa requestFullscreen), así la barra de
@@ -2145,8 +2321,23 @@ function toggleNosotrosPantallaCompleta(forzarCerrar) {
     wrap.classList.toggle("nosotros-pantalla-completa", nosotrosPantallaCompletaActiva);
     document.body.classList.toggle("nosotros-pantalla-completa-activa", nosotrosPantallaCompletaActiva);
 
+    // La ventana flotante (ver configurarArrastreNosotros) usa left/top/
+    // transform en línea. En pantalla completa eso debe desaparecer para
+    // que el overlay ocupe toda la pantalla; al salir, se restaura donde
+    // el usuario la había dejado (si nunca la arrastró, vuelve sola a su
+    // posición centrada de siempre).
+    if (nosotrosPantallaCompletaActiva) {
+        wrap.style.left = "";
+        wrap.style.top = "";
+        wrap.style.transform = "";
+    } else if (nosotrosPosicionGuardada) {
+        wrap.style.left = nosotrosPosicionGuardada.left + "px";
+        wrap.style.top = nosotrosPosicionGuardada.top + "px";
+        wrap.style.transform = "none";
+    }
+
     if (btn) {
-        btn.innerHTML = nosotrosPantallaCompletaActiva ? "✕ Salir de pantalla completa" : "⛶ Pantalla completa";
+        btn.innerHTML = nosotrosPantallaCompletaActiva ? "✕ Salir" : "⛶";
         btn.title = nosotrosPantallaCompletaActiva ? "Salir de pantalla completa" : "Ver en pantalla completa";
         btn.setAttribute("aria-label", btn.title);
     }
@@ -2156,6 +2347,10 @@ function toggleNosotrosPantallaCompleta(forzarCerrar) {
     } else {
         document.removeEventListener("keydown", salirNosotrosPantallaCompletaConEscape);
     }
+    // El tamaño del video cambia al entrar/salir de pantalla completa,
+    // así que el espacio reservado arriba del texto (ver
+    // ajustarEspacioVideoNosotros) debe recalcularse en ambos casos.
+    setTimeout(ajustarEspacioVideoNosotros, 60);
 }
 
 function salirNosotrosPantallaCompletaConEscape(evento) {
@@ -2688,22 +2883,39 @@ function filtrarPorLetra(letra) {
     categoriaActualMostrada = null;
     ultimasPalabras.innerHTML = ""; 
     ocultarPanelesGuardados();
+    // Igual que al elegir una tarjeta de Categoría: la sección
+    // "Categorías" (#filaCategoriasDiccionario) ya no se oculta al
+    // filtrar por letra, se deja siempre visible debajo del teclado
+    // A-Z. Solo se sigue ocultando el panel de Estadísticas, para no
+    // competir visualmente con el listado de resultados.
+    const statsPanelLetra = document.querySelector(".stats-panel-destacado");
+    if(statsPanelLetra) statsPanelLetra.style.display = "none";
+    const statsHeaderLetra = document.querySelector(".stats-header");
+    if(statsHeaderLetra) statsHeaderLetra.style.display = "none";
     window.history.pushState({}, '', window.location.pathname);
     const filtradas = App.datos.filter(p => p.palabra.toUpperCase().startsWith(letra.toUpperCase()));
     if (filtradas.length === 0) {
         resultado.innerHTML = `<div class="alert alert-light border text-center text-muted small py-3" style="border-radius: 12px;">No hay resultados con <strong>${letra}</strong>.</div>`;
         return;
     }
-    resultado.innerHTML = `<h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">Resultados con: ${letra}</h6>`;
-    filtradas.forEach(p => {
-        resultado.innerHTML += `
-        <div class="card mb-2 palabra-card shadow-sm animate-fade-in" style="border-radius: 10px;">
-            <div class="card-body p-2 d-flex justify-content-between align-items-center">
-                <div><h6 class="mb-0 fw-bold text-primary">${p.palabra}</h6><small class="text-muted">${p.categoria.trim()}</small></div>
-                <button class="btn btn-sm btn-primary py-1 px-3 fw-bold" onclick="mostrarPalabraPorNombre('${p.palabra}')">Ver Seña</button>
-            </div>
-        </div>`;
+    // Mismo estilo de tarjeta que usa filtrarPorCategoriaDiccionario():
+    // miniatura del video + nombre + botón "Ver Seña", en una cuadrícula
+    // (categoria-resultados-grid), en vez de la fila simple de antes.
+    // Se arma todo el HTML en una sola variable y se asigna de una vez,
+    // igual que allá, para evitar múltiples reflujos/reflows.
+    let htmlResultado = `<h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">Resultados con: ${letra}</h6>
+    <div class="categoria-resultados-grid">`;
+    filtradas.forEach((p, i) => {
+        const nombreEscapado = p.palabra.replace(/'/g, "\\'");
+        htmlResultado += `
+        <button type="button" class="categoria-resultado-item shadow-sm" style="animation-delay: ${Math.min(i, 20) * 0.04}s" onclick="mostrarPalabraPorNombre('${nombreEscapado}')">
+            ${generarMiniaturaVocabulario(p)}
+            <span class="categoria-resultado-titulo">${p.palabra}</span>
+            <span class="btn btn-sm btn-primary fw-bold categoria-resultado-boton">${ICONO_OJO_SVG} Ver Seña</span>
+        </button>`;
     });
+    htmlResultado += `</div>`;
+    resultado.innerHTML = htmlResultado;
 }
 
 // --- CATEGORÍAS ---
@@ -2905,18 +3117,16 @@ function observarEntradaAnimada(el){
 // Herramientas (menú móvil) y Sobre Nosotros ya están en el HTML desde
 // el inicio (no se crean por JS), así que sus tarjetas se observan una
 // sola vez apenas carga la página. Lo mismo aplica a las tarjetas de
-// apoyo reutilizadas en Diccionario/Vocabulario (#seccionSugerencias) y
-// en Herramientas (#seccionApoyoHerramientas): si no se observan acá,
-// se quedan con opacity:0 para siempre (ver ".nosotros-apoyo-card" en
-// estilos.css), aunque sigan funcionando al clic — quedan invisibles.
+// apoyo reutilizadas en Diccionario/Vocabulario (#seccionSugerencias):
+// si no se observan acá, se quedan con opacity:0 para siempre (ver
+// ".nosotros-apoyo-card" en estilos.css), aunque sigan funcionando al
+// clic — quedan invisibles.
 function observarTarjetasEstaticas(){
     document.querySelectorAll("#herramientasMenuMovilRow .herr-movil-btn")
         .forEach(observarEntradaAnimada);
     document.querySelectorAll("#nosotrosApoyoRow .nosotros-apoyo-card")
         .forEach(observarEntradaAnimada);
     document.querySelectorAll("#seccionSugerencias .nosotros-apoyo-card")
-        .forEach(observarEntradaAnimada);
-    document.querySelectorAll("#seccionApoyoHerramientas .nosotros-apoyo-card")
         .forEach(observarEntradaAnimada);
 }
 document.addEventListener("DOMContentLoaded", observarTarjetasEstaticas);
@@ -3214,8 +3424,22 @@ function filtrarPorCategoriaDiccionario(nombre){
     categoriaActualMostrada = null;
     ultimasPalabras.innerHTML = "";
     ocultarPanelesGuardados();
+    // Antes acá se ocultaba también #filaCategoriasDiccionario (las
+    // tarjetas de Categorías), pensado para "no repetir la grilla de
+    // categorías arriba y abajo del resultado" de cuando el resultado
+    // vivía DENTRO de esa misma fila. Ahora que #resultadoCategoriasDiccionario
+    // es una fila propia, independiente (ver index.html), ya no hay
+    // ninguna grilla que se repita: ocultar las tarjetas solo hacía que
+    // la sección "Categorías" desapareciera sin necesidad al elegir una,
+    // así que se dejan siempre visibles. El panel de Estadísticas sí se
+    // sigue ocultando (igual que al mostrar una palabra), para no competir
+    // visualmente con el listado de la categoría.
+    const statsPanelCat = document.querySelector(".stats-panel-destacado");
+    if(statsPanelCat) statsPanelCat.style.display = "none";
+    const statsHeaderCat = document.querySelector(".stats-header");
+    if(statsHeaderCat) statsHeaderCat.style.display = "none";
     window.history.pushState({}, '', window.location.pathname);
-    const filtradas = App.datos.filter(p => p.categoria.trim().toLowerCase() === nombre.trim().toLowerCase());
+    const filtradas = App.datos.filter(p => String(p.categoria || "").trim().toLowerCase() === nombre.trim().toLowerCase());
     if (filtradas.length === 0) {
         resultadoCategoriasDiccionario.innerHTML = `<div class="alert alert-light border text-center text-muted small py-3" style="border-radius: 12px;">No hay palabras en la categoría <strong>${nombre}</strong> todavía.</div>`;
         scrollAlPrimerResultado(resultadoCategoriasDiccionario);

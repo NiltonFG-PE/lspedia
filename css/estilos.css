@@ -108,15 +108,85 @@ h1, h2, h3, h4, h5, h6 {
     pointer-events: none;
 }
 
-/* Barra A-Z: todas las letras en una sola fila (nunca se parte en dos
-   filas en escritorio/tablet); si el espacio es muy angosto, se
-   comprimen las letras primero (ver .btn-abc de abajo) y, como último
-   recurso, aparece scroll horizontal. */
-.indice-alfabetico {
+/* ============================================================
+   ÍNDICE ALFABÉTICO — tarjeta con encabezado (insignia "A-Z" +
+   título) y, a la derecha, un enlace de texto "Mostrar todas" /
+   "Ocultar" que expande o contrae la cuadrícula de letras (usa el
+   collapse de Bootstrap sobre #indiceAlfabetico). La cuadrícula usa
+   CSS Grid con un número fijo de columnas por breakpoint (14 en
+   escritorio, 7 en móvil) para que las 27 letras (A-Z + Ñ) siempre
+   queden repartidas en filas parejas, igual que en el diseño de
+   referencia. ============================================================ */
+.indice-alfabetico-card {
     background: #ffffff;
-    display: flex !important;
-    flex-wrap: nowrap !important;
-    overflow-x: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
+    padding: 18px 20px;
+}
+.indice-alfabetico-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+}
+.indice-alfabetico-titulo-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.indice-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 26px;
+    padding: 0 10px;
+    border-radius: 8px;
+    background-color: #febd0f;
+    color: #1e1400;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    flex-shrink: 0;
+}
+.indice-alfabetico-titulo {
+    font-weight: 800;
+    color: var(--primary-color);
+    font-size: 1.05rem;
+}
+/* El toggle es solo texto (sin fondo ni borde propios), como un link
+   normal: "Mostrar todas" cuando el índice está contraído, "Ocultar"
+   cuando ya está expandido. Solo uno de los dos textos se muestra a
+   la vez, según el estado real del collapse (atributo
+   aria-expanded, que Bootstrap actualiza solo). */
+.indice-alfabetico-toggle {
+    background: none;
+    border: none;
+    padding: 4px 2px;
+    color: var(--accent-color);
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    flex-shrink: 0;
+}
+.indice-alfabetico-toggle:hover {
+    text-decoration: underline;
+}
+.indice-alfabetico-toggle .texto-ocultar { display: none; }
+.indice-alfabetico-toggle[aria-expanded="true"] .texto-mostrar { display: none; }
+.indice-alfabetico-toggle[aria-expanded="true"] .texto-ocultar { display: inline; }
+
+/* Cuadrícula de letras: 14 columnas por fila en escritorio (27
+   letras -> 14 + 13, igual que el diseño de referencia). El
+   contenido del collapse ya lleva su propio margen superior para
+   separarse del encabezado cuando está expandido. */
+.indice-alfabetico {
+    display: grid;
+    grid-template-columns: repeat(14, 1fr);
+    gap: 10px;
+    margin-top: 16px;
 }
 
 /* Estilo base de .btn-abc: lo reutiliza también el módulo "Aprender"
@@ -136,113 +206,41 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--accent-color);
 }
 
-/* Letras del Índice alfabético (vista Diccionario): cada una es una
-   "ficha" cuadrada, no un simple link de texto. Se escriben con el
-   prefijo ".indice-alfabetico" para no afectar el .btn-abc que genera
-   por su cuenta el módulo "Aprender" (js/alfabetizacion.js) en otra
-   parte de la página. */
+/* Letras del Índice alfabético (vista Diccionario): fichas cuadradas
+   con fondo gris claro, igual que el diseño de referencia. Se
+   escriben con el prefijo ".indice-alfabetico" para no afectar el
+   .btn-abc que genera por su cuenta el módulo "Aprender"
+   (js/alfabetizacion.js) en otra parte de la página. */
 .indice-alfabetico .btn-abc {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    flex: 1 1 0;
-    width: auto;
-    min-width: 22px;
-    height: 34px;
+    width: 100%;
+    aspect-ratio: 1 / 1;
     padding: 0;
-    border-radius: 9px;
-    background-color: #ffffff;
-    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background-color: #eef1f6;
+    border: none;
     color: var(--text-main);
-    font-weight: 700;
-    font-size: 13px;
+    font-weight: 700 !important;
+    font-size: 14px;
     text-decoration: none;
     transition: all 0.2s ease;
 }
-/* Amarillo (#febd0f) con texto blanco al pasar el cursor sobre una
-   letra del índice. */
+/* Amarillo un poco más oscuro/saturado que la insignia "A-Z" (que usa
+   #febd0f), tanto al pasar el cursor como en la letra seleccionada,
+   para que se note claramente sobre el fondo gris de las demás letras. */
 .indice-alfabetico .btn-abc:hover {
-    border-color: #febd0f;
-    color: #ffffff;
-    background-color: #febd0f;
+    background-color: #f5a90f;
+    color: #1e1400;
     transform: translateY(-1px);
 }
-/* Letra seleccionada: amarillo sólido (#febd0f), el mismo color que se
-   usa en el hover, para que sea claramente visible en escritorio. */
 .indice-alfabetico .btn-abc.active {
-    background: #febd0f;
-    border-color: transparent;
-    color: #ffffff;
-    box-shadow: 0 4px 10px rgba(245, 180, 0, 0.35);
+    background: #f5a90f;
+    color: #1e1400;
+    box-shadow: 0 4px 10px rgba(197, 130, 0, 0.4);
 }
 
-/* Encabezado "Índice alfabético": insignia A-Z + título, con la flecha
-   de expandir/contraer a la derecha. Reemplaza al botón-pastilla
-   anterior (que no llevaba insignia) y no incluye ningún botón
-   "Ver todo": el índice siempre puede desplegarse por completo tocando
-   el propio encabezado. */
-.indice-seccion-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    width: 100%;
-    background-color: #eaf2ff;
-    border: 1px solid #cfe0ff;
-    border-radius: 12px;
-    padding: 10px 14px;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-.indice-seccion-header:hover {
-    background-color: #dcebff;
-    border-color: #b9d5ff;
-}
-.indice-seccion-titulo-wrap {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-.indice-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 34px;
-    height: 26px;
-    padding: 0 8px;
-    border-radius: 7px;
-    background-color: #4d94ff;
-    color: #ffffff;
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 0.3px;
-    flex-shrink: 0;
-}
-.indice-seccion-titulo {
-    font-weight: 800;
-    color: var(--primary-color);
-    font-size: 0.95rem;
-    letter-spacing: 0.4px;
-    text-transform: uppercase;
-    text-align: left;
-}
-.flecha-abc-toggle {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    background-color: #1d4ed8;
-    color: #ffffff;
-    font-size: 14px;
-    font-weight: 700;
-    flex-shrink: 0;
-    transition: transform 0.2s ease, background-color 0.2s ease;
-}
-.indice-seccion-header[aria-expanded="true"] .flecha-abc-toggle {
-    transform: rotate(180deg);
-    background-color: #1547ac;
-}
 
 /* Panel de sugerencias desplegables (buscador principal y buscador de
    Vocabulario comparten el mismo look, ver #sugerenciasCategorias) */
@@ -349,17 +347,23 @@ h1, h2, h3, h4, h5, h6 {
     color: inherit;
     cursor: pointer;
     overflow: hidden;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
     /* animation-delay se fija inline por tarjeta (ver script.js) para
        que aparezcan en cascada, no todas de golpe. "both" mantiene el
        estado inicial (opacity:0) durante ese delay, en vez de
        mostrarse ya visibles antes de que le toque el turno. */
     animation: categoriaResultadoAparece 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+/* Al pasar el cursor (escritorio) o tocar la tarjeta (móvil): se eleva
+   un poco y crece levemente, para que se sienta "viva" al interactuar.
+   ":active" cubre el toque en móvil, donde no existe ":hover" —así el
+   mismo efecto aparece apenas se toca la tarjeta, no solo al soltarla. */
 .categoria-resultado-item:hover,
-.categoria-resultado-item:focus-visible {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
+.categoria-resultado-item:focus-visible,
+.categoria-resultado-item:active {
+    transform: translateY(-4px) scale(1.04);
+    box-shadow: 0 10px 20px rgba(15, 23, 42, 0.16);
+    z-index: 1;
 }
 .categoria-resultado-item .sugerencia-thumb-wrap {
     width: 100%;
@@ -382,6 +386,19 @@ h1, h2, h3, h4, h5, h6 {
     justify-content: center;
     gap: 5px;
     margin: 8px;
+    transition: background-color 0.15s ease;
+}
+/* Señal extra, más notoria que el movimiento de la tarjeta: el botón
+   "Ver Seña" de adentro cambia a un azul más oscuro al pasar el cursor
+   o al tocar la tarjeta (":active" cubre el toque en móvil). Se apunta
+   también directamente a ".categoria-resultado-boton:active" por si
+   algún navegador aplica ":active" solo al elemento tocado y no a sus
+   ancestros. */
+.categoria-resultado-item:hover .categoria-resultado-boton,
+.categoria-resultado-item:focus-visible .categoria-resultado-boton,
+.categoria-resultado-item:active .categoria-resultado-boton,
+.categoria-resultado-boton:active {
+    background-color: #0a4fb5 !important;
 }
 
 /* Versión móvil: 3 columnas fijas y tarjetas más chicas/compactas en
@@ -1426,28 +1443,12 @@ body.nosotros-pantalla-completa-activa {
         font-size: 1.3rem;
     }
 
-    /* Mejora del Abecedario: distribución en filas flexibles */
+    /* Índice Alfabético en móvil: misma tarjeta que en escritorio, pero
+       la cuadrícula pasa a 7 columnas (27 letras -> 7+7+7+6), igual que
+       el diseño de referencia para esta versión. */
     .indice-alfabetico {
-        display: flex !important;
-        flex-wrap: wrap !important;
-        gap: 5px !important;
-        padding: 10px !important;
-        justify-content: center !important;
-        overflow: visible !important;
-    }
-
-    .btn-abc {
-        /* Se divide el espacio para tener aproximadamente 7 letras por fila */
-        flex: 0 0 calc(100% / 8 - 5px); 
-        min-width: 35px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 8px;
-        font-size: 16px;
-        background-color: #f8f9fa; /* Fondo suave para mejor contraste */
-        border: 1px solid #dee2e6;
+        grid-template-columns: repeat(7, 1fr) !important;
+        gap: 8px !important;
     }
 
     #resultado .row > div:last-child {

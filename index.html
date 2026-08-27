@@ -61,7 +61,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/estilos.css?v=20260826">
     <link rel="stylesheet" href="css/quiz.css">
     <link rel="stylesheet" href="css/alfabetizacion.css">
     <link rel="stylesheet" href="css/matematicas.css">
@@ -716,6 +716,190 @@
             font-size: 0.78rem;
             color: #64748b;
             line-height: 1.35;
+        }
+
+        /* Video de "Sobre Nosotros" FIJO en la pantalla mientras se lee el
+           texto (mismo comportamiento que la Watchtower Online): a
+           diferencia de "sticky" (que solo acompaña el scroll dentro de
+           su contenedor), acá el video queda anclado al viewport con
+           "fixed", así el texto de abajo sigue subiendo y pasa
+           realmente POR DETRÁS de él, en vez de empujarlo. Para eso el
+           texto necesita un padding-top que dé lugar al video la
+           primera vez (ver .nosotros-texto-bajo-video) y el contenedor
+           de la sección necesita "position: relative" para que el
+           <section> siga midiendo el alto real del texto (si no,
+           position:fixed no cuenta para el alto del documento y el
+           scroll se corta antes de tiempo). */
+        #seccionNosotros {
+            position: relative;
+        }
+        .nosotros-video-wrap.nosotros-fijo {
+            position: fixed;
+            left: 50%;
+            z-index: 20;
+            width: calc(100% - 32px);
+            max-width: 510px;
+            transform: translateX(-50%);
+            background: rgba(248, 249, 250, 0.92);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border-radius: 14px;
+            padding: 6px 6px 3px;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.18);
+        }
+        /* Barrita para arrastrar la ventana flotante del video a cualquier
+           parte de la pantalla (ver configurarArrastreNosotros en
+           script.js). Solo sirve como mango: los clics dentro del video o
+           los botones de control no la tocan, así no interfiere con nada
+           más. "touch-action: none" evita que el celular intente hacer
+           scroll de la página mientras se arrastra con el dedo. */
+        .nosotros-arrastre {
+            cursor: grab;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+            text-align: center;
+            font-size: 11px;
+            line-height: 1;
+            color: #64748b;
+            letter-spacing: 2px;
+            padding: 5px 0 4px;
+            margin: -6px -6px 4px;
+            border-radius: 14px 14px 0 0;
+            background: rgba(15, 23, 42, 0.05);
+        }
+        .nosotros-arrastre:hover {
+            color: #0f172a;
+            background: rgba(15, 23, 42, 0.09);
+        }
+        /* La barra de controles también arrastra desde cualquier parte
+           "vacía" de ella (el JS ignora el toque si cae justo sobre un
+           botón o la píldora de velocidad, para no romper esos clics).
+           touch-action:none evita que el dedo dispare el scroll de la
+           página al arrastrar desde ahí. */
+        .nosotros-video-wrap.nosotros-fijo .controles-video {
+            cursor: grab;
+            touch-action: none;
+        }
+        .nosotros-video-wrap.nosotros-fijo .controles-video .btn,
+        .nosotros-video-wrap.nosotros-fijo .controles-video-velocidad {
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+        .nosotros-video-wrap.nosotros-arrastrando {
+            box-shadow: 0 16px 32px rgba(15, 23, 42, 0.32);
+        }
+        .nosotros-video-wrap.nosotros-arrastrando .nosotros-arrastre,
+        .nosotros-video-wrap.nosotros-arrastrando .controles-video {
+            cursor: grabbing;
+        }
+        /* En pantalla completa no tiene sentido arrastrar (el video ocupa
+           toda la pantalla), así que se oculta el mango. */
+        .nosotros-video-wrap.nosotros-fijo.nosotros-pantalla-completa .nosotros-arrastre {
+            display: none;
+        }
+        @media (min-width: 1200px) {
+            .nosotros-video-wrap.nosotros-fijo {
+                top: 117px;
+            }
+        }
+        @media (max-width: 1199.98px) {
+            .nosotros-video-wrap.nosotros-fijo {
+                top: 96px;
+            }
+        }
+        /* El video fijo se hace bien chico para dejar espacio de lectura
+           al texto (era la queja: "no hay espacio para ver el texto").
+           Acá se compacta la barra de controles SOLO mientras el video
+           está en este modo chico; en pantalla completa
+           (.nosotros-pantalla-completa, definida más abajo y con más
+           prioridad por ir después en este archivo) vuelve a su tamaño
+           normal. */
+        .nosotros-video-wrap.nosotros-fijo .controles-video {
+            padding: 4px 5px;
+            gap: 3px !important;
+            margin-top: 0 !important;
+            margin-bottom: 4px !important;
+            flex-wrap: wrap;
+        }
+        .nosotros-video-wrap.nosotros-fijo .controles-video .btn {
+            font-size: 9px;
+            padding: 0.15rem 0.35rem;
+        }
+        .nosotros-video-wrap.nosotros-fijo .controles-video-texto {
+            display: none;
+        }
+        .nosotros-video-wrap.nosotros-fijo .controles-video-velocidad {
+            padding: 1px 5px;
+        }
+        .nosotros-video-wrap.nosotros-fijo .controles-video-velocidad .small {
+            font-size: 9px;
+        }
+        /* En pantalla completa el video deja de ser chico (ver
+           .nosotros-pantalla-completa más abajo, con más ancho
+           disponible), así que los controles vuelven a su tamaño normal
+           en vez de quedarse con el tamaño compacto de arriba. */
+        .nosotros-video-wrap.nosotros-fijo.nosotros-pantalla-completa .controles-video-velocidad .small {
+            font-size: inherit !important;
+        }
+        /* El navy oscuro (#0f172a) del modo compacto casi no se distingue
+           sobre el fondo oscuro de pantalla completa; acá se aclara. */
+        .nosotros-video-wrap.nosotros-fijo.nosotros-pantalla-completa .controles-video-velocidad {
+            background-color: rgba(255, 255, 255, 0.14);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+        .nosotros-video-wrap.nosotros-fijo.nosotros-pantalla-completa .controles-video-velocidad .small {
+            color: #ffffff !important;
+        }
+        .nosotros-video-wrap.nosotros-fijo.nosotros-pantalla-completa .controles-video {
+            padding: 10px 12px;
+            gap: 8px !important;
+            flex-wrap: nowrap;
+        }
+        .nosotros-video-wrap.nosotros-fijo.nosotros-pantalla-completa .controles-video .btn {
+            font-size: 13px;
+            padding: 0.25rem 0.5rem;
+        }
+        .nosotros-video-wrap.nosotros-fijo.nosotros-pantalla-completa .controles-video-texto {
+            display: inline;
+        }
+        /* El texto arranca debajo del video (que ahora "flota" fuera del
+           flujo normal por el position:fixed) y, a medida que se hace
+           scroll, sube y desaparece detrás de él. El valor exacto se
+           ajusta por JS según la altura real del video+controles (ver
+           ajustarEspacioVideoNosotros en script.js), este es solo un
+           valor de respaldo mientras carga. */
+        .nosotros-texto-bajo-video {
+            padding-top: 420px;
+        }
+
+        /* Títulos y párrafos del texto de "Sobre Nosotros": al tocarlos,
+           el video salta directo a la parte donde se explica ese tema
+           (ver saltarVideoNosotros en script.js). El título va en azul
+           (color de marca) para que se note que es interactivo; el
+           bloque de párrafos se resalta sutilmente al pasar el mouse. */
+        .nosotros-titulo-clicable {
+            color: #0d6efd;
+            cursor: pointer;
+            transition: color 0.15s ease;
+        }
+        .nosotros-titulo-clicable:hover,
+        .nosotros-titulo-clicable:focus-visible {
+            color: #084298;
+            text-decoration: underline;
+            outline: none;
+        }
+        .nosotros-bloque-clicable {
+            cursor: pointer;
+            border-radius: 10px;
+            padding: 4px 8px;
+            margin: 0 -8px;
+            transition: background-color 0.15s ease;
+        }
+        .nosotros-bloque-clicable:hover,
+        .nosotros-bloque-clicable:focus-visible {
+            background-color: rgba(13, 110, 253, 0.06);
+            outline: none;
         }
 
         /* Botones del modal "Contratar un intérprete": fila con ícono,
@@ -1518,6 +1702,9 @@
     color: #ffffff;
     animation: pulsoBotonPrincipal 2.2s ease-in-out infinite;
 }
+.nosotros-icono-iniciar {
+    color: #28a745;
+}
 .controles-video .btn.btn-primary:hover {
     background-color: #1e293b;
     animation-play-state: paused;
@@ -1616,28 +1803,42 @@
 /* Vista "pantalla completa" del video de Sobre Nosotros: es un overlay
    dentro de la misma ventana del navegador (no usa la Fullscreen API real),
    para que la barra de direcciones y el resto de la página sigan visibles. */
-.nosotros-video-wrap.nosotros-pantalla-completa {
+/* Selector reforzado con ".nosotros-fijo" (3 clases, especificidad 0,3,0)
+   a propósito: el elemento SIEMPRE tiene también esa clase (nunca se
+   quita al entrar a pantalla completa, ver toggleNosotrosPantallaCompleta
+   en script.js), así que esto no cambia a qué aplica, pero garantiza que
+   estas reglas ganen siempre a las de ".nosotros-fijo" solo (0,2,0), sin
+   depender de cuál de los dos bloques quede después en el archivo. Antes
+   "width" y sobre todo "transform: translateX(-50%)" del modo compacto
+   quedaban sin anular: el video terminaba corrido medio ancho hacia la
+   izquierda y se veía cortado/deformado en pantalla completa. */
+.nosotros-video-wrap.nosotros-fijo.nosotros-pantalla-completa {
     position: fixed;
     inset: 0;
+    left: 0;
+    top: 0;
+    transform: none;
     z-index: 2000;
-    background-color: rgba(15, 23, 42, 0.97);
+    width: 100%;
+    max-width: none;
+    background: rgba(15, 23, 42, 0.97);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-radius: 0;
+    box-shadow: none;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    max-width: none;
     padding: 16px;
     margin: 0;
     overflow-y: auto;
 }
-.nosotros-video-wrap.nosotros-pantalla-completa #nosotrosVideoRatio {
+.nosotros-video-wrap.nosotros-fijo.nosotros-pantalla-completa #nosotrosVideoRatio {
     width: 100%;
     max-width: 1100px;
 }
-.nosotros-video-wrap.nosotros-pantalla-completa #nosotrosVideoLeyenda {
-    color: #e2e8f0 !important;
-}
-.nosotros-video-wrap.nosotros-pantalla-completa .controles-video {
+.nosotros-video-wrap.nosotros-fijo.nosotros-pantalla-completa .controles-video {
     background: rgba(255, 205, 87, 0.32);
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
@@ -2715,53 +2916,56 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
 
         </div>
 
-        <div class="row justify-content-center mb-2 mt-4" id="filaBotonIndiceAlfabetico">
+        <div class="row justify-content-center mb-4 mt-4" id="filaBotonIndiceAlfabetico">
             <div class="col-12">
-                <button class="btn indice-seccion-header" type="button" data-bs-toggle="collapse" data-bs-target="#indiceAlfabetico" aria-expanded="false" aria-controls="indiceAlfabetico" id="btnToggleAbc">
-                    <span class="indice-seccion-titulo-wrap">
-                        <span class="indice-badge">A-Z</span>
-                        <span class="indice-seccion-titulo">Índice alfabético</span>
-                    </span>
-                    <span id="flechaAbc" class="flecha-abc-toggle" aria-hidden="true">▾</span>
-                </button>
+                <div class="indice-alfabetico-card">
+                    <div class="indice-alfabetico-header">
+                        <span class="indice-alfabetico-titulo-wrap">
+                            <span class="indice-badge">A-Z</span>
+                            <span class="indice-alfabetico-titulo">Índice Alfabético</span>
+                        </span>
+                        <button type="button" class="indice-alfabetico-toggle" data-bs-toggle="collapse" data-bs-target="#indiceAlfabetico" aria-expanded="false" aria-controls="indiceAlfabetico" id="btnToggleAbc">
+                            <span class="texto-mostrar">Mostrar todas</span>
+                            <span class="texto-ocultar">Ocultar</span>
+                        </button>
+                    </div>
+                    <div id="filaIndiceAlfabetico">
+                        <div class="collapse" id="indiceAlfabetico">
+                            <div class="indice-alfabetico">
+                                <button class="btn btn-abc" onclick="filtrarPorLetra('A')">A</button>
+                                <button class="btn btn-abc" onclick="filtrarPorLetra('B')">B</button>
+                                <button class="btn btn-abc" onclick="filtrarPorLetra('C')">C</button>
+                                <button class="btn btn-abc" onclick="filtrarPorLetra('D')">D</button>
+                                <button class="btn btn-abc" onclick="filtrarPorLetra('E')">E</button>
+                                <button class="btn btn-abc" onclick="filtrarPorLetra('F')">F</button>
+                                <button class="btn btn-abc" onclick="filtrarPorLetra('G')">G</button>
+                                <button class="btn btn-abc" onclick="filtrarPorLetra('H')">H</button>
+                                <button class="btn btn-abc" onclick="filtrarPorLetra('I')">I</button>
+                                <button class="btn btn-abc" onclick="filtrarPorLetra('J')">J</button>
+                                <button class="btn btn-abc" onclick="filtrarPorLetra('K')">K</button>
+                                <button class="btn btn-abc" onclick="filtrarPorLetra('L')">L</button>
+                                <button class="btn btn-abc" onclick="filtrarPorLetra('M')">M</button>
+                                <button class="btn btn-abc" onclick="filtrarPorLetra('N')">N</button>
+                                <button class="btn btn-abc" onclick="filtrarPorLetra('Ñ')">Ñ</button>
+                                <button class="btn btn-abc" onclick="filtrarPorLetra('O')">O</button>
+                                <button class="btn btn-abc" onclick="filtrarPorLetra('P')">P</button>
+                                <button class="btn btn-abc" onclick="filtrarPorLetra('Q')">Q</button>
+                                <button class="btn btn-abc" onclick="filtrarPorLetra('R')">R</button>
+                                <button class="btn btn-abc" onclick="filtrarPorLetra('S')">S</button>
+                                <button class="btn btn-abc" onclick="filtrarPorLetra('T')">T</button>
+                                <button class="btn btn-abc" onclick="filtrarPorLetra('U')">U</button>
+                                <button class="btn btn-abc" onclick="filtrarPorLetra('V')">V</button>
+                                <button class="btn btn-abc" onclick="filtrarPorLetra('W')">W</button>
+                                <button class="btn btn-abc" onclick="filtrarPorLetra('X')">X</button>
+                                <button class="btn btn-abc" onclick="filtrarPorLetra('Y')">Y</button>
+                                <button class="btn btn-abc" onclick="filtrarPorLetra('Z')">Z</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="row justify-content-center mb-4" id="filaIndiceAlfabetico">
-            <div class="col-12">
-                <div class="collapse" id="indiceAlfabetico">
-                <div class="indice-alfabetico d-flex justify-content-between flex-wrap gap-1 p-2 bg-white rounded shadow-sm border">
-                    <button class="btn btn-abc" onclick="filtrarPorLetra('A')">A</button>
-                    <button class="btn btn-abc" onclick="filtrarPorLetra('B')">B</button>
-                    <button class="btn btn-abc" onclick="filtrarPorLetra('C')">C</button>
-                    <button class="btn btn-abc" onclick="filtrarPorLetra('D')">D</button>
-                    <button class="btn btn-abc" onclick="filtrarPorLetra('E')">E</button>
-                    <button class="btn btn-abc" onclick="filtrarPorLetra('F')">F</button>
-                    <button class="btn btn-abc" onclick="filtrarPorLetra('G')">G</button>
-                    <button class="btn btn-abc" onclick="filtrarPorLetra('H')">H</button>
-                    <button class="btn btn-abc" onclick="filtrarPorLetra('I')">I</button>
-                    <button class="btn btn-abc" onclick="filtrarPorLetra('J')">J</button>
-                    <button class="btn btn-abc" onclick="filtrarPorLetra('K')">K</button>
-                    <button class="btn btn-abc" onclick="filtrarPorLetra('L')">L</button>
-                    <button class="btn btn-abc" onclick="filtrarPorLetra('M')">M</button>
-                    <button class="btn btn-abc" onclick="filtrarPorLetra('N')">N</button>
-                    <button class="btn btn-abc" onclick="filtrarPorLetra('Ñ')">Ñ</button>
-                    <button class="btn btn-abc" onclick="filtrarPorLetra('O')">O</button>
-                    <button class="btn btn-abc" onclick="filtrarPorLetra('P')">P</button>
-                    <button class="btn btn-abc" onclick="filtrarPorLetra('Q')">Q</button>
-                    <button class="btn btn-abc" onclick="filtrarPorLetra('R')">R</button>
-                    <button class="btn btn-abc" onclick="filtrarPorLetra('S')">S</button>
-                    <button class="btn btn-abc" onclick="filtrarPorLetra('T')">T</button>
-                    <button class="btn btn-abc" onclick="filtrarPorLetra('U')">U</button>
-                    <button class="btn btn-abc" onclick="filtrarPorLetra('V')">V</button>
-                    <button class="btn btn-abc" onclick="filtrarPorLetra('W')">W</button>
-                    <button class="btn btn-abc" onclick="filtrarPorLetra('X')">X</button>
-                    <button class="btn btn-abc" onclick="filtrarPorLetra('Y')">Y</button>
-                    <button class="btn btn-abc" onclick="filtrarPorLetra('Z')">Z</button>
-                </div>
-                </div>
-            </div>
-        </div>
 
         <!-- Resultados de búsqueda del Diccionario: ahora aparecen ANTES de
              la sección Categorías (justo debajo del Índice Alfabético), no
@@ -2791,15 +2995,27 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                         Cargando categorías…
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <!-- Resultados al tocar una tarjeta de Categoría (Diccionario):
-                     antes se pintaban en #resultado (arriba de las tarjetas),
-                     lo que obligaba a un scroll hacia ARRIBA y hacía que la
-                     atención se quedara en las tarjetas de abajo. Ahora se
-                     pintan acá, justo debajo de las tarjetas, para que el
-                     scroll sea siempre hacia abajo y el bloque de resultados
-                     quede completo a la vista (ver filtrarPorCategoriaDiccionario()
-                     en script.js). -->
+        <!-- Resultados al tocar una tarjeta de Categoría (Diccionario):
+             antes se pintaban en #resultado (arriba de las tarjetas),
+             lo que obligaba a un scroll hacia ARRIBA y hacía que la
+             atención se quedara en las tarjetas de abajo. Ahora se
+             pintan acá, justo debajo de las tarjetas, para que el
+             scroll sea siempre hacia abajo y el bloque de resultados
+             quede completo a la vista (ver filtrarPorCategoriaDiccionario()
+             en script.js).
+             IMPORTANTE: este bloque va FUERA de #filaCategoriasDiccionario
+             a propósito. filtrarPorCategoriaDiccionario() oculta
+             #filaCategoriasDiccionario (display:none) para no repetir la
+             grilla de categorías arriba y abajo del resultado; cuando este
+             div vivía DENTRO de esa fila, ocultarla también ocultaba el
+             resultado recién generado, aunque el HTML se hubiera insertado
+             bien — por eso no se veía nada y las tarjetas "desaparecían"
+             sin que apareciera ningún resultado en su lugar. -->
+        <div class="row justify-content-center">
+            <div class="col-12">
                 <div id="resultadoCategoriasDiccionario" class="mb-4 animate-fade-in"></div>
             </div>
         </div>
@@ -3578,44 +3794,6 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
 
         </section>
 
-        <!-- BLOQUE DE APOYO para Herramientas: mismas 4 tarjetas que en
-             Diccionario/Vocabulario (#seccionSugerencias) y en Sobre
-             Nosotros (#nosotrosApoyoRow). Se muestra/oculta junto con
-             el resto de Herramientas (ver mostrarSeccionHerramientas y
-             ocultarSeccionHerramientas en script.js). -->
-        <section id="seccionApoyoHerramientas" class="mb-5 mt-4 pt-4 border-top d-none">
-            <div class="row g-3">
-                <div class="col-6 col-md-3">
-                    <div class="nosotros-apoyo-card nosotros-apoyo-card-sugerencia h-100 text-center" role="button" tabindex="0" data-bs-toggle="modal" data-bs-target="#modalSugerencia">
-                        <div class="nosotros-apoyo-icono" aria-hidden="true">💡</div>
-                        <div class="nosotros-apoyo-titulo">Sugerir palabra</div>
-                        <div class="nosotros-apoyo-desc">¿Falta un término? Envíanos tu propuesta.</div>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div class="nosotros-apoyo-card nosotros-apoyo-card-idea h-100 text-center" role="button" tabindex="0" data-bs-toggle="modal" data-bs-target="#modalEnviarIdea">
-                        <div class="nosotros-apoyo-icono" aria-hidden="true">💬</div>
-                        <div class="nosotros-apoyo-titulo">Enviar una idea</div>
-                        <div class="nosotros-apoyo-desc">Comparte sugerencias para mejorar LSPedia.</div>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div class="nosotros-apoyo-card nosotros-apoyo-card-donacion h-100 text-center" role="button" tabindex="0" data-bs-toggle="modal" data-bs-target="#modalDonacion">
-                        <div class="nosotros-apoyo-icono" aria-hidden="true">❤️</div>
-                        <div class="nosotros-apoyo-titulo">Apoyar LSPedia</div>
-                        <div class="nosotros-apoyo-desc">Ayuda a mantener el proyecto gratuito y en crecimiento.</div>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div class="nosotros-apoyo-card nosotros-apoyo-card-interprete h-100 text-center" role="button" tabindex="0" data-bs-toggle="modal" data-bs-target="#modalInterprete">
-                        <div class="nosotros-apoyo-icono" aria-hidden="true">🎤</div>
-                        <div class="nosotros-apoyo-titulo">Contratar un intérprete</div>
-                        <div class="nosotros-apoyo-desc">Solicita servicios de interpretación en LSP.</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <!-- BLOQUE DE APOYO: mismas 4 tarjetas (Sugerir palabra / Enviar
              una idea / Apoyar LSPedia / Contratar un intérprete) que ya
              usa la sección "Sobre Nosotros" (ver #nosotrosApoyoRow), acá
@@ -3666,15 +3844,11 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
         <section id="seccionNosotros" class="mb-5 d-none">
             <div class="nosotros-contenido mx-auto" style="max-width: 760px;">
 
-                <div class="nosotros-video-wrap mb-4" id="nosotrosVideoWrap">
-                    <div class="ratio ratio-16x9 rounded-4 overflow-hidden shadow-sm" id="nosotrosVideoRatio">
-                        <div id="reproductorNosotros"></div>
-                    </div>
-                    <p class="text-center small text-muted mt-2 mb-0" id="nosotrosVideoLeyenda">🤟 Traducción en Lengua de Señas Peruana (LSP) de este contenido</p>
-
-                    <div class="controles-video d-flex align-items-center justify-content-center gap-2 mt-2 flex-nowrap">
+                <div class="nosotros-video-wrap nosotros-fijo mb-4" id="nosotrosVideoWrap">
+                    <div class="nosotros-arrastre" id="nosotrosArrastre" title="Mantené presionado y arrastrá para mover el video" aria-label="Mover la ventana de video" role="button" tabindex="0">⠿ ⠿ ⠿</div>
+                    <div class="controles-video d-flex align-items-center justify-content-center gap-2 mb-2 flex-nowrap">
                         <button type="button" class="btn btn-sm btn-outline-secondary" id="btnRetroceder10Nosotros" title="Retroceder 3 segundos" aria-label="Retroceder 3 segundos">⏪ 3s</button>
-                        <button type="button" class="btn btn-sm btn-primary" id="btnPlayPauseNosotros" title="Reproducir o pausar" aria-label="Reproducir o pausar">▶️ <span class="controles-video-texto">Iniciar</span></button>
+                        <button type="button" class="btn btn-sm btn-primary" id="btnPlayPauseNosotros" title="Reproducir o pausar" aria-label="Reproducir o pausar"><span class="nosotros-icono-iniciar">▶</span> <span class="controles-video-texto">Iniciar</span></button>
                         <button type="button" class="btn btn-sm btn-outline-secondary" id="btnReiniciarNosotros" title="Reiniciar desde el principio" aria-label="Reiniciar desde el principio">↺ <span class="controles-video-texto">Más</span></button>
                         <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAvanzar10Nosotros" title="Avanzar 5 segundos" aria-label="Avanzar 5 segundos">5s ⏩</button>
                         <div class="controles-video-velocidad">
@@ -3682,11 +3856,45 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                             <span class="small fw-bold text-muted" id="nosotrosVelocidadLabel">1x</span>
                             <button type="button" class="btn btn-sm btn-outline-secondary" id="btnNosotrosVelocidadRapida" title="Aumentar velocidad" aria-label="Aumentar velocidad">🐇</button>
                         </div>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" id="btnNosotrosPantallaCompleta" title="Ver en pantalla completa" aria-label="Ver en pantalla completa">⛶ Pantalla completa</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="btnNosotrosPantallaCompleta" title="Ver en pantalla completa" aria-label="Ver en pantalla completa">⛶</button>
+                    </div>
+                    <div class="ratio ratio-16x9 rounded-4 overflow-hidden shadow-sm" id="nosotrosVideoRatio">
+                        <div id="reproductorNosotros"></div>
                     </div>
                 </div>
 
-                <!-- Bloque de 4 tarjetas: formas concretas de apoyar (justo debajo del video) -->
+                <div class="nosotros-texto-bajo-video" id="nosotrosTextoBajoVideo">
+
+                <h4 class="nosotros-titulo-clicable fw-bold mb-3" data-tiempo-nosotros="7" role="button" tabindex="0">¿Qué es LSPedia? 🌐🤟</h4>
+                <div class="nosotros-bloque-clicable" data-tiempo-nosotros="7" role="button" tabindex="0">
+                    <p class="text-secondary mb-3" style="line-height: 1.7;">La comunicación entre las personas sordas, que utilizan la lengua de señas, y los oyentes, que nos comunicamos en español, a veces puede ser un verdadero desafío 🚧. ¡Por eso existe LSPedia! 🎉 Nuestro objetivo es ser un puente que conecte a ambos grupos. ¿Cómo lo logramos? Por un lado, ayudamos a las personas sordas a aprender el significado de diversas palabras en español mediante videos muy fáciles de entender 📹, explicados directamente en lengua de señas 👐. Por otro lado, las personas oyentes pueden aprovechar estos mismos videos para repasar las señas que hayan aprendido de los sordos 👀. Así, aprendiendo juntos, rompemos barreras 🧱🔨 y fomentamos una comunicación e inclusión reales 🌍💙.</p>
+                </div>
+
+                <h4 class="nosotros-titulo-clicable fw-bold mb-3" data-tiempo-nosotros="62" role="button" tabindex="0">Un proyecto con respeto por la comunidad sorda 🤟✨</h4>
+                <div class="nosotros-bloque-clicable" data-tiempo-nosotros="62" role="button" tabindex="0">
+                    <p class="text-secondary mb-3" style="line-height: 1.7;">Reconocemos que la lengua de señas es el idioma y derecho de la comunidad sorda 🗣️🤲. Valoramos profundamente la labor de sus modelos lingüísticos, educadores e intérpretes 🎓; LSPedia no busca reemplazarlos, sino ser un apoyo 🤝.</p>
+                    <p class="text-secondary mb-4" style="line-height: 1.7;">Dado que gran parte de la información diaria (literatura, noticias, videos, deporte) está en español 📰📱, nuestro propósito es facilitar la comprensión de estas palabras, impulsando así el progreso constante de la comunidad 📈🙌.</p>
+                </div>
+
+                <h4 class="nosotros-titulo-clicable fw-bold mb-3" data-tiempo-nosotros="103" role="button" tabindex="0">Un proyecto que crece gracias a la comunidad 🌱👥</h4>
+                <div class="nosotros-bloque-clicable" data-tiempo-nosotros="103" role="button" tabindex="0">
+                    <p class="text-secondary mb-2" style="line-height: 1.7;">LSPedia es un proyecto cien por ciento personal e independiente 👤; no contamos con financiamiento de ninguna entidad estatal o grupo privado 🚫🏢. Pero trabajamos constantemente en su desarrollo 💻⚙️. ¿Te gustaría apoyarnos? Te explicamos 5 maneras de hacerlo: 👇</p>
+                    <ul class="text-secondary mb-4" style="line-height: 1.9;">
+                        <li>💡 1- Aportar nuevas palabras: Si entras a nuestra web y notas que nos falta alguna palabra, ¡escríbenos un correo para agregarla! 📧</li>
+                        <li>📝 2- Enviar sugerencias de mejora: Si tienes ideas o comentarios sobre cómo podemos optimizar la página web, escríbenos 💬.</li>
+                        <li>🤝 3- Compartir conocimientos: Invitamos a personas sordas, intérpretes de lengua de señas, universidades e institutos a compartir sus experiencias con nosotros para enriquecer este espacio 🧠🏫.</li>
+                        <li>❤️ 4- Brindar apoyo económico: Las donaciones son fundamentales 🪙. Nos ayudan a cubrir los costos de grabación, edición y mantenimiento del sitio web 🖥️. Así garantizamos que LSPedia siga siendo gratis para todos 🆓.</li>
+                        <li>🎤 5- Contrata nuestros servicios: Si necesitas un intérprete o traducir algún documento a lengua de señas, ¡puedes contratarnos para ese trabajo! 💼📄</li>
+                    </ul>
+                    <p class="text-secondary mb-4" style="line-height: 1.7;">Con cualquiera de estas acciones, nos ayudas a que este proyecto siga adelante 🚀.</p>
+                </div>
+
+                <h4 class="nosotros-titulo-clicable fw-bold mb-3" data-tiempo-nosotros="189" role="button" tabindex="0">Gracias por ser parte de LSPedia 🙏💙</h4>
+                <div class="nosotros-bloque-clicable" data-tiempo-nosotros="189" role="button" tabindex="0">
+                    <p class="text-secondary mb-5" style="line-height: 1.7;">"Agradecemos mucho tu apoyo, ya sea con ideas, sugerencias o donaciones 🎁. Tu ayuda impulsa el avance de LSPedia, permitiendo que más personas se beneficien de la información y promovamos juntos la inclusión." 🌟🤝</p>
+                </div>
+
+                <!-- Bloque de 4 tarjetas: formas concretas de apoyar, al final de todo el texto -->
                 <div class="row g-3 mb-5" id="nosotrosApoyoRow">
                     <div class="col-6 col-md-3">
                         <div class="nosotros-apoyo-card nosotros-apoyo-card-sugerencia h-100 text-center" role="button" tabindex="0" data-bs-toggle="modal" data-bs-target="#modalSugerencia">
@@ -3718,28 +3926,7 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                     </div>
                 </div>
 
-                <h4 class="fw-bold text-dark mb-3">¿Qué es LSPedia?</h4>
-                <p class="text-secondary mb-3" style="line-height: 1.7;">LSPedia es una plataforma gratuita que busca acercar el español y la Lengua de Señas Peruana (LSP), facilitando una comunicación más inclusiva entre personas sordas y oyentes.</p>
-                <p class="text-secondary mb-4" style="line-height: 1.7;">Nuestro objetivo es ayudar a las personas sordas a comprender mejor el español mediante explicaciones y videos en LSP, y ofrecer a cualquier persona una herramienta práctica para aprender, comunicarse y promover la inclusión.</p>
-
-                <h4 class="fw-bold text-dark mb-3">Un proyecto con respeto por la comunidad sorda</h4>
-                <p class="text-secondary mb-3" style="line-height: 1.7;">La Lengua de Señas Peruana (LSP) es el idioma natural y patrimonio lingüístico de la comunidad sorda.</p>
-                <p class="text-secondary mb-4" style="line-height: 1.7;">LSPedia no pretende reemplazar a los docentes, intérpretes ni a las organizaciones de personas sordas. Nuestro propósito es crear una herramienta de apoyo que facilite el acceso a la información y contribuya al aprendizaje y la inclusión.</p>
-
-                <h4 class="fw-bold text-dark mb-3">Un proyecto que crece gracias a la comunidad</h4>
-                <p class="text-secondary mb-2" style="line-height: 1.7;">LSPedia es un proyecto independiente y en constante desarrollo.</p>
-                <p class="text-secondary mb-2" style="line-height: 1.7;">Puedes ayudar de muchas maneras:</p>
-                <ul class="text-secondary mb-4" style="line-height: 1.9;">
-                    <li>💡 Sugiriendo nuevas palabras para el diccionario.</li>
-                    <li>📝 Enviando ideas o comentarios para mejorar la plataforma.</li>
-                    <li>🤝 Colaborando como persona sorda, intérprete o institución, compartiendo tu experiencia.</li>
-                    <li>❤️ Realizando una donación, que nos permitirá grabar más videos, mejorar el sitio y mantener el proyecto gratuito.</li>
-                    <li>🎤 Contratando servicios de interpretación o traducción en Lengua de Señas Peruana, contribuyendo al crecimiento de LSPedia mientras recibes apoyo profesional.</li>
-                </ul>
-
-                <h4 class="fw-bold text-dark mb-3">Gracias por ser parte de LSPedia</h4>
-                <p class="text-secondary mb-3" style="line-height: 1.7;">Cada sugerencia, colaboración, donación o servicio contratado nos ayuda a construir una plataforma más completa y accesible para miles de personas.</p>
-                <p class="text-secondary mb-5" style="line-height: 1.7;">Juntos podemos hacer que la información sea más accesible para todos.</p>
+                </div>
 
             </div>
         </section>
