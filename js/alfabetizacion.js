@@ -498,11 +498,72 @@ const AlfabetizacionV2 = (function () {
         renderEjemploActual();
     }
 
+    // Boca (fonética): a partir de LSPedia soporta tanto imagen (.png/.jpg)
+    // como video con fondo transparente (.webm/.mp4), según lo que traiga
+    // imagenBoca del Sheet. Se detecta por la extensión del archivo.
+    function esRutaDeVideo(ruta) {
+        return /\.(webm|mp4|mov)(\?.*)?$/i.test(ruta || "");
+    }
+
+    // Busca el imagenBoca real de una letra en los datos ya cargados (para
+    // reutilizarlo en la tira de números). Si no la encuentra, arma la ruta
+    // clásica en png como respaldo.
+    function bocaPorLetra(letra) {
+        const item = (estado.datos.alfabeto || []).find((x) => x.tipo === "letra" && x.caracter === letra);
+        return (item && item.imagenBoca) || ("img/alfabetizacion/boca/" + encodeURIComponent(letra) + ".png");
+    }
+
+    // Crea (o reutiliza) el elemento <img> o <video> dentro de bocaCaja según
+    // corresponda, reemplazando el nodo solo si el tipo cambió respecto al
+    // carácter anterior.
+    function actualizarMediaBoca(contenedorId, elementId, ruta, alt) {
+        const contenedor = el(contenedorId);
+        if (!contenedor) return;
+        const actual = document.getElementById(elementId);
+        const necesitaVideo = esRutaDeVideo(ruta);
+        const tipoActual = actual ? actual.tagName.toLowerCase() : null;
+
+        if (tipoActual === (necesitaVideo ? "video" : "img")) {
+            if (necesitaVideo) {
+                if (actual.getAttribute("src") !== ruta) {
+                    actual.src = ruta || "";
+                    actual.load();
+                    actual.play().catch(() => {});
+                }
+            } else {
+                actual.src = ruta || "";
+                actual.alt = alt || "";
+            }
+            return;
+        }
+
+        const nuevo = document.createElement(necesitaVideo ? "video" : "img");
+        nuevo.id = elementId;
+        nuevo.className = "apoyo-visual-img";
+        nuevo.src = ruta || "";
+        if (necesitaVideo) {
+            nuevo.autoplay = true;
+            nuevo.loop = true;
+            nuevo.muted = true;
+            nuevo.playsInline = true;
+            nuevo.setAttribute("muted", "");
+            nuevo.setAttribute("playsinline", "");
+        } else {
+            nuevo.alt = alt || "";
+        }
+
+        if (actual) {
+            actual.replaceWith(nuevo);
+        } else {
+            contenedor.insertBefore(nuevo, contenedor.firstChild);
+        }
+    }
+
     // Pinta la sección de Fonética según el tipo de carácter:
-    // LETRAS -> una sola imagen de boca (comportamiento de siempre).
+    // LETRAS -> una sola imagen o video de boca.
     // NÚMEROS -> tira desplazable con la boca de cada letra de la palabra
-    //            (ej. "13" -> T, R, E, C, E), reutilizando las imágenes
-    //            boca/{LETRA}.png que ya existen para el abecedario.
+    //            (ej. "13" -> T, R, E, C, E), reutilizando el imagenBoca real
+    //            de cada letra (imagen o video, lo que corresponda).
     function renderFonetica(c) {
         const bocaCaja = el("alfabBocaCaja");
         const bocaNumeroWrap = el("alfabBocaNumeroWrap");
@@ -522,14 +583,24 @@ const AlfabetizacionV2 = (function () {
                     const item = document.createElement("div");
                     item.className = "alfab-boca-numero-item";
 
-                    const img = document.createElement("img");
-                    img.src = "img/alfabetizacion/boca/" + encodeURIComponent(letra) + ".png";
-                    img.alt = "Boca de la letra " + letra;
+                    const ruta = bocaPorLetra(letra);
+                    const media = document.createElement(esRutaDeVideo(ruta) ? "video" : "img");
+                    media.src = ruta;
+                    if (media.tagName === "VIDEO") {
+                        media.autoplay = true;
+                        media.loop = true;
+                        media.muted = true;
+                        media.playsInline = true;
+                        media.setAttribute("muted", "");
+                        media.setAttribute("playsinline", "");
+                    } else {
+                        media.alt = "Boca de la letra " + letra;
+                    }
 
                     const label = document.createElement("span");
                     label.textContent = letra;
 
-                    item.appendChild(img);
+                    item.appendChild(media);
                     item.appendChild(label);
                     tira.appendChild(item);
                 });
@@ -543,7 +614,7 @@ const AlfabetizacionV2 = (function () {
             bocaNumeroWrap.classList.add("d-none");
             bocaNumeroWrap.classList.remove("d-flex");
         }
-        el("alfabBocaImg").src = c.imagenBoca || "";
+        actualizarMediaBoca("alfabBocaCaja", "alfabBocaImg", c.imagenBoca, "Boca de la letra " + c.caracter);
     }
 
     function irACaracter(delta) {

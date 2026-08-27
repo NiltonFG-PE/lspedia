@@ -81,7 +81,8 @@
     flex: 0 0 auto;
     text-align: center;
 }
-.alfab-boca-numero-item img {
+.alfab-boca-numero-item img,
+.alfab-boca-numero-item video {
     width: 78px;
     height: 78px;
     object-fit: cover;
@@ -726,14 +727,35 @@
 
 /* --- Índice rápido de caracteres --- */
 .alfab-indice-caracteres {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 8px;
     padding: 10px;
     background: #fff;
     border-radius: 16px;
     box-shadow: 0 2px 10px -4px rgba(15, 23, 42, 0.12);
     border: 1px solid #eef2f7;
 }
+/* Ficha en reposo: antes esta clase solo definía hover/active y
+   heredaba el .btn-abc "plano" (solo texto) del Diccionario, por eso
+   se veían las letras sueltas y apiladas en vez de una cuadrícula de
+   casillas. Ahora cada letra es una ficha cuadrada como en la
+   referencia visual. */
 .alfab-indice-caracteres .btn-abc {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    min-width: 0;
+    padding: 0;
     border-radius: 10px;
+    background-color: #eef1f6;
+    border: 1px solid transparent;
+    color: var(--text-main, #0f172a);
+    font-weight: 700 !important;
+    font-size: 14px;
+    text-decoration: none;
     transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 .alfab-indice-caracteres .btn-abc:hover {
@@ -752,6 +774,14 @@
     background: #febd0f;
     color: #fff;
     border-color: transparent;
+}
+
+/* En móvil, menos columnas para que cada ficha no quede diminuta */
+@media (max-width: 576px) {
+    .alfab-indice-caracteres {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 6px;
+    }
 }
 
 /* --- Tarjeta principal --- */
@@ -797,6 +827,14 @@
 
 /* --- Cajas de apoyo visual (fonética / grafía / ejemplo) --- */
 .alfab-visual-caja { border-radius: 16px !important; overflow: hidden; border-color: #e2e8f0 !important; }
+/* El video de fonética (.webm con fondo transparente) no trae su propio
+   fondo como sí lo traían las imágenes boca/*.png, así que se le da aquí
+   el mismo azul marino para que se vea igual sea imagen o video. */
+#alfabBocaCaja video.apoyo-visual-img {
+    width: 100%;
+    height: 100%;
+    background-color: #0f172a;
+}
 .alfab-etiqueta-panel {
     text-transform: uppercase;
     font-size: 0.75rem;
