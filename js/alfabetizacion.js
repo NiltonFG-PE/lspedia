@@ -209,13 +209,26 @@ const AlfabetizacionV2 = (function () {
 
     // Igual que quiz.js: JSONP porque Apps Script + GitHub Pages suele
     // bloquear la lectura por CORS aunque la URL funcione directamente.
-    function fetchRemoto() {
+    //
+    // ⚠️ Los Web Apps de Apps Script "duermen" cuando nadie los usa por un
+    // rato: la primera petición después de inactividad ("cold start") puede
+    // tardar bastante más que una normal. Como <script src> no dispara
+    // onerror mientras sigue cargando (solo si la red falla de verdad), un
+    // cold start lento se ve exactamente igual que uno roto: el spinner se
+    // queda quieto hasta que se cumple el timeout. Por eso: (1) el primer
+    // intento usa un timeout corto, (2) si no respondió a tiempo se
+    // reintenta UNA vez con un timeout más largo antes de rendirse, y
+    // (3) el spinner avisa en pantalla si el segundo intento está en curso,
+    // para que no parezca que la pantalla quedó colgada sin explicación.
+    function fetchRemoto(esReintento) {
         if (!CONFIG.APPS_SCRIPT_URL || CONFIG.APPS_SCRIPT_URL.indexOf("PEGA_AQUI") > -1) {
             mostrarError("Alfabetización aún no está conectada a Google Sheets. Falta pegar la URL de Apps Script en js/alfabetizacion.js.");
             return;
         }
 
-        const nombreCallback = "alfabV2Callback_" + Date.now();
+        if (esReintento) actualizarMensajeCargando("Google Sheets está tardando más de lo normal, reintentando...");
+
+        const nombreCallback = "alfabV2Callback_" + Date.now() + "_" + Math.floor(Math.random() * 1e6);
         let resuelto = false;
 
         const limpiar = () => {
@@ -243,19 +256,28 @@ const AlfabetizacionV2 = (function () {
         // datos de Alfabetización y no con el banco de preguntas del Quiz.
         script.src = CONFIG.APPS_SCRIPT_URL + separador + "modo=alfabetizacion&callback=" + nombreCallback;
         script.onerror = () => {
-            if (!resuelto) {
-                limpiar();
+            if (resuelto) return;
+            limpiar();
+            if (!esReintento) {
+                fetchRemoto(true);
+            } else {
                 manejarErrorCarga(new Error("No se pudo conectar con Google Apps Script (revisa la URL o el despliegue)."));
             }
         };
         document.body.appendChild(script);
 
+        // Primer intento: timeout corto (puede ser solo un cold start).
+        // Reintento: timeout largo antes de mostrar el error definitivo.
+        const espera = esReintento ? 15000 : 6000;
         setTimeout(() => {
-            if (!resuelto) {
-                limpiar();
-                manejarErrorCarga(new Error("Tiempo de espera agotado al conectar con Google Sheets."));
+            if (resuelto) return;
+            limpiar();
+            if (!esReintento) {
+                fetchRemoto(true);
+            } else {
+                manejarErrorCarga(new Error("Tiempo de espera agotado al conectar con Google Sheets. El servicio puede estar lento o el despliegue del Apps Script tiene un problema."));
             }
-        }, 10000);
+        }, espera);
     }
 
     function guardarDatos(data) {
@@ -325,8 +347,30 @@ const AlfabetizacionV2 = (function () {
     function mostrarError(msg) {
         ocultarTodosLosBloques();
         const cont = el("alfabError");
-        cont.textContent = "⚠️ " + msg;
+        cont.innerHTML = "";
+        const texto = document.createElement("span");
+        texto.textContent = "⚠️ " + msg;
+        cont.appendChild(texto);
+
+        const btnReintentar = document.createElement("button");
+        btnReintentar.type = "button";
+        btnReintentar.className = "btn btn-sm btn-outline-danger ms-3";
+        btnReintentar.textContent = "🔄 Reintentar";
+        btnReintentar.onclick = () => cargarDatos(true);
+        cont.appendChild(btnReintentar);
+
         cont.classList.remove("d-none");
+    }
+
+    // Cambia el texto bajo el spinner de "alfabCargando" sin tocar el resto
+    // del bloque, para que el usuario vea que la carga sigue intentando
+    // (y no piense que la pantalla quedó colgada) mientras dura un
+    // reintento de conexión con Google Sheets.
+    function actualizarMensajeCargando(msg) {
+        const cont = el("alfabCargando");
+        if (!cont) return;
+        const p = cont.querySelector("p");
+        if (p) p.textContent = msg;
     }
 
     // ---------------------------------------------------------
