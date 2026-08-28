@@ -637,24 +637,39 @@
    No toca IDs ni lógica de alfabetizacion.js, solo aspecto.
    ========================================================================== */
 
-/* --- Hero de encabezado con degradado --- */
+/* --- Encabezado con fondo blanco ---
+   El degradado azul se veía casi igual al resto del sitio y no
+   resaltaba el cambio, así que se quitó: ahora es una tarjeta blanca
+   lisa (igual que el resto de tarjetas del sitio), con el acento de
+   color solo en el ícono, el título y los detalles — y conserva el
+   movimiento (orbes flotando + ícono con respiro) pero muy sutil,
+   para que no compita con el fondo claro. */
 .alfab-hero {
     position: relative;
     overflow: hidden;
     border-radius: 20px;
     padding: 22px 26px;
     margin-bottom: 20px;
-    background: linear-gradient(135deg, #0c4a6e 0%, #075985 50%, #0369a1 100%);
-    box-shadow: 0 10px 30px -12px rgba(12, 74, 110, 0.55);
+    background: #ffffff;
+    border: 1px solid var(--border-color, #e2e8f0);
+    box-shadow: 0 6px 20px -14px rgba(15, 23, 42, 0.25);
 }
+/* Los "orbes" decorativos: círculos muy suaves en el acento del sitio,
+   apenas visibles, que flotan arriba/abajo con tiempos distintos entre
+   sí para que el movimiento se sienta orgánico. */
 .alfab-hero-orbe {
     position: absolute;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.14);
+    background: rgba(2, 132, 199, 0.08);
     pointer-events: none;
+    animation: alfabOrbeFlotar 7s ease-in-out infinite;
 }
-.alfab-hero-orbe-1 { width: 160px; height: 160px; top: -70px; right: -40px; }
-.alfab-hero-orbe-2 { width: 90px; height: 90px; bottom: -40px; right: 90px; background: rgba(255, 255, 255, 0.1); }
+.alfab-hero-orbe-1 { width: 160px; height: 160px; top: -70px; right: -40px; animation-duration: 8s; }
+.alfab-hero-orbe-2 { width: 90px; height: 90px; bottom: -40px; right: 90px; background: rgba(251, 191, 36, 0.14); animation-duration: 6s; animation-delay: 0.6s; }
+@keyframes alfabOrbeFlotar {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-10px) scale(1.05); }
+}
 .alfab-hero-fila {
     position: relative;
     z-index: 1;
@@ -666,27 +681,41 @@
 }
 .alfab-hero-titulo-wrap { display: flex; align-items: center; gap: 14px; }
 .alfab-hero-icono {
-    font-size: 30px;
+    font-size: 28px;
     width: 54px;
     height: 54px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.2);
+    background: #f1f5f9;
     border-radius: 14px;
+    box-shadow: 0 4px 12px -6px rgba(15, 23, 42, 0.25);
     flex-shrink: 0;
+    animation: alfabIconoRespirar 4s ease-in-out infinite;
 }
-.alfab-hero-titulo { color: #fff; letter-spacing: -0.01em; }
-.alfab-hero-subtitulo { color: rgba(255, 255, 255, 0.85); font-size: 0.9rem; }
+.alfab-hero-icono img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 6px;
+}
+/* Ligero "respiro" de escala en el ícono, apenas perceptible, para que
+   el encabezado no se sienta congelado sin llegar a distraer. */
+@keyframes alfabIconoRespirar {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.06); }
+}
+.alfab-hero-titulo { color: var(--text-main, #0f172a); letter-spacing: -0.01em; }
+.alfab-hero-subtitulo { color: var(--text-muted, #64748b); font-size: 0.9rem; }
 .alfab-hero-btn {
-    background: rgba(255, 255, 255, 0.16);
-    border: 1px solid rgba(255, 255, 255, 0.35);
-    color: #fff;
-    backdrop-filter: blur(2px);
+    background: #f1f5f9;
+    border: 1px solid var(--border-color, #e2e8f0);
+    color: var(--accent-color, #0284c7);
+    transition: transform 0.15s ease, background 0.15s ease;
 }
-.alfab-hero-btn:hover { background: rgba(255, 255, 255, 0.28); color: #fff; }
+.alfab-hero-btn:hover { background: #e0f2fe; color: var(--accent-color, #0284c7); transform: translateY(-1px); }
 
-/* Botón "Salir" en rojo, distinto del resto de botones translúcidos del hero */
+/* Botón "Salir" en rojo, distinto del resto de botones del hero */
 #btnAlfabSalir.alfab-hero-btn {
     background: #ef4444;
     border-color: #ef4444;
@@ -697,6 +726,17 @@
     background: #dc2626;
     border-color: #dc2626;
     color: #fff;
+}
+
+/* Quienes prefieren menos movimiento en pantalla no reciben ninguna
+   de las animaciones de arriba: orbes ni ícono quedan fijos en su
+   primer fotograma. */
+@media (prefers-reduced-motion: reduce) {
+    .alfab-hero,
+    .alfab-hero-orbe,
+    .alfab-hero-icono {
+        animation: none;
+    }
 }
 
 /* --- Toggle tipo píldora Abecedario / Números --- */
@@ -726,6 +766,12 @@
 }
 
 /* --- Índice rápido de caracteres --- */
+/* Envoltorio del índice + botón para colapsarlo en móvil (ver más
+   abajo, breakpoint 767px). En escritorio el botón queda oculto y el
+   índice siempre se ve completo, así que este wrap no cambia nada ahí. */
+.alfab-indice-wrap {
+    margin-bottom: 1.5rem; /* mismo espacio que tenía el .mb-4 original */
+}
 .alfab-indice-caracteres {
     display: grid;
     grid-template-columns: repeat(9, 1fr);
@@ -735,6 +781,10 @@
     border-radius: 16px;
     box-shadow: 0 2px 10px -4px rgba(15, 23, 42, 0.12);
     border: 1px solid #eef2f7;
+    max-height: 600px; /* suficiente para 27 letras o 20 números en cualquier ancho */
+    overflow: hidden;
+    transition: max-height 0.28s ease, opacity 0.2s ease, padding 0.28s ease,
+        margin 0.28s ease, border-width 0.2s ease;
 }
 /* Ficha en reposo: antes esta clase solo definía hover/active y
    heredaba el .btn-abc "plano" (solo texto) del Diccionario, por eso
@@ -784,13 +834,112 @@
     }
 }
 
+/* --- Botón flecha para colapsar/expandir el índice (solo móvil) ---
+   Al elegir una letra/número, alfabetizacion.js le agrega la clase
+   .alfab-colapsado al índice y este botón permite volver a mostrarlo.
+   Oculto por defecto (display:none) y solo se activa dentro del media
+   query de abajo, para que en escritorio el índice quede siempre
+   visible y este botón ni siquiera se muestre. */
+.alfab-indice-toggle {
+    display: none;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 8px;
+    padding: 7px 14px;
+    background: #fff;
+    border: 1px solid #eef2f7;
+    border-radius: 999px;
+    color: #0284c7;
+    font-weight: 600;
+    font-size: 0.82rem;
+    box-shadow: 0 2px 8px -4px rgba(15, 23, 42, 0.12);
+    transition: background 0.15s ease;
+}
+.alfab-indice-toggle:hover,
+.alfab-indice-toggle:focus-visible {
+    background: rgba(2, 132, 199, 0.08);
+}
+.alfab-indice-toggle-flecha {
+    display: inline-block;
+    transition: transform 0.25s ease;
+}
+/* Expandido = flecha apunta hacia arriba (▾ girada 180°); colapsado =
+   flecha normal apuntando hacia abajo, como para "desplegar". */
+.alfab-indice-toggle[aria-expanded="true"] .alfab-indice-toggle-flecha {
+    transform: rotate(180deg);
+}
+
+@media (max-width: 767px) {
+    .alfab-indice-toggle {
+        display: flex;
+    }
+
+    .alfab-indice-caracteres.alfab-colapsado {
+        max-height: 0;
+        opacity: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+        border-width: 0;
+        box-shadow: none;
+    }
+}
+
 /* --- Tarjeta principal --- */
 .alfab-card-principal {
     border-radius: 22px !important;
     background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
 }
 
-/* --- Navegación de carácter con círculo protagonista --- */
+/* --- Cuadrícula 2x2 del carácter actual ---
+   Arriba-izquierda: letra/número + sus 4 formas tipográficas.
+   Abajo-izquierda: grafía (video de trazo).
+   Arriba-derecha: fonética (video/imagen de boca).
+   Abajo-derecha: ejemplos de palabras.
+   Cada celda es una "tarjeta" suave para que la cuadrícula se lea
+   ordenada y moderna de un vistazo, incluso antes de leer las
+   etiquetas. En pantallas angostas se apila en una sola columna,
+   respetando el mismo orden de lectura (letra → fonética → grafía →
+   ejemplos) gracias a `order`. */
+.alfab-grid-2x2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+        "letra    fonetica"
+        "grafia   ejemplos";
+    gap: 18px;
+}
+.alfab-grid-celda {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+}
+.alfab-grid-letra { grid-area: letra; justify-content: center; }
+.alfab-grid-fonetica { grid-area: fonetica; }
+.alfab-grid-grafia { grid-area: grafia; }
+.alfab-grid-ejemplos { grid-area: ejemplos; }
+.alfab-grid-ejemplos .alfab-ejemplos-card { background: transparent; }
+
+@media (max-width: 767px) {
+    .alfab-grid-2x2 {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "letra"
+            "fonetica"
+            "grafia"
+            "ejemplos";
+    }
+}
+
+/* --- Navegación de carácter con tarjeta cuadrada protagonista ---
+   Antes era un círculo (border-radius:50%), pero eso recortaba la
+   imagen de la seña (manos, dedos) en los bordes. Ahora es un cuadrado
+   con esquinas redondeadas y fondo blanco, para que la seña se vea
+   completa y con buen contraste sin importar su forma/proporción. */
 .alfab-nav-caracter { gap: 10px; }
 .alfab-caracter-circulo {
     width: 92px;
@@ -799,14 +948,35 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #0c4a6e, #0369a1);
+    border-radius: 18px;
+    background: #ffffff;
     border: 3px solid #fff;
-    box-shadow: 0 8px 22px -8px rgba(12, 74, 110, 0.55), 0 0 0 3px rgba(254, 189, 15, 0.18);
+    box-shadow: 0 8px 22px -8px rgba(12, 74, 110, 0.35), 0 0 0 3px rgba(254, 189, 15, 0.18);
+}
+/* El texto (h2) es el respaldo mientras no hay imagen de seña cargada:
+   mantiene el fondo azul solo en ese caso, vía :has() con fallback. */
+.alfab-caracter-circulo:has(.alfab-caracter-img.d-none) {
+    background: linear-gradient(135deg, #0c4a6e, #0369a1);
 }
 .alfab-caracter-circulo h2 {
     font-size: 2.2rem;
     color: #ffffff;
+}
+.alfab-caracter-circulo:has(.alfab-caracter-img:not(.d-none)) h2 {
+    color: #0c4a6e;
+}
+/* Imagen de la seña (A-Z, 0-19) dentro del cuadrado: llena el
+   contenedor manteniendo proporción, sin recortarse; el texto (h2)
+   queda de respaldo y se oculta solo cuando la imagen carga bien (ver
+   actualizarCirculoCaracter en alfabetizacion.js). */
+.alfab-caracter-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 8px;
+    border-radius: 14px;
+    background: #ffffff;
+    pointer-events: none;
 }
 .alfab-nav-flecha {
     width: 44px;
@@ -825,6 +995,45 @@
 .alfab-nav-flecha:active { background: #febd0f; border-color: transparent; color: #fff; }
 .alfab-nav-flecha-sm { width: 38px; height: 38px; }
 
+/* --- Etiquetas de panel (Fonética / Grafía / Ejemplos) ---
+   Antes eran texto verde plano, un color ajeno al resto del sitio
+   (azul académico + ámbar). Ahora son "chips" con fondo suave e ícono
+   propio, cada una en un tono de la misma familia de color que ya usa
+   el resto de Alfabetización (círculo, chips tipográficos, hero),
+   para que se sientan parte del mismo diseño en vez de una etiqueta
+   suelta. */
+.alfab-etiqueta-panel {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    padding: 6px 14px;
+    border-radius: 999px;
+    margin-bottom: 12px;
+    border: 1px solid transparent;
+}
+/* Fonética: azul académico (el mismo acento principal del sitio) */
+.alfab-etiqueta-fonetica {
+    color: #0369a1;
+    background: rgba(2, 132, 199, 0.1);
+    border-color: rgba(2, 132, 199, 0.18);
+}
+/* Grafía: azul marino más oscuro, en línea con el círculo del carácter */
+.alfab-etiqueta-grafia {
+    color: #0c4a6e;
+    background: rgba(12, 74, 110, 0.08);
+    border-color: rgba(12, 74, 110, 0.16);
+}
+/* Ejemplos: ámbar, el mismo acento que ya usan los botones/hover del módulo */
+.alfab-etiqueta-ejemplos {
+    color: #b45309;
+    background: rgba(251, 191, 36, 0.16);
+    border-color: rgba(251, 191, 36, 0.3);
+}
+
 /* --- Cajas de apoyo visual (fonética / grafía / ejemplo) --- */
 .alfab-visual-caja { border-radius: 16px !important; overflow: hidden; border-color: #e2e8f0 !important; }
 /* El video de fonética (.webm con fondo transparente) no trae su propio
@@ -834,14 +1043,6 @@
     width: 100%;
     height: 100%;
     background-color: #0f172a;
-}
-.alfab-etiqueta-panel {
-    text-transform: uppercase;
-    font-size: 0.75rem;
-    font-weight: 800;
-    letter-spacing: 0.06em;
-    color: #059669;
-    margin-bottom: 8px;
 }
 
 /* --- Controles de velocidad del video de grafía --- */
@@ -882,7 +1083,7 @@
     background: linear-gradient(135deg, #f0fdf4 0%, #eff6ff 100%);
     border-radius: 18px;
 }
-.alfab-ejemplo-palabra { color: #0f172a; font-size: 1.05rem; }
+.alfab-ejemplo-palabra { color: #0f172a; font-size: 1.55rem; font-weight: 800; letter-spacing: 0.01em; }
 .alfab-ejemplo-contador { color: #64748b; }
 
 /* --- Micro-interacción al cambiar de carácter --- */

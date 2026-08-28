@@ -167,7 +167,7 @@ const AlfabetizacionV2 = (function () {
         mostrarBloque("alfabCargando");
 
         if (CONFIG.MOCK_ACTIVO) {
-            fetch(CONFIG.MOCK_URL)
+            fetchConTimeout(CONFIG.MOCK_URL, TIMEOUT_MOCK_MS)
                 .then((res) => {
                     if (!res.ok) throw new Error("No se pudo leer " + CONFIG.MOCK_URL);
                     return res.json();
@@ -192,12 +192,33 @@ const AlfabetizacionV2 = (function () {
         fetchRemoto();
     }
 
+    // Límite de tiempo "duro" para el fetch del mock local: igual que en
+    // script.js (cargarPalabrasJson), un fetch() normal puede quedarse
+    // colgado sin resolver NI rechazar nunca en algunos navegadores
+    // móviles cuando el Service Worker (sw.js) intercepta la petición.
+    // Con Promise.race el límite se cumple pase lo que pase con el fetch
+    // original, así el cascarón nunca deja el spinner pegado para
+    // siempre esperando una respuesta que quizás no llegue jamás.
+    const TIMEOUT_MOCK_MS = 5000;
+
+    function fetchConTimeout(url, timeoutMs) {
+        const controlador = (typeof AbortController !== "undefined") ? new AbortController() : null;
+        const promesaFetch = fetch(url, controlador ? { signal: controlador.signal } : undefined);
+        const promesaTimeout = new Promise((_, reject) => {
+            setTimeout(() => reject(new Error("Tiempo de espera agotado al leer " + url)), timeoutMs);
+        });
+        return Promise.race([promesaFetch, promesaTimeout]).catch((error) => {
+            if (controlador) { try { controlador.abort(); } catch (e) { /* no crítico */ } }
+            throw error;
+        });
+    }
+
     // Pinta el mock local de inmediato SOLO si todavía no hay nada mejor
     // en pantalla (evita pisar el dato real si, por lo que sea, llegó
-    // primero). Si el mock falla, no pasa nada: seguimos esperando el
-    // dato real sin mostrar error por esto.
+    // primero). Si el mock falla o tarda más de TIMEOUT_MOCK_MS, no pasa
+    // nada: seguimos esperando el dato real sin mostrar error por esto.
     function pintarMockDeInmediato() {
-        fetch(CONFIG.MOCK_URL)
+        fetchConTimeout(CONFIG.MOCK_URL, TIMEOUT_MOCK_MS)
             .then((res) => (res.ok ? res.json() : Promise.reject(new Error("No se pudo leer " + CONFIG.MOCK_URL))))
             .then((data) => {
                 if (!data.ok || estado.datos.alfabeto.length > 0) return;
@@ -307,6 +328,27 @@ const AlfabetizacionV2 = (function () {
         if (!estado._alfabDatosListos) {
             estado._alfabDatosListos = true;
             cambiarModulo(estado.moduloActivo || "aprender");
+            return;
+        }
+
+        // ⚠️ ESTE es el motivo real de "la letra A a veces no carga la
+        // fonética, cambio de letra, regreso y ya se ve": el mock local
+        // suele ganar la carrera y pinta primero (p.ej. con la ruta de
+        // imagenBoca del mock, que puede no coincidir con el archivo real
+        // ya subido). Como la rama de arriba SOLO pinta la primera vez,
+        // cuando el dato real de Google Sheets llegaba después, quedaba
+        // guardado en silencio en estado.datos pero la pantalla seguía
+        // mostrando la imagen rota del mock — hasta que el usuario
+        // cambiaba de letra y volvía, forzando un render nuevo que ya
+        // usaba el dato real.
+        //
+        // El módulo "Aprender" es de solo lectura (no hay partida en
+        // curso que se pueda "reiniciar" sin querer), así que es seguro
+        // refrescar el carácter actual en cuanto llega el dato real, sin
+        // esperar a que el usuario navegue. Completar/Unir NO se tocan
+        // aquí: siguen protegidos para no reiniciar una partida en curso.
+        if (estado.moduloActivo === "aprender") {
+            renderAprender();
         }
     }
 
@@ -448,8 +490,60 @@ const AlfabetizacionV2 = (function () {
                 estado.aprender.indiceCaracter = Number(btn.dataset.indice);
                 estado.aprender.ejemploIndice = 0;
                 renderAprender();
+                desplazarAContenidoCaracter();
+                // En móvil, tras elegir una letra/número el índice se oculta
+                // solo para dejar ver el contenido de inmediato; en
+                // escritorio (ver CSS, breakpoint 767px) se queda visible
+                // siempre y esta llamada no tiene efecto visual.
+                colapsarIndiceCaracteres();
             });
         });
+    }
+
+    // --- Colapsar/expandir el índice rápido en móvil ---
+    // El índice (grid de letras A-Z o números 0-19) puede ocupar bastante
+    // alto en pantallas angostas. Se oculta automáticamente apenas se
+    // elige un carácter, y queda una flechita/botón para volver a
+    // mostrarlo cuando se quiera cambiar de letra sin usar las flechas
+    // ◀▶. En escritorio (>=768px) el botón está oculto por CSS y el
+    // índice siempre se ve, sin importar esta clase.
+    const LIMITE_MOBILE_INDICE_PX = 767;
+
+    function esAnchoMobile() {
+        return typeof window !== "undefined" && window.innerWidth <= LIMITE_MOBILE_INDICE_PX;
+    }
+
+    function actualizarBotonIndiceToggle(colapsado) {
+        const btn = el("btnAlfabIndiceToggle");
+        if (!btn) return;
+        btn.setAttribute("aria-expanded", String(!colapsado));
+        const texto = btn.querySelector(".alfab-indice-toggle-texto");
+        if (texto) texto.textContent = colapsado ? "Mostrar índice" : "Ocultar índice";
+    }
+
+    function colapsarIndiceCaracteres() {
+        if (!esAnchoMobile()) return; // en escritorio el índice siempre queda visible
+        const cont = el("alfabIndiceCaracteres");
+        if (!cont) return;
+        cont.classList.add("alfab-colapsado");
+        actualizarBotonIndiceToggle(true);
+    }
+
+    function alternarIndiceCaracteres() {
+        const cont = el("alfabIndiceCaracteres");
+        if (!cont) return;
+        const colapsado = cont.classList.toggle("alfab-colapsado");
+        actualizarBotonIndiceToggle(colapsado);
+    }
+
+    // Al tocar una letra/número del índice rápido, el resultado (círculo,
+    // fonética, grafía, ejemplos) puede quedar fuera de la vista —
+    // especialmente en pantallas chicas — así que se hace scroll suave
+    // hasta esa tarjeta para que el cambio sea visible de inmediato.
+    function desplazarAContenidoCaracter() {
+        const destino = el("alfabContenidoCaracter");
+        if (!destino) return;
+        destino.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
     // Convención de nombre para los videos de grafía. Las LETRAS tienen 4
@@ -531,7 +625,7 @@ const AlfabetizacionV2 = (function () {
         const c = caracterActual();
         if (!c) return; // lista vacía (p.ej. mock sin números todavía)
 
-        el("alfabCaracterActual").textContent = c.caracter;
+        actualizarCirculoCaracter(c);
         actualizarImagenesChips(c);
 
         renderFonetica(c);
@@ -540,6 +634,81 @@ const AlfabetizacionV2 = (function () {
         renderVarianteActiva();
 
         renderEjemploActual();
+    }
+
+    // Círculo del carácter actual: en vez del texto suelto (A, B, 1, 2...)
+    // muestra la seña en LSP de esa letra/número, en img/alfabetizacion/circulo/
+    // {CARACTER}.webp (p.ej. A.webp, Ñ.webp, 13.webp). El texto (<h2 id=
+    // "alfabCaracterActual">) se mantiene siempre actualizado por accesibilidad
+    // y como respaldo visual: si el archivo aún no existe o falla la carga
+    // (tras reintentar), se muestra el texto en vez de dejar el círculo vacío.
+    // Así se puede ir agregando el set de 46 imágenes de a pocas sin romper
+    // nada mientras tanto.
+    function rutaCirculoCaracter(caracter) {
+        return "img/alfabetizacion/circulo/" + encodeURIComponent(caracter) + ".webp";
+    }
+
+    function actualizarCirculoCaracter(c) {
+        const img = el("alfabCaracterImg");
+        const texto = el("alfabCaracterActual");
+        if (texto) texto.textContent = c.caracter;
+        if (!img) return; // por si el HTML aún no tiene el <img> (compatibilidad)
+
+        if (img._alfabReintentoTimer) {
+            clearTimeout(img._alfabReintentoTimer);
+            img._alfabReintentoTimer = null;
+        }
+        if (img._alfabWatchdogTimer) {
+            clearTimeout(img._alfabWatchdogTimer);
+            img._alfabWatchdogTimer = null;
+        }
+
+        const ruta = rutaCirculoCaracter(c.caracter);
+        const maxIntentos = 3;
+        let intentos = 0;
+        let resuelto = false;
+
+        const reintentar = () => {
+            intentos++;
+            if (intentos <= maxIntentos) {
+                img._alfabReintentoTimer = setTimeout(() => {
+                    resuelto = false;
+                    img.src = ruta;
+                    armarWatchdog();
+                }, 500 * intentos);
+            } else {
+                // No hay imagen para este carácter (o falló de verdad):
+                // se cae al texto de siempre, sin dejar el círculo vacío.
+                img.classList.add("d-none");
+                if (texto) texto.classList.remove("d-none");
+            }
+        };
+
+        // Igual que en asignarMediaConReintento: si la carga se cuelga sin
+        // disparar "load" ni "error" (Service Worker, hipo de red), este
+        // watchdog fuerza el mismo reintento en vez de dejar el círculo
+        // esperando para siempre.
+        const armarWatchdog = () => {
+            img._alfabWatchdogTimer = setTimeout(() => {
+                if (resuelto) return;
+                reintentar();
+            }, 4000);
+        };
+
+        img.onload = function () {
+            resuelto = true;
+            if (img._alfabWatchdogTimer) clearTimeout(img._alfabWatchdogTimer);
+            img.classList.remove("d-none");
+            if (texto) texto.classList.add("d-none");
+        };
+        img.onerror = function () {
+            resuelto = true;
+            if (img._alfabWatchdogTimer) clearTimeout(img._alfabWatchdogTimer);
+            reintentar();
+        };
+        img.alt = (c.tipo === "numero" ? "Seña del número " : "Seña de la letra ") + c.caracter;
+        img.src = ruta;
+        armarWatchdog();
     }
 
     // Boca (fonética): a partir de LSPedia soporta tanto imagen (.png/.jpg)
@@ -557,6 +726,79 @@ const AlfabetizacionV2 = (function () {
         return (item && item.imagenBoca) || ("img/alfabetizacion/boca/" + encodeURIComponent(letra) + ".png");
     }
 
+    // Asigna src a un <img> o <video> con reintento automático si falla la
+    // carga (hipo de red, cold start del hosting de imágenes, etc.). Antes,
+    // si la carga fallaba, el elemento se quedaba roto para siempre hasta
+    // que ALGO volviera a asignarle el mismo src (típicamente, el usuario
+    // cambiando de módulo/carácter y regresando) — por eso el síntoma de
+    // "a veces no carga, si voy a otro lado y regreso ya aparece". Con esto
+    // el propio módulo reintenta solo, sin depender de que el usuario
+    // navegue para "arreglarlo" sin querer.
+    //
+    // ⚠️ IMPORTANTE: además del reintento por "onerror", hay un "vigilante"
+    // (watchdog) por temporizador. Un <img>/<video> puede quedarse callado
+    // para siempre -sin disparar "load" NI "error"- cuando la petición se
+    // cuelga a medio camino (típico con el Service Worker de sw.js
+    // interceptando la carga, o un hipo de red que ni siquiera llega a
+    // fallar). Ese es justo el caso de "la letra A a veces no carga":
+    // "onerror" nunca se dispara, así que el reintento de arriba nunca se
+    // activaba solo, y hacía falta cambiar de letra y volver para forzar
+    // una asignación nueva de src. El watchdog fuerza ese mismo reintento
+    // si no hay señal de éxito ni de error dentro de un tiempo razonable.
+    function asignarMediaConReintento(media, ruta, intentosMax) {
+        if (!media) return;
+        intentosMax = typeof intentosMax === "number" ? intentosMax : 3;
+        const TIMEOUT_WATCHDOG_MS = 4000;
+
+        // Limpia cualquier temporizador de un intento anterior (reintento
+        // o watchdog) para no pisar un elemento que ya no corresponde,
+        // p.ej. si el usuario cambió de carácter mientras uno esperaba.
+        if (media._alfabReintentoTimer) {
+            clearTimeout(media._alfabReintentoTimer);
+            media._alfabReintentoTimer = null;
+        }
+        if (media._alfabWatchdogTimer) {
+            clearTimeout(media._alfabWatchdogTimer);
+            media._alfabWatchdogTimer = null;
+        }
+
+        let intentos = 0;
+        let resuelto = false;
+
+        const programarReintento = () => {
+            intentos++;
+            if (intentos > intentosMax || !ruta) return; // se rinde en silencio tras varios intentos
+            media._alfabReintentoTimer = setTimeout(() => {
+                resuelto = false;
+                media.src = ruta;
+                if (media.tagName === "VIDEO") media.load();
+                armarWatchdog();
+            }, 500 * intentos); // backoff simple: 0.5s, 1s, 1.5s...
+        };
+
+        const armarWatchdog = () => {
+            if (media._alfabWatchdogTimer) clearTimeout(media._alfabWatchdogTimer);
+            media._alfabWatchdogTimer = setTimeout(() => {
+                if (resuelto) return;
+                programarReintento();
+            }, TIMEOUT_WATCHDOG_MS);
+        };
+
+        media.onerror = function () {
+            resuelto = true;
+            if (media._alfabWatchdogTimer) clearTimeout(media._alfabWatchdogTimer);
+            programarReintento();
+        };
+        media.onload = function () { resuelto = true; };
+        if (media.tagName === "VIDEO") {
+            media.oncanplay = function () { resuelto = true; };
+        }
+
+        media.src = ruta || "";
+        if (media.tagName === "VIDEO") media.load();
+        if (ruta) armarWatchdog();
+    }
+
     // Crea (o reutiliza) el elemento <img> o <video> dentro de bocaCaja según
     // corresponda, reemplazando el nodo solo si el tipo cambió respecto al
     // carácter anterior.
@@ -570,12 +812,11 @@ const AlfabetizacionV2 = (function () {
         if (tipoActual === (necesitaVideo ? "video" : "img")) {
             if (necesitaVideo) {
                 if (actual.getAttribute("src") !== ruta) {
-                    actual.src = ruta || "";
-                    actual.load();
+                    asignarMediaConReintento(actual, ruta);
                     actual.play().catch(() => {});
                 }
             } else {
-                actual.src = ruta || "";
+                asignarMediaConReintento(actual, ruta);
                 actual.alt = alt || "";
             }
             return;
@@ -584,7 +825,6 @@ const AlfabetizacionV2 = (function () {
         const nuevo = document.createElement(necesitaVideo ? "video" : "img");
         nuevo.id = elementId;
         nuevo.className = "apoyo-visual-img";
-        nuevo.src = ruta || "";
         if (necesitaVideo) {
             nuevo.autoplay = true;
             nuevo.loop = true;
@@ -595,6 +835,7 @@ const AlfabetizacionV2 = (function () {
         } else {
             nuevo.alt = alt || "";
         }
+        asignarMediaConReintento(nuevo, ruta);
 
         if (actual) {
             actual.replaceWith(nuevo);
@@ -629,7 +870,6 @@ const AlfabetizacionV2 = (function () {
 
                     const ruta = bocaPorLetra(letra);
                     const media = document.createElement(esRutaDeVideo(ruta) ? "video" : "img");
-                    media.src = ruta;
                     if (media.tagName === "VIDEO") {
                         media.autoplay = true;
                         media.loop = true;
@@ -640,6 +880,7 @@ const AlfabetizacionV2 = (function () {
                     } else {
                         media.alt = "Boca de la letra " + letra;
                     }
+                    asignarMediaConReintento(media, ruta);
 
                     const label = document.createElement("span");
                     label.textContent = letra;
@@ -1903,6 +2144,9 @@ const AlfabetizacionV2 = (function () {
 
         const btnTipoNumeros = el("btnAlfabTipoNumeros");
         if (btnTipoNumeros) btnTipoNumeros.addEventListener("click", () => cambiarTipo("numero"));
+
+        const btnIndiceToggle = el("btnAlfabIndiceToggle");
+        if (btnIndiceToggle) btnIndiceToggle.addEventListener("click", alternarIndiceCaracteres);
 
         const btnCarActualAnterior = el("btnAlfabCaracterAnterior");
         if (btnCarActualAnterior) btnCarActualAnterior.addEventListener("click", () => irACaracter(-1));

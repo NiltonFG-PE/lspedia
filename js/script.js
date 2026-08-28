@@ -1736,10 +1736,10 @@ function mostrarPalabra(p, opciones = {}){
            </div>`;
     const bloqueControlesVideo = hayVideo
             ? `<div class="controles-video d-flex align-items-center justify-content-center gap-2 mt-2 flex-nowrap">
-                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnRetroceder10" title="Retroceder 1 segundo" aria-label="Retroceder 1 segundo">⏪ 1s</button>
-                <button type="button" class="btn btn-sm btn-primary" id="btnPlayPause" title="Reproducir o pausar" aria-label="Reproducir o pausar">▶️ Iniciar</button>
-                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnReiniciarPalabra" title="Reiniciar desde el principio" aria-label="Reiniciar desde el principio">↺ Más</button>
-                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAvanzar10" title="Avanzar 3 segundos" aria-label="Avanzar 3 segundos">3s ⏩</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnRetroceder10" title="Retroceder 1 segundo" aria-label="Retroceder 1 segundo">⏪ <span class="controles-video-texto">1s</span></button>
+                <button type="button" class="btn btn-sm btn-primary" id="btnPlayPause" title="Reproducir o pausar" aria-label="Reproducir o pausar">▶️ <span class="controles-video-texto">Iniciar</span></button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnReiniciarPalabra" title="Reiniciar desde el principio" aria-label="Reiniciar desde el principio">↺ <span class="controles-video-texto">Más</span></button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAvanzar10" title="Avanzar 3 segundos" aria-label="Avanzar 3 segundos"><span class="controles-video-texto">3s</span> ⏩</button>
                 <div class="controles-video-velocidad">
                     <button type="button" class="btn btn-sm btn-outline-secondary" id="btnPalabraVelocidadLenta" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
                     <span class="small fw-bold text-muted" id="palabraVelocidadLabel">1x</span>
@@ -1882,10 +1882,10 @@ function mostrarPalabraSimplificada(p, opciones = {}){
            </div>`;
     const bloqueControlesVideo = idVideo
         ? `<div class="controles-video d-flex align-items-center justify-content-center gap-2 mt-2 flex-nowrap">
-                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnRetroceder10" title="Retroceder 1 segundo" aria-label="Retroceder 1 segundo">⏪ 1s</button>
-                <button type="button" class="btn btn-sm btn-primary" id="btnPlayPause" title="Reproducir o pausar" aria-label="Reproducir o pausar">▶️ Iniciar</button>
-                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnReiniciarPalabra" title="Reiniciar desde el principio" aria-label="Reiniciar desde el principio">↺ Más</button>
-                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAvanzar10" title="Avanzar 3 segundos" aria-label="Avanzar 3 segundos">3s ⏩</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnRetroceder10" title="Retroceder 1 segundo" aria-label="Retroceder 1 segundo">⏪ <span class="controles-video-texto">1s</span></button>
+                <button type="button" class="btn btn-sm btn-primary" id="btnPlayPause" title="Reproducir o pausar" aria-label="Reproducir o pausar">▶️ <span class="controles-video-texto">Iniciar</span></button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnReiniciarPalabra" title="Reiniciar desde el principio" aria-label="Reiniciar desde el principio">↺ <span class="controles-video-texto">Más</span></button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAvanzar10" title="Avanzar 3 segundos" aria-label="Avanzar 3 segundos"><span class="controles-video-texto">3s</span> ⏩</button>
                 <div class="controles-video-velocidad">
                     <button type="button" class="btn btn-sm btn-outline-secondary" id="btnPalabraVelocidadLenta" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
                     <span class="small fw-bold text-muted" id="palabraVelocidadLabel">1x</span>
@@ -2537,7 +2537,9 @@ function actualizarLabelVelocidadPalabra() {
 function actualizarBotonPlayPause(evento) {
     const btnPlayPause = document.getElementById("btnPlayPause");
     if (!btnPlayPause) return;
-    btnPlayPause.textContent = evento.data === YT.PlayerState.PLAYING ? "⏸ Pausar" : "▶️ Iniciar";
+    btnPlayPause.innerHTML = evento.data === YT.PlayerState.PLAYING
+        ? '⏸ <span class="controles-video-texto">Pausar</span>'
+        : '▶️ <span class="controles-video-texto">Iniciar</span>';
     alternarTapaPausaYoutube("reproductorPalabraWrap", evento);
 }
 
