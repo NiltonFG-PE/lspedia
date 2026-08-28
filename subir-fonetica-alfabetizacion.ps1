@@ -1,5 +1,4 @@
-# subir-fonetica-alfabetizacion.ps1
-# Uso: .\subir-fonetica-alfabetizacion.ps1 C.webm
+# .\subir-fonetica-alfabetizacion.ps1 C.webm
 #      .\subir-fonetica-alfabetizacion.ps1 C.webm,D.webm,E.png
 #
 # Igual que subir-imagen-vocabulario.ps1, pero para los archivos de la

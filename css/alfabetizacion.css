@@ -64,53 +64,10 @@
 .alfab-chip-numero.active { background: #e0f2fe; border-color: #0284c7; box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.18); }
 
 /* ============================================================
-   Tira de fonética letra por letra (para NÚMEROS: se pronuncian
-   como palabra, ej. 13 = T-R-E-C-E, y se reutiliza la boca de
-   cada letra ya existente en img/alfabetizacion/boca/{LETRA}.png)
+   (Antes: tira de fonética letra por letra para NÚMEROS, ej. 13 =
+   T-R-E-C-E. Se reemplazó por un solo video/imagen de boca -igual
+   que las letras-, así que ya no hace falta esta tira desplazable.)
    ============================================================ */
-.alfab-boca-numero-tira {
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    padding: 4px 2px;
-    flex: 1 1 auto;
-    min-width: 0;
-    /* Máscara de desvanecido en el borde derecho: pista visual de que
-       hay más letras si se desliza, en vez de que parezca simplemente
-       cortado. Se desactiva sola al llegar al final del scroll gracias
-       a la segunda parada del gradiente en 100%. */
-    mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent 100%);
-    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent 100%);
-}
-
-/* El wrapper (flechas + tira) también necesita min-width:0: es un
-   ítem flex dentro de .alfab-grid-celda (columna), y a su vez es un
-   contenedor flex fila para sus propios hijos. */
-#alfabBocaNumeroWrap {
-    min-width: 0;
-}
-.alfab-boca-numero-item {
-    flex: 0 0 auto;
-    text-align: center;
-}
-.alfab-boca-numero-item img,
-.alfab-boca-numero-item video {
-    width: 78px;
-    height: 78px;
-    object-fit: cover;
-    border-radius: 10px;
-    border: 3px solid #0f172a;
-    background-color: #0f172a;
-    display: block;
-}
-.alfab-boca-numero-item span {
-    display: block;
-    margin-top: 6px;
-    font-weight: 800;
-    font-size: 1.15rem;
-    color: var(--text-main, #0f172a);
-}
 
 /* ============================================================
    Juego "Completar la palabra": fusiona palabras del abecedario
@@ -930,14 +887,6 @@
     padding: 18px;
     display: flex;
     flex-direction: column;
-    /* Los ítems de CSS Grid no se encogen por debajo del ancho mínimo
-       de su contenido por defecto (min-width: auto implícito). La tira
-       de fonética de números (.alfab-boca-numero-tira) es más ancha
-       que la celda en pantallas angostas, así que sin este min-width:0
-       toda la celda —y con ella la tarjeta— se ensanchaba y el
-       contenido quedaba cortado en el borde de la pantalla en vez de
-       quedar desplazable dentro de su propia caja. */
-    min-width: 0;
 }
 .alfab-grid-letra { grid-area: letra; justify-content: center; }
 .alfab-grid-fonetica { grid-area: fonetica; }

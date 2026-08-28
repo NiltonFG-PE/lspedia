@@ -3748,21 +3748,17 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                                 </div>
                             </div>
 
-                            <!-- Celda 2: Fonética (foto/video de boca). LETRAS: una sola
-                                 imagen (la boca de esa letra). NÚMEROS: se pronuncian como
-                                 palabra (ej. "13" = TRECE), así que se muestra una tira
-                                 desplazable con la boca de cada letra de la palabra,
-                                 reutilizando las imágenes boca/{LETRA}.png que ya existen. -->
+                            <!-- Celda 2: Fonética (foto/video de boca). Un único video/imagen
+                                 tanto para letras como para números (imagenBoca del Sheet),
+                                 sin distinción de tipo. Antes los números mostraban una tira
+                                 desplazable con la boca de cada letra de la palabra (ej. "13" =
+                                 T-R-E-C-E); se simplificó a un solo video que pronuncia el
+                                 número completo (ej. img/alfabetizacion/boca/1.webm). -->
                             <div class="alfab-grid-celda alfab-grid-fonetica">
                                 <p class="alfab-etiqueta-panel alfab-etiqueta-fonetica">🔊👄 Fonética</p>
                                 <div class="apoyo-visual-caja alfab-visual-caja rounded border" id="alfabBocaCaja">
                                     <img id="alfabBocaImg" src="" alt="Imagen de fonética" class="apoyo-visual-img">
                                     <span class="apoyo-visual-lupa">Ampliar 🔍</span>
-                                </div>
-                                <div class="d-none align-items-center gap-2" id="alfabBocaNumeroWrap">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle flex-shrink-0" id="btnAlfabBocaNumeroAnterior" title="Desplazar a la izquierda" aria-label="Desplazar a la izquierda">◀</button>
-                                    <div class="alfab-boca-numero-tira" id="alfabBocaNumeroTira"></div>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle flex-shrink-0" id="btnAlfabBocaNumeroSiguiente" title="Desplazar a la derecha" aria-label="Desplazar a la derecha">▶</button>
                                 </div>
                             </div>
 

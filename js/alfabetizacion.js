@@ -718,14 +718,6 @@ const AlfabetizacionV2 = (function () {
         return /\.(webm|mp4|mov)(\?.*)?$/i.test(ruta || "");
     }
 
-    // Busca el imagenBoca real de una letra en los datos ya cargados (para
-    // reutilizarlo en la tira de números). Si no la encuentra, arma la ruta
-    // clásica en png como respaldo.
-    function bocaPorLetra(letra) {
-        const item = (estado.datos.alfabeto || []).find((x) => x.tipo === "letra" && x.caracter === letra);
-        return (item && item.imagenBoca) || ("img/alfabetizacion/boca/" + encodeURIComponent(letra) + ".png");
-    }
-
     // Asigna src a un <img> o <video> con reintento automático si falla la
     // carga (hipo de red, cold start del hosting de imágenes, etc.). Antes,
     // si la carga fallaba, el elemento se quedaba roto para siempre hasta
@@ -844,62 +836,13 @@ const AlfabetizacionV2 = (function () {
         }
     }
 
-    // Pinta la sección de Fonética según el tipo de carácter:
-    // LETRAS -> una sola imagen o video de boca.
-    // NÚMEROS -> tira desplazable con la boca de cada letra de la palabra
-    //            (ej. "13" -> T, R, E, C, E), reutilizando el imagenBoca real
-    //            de cada letra (imagen o video, lo que corresponda).
+    // Pinta la sección de Fonética: un solo video/imagen de boca, tanto para
+    // letras como para números (imagenBoca del Sheet). Antes los números
+    // armaban una tira con la boca de cada letra de la palabra (ej. "13" =
+    // T-R-E-C-E); ahora se usa un único video que pronuncia el número
+    // completo (ej. img/alfabetizacion/boca/1.webm), igual que las letras.
     function renderFonetica(c) {
-        const bocaCaja = el("alfabBocaCaja");
-        const bocaNumeroWrap = el("alfabBocaNumeroWrap");
-
-        if (c.tipo === "numero") {
-            if (bocaCaja) bocaCaja.classList.add("d-none");
-            if (bocaNumeroWrap) {
-                bocaNumeroWrap.classList.remove("d-none");
-                bocaNumeroWrap.classList.add("d-flex");
-            }
-
-            const palabra = CONFIG.PALABRA_NUMERO[c.caracter] || "";
-            const tira = el("alfabBocaNumeroTira");
-            if (tira) {
-                tira.innerHTML = "";
-                palabra.split("").forEach((letra) => {
-                    const item = document.createElement("div");
-                    item.className = "alfab-boca-numero-item";
-
-                    const ruta = bocaPorLetra(letra);
-                    const media = document.createElement(esRutaDeVideo(ruta) ? "video" : "img");
-                    if (media.tagName === "VIDEO") {
-                        media.autoplay = true;
-                        media.loop = true;
-                        media.muted = true;
-                        media.playsInline = true;
-                        media.setAttribute("muted", "");
-                        media.setAttribute("playsinline", "");
-                    } else {
-                        media.alt = "Boca de la letra " + letra;
-                    }
-                    asignarMediaConReintento(media, ruta);
-
-                    const label = document.createElement("span");
-                    label.textContent = letra;
-
-                    item.appendChild(media);
-                    item.appendChild(label);
-                    tira.appendChild(item);
-                });
-                tira.scrollLeft = 0;
-            }
-            return;
-        }
-
-        if (bocaCaja) bocaCaja.classList.remove("d-none");
-        if (bocaNumeroWrap) {
-            bocaNumeroWrap.classList.add("d-none");
-            bocaNumeroWrap.classList.remove("d-flex");
-        }
-        actualizarMediaBoca("alfabBocaCaja", "alfabBocaImg", c.imagenBoca, "Boca de la letra " + c.caracter);
+        actualizarMediaBoca("alfabBocaCaja", "alfabBocaImg", c.imagenBoca, "Boca de " + (c.tipo === "numero" ? "el número " : "la letra ") + c.caracter);
     }
 
     function irACaracter(delta) {
@@ -2167,22 +2110,6 @@ const AlfabetizacionV2 = (function () {
 
         const btnTrazoReiniciar = el("btnAlfabTrazoReiniciar");
         if (btnTrazoReiniciar) btnTrazoReiniciar.addEventListener("click", reiniciarTrazo);
-
-        const btnBocaNumeroAnterior = el("btnAlfabBocaNumeroAnterior");
-        if (btnBocaNumeroAnterior) {
-            btnBocaNumeroAnterior.addEventListener("click", () => {
-                const tira = el("alfabBocaNumeroTira");
-                if (tira) tira.scrollBy({ left: -100, behavior: "smooth" });
-            });
-        }
-
-        const btnBocaNumeroSiguiente = el("btnAlfabBocaNumeroSiguiente");
-        if (btnBocaNumeroSiguiente) {
-            btnBocaNumeroSiguiente.addEventListener("click", () => {
-                const tira = el("alfabBocaNumeroTira");
-                if (tira) tira.scrollBy({ left: 100, behavior: "smooth" });
-            });
-        }
 
         const btnEjemploAnterior = el("btnAlfabEjemploAnterior");
         if (btnEjemploAnterior) btnEjemploAnterior.addEventListener("click", () => irAEjemplo(-1));
