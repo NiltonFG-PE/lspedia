@@ -76,6 +76,19 @@
     padding: 4px 2px;
     flex: 1 1 auto;
     min-width: 0;
+    /* Máscara de desvanecido en el borde derecho: pista visual de que
+       hay más letras si se desliza, en vez de que parezca simplemente
+       cortado. Se desactiva sola al llegar al final del scroll gracias
+       a la segunda parada del gradiente en 100%. */
+    mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent 100%);
+}
+
+/* El wrapper (flechas + tira) también necesita min-width:0: es un
+   ítem flex dentro de .alfab-grid-celda (columna), y a su vez es un
+   contenedor flex fila para sus propios hijos. */
+#alfabBocaNumeroWrap {
+    min-width: 0;
 }
 .alfab-boca-numero-item {
     flex: 0 0 auto;
@@ -917,6 +930,14 @@
     padding: 18px;
     display: flex;
     flex-direction: column;
+    /* Los ítems de CSS Grid no se encogen por debajo del ancho mínimo
+       de su contenido por defecto (min-width: auto implícito). La tira
+       de fonética de números (.alfab-boca-numero-tira) es más ancha
+       que la celda en pantallas angostas, así que sin este min-width:0
+       toda la celda —y con ella la tarjeta— se ensanchaba y el
+       contenido quedaba cortado en el borde de la pantalla en vez de
+       quedar desplazable dentro de su propia caja. */
+    min-width: 0;
 }
 .alfab-grid-letra { grid-area: letra; justify-content: center; }
 .alfab-grid-fonetica { grid-area: fonetica; }
