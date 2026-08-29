@@ -109,6 +109,7 @@ const AlfabetizacionV2 = (function () {
             tipo: "letra",           // letra | numero
             indiceCaracter: 0,       // índice dentro de la lista filtrada por tipo
             velocidadIndex: CONFIG.VELOCIDAD_INDEX_INICIAL,
+            bocaVelocidadIndex: CONFIG.VELOCIDAD_INDEX_INICIAL,
             ejemploIndice: 0,
             variante: "mayuscula"    // variante tipográfica activa (chip seleccionado)
         },
@@ -847,16 +848,22 @@ const AlfabetizacionV2 = (function () {
 
     // Crea (o reutiliza) el elemento <img> o <video> dentro de bocaCaja según
     // corresponda, reemplazando el nodo solo si el tipo cambió respecto al
-    // carácter anterior.
-    function actualizarMediaBoca(contenedorId, elementId, ruta, alt) {
+    // carácter anterior. Cuando es video, además muestra la barra de
+    // controles de velocidad (controlesId) y le aplica la velocidad activa
+    // (estado.aprender.bocaVelocidadIndex); cuando es imagen, la oculta,
+    // porque no hay nada que acelerar/frenar en una foto fija.
+    function actualizarMediaBoca(contenedorId, elementId, ruta, alt, controlesId) {
         const contenedor = el(contenedorId);
         if (!contenedor) return;
         const actual = document.getElementById(elementId);
         const necesitaVideo = esRutaDeVideo(ruta);
         const tipoActual = actual ? actual.tagName.toLowerCase() : null;
+        const controles = controlesId ? el(controlesId) : null;
+        if (controles) controles.classList.toggle("d-none", !necesitaVideo);
 
         if (tipoActual === (necesitaVideo ? "video" : "img")) {
             if (necesitaVideo) {
+                actual.playbackRate = CONFIG.VELOCIDADES_TRAZO[estado.aprender.bocaVelocidadIndex];
                 if (actual.getAttribute("src") !== ruta) {
                     asignarMediaConReintento(actual, ruta);
                     actual.play().catch(() => {});
@@ -878,6 +885,7 @@ const AlfabetizacionV2 = (function () {
             nuevo.playsInline = true;
             nuevo.setAttribute("muted", "");
             nuevo.setAttribute("playsinline", "");
+            nuevo.playbackRate = CONFIG.VELOCIDADES_TRAZO[estado.aprender.bocaVelocidadIndex];
         } else {
             nuevo.alt = alt || "";
         }
@@ -896,7 +904,8 @@ const AlfabetizacionV2 = (function () {
     // T-R-E-C-E); ahora se usa un único video que pronuncia el número
     // completo (ej. img/alfabetizacion/boca/1.webm), igual que las letras.
     function renderFonetica(c) {
-        actualizarMediaBoca("alfabBocaCaja", "alfabBocaImg", c.imagenBoca, "Boca de " + (c.tipo === "numero" ? "el número " : "la letra ") + c.caracter);
+        actualizarMediaBoca("alfabBocaCaja", "alfabBocaImg", c.imagenBoca, "Boca de " + (c.tipo === "numero" ? "el número " : "la letra ") + c.caracter, "alfabBocaControles");
+        actualizarLabelVelocidadBoca();
     }
 
     function irACaracter(delta) {
@@ -951,6 +960,31 @@ const AlfabetizacionV2 = (function () {
     function reiniciarTrazo() {
         const video = el("alfabTrazoVideo");
         if (!video || !video.src) return;
+        video.currentTime = 0;
+        video.play().catch(() => { /* el autoplay puede requerir un gesto del usuario en algunos navegadores */ });
+    }
+
+    // --- Control de velocidad de Fonética (video de boca) ---
+    // Mismo patrón que la Grafía (cambiarVelocidad/reiniciarTrazo arriba),
+    // pero con su propio índice de velocidad porque son dos videos
+    // independientes: acelerar la Grafía no debería tocar la Fonética ni
+    // viceversa.
+    function cambiarVelocidadBoca(delta) {
+        const max = CONFIG.VELOCIDADES_TRAZO.length - 1;
+        estado.aprender.bocaVelocidadIndex = Math.min(max, Math.max(0, estado.aprender.bocaVelocidadIndex + delta));
+        const video = el("alfabBocaImg");
+        if (video && video.tagName === "VIDEO") video.playbackRate = CONFIG.VELOCIDADES_TRAZO[estado.aprender.bocaVelocidadIndex];
+        actualizarLabelVelocidadBoca();
+    }
+
+    function actualizarLabelVelocidadBoca() {
+        const label = el("alfabBocaVelocidadLabel");
+        if (label) label.textContent = CONFIG.VELOCIDADES_TRAZO[estado.aprender.bocaVelocidadIndex] + "x";
+    }
+
+    function reiniciarBoca() {
+        const video = el("alfabBocaImg");
+        if (!video || video.tagName !== "VIDEO" || !video.src) return;
         video.currentTime = 0;
         video.play().catch(() => { /* el autoplay puede requerir un gesto del usuario en algunos navegadores */ });
     }
@@ -2164,6 +2198,15 @@ const AlfabetizacionV2 = (function () {
 
         const btnTrazoReiniciar = el("btnAlfabTrazoReiniciar");
         if (btnTrazoReiniciar) btnTrazoReiniciar.addEventListener("click", reiniciarTrazo);
+
+        const btnBocaLento = el("btnAlfabBocaLento");
+        if (btnBocaLento) btnBocaLento.addEventListener("click", () => cambiarVelocidadBoca(-1));
+
+        const btnBocaRapido = el("btnAlfabBocaRapido");
+        if (btnBocaRapido) btnBocaRapido.addEventListener("click", () => cambiarVelocidadBoca(1));
+
+        const btnBocaReiniciar = el("btnAlfabBocaReiniciar");
+        if (btnBocaReiniciar) btnBocaReiniciar.addEventListener("click", reiniciarBoca);
 
         const btnEjemploAnterior = el("btnAlfabEjemploAnterior");
         if (btnEjemploAnterior) btnEjemploAnterior.addEventListener("click", () => irAEjemplo(-1));

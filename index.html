@@ -3763,9 +3763,17 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                                  número completo (ej. img/alfabetizacion/boca/1.webm). -->
                             <div class="alfab-grid-celda alfab-grid-fonetica">
                                 <p class="alfab-etiqueta-panel alfab-etiqueta-fonetica">🔊👄 Fonética</p>
-                                <div class="apoyo-visual-caja alfab-visual-caja rounded border" id="alfabBocaCaja">
+                                <div class="apoyo-visual-caja alfab-visual-caja rounded border mb-2" id="alfabBocaCaja">
                                     <img id="alfabBocaImg" src="" alt="Imagen de fonética" class="apoyo-visual-img">
                                     <span class="apoyo-visual-lupa">Ampliar 🔍</span>
+                                </div>
+                                <div class="controles-video alfab-controles-video d-flex align-items-center justify-content-center gap-2 d-none" id="alfabBocaControles">
+                                    <div class="controles-video-velocidad alfab-velocidad-pildora">
+                                        <button type="button" class="btn btn-sm alfab-btn-control" id="btnAlfabBocaLento" title="Reducir velocidad" aria-label="Reducir velocidad">🐢</button>
+                                        <span class="small fw-bold" id="alfabBocaVelocidadLabel">1x</span>
+                                        <button type="button" class="btn btn-sm alfab-btn-control" id="btnAlfabBocaRapido" title="Aumentar velocidad" aria-label="Aumentar velocidad">🐇</button>
+                                    </div>
+                                    <button type="button" class="btn btn-sm alfab-btn-reiniciar ms-2" id="btnAlfabBocaReiniciar" title="Repetir animación" aria-label="Repetir animación">🔁</button>
                                 </div>
                             </div>
 
