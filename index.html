@@ -816,24 +816,31 @@
            prioridad por ir después en este archivo) vuelve a su tamaño
            normal. */
         .nosotros-video-wrap.nosotros-fijo .controles-video {
-            padding: 4px 5px;
-            gap: 3px !important;
+            padding: 5px 6px;
+            gap: 5px !important;
             margin-top: 0 !important;
             margin-bottom: 4px !important;
             flex-wrap: wrap;
         }
+        /* Los botones se agrandaron (antes 9px, casi ilegibles) pero
+           siguen entrando todos en una sola cinta: al no tener texto
+           (.controles-video-texto oculto) son solo un icono cada uno, asi
+           que hay margen de sobra incluso en celulares angostos; si algun
+           celular muy chico no llegara a entrar, flex-wrap:wrap (definido
+           arriba) los pasa a una segunda linea en vez de recortarlos. */
         .nosotros-video-wrap.nosotros-fijo .controles-video .btn {
-            font-size: 9px;
-            padding: 0.15rem 0.35rem;
+            font-size: 14px;
+            padding: 0.35rem 0.55rem;
         }
         .nosotros-video-wrap.nosotros-fijo .controles-video-texto {
             display: none;
         }
         .nosotros-video-wrap.nosotros-fijo .controles-video-velocidad {
-            padding: 1px 5px;
+            padding: 3px 8px;
+            gap: 5px;
         }
         .nosotros-video-wrap.nosotros-fijo .controles-video-velocidad .small {
-            font-size: 9px;
+            font-size: 13px;
         }
         /* En pantalla completa el video deja de ser chico (ver
            .nosotros-pantalla-completa más abajo, con más ancho
@@ -3712,7 +3719,7 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                             <div class="alfab-grid-celda alfab-grid-letra">
                                 <div class="d-flex justify-content-between align-items-center mb-3 alfab-nav-caracter">
                                     <button type="button" class="btn alfab-nav-flecha" id="btnAlfabCaracterAnterior" title="Anterior" aria-label="Carácter anterior">◀</button>
-                                    <div class="alfab-caracter-circulo">
+                                    <div class="alfab-caracter-circulo" id="alfabCaracterCirculo">
                                         <img id="alfabCaracterImg" class="alfab-caracter-img d-none" alt="">
                                         <h2 class="fw-bold mb-0" id="alfabCaracterActual">A</h2>
                                     </div>

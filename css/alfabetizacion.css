@@ -948,6 +948,52 @@
     background: #ffffff;
     pointer-events: none;
 }
+/* Números compuestos (16 a 19, ver digitosCompuestos en alfabetizacion.js):
+   en vez de un único cuadro, se muestran dos cuadros chicos juntos, uno por
+   cada dígito (ej. la seña del "1" y la seña del "6" para el número 16).
+   Se anula el fondo/borde/sombra del cuadro grande (pasan a los dos
+   cuadros chicos) y se acomodan lado a lado dentro del mismo espacio. */
+.alfab-nav-caracter .alfab-caracter-circulo.alfab-caracter-circulo--doble {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    gap: 5px;
+    padding: 0;
+}
+.alfab-caracter-circulo--doble .alfab-caracter-subcaja {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #0c4a6e, #0369a1);
+    box-shadow: 0 8px 22px -8px rgba(12, 74, 110, 0.35), 0 0 0 3px rgba(254, 189, 15, 0.18);
+    position: relative;
+    overflow: hidden;
+}
+.alfab-caracter-circulo--doble .alfab-caracter-subcaja:has(.alfab-caracter-img:not(.d-none)) {
+    background: #ffffff;
+}
+.alfab-caracter-circulo--doble .alfab-caracter-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 4px;
+    border-radius: 11px;
+    background: #ffffff;
+    pointer-events: none;
+}
+.alfab-caracter-circulo--doble .alfab-caracter-subtexto {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+@media (max-width: 575.98px) {
+    .alfab-caracter-circulo--doble { gap: 4px; }
+    .alfab-caracter-circulo--doble .alfab-caracter-subtexto { font-size: 1.15rem; }
+}
+
 .alfab-nav-flecha {
     width: 44px;
     height: 44px;

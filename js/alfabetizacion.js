@@ -648,12 +648,29 @@ const AlfabetizacionV2 = (function () {
         return "img/alfabetizacion/circulo/" + encodeURIComponent(caracter) + ".webp";
     }
 
-    function actualizarCirculoCaracter(c) {
-        const img = el("alfabCaracterImg");
-        const texto = el("alfabCaracterActual");
-        if (texto) texto.textContent = c.caracter;
-        if (!img) return; // por si el HTML aún no tiene el <img> (compatibilidad)
+    // Números 16 a 19: todavía no tienen una imagen propia combinada en
+    // img/alfabetizacion/circulo/ (16.webp, 17.webp, ...). En vez de
+    // dejarlos sin seña, se arman visualmente juntando dos cuadros más
+    // chicos uno al lado del otro: uno con la seña del "10" y otro con la
+    // seña del dígito de la unidad (6, 7, 8 o 9). Esos dos archivos sueltos
+    // (10.webp, 6.webp, etc.) ya existen porque son los mismos que usan el
+    // número 10 y los números 0-9. El resto de los números (0-15) y todas
+    // las letras siguen usando un único cuadro con su propia imagen
+    // combinada.
+    function digitosCompuestos(c) {
+        if (c.tipo !== "numero") return null;
+        const n = parseInt(c.caracter, 10);
+        if (Number.isNaN(n) || n < 16 || n > 19) return null;
+        return ["10", c.caracter.slice(1)];
+    }
 
+    // Carga una imagen de seña con reintentos (hasta 3, con backoff) y un
+    // watchdog por si la carga se cuelga sin disparar "load" ni "error"
+    // (Service Worker, hipo de red). Si tras los reintentos no hay imagen,
+    // se cae al texto de respaldo (texto) en vez de dejar el cuadro vacío.
+    // Reutilizada tanto para el cuadro único (letras y números 0-15) como
+    // para cada uno de los dos cuadros de los números compuestos (16-19).
+    function cargarImagenSenaConReintento(img, texto, ruta, altTexto) {
         if (img._alfabReintentoTimer) {
             clearTimeout(img._alfabReintentoTimer);
             img._alfabReintentoTimer = null;
@@ -663,7 +680,6 @@ const AlfabetizacionV2 = (function () {
             img._alfabWatchdogTimer = null;
         }
 
-        const ruta = rutaCirculoCaracter(c.caracter);
         const maxIntentos = 3;
         let intentos = 0;
         let resuelto = false;
@@ -677,17 +693,11 @@ const AlfabetizacionV2 = (function () {
                     armarWatchdog();
                 }, 500 * intentos);
             } else {
-                // No hay imagen para este carácter (o falló de verdad):
-                // se cae al texto de siempre, sin dejar el círculo vacío.
                 img.classList.add("d-none");
                 if (texto) texto.classList.remove("d-none");
             }
         };
 
-        // Igual que en asignarMediaConReintento: si la carga se cuelga sin
-        // disparar "load" ni "error" (Service Worker, hipo de red), este
-        // watchdog fuerza el mismo reintento en vez de dejar el círculo
-        // esperando para siempre.
         const armarWatchdog = () => {
             img._alfabWatchdogTimer = setTimeout(() => {
                 if (resuelto) return;
@@ -706,9 +716,53 @@ const AlfabetizacionV2 = (function () {
             if (img._alfabWatchdogTimer) clearTimeout(img._alfabWatchdogTimer);
             reintentar();
         };
-        img.alt = (c.tipo === "numero" ? "Seña del número " : "Seña de la letra ") + c.caracter;
+        img.alt = altTexto;
         img.src = ruta;
         armarWatchdog();
+    }
+
+    function actualizarCirculoCaracter(c) {
+        const contenedor = el("alfabCaracterCirculo");
+        if (!contenedor) return; // por si el HTML aún no tiene el contenedor (compatibilidad)
+
+        const digitos = digitosCompuestos(c);
+
+        if (digitos) {
+            // Número compuesto (16-19): dos cuadros chicos lado a lado.
+            contenedor.dataset.modo = "doble";
+            contenedor.classList.add("alfab-caracter-circulo--doble");
+            contenedor.innerHTML = digitos.map((d, i) => (
+                '<span class="alfab-caracter-subcaja">' +
+                    '<img class="alfab-caracter-img d-none" data-sub-img="' + i + '" alt="">' +
+                    '<span class="alfab-caracter-subtexto" data-sub-texto="' + i + '">' + d + '</span>' +
+                '</span>'
+            )).join("");
+
+            digitos.forEach((d, i) => {
+                const img = contenedor.querySelector('[data-sub-img="' + i + '"]');
+                const texto = contenedor.querySelector('[data-sub-texto="' + i + '"]');
+                cargarImagenSenaConReintento(img, texto, rutaCirculoCaracter(d), "Seña del número " + d);
+            });
+            return;
+        }
+
+        if (contenedor.dataset.modo === "doble") {
+            // Viene de un número compuesto (16-19): se restaura el cuadro
+            // único original antes de seguir con el flujo normal.
+            contenedor.innerHTML =
+                '<img id="alfabCaracterImg" class="alfab-caracter-img d-none" alt="">' +
+                '<h2 class="fw-bold mb-0" id="alfabCaracterActual"></h2>';
+            contenedor.classList.remove("alfab-caracter-circulo--doble");
+        }
+        contenedor.dataset.modo = "simple";
+
+        const img = el("alfabCaracterImg");
+        const texto = el("alfabCaracterActual");
+        if (texto) texto.textContent = c.caracter;
+        if (!img) return;
+
+        const altTexto = (c.tipo === "numero" ? "Seña del número " : "Seña de la letra ") + c.caracter;
+        cargarImagenSenaConReintento(img, texto, rutaCirculoCaracter(c.caracter), altTexto);
     }
 
     // Boca (fonética): a partir de LSPedia soporta tanto imagen (.png/.jpg)
