@@ -960,22 +960,24 @@ iframe {
    a la esquina superior izquierda del iframe en el reproductor principal
    (#reproductorPalabraWrap) en móvil. No se puede quitar ese icono desde
    fuera (vive dentro del iframe de youtube.com, de otro origen), así que
-   se cubre con una franja del mismo color que el fondo del reproductor.
-   Se deja pasar el clic a través de ella (pointer-events: none) para no
-   estorbar si el usuario sí necesita tocar la barra de progreso nativa de
-   YouTube justo debajo. */
+   se cubre con un parche chico del mismo color que el fondo del
+   reproductor, SOLO en esa esquina (antes cubría todo el ancho del video
+   como una franja negra completa, que tapaba el nombre del canal y se
+   veía como un bloque roto en vez de algo prolijo). Se deja pasar el
+   clic a través de ella (pointer-events: none) para no estorbar si el
+   usuario sí necesita tocar la barra de progreso nativa de YouTube justo
+   debajo. */
 .reproductor-palabra-wrap:not(.video-palabra-pantalla-completa)::before {
     content: "";
     position: absolute;
     top: 0;
     left: 0;
-    right: 0;
-    height: 34px;
+    width: 44px;
+    height: 28px;
     background-color: #000;
     z-index: 3;
     pointer-events: none;
     border-top-left-radius: inherit;
-    border-top-right-radius: inherit;
 }
 
 /* Capa transparente sobre cada video de YouTube: intercepta el toque antes
