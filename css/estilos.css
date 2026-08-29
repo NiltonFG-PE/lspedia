@@ -967,18 +967,13 @@ iframe {
    clic a través de ella (pointer-events: none) para no estorbar si el
    usuario sí necesita tocar la barra de progreso nativa de YouTube justo
    debajo. */
-.reproductor-palabra-wrap:not(.video-palabra-pantalla-completa)::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 44px;
-    height: 28px;
-    background-color: #000;
-    z-index: 3;
-    pointer-events: none;
-    border-top-left-radius: inherit;
-}
+/* (Antes acá había un parche negro para tapar un icono chiquito de YouTube
+   en la esquina superior izquierda del reproductor principal. Se sacó:
+   por más chico que fuera, siempre se terminaba viendo como un cuadrado
+   negro suelto encima del video, lo cual se veía peor que dejar ver ese
+   icono mínimo de YouTube. Ver .video-toque-overlay más abajo: esa capa
+   sigue intacta y evita que se abra la UI nativa de YouTube al tocar el
+   video.) */
 
 /* Capa transparente sobre cada video de YouTube: intercepta el toque antes
    de que llegue al iframe. Sin esto, tocar el video (aunque sea sin querer)
