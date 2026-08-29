@@ -335,61 +335,15 @@ document.getElementById("btnCategorias").addEventListener("click", (e) => {
 // equivalente del menú de arriba (data-vinculado guarda su id), así
 // que no duplicamos ninguna lógica: toda la navegación real sigue
 // pasando por los mismos handlers de siempre.
-//
-// EXCEPCIÓN: "Vocabulario" y "Nosotros" son los dos botones donde los
-// usuarios suelen tocar varias veces seguidas (ya sea porque quieren
-// "refrescar" esa pantalla o porque no pasó nada la primera vez). Si el
-// botón que se toca YA estaba activo (o sea, es un segundo/tercer toque
-// sobre la misma sección), en vez de repetir el mismo clic se hace un
-// refresco real de la página (window.location), pero guardando antes en
-// la URL la búsqueda/categoría actual de Vocabulario (o simplemente la
-// vista "nosotros"), para que al recargar la persona siga viendo
-// exactamente lo mismo que estaba viendo.
-const SECCIONES_CON_REFRESCO = ["btnCategorias", "btnSobreNosotros"];
-
 document.querySelectorAll(".mbn-item").forEach(boton => {
     boton.addEventListener("click", () => {
         const idVinculado = boton.dataset.vinculado;
-        const esSegundoToque = boton.classList.contains("active") &&
-            SECCIONES_CON_REFRESCO.includes(idVinculado);
-
-        if (esSegundoToque) {
-            refrescarSeccionConservandoEstado(idVinculado);
-            return;
-        }
-
         document.querySelectorAll(".mbn-item").forEach(b => b.classList.remove("active"));
         boton.classList.add("active");
         const elementoOriginal = idVinculado && document.getElementById(idVinculado);
         if(elementoOriginal) elementoOriginal.click();
     });
 });
-
-// Arma la URL con el estado que hay que conservar y recarga la página de
-// verdad (window.location.href), en vez de solo repetir el clic. Al
-// volver a cargar, App.iniciar() lee estos mismos parámetros (ver más
-// abajo) y deja a la persona tal como estaba antes del refresco.
-function refrescarSeccionConservandoEstado(idVinculado){
-    if (idVinculado === "btnCategorias") {
-        let nuevaUrl = window.location.pathname + "?vista=vocabulario";
-        const textoBusqueda = buscarCategorias ? buscarCategorias.value.trim() : "";
-        if (textoBusqueda) {
-            // Si hay algo escrito en el buscador de Vocabulario, eso manda:
-            // es "la búsqueda actual".
-            nuevaUrl += "&buscar=" + encodeURIComponent(textoBusqueda);
-        } else if (categoriaActualMostrada) {
-            // Si no hay texto buscado pero sí una categoría abierta
-            // (ej: "Familia"), se conserva esa ("lo que se estaba viendo").
-            nuevaUrl += "&categoria=" + encodeURIComponent(categoriaActualMostrada);
-        }
-        window.location.href = nuevaUrl;
-    } else if (idVinculado === "btnSobreNosotros") {
-        // "Sobre Nosotros" no tiene buscador propio: conservar "lo que se
-        // estaba viendo" acá es simplemente volver a dejar abierta esa
-        // misma sección después del refresco.
-        window.location.href = window.location.pathname + "?vista=nosotros";
-    }
-}
 
 // "Jugar", "Alfabetización" y "Subtítulos" ya no tienen botón propio en
 // el menú: viven todos juntos, cada uno en su bloque independiente,
@@ -1204,10 +1158,11 @@ function procesarDatosApp(data) {
                     // desde arriba (ver bandera "saltarScrollAlAbrirVocabulario").
                     saltarScrollAlAbrirVocabulario = true;
                     if (btnCategorias) btnCategorias.click();
-                    // Si el refresco vino de un segundo toque en "Vocabulario"
-                    // (ver refrescarSeccionConservandoEstado), acá se restaura
-                    // exactamente lo que se estaba viendo: la búsqueda escrita
-                    // o la categoría abierta.
+                    // (antes, un segundo toque en "Vocabulario" desde la barra
+                    // inferior forzaba un refresco real de la página y acá se
+                    // restauraba la búsqueda/categoría; esa función ya no
+                    // existe, pero esta restauración sigue sirviendo para un
+                    // refresco manual normal del navegador, ej. F5).
                     const textoBusquedaUrl = urlParams.get("buscar");
                     const categoriaUrl = urlParams.get("categoria");
                     if (textoBusquedaUrl && buscarCategorias) {
