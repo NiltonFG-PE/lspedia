@@ -737,6 +737,23 @@ function mostrarSeccionHerramientas(){
         ocultarAlfabetizacion();
         menuMovil.classList.remove("d-none");
         menuMovil.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        // Precarga en segundo plano de "Alfabeto y números": a diferencia
+        // de Subtítulos (pide permiso de micrófono) y Jugar (solo abre un
+        // menú, no tiene datos que descargar), Alfabetización sí depende
+        // de un fetch a Google Sheets que puede tardar. Se llama a
+        // iniciar() ya mismo, con #seccionAlfabetizacion todavía en
+        // "d-none" (oculto), para que cargarDatos()/cambiarModulo() dejen
+        // el bloque "Aprender" listo y pintado por dentro sin que se vea
+        // nada en pantalla. Así, cuando el usuario toca la tarjeta
+        // "Alfabeto y números", btnHerrMovilAlfabetizacion solo necesita
+        // destaparlo (ya no hay que esperar la carga en ese momento).
+        try {
+            if(window.AlfabetizacionV2 && typeof AlfabetizacionV2.iniciar === "function"){
+                AlfabetizacionV2.iniciar();
+            }
+        } catch(err){ console.error("No se pudo precargar Alfabetización:", err); }
+
         return;
     }
 
