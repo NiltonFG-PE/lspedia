@@ -406,6 +406,7 @@
         .stat2-onda-azul { background: linear-gradient(135deg, #bfdbfe, #93c5fd); }
         .stat2-onda-ambar { background: linear-gradient(135deg, #fde8b6, #fbcf7d); }
         .stat2-onda-morada { background: linear-gradient(135deg, #ddd6fe, #c4b5fd); }
+        .stat2-onda-rosa { background: linear-gradient(135deg, #fbcfe8, #f9a8d4); }
         .stat2-puntos {
             position: absolute;
             top: 14px;
@@ -475,6 +476,7 @@
         .stat2-icono-azul { background-color: #dbeafe; }
         .stat2-icono-ambar { background-color: #fef3c7; }
         .stat2-icono-morada { background-color: #ede9fe; }
+        .stat2-icono-rosa { background-color: #fce7f3; }
         .stat2-titulo {
             position: relative;
             z-index: 1;
@@ -606,6 +608,51 @@
         }
         .stat2-card-ancha .stat2-numero {
             font-size: 2.5rem;
+        }
+        /* Tarjeta "REDES SOCIALES" (4ta tarjeta del panel, mismo tamaño
+           que Palabras/Categorías/Videos): en vez de un número grande,
+           muestra un texto corto y los 3 íconos de redes en círculos. */
+        .stat2-redes-texto {
+            position: relative;
+            z-index: 1;
+            font-size: 0.85rem;
+            color: #64748b;
+            margin: 0 0 14px 0;
+        }
+        .stat2-redes-iconos {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            gap: 10px;
+        }
+        .stat2-red-icono {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background-color: #f1f5f9;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+        }
+        .stat2-red-icono svg {
+            width: 18px;
+            height: 18px;
+        }
+        .stat2-red-icono:hover,
+        .stat2-red-icono:focus-visible {
+            transform: scale(1.12);
+            color: #ffffff;
+        }
+        .stat2-red-tiktok:hover { background-color: #010101; }
+        .stat2-red-instagram:hover { background: radial-gradient(circle at 30% 110%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285AEB 90%); }
+        .stat2-red-youtube:hover { background-color: #ff0000; }
+        @media (max-width: 576px) {
+            .stat2-redes-texto { font-size: 0.72rem; margin-bottom: 10px; }
+            .stat2-red-icono { width: 32px; height: 32px; }
+            .stat2-red-icono svg { width: 15px; height: 15px; }
+            .stat2-redes-iconos { gap: 7px; }
         }
         @media (max-width: 576px) {
             .stats-header-titulo { font-size: 0.92rem; }
@@ -1363,15 +1410,16 @@
             object-fit: contain;
             flex-shrink: 0;
         }
-        .footer-tagline {
-            color: var(--text-muted);
-            font-size: 0.88rem;
-            font-weight: 600;
-            max-width: 300px;
-        }
         .footer-corazon {
             font-size: 1.4rem;
             flex-shrink: 0;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background-color: #fee2e2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .footer-desarrollado {
             color: var(--text-muted);
@@ -1383,9 +1431,84 @@
             border-bottom: 1px solid var(--border-color);
             margin-bottom: 16px;
         }
+        /* Barra inferior del footer (copyright + licencia): fondo gris muy
+           claro en una "píldora" redondeada, con un ícono de escudo a la
+           izquierda y el link "Ver licencia" acompañado de un ícono de
+           enlace externo. */
+        .footer-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background-color: #f8fafc;
+            border-radius: 999px;
+            padding: 12px 20px;
+            flex-wrap: wrap;
+        }
+        .footer-escudo {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background-color: #dbeafe;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .footer-escudo svg {
+            width: 15px;
+            height: 15px;
+        }
+        .footer-link-licencia {
+            color: #2563eb;
+            font-weight: 600;
+            text-decoration: underline;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .footer-icono-externo {
+            width: 13px;
+            height: 13px;
+            flex-shrink: 0;
+        }
+        /* Fila de íconos de redes sociales del footer (ahora dentro de
+   footer-top, junto al logo y al texto del corazón): círculos
+   discretos en tono gris que se colorean con la marca de cada red al
+   pasar el mouse/tocar (mismo comportamiento que en la tarjeta de
+   Estadísticas). */
+        .footer-redes {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .footer-red-icono {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #f1f5f9;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+        }
+        .footer-red-icono svg {
+            width: 19px;
+            height: 19px;
+        }
+        .footer-red-icono:hover,
+        .footer-red-icono:focus-visible {
+            transform: scale(1.12);
+            color: #ffffff;
+        }
+        .footer-red-tiktok:hover { background-color: #010101; }
+        .footer-red-instagram:hover { background: radial-gradient(circle at 30% 110%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285AEB 90%); }
+        .footer-red-youtube:hover { background-color: #ff0000; }
         @media (max-width: 767.98px) {
             .footer-logo { height: 48px; }
-            .footer-tagline, .footer-desarrollado { max-width: none; }
+            .footer-desarrollado { max-width: none; }
         }
 
         /* Evita que el menú (u otro elemento) desborde el ancho de la
@@ -3107,8 +3230,8 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                         <span class="stat2-pill stat2-pill-ambar" id="detalleCategoriasStats"><span class="stat2-desglose-icon-img" aria-hidden="true" style="-webkit-mask-image:url('img/icons/nav/icono-diccionario.png'); mask-image:url('img/icons/nav/icono-diccionario.png');"></span><span class="stat2-desglose-num" id="detalleCategoriasDic">0</span><span class="stat2-desglose-label">Diccionario</span><span class="stat2-desglose-sep">·</span><span class="stat2-desglose-icon-img" aria-hidden="true" style="-webkit-mask-image:url('img/icons/nav/icono-vocabulario.png'); mask-image:url('img/icons/nav/icono-vocabulario.png');"></span><span class="stat2-desglose-num" id="detalleCategoriasVoc">0</span><span class="stat2-desglose-label">Vocabulario</span></span>
                     </div>
                 </div>
-                <div class="col-12">
-                    <div class="stat2-card stat2-card-ancha stat-card-clicable" id="statCardVideos" role="button" tabindex="0">
+                <div class="col-6 col-md-6">
+                    <div class="stat2-card stat-card-clicable" id="statCardVideos" role="button" tabindex="0">
                         <span class="stat2-puntos" aria-hidden="true"></span>
                         <span class="stat2-onda stat2-onda-morada" aria-hidden="true"></span>
                         <span class="stat2-clapper" aria-hidden="true">🎬</span>
@@ -3118,33 +3241,33 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                         <div class="stat2-pill stat2-pill-morada" id="detalleVideosStats"><span class="stat2-desglose-icon-img" aria-hidden="true" style="-webkit-mask-image:url('img/icons/nav/icono-diccionario.png'); mask-image:url('img/icons/nav/icono-diccionario.png');"></span><span class="stat2-desglose-num" id="detalleVideosDic">0</span><span class="stat2-desglose-label">Diccionario</span><span class="stat2-desglose-sep">·</span><span class="stat2-desglose-icon-img" aria-hidden="true" style="-webkit-mask-image:url('img/icons/nav/icono-vocabulario.png'); mask-image:url('img/icons/nav/icono-vocabulario.png');"></span><span class="stat2-desglose-num" id="detalleVideosVoc">0</span><span class="stat2-desglose-label">Vocabulario</span></div>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- ============================================================
-             TARJETA "REDES SOCIALES" (dentro de Estadísticas): invita a
-             seguir a LSPedia en TikTok, Instagram y YouTube. Los 3 son
-             simples enlaces <a target="_blank">, sin lógica de JS.
-             Cuentas reales de LSPedia: TikTok @lspedia, Instagram
-             @lspedia_sign, YouTube @LSPedia-sign (este último es el
-             mismo canal que usa el botón "Ver más videos" de
-             Vocabulario).
-             ============================================================ -->
-        <div class="stats-redes-card mb-5">
-            <div class="stats-redes-texto">
-                <h3 class="stats-redes-titulo">📲 Síguenos en redes</h3>
-                <p class="stats-redes-subtitulo">Nuevas señas, tips y novedades de LSPedia cada semana.</p>
-            </div>
-            <div class="stats-redes-iconos">
-                <a href="https://www.tiktok.com/@lspedia" target="_blank" rel="noopener" class="stats-red-icono stats-red-tiktok" title="LSPedia en TikTok" aria-label="Síguenos en TikTok">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.6 5.82c-.7-.77-1.14-1.75-1.24-2.82h-3.1v13.44c0 1.5-1.22 2.72-2.72 2.72a2.72 2.72 0 0 1-2.72-2.72 2.72 2.72 0 0 1 2.72-2.72c.29 0 .56.04.82.12v-3.14a5.9 5.9 0 0 0-.82-.06A5.86 5.86 0 0 0 3.68 16.5a5.86 5.86 0 0 0 5.86 5.86 5.86 5.86 0 0 0 5.86-5.86V9.01a8.9 8.9 0 0 0 5.2 1.67V7.58a5.8 5.8 0 0 1-4-1.76z"/></svg>
-                </a>
-                <a href="https://www.instagram.com/lspedia_sign" target="_blank" rel="noopener" class="stats-red-icono stats-red-instagram" title="LSPedia en Instagram" aria-label="Síguenos en Instagram">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.55.22.95.47 1.37.89.42.42.67.82.89 1.37.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.55-.47.95-.89 1.37-.42.42-.82.67-1.37.89-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.69 3.69 0 0 1-1.37-.89 3.69 3.69 0 0 1-.89-1.37c-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.55.47-.95.89-1.37.42-.42.82-.67 1.37-.89.42-.16 1.06-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07M12 0C8.74 0 8.33.01 7.05.07c-1.28.06-2.15.26-2.91.56-.79.31-1.46.72-2.13 1.38A5.86 5.86 0 0 0 .63 4.14c-.3.76-.5 1.63-.56 2.91C.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.28.26 2.15.56 2.91.31.79.72 1.46 1.38 2.13.66.66 1.34 1.07 2.13 1.38.76.3 1.63.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.28-.06 2.15-.26 2.91-.56.79-.31 1.46-.72 2.13-1.38a5.86 5.86 0 0 0 1.38-2.13c.3-.76.5-1.63.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.28-.26-2.15-.56-2.91a5.86 5.86 0 0 0-1.38-2.13A5.86 5.86 0 0 0 19.86.63c-.76-.3-1.63-.5-2.91-.56C15.67.01 15.26 0 12 0z"/><path fill="currentColor" d="M12 5.84A6.16 6.16 0 1 0 18.16 12 6.16 6.16 0 0 0 12 5.84zm0 10.16A4 4 0 1 1 16 12a4 4 0 0 1-4 4zM18.41 4.15a1.44 1.44 0 1 0 1.44 1.44 1.44 1.44 0 0 0-1.44-1.44z"/></svg>
-                </a>
-                <a href="https://www.youtube.com/@LSPedia-sign" target="_blank" rel="noopener" class="stats-red-icono stats-red-youtube" title="LSPedia en YouTube" aria-label="Síguenos en YouTube">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.51 3.5 12 3.5 12 3.5s-7.51 0-9.38.55A3.02 3.02 0 0 0 .5 6.19 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.81 3.02 3.02 0 0 0 2.12 2.14c1.87.55 9.38.55 9.38.55s7.51 0 9.38-.55a3.02 3.02 0 0 0 2.12-2.14A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.81zM9.6 15.6V8.4l6.27 3.6z"/></svg>
-                </a>
+                <!-- ============================================================
+                     4ta TARJETA "REDES SOCIALES" (mismo tamaño y estilo que las
+                     otras 3 de arriba): invita a seguir a LSPedia en TikTok,
+                     Instagram y YouTube. Cuentas reales: TikTok @lspedia,
+                     Instagram @lspedia_sign, YouTube @LSPedia-sign (este
+                     último es el mismo canal que usa el botón "Ver más
+                     videos" de Vocabulario).
+                     ============================================================ -->
+                <div class="col-6 col-md-6">
+                    <div class="stat2-card stat2-card-redes">
+                        <span class="stat2-onda stat2-onda-rosa" aria-hidden="true"></span>
+                        <div class="stat2-icono-wrap stat2-icono-rosa" aria-hidden="true">📲</div>
+                        <div class="stat2-titulo">REDES SOCIALES</div>
+                        <p class="stat2-redes-texto">Síguenos y no te pierdas nada</p>
+                        <div class="stat2-redes-iconos">
+                            <a href="https://www.tiktok.com/@lspedia" target="_blank" rel="noopener" class="stat2-red-icono stat2-red-tiktok" title="LSPedia en TikTok" aria-label="Síguenos en TikTok">
+                                <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.6 5.82c-.7-.77-1.14-1.75-1.24-2.82h-3.1v13.44c0 1.5-1.22 2.72-2.72 2.72a2.72 2.72 0 0 1-2.72-2.72 2.72 2.72 0 0 1 2.72-2.72c.29 0 .56.04.82.12v-3.14a5.9 5.9 0 0 0-.82-.06A5.86 5.86 0 0 0 3.68 16.5a5.86 5.86 0 0 0 5.86 5.86 5.86 5.86 0 0 0 5.86-5.86V9.01a8.9 8.9 0 0 0 5.2 1.67V7.58a5.8 5.8 0 0 1-4-1.76z"/></svg>
+                            </a>
+                            <a href="https://www.instagram.com/lspedia_sign" target="_blank" rel="noopener" class="stat2-red-icono stat2-red-instagram" title="LSPedia en Instagram" aria-label="Síguenos en Instagram">
+                                <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.55.22.95.47 1.37.89.42.42.67.82.89 1.37.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.55-.47.95-.89 1.37-.42.42-.82.67-1.37.89-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.69 3.69 0 0 1-1.37-.89 3.69 3.69 0 0 1-.89-1.37c-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.55.47-.95.89-1.37.42-.42.82-.67 1.37-.89.42-.16 1.06-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07M12 0C8.74 0 8.33.01 7.05.07c-1.28.06-2.15.26-2.91.56-.79.31-1.46.72-2.13 1.38A5.86 5.86 0 0 0 .63 4.14c-.3.76-.5 1.63-.56 2.91C.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.28.26 2.15.56 2.91.31.79.72 1.46 1.38 2.13.66.66 1.34 1.07 2.13 1.38.76.3 1.63.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.28-.06 2.15-.26 2.91-.56.79-.31 1.46-.72 2.13-1.38a5.86 5.86 0 0 0 1.38-2.13c.3-.76.5-1.63.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.28-.26-2.15-.56-2.91a5.86 5.86 0 0 0-1.38-2.13A5.86 5.86 0 0 0 19.86.63c-.76-.3-1.63-.5-2.91-.56C15.67.01 15.26 0 12 0z"/><path fill="currentColor" d="M12 5.84A6.16 6.16 0 1 0 18.16 12 6.16 6.16 0 0 0 12 5.84zm0 10.16A4 4 0 1 1 16 12a4 4 0 0 1-4 4zM18.41 4.15a1.44 1.44 0 1 0 1.44 1.44 1.44 1.44 0 0 0-1.44-1.44z"/></svg>
+                            </a>
+                            <a href="https://www.youtube.com/@LSPedia-sign" target="_blank" rel="noopener" class="stat2-red-icono stat2-red-youtube" title="LSPedia en YouTube" aria-label="Síguenos en YouTube">
+                                <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.51 3.5 12 3.5 12 3.5s-7.51 0-9.38.55A3.02 3.02 0 0 0 .5 6.19 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.81 3.02 3.02 0 0 0 2.12 2.14c1.87.55 9.38.55 9.38.55s7.51 0 9.38-.55a3.02 3.02 0 0 0 2.12-2.14A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.81zM9.6 15.6V8.4l6.27 3.6z"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -4343,19 +4466,41 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
 <footer class="footer-lspedia mt-5">
     <div class="container">
         <div class="footer-top row gy-4 align-items-center">
-            <div class="col-md-6 d-flex align-items-center gap-3 justify-content-center justify-content-md-start text-center text-md-start">
+            <div class="col-md-4 d-flex align-items-center gap-3 justify-content-center justify-content-md-start">
                 <img src="img/lspedia.png" alt="Logo LSPedia" class="footer-logo">
-                <p class="footer-tagline mb-0">La enciclopedia inclusiva de Lengua de Señas Peruana.</p>
             </div>
-            <div class="col-md-6 d-flex align-items-center gap-3 justify-content-center justify-content-md-end text-center text-md-start">
+
+            <!-- Íconos de redes sociales del footer: mismas cuentas reales que
+                 la tarjeta "Redes Sociales" de Estadísticas (TikTok @lspedia,
+                 Instagram @lspedia_sign, YouTube @LSPedia-sign). -->
+            <div class="col-md-4 footer-redes justify-content-center">
+                <a href="https://www.tiktok.com/@lspedia" target="_blank" rel="noopener" class="footer-red-icono footer-red-tiktok" title="LSPedia en TikTok" aria-label="Síguenos en TikTok">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.6 5.82c-.7-.77-1.14-1.75-1.24-2.82h-3.1v13.44c0 1.5-1.22 2.72-2.72 2.72a2.72 2.72 0 0 1-2.72-2.72 2.72 2.72 0 0 1 2.72-2.72c.29 0 .56.04.82.12v-3.14a5.9 5.9 0 0 0-.82-.06A5.86 5.86 0 0 0 3.68 16.5a5.86 5.86 0 0 0 5.86 5.86 5.86 5.86 0 0 0 5.86-5.86V9.01a8.9 8.9 0 0 0 5.2 1.67V7.58a5.8 5.8 0 0 1-4-1.76z"/></svg>
+                </a>
+                <a href="https://www.instagram.com/lspedia_sign" target="_blank" rel="noopener" class="footer-red-icono footer-red-instagram" title="LSPedia en Instagram" aria-label="Síguenos en Instagram">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.55.22.95.47 1.37.89.42.42.67.82.89 1.37.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.55-.47.95-.89 1.37-.42.42-.82.67-1.37.89-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.69 3.69 0 0 1-1.37-.89 3.69 3.69 0 0 1-.89-1.37c-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.55.47-.95.89-1.37.42-.42.82-.67 1.37-.89.42-.16 1.06-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07M12 0C8.74 0 8.33.01 7.05.07c-1.28.06-2.15.26-2.91.56-.79.31-1.46.72-2.13 1.38A5.86 5.86 0 0 0 .63 4.14c-.3.76-.5 1.63-.56 2.91C.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.28.26 2.15.56 2.91.31.79.72 1.46 1.38 2.13.66.66 1.34 1.07 2.13 1.38.76.3 1.63.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.28-.06 2.15-.26 2.91-.56.79-.31 1.46-.72 2.13-1.38a5.86 5.86 0 0 0 1.38-2.13c.3-.76.5-1.63.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.28-.26-2.15-.56-2.91a5.86 5.86 0 0 0-1.38-2.13A5.86 5.86 0 0 0 19.86.63c-.76-.3-1.63-.5-2.91-.56C15.67.01 15.26 0 12 0z"/><path fill="currentColor" d="M12 5.84A6.16 6.16 0 1 0 18.16 12 6.16 6.16 0 0 0 12 5.84zm0 10.16A4 4 0 1 1 16 12a4 4 0 0 1-4 4zM18.41 4.15a1.44 1.44 0 1 0 1.44 1.44 1.44 1.44 0 0 0-1.44-1.44z"/></svg>
+                </a>
+                <a href="https://www.youtube.com/@LSPedia-sign" target="_blank" rel="noopener" class="footer-red-icono footer-red-youtube" title="LSPedia en YouTube" aria-label="Síguenos en YouTube">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.51 3.5 12 3.5 12 3.5s-7.51 0-9.38.55A3.02 3.02 0 0 0 .5 6.19 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.81 3.02 3.02 0 0 0 2.12 2.14c1.87.55 9.38.55 9.38.55s7.51 0 9.38-.55a3.02 3.02 0 0 0 2.12-2.14A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.81zM9.6 15.6V8.4l6.27 3.6z"/></svg>
+                </a>
+            </div>
+
+            <div class="col-md-4 d-flex align-items-center gap-3 justify-content-center justify-content-md-end text-center text-md-start">
                 <span class="footer-corazon" aria-hidden="true">❤️</span>
                 <p class="footer-desarrollado mb-0">Desarrollado con corazón para potenciar la comunicación y la inclusión en el Perú.</p>
             </div>
         </div>
+
         <div class="footer-bottom text-center">
+            <span class="footer-escudo" aria-hidden="true">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M12 3l7 3v5c0 4.5-3 7.7-7 9-4-1.3-7-4.5-7-9V6l7-3z"/><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/></svg>
+            </span>
             <p class="text-muted small mb-0">
                 © 2026 LSPedia — Nilton F. G. Todos los derechos reservados.
-                <a href="licencia.html" class="text-muted">Ver licencia</a>
+                <a href="licencia.html" class="footer-link-licencia">
+                    Ver licencia
+                    <svg viewBox="0 0 24 24" aria-hidden="true" class="footer-icono-externo"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M15 3h6v6"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M10 14L21 3"/></svg>
+                </a>
             </p>
         </div>
     </div>
