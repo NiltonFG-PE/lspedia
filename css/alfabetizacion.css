@@ -869,9 +869,10 @@
    Abajo-derecha: ejemplos de palabras.
    Cada celda es una "tarjeta" suave para que la cuadrícula se lea
    ordenada y moderna de un vistazo, incluso antes de leer las
-   etiquetas. En pantallas angostas se apila en una sola columna,
-   respetando el mismo orden de lectura (letra → fonética → grafía →
-   ejemplos) gracias a `order`. */
+   etiquetas. En pantallas angostas se apila en una sola columna; el
+   orden ahí es letra → grafía → fonética → ejemplos (ver el
+   grid-template-areas del media query 767px más abajo, que es
+   independiente del de escritorio). */
 .alfab-grid-2x2 {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -897,10 +898,13 @@
 @media (max-width: 767px) {
     .alfab-grid-2x2 {
         grid-template-columns: 1fr;
+        /* Orden pedido para móvil: letra → grafía → fonética → ejemplos
+           (en escritorio no cambia nada, sigue letra/fonética arriba y
+           grafía/ejemplos abajo, ver grid-template-areas de más arriba). */
         grid-template-areas:
             "letra"
-            "fonetica"
             "grafia"
+            "fonetica"
             "ejemplos";
     }
 }
