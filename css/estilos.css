@@ -1179,19 +1179,31 @@ body.nosotros-pantalla-completa-activa {
 }
 
 /* ==========================================
-   Botón flotante: acceso directo a "Jugar" (Quiz)
+   MENÚ FLOTANTE DE ACCESOS RÁPIDOS ("speed dial"): un solo botón
+   principal (🤟🏻) fijo abajo a la derecha que, al tocarlo, despliega
+   hacia arriba la listita de accesos directos (Jugar, Herramientas,
+   Vocabulario, Apoyar LSPedia), cada uno apareciendo con una pequeña
+   animación escalonada. El estado abierto/cerrado se guarda en
+   localStorage (ver script al final de index.html) y se recuerda la
+   próxima vez que la persona entra al sitio. Solo vive en escritorio;
+   en móvil/tablet lo oculta el CSS más abajo, porque ahí ya existe la
+   barra inferior tipo app con los mismos accesos.
 ========================================== */
-/* El position:fixed ahora vive en el .fab-wrap (contenedor), no en el
-   botón, para poder anclar junto a él la "x" individual sin romper el
-   layout. El botón interno pasa a position:static. */
-#fabWrapJugar {
+.fab-menu {
     position: fixed;
     right: 22px;
     bottom: 38px;
     z-index: 1040;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
-.btn-acceso-jugar {
-    position: static;
+
+/* Botón principal: mano 🤟🏻 que se convierte en ✕ mientras el menú
+   está abierto, con un pequeño pulso para llamar la atención cuando
+   está cerrado. */
+.fab-menu-toggle {
+    position: relative;
     width: 68px;
     height: 68px;
     border-radius: 50%;
@@ -1205,163 +1217,101 @@ body.nosotros-pantalla-completa-activa {
     justify-content: center;
     box-shadow: 0 6px 18px rgba(15, 23, 42, 0.35);
     cursor: pointer;
-    animation: jugarPulso 2.2s ease-in-out infinite;
-    transition: transform 0.15s ease, opacity 0.2s ease;
+    z-index: 1041;
+    animation: fabPulso 2.4s ease-in-out infinite;
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease, background-color 0.25s ease;
 }
-.btn-acceso-jugar:hover,
-.btn-acceso-jugar:focus {
+.fab-menu-toggle:hover,
+.fab-menu-toggle:focus {
     transform: scale(1.08);
+    animation-play-state: paused;
 }
-.btn-acceso-jugar:active {
-    transform: scale(0.96);
+.fab-menu-toggle:active {
+    transform: scale(0.94);
 }
-@keyframes jugarPulso {
+.fab-menu-toggle-icono {
+    display: inline-block;
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.fab-menu-abierto .fab-menu-toggle {
+    animation: none;
+    background-color: #64748b;
+    color: #ffffff;
+    transform: rotate(0deg) scale(1.06);
+}
+.fab-menu-abierto .fab-menu-toggle-icono {
+    transform: rotate(180deg) scale(1.1);
+}
+@keyframes fabPulso {
     0%, 100% { box-shadow: 0 6px 18px rgba(15, 23, 42, 0.35), 0 0 0 0 rgba(255, 193, 7, 0.5); }
     50% { box-shadow: 0 6px 18px rgba(15, 23, 42, 0.35), 0 0 0 10px rgba(255, 193, 7, 0); }
 }
-@media (max-width: 576px) {
-    #fabWrapJugar {
-        right: 16px;
-        bottom: 30px;
-    }
-    .btn-acceso-jugar {
-        width: 60px;
-        height: 60px;
-        font-size: 1.6rem;
-    }
-}
 
-/* ==========================================
-   Botones flotantes secundarios: acceso directo a "Herramientas" y a
-   "Temas orden". Se apilan arriba del botón de Jugar, mismo color
-   y estilo circular (amarillo), un poco más chicos y sin la animación
-   de pulso.
-========================================== */
-#fabWrapHerramientas,
-#fabWrapTemas {
-    position: fixed;
-    right: 28px;
-    z-index: 1040;
-}
-.btn-acceso-flotante {
-    position: static;
-    width: 68px;
-    height: 68px;
-    border-radius: 50%;
-    border: none;
-    background-color: #ffc107;
-    color: #0f172a;
-    font-size: 1.9rem;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.3);
-    cursor: pointer;
-    transition: transform 0.15s ease, opacity 0.2s ease;
-}
-.btn-acceso-flotante:hover,
-.btn-acceso-flotante:focus {
-    transform: scale(1.08);
-}
-.btn-acceso-flotante:active {
-    transform: scale(0.96);
-}
-
-/* Justo arriba del botón de Jugar (bottom: 38px + 68px de alto + 14px de separación) */
-#fabWrapHerramientas {
-    bottom: 120px;
-}
-
-/* Arriba del botón de Herramientas (120px + 68px de alto + 14px de separación) */
-#fabWrapTemas {
-    bottom: 202px;
-}
-
-/* ==========================================
-   "x" individual de cada acceso flotante: un botón pequeño y discreto
-   en la esquina superior derecha de cada uno, para cerrar SOLO ese
-   acceso sin afectar a los otros dos. Aparece siempre visible pero
-   pequeño y con opacidad baja, para no competir visualmente con el
-   ícono principal; se resalta al pasar el cursor/tocar cerca.
-========================================== */
-.fab-wrap {
-    position: fixed;
-}
-.fab-cerrar-individual {
+/* Lista de accesos: apilada arriba del botón principal, oculta por
+   defecto (sin ocupar espacio ni recibir clics) y visible cuando el
+   contenedor tiene la clase ".fab-menu-abierto". */
+.fab-menu-lista {
     position: absolute;
-    top: -6px;
-    right: -6px;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    border: 2px solid #ffffff;
-    background-color: #64748b;
-    color: #ffffff;
-    font-size: 0.7rem;
-    line-height: 1;
-    padding: 0;
+    bottom: 82px;
+    right: 0;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-end;
+    gap: 14px;
+    pointer-events: none;
+}
+.fab-menu-abierto .fab-menu-lista {
+    pointer-events: auto;
+}
+
+.fab-item {
     display: flex;
     align-items: center;
-    justify-content: center;
-    opacity: 0.85;
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.35);
-    transition: transform 0.15s ease, opacity 0.15s ease, background-color 0.15s ease;
-    z-index: 1041;
+    gap: 10px;
+    opacity: 0;
+    transform: translateY(22px) scale(0.4) rotate(-20deg);
+    transform-origin: bottom right;
+    transition: opacity 0.25s ease, transform 0.2s ease;
 }
-.fab-cerrar-individual:hover,
-.fab-cerrar-individual:focus {
+/* Cada ícono aparece con un pequeño "salto" elástico (rebasa el
+   tamaño final y vuelve), escalonado según lo lejos que está del
+   botón principal ("--fab-orden" viene del HTML), para que la lista
+   se sienta más viva al abrirse en vez de solo aparecer en bloque. */
+.fab-menu-abierto .fab-item {
     opacity: 1;
-    background-color: #dc2626;
-    transform: scale(1.12);
-}
-@media (max-width: 576px) {
-    .fab-cerrar-individual {
-        width: 20px;
-        height: 20px;
-        font-size: 0.65rem;
-    }
+    transform: translateY(0) scale(1) rotate(0deg);
+    transition: opacity 0.3s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition-delay: calc((var(--fab-orden, 1) - 1) * 0.07s);
 }
 
-/* Botón "✕" para ocultar el grupo de 3 accesos, como una pequeña
-   insignia sobre la esquina superior del botón de Buscar (el más alto
-   de la pila). */
-.btn-cerrar-accesos {
-    position: fixed;
-    bottom: 286px;
-    right: 20px;
-    z-index: 1041;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    border: 2px solid #ffffff;
-    background-color: #64748b;
+/* Etiqueta con el nombre del acceso: aparece a la izquierda del
+   ícono, solo mientras el menú está abierto y al pasar el cursor. */
+.fab-item-etiqueta {
+    background-color: #0f172a;
     color: #ffffff;
-    font-size: 12px;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 3px 8px rgba(15, 23, 42, 0.3);
-    cursor: pointer;
-    padding: 0;
-    transition: transform 0.15s ease, opacity 0.2s ease;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-weight: 600;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    padding: 6px 12px;
+    border-radius: 999px;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.25);
+    opacity: 0;
+    transform: translateX(6px);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    pointer-events: none;
 }
-.btn-cerrar-accesos:hover {
-    transform: scale(1.1);
-    background-color: #475569;
+.fab-item:hover .fab-item-etiqueta,
+.fab-item-btn:focus-visible ~ .fab-item-etiqueta {
+    opacity: 1;
+    transform: translateX(0);
 }
 
-/* Botón para volver a mostrar el grupo, una vez ocultado. Ocupa el
-   mismo lugar/tamaño que tenía el botón de Jugar. */
-.btn-mostrar-accesos {
-    position: fixed;
-    right: 22px;
-    bottom: 38px;
-    z-index: 1040;
-    width: 68px;
-    height: 68px;
+.fab-item-btn {
+    position: relative;
+    flex-shrink: 0;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     border: none;
     background-color: #ffc107;
@@ -1371,54 +1321,74 @@ body.nosotros-pantalla-completa-activa {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.35);
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.3);
     cursor: pointer;
-    transition: transform 0.15s ease;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, background-color 0.2s ease;
 }
-.btn-mostrar-accesos:hover,
-.btn-mostrar-accesos:focus {
-    transform: scale(1.08);
+/* Los íconos "se mueven" al pasar el cursor: se agrandan y se
+   levantan un poco, con un rebote suave. */
+.fab-item-btn:hover,
+.fab-item-btn:focus-visible {
+    transform: translateY(-6px) scale(1.12) rotate(-4deg);
+    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.35);
 }
-
-/* Estado oculto: se desvanecen y se deslizan hacia abajo en vez de
-   desaparecer de golpe, y dejan de recibir clics. Se aplica al
-   .fab-wrap completo (botón + su "x" individual) para ocultar ambos
-   a la vez. */
-.fab-oculto {
-    opacity: 0;
-    transform: translateY(20px);
-    pointer-events: none;
+.fab-item-btn:active {
+    transform: translateY(-2px) scale(0.96);
 }
 
-@media (max-width: 576px) {
-    #fabWrapHerramientas,
-    #fabWrapTemas {
-        right: 22px;
-    }
-    .btn-acceso-flotante {
-        width: 60px;
-        height: 60px;
-        font-size: 1.6rem;
-    }
-    #fabWrapHerramientas {
-        bottom: 104px;
-    }
-    #fabWrapTemas {
-        bottom: 178px;
-    }
-    .btn-cerrar-accesos {
-        bottom: 252px;
-        right: 16px;
-        width: 20px;
-        height: 20px;
-        font-size: 10px;
-    }
-    .btn-mostrar-accesos {
-        width: 60px;
-        height: 60px;
-        font-size: 1.5rem;
-        right: 16px;
-        bottom: 30px;
+.fab-item-btn-corazon {
+    background-color: #fee2e2;
+}
+.fab-item-btn-corazon:hover,
+.fab-item-btn-corazon:focus-visible {
+    background-color: #fecaca;
+}
+
+/* Vocabulario, Herramientas y Jugar usan íconos 3D a color (PNG con
+   su propio color, no monocromos), así que en vez de máscara se
+   centran como imagen de fondo dentro del círculo, cada uno sobre un
+   fondo pastel que combina con su ícono. */
+.fab-item-icono-img {
+    display: block;
+    width: 36px;
+    height: 36px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.fab-item-btn-vocabulario {
+    background-color: #e2e8f0; /* plomo claro */
+}
+.fab-item-btn-vocabulario:hover,
+.fab-item-btn-vocabulario:focus-visible {
+    background-color: #cbd5e1;
+}
+
+.fab-item-btn-herramientas {
+    background-color: #dbeafe; /* celeste claro */
+}
+.fab-item-btn-herramientas:hover,
+.fab-item-btn-herramientas:focus-visible {
+    background-color: #bfdbfe;
+}
+
+.fab-item-btn-jugar {
+    background-color: #ede9fe; /* morado claro */
+}
+.fab-item-btn-jugar:hover,
+.fab-item-btn-jugar:focus-visible {
+    background-color: #ddd6fe;
+}
+
+/* Este menú flotante es exclusivo de escritorio: en móvil/tablet se
+   oculta por completo (antes solo se achicaba con max-width:576px,
+   pero seguía apareciendo en pantallas medianas). Se usa el mismo
+   punto de corte "lg" de Bootstrap (991.98px) que ya delimita el resto
+   del layout de escritorio en este archivo. */
+@media (max-width: 991.98px) {
+    .fab-menu {
+        display: none !important;
     }
 }
 
@@ -1436,6 +1406,78 @@ body.nosotros-pantalla-completa-activa {
     .stats-panel-destacado {
         padding: 10px 8px;
         border-radius: 14px;
+    }
+}
+
+/* ============================================================
+   TARJETA "REDES SOCIALES" (dentro de Estadísticas): llama la
+   atención para que la persona siga a LSPedia en TikTok, Instagram
+   y YouTube. Fondo oscuro degradado para destacar sobre el resto de
+   tarjetas claras de la página, con los 3 íconos en círculos blancos
+   que se agrandan un poco al pasar el mouse/tocar.
+   ============================================================ */
+.stats-redes-card {
+    background: linear-gradient(135deg, #1e1b4b 0%, #4c1d95 60%, #831843 100%);
+    border-radius: 16px;
+    padding: 20px 22px;
+    box-shadow: 0 6px 18px rgba(76, 29, 149, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+.stats-redes-titulo {
+    color: #ffffff;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin: 0 0 4px 0;
+}
+.stats-redes-subtitulo {
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 0.85rem;
+    margin: 0;
+}
+.stats-redes-iconos {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+.stats-red-icono {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.14);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+.stats-red-icono svg {
+    width: 22px;
+    height: 22px;
+}
+.stats-red-icono:hover,
+.stats-red-icono:focus-visible {
+    background-color: rgba(255, 255, 255, 0.28);
+    transform: scale(1.1);
+    color: #ffffff;
+}
+.stats-red-tiktok:hover { background-color: #010101; }
+.stats-red-instagram:hover { background: radial-gradient(circle at 30% 110%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285AEB 90%); }
+.stats-red-youtube:hover { background-color: #ff0000; }
+
+@media (max-width: 576px) {
+    .stats-redes-card {
+        padding: 16px 16px;
+        justify-content: center;
+        text-align: center;
+    }
+    .stats-redes-texto {
+        width: 100%;
     }
 }
 

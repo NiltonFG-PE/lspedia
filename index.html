@@ -2506,6 +2506,16 @@ html.modo-escritorio-forzado nav.navbar {
     left: 0;
     right: 0;
     z-index: 1030;
+    /* El efecto de barra semitransparente + blur (ver el media query
+       "max-width: 1199.98px" de arriba) es exclusivo del diseño móvil.
+       Si alguien en escritorio achica la ventana del navegador por
+       debajo de 1200px, ese media query se activa igual por ancho,
+       aunque el user-agent siga siendo de escritorio. Como acá SÍ
+       sabemos (por user-agent) que es escritorio real, se fuerza de
+       nuevo el fondo sólido de siempre y se anula el blur. */
+    background-color: var(--primary-color) !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
 }
 html.modo-escritorio-forzado nav.navbar .container {
     justify-content: space-between !important;
@@ -2800,34 +2810,53 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
          VISIBLES por defecto (ver el script al final del archivo); en
          móvil/tablet los oculta directamente el CSS (queda la barra
          inferior tipo app en su lugar). -->
-    <div class="fab-wrap fab-oculto" id="fabWrapJugar">
-        <button type="button" id="btnAccesoJugar" class="btn-acceso-jugar" title="Ir a Jugar" aria-label="Acceso directo a Jugar">
-            <span aria-hidden="true">🎮</span>
+    <!-- ================================================================
+         MENÚ FLOTANTE DE ACCESOS RÁPIDOS ("speed dial"): un solo botón
+         principal (mano 🤟🏻) que despliega, con animación, la listita de
+         accesos directos (Jugar, Herramientas, Vocabulario y Apoyar
+         LSPedia). El estado abierto/cerrado se guarda en localStorage
+         para recordarlo la próxima vez que la persona entre al sitio
+         (ver script al final del archivo). En móvil/tablet se oculta
+         vía CSS (queda la barra inferior tipo app en su lugar). -->
+    <div class="fab-menu" id="fabMenuAccesos">
+
+        <div class="fab-menu-lista" id="fabMenuLista">
+
+            <div class="fab-item" style="--fab-orden:4;">
+                <span class="fab-item-etiqueta">Apoyar LSPedia</span>
+                <button type="button" id="btnAccesoApoyar" class="fab-item-btn fab-item-btn-corazon" title="Apoyar LSPedia" aria-label="Apoyar LSPedia" data-bs-toggle="modal" data-bs-target="#modalDonacion">
+                    <span aria-hidden="true">❤️</span>
+                </button>
+            </div>
+
+            <div class="fab-item" style="--fab-orden:3;">
+                <span class="fab-item-etiqueta">Ir a Vocabulario</span>
+                <button type="button" id="btnAccesoTemas" class="fab-item-btn fab-item-btn-vocabulario" title="Ir a Vocabulario" aria-label="Acceso directo a Vocabulario">
+                    <span class="fab-item-icono-img" style="background-image:url('img/categorias/Vocabulario_Icono.png');" aria-hidden="true"></span>
+                </button>
+            </div>
+
+            <div class="fab-item" style="--fab-orden:2;">
+                <span class="fab-item-etiqueta">Ir a Herramientas</span>
+                <button type="button" id="btnAccesoHerramientas" class="fab-item-btn fab-item-btn-herramientas" title="Ir a Herramientas" aria-label="Acceso directo a Herramientas">
+                    <span class="fab-item-icono-img" style="background-image:url('img/categorias/Herramientas.png');" aria-hidden="true"></span>
+                </button>
+            </div>
+
+            <div class="fab-item" style="--fab-orden:1;">
+                <span class="fab-item-etiqueta">Ir a Jugar</span>
+                <button type="button" id="btnAccesoJugar" class="fab-item-btn fab-item-btn-jugar" title="Ir a Jugar" aria-label="Acceso directo a Jugar">
+                    <span class="fab-item-icono-img" style="background-image:url('img/categorias/juegos.png');" aria-hidden="true"></span>
+                </button>
+            </div>
+
+        </div>
+
+        <button type="button" id="btnToggleAccesos" class="fab-menu-toggle" title="Mostrar u ocultar accesos rápidos" aria-label="Mostrar u ocultar accesos rápidos" aria-expanded="false">
+            <span class="fab-menu-toggle-icono" id="fabMenuToggleIcono" aria-hidden="true">🤟🏻</span>
         </button>
-        <button type="button" class="fab-cerrar-individual" data-fab="jugar" title="Ocultar este acceso" aria-label="Ocultar acceso a Jugar">✕</button>
+
     </div>
-
-    <div class="fab-wrap fab-oculto" id="fabWrapHerramientas">
-        <button type="button" id="btnAccesoHerramientas" class="btn-acceso-flotante btn-acceso-herramientas" title="Ir a Herramientas" aria-label="Acceso directo a Herramientas">
-            <span aria-hidden="true">🛠️</span>
-        </button>
-        <button type="button" class="fab-cerrar-individual" data-fab="herramientas" title="Ocultar este acceso" aria-label="Ocultar acceso a Herramientas">✕</button>
-    </div>
-
-    <div class="fab-wrap fab-oculto" id="fabWrapTemas">
-        <button type="button" id="btnAccesoTemas" class="btn-acceso-flotante btn-acceso-temas" title="Ir a Vocabulario" aria-label="Acceso directo a Vocabulario">
-            <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M3 6.5C3 5.67157 3.67157 5 4.5 5H9.17157C9.5694 5 9.95093 5.15804 10.2322 5.43934L11.5 6.70711C11.7811 6.98811 12.1627 7.14615 12.5605 7.14615H19.5C20.3284 7.14615 21 7.81772 21 8.64615V17.5C21 18.3284 20.3284 19 19.5 19H4.5C3.67157 19 3 18.3284 3 17.5V6.5Z" fill="#0ea5e9"/>
-            </svg>
-        </button>
-        <button type="button" class="fab-cerrar-individual" data-fab="temas" title="Ocultar este acceso" aria-label="Ocultar acceso a Vocabulario">✕</button>
-    </div>
-
-    <button type="button" id="btnCerrarAccesos" class="btn-cerrar-accesos fab-oculto" title="Ocultar todos los accesos rápidos" aria-label="Ocultar todos los accesos rápidos">←</button>
-
-    <button type="button" id="btnMostrarAccesos" class="btn-mostrar-accesos" title="Mostrar accesos rápidos" aria-label="Mostrar accesos rápidos">
-        <span aria-hidden="true">🤟🏻</span>
-    </button>
 
 
     <div class="container py-4">
@@ -3089,6 +3118,33 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                         <div class="stat2-pill stat2-pill-morada" id="detalleVideosStats"><span class="stat2-desglose-icon-img" aria-hidden="true" style="-webkit-mask-image:url('img/icons/nav/icono-diccionario.png'); mask-image:url('img/icons/nav/icono-diccionario.png');"></span><span class="stat2-desglose-num" id="detalleVideosDic">0</span><span class="stat2-desglose-label">Diccionario</span><span class="stat2-desglose-sep">·</span><span class="stat2-desglose-icon-img" aria-hidden="true" style="-webkit-mask-image:url('img/icons/nav/icono-vocabulario.png'); mask-image:url('img/icons/nav/icono-vocabulario.png');"></span><span class="stat2-desglose-num" id="detalleVideosVoc">0</span><span class="stat2-desglose-label">Vocabulario</span></div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             TARJETA "REDES SOCIALES" (dentro de Estadísticas): invita a
+             seguir a LSPedia en TikTok, Instagram y YouTube. Los 3 son
+             simples enlaces <a target="_blank">, sin lógica de JS.
+             Cuentas reales de LSPedia: TikTok @lspedia, Instagram
+             @lspedia_sign, YouTube @LSPedia-sign (este último es el
+             mismo canal que usa el botón "Ver más videos" de
+             Vocabulario).
+             ============================================================ -->
+        <div class="stats-redes-card mb-5">
+            <div class="stats-redes-texto">
+                <h3 class="stats-redes-titulo">📲 Síguenos en redes</h3>
+                <p class="stats-redes-subtitulo">Nuevas señas, tips y novedades de LSPedia cada semana.</p>
+            </div>
+            <div class="stats-redes-iconos">
+                <a href="https://www.tiktok.com/@lspedia" target="_blank" rel="noopener" class="stats-red-icono stats-red-tiktok" title="LSPedia en TikTok" aria-label="Síguenos en TikTok">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.6 5.82c-.7-.77-1.14-1.75-1.24-2.82h-3.1v13.44c0 1.5-1.22 2.72-2.72 2.72a2.72 2.72 0 0 1-2.72-2.72 2.72 2.72 0 0 1 2.72-2.72c.29 0 .56.04.82.12v-3.14a5.9 5.9 0 0 0-.82-.06A5.86 5.86 0 0 0 3.68 16.5a5.86 5.86 0 0 0 5.86 5.86 5.86 5.86 0 0 0 5.86-5.86V9.01a8.9 8.9 0 0 0 5.2 1.67V7.58a5.8 5.8 0 0 1-4-1.76z"/></svg>
+                </a>
+                <a href="https://www.instagram.com/lspedia_sign" target="_blank" rel="noopener" class="stats-red-icono stats-red-instagram" title="LSPedia en Instagram" aria-label="Síguenos en Instagram">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.55.22.95.47 1.37.89.42.42.67.82.89 1.37.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.55-.47.95-.89 1.37-.42.42-.82.67-1.37.89-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.69 3.69 0 0 1-1.37-.89 3.69 3.69 0 0 1-.89-1.37c-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.55.47-.95.89-1.37.42-.42.82-.67 1.37-.89.42-.16 1.06-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07M12 0C8.74 0 8.33.01 7.05.07c-1.28.06-2.15.26-2.91.56-.79.31-1.46.72-2.13 1.38A5.86 5.86 0 0 0 .63 4.14c-.3.76-.5 1.63-.56 2.91C.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.28.26 2.15.56 2.91.31.79.72 1.46 1.38 2.13.66.66 1.34 1.07 2.13 1.38.76.3 1.63.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.28-.06 2.15-.26 2.91-.56.79-.31 1.46-.72 2.13-1.38a5.86 5.86 0 0 0 1.38-2.13c.3-.76.5-1.63.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.28-.26-2.15-.56-2.91a5.86 5.86 0 0 0-1.38-2.13A5.86 5.86 0 0 0 19.86.63c-.76-.3-1.63-.5-2.91-.56C15.67.01 15.26 0 12 0z"/><path fill="currentColor" d="M12 5.84A6.16 6.16 0 1 0 18.16 12 6.16 6.16 0 0 0 12 5.84zm0 10.16A4 4 0 1 1 16 12a4 4 0 0 1-4 4zM18.41 4.15a1.44 1.44 0 1 0 1.44 1.44 1.44 1.44 0 0 0-1.44-1.44z"/></svg>
+                </a>
+                <a href="https://www.youtube.com/@LSPedia-sign" target="_blank" rel="noopener" class="stats-red-icono stats-red-youtube" title="LSPedia en YouTube" aria-label="Síguenos en YouTube">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.51 3.5 12 3.5 12 3.5s-7.51 0-9.38.55A3.02 3.02 0 0 0 .5 6.19 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.81 3.02 3.02 0 0 0 2.12 2.14c1.87.55 9.38.55 9.38.55s7.51 0 9.38-.55a3.02 3.02 0 0 0 2.12-2.14A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.81zM9.6 15.6V8.4l6.27 3.6z"/></svg>
+                </a>
             </div>
         </div>
 
@@ -4198,13 +4254,18 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
         })();
     </script>
 
-    <!-- Botones flotantes de acceso directo: Subtítulos y Buscar palabras
-         (reutilizan la navegación ya existente de los links del menú, no
-         duplican lógica), más el control para ocultarlos/mostrarlos. -->
+    <!-- Menú flotante de accesos rápidos ("speed dial"): reutiliza la
+         navegación ya existente de los links del menú (no duplica
+         lógica) y agrega el control de abrir/cerrar la listita, con su
+         estado guardado en localStorage. -->
     <script>
         (function () {
-            const CLAVE_OCULTO = "lspedia_accesos_flotantes_ocultos"; // legado: estado del grupo completo
-            const CLAVE_OCULTOS_INDIVIDUALES = "lspedia_accesos_individuales_ocultos"; // { jugar, subtitulos, buscar }
+            // Menú flotante de accesos rápidos ("speed dial"): el botón
+            // principal (🤟🏻) despliega/cierra la listita de accesos
+            // (Jugar, Herramientas, Vocabulario, Apoyar LSPedia). El
+            // estado abierto/cerrado se recuerda en localStorage para que
+            // la próxima visita respete cómo lo dejó la persona.
+            const CLAVE_FAB_ABIERTO = "lspedia_fab_menu_abierto";
 
             const btnAccesoHerramientas = document.getElementById("btnAccesoHerramientas");
             if (btnAccesoHerramientas) {
@@ -4227,119 +4288,54 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                 });
             }
 
-            // ------------------------------------------------------------
-            // Ocultar / mostrar accesos flotantes: cada botón (Jugar,
-            // Subtítulos, Buscar) se puede cerrar POR SEPARADO con su
-            // propia "x" individual, además del botón "✕" grupal que
-            // cierra los 3 de una vez. El botón de reemplazo "🤟" vuelve a
-            // mostrar TODOS los accesos (el grupo completo), sea cual sea
-            // la combinación que estaba oculta.
-            // ------------------------------------------------------------
-            const WRAPS = {
-                jugar: document.getElementById("fabWrapJugar"),
-                herramientas: document.getElementById("fabWrapHerramientas"),
-                temas: document.getElementById("fabWrapTemas")
-            };
-            const btnCerrarAccesos = document.getElementById("btnCerrarAccesos");
-            const btnMostrarAccesos = document.getElementById("btnMostrarAccesos");
+            const fabMenu = document.getElementById("fabMenuAccesos");
+            const btnToggleAccesos = document.getElementById("btnToggleAccesos");
+            const fabMenuToggleIcono = document.getElementById("fabMenuToggleIcono");
 
-            function leerOcultosIndividuales() {
+            function leerEstadoGuardado() {
                 try {
-                    return JSON.parse(localStorage.getItem(CLAVE_OCULTOS_INDIVIDUALES) || "{}");
+                    return localStorage.getItem(CLAVE_FAB_ABIERTO) === "1";
                 } catch (e) {
-                    return {};
+                    return false;
                 }
             }
 
-            function guardarOcultosIndividuales(ocultos) {
-                try { localStorage.setItem(CLAVE_OCULTOS_INDIVIDUALES, JSON.stringify(ocultos)); } catch (e) {}
+            function guardarEstado(abierto) {
+                try { localStorage.setItem(CLAVE_FAB_ABIERTO, abierto ? "1" : "0"); } catch (e) {}
             }
 
-            // Actualiza la visibilidad de btnCerrarAccesos / btnMostrarAccesos
-            // según cuántos de los 3 wraps queden visibles: si TODOS están
-            // ocultos, se muestra el botón de reemplazo "🤟"; si al menos uno
-            // sigue visible, se mantiene el "✕" grupal disponible.
-            function actualizarBotonesGrupo() {
-                const ocultos = leerOcultosIndividuales();
-                const todosOcultos = ["jugar", "herramientas", "temas"].every((clave) => ocultos[clave]);
-                if (btnCerrarAccesos) btnCerrarAccesos.classList.toggle("fab-oculto", todosOcultos);
-                if (btnMostrarAccesos) btnMostrarAccesos.classList.toggle("d-none", !todosOcultos);
+            function aplicarEstado(abierto) {
+                if (!fabMenu || !btnToggleAccesos) return;
+                fabMenu.classList.toggle("fab-menu-abierto", abierto);
+                btnToggleAccesos.setAttribute("aria-expanded", abierto ? "true" : "false");
+                if (fabMenuToggleIcono) fabMenuToggleIcono.textContent = abierto ? "✕" : "🤟🏻";
             }
 
-            function ocultarUno(clave) {
-                const wrap = WRAPS[clave];
-                if (wrap) wrap.classList.add("fab-oculto");
-                const ocultos = leerOcultosIndividuales();
-                ocultos[clave] = true;
-                guardarOcultosIndividuales(ocultos);
-                // Mantenemos el localStorage "legado" en sync por si algo más
-                // lo lee, aunque ya no es la única fuente de verdad.
-                try { localStorage.setItem(CLAVE_OCULTO, "0"); } catch (e) {}
-                actualizarBotonesGrupo();
+            function alternarMenu() {
+                const abierto = !fabMenu.classList.contains("fab-menu-abierto");
+                aplicarEstado(abierto);
+                guardarEstado(abierto);
             }
 
-            function mostrarUno(clave) {
-                const wrap = WRAPS[clave];
-                if (wrap) wrap.classList.remove("fab-oculto");
-                const ocultos = leerOcultosIndividuales();
-                ocultos[clave] = false;
-                guardarOcultosIndividuales(ocultos);
-                actualizarBotonesGrupo();
+            if (btnToggleAccesos) {
+                btnToggleAccesos.addEventListener("click", alternarMenu);
             }
 
-            function ocultarAccesos() {
-                // Botón "✕" grupal: oculta los 3 de una vez.
-                Object.keys(WRAPS).forEach(ocultarUno);
-            }
-
-            function mostrarAccesos() {
-                // Botón de reemplazo "🤟": vuelve a mostrar los 3 de una vez.
-                Object.keys(WRAPS).forEach(mostrarUno);
-            }
-
-            document.querySelectorAll(".fab-cerrar-individual").forEach((btn) => {
-                btn.addEventListener("click", (e) => {
-                    e.stopPropagation(); // no debe disparar el clic del botón principal debajo
-                    const clave = btn.getAttribute("data-fab");
-                    if (clave) ocultarUno(clave);
+            // Al tocar cualquiera de los accesos de la lista, el menú se
+            // cierra solo (mejor experiencia, sobre todo en pantallas
+            // chicas), salvo que el propio botón sea el toggle.
+            if (fabMenu) {
+                fabMenu.querySelectorAll(".fab-item-btn").forEach((btn) => {
+                    btn.addEventListener("click", () => {
+                        aplicarEstado(false);
+                        guardarEstado(false);
+                    });
                 });
-            });
-
-            if (btnCerrarAccesos) btnCerrarAccesos.addEventListener("click", ocultarAccesos);
-            if (btnMostrarAccesos) btnMostrarAccesos.addEventListener("click", mostrarAccesos);
-
-            // Restaura el estado guardado al cargar la página. Si existe el
-            // estado individual nuevo, manda sobre el legado (grupo completo).
-            // Si nunca se guardó nada, arrancan VISIBLES por defecto en
-            // cualquier dispositivo y a cualquier nivel de zoom, sin que el
-            // usuario tenga que tocar el botón "🤟🏻".
-            const ocultosGuardados = leerOcultosIndividuales();
-            const hayEstadoIndividual = Object.keys(ocultosGuardados).length > 0;
-            if (hayEstadoIndividual) {
-                Object.keys(WRAPS).forEach((clave) => {
-                    const wrap = WRAPS[clave];
-                    if (!wrap) return;
-                    wrap.classList.toggle("fab-oculto", !!ocultosGuardados[clave]);
-                });
-                actualizarBotonesGrupo();
-            } else {
-                // Compatibilidad con visitantes que ya tenían guardado el
-                // estado "legado" de grupo completo, antes de este cambio:
-                // si explícitamente los tenían visibles u ocultos, se respeta
-                // esa elección tal cual estaba.
-                let hayLegado = false, estabaOculto = true;
-                try {
-                    hayLegado = localStorage.getItem(CLAVE_OCULTO) !== null;
-                    estabaOculto = localStorage.getItem(CLAVE_OCULTO) === "1";
-                } catch (e) {}
-                if (hayLegado) {
-                    if (!estabaOculto) mostrarAccesos(); else ocultarAccesos();
-                } else {
-                    // Primera visita: se muestran por defecto, sin importar
-                    // el ancho de pantalla ni el zoom.
-                    mostrarAccesos();
-                }
             }
+
+            // Restaura el estado guardado al cargar la página (cerrado por
+            // defecto en la primera visita).
+            aplicarEstado(leerEstadoGuardado());
         })();
     </script>
 
