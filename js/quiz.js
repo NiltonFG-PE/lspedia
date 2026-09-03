@@ -29,7 +29,10 @@ const QuizV2 = (function () {
         DURACION_CACHE_MS: 5 * 60 * 1000, // 5 minutos: evita golpear el Sheet en cada clic
         PREGUNTAS_POR_RONDA: 8,
         PARES_MEMORIA: 6,
-        TIEMPOS_POR_NIVEL: { "Fácil": 20, "Medio": 15, "Difícil": 10 }
+        TIEMPOS_POR_NIVEL: { "Fácil": 20, "Medio": 15, "Difícil": 10 },
+        // Tiempo (ms) que se muestra el feedback (✅/❌) antes de avanzar
+        // solo a la siguiente pregunta automáticamente.
+        RETRASO_AVANCE_AUTOMATICO_MS: 1400
     };
 
     // ---------------------------------------------------------
@@ -42,6 +45,9 @@ const QuizV2 = (function () {
         modo: "5", // 1=Video→Palabra 2=Palabra→Video 3=V/F 4=Memoria 5=Aleatorio
         ronda: { preguntas: [], indice: 0, puntaje: 0, respuestas: [] },
         temporizador: { id: null, restante: 0, total: 0 },
+        // Timeout que avanza solo a la siguiente pregunta tras responder
+        // (ver programarAvanceAutomatico / cancelarAvanceAutomatico).
+        avanceAutomatico: { id: null },
         memoria: { cartas: [], primeraSeleccion: null, bloqueado: false, intentos: 0, aciertos: 0, inicio: 0, cronoId: null },
         audioCtx: null
     };
@@ -754,6 +760,7 @@ const QuizV2 = (function () {
         }
         el("quizPuntaje").textContent = `⭐ ${estado.ronda.puntaje}`;
         el("btnSiguientePregunta").classList.remove("d-none");
+        programarAvanceAutomatico();
     }
 
     function calcularPuntos(nivel, tiempoUsado, tiempoTotal) {
@@ -812,6 +819,29 @@ const QuizV2 = (function () {
         }
     }
 
+    // ---------------------------------------------------------
+    // AVANCE AUTOMÁTICO A LA SIGUIENTE PREGUNTA
+    // Tras responder (bien o mal, o por tiempo agotado), esperamos un
+    // instante para que se vea el feedback y pasamos solos a la
+    // siguiente pregunta, sin depender de que toquen "Siguiente".
+    // El botón "Siguiente" se deja visible igual, por si alguien
+    // quiere avanzar antes de que se cumpla el retraso.
+    // ---------------------------------------------------------
+    function programarAvanceAutomatico() {
+        cancelarAvanceAutomatico();
+        estado.avanceAutomatico.id = setTimeout(() => {
+            estado.avanceAutomatico.id = null;
+            siguientePregunta();
+        }, CONFIG.RETRASO_AVANCE_AUTOMATICO_MS);
+    }
+
+    function cancelarAvanceAutomatico() {
+        if (estado.avanceAutomatico.id) {
+            clearTimeout(estado.avanceAutomatico.id);
+            estado.avanceAutomatico.id = null;
+        }
+    }
+
     // Muestra el número (o "¡Fin!") grande y transparente superpuesto
     // sobre la pregunta, con una pequeña animación de pulso. Se reinicia
     // la animación en cada llamada aunque el texto cambie de "5" a "4", etc.
@@ -839,6 +869,7 @@ const QuizV2 = (function () {
     }
 
     function siguientePregunta() {
+        cancelarAvanceAutomatico();
         estado.ronda.indice++;
         mostrarPreguntaActual();
     }
@@ -1065,6 +1096,7 @@ const QuizV2 = (function () {
             return;
         }
         detenerTemporizador();
+        cancelarAvanceAutomatico();
         detenerCronoMemoria();
         destruirReproductorQuizVideo();
         mostrarIntro();
@@ -1075,6 +1107,7 @@ const QuizV2 = (function () {
     // ---------------------------------------------------------
     function salir() {
         detenerTemporizador();
+        cancelarAvanceAutomatico();
         detenerCronoMemoria();
         destruirReproductorQuizVideo();
     }
@@ -1112,10 +1145,26 @@ const QuizV2 = (function () {
 
         const btnSalirResultados = el("btnQuizSalirResultados");
         if (btnSalirResultados) btnSalirResultados.addEventListener("click", () => {
-            salir();
-            if (window.AlfabetizacionV2 && typeof AlfabetizacionV2.detenerJuegosActivos === "function") AlfabetizacionV2.detenerJuegosActivos();
-            const seccion = el("seccionQuiz");
-            if (seccion) seccion.classList.add("d-none");
+            // Antes esto solo ocultaba #seccionQuiz "a mano", sin pasar por
+            // ocultarQuiz()/volverAlMenuHerramientasMovilSiCorresponde() de
+            // script.js (las mismas que usa el botón "Salir" de arriba, ver
+            // #btnQuizSalir). En móvil eso dejaba la pantalla en blanco,
+            // porque nadie volvía a mostrar el menú grande de Herramientas.
+            // Reusamos esas mismas funciones globales para que el
+            // comportamiento sea idéntico sin importar desde qué botón
+            // "Salir" se dispare.
+            if (typeof window.ocultarQuiz === "function") {
+                window.ocultarQuiz();
+            } else {
+                // Reserva por si script.js no llegó a definirla todavía.
+                salir();
+                if (window.AlfabetizacionV2 && typeof AlfabetizacionV2.detenerJuegosActivos === "function") AlfabetizacionV2.detenerJuegosActivos();
+                const seccion = el("seccionQuiz");
+                if (seccion) seccion.classList.add("d-none");
+            }
+            if (typeof window.volverAlMenuHerramientasMovilSiCorresponde === "function") {
+                window.volverAlMenuHerramientasMovilSiCorresponde();
+            }
         });
 
         // El botón de pantalla completa (#btnQuizFullscreen) y sus
