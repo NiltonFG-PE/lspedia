@@ -2292,10 +2292,33 @@ const AlfabetizacionV2 = (function () {
     // ---------------------------------------------------------
     // PUNTO DE ENTRADA PÚBLICO (llamado desde script.js)
     // ---------------------------------------------------------
+    // OJO: script.js llama a iniciar() DOS VECES en el flujo normal:
+    // 1) en segundo plano, para precargar los datos apenas se abre
+    //    "Herramientas" (con #seccionAlfabetizacion todavía oculta).
+    // 2) otra vez cuando el usuario toca la tarjeta "Alfabeto y
+    //    números", para destapar la sección.
+    // Antes, la segunda llamada volvía a disparar cargarDatos(false)
+    // sin importar si los datos ya habían llegado. Eso mostraba el
+    // spinner de nuevo, pero alTerminarCarga() solo llama a
+    // cambiarModulo() (que es quien realmente oculta el spinner) LA
+    // PRIMERA VEZ que hay datos en toda la vida de la página (ver
+    // estado._alfabDatosListos). Como esa primera vez ya había pasado
+    // en la precarga, la segunda carga terminaba en silencio sin que
+    // nadie ocultara "alfabCargando": el spinner se quedaba pegado
+    // para siempre aunque los datos ya estuvieran listos.
+    // Mismo patrón de protección que ya usa mostrarJuego() más abajo:
+    // si ya hay datos en memoria, solo repintamos el módulo activo sin
+    // volver a llamar a cargarDatos().
     function iniciar() {
         enlazarEventos();
-        cambiarModulo("aprender");
-        cargarDatos(false);
+        const hayDatos = (estado.datos.alfabeto && estado.datos.alfabeto.length) ||
+                          (estado.datos.ejemplos && estado.datos.ejemplos.length);
+        if (hayDatos) {
+            cambiarModulo(estado.moduloActivo || "aprender");
+        } else {
+            cambiarModulo("aprender");
+            cargarDatos(false);
+        }
     }
 
     return { iniciar, salir, mostrarJuego, detenerJuegosActivos };
