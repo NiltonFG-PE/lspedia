@@ -143,10 +143,28 @@ const QuizV2 = (function () {
         if (cache && !forzar) {
             estado.banco = cache;
             mostrarIntro();
-            // refresca en segundo plano sin bloquear al usuario
-            fetchRemoto(true);
+            // refresca en segundo plano sin bloquear al usuario, pero solo
+            // si no hay ya una petición en camino (ver más abajo).
+            if (!cargaEnCurso) fetchRemoto(true);
             return;
         }
+
+        // ⚠️ BUG CORREGIDO: iniciar() (llamado cada vez que el usuario abre
+        // "Jugar" → "Quiz") disparaba fetchRemoto() sin fijarse si YA había
+        // una petición en camino (por ejemplo, la precarga automática del
+        // DOMContentLoaded, o un intento anterior que seguía esperando
+        // respuesta en una conexión lenta). Eso apilaba varias peticiones
+        // JSONP a la vez; la primera en "ganar" podía haberse iniciado con
+        // silencioso=true y por lo tanto nunca llamaba a mostrarIntro(), así
+        // que el spinner de "Cargando..." se quedaba pegado para siempre
+        // hasta refrescar la página, aunque los datos ya hubieran llegado.
+        // Ahora, si ya hay una petición en camino, no se dispara otra: nos
+        // enganchamos a avisarnos apenas la que ya está en camino termine.
+        if (cargaEnCurso) {
+            onBancoListo(mostrarIntro);
+            return;
+        }
+
         fetchRemoto(false);
     }
 
@@ -243,16 +261,12 @@ const QuizV2 = (function () {
         }
     }
 
-    function ocultarTodosLosBloques() {
-        ["quizCargando", "quizIntro", "quizActivo", "quizMemoria", "quizResultados", "quizMenuJuegos", "alfabCompletar", "alfabUnir", "alfabResultados"].forEach((id) => {
-            const n = el(id);
-            if (n) n.classList.add("d-none");
-        });
-    }
-
-    // ---------------------------------------------------------
     // NAVEGACIÓN ENTRE PANTALLAS DEL QUIZ
     // ---------------------------------------------------------
+    // (Antes había DOS declaraciones de esta misma función —código
+    // duplicado de un refactor anterior—, y por cómo funciona el
+    // "hoisting" de funciones en JavaScript solo la segunda quedaba
+    // activa. Se dejó una sola para evitar confusiones a futuro.)
     function ocultarTodosLosBloques() {
         ["quizCargando", "quizIntro", "quizActivo", "quizMemoria", "quizResultados"].forEach((id) => {
             const n = el(id);
@@ -262,11 +276,42 @@ const QuizV2 = (function () {
 
     function mostrarBloque(id) {
         ocultarTodosLosBloques();
+        el("quizError").classList.add("d-none");
         const n = el(id);
         if (n) {
             n.classList.remove("d-none");
             n.classList.add("quiz-fade-in");
         }
+    }
+
+    // ⚠️ BUG CORREGIDO: se llamaba a mostrarError(...) en dos lugares
+    // (config sin URL de Apps Script, y error final de carga) pero la
+    // función NUNCA estaba definida en este archivo (sí existe en
+    // alfabetizacion.js, pero cada módulo es independiente). Eso hacía
+    // que, apenas la carga fallaba de verdad (sin caché de respaldo),
+    // saltara un "ReferenceError: mostrarError is not defined" dentro
+    // de un setTimeout/onerror que nadie atajaba: la pantalla se quedaba
+    // con el spinner de "Cargando..." pegado para siempre (el mismo
+    // "se congela y hay que refrescar la página" que reportaste), en vez
+    // de mostrar el mensaje de error con su botón "Reintentar".
+    function mostrarError(msg) {
+        ocultarTodosLosBloques();
+        const cont = el("quizError");
+        if (!cont) return;
+        cont.innerHTML = "";
+
+        const texto = document.createElement("span");
+        texto.textContent = "⚠️ " + msg;
+        cont.appendChild(texto);
+
+        const btnReintentar = document.createElement("button");
+        btnReintentar.type = "button";
+        btnReintentar.className = "btn btn-sm btn-outline-danger ms-3";
+        btnReintentar.textContent = "🔄 Reintentar";
+        btnReintentar.onclick = () => cargarBanco(true);
+        cont.appendChild(btnReintentar);
+
+        cont.classList.remove("d-none");
     }
 
     // ---------------------------------------------------------

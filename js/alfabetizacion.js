@@ -167,6 +167,25 @@ const AlfabetizacionV2 = (function () {
 
         mostrarBloque("alfabCargando");
 
+        // ⚠️ BUG CORREGIDO: script.js llama a iniciar() varias veces seguidas
+        // en el flujo normal (precarga al abrir "Herramientas" + de nuevo al
+        // tocar la tarjeta "Alfabeto y números", y otra vez si el usuario
+        // entra y sale de Herramientas varias veces seguidas, por ejemplo
+        // pasando antes por Jugar/Quiz). Cada una de esas llamadas terminaba
+        // en cargarDatos(false) sin fijarse si YA había una carga en camino,
+        // así que se apilaban varias peticiones (JSONP + fetch del mock) al
+        // mismo tiempo. Con conexión lenta/inestable, la que terminaba
+        // primero podía no ser la más reciente, y su callback llamaba a
+        // mostrarBloque()/mostrarError() por su cuenta, pisando lo que la
+        // pantalla debía estar mostrando en ese momento (a veces dejando
+        // TODOS los bloques ocultos a la vez: ni spinner ni contenido ni
+        // error, la pantalla en blanco). Ahora, si ya hay una carga real en
+        // curso, no se dispara otra: dejamos que la que ya está en camino
+        // termine sola (ver guardarDatos()/manejarErrorCarga() más abajo,
+        // que son quienes de verdad actualizan la pantalla).
+        if (estado.cargando && !forzar) return;
+        estado.cargando = true;
+
         if (CONFIG.MOCK_ACTIVO) {
             fetchConTimeout(CONFIG.MOCK_URL, TIMEOUT_MOCK_MS)
                 .then((res) => {
@@ -244,6 +263,7 @@ const AlfabetizacionV2 = (function () {
     // para que no parezca que la pantalla quedó colgada sin explicación.
     function fetchRemoto(esReintento) {
         if (!CONFIG.APPS_SCRIPT_URL || CONFIG.APPS_SCRIPT_URL.indexOf("PEGA_AQUI") > -1) {
+            estado.cargando = false;
             mostrarError("Alfabetización aún no está conectada a Google Sheets. Falta pegar la URL de Apps Script en js/alfabetizacion.js.");
             return;
         }
@@ -303,6 +323,7 @@ const AlfabetizacionV2 = (function () {
     }
 
     function guardarDatos(data) {
+        estado.cargando = false;
         estado.datos = { alfabeto: data.alfabeto || [], ejemplos: data.ejemplos || [] };
         guardarCache(estado.datos);
         alTerminarCarga();
@@ -354,6 +375,7 @@ const AlfabetizacionV2 = (function () {
     }
 
     function manejarErrorCarga(err) {
+        estado.cargando = false;
         console.error("Error cargando Alfabetización:", err);
         const cache = leerCache(true); // ignora expiración como último recurso
         if (cache) {

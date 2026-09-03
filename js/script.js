@@ -754,6 +754,22 @@ function mostrarSeccionHerramientas(){
             }
         } catch(err){ console.error("No se pudo precargar Alfabetización:", err); }
 
+        // Precarga (o "asegura") en segundo plano el banco de preguntas
+        // del Quiz: aunque QuizV2 ya se precarga solo apenas carga la
+        // página, en una conexión lenta esa primera precarga puede seguir
+        // en camino (o haber fallado) para cuando el usuario llega hasta
+        // acá. asegurarBancoCargado() es seguro de llamar las veces que
+        // haga falta: no dispara una petición nueva si ya hay una en
+        // curso o si el banco ya tiene datos, así que apenas el usuario
+        // toca la tarjeta "Jugar" → "Quiz", lo más probable es que las
+        // preguntas ya estén listas en vez de tener que esperar a que
+        // arranque recién en ese momento.
+        try {
+            if(window.QuizV2 && typeof QuizV2.asegurarBancoCargado === "function"){
+                QuizV2.asegurarBancoCargado();
+            }
+        } catch(err){ console.error("No se pudo precargar el Quiz:", err); }
+
         return;
     }
 
@@ -775,6 +791,14 @@ function mostrarSeccionHerramientas(){
     if(seccionQuiz){
         seccionQuiz.classList.remove("d-none");
         try { mostrarMenuJuegos(); } catch(err){ console.error("No se pudo abrir Jugar:", err); }
+        // Mismo motivo que en la rama móvil de más arriba: nos aseguramos
+        // de que el banco de preguntas del Quiz esté cargado (o en camino)
+        // sin duplicar peticiones.
+        try {
+            if(window.QuizV2 && typeof QuizV2.asegurarBancoCargado === "function"){
+                QuizV2.asegurarBancoCargado();
+            }
+        } catch(err){ console.error("No se pudo precargar el Quiz:", err); }
     }
 
     // 3) Alfabetización

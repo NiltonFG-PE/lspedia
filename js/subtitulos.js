@@ -76,6 +76,7 @@ const SubtitulosV2 = (function () {
         textoInterino: "",
         _reinicioProgramado: false,
         _eventosListos: false,
+        _flashTextoNuevo: false, // dispara la animación de "llegada" del texto (ver renderizarTexto)
         // --- Medidor de nivel de audio (pantalla intro, ver más abajo) ---
         medidor: {
             activo: false,
@@ -126,9 +127,16 @@ const SubtitulosV2 = (function () {
         const enVivo = el("subtitulosEnVivo");
         const noSoportado = el("subtitulosNoSoportado");
         [intro, enVivo, noSoportado].forEach((s) => { if (s) s.classList.add("d-none"); });
-        if (nombre === "intro" && intro) intro.classList.remove("d-none");
-        if (nombre === "enVivo" && enVivo) enVivo.classList.remove("d-none");
-        if (nombre === "noSoportado" && noSoportado) noSoportado.classList.remove("d-none");
+        // Reutilizamos la misma animación de entrada suave que ya usa el
+        // Quiz (.quiz-fade-in, definida en quiz.css) para que cambiar de
+        // pantalla dentro de Subtítulos se sienta igual de moderno.
+        const activa = nombre === "intro" ? intro : nombre === "enVivo" ? enVivo : nombre === "noSoportado" ? noSoportado : null;
+        if (activa) {
+            activa.classList.remove("d-none");
+            activa.classList.remove("quiz-fade-in");
+            void activa.offsetWidth; // reinicia la animación aunque se repita la misma pantalla
+            activa.classList.add("quiz-fade-in");
+        }
     }
 
     // ---------------------------------------------------------
@@ -395,6 +403,11 @@ const SubtitulosV2 = (function () {
         estado.ultimaFraseFinal = texto;
         estado.textoAcumulado = (estado.textoAcumulado + " " + texto).trim();
         estado.textoCompleto = (estado.textoCompleto + " " + texto).trim();
+        // Marca que hay una frase final nueva, para que renderizarTexto()
+        // dispare una pequeña animación de "llegada" (ver CSS
+        // .subtitulos-texto-nuevo) solo cuando de verdad cambia el texto
+        // confirmado, no en cada actualización del texto interino.
+        estado._flashTextoNuevo = true;
 
         // Mantenemos solo los últimos N caracteres EN PANTALLA (textoAcumulado),
         // cortando por palabra completa, para que actúe como subtítulos "en
@@ -432,16 +445,37 @@ const SubtitulosV2 = (function () {
     function manejarFin() {
         // Con continuous:false, cada sesión termina apenas se detecta una
         // pausa (o al terminar una frase); si el usuario sigue con los
-        // subtítulos activos, reiniciamos casi de inmediato para que la
-        // escucha se sienta continua, sin perder lo que se hable después.
+        // subtítulos activos, reiniciamos AL INSTANTE (sin el retraso fijo
+        // que tenía antes) para que la escucha se sienta continua, sin
+        // huecos perceptibles entre frase y frase.
+        //
+        // reconocimiento.start() puede lanzar "already started" si el
+        // navegador todavía no soltó del todo la sesión anterior; en ese
+        // caso (poco común) reintentamos una sola vez con un margen mínimo,
+        // en vez de esperar siempre los 120ms fijos de antes.
         if (estado.activo && !estado._reinicioProgramado) {
             estado._reinicioProgramado = true;
-            setTimeout(() => {
+            const intentarReiniciar = () => {
                 estado._reinicioProgramado = false;
-                if (estado.activo && estado.reconocimiento) {
-                    try { estado.reconocimiento.start(); } catch (e) { /* ya estaba iniciado, se ignora */ }
+                if (!estado.activo || !estado.reconocimiento) return;
+                try {
+                    estado.reconocimiento.start();
+                } catch (e) {
+                    // "already started" o similar: el navegador necesita un
+                    // instante más para soltar el micrófono del intento
+                    // anterior. Reintentamos una vez, no en bucle.
+                    setTimeout(() => {
+                        if (estado.activo && estado.reconocimiento) {
+                            try { estado.reconocimiento.start(); } catch (e2) { /* se ignora */ }
+                        }
+                    }, 60);
                 }
-            }, 120);
+            };
+            // Se dispara en el siguiente "tick" (no de forma 100% síncrona
+            // dentro de onend), que es lo más rápido que permite el
+            // navegador de forma confiable, en vez del setTimeout de 120ms
+            // fijo que había antes.
+            setTimeout(intentarReiniciar, 0);
         }
     }
 
@@ -473,6 +507,16 @@ const SubtitulosV2 = (function () {
         // reciente quede visible y lo más viejo se "recorte" solo por
         // arriba, sin que el usuario tenga que deslizar nada a mano.
         contenedor.scrollTop = contenedor.scrollHeight;
+
+        // Pequeño "destello" de entrada cuando se confirma una frase nueva
+        // (ver .subtitulos-texto-nuevo en subtitulos.css): se reinicia la
+        // animación quitando y volviendo a poner la clase.
+        if (estado._flashTextoNuevo) {
+            estado._flashTextoNuevo = false;
+            contenedor.classList.remove("subtitulos-texto-nuevo");
+            void contenedor.offsetWidth;
+            contenedor.classList.add("subtitulos-texto-nuevo");
+        }
     }
 
     function escaparHtml(texto) {
@@ -547,6 +591,32 @@ const SubtitulosV2 = (function () {
         const original = btn.innerHTML;
         btn.innerHTML = "✅ Copiado";
         setTimeout(() => { btn.innerHTML = original; }, 1800);
+    }
+
+    // ---------------------------------------------------------
+    // BORRAR TEXTO EN PANTALLA
+    // Limpia tanto la ventana visible (textoAcumulado/textoInterino)
+    // como la transcripción completa que usa "Guardar" (textoCompleto):
+    // así "Guardar" nunca copia texto que el usuario ya borró a propósito.
+    // La escucha sigue activa; solo se limpia la pantalla para volver a
+    // empezar "en blanco" sin tener que pulsar "Detener".
+    // ---------------------------------------------------------
+    function borrarTexto() {
+        estado.textoAcumulado = "";
+        estado.textoCompleto = "";
+        estado.textoInterino = "";
+        estado.ultimaFraseFinal = "";
+        renderizarTexto();
+        mostrarConfirmacionBorrado();
+    }
+
+    function mostrarConfirmacionBorrado() {
+        const btn = el("btnSubtitulosBorrar");
+        if (!btn) return;
+        const original = btn.innerHTML;
+        btn.innerHTML = "✅";
+        btn.disabled = true;
+        setTimeout(() => { btn.innerHTML = original; btn.disabled = false; }, 900);
     }
 
     // ---------------------------------------------------------
@@ -712,6 +782,9 @@ const SubtitulosV2 = (function () {
 
         const btnColor = el("btnSubtitulosColor");
         if (btnColor) btnColor.addEventListener("click", alternarColorResaltado);
+
+        const btnBorrar = el("btnSubtitulosBorrar");
+        if (btnBorrar) btnBorrar.addEventListener("click", borrarTexto);
 
         const btnGuardar = el("btnSubtitulosGuardar");
         if (btnGuardar) btnGuardar.addEventListener("click", copiarTranscripcion);
