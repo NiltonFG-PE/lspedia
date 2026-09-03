@@ -1,34 +1,55 @@
-# subir-imagen.ps1
-# Uso: .\subir-imagen.ps1 nombre-de-la-imagen.png
+# subir-imagen-diccionario.ps1
+# Uso: .\subir-imagen-diccionario.ps1 nombre-de-la-imagen.webp
+#      .\subir-imagen-diccionario.ps1 hola.webp,gracias.webp,"de nada.webp"
+#
+# NOVEDAD: ahora acepta una o varias imagenes separadas por coma en un
+# solo comando (antes solo aceptaba una imagen por ejecucion).
+# Los nombres con espacios deben ir entre comillas, ej: "buenas tardes.webp"
 
 param(
     [Parameter(Mandatory=$true)]
-    [string]$NombreImagen
+    [string[]]$NombreImagen
 )
 
 $ErrorActionPreference = "Stop"
+# Evita que un comando externo (git) que devuelva un codigo de salida
+# distinto de 0 tumbe todo el script como si fuera un error de PowerShell.
+# Usamos $LASTEXITCODE a mano en su lugar.
+$PSNativeCommandUseErrorActionPreference = $false
 
 Write-Host "==========================================" -ForegroundColor Cyan
-Write-Host " Subir imagen a LSPedia (rama develop)" -ForegroundColor Cyan
+Write-Host " Subir imagen(es) de Diccionario a LSPedia (rama develop)" -ForegroundColor Cyan
 Write-Host "==========================================" -ForegroundColor Cyan
 
-# 1. Verificar que el archivo existe en img/diccionario/
-$rutaImagen = "img/diccionario/$NombreImagen"
+# 1. Verificar que todos los archivos existen en img/diccionario/
+$rutasImagenes = @()
 
-if (-Not (Test-Path $rutaImagen)) {
-    Write-Host "ERROR: No se encontró el archivo '$rutaImagen'." -ForegroundColor Red
-    Write-Host "Verifica que la imagen esté dentro de la carpeta img/diccionario/ y que el nombre sea correcto." -ForegroundColor Yellow
-    exit 1
+foreach ($nombre in $NombreImagen) {
+    $ruta = "img/diccionario/$nombre"
+    if (-Not (Test-Path $ruta)) {
+        Write-Host "ERROR: No se encontró el archivo '$ruta'." -ForegroundColor Red
+        Write-Host "Verifica que la imagen esté dentro de la carpeta img/diccionario/ y que el nombre sea correcto." -ForegroundColor Yellow
+        exit 1
+    }
+    $rutasImagenes += $ruta
 }
 
 Write-Host "`n[1/5] Cambiando a la rama develop..." -ForegroundColor Green
 git checkout develop
 
-Write-Host "`n[2/5] Agregando la imagen: $rutaImagen" -ForegroundColor Green
-git add $rutaImagen
+Write-Host "`n[2/5] Agregando $($rutasImagenes.Count) imagen(es):" -ForegroundColor Green
+foreach ($ruta in $rutasImagenes) {
+    Write-Host "   - $ruta" -ForegroundColor Green
+    git add $ruta
+}
 
 Write-Host "`n[3/5] Creando commit..." -ForegroundColor Green
-$mensaje = "Agrega imagen $NombreImagen"
+$nombresFinales = $rutasImagenes | ForEach-Object { [System.IO.Path]::GetFileName($_) }
+if ($nombresFinales.Count -eq 1) {
+    $mensaje = "Agrega imagen $($nombresFinales[0])"
+} else {
+    $mensaje = "Agrega imagenes: $($nombresFinales -join ', ')"
+}
 git commit -m "$mensaje"
 
 Write-Host "`n[4/5] Trayendo cambios remotos (git pull)..." -ForegroundColor Green
@@ -60,7 +81,7 @@ for ($intento = 1; $intento -le $intentoMaximo; $intento++) {
 
 Write-Host "`n==========================================" -ForegroundColor Cyan
 if ($subidoOk) {
-    Write-Host " Listo. Imagen subida correctamente." -ForegroundColor Cyan
+    Write-Host " Listo. Imagen(es) subida(s) correctamente." -ForegroundColor Cyan
 } else {
     Write-Host " No se pudo subir tras varios intentos." -ForegroundColor Red
     Write-Host " Revisa el mensaje de error de arriba (puede haber un" -ForegroundColor Yellow
