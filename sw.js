@@ -11,7 +11,13 @@
    este archivo con una estrategia de caché (cache-first, etc.).
    ============================================================ */
 
-const CACHE_NOMBRE = "lspedia-shell-v1";
+// IMPORTANTE: cambia este número cada vez que subas una nueva versión
+// del sitio (v1, v2, v3...). Es lo único que hace que el navegador
+// detecte que el sw.js "cambió" y reemplace el Service Worker viejo
+// (y su caché) por el nuevo. Si no lo cambias, los celulares que ya
+// instalaron la app se quedan atascados viendo la versión vieja.
+const VERSION_APP = "v5";
+const CACHE_NOMBRE = "lspedia-shell-" + VERSION_APP;
 
 // Solo cacheamos el "cascarón" de la app (HTML/CSS/JS base), nunca
 // los JSON de datos (palabras.json, categorias.json, etc.) para que
