@@ -349,7 +349,22 @@ const AlfabetizacionV2 = (function () {
         // la pantalla que el usuario esté viendo en este momento.
         if (!estado._alfabDatosListos) {
             estado._alfabDatosListos = true;
-            cambiarModulo(estado.moduloActivo || "aprender");
+            // ⚠️ BUG CORREGIDO: esto se ejecutaba SIEMPRE, sin fijarse si el
+            // usuario seguía viendo la pantalla a la que apunta. Si esta
+            // llamada venía de la precarga en segundo plano (con el
+            // usuario ya navegando por el menú de Jugar, por ejemplo) el
+            // cambiarModulo() de abajo pintaba igual "Aprender" por
+            // dentro, y mostrarBloque() de paso ocultaba pantallas de
+            // Jugar (ver el comentario en mostrarBloque más arriba): la
+            // pantalla "saltaba" sola de Jugar a Alfabetización. Ahora
+            // solo se repinta si el contenedor correspondiente sigue
+            // visible; si no, los datos igual quedan guardados en
+            // estado.datos y se usan sin pedir nada de nuevo la próxima
+            // vez que el usuario entre a esa pantalla (ver "hayDatos" en
+            // iniciar()/mostrarJuego()).
+            const modulo = estado.moduloActivo || "aprender";
+            const contextoVisible = modulo === "aprender" ? contextoAprenderVisible() : contextoJuegoAlfabVisible();
+            if (contextoVisible) cambiarModulo(modulo);
             return;
         }
 
@@ -441,18 +456,54 @@ const AlfabetizacionV2 = (function () {
     // ---------------------------------------------------------
     // NAVEGACIÓN ENTRE BLOQUES (cargando / error / los 3 módulos / resultados)
     // ---------------------------------------------------------
+    // ⚠️ BUG CORREGIDO: "Aprender" vive dentro de #seccionAlfabetizacion,
+    // pero "Completar"/"Unir" (y las pantallas propias del Quiz que están
+    // al lado, quizCargando/quizMenuJuegos) viven dentro de #seccionQuiz.
+    // ocultarTodosLosBloques()/mostrarBloque() trataban los dos grupos
+    // como si fueran uno solo: pintar "Aprender" de paso ocultaba también
+    // el menú "¿A qué quieres jugar?" (quizMenuJuegos), aunque esté en una
+    // sección totalmente aparte. Eso se notaba cuando la precarga de
+    // Alfabetización terminaba de cargar en segundo plano justo mientras
+    // el usuario estaba mirando el menú de Jugar: la pantalla "saltaba"
+    // de Jugar a Alfabetización (o al revés) sola, sin que nadie la
+    // tocara. Ahora cada grupo solo oculta sus propias pantallas.
+    const GRUPO_APRENDER = ["alfabCargando", "alfabAprender"];
+    const GRUPO_JUEGO = ["quizCargando", "quizMenuJuegos", "alfabCompletar", "alfabUnir", "alfabResultados"];
+
     function ocultarTodosLosBloques() {
-        ["alfabCargando", "alfabAprender", "alfabCompletar", "alfabUnir", "alfabResultados", "quizCargando", "quizMenuJuegos"].forEach((id) => {
+        GRUPO_APRENDER.concat(GRUPO_JUEGO).forEach((id) => {
             const bloque = el(id);
             if (bloque) bloque.classList.add("d-none");
         });
     }
 
     function mostrarBloque(id) {
-        ocultarTodosLosBloques();
+        // Solo se ocultan las pantallas DEL MISMO GRUPO que "id" (ver
+        // arriba): así, pintar "Aprender" nunca oculta de paso el menú de
+        // Jugar, ni viceversa.
+        const grupo = GRUPO_APRENDER.includes(id) ? GRUPO_APRENDER : GRUPO_JUEGO;
+        grupo.forEach((otroId) => {
+            const bloque = el(otroId);
+            if (bloque) bloque.classList.add("d-none");
+        });
         const bloque = el(id);
         if (bloque) bloque.classList.remove("d-none");
         el("alfabError").classList.add("d-none");
+    }
+
+    // ¿Está el usuario viendo "Aprender" (#seccionAlfabetizacion) ahora
+    // mismo? / ¿Está viendo "Completar"/"Unir" (dentro de #seccionQuiz)
+    // ahora mismo? Se usan para no repintar la pantalla cuando una carga
+    // en segundo plano (precarga) termina mientras el usuario está en
+    // otro lado por completo (ver alTerminarCarga más abajo).
+    function contextoAprenderVisible() {
+        const seccion = el("seccionAlfabetizacion");
+        return !!seccion && !seccion.classList.contains("d-none");
+    }
+
+    function contextoJuegoAlfabVisible() {
+        const seccion = el("seccionQuiz");
+        return !!seccion && !seccion.classList.contains("d-none");
     }
 
     function cambiarModulo(modulo) {
@@ -2299,9 +2350,21 @@ const AlfabetizacionV2 = (function () {
 
         const btnSalir = el("btnAlfabSalir");
         if (btnSalir) btnSalir.addEventListener("click", () => {
+            // ⚠️ BUG CORREGIDO: esto solo ocultaba #seccionAlfabetizacion
+            // "a mano", igual que le pasaba antes al botón "Salir" del
+            // Quiz (ver el comentario de btnQuizSalirResultados en
+            // quiz.js). En móvil, tras tocar este botón nadie volvía a
+            // mostrar el selector grande de Herramientas (Subtítulos /
+            // Jugar / Alfabetización): la pantalla se quedaba
+            // completamente en blanco hasta tocar "Herramientas" de
+            // nuevo. Reusamos la misma función global que usan los demás
+            // botones "Salir" para que el comportamiento sea idéntico.
             salir();
             const seccion = el("seccionAlfabetizacion");
             if (seccion) seccion.classList.add("d-none");
+            if (typeof window.volverAlMenuHerramientasMovilSiCorresponde === "function") {
+                window.volverAlMenuHerramientasMovilSiCorresponde();
+            }
         });
 
         ["fullscreenchange", "webkitfullscreenchange", "MSFullscreenChange"].forEach((evt) => {
