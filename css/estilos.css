@@ -1678,3 +1678,104 @@ body.nosotros-pantalla-completa-activa {
 html {
     overflow-anchor: none;
 }
+
+/* ============================================================
+   AVISO "ENLACE COPIADO" (compartir en Diccionario/Vocabulario)
+   Mensaje flotante breve, centrado abajo, que confirma que el
+   enlace de la palabra se copió al portapapeles (cuando el
+   navegador no tiene panel nativo de compartir). Se crea una sola
+   vez desde JS (mostrarAvisoCompartir en script.js) y se reutiliza.
+   ============================================================ */
+.toast-compartir {
+    position: fixed;
+    left: 50%;
+    bottom: 28px;
+    transform: translate(-50%, 12px);
+    background-color: var(--primary-color);
+    color: #ffffff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 10px 18px;
+    border-radius: 999px;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.25);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 2000;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.toast-compartir.mostrar {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+/* ============================================================
+   BOTÓN "COMPARTIR" (fichas de Diccionario y Vocabulario)
+   Degradado cálido que contrasta con el azul del resto del sitio,
+   para que resalte junto al botón de Favoritos, más un brillo
+   pulsante suave que llama la atención sin ser molesto. Al pasar
+   el mouse o tocarlo, el pulso se detiene y el botón "flota" un
+   poco más marcado.
+   ============================================================ */
+.btn-compartir {
+    background: linear-gradient(120deg, #14b8a6, #6366f1, #14b8a6);
+    background-size: 200% auto;
+    color: #ffffff;
+    border: none;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+    animation: compartirDegradado 3s linear infinite, compartirPulso 2.4s ease-in-out infinite;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.btn-compartir:hover,
+.btn-compartir:focus {
+    color: #ffffff;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.55);
+}
+.btn-compartir:active {
+    transform: translateY(0) scale(0.96);
+    box-shadow: 0 3px 10px rgba(99, 102, 241, 0.4);
+    transition-duration: 0.1s;
+}
+
+/* El ícono 🔗 se balancea cada pocos segundos, independiente del
+   texto, para dar aún más vida al botón sin marear al leer el
+   texto "Compartir". */
+.btn-compartir .btn-compartir-icono {
+    display: inline-block;
+    animation: compartirIconoBalanceo 2.4s ease-in-out infinite;
+}
+
+@keyframes compartirDegradado {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+}
+
+@keyframes compartirPulso {
+    0%, 100% {
+        box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+    }
+    50% {
+        box-shadow: 0 4px 22px rgba(20, 184, 166, 0.65);
+    }
+}
+
+@keyframes compartirIconoBalanceo {
+    0%, 100% { transform: rotate(0deg); }
+    20% { transform: rotate(-18deg); }
+    40% { transform: rotate(14deg); }
+    60% { transform: rotate(-8deg); }
+    80% { transform: rotate(0deg); }
+}
+
+/* Quienes prefieren menos movimiento en pantalla no reciben las
+   animaciones, solo el color y la sombra fija. */
+@media (prefers-reduced-motion: reduce) {
+    .btn-compartir,
+    .btn-compartir .btn-compartir-icono {
+        animation: none;
+    }
+}

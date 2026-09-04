@@ -1666,6 +1666,53 @@ function extraerIdYouTube(valor) {
     return "";
 }
 
+// --- COMPARTIR ENLACE DE UNA PALABRA (Diccionario y Vocabulario) ---
+// Genera el botón que va junto al título de la ficha. Usa la misma URL
+// "?p=..." que ya arma mostrarPalabra()/mostrarPalabraSimplificada() al
+// hacer history.pushState(), así que el enlace compartido, al abrirse,
+// restaura directamente esa palabra (ver restaurarPalabraDesdeUrl()).
+function generarBotonCompartir(){
+    return `<button type="button" id="btnCompartir" class="btn btn-sm btn-compartir py-1 px-3" title="Compartir esta seña" aria-label="Compartir esta seña"><span class="btn-compartir-icono">🔗</span> Compartir</button>`;
+}
+
+// Si el navegador soporta la Web Share API (la mayoría de celulares), abre
+// el panel nativo para compartir a redes sociales, WhatsApp, etc. Si no
+// (la mayoría de escritorios), copia el enlace al portapapeles y lo avisa
+// con un pequeño mensaje flotante. Como último respaldo (navegadores muy
+// viejos o sin permiso de portapapeles), muestra un prompt con el enlace
+// ya seleccionado para copiar a mano.
+function compartirPalabra(nombrePalabra){
+    const url = window.location.origin + window.location.pathname + "?p=" + encodeURIComponent(nombrePalabra);
+    const textoCompartir = `Mira la seña de "${nombrePalabra}" en LSP 🤟 - LSPedia`;
+    if (navigator.share) {
+        navigator.share({ title: "LSPedia", text: textoCompartir, url: url }).catch(() => {});
+        return;
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url)
+            .then(() => mostrarAvisoCompartir("🔗 Enlace copiado"))
+            .catch(() => window.prompt("Copia este enlace para compartir:", url));
+        return;
+    }
+    window.prompt("Copia este enlace para compartir:", url);
+}
+
+// Mensaje flotante breve (estilo "toast") que confirma que el enlace se
+// copió. Se crea una sola vez y se reutiliza en cada llamada.
+function mostrarAvisoCompartir(mensaje){
+    let toast = document.getElementById("toastCompartir");
+    if (!toast) {
+        toast = document.createElement("div");
+        toast.id = "toastCompartir";
+        toast.className = "toast-compartir";
+        document.body.appendChild(toast);
+    }
+    toast.textContent = mensaje;
+    clearTimeout(toast._timeoutId);
+    toast.classList.add("mostrar");
+    toast._timeoutId = setTimeout(() => toast.classList.remove("mostrar"), 2200);
+}
+
 function mostrarPalabra(p, opciones = {}){
     // opciones.enCategorias === true  ->  este resultado viene de la vista
     // "Temas orden" (categorías): se pinta dentro de #resultadoCategorias,
@@ -1716,6 +1763,7 @@ function mostrarPalabra(p, opciones = {}){
     agregarAHistorial(p.palabra); 
     const enFavoritos = esFavorito(p.palabra);
     const textoBoton = enFavoritos ? "★ En favoritos" : "⭐ Agregar a favoritos";
+    const botonCompartir = generarBotonCompartir();
     // La columna "imagen" puede traer varias URLs separadas por coma para
     // mostrar más de un ejemplo por palabra. Con una sola imagen se
     // mantiene el comportamiento de siempre (clic para ampliar, sin
@@ -1788,7 +1836,10 @@ function mostrarPalabra(p, opciones = {}){
             ${bloqueBadgeQuiz}
             <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
                 <h3 class="fw-bold mb-0" style="color: #0d6efd;">${p.palabra}</h3>
-                <button id="btnFavorito" class="btn btn-sm btn-outline-primary py-1 px-3 flex-shrink-0" style="border-radius: 15px; font-size: 12px; font-weight: bold;">${textoBoton}</button>
+                <div class="d-flex gap-2 flex-shrink-0 flex-wrap justify-content-end">
+                    ${botonCompartir}
+                    <button id="btnFavorito" class="btn btn-sm btn-outline-primary py-1 px-3" style="border-radius: 15px; font-size: 12px; font-weight: bold;">${textoBoton}</button>
+                </div>
             </div>
             <p class="mb-3 p-3 rounded" style="background-color: #eef6ff; border-left: 4px solid #0d6efd; font-size: 1rem; line-height: 1.5; color: #1e293b;">${formatearDefinicion(p.definicion)}</p>
             ${bloqueVariantes}
@@ -1817,6 +1868,8 @@ function mostrarPalabra(p, opciones = {}){
         document.getElementById("btnFavorito").textContent = ahoraEnFavoritos ? "★ En favoritos" : "⭐ Agregar a favoritos";
         mostrarFavoritos();
     });
+    const btnCompartirDicc = document.getElementById("btnCompartir");
+    if (btnCompartirDicc) btnCompartirDicc.addEventListener("click", () => compartirPalabra(p.palabra));
     if (!enCategorias) {
         mostrarSugerenciasRelacionadas(p, ultimasPalabras);
     } else {
@@ -1903,7 +1956,10 @@ function mostrarPalabraSimplificada(p, opciones = {}){
             <span class="badge bg-warning text-dark mb-2" style="font-size: 11px;">🎮 Banco del Quiz</span>
             ${p.categoria ? `<span class="badge bg-primary mb-2 ms-1" style="font-size: 11px;">${p.categoria.trim()}</span>` : ""}
             ${p.nivel ? `<span class="badge bg-secondary mb-2 ms-1" style="font-size: 11px;">${p.nivel}</span>` : ""}
-            <h3 class="fw-bold mb-3" style="color: #0d6efd;">${p.palabra}</h3>
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+                <h3 class="fw-bold mb-0" style="color: #0d6efd;">${p.palabra}</h3>
+                ${generarBotonCompartir()}
+            </div>
             ${bloqueVariantes}
             <div class="row g-4 justify-content-center align-items-stretch">
                 <div class="col-lg-7 d-flex flex-column">
@@ -1925,6 +1981,8 @@ function mostrarPalabraSimplificada(p, opciones = {}){
         </div>
     </div>`;
 
+    const btnCompartirVoc = document.getElementById("btnCompartir");
+    if (btnCompartirVoc) btnCompartirVoc.addEventListener("click", () => compartirPalabra(p.palabra));
     if (!enCategorias) {
         mostrarSugerenciasRelacionadasVocabulario(p, ultimasPalabras);
     } else {
