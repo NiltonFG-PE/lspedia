@@ -3082,42 +3082,42 @@ const resultadoCategoriasDiccionario = document.getElementById("resultadoCategor
 
 const CATEGORIAS_DICCIONARIO_INFO = {
     "ciencia": {
-        icono: "img/categorias/ciencia.png",
+        icono: "img/categorias/ciencia.webp",
         descripcion: "Explora estas palabras",
         fondo: "#e0f2fe", borde: "#bae6fd", texto: "#0369a1"
     },
     "comunicación": {
-        icono: "img/categorias/comunicacion.png",
+        icono: "img/categorias/comunicacion.webp",
         descripcion: "Explora estas palabras",
         fondo: "#fce7f3", borde: "#fbcfe8", texto: "#be185d"
     },
     "sociedad": {
-        icono: "img/categorias/sociedad.png",
+        icono: "img/categorias/sociedad.webp",
         descripcion: "Explora estas palabras",
         fondo: "#e0e7ff", borde: "#c7d2fe", texto: "#4338ca"
     },
     "cortesía": {
-        icono: "img/categorias/cortesia.png",
+        icono: "img/categorias/cortesia.webp",
         descripcion: "Palabras para usar a diario",
         fondo: "#dbeeff", borde: "#bfe0fc", texto: "#1d4ed8"
     },
     "educación": {
-        icono: "img/categorias/educacion.png",
+        icono: "img/categorias/educacion.webp",
         descripcion: "Aprende y enseña",
         fondo: "#fce4ef", borde: "#f8c7dd", texto: "#be185d"
     },
     "reflexión": {
-        icono: "img/categorias/reflexion.png",
+        icono: "img/categorias/reflexion.webp",
         descripcion: "Pensamientos y emociones",
         fondo: "#fff3d6", borde: "#fde7ad", texto: "#b45309"
     },
     "saludos": {
-        icono: "img/categorias/saludos.png",
+        icono: "img/categorias/saludos.webp",
         descripcion: "Formas de saludar",
         fondo: "#e1f7ea", borde: "#bdeed0", texto: "#15803d"
     },
     "alimentos": {
-        icono: "img/categorias/alimentos.png",
+        icono: "img/categorias/alimentos.webp",
         descripcion: "Comidas y bebidas",
         fondo: "#efe6fb", borde: "#ddc9f5", texto: "#7a3fc4"
     }
@@ -3535,10 +3535,10 @@ window.filtrarPorCategoriaDiccionario = filtrarPorCategoriaDiccionario;
 // mapea el nombre -> ruta de imagen. Cualquier categoría nueva que
 // todavía no tenga ícono cae en un emoji de libro por defecto.
 const ICONOS_CATEGORIA_VOCABULARIO = {
-    "adjetivos": "img/categorias/adjetivos.png",
-    "emociones": "img/categorias/emociones.png",
-    "verbos": "img/categorias/verbos.png",
-    "tiempo": "img/categorias/tiempo.png"
+    "adjetivos": "img/categorias/adjetivos.webp",
+    "emociones": "img/categorias/emociones.webp",
+    "verbos": "img/categorias/verbos.webp",
+    "tiempo": "img/categorias/tiempo.webp"
 };
 
 // Emoji de respaldo por categoría, para cuando todavía no hay una imagen
