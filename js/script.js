@@ -1683,7 +1683,7 @@ function generarBotonCompartir(){
 // ya seleccionado para copiar a mano.
 function compartirPalabra(nombrePalabra){
     const url = window.location.origin + window.location.pathname + "?p=" + encodeURIComponent(nombrePalabra);
-    const textoCompartir = `Mira la seña de "${nombrePalabra}" en LSP 🤟 - LSPedia`;
+    const textoCompartir = `Descubre el significado de "${nombrePalabra}" en LSPedia 📖`;
     if (navigator.share) {
         navigator.share({ title: "LSPedia", text: textoCompartir, url: url }).catch(() => {});
         return;
@@ -3120,6 +3120,11 @@ const CATEGORIAS_DICCIONARIO_INFO = {
         icono: "img/categorias/alimentos.webp",
         descripcion: "Comidas y bebidas",
         fondo: "#efe6fb", borde: "#ddc9f5", texto: "#7a3fc4"
+    },
+    "tecnología": {
+        icono: "img/categorias/tecnología.webp",
+        descripcion: "Explora estas palabras",
+        fondo: "#dbeafe", borde: "#bfdbfe", texto: "#1e40af"
     }
 };
 

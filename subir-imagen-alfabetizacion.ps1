@@ -2,7 +2,7 @@
 # Uso (una imagen):
 #     .\subir-imagen-alfabetizacion.ps1 gato.jpg
 # Uso (varias imagenes a la vez):
-#     .\subir-imagen-alfabetizacion.ps1 gato.jpg helado.jpg iman.jpg
+#  .\subir-imagen-alfabetizacion.ps1 gato.jpg helado.jpg iman.jpg   
 #
 # Igual que subir-imagen-vocabulario.ps1, pero para las imagenes de
 # ejemplo de la seccion Alfabetizacion: deben estar dentro de
