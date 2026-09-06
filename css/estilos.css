@@ -1779,3 +1779,16 @@ html {
         animation: none;
     }
 }
+/* Aviso de "Vocabulario en fase de prueba": mientras el modal
+   #modalAvisoVocabulario esta abierto, el contenido de fondo se ve
+   desenfocado y no se puede interactuar con el; al tocar el boton
+   "ENTIENDO, CONTINUAR" (ver mostrarAvisoVocabulario() en script.js)
+   se retira esta clase y el contenido vuelve a verse con normalidad. */
+#contenidoPrincipalApp.contenido-desenfocado {
+    filter: blur(6px);
+    -webkit-filter: blur(6px);
+    pointer-events: none;
+    -webkit-user-select: none;
+    user-select: none;
+    transition: filter 0.2s ease;
+}

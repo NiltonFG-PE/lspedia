@@ -248,11 +248,42 @@ function irAlBuscador(){
 // leerla.
 let saltarScrollAlAbrirVocabulario = false;
 
+// --- AVISO DE VOCABULARIO EN FASE DE PRUEBA ---
+// Ventana flotante (modal de Bootstrap) que se muestra cada vez que la
+// persona toca el botón del menú "VOCABULARIO", recordando que la
+// sección está en fase de prueba y que a futuro sus videos serán
+// grabados solo por personas sordas. Mientras el modal está abierto,
+// el contenido de fondo se ve desenfocado (clase "contenido-desenfocado"
+// sobre #contenidoPrincipalApp) y no se puede tocar ni leer con
+// normalidad; el modal es "static" (no se cierra con clic afuera ni con
+// Escape ni con una X), así que la única forma de quitar el desenfoque
+// es tocando el botón "ENTIENDO, CONTINUAR".
+function mostrarAvisoVocabulario() {
+    const modalEl = document.getElementById("modalAvisoVocabulario");
+    const contenidoPrincipal = document.getElementById("contenidoPrincipalApp");
+    if (contenidoPrincipal) contenidoPrincipal.classList.add("contenido-desenfocado");
+    if (!modalEl) return;
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    modal.show();
+}
+
+// Al tocar "ENTIENDO, CONTINUAR" se retira el desenfoque del contenido.
+// El listener se registra una sola vez (fuera de mostrarAvisoVocabulario)
+// para no duplicarse cada vez que se abre el aviso.
+const btnAceptarAvisoVocabulario = document.getElementById("btnAceptarAvisoVocabulario");
+if (btnAceptarAvisoVocabulario) {
+    btnAceptarAvisoVocabulario.addEventListener("click", () => {
+        const contenidoPrincipal = document.getElementById("contenidoPrincipalApp");
+        if (contenidoPrincipal) contenidoPrincipal.classList.remove("contenido-desenfocado");
+    });
+}
+
 // El botón "Historial" del menú se fusionó dentro de "Temas orden":
 // un solo clic ahora muestra Categorías, Favoritos e Historial juntos
 // (cada uno sigue siendo su propio bloque independiente en el HTML).
 document.getElementById("btnCategorias").addEventListener("click", (e) => {
     e.preventDefault();
+    mostrarAvisoVocabulario();
     ocultarSeccionHerramientas();
     ocultarSeccionNosotros();
     mostrarBloqueInicio();

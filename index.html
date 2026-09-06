@@ -2774,7 +2774,8 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
 <div id="splashScreen">
     <img src="img/lspedia.png" alt="LSPedia" id="splashLogo">
     <div class="splash-barra-wrap">
-        <div class="splash-barra"></div>
+        <div class="splash-barra-relleno"></div>
+        <div class="splash-barra-brillo"></div>
     </div>
 </div>
 
@@ -2798,7 +2799,7 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
     #splashLogo {
         width: min(70vw, 320px);
         height: auto;
-        animation: splashLatido 1.6s ease-in-out infinite;
+        animation: splashLatido 1s ease-in-out infinite;
     }
     @keyframes splashLatido {
         0%, 100% { transform: scale(1); }
@@ -2810,17 +2811,26 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
         border-radius: 20px;
         background-color: #e2e8f0;
         overflow: hidden;
+        position: relative;
     }
-    .splash-barra {
-        height: 100%;
-        width: 40%;
+    .splash-barra-relleno {
+        position: absolute;
+        inset: 0;
         border-radius: 20px;
-        background: linear-gradient(90deg, #0284c7, #38bdf8);
-        animation: splashCargando 1.1s ease-in-out infinite;
+        background-color: #0f172a;
+    }
+    .splash-barra-brillo {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: -20%;
+        width: 20%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+        animation: splashCargando 0.9s ease-in-out infinite;
     }
     @keyframes splashCargando {
-        0%   { transform: translateX(-100%); }
-        100% { transform: translateX(350%); }
+        0%   { left: -20%; }
+        100% { left: 100%; }
     }
 </style>
 
@@ -2982,7 +2992,7 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
     </div>
 
 
-    <div class="container py-4">
+    <div class="container py-4" id="contenidoPrincipalApp">
 
         <div class="row justify-content-center align-items-start mb-4 g-4 g-lg-4 g-xl-5" id="filaHeroPrincipal">
 
@@ -4230,6 +4240,22 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                             <span class="text-muted" aria-hidden="true">›</span>
                         </a>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalAvisoVocabulario" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header py-3" style="background-color: #343a40 !important;">
+                    <h6 class="modal-title fw-bold d-flex align-items-center" style="color: #ffffff !important; font-size: 16px;"><span class="me-2">🧏</span> Vocabulario en fase de prueba</h6>
+                </div>
+                <div class="modal-body p-4">
+                    <p class="text-secondary mb-0">Debido a que LSPedia entiende que enseñar lengua de señas le corresponde a los sordos, la sección <strong>VOCABULARIO</strong> está en fase de prueba. En el futuro, los videos que contiene serán grabados solo por personas sordas.</p>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-primary px-4" id="btnAceptarAvisoVocabulario" data-bs-dismiss="modal">ENTIENDO, CONTINUAR</button>
                 </div>
             </div>
         </div>
