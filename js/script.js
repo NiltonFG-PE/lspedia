@@ -2293,6 +2293,76 @@ function actualizarBotonPlayPauseNosotros(evento) {
         ? '⏸ <span class="controles-video-texto">Pausar</span>'
         : '<span class="nosotros-icono-iniciar">▶</span> <span class="controles-video-texto">Iniciar</span>';
     alternarTapaPausaYoutube("nosotrosVideoRatio", evento);
+
+    // Seguimiento del bloque de texto activo (ver
+    // actualizarBloqueActivoNosotros más abajo): solo tiene sentido
+    // recalcularlo a intervalos mientras el video está reproduciéndose;
+    // en pausa/terminado se detiene el intervalo para no gastar recursos
+    // de más, pero se deja el último resaltado tal como quedó.
+    if (reproduciendo) {
+        actualizarBloqueActivoNosotros();
+        iniciarSeguimientoNosotros();
+    } else {
+        detenerSeguimientoNosotros();
+    }
+}
+
+// Recorre los mismos elementos [data-tiempo-nosotros] que ya se usan
+// para saltar el video (título + bloque de párrafos de cada tema, ver
+// el HTML) y les agrega/quita la clase "nosotros-bloque-activo" (ver
+// CSS) según cuál de esos tiempos es el más reciente que ya pasó
+// respecto al segundo actual del video. Además, cuando el tema activo
+// CAMBIA (no en cada revisión, solo al pasar de un tema a otro), hace
+// scroll automático hasta el nuevo título para que la persona no tenga
+// que desplazarse a mano: el texto "sigue" solo al video, resaltado en
+// celeste, como un subtítulo que se va moviendo con el tiempo.
+let nosotrosSeguimientoInterval = null;
+let nosotrosTiempoActivoActual = -1;
+function actualizarBloqueActivoNosotros() {
+    if (!ytPlayerNosotros || typeof ytPlayerNosotros.getCurrentTime !== "function") return;
+    const tiempoActual = ytPlayerNosotros.getCurrentTime();
+    const elementos = document.querySelectorAll("[data-tiempo-nosotros]");
+    let tiempoActivo = -1;
+    elementos.forEach((el) => {
+        const t = parseInt(el.getAttribute("data-tiempo-nosotros"), 10);
+        if (!isNaN(t) && t <= tiempoActual && t > tiempoActivo) tiempoActivo = t;
+    });
+    // Si el tema activo es el mismo de la última revisión, no hay nada
+    // que actualizar (evita repintar clases y, sobre todo, evita
+    // relanzar el scroll automático en cada intervalo mientras la
+    // persona sigue leyendo el mismo bloque).
+    if (tiempoActivo === nosotrosTiempoActivoActual) return;
+    nosotrosTiempoActivoActual = tiempoActivo;
+
+    elementos.forEach((el) => {
+        const t = parseInt(el.getAttribute("data-tiempo-nosotros"), 10);
+        el.classList.toggle("nosotros-bloque-activo", t === tiempoActivo);
+    });
+
+    // El título es el primer elemento con ese tiempo (el bloque de
+    // párrafos comparte el mismo data-tiempo-nosotros). "center" lo dejamos
+    // porque el video queda fijo (position:fixed) tapando la parte
+    // superior de la pantalla: con "start" el título podría quedar
+    // escondido justo detrás de él.
+    const tituloActivo = document.querySelector(
+        `.nosotros-titulo-clicable[data-tiempo-nosotros="${tiempoActivo}"]`
+    );
+    if (tituloActivo) {
+        tituloActivo.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+}
+
+// Se revisa cada 400ms (no hace falta más frecuencia para texto que no
+// cambia palabra por palabra) mientras el video está en reproducción.
+function iniciarSeguimientoNosotros() {
+    detenerSeguimientoNosotros();
+    nosotrosSeguimientoInterval = setInterval(actualizarBloqueActivoNosotros, 400);
+}
+function detenerSeguimientoNosotros() {
+    if (nosotrosSeguimientoInterval) {
+        clearInterval(nosotrosSeguimientoInterval);
+        nosotrosSeguimientoInterval = null;
+    }
 }
 
 // Ver comentario en estilos.css (junto a .yt-pausado): agrega/quita la
@@ -4019,7 +4089,7 @@ function mostrarSenalDelDia(offset = offsetSenalDelDia){
             // de llegar al dominio ya precalentado, retrasando de forma
             // visible la aparición de esta miniatura.
             miniaturaImg.src = `https://i.ytimg.com/vi/${idVideoDelDia}/mqdefault.jpg`;
-            miniaturaImg.alt = `Miniatura de la seña "${palabra.palabra}"`;
+            miniaturaImg.alt = `Miniatura de la palabra "${palabra.palabra}"`;
             miniaturaWrap.classList.remove("d-none");
             const abrirDesdeMiniatura = () => {
                 window.scrollTo({ top: 0, behavior: "smooth" });
@@ -4035,9 +4105,9 @@ function mostrarSenalDelDia(offset = offsetSenalDelDia){
 
     const labelSenalDelDia = document.getElementById("labelSenalDelDia");
     if(labelSenalDelDia){
-        if(offset === 0) labelSenalDelDia.textContent = "✨ Seña del día";
-        else if(offset === 1) labelSenalDelDia.textContent = "✨ Seña de ayer";
-        else labelSenalDelDia.textContent = `✨ Seña de hace ${offset} días`;
+        if(offset === 0) labelSenalDelDia.textContent = "✨ Palabra del día";
+        else if(offset === 1) labelSenalDelDia.textContent = "✨ Palabra de ayer";
+        else labelSenalDelDia.textContent = `✨ Palabra de hace ${offset} días`;
     }
 
     const btnSenalSiguiente = document.getElementById("btnSenalSiguiente");
