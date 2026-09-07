@@ -927,6 +927,59 @@
             padding-top: 420px;
         }
 
+        /* ============================================================
+           LAYOUT ANCHO DE "SOBRE NOSOTROS" (escritorio con la ventana
+           completa): en vez de la ventanita flotante centrada sobre el
+           texto (pensada para pantallas angostas o la mitad de la
+           ventana), el video arranca más grande y fijo (sticky) a la
+           izquierda, con el texto a la derecha, en dos columnas
+           ordenadas, sin que una tape a la otra. Al hacer scroll el
+           video se queda visible (pegado a "top: 117px") en vez de
+           irse con el resto de la página. El mango de arrastre sigue
+           disponible acá también: si se arrastra, script.js pasa el
+           video a "position: fixed" para que se pueda mover libremente,
+           igual que en pantalla angosta (ver configurarArrastreNosotros).
+
+           Nota: el "position: sticky" solo funciona si ningún ancestro
+           hasta el <html> tiene "overflow" distinto de "visible"; por
+           eso el overflow-x global del sitio usa "clip" y no "hidden"
+           (ver esa regla más arriba).
+
+           Se activa agregando "nosotros-layout-ancho" al <html> (ver
+           actualizarLayoutAnchoNosotros() en script.js), que decide
+           según el ancho REAL de la ventana del navegador (no según si
+           el dispositivo es un celular/tablet real): así, si la
+           ventana se achica —por ejemplo a la mitad de la pantalla— o
+           si es un celular/tablet, vuelve solo a la ventanita flotante
+           y arrastrable de siempre.
+
+           ":not(.nosotros-pantalla-completa)" en el video evita que
+           esto se mezcle con la vista de pantalla completa (que ya
+           tiene sus propias reglas, con más especificidad, más abajo
+           en este archivo). */
+        html.nosotros-layout-ancho .nosotros-contenido {
+            display: flex;
+            align-items: flex-start;
+            gap: 40px;
+            max-width: 1200px !important;
+        }
+        html.nosotros-layout-ancho .nosotros-video-wrap.nosotros-fijo:not(.nosotros-pantalla-completa) {
+            position: sticky;
+            left: auto;
+            top: 117px;
+            transform: none;
+            width: 560px;
+            flex: 0 0 560px;
+            margin: 0;
+        }
+        html.nosotros-layout-ancho .nosotros-texto-bajo-video {
+            padding-top: 0 !important;
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+
+
+
         /* Títulos y párrafos del texto de "Sobre Nosotros": al tocarlos,
            el video salta directo a la parte donde se explica ese tema
            (ver saltarVideoNosotros en script.js). El título va en azul
@@ -1529,9 +1582,15 @@
         }
 
         /* Evita que el menú (u otro elemento) desborde el ancho de la
-           pantalla y "empuje" o descentre el contenido en tablets. */
+           pantalla y "empuje" o descentre el contenido en tablets.
+           Se usa "clip" en vez de "hidden": recorta igual el
+           desborde horizontal, pero (a diferencia de "hidden") no
+           convierte a <html>/<body> en un contenedor con scroll
+           propio, que es justo lo que rompía el "position: sticky"
+           del video de Sobre Nosotros en el layout ancho de
+           escritorio (ver "nosotros-layout-ancho" más abajo). */
         html, body {
-            overflow-x: hidden;
+            overflow-x: clip;
         }
 
         /* Con el navbar ya expandido (pantallas anchas), si aun así no
@@ -4265,7 +4324,7 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                     <h6 class="modal-title fw-bold d-flex align-items-center" style="color: #ffffff !important; font-size: 16px;"><span class="me-2">🧏</span> Vocabulario en fase de prueba</h6>
                 </div>
                 <div class="modal-body p-4">
-                    <p class="text-secondary mb-0">Debido a que LSPedia entiende que enseñar lengua de señas le corresponde a los sordos, la sección <strong>VOCABULARIO</strong> está en fase de prueba. En el futuro, los videos que contiene serán grabados solo por personas sordas.</p>
+                    <p class="text-secondary mb-0">La sección <strong>VOCABULARIO</strong> está en fase de prueba. Esperamos contar en el futuro con la ayuda de personas sordas en la grabación de estos videos.</p>
                 </div>
                 <div class="modal-footer border-0 pt-0">
                     <button type="button" class="btn btn-primary px-4" id="btnAceptarAvisoVocabulario" data-bs-dismiss="modal">ENTIENDO, CONTINUAR</button>

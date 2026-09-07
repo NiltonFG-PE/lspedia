@@ -189,6 +189,11 @@ function activarBotonMenu(idActivo){
     document.querySelectorAll(".navbar-nav .nav-link").forEach((link) => {
         link.classList.toggle("active", link.id === idActivo);
     });
+    // Si el menú superior está desplegado como lista (pantalla angosta o
+    // ventana del navegador achicada a la mitad, ver ☰ en el HTML), se
+    // cierra solo al elegir una sección, en vez de quedarse abierto
+    // tapando el contenido (por ejemplo, el video de Sobre Nosotros).
+    cerrarMenuPrincipalSiEstaAbierto();
     // La barra de navegación inferior (solo móvil/tablet) tiene sus
     // propios botones (.mbn-item), separados de los del menú de arriba,
     // y cada uno apunta al enlace real mediante data-vinculado. Antes
@@ -204,6 +209,22 @@ function activarBotonMenu(idActivo){
     document.querySelectorAll(".mbn-item").forEach((boton) => {
         boton.classList.toggle("active", boton.dataset.vinculado === idActivo);
     });
+}
+
+// Cierra el menú superior (#menuPrincipal) si está desplegado como lista
+// (el ☰ de pantallas angostas, o de una ventana de escritorio achicada a
+// la mitad). Usa la API de Bootstrap en vez de sacarle la clase "show" a
+// mano, para que la animación de cierre y el estado interno de Bootstrap
+// (aria-expanded, etc.) queden consistentes.
+function cerrarMenuPrincipalSiEstaAbierto(){
+    const menu = document.getElementById("menuPrincipal");
+    if(!menu || !menu.classList.contains("show")) return;
+    if(typeof bootstrap === "undefined" || !bootstrap.Collapse){
+        menu.classList.remove("show");
+        return;
+    }
+    const instancia = bootstrap.Collapse.getInstance(menu) || new bootstrap.Collapse(menu, { toggle: false });
+    instancia.hide();
 }
 
 function irAlBuscador(){
@@ -657,6 +678,53 @@ function esVistaMovilHerramientas(){
     return window.innerWidth < 1200;
 }
 
+// Decide si "Sobre Nosotros" debe verse en el layout ancho de escritorio
+// (video fijo a la izquierda, texto a la derecha) o en la ventanita
+// flotante/arrastrable de siempre (pantalla angosta, celular/tablet real,
+// o una ventana de escritorio achicada, por ejemplo a la mitad de la
+// pantalla). Mismo breakpoint "xl" de Bootstrap (1200px) que usa el resto
+// del sitio para pasar de diseño móvil a diseño de escritorio.
+function esVistaAnchaNosotros(){
+    if (document.documentElement.classList.contains("modo-movil-real")) return false;
+    return window.innerWidth >= 1200;
+}
+
+// Agrega o quita "nosotros-layout-ancho" en <html> según corresponda (ver
+// el CSS de ese selector). Se llama al cargar, al cambiar el tamaño de la
+// ventana y al entrar a la sección, para que el cambio de ventana
+// completa <-> mitad de pantalla se refleje al instante.
+// Recuerda el último modo confirmado (true = ancho, false = angosto/
+// flotante) para solo reacomodar el video al CAMBIAR de uno a otro, sin
+// deshacer un arrastre que el usuario haya hecho a propósito ante
+// cualquier resize dentro del mismo modo (por ejemplo, al aparecer o
+// desaparecer una barra de scroll).
+let nosotrosLayoutAnchoAnterior = null;
+
+function actualizarLayoutAnchoNosotros(){
+    const anchoActivo = esVistaAnchaNosotros();
+    const cambioDeModo = nosotrosLayoutAnchoAnterior !== null && nosotrosLayoutAnchoAnterior !== anchoActivo;
+    document.documentElement.classList.toggle("nosotros-layout-ancho", anchoActivo);
+    // Si antes se arrastró la ventanita flotante, queda "position: fixed"
+    // y left/top/transform puestos en línea por JS (ver moverA en
+    // configurarArrastreNosotros), que pesan más que el CSS. Al pasar de
+    // un modo a otro (angosto <-> ancho) se limpian para que el video
+    // vuelva a su posición por defecto de ese modo; dentro del mismo modo
+    // se respeta dónde el usuario lo haya dejado.
+    if (cambioDeModo) {
+        const wrap = document.getElementById("nosotrosVideoWrap");
+        if (wrap && !wrap.classList.contains("nosotros-pantalla-completa")) {
+            wrap.style.position = "";
+            wrap.style.left = "";
+            wrap.style.top = "";
+            wrap.style.transform = "";
+            nosotrosPosicionGuardada = null;
+        }
+    }
+    nosotrosLayoutAnchoAnterior = anchoActivo;
+}
+document.addEventListener("DOMContentLoaded", actualizarLayoutAnchoNosotros);
+window.addEventListener("resize", actualizarLayoutAnchoNosotros);
+
 // En móvil, "Salir" de cualquiera de los 3 módulos regresa al selector
 // de botones grandes en vez de dejar la pantalla vacía. En escritorio no
 // hace nada (ahí los 3 bloques siguen mostrándose juntos, como antes).
@@ -880,6 +948,11 @@ function mostrarSeccionNosotros(){
     // el ancho de pantalla, se mide después de que el layout se asiente
     // (por eso el pequeño delay) en vez de usar un valor fijo adivinado.
     setTimeout(ajustarEspacioVideoNosotros, 60);
+    // Por si la ventana cambió de tamaño mientras se estaba en otra
+    // sección (ver actualizarLayoutAnchoNosotros): al entrar de nuevo acá
+    // se confirma si corresponde el layout ancho (video a la izquierda)
+    // o la ventanita flotante de siempre.
+    actualizarLayoutAnchoNosotros();
     // iniciarReproductorNosotros ya espera, cuadro a cuadro, a que el
     // contenedor tenga su tamaño real antes de crear el reproductor de
     // YouTube (ver crearReproductorNosotrosCuandoVisible más abajo), así
@@ -2401,6 +2474,12 @@ function configurarArrastreNosotros() {
         const maxY = Math.max(margen, window.innerHeight - wrap.offsetHeight - margen);
         const nuevoX = Math.max(margen, Math.min(x, maxX));
         const nuevoY = Math.max(margen, Math.min(y, maxY));
+        // En el layout ancho de escritorio el video arranca con
+        // "position: sticky" (ver CSS de "nosotros-layout-ancho"). Al
+        // arrastrarlo se pasa a "fixed" en línea (pesa más que el CSS)
+        // para que se pueda mover libremente por toda la pantalla, igual
+        // que en pantalla angosta / ventana a la mitad.
+        wrap.style.position = "fixed";
         wrap.style.left = nuevoX + "px";
         wrap.style.top = nuevoY + "px";
         wrap.style.transform = "none";
@@ -2486,6 +2565,7 @@ function toggleNosotrosPantallaCompleta(forzarCerrar) {
         wrap.style.top = "";
         wrap.style.transform = "";
     } else if (nosotrosPosicionGuardada) {
+        wrap.style.position = "fixed";
         wrap.style.left = nosotrosPosicionGuardada.left + "px";
         wrap.style.top = nosotrosPosicionGuardada.top + "px";
         wrap.style.transform = "none";
