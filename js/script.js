@@ -153,7 +153,11 @@ function actualizarVistaUrl(vista){
 const TITULOS_PRINCIPALES = {
     diccionario: {
         titulo: '<span class="titulo-acento">Diccionario</span> de Lengua de Señas Peruana (LSP) y Español',
-        subtitulo: "Aprende el significado de las palabras con el apoyo de videos en señas."
+        subtituloHtml: '<span class="aviso-mision-icono" aria-hidden="true">🤟</span>'
+            + '<div class="aviso-mision-texto">'
+            + '<p class="aviso-mision-linea1">No enseñamos lengua de señas, <strong>eso le pertenece a los sordos</strong>.</p>'
+            + '<p class="aviso-mision-linea2">Te ayudamos a aprender palabras del español con <span class="subtitulo-resaltado">videos en Lengua de Señas Peruana</span>.</p>'
+            + '</div>'
     },
     vocabulario: {
         titulo: '<span class="titulo-acento">Vocabulario</span> de Lengua de Señas Peruana (LSP)',
@@ -172,10 +176,12 @@ function actualizarTituloPrincipal(vista){
     if(titulo) titulo.innerHTML = datos.titulo;
     const esVocabulario = vista === "vocabulario";
     // En Vocabulario, la lista con íconos (arriba, en el HTML) reemplaza
-    // al párrafo simple del subtítulo; en Diccionario es al revés.
+    // al aviso "No enseñamos lengua de señas" (Diccionario); en
+    // Diccionario es al revés. El aviso usa innerHTML (no textContent)
+    // porque tiene su propio ícono + 2 párrafos, no es texto plano.
     if(subtitulo) subtitulo.classList.toggle("d-none", esVocabulario);
     if(listaVocab) listaVocab.classList.toggle("d-none", !esVocabulario);
-    if(subtitulo && !esVocabulario) subtitulo.textContent = datos.subtitulo;
+    if(subtitulo && !esVocabulario && datos.subtituloHtml) subtitulo.innerHTML = datos.subtituloHtml;
 }
 
 // Marca cuál botón del menú superior (escritorio) está activo, quitando
@@ -790,6 +796,12 @@ function mostrarBloqueInicio(){
     if(sugerencias) sugerencias.style.display = "";
     const bloqueEjemplosInicio = document.getElementById("bloqueEjemplos");
     if(bloqueEjemplosInicio) bloqueEjemplosInicio.style.display = "";
+    // Sortea un nuevo grupo de 5 "Palabras sugeridas" cada vez que se
+    // vuelve a entrar a Diccionario (función definida en index.html, junto
+    // al resto de la lógica de esos chips).
+    if (typeof window.recalcularChipsSugeridos === "function") {
+        window.recalcularChipsSugeridos();
+    }
     const colAvatarHero = document.getElementById("colAvatarHero");
     if(colAvatarHero) colAvatarHero.classList.remove("oculto-por-seccion");
     const statsHeader = document.querySelector(".stats-header");

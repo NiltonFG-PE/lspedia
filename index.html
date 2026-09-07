@@ -2390,6 +2390,62 @@ body.video-palabra-pantalla-completa-activa .controles-video {
     }
 }
 
+/* Aviso "No enseñamos lengua de señas" (reemplaza al subtítulo simple de
+   antes, solo en la vista Diccionario): franja de acento dorada a la
+   izquierda + ícono circular azul, para que la regla central del
+   proyecto no pase desapercibida. Dos líneas de texto, una idea por
+   línea; la primera línea usa <strong> para remarcar "eso le pertenece
+   a los sordos", la segunda reutiliza .subtitulo-resaltado (ya definido
+   más abajo) para la frase en azul. */
+.aviso-mision {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    text-align: left;
+    background-color: #fff8e6;
+    border-left: 4px solid #ffc107;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin: 4px 0 0;
+}
+.aviso-mision-icono {
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background-color: #2563eb;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+.aviso-mision-texto {
+    min-width: 0;
+}
+.aviso-mision-linea1,
+.aviso-mision-linea2 {
+    margin: 0;
+    font-size: 0.98rem;
+    line-height: 1.45;
+}
+.aviso-mision-linea1 {
+    color: #182b55;
+    margin-bottom: 4px;
+}
+.aviso-mision-linea1 strong {
+    color: #b45309;
+    font-weight: 700;
+}
+.aviso-mision-linea2 {
+    color: #334155;
+}
+@media (max-width: 991.98px) {
+    .aviso-mision {
+        text-align: left;
+    }
+}
+
 /* Lista de introducción de "Vocabulario": ícono circular azul + texto,
    con un conector punteado vertical entre ícono e ícono, igual al diseño
    de referencia. Solo visible en la vista Vocabulario. */
@@ -3089,7 +3145,19 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                 <div class="text-center text-lg-start header-minimal mb-3" id="bloqueTituloPrincipal">
                     <h1 class="tracking-tight" id="tituloPrincipal"><span class="titulo-acento">Diccionario</span> de Lengua de Señas Peruana (LSP) y Español</h1>
                     <span class="titulo-raya" aria-hidden="true"></span>
-                    <p class="text-muted mb-0" id="subtituloPrincipal">Busca palabras en español y descubre su significado mediante <span class="subtitulo-resaltado">videos en Lengua de Señas Peruana</span>.</p>
+                    <!-- Aviso "No enseñamos lengua de señas": reemplaza al
+                         subtítulo simple de antes. Franja de acento dorada +
+                         ícono para que resalte visualmente (regla central
+                         del proyecto: LSPedia no enseña LSP -eso pertenece a
+                         los sordos-, ayuda a aprender español mediante
+                         videos en LSP). Dos líneas, una idea por línea. -->
+                    <div class="aviso-mision" id="subtituloPrincipal">
+                        <span class="aviso-mision-icono" aria-hidden="true">🤟</span>
+                        <div class="aviso-mision-texto">
+                            <p class="aviso-mision-linea1">No enseñamos lengua de señas, <strong>eso le pertenece a los sordos</strong>.</p>
+                            <p class="aviso-mision-linea2">Esta herramienta es para ti: te ayudamos a aprender palabras del español con <span class="subtitulo-resaltado">videos en Lengua de Señas Peruana</span>.</p>
+                        </div>
+                    </div>
 
                     <!-- Lista de introducción exclusiva de "Vocabulario": 3 ideas
                          cortas con ícono + conector vertical punteado entre ellos,
@@ -4266,14 +4334,14 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-4">
-                    <p class="text-secondary mb-3" style="line-height: 1.7;">LSPedia es un proyecto independiente financiado con recursos propios.</p>
+                    <p class="text-secondary mb-3" style="line-height: 1.7;">LSPedia es un proyecto independiente financiado con recursos propios. Puedes contactarme para cualquier aporte o sugerencia.</p>
                     <p class="text-secondary mb-4" style="line-height: 1.7;">Si deseas brindar un apoyo económico, escríbeme por WhatsApp y con gusto te compartiré los medios de pago disponibles.</p>
                     <div class="d-grid gap-3 mb-4">
                         <a href="https://wa.me/51928789623" target="_blank" rel="noopener" class="btn-contacto-interprete d-flex align-items-center text-decoration-none">
                             <span class="btn-contacto-icono" style="background-color:#dcfce7; color:#16a34a;" aria-hidden="true">📱</span>
                             <span class="flex-grow-1 text-start">
                                 <span class="d-block fw-bold text-dark">WhatsApp</span>
-                                <span class="d-block small text-muted">+51 928 789 623</span>
+                                <span class="d-block small text-muted">+51 928 789 623 · Nilton L. F. G.</span>
                             </span>
                             <span class="text-muted" aria-hidden="true">›</span>
                         </a>
@@ -4293,13 +4361,13 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-4">
-                    <p class="text-center text-secondary mb-4">Escríbenos por el medio que prefieras y coordinamos los detalles de tu solicitud de interpretación en LSP.</p>
+                    <p class="text-center text-secondary mb-4">Escríbenos por el medio que prefieras y coordinamos los detalles de tu solicitud. Puedes contactarme para ofertas de trabajo o servicios de traducción e interpretación.</p>
                     <div class="d-grid gap-3">
                         <a href="https://wa.me/51928789623" target="_blank" rel="noopener" class="btn-contacto-interprete d-flex align-items-center text-decoration-none">
                             <span class="btn-contacto-icono" style="background-color:#dcfce7; color:#16a34a;" aria-hidden="true">💬</span>
                             <span class="flex-grow-1 text-start">
                                 <span class="d-block fw-bold text-dark">WhatsApp</span>
-                                <span class="d-block small text-muted">+51 928 789 623</span>
+                                <span class="d-block small text-muted">+51 928 789 623 · Nilton L. F. G.</span>
                             </span>
                             <span class="text-muted" aria-hidden="true">›</span>
                         </a>
@@ -4307,7 +4375,7 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                             <span class="btn-contacto-icono" style="background-color:#dbeafe; color:#2563eb;" aria-hidden="true">✉️</span>
                             <span class="flex-grow-1 text-start">
                                 <span class="d-block fw-bold text-dark">Correo electrónico</span>
-                                <span class="d-block small text-muted">proyectolspedia@gmail.com</span>
+                                <span class="d-block small text-muted">proyectolspedia@gmail.com · Nilton L. F. G.</span>
                             </span>
                             <span class="text-muted" aria-hidden="true">›</span>
                         </a>
@@ -4380,14 +4448,15 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
          ya existe, para reutilizar la lógica de búsqueda tal cual (sin
          duplicarla) y mostrar el resultado.
 
-         Las 5 palabras se recalculan en vivo a partir de App.datos (las
+         Las 5 palabras se sortean al azar a partir de App.datos (las
          mismas palabras que ya pasaron el filtro "tiene video cargado" en
          App.iniciar, en script.js), en vez de quedar escritas a mano en el
          HTML: así los ejemplos nunca apuntan a una palabra que no exista
          (o que ya no tenga video) en el diccionario, sea cual sea el
-         contenido actual de la Hoja de cálculo. Se prefiere un puñado de
-         palabras cortas y conocidas si están disponibles; si no, se
-         completa con las primeras palabras que haya en App.datos. -->
+         contenido actual de la Hoja de cálculo. window.recalcularChipsSugeridos
+         queda expuesta para que script.js pueda pedir un sorteo nuevo cada
+         vez que se vuelve a entrar a la sección Diccionario (ver
+         mostrarBloqueInicio() en script.js). -->
     <script>
         (function () {
             const campoBuscar = document.getElementById("buscar");
@@ -4395,27 +4464,25 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
             const bloqueEjemplos = document.getElementById("bloqueEjemplos");
             if (!campoBuscar || !botonBuscar || !bloqueEjemplos) return;
 
-            const PREFERIDAS = ["Hola", "Gracias", "Por favor", "Adiós", "Bienvenido"];
             const MAX_CHIPS = 5;
+
+            // Mezcla al azar (Fisher-Yates) una copia del array recibido,
+            // sin modificar el original.
+            function mezclarAlAzar(lista) {
+                const copia = lista.slice();
+                for (let i = copia.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [copia[i], copia[j]] = [copia[j], copia[i]];
+                }
+                return copia;
+            }
 
             function construirListaChips() {
                 const datos = (window.App && Array.isArray(window.App.datos)) ? window.App.datos : [];
                 if (!datos.length) return null; // todavía no cargó el diccionario
 
                 const disponibles = datos.map(p => p.palabra);
-                const elegidas = [];
-
-                PREFERIDAS.forEach((nombre) => {
-                    if (elegidas.length >= MAX_CHIPS) return;
-                    const encontrada = disponibles.find(p => p.toLowerCase() === nombre.toLowerCase());
-                    if (encontrada && !elegidas.includes(encontrada)) elegidas.push(encontrada);
-                });
-
-                for (let i = 0; elegidas.length < MAX_CHIPS && i < disponibles.length; i++) {
-                    if (!elegidas.includes(disponibles[i])) elegidas.push(disponibles[i]);
-                }
-
-                return elegidas;
+                return mezclarAlAzar(disponibles).slice(0, MAX_CHIPS);
             }
 
             function activarClicChip(chip) {
@@ -4464,17 +4531,22 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
             // termine de cargar App.datos.
             document.querySelectorAll(".ejemplo-chip").forEach(activarClicChip);
 
-            const lista = construirListaChips();
-            if (lista) {
-                pintarChips(lista);
-            } else {
+            // Sortea y pinta un nuevo grupo de 5 palabras. Se usa tanto en
+            // la carga inicial como cada vez que se vuelve a entrar a
+            // Diccionario (llamada desde script.js), para que las palabras
+            // sugeridas cambien en cada visita a la sección.
+            function recalcularChipsSugeridos() {
+                const lista = construirListaChips();
+                if (lista) pintarChips(lista);
+                return !!lista;
+            }
+            window.recalcularChipsSugeridos = recalcularChipsSugeridos;
+
+            if (!recalcularChipsSugeridos()) {
                 // App.datos aún no está listo: se reintenta poco después de
                 // que cargue la página (App.iniciar hace su fetch en
                 // DOMContentLoaded, así que con un pequeño margen alcanza).
-                window.addEventListener("load", () => {
-                    const listaTardia = construirListaChips();
-                    if (listaTardia) pintarChips(listaTardia);
-                });
+                window.addEventListener("load", recalcularChipsSugeridos);
             }
         })();
     </script>
