@@ -3382,6 +3382,11 @@ function observarTarjetasEstaticas(){
         .forEach(observarEntradaAnimada);
     document.querySelectorAll("#seccionSugerencias .nosotros-apoyo-card")
         .forEach(observarEntradaAnimada);
+    // Tarjetas de estadísticas (Palabras / Categorías / Videos / Redes
+    // Sociales): también están en el HTML desde el inicio, así que se
+    // observan una sola vez apenas carga la página.
+    document.querySelectorAll(".stats-panel-destacado .stat2-card")
+        .forEach(observarEntradaAnimada);
 }
 document.addEventListener("DOMContentLoaded", observarTarjetasEstaticas);
 
