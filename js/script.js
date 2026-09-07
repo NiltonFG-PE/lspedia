@@ -2045,7 +2045,7 @@ let ytOpcionesReproductorPalabraPendiente = {};
 let ytVideoIdSugeridaPendiente = null;
 
 // --- REPRODUCTOR DE VIDEO CONTROLABLE PARA "SOBRE NOSOTROS" ---
-const ID_VIDEO_NOSOTROS = "CTzPj2deb3M";
+const ID_VIDEO_NOSOTROS = "4tQBIrxA5gQ";
 let ytPlayerNosotros = null;
 let ytVideoNosotrosPendiente = null;
 let nosotrosVelocidadIndex = VELOCIDADES_PALABRA.indexOf(1);
