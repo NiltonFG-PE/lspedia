@@ -486,15 +486,24 @@ const OracionesV2 = (function(){
   }
 
   function asegurarBoton(){
-    if(document.getElementById("btnMenuJuegoOraciones")) return;
-    const fila=document.querySelector("#quizMenuJuegos .row");
-    if(!fila) return;
-    const col=document.createElement("div");
-    col.className="col-6 col-md-3 menu-juego-col";
-    col.innerHTML=`<button type="button" class="quiz-selector-btn menu-juego-btn w-100 h-100" id="btnMenuJuegoOraciones" aria-label="Juego Construye la oración"><span class="icono">💬</span><span class="fw-bold">Oraciones</span></button>`;
-    fila.appendChild(col);
-    const btn=col.querySelector("#btnMenuJuegoOraciones");
-    btn.addEventListener("click",()=>iniciar());
+    let btn=document.getElementById("btnMenuJuegoOraciones");
+
+    // La tarjeta Oraciones vive de forma permanente en index.html.
+    // Este respaldo solo la crea si alguien abre una copia vieja del HTML.
+    if(!btn){
+      const fila=document.querySelector("#quizMenuJuegos .row");
+      if(!fila) return;
+      const col=document.createElement("div");
+      col.className="col-6 col-md-3 menu-juego-col";
+      col.innerHTML=`<button type="button" class="quiz-selector-btn menu-juego-btn w-100 h-100" id="btnMenuJuegoOraciones" aria-label="Juego Construye la oración"><span class="icono">💬</span><span class="fw-bold">Oraciones</span></button>`;
+      fila.appendChild(col);
+      btn=col.querySelector("#btnMenuJuegoOraciones");
+    }
+
+    if(btn && btn.dataset.oracionesListo!=="1"){
+      btn.dataset.oracionesListo="1";
+      btn.addEventListener("click",()=>iniciar());
+    }
   }
 
   function alCargar(){
