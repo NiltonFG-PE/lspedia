@@ -3497,7 +3497,7 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                         <span class="herr-movil-ola" aria-hidden="true"></span>
                         <span class="herr-movil-icono" aria-hidden="true"><img src="img/categorias/alfabeto_y_números.webp" alt="" loading="lazy"></span>
                         <span class="herr-movil-textos">
-                            <span class="herr-movil-texto">Alfabeto y números</span>
+                            <span class="herr-movil-texto">Alfabeto y números</span><span class="herr-movil-desc">Mira, reconoce y practica letras y números</span>
                         </span>
                         <span class="herr-movil-flecha" aria-hidden="true">→</span>
                     </button>
@@ -3507,7 +3507,7 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                         <span class="herr-movil-ola" aria-hidden="true"></span>
                         <span class="herr-movil-icono" aria-hidden="true"><img src="img/categorias/juegos.webp" alt="" loading="lazy"></span>
                         <span class="herr-movil-textos">
-                            <span class="herr-movil-texto">Jugar</span>
+                            <span class="herr-movil-texto">Jugar</span><span class="herr-movil-desc">Aprende tocando, ordenando y resolviendo</span>
                         </span>
                         <span class="herr-movil-flecha" aria-hidden="true">→</span>
                     </button>
@@ -3517,7 +3517,7 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                         <span class="herr-movil-ola" aria-hidden="true"></span>
                         <span class="herr-movil-icono" aria-hidden="true"><img src="img/categorias/Subtítulos.webp" alt="" loading="lazy"></span>
                         <span class="herr-movil-textos">
-                            <span class="herr-movil-texto">Subtítulos</span>
+                            <span class="herr-movil-texto">Subtítulos</span><span class="herr-movil-desc">Convierte la voz en texto en tiempo real</span>
                         </span>
                         <span class="herr-movil-flecha" aria-hidden="true">→</span>
                     </button>
@@ -3668,36 +3668,51 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
             <!-- MENÚ: elegir a qué juego jugar -->
             <div id="quizMenuJuegos" class="row justify-content-center">
                 <div class="col-lg-10">
-                    <p class="text-muted small text-center mb-4">Elige a qué quieres jugar.</p>
+                    <p class="text-muted small text-center mb-4 juegos-menu-subtitulo">Toca un juego. La animación te muestra qué harás.</p>
                     <div class="row g-3">
                         <div class="col-6 col-md-3 menu-juego-col">
-                            <button type="button" class="quiz-selector-btn menu-juego-btn w-100 h-100" id="btnMenuJuegoCompletar">
-                                <span class="icono">🧩</span>
-                                <span class="fw-bold">Completar la palabra</span>
+                            <button type="button" class="quiz-selector-btn menu-juego-btn w-100 h-100" id="btnMenuJuegoCompletar" aria-label="Juego Completar la palabra">
+                                <span class="juego-preview preview-completar" aria-hidden="true">
+                                    <span class="jp-palabra"><b>C</b><b>A</b><b class="jp-hueco">_</b><b>A</b></span><i class="jp-ficha">S</i>
+                                </span>
+                                <span class="fw-bold juego-titulo">Completar la palabra</span>
+                                <span class="juego-desc">Lleva la letra al espacio</span>
                             </button>
                         </div>
                         <div class="col-6 col-md-3 menu-juego-col">
-                            <button type="button" class="quiz-selector-btn menu-juego-btn w-100 h-100" id="btnMenuJuegoUnir">
-                                <span class="icono">🔗</span>
-                                <span class="fw-bold">Unir con flechas</span>
+                            <button type="button" class="quiz-selector-btn menu-juego-btn w-100 h-100" id="btnMenuJuegoUnir" aria-label="Juego Unir con flechas">
+                                <span class="juego-preview preview-unir" aria-hidden="true">
+                                    <span class="jp-nodo jp-nodo-a">🖼️</span><span class="jp-linea"></span><span class="jp-nodo jp-nodo-b">CASA</span>
+                                </span>
+                                <span class="fw-bold juego-titulo">Unir con flechas</span>
+                                <span class="juego-desc">Arrastra y conecta</span>
                             </button>
                         </div>
                         <div class="col-6 col-md-3 menu-juego-col">
-                            <button type="button" class="quiz-selector-btn menu-juego-btn w-100 h-100" id="btnMenuJuegoQuiz">
-                                <span class="icono">🎲</span>
-                                <span class="fw-bold">Quiz</span>
+                            <button type="button" class="quiz-selector-btn menu-juego-btn w-100 h-100" id="btnMenuJuegoQuiz" aria-label="Juego Quiz">
+                                <span class="juego-preview preview-quiz" aria-hidden="true">
+                                    <span class="jp-quiz-card"><b>?</b><i>✓</i></span><span class="jp-estrellas">★ ★</span>
+                                </span>
+                                <span class="fw-bold juego-titulo">Quiz</span>
+                                <span class="juego-desc">Mira, piensa y elige</span>
                             </button>
                         </div>
                         <div class="col-6 col-md-3 menu-juego-col">
-                            <button type="button" class="quiz-selector-btn menu-juego-btn w-100 h-100" id="btnMenuJuegoMatematicas">
-                                <span class="icono">🔢</span>
-                                <span class="fw-bold">Matemáticas</span>
+                            <button type="button" class="quiz-selector-btn menu-juego-btn w-100 h-100" id="btnMenuJuegoMatematicas" aria-label="Juego Matematicas">
+                                <span class="juego-preview preview-matematicas" aria-hidden="true">
+                                    <span class="jp-math"><b>3</b><i>+</i><b>2</b><em>=</em><strong>5</strong></span><span class="jp-dots">●●● + ●●</span>
+                                </span>
+                                <span class="fw-bold juego-titulo">Matemáticas</span>
+                                <span class="juego-desc">Junta, quita, agrupa y reparte</span>
                             </button>
                         </div>
                         <div class="col-6 col-md-3 menu-juego-col">
                             <button type="button" class="quiz-selector-btn menu-juego-btn w-100 h-100" id="btnMenuJuegoOraciones" aria-label="Juego Construye la oración">
-                                <span class="icono">💬</span>
-                                <span class="fw-bold">Oraciones</span>
+                                <span class="juego-preview preview-oraciones" aria-hidden="true">
+                                    <span class="jp-chip jp-chip-1">NIÑO</span><span class="jp-chip jp-chip-2">TOMA</span><span class="jp-chip jp-chip-3">AGUA</span>
+                                </span>
+                                <span class="fw-bold juego-titulo">Oraciones</span>
+                                <span class="juego-desc">Ordena ideas y conversa mejor</span>
                             </button>
                         </div>
                     </div>
@@ -3722,15 +3737,22 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                         </div>
                         <p class="text-muted small text-center mb-4">Elige el nivel y el modo de juego para tu ronda de práctica.</p>
 
-                        <p class="text-uppercase small fw-bold mb-2" style="color:#64748b; letter-spacing:0.05em;">Nivel</p>
-                        <div class="row g-2 mb-4" id="quizSelectorNivel"></div>
+                        <div class="quiz-inicio-rapido mb-3">
+                            <button type="button" id="btnQuizJugarRapido" class="quiz-btn-jugar-rapido">▶ JUGAR</button>
+                            <button type="button" id="btnQuizConfigurar" class="quiz-btn-configurar" aria-expanded="false" aria-controls="quizConfiguracion">⚙️ Elegir nivel</button>
+                        </div>
 
-                        <p class="text-uppercase small fw-bold mb-2" style="color:#64748b; letter-spacing:0.05em;">Modo de juego</p>
-                        <div class="row g-2 mb-4" id="quizSelectorModo"></div>
+                        <div id="quizConfiguracion" class="quiz-configuracion d-none">
+                            <p class="text-uppercase small fw-bold mb-2" style="color:#64748b; letter-spacing:0.05em;">Nivel</p>
+                            <div class="row g-2 mb-4" id="quizSelectorNivel"></div>
 
-                        <p class="text-center small mb-3" id="quizTotalDisponibles"></p>
-                        <div class="text-center">
-                            <button id="btnEmpezarQuiz" class="btn btn-warning fw-bold py-2 px-4 rounded-pill">▶ Empezar</button>
+                            <p class="text-uppercase small fw-bold mb-2" style="color:#64748b; letter-spacing:0.05em;">Modo de juego</p>
+                            <div class="row g-2 mb-4" id="quizSelectorModo"></div>
+
+                            <p class="text-center small mb-3" id="quizTotalDisponibles"></p>
+                            <div class="text-center">
+                                <button id="btnEmpezarQuiz" class="btn btn-warning fw-bold py-2 px-4 rounded-pill">▶ Empezar</button>
+                            </div>
                         </div>
                     </div>
                 </div>

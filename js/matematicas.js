@@ -1250,13 +1250,16 @@ const HistorialJuegosLSPedia = (function () {
         "alfabCompletar", "alfabUnir", "alfabResultados", "matApp"
     ];
 
-    function construirUrl(juego, pantalla, operacion) {
+    function construirUrl(juego, pantalla, operacion, extra = {}) {
         const url = new URL(window.location.href);
         url.search = "";
         url.searchParams.set("vista", "herramientas-jugar");
         if (juego) url.searchParams.set("juego", juego);
-        if (pantalla) url.searchParams.set("pantalla", pantalla);
+        if (pantalla && pantalla !== "menu") url.searchParams.set("pantalla", pantalla);
         if (operacion) url.searchParams.set("op", operacion);
+        Object.entries(extra || {}).forEach(([k,v]) => {
+            if(v !== undefined && v !== null && String(v) !== "") url.searchParams.set(k,String(v));
+        });
         return url.pathname + "?" + url.searchParams.toString();
     }
 
@@ -1267,10 +1270,10 @@ const HistorialJuegosLSPedia = (function () {
         else window.history.pushState(estado, "", url);
     }
 
-    function registrarJuego(juego) {
+    function registrarJuego(juego, pantalla = "menu", extra = {}) {
         registrar(
-            construirUrl(juego),
-            { tipo: "juego", vista: "herramientas-jugar", juego }
+            construirUrl(juego, pantalla, "", extra),
+            { tipo: "juego", vista: "herramientas-jugar", juego, pantalla, ...extra }
         );
     }
 
@@ -1375,32 +1378,17 @@ const HistorialJuegosLSPedia = (function () {
 
     function volverAlMenuJuegosDesdeBoton() {
         const params = new URLSearchParams(window.location.search);
-        if (params.get("vista") !== "herramientas-jugar" || !params.get("juego")) return;
-
-        if (params.get("juego") === "matematicas" && params.get("pantalla") === "partida") {
-            if (window.history.length > 2) {
-                window.history.go(-2);
-            } else {
-                window.history.replaceState(
-                    { tipo: "jugar", vista: "herramientas-jugar" },
-                    "",
-                    construirUrl()
-                );
-                mostrarMenuJuegosSinHistorial();
-            }
+        if (params.get("vista") === "herramientas-jugar" && params.get("juego") && window.history.length > 1) {
+            // Un solo paso: partida -> menú del juego -> Jugar -> Herramientas.
+            window.history.back();
             return;
         }
-
-        if (window.history.length > 1) {
-            window.history.back();
-        } else {
-            window.history.replaceState(
-                { tipo: "jugar", vista: "herramientas-jugar" },
-                "",
-                construirUrl()
-            );
-            mostrarMenuJuegosSinHistorial();
-        }
+        window.history.replaceState(
+            { tipo: "jugar", vista: "herramientas-jugar" },
+            "",
+            construirUrl()
+        );
+        mostrarMenuJuegosSinHistorial();
     }
 
     function enlazar() {
@@ -1416,12 +1404,6 @@ const HistorialJuegosLSPedia = (function () {
             });
         });
 
-        document.querySelectorAll(".btn-volver-menu-juegos").forEach((btn) => {
-            btn.addEventListener("click", () => {
-                if (!restaurando) volverAlMenuJuegosDesdeBoton();
-            });
-        });
-
         window.addEventListener("popstate", manejarPopstateInterno);
 
         setTimeout(restaurarDesdeUrl, 0);
@@ -1433,7 +1415,8 @@ const HistorialJuegosLSPedia = (function () {
     return {
         registrarJuego,
         registrarPantallaMatematicas,
-        restaurarDesdeUrl
+        restaurarDesdeUrl,
+        volverAlMenuJuegosDesdeBoton
     };
 })();
 

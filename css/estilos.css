@@ -1908,3 +1908,30 @@ html {
     user-select: none;
     transition: filter 0.2s ease;
 }
+
+/* ===== HERRAMIENTAS UX V3 ===== */
+#herramientasMenuMovil .herr-movil-icono img{animation:none!important}
+#herramientasMenuMovil:not(.d-none) .col-12{
+  opacity:0;transform:translateY(18px) scale(.985);
+  animation:herrEntradaV3 .42s cubic-bezier(.22,.9,.28,1) forwards
+}
+#herramientasMenuMovil:not(.d-none) .col-12:nth-child(1){animation-delay:.04s}
+#herramientasMenuMovil:not(.d-none) .col-12:nth-child(2){animation-delay:.12s}
+#herramientasMenuMovil:not(.d-none) .col-12:nth-child(3){animation-delay:.20s}
+@keyframes herrEntradaV3{to{opacity:1;transform:translateY(0) scale(1)}}
+.herr-movil-btn{
+  min-height:116px;border:1px solid rgba(148,163,184,.22)!important;
+  box-shadow:0 10px 28px rgba(15,23,42,.09)!important;
+  transition:transform .2s cubic-bezier(.22,.9,.28,1),box-shadow .2s ease,border-color .2s ease!important
+}
+.herr-movil-btn:active{transform:scale(.975)!important;box-shadow:0 5px 15px rgba(15,23,42,.10)!important}
+.herr-movil-btn .herr-movil-flecha{transition:transform .24s cubic-bezier(.22,.9,.28,1)}
+.herr-movil-btn:hover .herr-movil-flecha,.herr-movil-btn:focus-visible .herr-movil-flecha,.herr-movil-btn:active .herr-movil-flecha{transform:translate(5px,-50%)}
+.herr-movil-desc{display:block;max-width:76%;margin-top:4px;color:#64748b;font-size:12.5px;line-height:1.28;font-weight:650}
+.lsp-vista-juego-entrando{animation:lspVistaJuegoEntrarV3 .34s cubic-bezier(.22,.9,.28,1) both}
+.lsp-vista-juego-regresando{animation:lspVistaJuegoRegresarV3 .30s cubic-bezier(.22,.9,.28,1) both}
+@keyframes lspVistaJuegoEntrarV3{from{opacity:0;transform:translateX(20px) scale(.99)}to{opacity:1;transform:translateX(0) scale(1)}}
+@keyframes lspVistaJuegoRegresarV3{from{opacity:0;transform:translateX(-14px) scale(.99)}to{opacity:1;transform:translateX(0) scale(1)}}
+@media(prefers-reduced-motion:reduce){
+ #herramientasMenuMovil:not(.d-none) .col-12,.lsp-vista-juego-entrando,.lsp-vista-juego-regresando{animation:none!important;opacity:1;transform:none}
+}

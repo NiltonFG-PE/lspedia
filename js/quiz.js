@@ -362,6 +362,10 @@ const QuizV2 = (function () {
         renderSelectorNivel();
         renderSelectorModo();
         actualizarConteoDisponibles();
+        const config = el("quizConfiguracion");
+        const btnConfig = el("btnQuizConfigurar");
+        if(config) config.classList.add("d-none");
+        if(btnConfig) btnConfig.setAttribute("aria-expanded","false");
     }
 
     function renderSelectorNivel() {
@@ -447,6 +451,9 @@ const QuizV2 = (function () {
     // INICIO DE RONDA
     // ---------------------------------------------------------
     function empezarPartida() {
+        if(window.HistorialJuegosLSPedia && typeof HistorialJuegosLSPedia.registrarJuego === "function"){
+            HistorialJuegosLSPedia.registrarJuego("quiz","partida",{nivel:estado.nivel,modo:estado.modo});
+        }
         if (estado.modo === "4") {
             iniciarModoMemoria();
             return;
@@ -817,8 +824,10 @@ const QuizV2 = (function () {
         if (esCorrecta) {
             estado.ronda.puntaje += calcularPuntos(pregunta.nivel, tiempoUsado, estado.temporizador.total);
             reproducirSonidoCorrecto();
+            if(window.FeedbackJuegosLSPedia) FeedbackJuegosLSPedia.correcto({confeti:true});
         } else {
             reproducirSonidoIncorrecto();
+            if(window.FeedbackJuegosLSPedia) FeedbackJuegosLSPedia.error();
         }
 
         estado.ronda.respuestas.push({
@@ -1184,6 +1193,11 @@ const QuizV2 = (function () {
         cancelarAvanceAutomatico();
         detenerCronoMemoria();
         destruirReproductorQuizVideo();
+        const params = new URLSearchParams(window.location.search);
+        if(params.get("vista") === "herramientas-jugar" && params.get("juego") === "quiz" && params.get("pantalla") === "partida" && window.history.length > 1){
+            window.history.back();
+            return;
+        }
         mostrarIntro();
     }
 
@@ -1207,6 +1221,22 @@ const QuizV2 = (function () {
     function enlazarEventos() {
         const btnEmpezar = el("btnEmpezarQuiz");
         if (btnEmpezar) btnEmpezar.addEventListener("click", empezarPartida);
+
+        const btnRapido = el("btnQuizJugarRapido");
+        if(btnRapido) btnRapido.addEventListener("click", () => {
+            estado.nivel = "Todos";
+            estado.modo = "5";
+            empezarPartida();
+        });
+
+        const btnConfig = el("btnQuizConfigurar");
+        if(btnConfig) btnConfig.addEventListener("click", () => {
+            const panel = el("quizConfiguracion");
+            if(!panel) return;
+            const abrir = panel.classList.contains("d-none");
+            panel.classList.toggle("d-none", !abrir);
+            btnConfig.setAttribute("aria-expanded", abrir ? "true" : "false");
+        });
 
         const btnSiguiente = el("btnSiguientePregunta");
         if (btnSiguiente) btnSiguiente.addEventListener("click", siguientePregunta);

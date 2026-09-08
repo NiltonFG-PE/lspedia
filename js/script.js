@@ -816,6 +816,42 @@ if(btnQuizFullscreen) btnQuizFullscreen.addEventListener("click", alternarPantal
 // y el Quiz en js/quiz.js (QuizV2); esta lista cubre TODAS las pantallas
 // posibles dentro de #seccionQuiz para poder ocultarlas de una sola vez
 // antes de mostrar la que corresponde, sin importar de qué módulo venga.
+
+// --- LENGUAJE VISUAL COMÚN DE LOS JUEGOS ---
+const FeedbackJuegosLSPedia = (function(){
+    function limpiar(clase){ document.querySelectorAll("."+clase).forEach(n=>n.remove()); }
+    function reaccion(emoji,duracion=720){
+        limpiar("lsp-game-reaccion");
+        const capa=document.createElement("div"); capa.className="lsp-game-reaccion";
+        capa.innerHTML="<div>"+emoji+"</div>"; document.body.appendChild(capa);
+        setTimeout(()=>capa.remove(),duracion);
+    }
+    function confeti(){
+        limpiar("lsp-game-confeti");
+        const capa=document.createElement("div"); capa.className="lsp-game-confeti";
+        const colores=["#ef4444","#f59e0b","#22c55e","#06b6d4","#3b82f6","#8b5cf6","#ec4899"];
+        for(let i=0;i<18;i++){
+            const p=document.createElement("i"); p.style.left=(Math.random()*100)+"vw";
+            p.style.background=colores[i%colores.length]; p.style.animationDelay=(Math.random()*.16)+"s";
+            capa.appendChild(p);
+        }
+        document.body.appendChild(capa); setTimeout(()=>capa.remove(),1700);
+    }
+    function flash(clase,ms){ limpiar(clase); const n=document.createElement("div"); n.className=clase; document.body.appendChild(n); setTimeout(()=>n.remove(),ms); }
+    function correcto(opciones={}){ flash("lsp-game-flash-ok",760); reaccion("🥳👏🏻"); if(opciones.confeti!==false) confeti(); }
+    function error(){ flash("lsp-game-flash-error",520); reaccion("😢👎🏻",650); if(navigator.vibrate){try{navigator.vibrate([150,60,150])}catch(_){}} }
+    return {correcto,error};
+})();
+window.FeedbackJuegosLSPedia=FeedbackJuegosLSPedia;
+
+function animarEntradaVistaJuego(nodo,regreso=false){
+    if(!nodo) return;
+    nodo.classList.remove("lsp-vista-juego-entrando","lsp-vista-juego-regresando");
+    void nodo.offsetWidth;
+    nodo.classList.add(regreso?"lsp-vista-juego-regresando":"lsp-vista-juego-entrando");
+    setTimeout(()=>nodo.classList.remove("lsp-vista-juego-entrando","lsp-vista-juego-regresando"),430);
+}
+
 const PANTALLAS_SECCION_JUEGOS = [
     "quizMenuJuegos", "quizCargando", "quizIntro", "quizActivo", "quizMemoria", "quizResultados",
     "alfabCompletar", "alfabUnir", "alfabResultados", "matApp"
@@ -832,7 +868,10 @@ function ocultarPantallasJuegos(){
 function mostrarPantallaJuegos(id){
     ocultarPantallasJuegos();
     const n = document.getElementById(id);
-    if(n) n.classList.remove("d-none");
+    if(n){
+        n.classList.remove("d-none");
+        animarEntradaVistaJuego(n,id === "quizMenuJuegos");
+    }
     if(id === "quizMenuJuegos") reproducirAnimacionMenuJuegos();
 }
 
@@ -857,22 +896,34 @@ function mostrarMenuJuegos(){
     mostrarPantallaJuegos("quizMenuJuegos");
 }
 
-function abrirJuegoCompletar(){
+function abrirJuegoCompletar(opciones = {}){
+    if(!opciones.sinHistorial && window.HistorialJuegosLSPedia && typeof HistorialJuegosLSPedia.registrarJuego === "function"){
+        HistorialJuegosLSPedia.registrarJuego("completar","menu");
+    }
     mostrarPantallaJuegos("quizCargando");
     if(window.AlfabetizacionV2 && typeof AlfabetizacionV2.mostrarJuego === "function") AlfabetizacionV2.mostrarJuego("completar");
 }
 
-function abrirJuegoUnir(){
+function abrirJuegoUnir(opciones = {}){
+    if(!opciones.sinHistorial && window.HistorialJuegosLSPedia && typeof HistorialJuegosLSPedia.registrarJuego === "function"){
+        HistorialJuegosLSPedia.registrarJuego("unir","menu");
+    }
     mostrarPantallaJuegos("quizCargando");
     if(window.AlfabetizacionV2 && typeof AlfabetizacionV2.mostrarJuego === "function") AlfabetizacionV2.mostrarJuego("unir");
 }
 
-function abrirJuegoQuiz(){
+function abrirJuegoQuiz(opciones = {}){
+    if(!opciones.sinHistorial && window.HistorialJuegosLSPedia && typeof HistorialJuegosLSPedia.registrarJuego === "function"){
+        HistorialJuegosLSPedia.registrarJuego("quiz","menu");
+    }
     mostrarPantallaJuegos("quizCargando");
     if(window.QuizV2 && typeof QuizV2.iniciar === "function") QuizV2.iniciar();
 }
 
-function abrirJuegoMatematicas(){
+function abrirJuegoMatematicas(opciones = {}){
+    if(!opciones.sinHistorial && window.HistorialJuegosLSPedia && typeof HistorialJuegosLSPedia.registrarJuego === "function"){
+        HistorialJuegosLSPedia.registrarJuego("matematicas","menu");
+    }
     mostrarPantallaJuegos("matApp");
     if(window.MatematicasV2 && typeof MatematicasV2.iniciar === "function") MatematicasV2.iniciar();
 }
@@ -890,7 +941,13 @@ const btnMenuJuegoMatematicas = document.getElementById("btnMenuJuegoMatematicas
 if(btnMenuJuegoMatematicas) btnMenuJuegoMatematicas.addEventListener("click", abrirJuegoMatematicas);
 
 document.querySelectorAll(".btn-volver-menu-juegos").forEach((btn) => {
-    btn.addEventListener("click", mostrarMenuJuegos);
+    btn.addEventListener("click", () => {
+        if(window.HistorialJuegosLSPedia && typeof HistorialJuegosLSPedia.volverAlMenuJuegosDesdeBoton === "function"){
+            HistorialJuegosLSPedia.volverAlMenuJuegosDesdeBoton();
+        } else {
+            mostrarMenuJuegos();
+        }
+    });
 });
 
 function ocultarQuiz(){

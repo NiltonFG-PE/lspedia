@@ -570,3 +570,38 @@
         font-size: 1.3rem;
     }
 }
+
+/* ===== MENU JUGAR VISUAL V3 ===== */
+#quizMenuJuegos .menu-juego-btn{
+ position:relative;min-height:178px;overflow:hidden;gap:8px;padding:18px 10px 15px;
+ border:1px solid #dce6f1;border-radius:22px;background:linear-gradient(180deg,#fff,#fbfdff);
+ box-shadow:0 8px 24px rgba(15,23,42,.08);
+ transition:transform .22s cubic-bezier(.22,.9,.28,1),box-shadow .22s ease,border-color .22s ease
+}
+#quizMenuJuegos .menu-juego-btn:hover,#quizMenuJuegos .menu-juego-btn:focus-visible{transform:translateY(-4px);border-color:#bfdbfe;box-shadow:0 16px 34px rgba(15,23,42,.13)}
+#quizMenuJuegos .menu-juego-btn:active{transform:translateY(0) scale(.97)}
+#quizMenuJuegos .juego-titulo{font-size:1rem;line-height:1.2;color:#111827}
+#quizMenuJuegos .juego-desc{display:block;max-width:180px;color:#64748b;font-size:.74rem;line-height:1.25;font-weight:650}
+.juegos-menu-subtitulo{font-size:.92rem!important}
+.juego-preview{width:118px;height:68px;border-radius:18px;background:#f6f9fd;border:1px solid #e5edf6;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;box-shadow:inset 0 1px 0 #fff}
+.menu-juego-anim .juego-preview{animation:jpPreviewInV3 .42s cubic-bezier(.22,.9,.28,1) both}
+@keyframes jpPreviewInV3{from{opacity:0;transform:scale(.86)}to{opacity:1;transform:scale(1)}}
+.preview-completar .jp-palabra{display:flex;gap:3px;font-weight:950;color:#1e3a5f}
+.preview-completar .jp-palabra b{width:22px;height:29px;display:grid;place-items:center;border-radius:7px;background:#fff;border:1px solid #dbe5ef}
+.preview-completar .jp-hueco{border:2px dashed #60a5fa!important;color:#94a3b8}
+.preview-completar .jp-ficha{position:absolute;bottom:4px;left:51px;width:22px;height:24px;display:grid;place-items:center;border-radius:7px;background:#2563eb;color:#fff;font-style:normal;font-weight:950}
+.menu-juego-anim .preview-completar .jp-ficha{animation:jpFichaV3 .95s .25s cubic-bezier(.22,.9,.28,1) both}
+@keyframes jpFichaV3{0%{transform:translateY(0)}70%,100%{transform:translateY(-34px)}}
+.preview-unir{justify-content:space-between;padding:0 10px}.preview-unir .jp-nodo{z-index:2;background:#fff;border:2px solid #dbe5ef;border-radius:10px;padding:7px;font-size:.72rem;font-weight:900}
+.preview-unir .jp-linea{position:absolute;left:37px;right:39px;height:4px;border-radius:99px;background:#38bdf8;transform-origin:left center}
+.menu-juego-anim .preview-unir .jp-linea{animation:jpLineaV3 .7s .28s ease both}@keyframes jpLineaV3{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.preview-quiz{flex-direction:column;gap:3px}.jp-quiz-card{width:42px;height:42px;border-radius:12px;background:#fff;border:2px solid #c7d2fe;display:grid;place-items:center;position:relative;font-size:1.2rem;font-weight:950;color:#4f46e5}.jp-quiz-card i{position:absolute;opacity:0;color:#16a34a;font-style:normal;font-size:1.5rem}
+.menu-juego-anim .jp-quiz-card b{animation:jpQuizQV3 1.15s .25s both}.menu-juego-anim .jp-quiz-card i{animation:jpQuizOkV3 1.15s .25s both}
+@keyframes jpQuizQV3{0%,48%{opacity:1;transform:rotateY(0)}60%,100%{opacity:0;transform:rotateY(90deg)}}@keyframes jpQuizOkV3{0%,52%{opacity:0;transform:scale(.6)}70%,100%{opacity:1;transform:scale(1)}}
+.jp-estrellas{font-size:.62rem;color:#f59e0b;letter-spacing:3px}
+.preview-matematicas{flex-direction:column;gap:2px}.jp-math{display:flex;gap:5px;align-items:center;font-weight:950;color:#172033}.jp-math i{font-style:normal;color:#2563eb;font-size:1.25rem}.jp-math em{font-style:normal;color:#64748b}.jp-math strong{color:#16a34a}.jp-dots{font-size:.62rem;color:#2563eb;letter-spacing:1px}.menu-juego-anim .jp-math i{animation:jpMasV3 .85s .25s ease both}@keyframes jpMasV3{50%{transform:scale(1.45) rotate(-8deg)}}
+.preview-oraciones{gap:4px;align-items:flex-end;padding-bottom:12px}.preview-oraciones .jp-chip{font-size:.57rem;font-weight:950;color:#fff;border-radius:7px;padding:5px 4px}.jp-chip-1{background:#2563eb}.jp-chip-2{background:#e5484d}.jp-chip-3{background:#16a34a}.menu-juego-anim .jp-chip-1{animation:jpChipV3 .45s .12s both}.menu-juego-anim .jp-chip-2{animation:jpChipV3 .45s .24s both}.menu-juego-anim .jp-chip-3{animation:jpChipV3 .45s .36s both}@keyframes jpChipV3{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.quiz-inicio-rapido{display:grid;grid-template-columns:1fr 1fr;gap:9px;max-width:480px;margin-left:auto;margin-right:auto}.quiz-btn-jugar-rapido,.quiz-btn-configurar{border:0;border-radius:16px;padding:13px 10px;font-weight:900}.quiz-btn-jugar-rapido{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#111827;box-shadow:0 8px 18px rgba(245,158,11,.25)}.quiz-btn-configurar{background:#eef2ff;color:#4338ca;border:2px solid #c7d2fe}.quiz-configuracion{margin-top:12px;padding:14px;border-radius:18px;background:#f8fafc;border:1px solid #e2e8f0;animation:quizFadeIn .25s ease}
+.lsp-game-flash-ok,.lsp-game-flash-error,.lsp-game-reaccion,.lsp-game-confeti{position:fixed;inset:0;pointer-events:none}.lsp-game-flash-ok{z-index:12050;background:radial-gradient(circle,rgba(255,255,255,.96),rgba(220,252,231,.78) 45%,transparent 76%);animation:lspGameFlashV3 .72s ease-out forwards}.lsp-game-flash-error{z-index:12050;background:rgba(220,38,38,.54);animation:lspGameFlashV3 .48s ease-out forwards}@keyframes lspGameFlashV3{0%{opacity:0}18%{opacity:1}100%{opacity:0}}.lsp-game-reaccion{z-index:12052;display:grid;place-items:center}.lsp-game-reaccion>div{font-size:3.1rem;background:rgba(255,255,255,.94);border-radius:24px;padding:12px 18px;box-shadow:0 14px 38px rgba(15,23,42,.25);animation:jpPreviewInV3 .42s ease}.lsp-game-confeti{z-index:12051;overflow:hidden}.lsp-game-confeti i{position:absolute;top:-28px;width:9px;height:18px;border-radius:3px;animation:lspGameCaerV3 1.45s linear forwards}@keyframes lspGameCaerV3{to{transform:translateY(112vh) rotate(640deg)}}
+@media(max-width:420px){#quizMenuJuegos .menu-juego-btn{min-height:166px;padding:14px 7px}.juego-preview{width:106px}.quiz-inicio-rapido{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.menu-juego-anim .juego-preview,.menu-juego-anim .juego-preview *,.lsp-game-flash-ok,.lsp-game-flash-error,.lsp-game-reaccion>div,.lsp-game-confeti i{animation:none!important}}

@@ -77,7 +77,8 @@ const AlfabetizacionV2 = (function () {
         NIVELES_COMPLETAR: [
             { id: "facil", nombre: "Fácil", icono: "🙂", opciones: 3, tiempoBaseSeg: 25, segPorLetra: 1.0, letrasFaltantes: 1, badgeClase: "badge-nivel-facil" },
             { id: "medio", nombre: "Medio", icono: "😐", opciones: 4, tiempoBaseSeg: 20, segPorLetra: 1.1, letrasFaltantes: 2, badgeClase: "badge-nivel-medio" },
-            { id: "dificil", nombre: "Difícil", icono: "🔥", opciones: 5, tiempoBaseSeg: 15, segPorLetra: 1.3, letrasFaltantes: 3, badgeClase: "badge-nivel-dificil" }
+            { id: "dificil", nombre: "Difícil", icono: "🔥", opciones: 5, tiempoBaseSeg: 15, segPorLetra: 1.3, letrasFaltantes: 3, badgeClase: "badge-nivel-dificil" },
+            { id: "reto", nombre: "Reto", icono: "🧠", opciones: 6, tiempoBaseSeg: 18, segPorLetra: 1.5, letrasFaltantes: 999, badgeClase: "badge-nivel-dificil" }
         ],
         TIEMPO_MAXIMO_COMPLETAR_SEG: 50,
         PREGUNTAS_POR_RONDA_COMPLETAR: 10,
@@ -89,7 +90,8 @@ const AlfabetizacionV2 = (function () {
         NIVELES_UNIR: [
             { id: "facil", nombre: "Fácil", icono: "🙂", pares: 4, badgeClase: "badge-nivel-facil" },
             { id: "medio", nombre: "Medio", icono: "😐", pares: 6, badgeClase: "badge-nivel-medio" },
-            { id: "dificil", nombre: "Difícil", icono: "🔥", pares: 8, badgeClase: "badge-nivel-dificil" }
+            { id: "dificil", nombre: "Difícil", icono: "🔥", pares: 8, badgeClase: "badge-nivel-dificil" },
+            { id: "reto", nombre: "Reto", icono: "🧠", pares: 10, badgeClase: "badge-nivel-dificil" }
         ],
         RONDAS_POR_PARTIDA_UNIR: 3,
         PUNTOS_POR_PAREJA_UNIR: 15
@@ -1267,7 +1269,7 @@ const AlfabetizacionV2 = (function () {
             cont.innerHTML = "";
             CONFIG.NIVELES_COMPLETAR.forEach((nivel) => {
                 const col = document.createElement("div");
-                col.className = "col-4";
+                col.className = "col-6 col-md-3";
 
                 const btn = document.createElement("button");
                 btn.type = "button";
@@ -1294,6 +1296,9 @@ const AlfabetizacionV2 = (function () {
     }
 
     function iniciarJuegoCompletar() {
+        if(window.HistorialJuegosLSPedia && typeof HistorialJuegosLSPedia.registrarJuego === "function"){
+            HistorialJuegosLSPedia.registrarJuego("completar","partida",{nivel:estado.completar.nivelId || ""});
+        }
         const banco = barajar(bancoPalabrasCompletar());
         const cantidad = Math.min(CONFIG.PREGUNTAS_POR_RONDA_COMPLETAR, banco.length);
 
@@ -1443,9 +1448,69 @@ const AlfabetizacionV2 = (function () {
             btn.type = "button";
             btn.className = "completar-opcion-letra";
             btn.textContent = letra;
-            btn.addEventListener("click", () => seleccionarOpcionCompletar(letra, btn));
+            btn.addEventListener("click", () => animarLetraHaciaCasilla(letra, btn, () => seleccionarOpcionCompletar(letra, btn)));
             filaOpciones.appendChild(btn);
         });
+        programarGuiaVisualCompletar();
+    }
+
+
+    function animarLetraHaciaCasilla(letra, btnEl, callback) {
+        const pregunta = estado.completar.preguntas[estado.completar.indice];
+        const indiceBlanco = pregunta && pregunta._indicesBlanco ? pregunta._indicesBlanco[estado.completar.subIndice] : null;
+        const destino = indiceBlanco !== null ? el("completarCasilla" + indiceBlanco) : null;
+        if (!btnEl || !destino || window.matchMedia("(prefers-reduced-motion: reduce)").matches) { callback(); return; }
+        document.querySelectorAll("#alfabCompletarOpciones .completar-opcion-letra").forEach(b => { b.disabled = true; });
+        const origen = btnEl.getBoundingClientRect();
+        const fin = destino.getBoundingClientRect();
+        const ficha = document.createElement("div");
+        ficha.className = "completar-letra-viajera";
+        ficha.textContent = letra;
+        ficha.style.left = (origen.left + origen.width / 2 - 24) + "px";
+        ficha.style.top = (origen.top + origen.height / 2 - 24) + "px";
+        document.body.appendChild(ficha);
+        requestAnimationFrame(() => {
+            ficha.style.left = (fin.left + fin.width / 2 - 24) + "px";
+            ficha.style.top = (fin.top + fin.height / 2 - 24) + "px";
+            ficha.style.transform = "scale(.82)";
+        });
+        setTimeout(() => { ficha.remove(); callback(); }, 440);
+    }
+
+    function programarGuiaVisualCompletar() {
+        const indicePregunta = estado.completar.indice;
+        const subIndice = estado.completar.subIndice;
+        setTimeout(() => {
+            if (estado.completar.respondida || estado.completar.blancoRespondido) return;
+            if (estado.completar.indice !== indicePregunta || estado.completar.subIndice !== subIndice) return;
+            const pregunta = estado.completar.preguntas[indicePregunta];
+            if (!pregunta) return;
+            const correcta = String(pregunta._letrasCorrectas[subIndice] || "").toUpperCase();
+            const indiceBlanco = pregunta._indicesBlanco[subIndice];
+            const destino = el("completarCasilla" + indiceBlanco);
+            const opciones = Array.from(document.querySelectorAll("#alfabCompletarOpciones .completar-opcion-letra"));
+            const origen = opciones.find(b => b.textContent.trim().toUpperCase() === correcta);
+            if (!origen || !destino) return;
+            const ro = origen.getBoundingClientRect();
+            const rd = destino.getBoundingClientRect();
+            const clon = origen.cloneNode(true);
+            clon.disabled = false;
+            clon.classList.add("completar-guia-clon");
+            clon.style.left = ro.left + "px"; clon.style.top = ro.top + "px";
+            clon.style.width = ro.width + "px"; clon.style.height = ro.height + "px";
+            const mano = document.createElement("div");
+            mano.className = "completar-mano-guia"; mano.textContent = "👆";
+            mano.style.left = (ro.left + ro.width * .55) + "px";
+            mano.style.top = (ro.top + ro.height * .60) + "px";
+            document.body.append(clon, mano);
+            requestAnimationFrame(() => {
+                clon.style.left = (rd.left + rd.width / 2 - ro.width / 2) + "px";
+                clon.style.top = (rd.top + rd.height / 2 - ro.height / 2) + "px";
+                mano.style.left = (rd.left + rd.width * .55) + "px";
+                mano.style.top = (rd.top + rd.height * .60) + "px";
+            });
+            setTimeout(() => { clon.remove(); mano.remove(); }, 950);
+        }, 5200);
     }
 
     function seleccionarOpcionCompletar(letra, btnEl) {
@@ -1479,6 +1544,7 @@ const AlfabetizacionV2 = (function () {
             estado.completar.palabraTuvoError = true;
             estado.completar.racha = 0;
             reproducirSonidoIncorrecto();
+            if(window.FeedbackJuegosLSPedia) FeedbackJuegosLSPedia.error();
         }
         el("alfabCompletarPuntaje").textContent = "⭐ " + estado.completar.puntaje;
         actualizarRachaCompletar();
@@ -1517,6 +1583,7 @@ const AlfabetizacionV2 = (function () {
         estado.completar.racha = 0;
         actualizarRachaCompletar();
         reproducirSonidoIncorrecto();
+        if(window.FeedbackJuegosLSPedia) FeedbackJuegosLSPedia.error();
         el("alfabCompletarFeedback").innerHTML = '<span class="text-danger">⏱ Se acabó el tiempo.</span>';
         finalizarPreguntaCompletar(false);
     }
@@ -1576,6 +1643,7 @@ const AlfabetizacionV2 = (function () {
             estado.completar.correctas++;
             el("alfabCompletarFeedback").innerHTML = '<span class="text-success">¡Muy bien! 🎉</span>';
             lanzarConfetiCompletar();
+            if(window.FeedbackJuegosLSPedia) FeedbackJuegosLSPedia.correcto({confeti:false});
         } else {
             estado.completar.incorrectas++;
             if (!el("alfabCompletarFeedback").innerHTML) {
@@ -1753,7 +1821,7 @@ const AlfabetizacionV2 = (function () {
             cont.innerHTML = "";
             CONFIG.NIVELES_UNIR.forEach((nivel) => {
                 const col = document.createElement("div");
-                col.className = "col-4";
+                col.className = "col-6 col-md-3";
 
                 const btn = document.createElement("button");
                 btn.type = "button";
@@ -1780,6 +1848,9 @@ const AlfabetizacionV2 = (function () {
     }
 
     function iniciarJuegoUnir() {
+        if(window.HistorialJuegosLSPedia && typeof HistorialJuegosLSPedia.registrarJuego === "function"){
+            HistorialJuegosLSPedia.registrarJuego("unir","partida",{nivel:estado.unir.nivelId || ""});
+        }
         estado.unir.ronda = 0;
         estado.unir.puntaje = 0;
         estado.unir.correctas = 0;
@@ -1841,7 +1912,8 @@ const AlfabetizacionV2 = (function () {
                 btn.appendChild(num);
             }
 
-            btn.addEventListener("click", () => alternarSeleccionUnir("imagen", idx, btn));
+            btn.addEventListener("click", () => { if(btn.dataset.suprimirClickUnir !== "1") alternarSeleccionUnir("imagen", idx, btn); });
+            activarArrastreVisualUnir(btn, "imagen", idx);
             contImagenes.appendChild(btn);
         });
 
@@ -1853,7 +1925,8 @@ const AlfabetizacionV2 = (function () {
             btn.className = "alfab-unir-item alfab-unir-palabra";
             btn.textContent = par.palabra;
 
-            btn.addEventListener("click", () => alternarSeleccionUnir("palabra", idx, btn));
+            btn.addEventListener("click", () => { if(btn.dataset.suprimirClickUnir !== "1") alternarSeleccionUnir("palabra", idx, btn); });
+            activarArrastreVisualUnir(btn, "palabra", idx);
             contPalabras.appendChild(btn);
         });
 
@@ -1866,6 +1939,61 @@ const AlfabetizacionV2 = (function () {
         badge.className = "badge " + nivel.badgeClase;
 
         dibujarLineasUnir();
+    }
+
+
+    function activarArrastreVisualUnir(elemento, tipo, indice) {
+        if (!elemento) return;
+        elemento.dataset.unirTipo = tipo;
+        elemento.dataset.unirIndice = String(indice);
+        elemento.style.touchAction = "none";
+        elemento.addEventListener("pointerdown", (ev) => {
+            if (estado.unir.resueltos.has(indice)) return;
+            const inicioX = ev.clientX, inicioY = ev.clientY;
+            let activo = false, svg = null, linea = null;
+            const rect = elemento.getBoundingClientRect();
+            const x1 = rect.left + rect.width / 2, y1 = rect.top + rect.height / 2;
+
+            function mover(e) {
+                if (!activo && Math.hypot(e.clientX - inicioX, e.clientY - inicioY) < 7) return;
+                if (!activo) {
+                    activo = true;
+                    elemento.classList.add("unir-arrastrando");
+                    svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                    svg.classList.add("unir-linea-arrastre");
+                    linea = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                    linea.setAttribute("x1", x1); linea.setAttribute("y1", y1);
+                    linea.setAttribute("x2", e.clientX); linea.setAttribute("y2", e.clientY);
+                    linea.setAttribute("stroke", tipo === "imagen" ? "#38bdf8" : "#8b5cf6");
+                    linea.setAttribute("stroke-width", "5"); linea.setAttribute("stroke-linecap", "round");
+                    svg.appendChild(linea); document.body.appendChild(svg);
+                } else if (linea) {
+                    linea.setAttribute("x2", e.clientX); linea.setAttribute("y2", e.clientY);
+                }
+            }
+
+            function soltar(e) {
+                window.removeEventListener("pointermove", mover);
+                window.removeEventListener("pointerup", soltar);
+                window.removeEventListener("pointercancel", soltar);
+                elemento.classList.remove("unir-arrastrando");
+                if (svg) svg.remove();
+                if (!activo) return;
+                elemento.dataset.suprimirClickUnir = "1";
+                const bruto = document.elementFromPoint(e.clientX, e.clientY);
+                const destino = bruto ? bruto.closest(".alfab-unir-item") : null;
+                if (destino && destino.dataset.unirTipo && destino.dataset.unirTipo !== tipo) {
+                    const indiceDestino = parseInt(destino.dataset.unirIndice, 10);
+                    alternarSeleccionUnir(tipo, indice, elemento);
+                    alternarSeleccionUnir(destino.dataset.unirTipo, indiceDestino, destino);
+                }
+                setTimeout(() => { elemento.dataset.suprimirClickUnir = ""; }, 90);
+            }
+
+            window.addEventListener("pointermove", mover);
+            window.addEventListener("pointerup", soltar);
+            window.addEventListener("pointercancel", soltar);
+        });
     }
 
     // Toca un ítem (imagen o palabra). El primer toque solo selecciona;
@@ -2068,7 +2196,13 @@ const AlfabetizacionV2 = (function () {
         const huboErrores = pendientes.some((idx) => !resultados[idx]);
         const rondaCompleta = estado.unir.resueltos.size === estado.unir.pares.length;
 
-        if (huboErrores) reproducirSonidoIncorrecto(); else reproducirSonidoCorrecto();
+        if (huboErrores) {
+            reproducirSonidoIncorrecto();
+            if(window.FeedbackJuegosLSPedia) FeedbackJuegosLSPedia.error();
+        } else {
+            reproducirSonidoCorrecto();
+            if(window.FeedbackJuegosLSPedia) FeedbackJuegosLSPedia.correcto({confeti:rondaCompleta});
+        }
 
         if (rondaCompleta) {
             el("alfabUnirFeedback").innerHTML = '<span class="text-success">¡Ronda completada! 🎉</span>';
@@ -2125,6 +2259,16 @@ const AlfabetizacionV2 = (function () {
 
         estado._alfabResultadosVolverA = "unir";
         mostrarBloque("alfabResultados");
+    }
+
+
+    function volverMenuInternoConHistorial(juego, fallback) {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get("vista") === "herramientas-jugar" && params.get("juego") === juego && params.get("pantalla") === "partida" && window.history.length > 1) {
+            window.history.back();
+            return;
+        }
+        fallback();
     }
 
     // ---------------------------------------------------------
@@ -2294,7 +2438,7 @@ const AlfabetizacionV2 = (function () {
         if (btnCompletarSiguiente) btnCompletarSiguiente.addEventListener("click", avanzarCompletar);
 
         const btnCompletarMenu = el("btnAlfabCompletarMenu");
-        if (btnCompletarMenu) btnCompletarMenu.addEventListener("click", renderCompletarIntro);
+        if (btnCompletarMenu) btnCompletarMenu.addEventListener("click", () => volverMenuInternoConHistorial("completar", renderCompletarIntro));
 
         const btnUnirEmpezar = el("btnAlfabUnirEmpezar");
         if (btnUnirEmpezar) btnUnirEmpezar.addEventListener("click", iniciarJuegoUnir);
@@ -2303,7 +2447,7 @@ const AlfabetizacionV2 = (function () {
         if (btnUnirMenu) {
             btnUnirMenu.addEventListener("click", () => {
                 if (estado.unir._timerAutoComprobar) clearTimeout(estado.unir._timerAutoComprobar);
-                renderUnirIntro();
+                volverMenuInternoConHistorial("unir", renderUnirIntro);
             });
         }
 
