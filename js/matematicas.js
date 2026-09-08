@@ -1354,21 +1354,24 @@ const HistorialJuegosLSPedia = (function () {
         }
     }
 
-    function manejarPopstateInterno(evento) {
-        const params = new URLSearchParams(window.location.search);
+    function manejarPopstateInterno() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("vista") !== "herramientas-jugar") return;
 
-        if (params.get("vista") !== "herramientas-jugar" || !jugarEstaVisible()) {
-            return;
-        }
-
-        evento.stopImmediatePropagation();
+    // script.js se carga antes que matematicas.js. Dejamos que el
+    // router general reconstruya Herramientas > Jugar y después
+    // restauramos la pantalla interna exacta indicada por la URL.
+    setTimeout(() => {
+        const actuales = new URLSearchParams(window.location.search);
+        if (actuales.get("vista") !== "herramientas-jugar") return;
         restaurando = true;
         try {
-            restaurarJuegoDesdeParametros(params);
+            restaurarJuegoDesdeParametros(actuales);
         } finally {
             restaurando = false;
         }
-    }
+    }, 0);
+}
 
     function volverAlMenuJuegosDesdeBoton() {
         const params = new URLSearchParams(window.location.search);
@@ -1419,7 +1422,7 @@ const HistorialJuegosLSPedia = (function () {
             });
         });
 
-        window.addEventListener("popstate", manejarPopstateInterno, true);
+        window.addEventListener("popstate", manejarPopstateInterno);
 
         setTimeout(restaurarDesdeUrl, 0);
         setTimeout(restaurarDesdeUrl, 900);
