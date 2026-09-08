@@ -1,0 +1,60 @@
+name: Quitar emoji libros del aviso
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - '.github/workflows/quitar-emoji-libros-aviso.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  ajustar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Quitar emoji y actualizar cache
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          index = Path('index.html')
+          texto = index.read_text(encoding='utf-8')
+          anterior = '📚Diccionario visual de español'
+          nuevo = 'Diccionario visual de español'
+          if anterior not in texto:
+              raise SystemExit('No se encontró el emoji de libros en el aviso.')
+          texto = texto.replace(anterior, nuevo, 1)
+          index.write_text(texto, encoding='utf-8')
+
+          sw = Path('sw.js')
+          sw_texto = sw.read_text(encoding='utf-8')
+          sw_texto = re.sub(r'const VERSION_APP = "v\d+";', 'const VERSION_APP = "v22";', sw_texto, count=1)
+          sw.write_text(sw_texto, encoding='utf-8')
+          PY
+
+      - name: Validar
+        shell: bash
+        run: |
+          git diff --check
+          grep -q 'Diccionario visual de español</span> con apoyo en Lengua de Señas Peruana.' index.html
+          if grep -q '📚Diccionario visual de español' index.html; then exit 1; fi
+          grep -q 'const VERSION_APP = "v22"' sw.js
+
+      - name: Guardar en develop
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html sw.js
+          git commit -m 'Quitar emoji de libros del aviso del Diccionario'
+          git push origin develop
