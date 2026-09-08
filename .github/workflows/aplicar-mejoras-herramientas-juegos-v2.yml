@@ -1,0 +1,43 @@
+name: Mejorar Herramientas y Jugar V2
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - .github/workflows/aplicar-mejoras-herramientas-juegos-v2.yml
+
+permissions:
+  contents: write
+
+jobs:
+  mejorar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Aplicar mejoras
+        run: python .tmp/aplicar_mejoras_herramientas_juegos_v2.py
+
+      - name: Validar archivos clave
+        run: |
+          node --check js/script.js
+          node --check js/alfabetizacion.js
+          node --check js/quiz.js
+          node --check js/matematicas.js
+          node --check js/oraciones.js
+          grep -q 'btnMenuJuegoOraciones' index.html
+          grep -q 'btnQuizJugarRapido' index.html
+          grep -q 'HistorialJuegosLSPedia' js/script.js
+
+      - name: Guardar en develop y limpiar archivos temporales
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm -f .tmp/aplicar_mejoras_herramientas_juegos_v2.py
+          rm -f .github/workflows/aplicar-mejoras-herramientas-juegos-v2.yml
+          git add -A
+          git commit -m "Mejorar navegación visual y juegos de Herramientas"
+          git push origin develop
