@@ -42,6 +42,43 @@ const listaFavoritos = document.getElementById("listaFavoritos");
 //   - Saltos de línea reales -> <br> (para que los \n del Sheet se vean).
 // Uso: en el <p> de la ficha con innerHTML, NUNCA insertar p.definicion
 // directo; siempre pasar por acá.
+// Escapa cualquier dato externo antes de insertarlo dentro de innerHTML.
+// Se usa para palabras, categorías, variantes y texto escrito por el usuario.
+function escaparHtml(valor){
+    return String(valor ?? "").replace(/[&<>"\']/g, caracter => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "\'": "&#39;"
+    })[caracter]);
+}
+
+function escaparAtributoHtml(valor){
+    return escaparHtml(valor);
+}
+
+function escaparCadenaJsAtributo(valor){
+    return String(valor ?? "")
+        .replace(/\\/g, "\\\\")
+        .replace(/\'/g, "\\x27")
+        .replace(/"/g, "\\x22")
+        .replace(/&/g, "\\x26")
+        .replace(/</g, "\\x3C")
+        .replace(/>/g, "\\x3E")
+        .replace(/\r/g, "\\r")
+        .replace(/\n/g, "\\n");
+}
+
+// Solo permite imágenes http/https, incluidas rutas relativas del propio sitio.
+function normalizarUrlImagenSegura(valor){
+    const textoUrl = String(valor || "").trim();
+    if(!textoUrl) return "";
+    try {
+        const url = new URL(textoUrl, window.location.href);
+        if(url.protocol !== "http:" && url.protocol !== "https:") return "";
+        return url.href;
+    } catch(_error){
+        return "";
+    }
+}
+
 function formatearDefinicion(texto){
     if (!texto) return "";
 
@@ -2150,7 +2187,7 @@ function buscarPalabras(){
             cercanos.forEach(p => {
                 const boton = document.createElement("button");
                 boton.className = "list-group-item list-group-item-action text-start";
-                boton.innerHTML = `<strong>${p.palabra}</strong> <span class="badge" style="font-size: 10px;">${p.categoria.trim()}</span>`;
+                boton.innerHTML = `<strong>${escaparHtml(p.palabra)}</strong> <span class="badge" style="font-size: 10px;">${escaparHtml(p.categoria.trim())}</span>`;
                 boton.onclick = () => mostrarPalabra(p);
                 sugerencias.appendChild(boton);
             });
@@ -2158,7 +2195,7 @@ function buscarPalabras(){
         }
         sugerencias.innerHTML = `
             <div class="list-group-item text-center py-3" style="background-color: #343a40; border: none;">
-                <span class="text-white d-block mb-2 small">No hay resultados para "${texto}"</span>
+                <span class="text-white d-block mb-2 small">No hay resultados para "${escaparHtml(texto)}"</span>
                 <button class="btn btn-sm btn-warning w-100 fw-bold text-dark" data-bs-toggle="modal" data-bs-target="#modalSugerencia" onclick="document.getElementById('sugerencias').style.display='none'">
                     Sugerir esta palabra
                 </button>
@@ -2169,10 +2206,10 @@ function buscarPalabras(){
     encontrados.forEach(p=>{
         const boton=document.createElement("button");
         boton.className="list-group-item list-group-item-action text-start";
-        let textoMatch = `<strong>${p.palabra}</strong>`;
+        let textoMatch = `<strong>${escaparHtml(p.palabra)}</strong>`;
         const varianteCoincidente = obtenerVarianteQueCoincide(p.variantes, texto);
         if(varianteCoincidente && !norm(p.palabra).includes(texto)){
-            textoMatch += ` <small class="text-primary ms-2 fw-bold" style="font-size: 11px;">(Variante: ${varianteCoincidente})</small>`;
+            textoMatch += ` <small class="text-primary ms-2 fw-bold" style="font-size: 11px;">(Variante: ${escaparHtml(varianteCoincidente)})</small>`;
         }
 
         // Video-first: miniatura de la seña junto a cada sugerencia,
@@ -2180,7 +2217,7 @@ function buscarPalabras(){
         const idVideoSugerencia = extraerIdYouTube(p.video);
         const miniatura = idVideoSugerencia
             ? `<div class="sugerencia-thumb-wrap">
-                   <img src="https://i.ytimg.com/vi/${idVideoSugerencia}/mqdefault.jpg" alt="Seña de ${p.palabra}" loading="lazy">
+                   <img src="https://i.ytimg.com/vi/${idVideoSugerencia}/mqdefault.jpg" alt="Seña de ${escaparAtributoHtml(p.palabra)}" loading="lazy">
                    <span class="sugerencia-thumb-play">▶</span>
                </div>`
             : `<div class="sugerencia-thumb-wrap sin-video">🤟</div>`;
@@ -2190,7 +2227,7 @@ function buscarPalabras(){
                 ${miniatura}
                 <div class="sugerencia-texto">
                     ${textoMatch}
-                    <span class="badge" style="font-size: 10px;">${p.categoria.trim()}</span>
+                    <span class="badge" style="font-size: 10px;">${escaparHtml(p.categoria.trim())}</span>
                 </div>
             </div>`;
         boton.onclick=()=>mostrarPalabra(p);
@@ -2245,7 +2282,7 @@ function ejecutarBusquedaDirecta() {
                     <source src="img/avatar_duda.webm" type="video/webm">
                 </video>
             </div>
-            <h4 class="fw-bold mb-3 text-primary">No encontramos "${buscar.value}"</h4>
+            <h4 class="fw-bold mb-3 text-primary">No encontramos "${escaparHtml(buscar.value)}"</h4>
             <button class="btn btn-warning px-4 py-2 rounded-pill fw-bold text-dark" data-bs-toggle="modal" data-bs-target="#modalSugerencia">Sugerir esta palabra</button>
         </div>
     </div>`;
@@ -2407,7 +2444,7 @@ function mostrarPalabra(p, opciones = {}){
                 <button type="button" class="btn btn-sm btn-outline-secondary" id="btnPalabraFullscreen" title="Ver en pantalla completa" aria-label="Ver en pantalla completa">⛶</button>
            </div>`
         : "";
-    let bloqueVariantes = p.variantes && p.variantes.trim() !== "" ? `<div class="mb-3 p-2 bg-light rounded border"><span class="d-block fw-bold text-secondary mb-1" style="font-size: 10px; letter-spacing: 0.5px;">🔄 CONJUGACIONES O VARIANTES:</span><span class="text-muted small fst-italic">${p.variantes}</span></div>` : "";
+    let bloqueVariantes = p.variantes && p.variantes.trim() !== "" ? `<div class="mb-3 p-2 bg-light rounded border"><span class="d-block fw-bold text-secondary mb-1" style="font-size: 10px; letter-spacing: 0.5px;">🔄 CONJUGACIONES O VARIANTES:</span><span class="text-muted small fst-italic">${escaparHtml(p.variantes)}</span></div>` : "";
 
     // Columna "senaSugerida" de la Hoja 1: es un ID/URL de YouTube, así que
     // en vez de mostrarla como texto se arma una tercera caja con su propio
@@ -2441,9 +2478,9 @@ function mostrarPalabra(p, opciones = {}){
     ${enCategorias ? botonAtrasCategorias() : ""}
     <div class="card shadow-sm mb-4 animate-fade-in" style="border-radius: 15px; border-color: #dceefc;">
         <div class="card-body p-4">
-            <span class="badge bg-primary mb-2" style="font-size: 11px;">${p.categoria.trim()}</span>
+            <span class="badge bg-primary mb-2" style="font-size: 11px;">${escaparHtml(p.categoria.trim())}</span>
             <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
-                <h3 class="fw-bold mb-0" style="color: #0d6efd;">${p.palabra}</h3>
+                <h3 class="fw-bold mb-0" style="color: #0d6efd;">${escaparHtml(p.palabra)}</h3>
                 <div class="d-flex gap-2 flex-shrink-0 flex-wrap justify-content-end">
                     ${botonCompartir}
                     <button id="btnFavorito" class="btn btn-sm btn-outline-primary py-1 px-3" style="border-radius: 15px; font-size: 12px; font-weight: bold;">${textoBoton}</button>
@@ -2564,7 +2601,7 @@ function mostrarPalabraSimplificada(p, opciones = {}){
 
     const imagenesPalabra = obtenerImagenesDeApoyo(p);
     const bloqueImagen = generarBloqueImagenApoyo(imagenesPalabra, p.palabra);
-    let bloqueVariantes = p.variantes && p.variantes.trim() !== "" ? `<div class="mb-3 p-2 bg-light rounded border"><span class="d-block fw-bold text-secondary mb-1" style="font-size: 10px; letter-spacing: 0.5px;">🔄 CONJUGACIONES O VARIANTES:</span><span class="text-muted small fst-italic">${p.variantes}</span></div>` : "";
+    let bloqueVariantes = p.variantes && p.variantes.trim() !== "" ? `<div class="mb-3 p-2 bg-light rounded border"><span class="d-block fw-bold text-secondary mb-1" style="font-size: 10px; letter-spacing: 0.5px;">🔄 CONJUGACIONES O VARIANTES:</span><span class="text-muted small fst-italic">${escaparHtml(p.variantes)}</span></div>` : "";
 
     const contenedorDestino = enCategorias ? resultadoCategorias : resultado;
     contenedorDestino.innerHTML = `
@@ -2572,10 +2609,10 @@ function mostrarPalabraSimplificada(p, opciones = {}){
     <div class="card shadow-sm mb-4 animate-fade-in" style="border-radius: 15px; border-color: #dceefc;">
         <div class="card-body p-4">
             <span class="badge bg-warning text-dark mb-2" style="font-size: 11px;">📚 Vocabulario</span>
-            ${p.categoria ? `<span class="badge bg-primary mb-2 ms-1" style="font-size: 11px;">${p.categoria.trim()}</span>` : ""}
-            ${p.nivel ? `<span class="badge bg-secondary mb-2 ms-1" style="font-size: 11px;">${p.nivel}</span>` : ""}
+            ${p.categoria ? `<span class="badge bg-primary mb-2 ms-1" style="font-size: 11px;">${escaparHtml(p.categoria.trim())}</span>` : ""}
+            ${p.nivel ? `<span class="badge bg-secondary mb-2 ms-1" style="font-size: 11px;">${escaparHtml(p.nivel)}</span>` : ""}
             <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
-                <h3 class="fw-bold mb-0" style="color: #0d6efd;">${p.palabra}</h3>
+                <h3 class="fw-bold mb-0" style="color: #0d6efd;">${escaparHtml(p.palabra)}</h3>
                 ${generarBotonCompartir()}
             </div>
             ${bloqueVariantes}
@@ -3706,7 +3743,8 @@ const IMAGENES_CATEGORIA = {
 // mostrarPalabraSimplificada() (Vocabulario, Hoja 2), para que ambas
 // vistas se vean y se comporten igual.
 function generarBloqueImagenApoyo(imagenesPalabra, nombrePalabra){
-    const escaparComillasImg = (texto) => texto.replace(/'/g, "\\'");
+    const nombreSeguro = escaparAtributoHtml(nombrePalabra);
+    const escaparComillasImg = escaparCadenaJsAtributo;
     if(imagenesPalabra.length === 0){
         return `<div class="d-flex flex-column align-items-center justify-content-center text-muted text-center p-3 w-100 h-100">
                 <span class="fs-1 mb-2">🖼️</span>
@@ -3715,9 +3753,9 @@ function generarBloqueImagenApoyo(imagenesPalabra, nombrePalabra){
     }
     if(imagenesPalabra.length === 1){
         return `<div class="apoyo-visual-caja h-100 w-100" role="button" tabindex="0"
-                onclick="abrirImagenAmpliada('${imagenesPalabra[0]}', '${escaparComillasImg(nombrePalabra)}')"
-                onkeypress="if(event.key==='Enter') abrirImagenAmpliada('${imagenesPalabra[0]}', '${escaparComillasImg(nombrePalabra)}')">
-                <img src="${imagenesPalabra[0]}" class="apoyo-visual-img" alt="Imagen de apoyo visual para ${nombrePalabra}">
+                onclick="abrirImagenAmpliada('${escaparComillasImg(imagenesPalabra[0])}', '${escaparComillasImg(nombrePalabra)}')"
+                onkeypress="if(event.key==='Enter') abrirImagenAmpliada('${escaparComillasImg(imagenesPalabra[0])}', '${escaparComillasImg(nombrePalabra)}')">
+                <img src="${escaparAtributoHtml(imagenesPalabra[0])}" class="apoyo-visual-img" alt="Imagen de apoyo visual para ${nombreSeguro}">
                 <span class="apoyo-visual-lupa">🔍 Ampliar</span>
            </div>`;
     }
@@ -3725,9 +3763,9 @@ function generarBloqueImagenApoyo(imagenesPalabra, nombrePalabra){
     const slides = imagenesPalabra.map((url, i) => `
         <div class="carousel-item ${i === 0 ? "active" : ""}">
             <div class="apoyo-visual-caja h-100 w-100" role="button" tabindex="0"
-                 onclick="abrirImagenAmpliada('${url}', '${escaparComillasImg(nombrePalabra)}')"
-                 onkeypress="if(event.key==='Enter') abrirImagenAmpliada('${url}', '${escaparComillasImg(nombrePalabra)}')">
-                <img src="${url}" class="apoyo-visual-img" alt="Imagen de apoyo visual ${i + 1} de ${imagenesPalabra.length} para ${nombrePalabra}">
+                 onclick="abrirImagenAmpliada('${escaparComillasImg(url)}', '${escaparComillasImg(nombrePalabra)}')"
+                 onkeypress="if(event.key==='Enter') abrirImagenAmpliada('${escaparComillasImg(url)}', '${escaparComillasImg(nombrePalabra)}')">
+                <img src="${escaparAtributoHtml(url)}" class="apoyo-visual-img" alt="Imagen de apoyo visual ${i + 1} de ${imagenesPalabra.length} para ${nombreSeguro}">
                 <span class="apoyo-visual-lupa">🔍 Ampliar</span>
             </div>
         </div>`).join("");
@@ -3754,10 +3792,10 @@ function generarBloqueImagenApoyo(imagenesPalabra, nombrePalabra){
 function obtenerImagenesDeApoyo(p){
     const propias = (p.imagen || "")
         .split(",")
-        .map(url => url.trim())
-        .filter(url => url !== "");
+        .map(normalizarUrlImagenSegura)
+        .filter(Boolean);
     if(propias.length > 0) return propias;
-    const deCategoria = p.categoria ? IMAGENES_CATEGORIA[p.categoria.trim()] : null;
+    const deCategoria = p.categoria ? normalizarUrlImagenSegura(IMAGENES_CATEGORIA[p.categoria.trim()]) : "";
     return deCategoria ? [deCategoria] : [];
 }
 
@@ -4409,7 +4447,7 @@ function buscarEnCategorias(){
             cercanos.forEach(p => {
                 const boton = document.createElement("button");
                 boton.className = "list-group-item list-group-item-action text-start";
-                boton.innerHTML = `<strong>${p.palabra}</strong> <span class="badge" style="font-size: 10px;">${p.categoria.trim()}</span>`;
+                boton.innerHTML = `<strong>${escaparHtml(p.palabra)}</strong> <span class="badge" style="font-size: 10px;">${escaparHtml(p.categoria.trim())}</span>`;
                 boton.onclick = () => {
                     buscarCategorias.value = "";
                     sugerenciasCategorias.innerHTML = "";
@@ -4422,7 +4460,7 @@ function buscarEnCategorias(){
         }
         sugerenciasCategorias.innerHTML = `
             <div class="list-group-item text-center py-3" style="background-color: #343a40; border: none;">
-                <span class="text-white d-block small">No hay resultados para "${textoOriginal}"</span>
+                <span class="text-white d-block small">No hay resultados para "${escaparHtml(textoOriginal)}"</span>
             </div>`;
         return;
     }
@@ -4430,17 +4468,17 @@ function buscarEnCategorias(){
     coincidencias.forEach(p => {
         const boton = document.createElement("button");
         boton.className = "list-group-item list-group-item-action text-start";
-        let textoMatch = `<strong>${p.palabra}</strong>`;
+        let textoMatch = `<strong>${escaparHtml(p.palabra)}</strong>`;
         const varianteCoincidenteCat = obtenerVarianteQueCoincide(p.variantes, texto);
         if(varianteCoincidenteCat && !norm(p.palabra).includes(texto)){
-            textoMatch += ` <small class="text-primary ms-2 fw-bold" style="font-size: 11px;">(Variante: ${varianteCoincidenteCat})</small>`;
+            textoMatch += ` <small class="text-primary ms-2 fw-bold" style="font-size: 11px;">(Variante: ${escaparHtml(varianteCoincidenteCat)})</small>`;
         }
         boton.innerHTML = `
             <div class="sugerencia-fila">
                 ${generarMiniaturaVocabulario(p)}
                 <div class="sugerencia-texto">
                     ${textoMatch}
-                    <span class="badge" style="font-size: 10px;">${p.categoria.trim()}</span>
+                    <span class="badge" style="font-size: 10px;">${escaparHtml(p.categoria.trim())}</span>
                 </div>
             </div>`;
         boton.onclick = () => {
@@ -4484,7 +4522,7 @@ function generarMiniaturaVocabulario(p){
     const idVideo = extraerIdYouTube(p.video);
     return idVideo
         ? `<div class="sugerencia-thumb-wrap">
-               <img src="https://i.ytimg.com/vi/${idVideo}/mqdefault.jpg" alt="Seña de ${p.palabra}" loading="lazy">
+               <img src="https://i.ytimg.com/vi/${idVideo}/mqdefault.jpg" alt="Seña de ${escaparAtributoHtml(p.palabra)}" loading="lazy">
                <span class="sugerencia-thumb-play">▶</span>
            </div>`
         : `<div class="sugerencia-thumb-wrap sin-video">🤟</div>`;
@@ -4723,9 +4761,9 @@ window.addEventListener("popstate", (evento) => {
 // mini-bloque "🖼️" ya usado en otras partes del sitio para "sin imagen
 // todavía", en vez de depender de un servicio externo.
 function generarMiniaturaSugerencia(p){
-    const primeraImagen = (p.imagen || "").split(",")[0].trim();
+    const primeraImagen = normalizarUrlImagenSegura((p.imagen || "").split(",")[0]);
     if(primeraImagen){
-        return `<img src="${primeraImagen}" class="img-fluid rounded" style="height: 70px; width: 70px; object-fit: cover;" alt="Imagen de apoyo visual para ${p.palabra}">`;
+        return `<img src="${escaparAtributoHtml(primeraImagen)}" class="img-fluid rounded" style="height: 70px; width: 70px; object-fit: cover;" alt="Imagen de apoyo visual para ${escaparAtributoHtml(p.palabra)}">`;
     }
     return `<div class="rounded d-flex align-items-center justify-content-center bg-light text-muted" style="height: 70px; width: 70px; font-size: 1.3rem;">🖼️</div>`;
 }
@@ -4747,7 +4785,7 @@ function mostrarSugerenciasRelacionadas(palabraActual, contenedor, opciones = {}
     const filas = contenedor.querySelector(".sugerenciasPanelFilas");
     relacionadas.slice(-4).reverse().forEach(p => {
         const col = document.createElement("div"); col.className = "col-12 col-md-6 mb-2";
-        col.innerHTML = `<div class="card h-100 border-0 shadow-sm" style="border-radius: 12px; background-color: #ffffff;"><div class="row g-0 align-items-center"><div class="col-3 p-2">${generarMiniaturaSugerencia(p)}</div><div class="col-9"><div class="card-body py-2 px-2"><h6 class="mb-0 fw-bold text-primary">${p.palabra}</h6></div></div></div></div>`;
+        col.innerHTML = `<div class="card h-100 border-0 shadow-sm" style="border-radius: 12px; background-color: #ffffff;"><div class="row g-0 align-items-center"><div class="col-3 p-2">${generarMiniaturaSugerencia(p)}</div><div class="col-9"><div class="card-body py-2 px-2"><h6 class="mb-0 fw-bold text-primary">${escaparHtml(p.palabra)}</h6></div></div></div></div>`;
         col.onclick = () => { window.scrollTo({ top: 0, behavior: 'smooth' }); mostrarPalabra(p, { enCategorias: !!opciones.clickAbreEnCategorias }); };
         filas.appendChild(col);
     });
@@ -4768,7 +4806,7 @@ function mostrarSugerenciasRelacionadasVocabulario(palabraActual, contenedor, op
     const filas = contenedor.querySelector(".sugerenciasPanelFilas");
     relacionadas.slice(-4).reverse().forEach(p => {
         const col = document.createElement("div"); col.className = "col-12 col-md-6 mb-2";
-        col.innerHTML = `<div class="card h-100 border-0 shadow-sm" style="border-radius: 12px; background-color: #ffffff;"><div class="row g-0 align-items-center"><div class="col-3 p-2">${generarMiniaturaSugerencia(p)}</div><div class="col-9"><div class="card-body py-2 px-2"><h6 class="mb-0 fw-bold text-primary">${p.palabra}</h6></div></div></div></div>`;
+        col.innerHTML = `<div class="card h-100 border-0 shadow-sm" style="border-radius: 12px; background-color: #ffffff;"><div class="row g-0 align-items-center"><div class="col-3 p-2">${generarMiniaturaSugerencia(p)}</div><div class="col-9"><div class="card-body py-2 px-2"><h6 class="mb-0 fw-bold text-primary">${escaparHtml(p.palabra)}</h6></div></div></div></div>`;
         col.onclick = () => { window.scrollTo({ top: 0, behavior: 'smooth' }); mostrarPalabraSimplificada(p, { enCategorias: !!opciones.clickAbreEnCategorias }); };
         filas.appendChild(col);
     });
