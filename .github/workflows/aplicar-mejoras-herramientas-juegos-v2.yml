@@ -24,13 +24,25 @@ jobs:
           from pathlib import Path
           p=Path('.tmp/aplicar_mejoras_herramientas_juegos_v2.py')
           s=p.read_text(encoding='utf-8')
+
+          # La versión actual de alfabetizacion.js inicia Completar creando
+          # directamente el banco; adapta el parche a ese encabezado real.
           viejo='''    function iniciarJuegoCompletar() {\n        const nivel = nivelCompletarActual();'''
           nuevo='''    function iniciarJuegoCompletar() {\n        const banco = barajar(bancoPalabrasCompletar());'''
           reemplazo_viejo='''    function iniciarJuegoCompletar() {\n        if(window.HistorialJuegosLSPedia && typeof HistorialJuegosLSPedia.registrarJuego === "function"){\n            HistorialJuegosLSPedia.registrarJuego("completar", "partida", { nivel: estado.completar.nivelId || "" });\n        }\n        const nivel = nivelCompletarActual();'''
           reemplazo_nuevo='''    function iniciarJuegoCompletar() {\n        if(window.HistorialJuegosLSPedia && typeof HistorialJuegosLSPedia.registrarJuego === "function"){\n            HistorialJuegosLSPedia.registrarJuego("completar", "partida", { nivel: estado.completar.nivelId || "" });\n        }\n        const banco = barajar(bancoPalabrasCompletar());'''
-          if viejo not in s or reemplazo_viejo not in s:
-              raise SystemExit('No se encontro el patron interno a ajustar')
-          s=s.replace(viejo,nuevo,1).replace(reemplazo_viejo,reemplazo_nuevo,1)
+          if viejo in s:
+              s=s.replace(viejo,nuevo,1)
+          if reemplazo_viejo in s:
+              s=s.replace(reemplazo_viejo,reemplazo_nuevo,1)
+
+          # Sustituye la inserción demasiado estricta de la guía por una
+          # operación robusta: añade la llamada justo después de construir
+          # todas las opciones y antes de cerrar renderOpcionesBlancoActual.
+          inicio=s.index('# Programa la guía cada vez que se redibujan las opciones.')
+          fin=s.index('# Feedback común en Completar.', inicio)
+          bloque='''# Programa la guía cada vez que se redibujan las opciones.\nguide_anchor = '            filaOpciones.appendChild(btn);\\n        });\\n    }\\n\\n    function animarLetraHaciaCasilla'\nif guide_anchor not in a:\n    raise RuntimeError("No se pudo localizar el cierre de opciones para la mano guia")\na = a.replace(\n    guide_anchor,\n    '            filaOpciones.appendChild(btn);\\n        });\\n        programarGuiaVisualCompletar();\\n    }\\n\\n    function animarLetraHaciaCasilla',\n    1\n)\n\n'''
+          s=s[:inicio]+bloque+s[fin:]
           p.write_text(s,encoding='utf-8')
           PY
 
@@ -48,6 +60,7 @@ jobs:
           grep -q 'btnQuizJugarRapido' index.html
           grep -q 'HistorialJuegosLSPedia' js/script.js
           grep -q 'activarArrastreVisualUnir' js/alfabetizacion.js
+          grep -q 'animarLetraHaciaCasilla' js/alfabetizacion.js
 
       - name: Guardar en develop y limpiar archivos temporales
         run: |
