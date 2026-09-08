@@ -5,6 +5,10 @@ Revisa Diccionario y Vocabulario como fuentes independientes. Los errores
 estructurales hacen fallar la validación; las advertencias se muestran para
 revisión pero no bloquean una actualización válida.
 
+En el Diccionario puede haber borradores todavía sin video. Esos registros se
+revisan, pero no cuentan como contenido publicable y sus duplicados de borrador
+no bloquean el sitio. Una palabra con video sí se valida con reglas más estrictas.
+
 Uso:
     python scripts/validar_lspedia.py
     python scripts/validar_lspedia.py --fuente diccionario
@@ -17,7 +21,7 @@ import json
 import re
 import sys
 import unicodedata
-from collections import Counter, defaultdict
+from collections import Counter
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
@@ -106,17 +110,23 @@ def _youtube_id(valor: object) -> str | None:
 
 
 def _revisar_campos_extranos(nombre: str, filas: list[dict], informe: Informe) -> None:
-    campos_vacios = []
+    """Avisa solo si una columna sin nombre contiene un valor real.
+
+    palabras.json conserva actualmente una columna vacía heredada del origen de
+    datos. Si la celda también está vacía es inocua y no genera ruido. Si alguien
+    pega texto accidentalmente en esa columna, sí se muestra la advertencia.
+    """
+    sospechosos = []
     for i, fila in enumerate(filas, 1):
         for campo, valor in fila.items():
-            if not _texto(campo):
-                campos_vacios.append((i, _texto(valor)))
-    if campos_vacios:
+            if not _texto(campo) and _texto(valor):
+                sospechosos.append((i, _texto(valor)))
+    if sospechosos:
         ejemplos = "; ".join(
-            f"#{i}={valor[:70]!r}" for i, valor in campos_vacios[:3]
+            f"#{i}={valor[:70]!r}" for i, valor in sospechosos[:3]
         )
         informe.aviso(
-            f"{nombre}: {len(campos_vacios)} campo(s) con nombre vacío. "
+            f"{nombre}: {len(sospechosos)} valor(es) en una columna sin nombre. "
             f"Revisar posible dato pegado por accidente. {ejemplos}"
         )
 
@@ -128,18 +138,20 @@ def validar_diccionario(informe: Informe) -> list[dict]:
 
     categorias_permitidas = set(CATEGORIAS_DICCIONARIO)
     ids: dict[str, int] = {}
-    palabras_categoria: dict[tuple[str, str], int] = {}
+    palabras_categoria: dict[tuple[str, str], tuple[int, bool]] = {}
     palabras = Counter()
     sin_video = 0
     publicables = 0
     sin_definicion_publicable = 0
     ids_no_slug = 0
+    duplicados_borrador = 0
 
     for i, fila in enumerate(filas, 1):
         palabra = _texto(fila.get("palabra"))
         categoria = _texto(fila.get("categoria"))
         identificador = _texto(fila.get("id"))
         video = _texto(fila.get("video"))
+        es_publicable = bool(video)
 
         if not palabra:
             informe.error(f"Diccionario #{i}: falta 'palabra'.")
@@ -169,12 +181,19 @@ def validar_diccionario(informe: Informe) -> list[dict]:
             palabras[clave_palabra] += 1
             par = (clave_palabra, _clave(categoria))
             if par in palabras_categoria:
-                informe.error(
-                    f"Diccionario: palabra duplicada en la misma categoría: {palabra!r} "
-                    f"(registros #{palabras_categoria[par]} y #{i})."
-                )
+                anterior_i, anterior_publicable = palabras_categoria[par]
+                # Solo bloqueamos si el duplicado podría llegar realmente a la
+                # web (alguno de los dos tiene video). Dos borradores sin video
+                # se señalan, pero no alteran las cifras ni la publicación.
+                if es_publicable or anterior_publicable:
+                    informe.error(
+                        f"Diccionario: palabra publicable duplicada en la misma categoría: "
+                        f"{palabra!r} (registros #{anterior_i} y #{i})."
+                    )
+                else:
+                    duplicados_borrador += 1
             else:
-                palabras_categoria[par] = i
+                palabras_categoria[par] = (i, es_publicable)
 
         if video:
             publicables += 1
@@ -190,8 +209,13 @@ def validar_diccionario(informe: Informe) -> list[dict]:
     duplicados_nombre = sum(1 for n in palabras.values() if n > 1)
     if duplicados_nombre:
         informe.aviso(
-            f"Diccionario: {duplicados_nombre} nombre(s) aparecen más de una vez. "
+            f"Diccionario: {duplicados_nombre} nombre(s) aparecen más de una vez en los datos. "
             "No se mezclaron automáticamente; revisar si son conceptos distintos."
+        )
+    if duplicados_borrador:
+        informe.aviso(
+            f"Diccionario: {duplicados_borrador} duplicado(s) están solo entre borradores sin video. "
+            "No cuentan como contenido publicable y no bloquean la actualización."
         )
     if ids_no_slug:
         informe.aviso(
@@ -205,7 +229,8 @@ def validar_diccionario(informe: Informe) -> list[dict]:
     _revisar_campos_extranos("Diccionario", filas, informe)
     informe.dato(
         f"Diccionario: {len(filas)} registros, {publicables} con video publicable, "
-        f"{sin_video} sin video (no se publican), {len(set(_texto(x.get('categoria')) for x in filas))} categorías."
+        f"{sin_video} sin video (no se publican), "
+        f"{len(set(_texto(x.get('categoria')) for x in filas))} categorías."
     )
     return filas
 
