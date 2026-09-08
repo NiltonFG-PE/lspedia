@@ -1,4 +1,4 @@
-name: Actualizar sitemap
+name: Actualizar IDs y sitemap
 
 on:
   push:
@@ -6,6 +6,8 @@ on:
       - develop
     paths:
       - "data/palabras.json"
+      - "js/script.js"
+      - "scripts/migrar_ids_palabras.py"
       - "scripts/generar_sitemap.py"
       - ".github/workflows/actualizar-sitemap.yml"
   workflow_dispatch:
@@ -14,11 +16,11 @@ permissions:
   contents: write
 
 concurrency:
-  group: actualizar-sitemap-develop
+  group: actualizar-ids-sitemap-develop
   cancel-in-progress: true
 
 jobs:
-  generar-sitemap:
+  actualizar-datos:
     runs-on: ubuntu-latest
 
     steps:
@@ -33,19 +35,28 @@ jobs:
         with:
           python-version: "3.x"
 
+      - name: Crear y migrar IDs únicos
+        run: python scripts/migrar_ids_palabras.py
+
       - name: Generar sitemap.xml
         run: python scripts/generar_sitemap.py
 
-      - name: Guardar sitemap actualizado
+      - name: Validar JSON y JavaScript
         shell: bash
         run: |
-          if git diff --quiet -- sitemap.xml; then
-            echo "sitemap.xml ya estaba actualizado."
+          python -m json.tool data/palabras.json > /dev/null
+          node --check js/script.js
+
+      - name: Guardar cambios automáticos
+        shell: bash
+        run: |
+          if git diff --quiet -- data/palabras.json js/script.js sitemap.xml; then
+            echo "IDs y sitemap ya estaban actualizados."
             exit 0
           fi
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add sitemap.xml
-          git commit -m "Actualizar sitemap automáticamente"
+          git add data/palabras.json js/script.js sitemap.xml
+          git commit -m "Actualizar IDs únicos y sitemap automáticamente"
           git push origin HEAD:develop
