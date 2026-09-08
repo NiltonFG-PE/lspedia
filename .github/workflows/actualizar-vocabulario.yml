@@ -7,6 +7,8 @@ on:
       - "js/quiz.js"
       - "scripts/generar_vocabulario.py"
       - "scripts/migrar_quiz_vocabulario_local.py"
+      - "scripts/normalizar_categorias.py"
+      - "scripts/validar_lspedia.py"
       - ".github/workflows/actualizar-vocabulario.yml"
   schedule:
     - cron: "*/15 * * * *"
@@ -41,10 +43,11 @@ jobs:
       - name: Descargar Hoja 2 y generar vocabulario.json
         run: python scripts/generar_vocabulario.py
 
-      - name: Validar archivos
+      - name: Validar Vocabulario antes de guardar
         shell: bash
         run: |
           python -m json.tool data/vocabulario.json > /dev/null
+          python scripts/validar_lspedia.py --fuente vocabulario
           node --check js/quiz.js
 
       - name: Guardar cambios si hubo actualización
