@@ -1,0 +1,50 @@
+name: Auditar categorias temporal
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - '.github/workflows/auditar-categorias-temporal.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  auditar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: develop
+      - name: Listar categorias por fuente
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, unicodedata, collections
+          from pathlib import Path
+
+          def clave(s):
+              s = '' if s is None else str(s).strip()
+              s = ' '.join(s.split())
+              s = ''.join(c for c in unicodedata.normalize('NFD', s.casefold()) if unicodedata.category(c) != 'Mn')
+              return s
+
+          for nombre, ruta in [('DICCIONARIO','data/palabras.json'),('VOCABULARIO','data/vocabulario.json')]:
+              data=json.loads(Path(ruta).read_text(encoding='utf-8'))
+              cats=[str(x.get('categoria') or '').strip() for x in data if isinstance(x,dict)]
+              conteo=collections.Counter(cats)
+              print('\n===',nombre,'===')
+              print('registros:',len(data),'categorias_unicas:',len(conteo),'sin_categoria:',conteo.get('',0))
+              for cat,n in sorted(conteo.items(), key=lambda kv:(clave(kv[0]),kv[0])):
+                  print(f'{n:4d} | {cat!r}')
+              grupos=collections.defaultdict(list)
+              for cat in conteo:
+                  grupos[clave(cat)].append(cat)
+              print('\n-- POSIBLES VARIANTES EQUIVALENTES --')
+              hubo=False
+              for k,vals in sorted(grupos.items()):
+                  if len(vals)>1:
+                      hubo=True
+                      print(k,'=>',[(v,conteo[v]) for v in vals])
+              if not hubo: print('(ninguna por mayusculas/tildes/espacios)')
+          PY
