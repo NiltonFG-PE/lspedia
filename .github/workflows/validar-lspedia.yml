@@ -1,0 +1,60 @@
+name: Validar LSPedia
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - "data/**"
+      - "js/**"
+      - "scripts/validar_lspedia.py"
+      - "scripts/normalizar_categorias.py"
+      - ".github/workflows/validar-lspedia.yml"
+  pull_request:
+    branches: [develop]
+    paths:
+      - "data/**"
+      - "js/**"
+      - "scripts/validar_lspedia.py"
+      - "scripts/normalizar_categorias.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validar-lspedia-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || 'develop' }}
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Validar Diccionario y Vocabulario
+        run: python scripts/validar_lspedia.py
+
+      - name: Validar sintaxis de JavaScript
+        shell: bash
+        run: |
+          set -e
+          while IFS= read -r -d '' archivo; do
+            echo "Revisando $archivo"
+            node --check "$archivo"
+          done < <(find js -maxdepth 1 -type f -name '*.js' -print0 | sort -z)
+
+      - name: Validar JSON principales
+        shell: bash
+        run: |
+          python -m json.tool data/palabras.json > /dev/null
+          python -m json.tool data/vocabulario.json > /dev/null
+          echo "JSON válidos."
