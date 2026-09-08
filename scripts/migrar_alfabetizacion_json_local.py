@@ -26,6 +26,16 @@ def quitar_bloque_funcion(texto: str, inicio: str, siguiente: str) -> str:
     return texto[:pos_inicio] + texto[pos_fin:]
 
 
+def quitar_rango(texto: str, inicio: str, fin: str) -> str:
+    pos_inicio = texto.find(inicio)
+    if pos_inicio == -1:
+        return texto
+    pos_fin = texto.find(fin, pos_inicio)
+    if pos_fin == -1:
+        raise RuntimeError(f"No se encontró el final del rango iniciado por {inicio!r}.")
+    return texto[:pos_inicio] + texto[pos_fin:]
+
+
 def main() -> int:
     try:
         texto = RUTA_JS.read_text(encoding="utf-8")
@@ -39,6 +49,35 @@ def main() -> int:
             "   ya no ejecuta JSONP ni consulta directamente Google Apps Script.\n",
             1,
         )
+        texto = texto.replace(
+            "   ⚠️ MODO MOCK (mientras el Apps Script no está listo):\n"
+            "   Con MOCK_ACTIVO en true, los datos se leen de\n"
+            "   data/alfabetizacion-mock.json (mismo origen, sin problemas de\n"
+            "   CORS). Cuando el doGet combinado esté desplegado, basta con:\n"
+            "     1) Pegar la URL real en CONFIG.APPS_SCRIPT_URL\n"
+            "     2) Poner MOCK_ACTIVO en false\n"
+            "   El resto del módulo no necesita cambios: cargarDatos() ya\n"
+            "   entrega los datos en la misma forma { alfabeto, ejemplos }\n"
+            "   sin importar el origen.\n",
+            "   MODO MOCK: data/alfabetizacion-mock.json se conserva únicamente\n"
+            "   como respaldo local y para pruebas. En uso normal la fuente real\n"
+            "   es data/alfabetizacion.json, sincronizada desde Google Sheets.\n",
+            1,
+        )
+
+        texto = texto.replace(
+            '        MOCK_ACTIVO: false, // 👉 ya conectado al Apps Script real (Sheet). Poner en true para volver al mock local si hace falta debuggear sin depender de Google.\n',
+            '        MOCK_ACTIVO: false, // true solo para pruebas o respaldo manual.\n',
+            1,
+        )
+        texto = texto.replace(
+            "    // CARGA DE DATOS (mock local o Apps Script real, mismo contrato)\n",
+            "    // CARGA DE DATOS (JSON local + caché/mock de respaldo)\n",
+            1,
+        )
+        texto = texto.replace("(JSONP + fetch del mock)", "(JSON local + fetch del mock)")
+        texto = texto.replace("dato real de Google Sheets", "dato real de alfabetizacion.json")
+        texto = texto.replace("conexión con Google Sheets", "lectura de alfabetizacion.json")
 
         # Reemplaza la URL pública del Web App por la fuente local.
         patron_config = re.compile(
@@ -93,8 +132,23 @@ def main() -> int:
             "    function guardarDatos(data) {",
         )
 
+        # Si la función remota ya se eliminó en una ejecución anterior, también
+        # quitamos los comentarios históricos JSONP que quedaron delante de guardarDatos.
+        texto = quitar_rango(
+            texto,
+            "    // Igual que quiz.js: JSONP porque Apps Script + GitHub Pages suele",
+            "    function guardarDatos(data) {",
+        )
+
+        # Helper que solo servía para mostrar el segundo intento remoto de Apps Script.
+        texto = quitar_rango(
+            texto,
+            '    // Cambia el texto bajo el spinner de "alfabCargando" sin tocar el resto',
+            "    // ---------------------------------------------------------\n    // NAVEGACIÓN ENTRE BLOQUES",
+        )
+
         texto = texto.replace(
-            "Alfabetización: usando datos de respaldo (mock) porque falló la conexión con Google Sheets.",
+            "Alfabetización: usando datos de respaldo (mock) porque falló la lectura de alfabetizacion.json.",
             "Alfabetización: usando datos de respaldo (mock) porque no se pudo leer alfabetizacion.json.",
         )
         texto = texto.replace(
