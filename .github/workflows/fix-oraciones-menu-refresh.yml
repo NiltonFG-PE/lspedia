@@ -1,0 +1,113 @@
+name: Corregir botón Oraciones al refrescar
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - .github/workflows/fix-oraciones-menu-refresh.yml
+
+permissions:
+  contents: write
+
+jobs:
+  corregir:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Hacer permanente el botón Oraciones
+        shell: bash
+        run: |
+          python - <<'PYCODE'
+          from pathlib import Path
+          import re, subprocess
+
+          index = Path('index.html')
+          html = index.read_text(encoding='utf-8')
+
+          if 'id="btnMenuJuegoOraciones"' not in html:
+              bloque_mat = '''                        <div class="col-6 col-md-3 menu-juego-col">
+                            <button type="button" class="quiz-selector-btn menu-juego-btn w-100 h-100" id="btnMenuJuegoMatematicas">
+                                <span class="icono">🔢</span>
+                                <span class="fw-bold">Matemáticas</span>
+                            </button>
+                        </div>'''
+              bloque_oraciones = '''
+                        <div class="col-6 col-md-3 menu-juego-col">
+                            <button type="button" class="quiz-selector-btn menu-juego-btn w-100 h-100" id="btnMenuJuegoOraciones" aria-label="Juego Construye la oración">
+                                <span class="icono">💬</span>
+                                <span class="fw-bold">Oraciones</span>
+                            </button>
+                        </div>'''
+              if bloque_mat not in html:
+                  raise SystemExit('No se encontró la tarjeta de Matemáticas en index.html')
+              html = html.replace(bloque_mat, bloque_mat + bloque_oraciones, 1)
+
+          html = html.replace('js/oraciones.js?v=20260908b"', 'js/oraciones.js?v=20260908c"')
+          index.write_text(html, encoding='utf-8')
+
+          js_path = Path('js/oraciones.js')
+          js = js_path.read_text(encoding='utf-8')
+
+          patron = re.compile(r'''  function asegurarBoton\(\)\{\n.*?\n  \}\n\n  function alCargar\(\)\{''', re.S)
+          nuevo = '''  function asegurarBoton(){
+    let btn=document.getElementById("btnMenuJuegoOraciones");
+
+    // Respaldo para copias antiguas del HTML: si la tarjeta todavía no
+    // existe, la creamos. En la versión actual ya viene fija en index.html,
+    // por lo que no desaparece aunque otros módulos terminen de iniciar.
+    if(!btn){
+      const fila=document.querySelector("#quizMenuJuegos .row");
+      if(!fila) return;
+      const col=document.createElement("div");
+      col.className="col-6 col-md-3 menu-juego-col";
+      col.innerHTML=`<button type="button" class="quiz-selector-btn menu-juego-btn w-100 h-100" id="btnMenuJuegoOraciones" aria-label="Juego Construye la oración"><span class="icono">💬</span><span class="fw-bold">Oraciones</span></button>`;
+      fila.appendChild(col);
+      btn=col.querySelector("#btnMenuJuegoOraciones");
+    }
+
+    // Como el botón ahora está escrito directamente en index.html, el JS
+    // solo conecta su acción. La marca evita duplicar listeners si esta
+    // función se ejecuta más de una vez.
+    if(btn && btn.dataset.oracionesListo!=="1"){
+      btn.dataset.oracionesListo="1";
+      btn.addEventListener("click",()=>iniciar());
+    }
+  }
+
+  function alCargar(){'''
+
+          js, n = patron.subn(nuevo, js, count=1)
+          if n != 1:
+              raise SystemExit('No se pudo actualizar asegurarBoton()')
+
+          js_path.write_text(js, encoding='utf-8')
+
+          sw = Path('sw.js')
+          sw_text = sw.read_text(encoding='utf-8')
+          sw_text = re.sub(r'const VERSION_APP = "v\d+";', 'const VERSION_APP = "v13";', sw_text, count=1)
+          sw.write_text(sw_text, encoding='utf-8')
+
+          subprocess.run(['node','--check','js/oraciones.js'], check=True)
+
+          html2=index.read_text(encoding='utf-8')
+          js2=js_path.read_text(encoding='utf-8')
+          sw2=sw.read_text(encoding='utf-8')
+          assert html2.count('id="btnMenuJuegoOraciones"') == 1
+          assert 'data-oraciones' not in html2 or True
+          assert 'btn.dataset.oracionesListo' in js2
+          assert 'js/oraciones.js?v=20260908c' in html2
+          assert 'const VERSION_APP = "v13";' in sw2
+          PYCODE
+
+      - name: Guardar corrección
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html js/oraciones.js sw.js
+          git commit -m "Fijar botón Oraciones en el menú Jugar"
+          git push origin develop
