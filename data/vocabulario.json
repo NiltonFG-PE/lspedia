@@ -1,1 +1,450 @@
-[]
+[
+  {
+    "palabra": "Adulto",
+    "video": "p20mQeIR4kg",
+    "categoria": "Adjetivos",
+    "nivel": "Medio",
+    "imagen": "img/vocabulario/adulto.webp",
+    "variantes": ""
+  },
+  {
+    "palabra": "Caro",
+    "video": "rTQh0O4ydMw",
+    "categoria": "Adjetivos",
+    "nivel": "Difícil",
+    "imagen": "img/vocabulario/caro.webp",
+    "variantes": "Costoso, ojo de la cara,"
+  },
+  {
+    "palabra": "Débil",
+    "video": "aUfSgeVzTUg",
+    "categoria": "Adjetivos",
+    "nivel": "Difícil",
+    "imagen": "img/vocabulario/debil.webp",
+    "variantes": "Delicado, Frágil,"
+  },
+  {
+    "palabra": "Difícil",
+    "video": "ledSey8cBJM",
+    "categoria": "Adjetivos",
+    "nivel": "Difícil",
+    "imagen": "img/vocabulario/dificil.webp",
+    "variantes": "complicado"
+  },
+  {
+    "palabra": "Distraído",
+    "video": "L48N6jLbY7E",
+    "categoria": "Adjetivos",
+    "nivel": "Difícil",
+    "imagen": "img/vocabulario/distraido.webp",
+    "variantes": "desconcentrado"
+  },
+  {
+    "palabra": "Cansado",
+    "video": "8YPO4XsqqTg",
+    "categoria": "Emociones",
+    "nivel": "Medio",
+    "imagen": "img/vocabulario/cansado.webp",
+    "variantes": "Fatigado, Agotado, molido, rendido, exhausto"
+  },
+  {
+    "palabra": "Aburrido",
+    "video": "6W78LABxkn0",
+    "categoria": "Emociones",
+    "nivel": "Difícil",
+    "imagen": "img/vocabulario/aburrido.webp",
+    "variantes": "Tedioso, Soso, Monótono, Latoso, Soporífero"
+  },
+  {
+    "palabra": "Amor",
+    "video": "EPIFqLhuz-0",
+    "categoria": "Emociones",
+    "nivel": "Fácil",
+    "imagen": "img/vocabulario/amor.webp",
+    "variantes": "Amar"
+  },
+  {
+    "palabra": "Asustado",
+    "video": "mJMgeB1TRBw",
+    "categoria": "Emociones",
+    "nivel": "Fácil",
+    "imagen": "img/vocabulario/asustado.webp",
+    "variantes": "miedo, temor, aterrado, espantado"
+  },
+  {
+    "palabra": "Cariño",
+    "video": "yq775DDg920",
+    "categoria": "Emociones",
+    "nivel": "Difícil",
+    "imagen": "img/vocabulario/cariño.webp",
+    "variantes": "Afecto, Estimación"
+  },
+  {
+    "palabra": "Celos",
+    "video": "UWW3mAI3m8k",
+    "categoria": "Emociones",
+    "nivel": "Difícil",
+    "imagen": "img/vocabulario/celos.webp",
+    "variantes": "celoso, celosa"
+  },
+  {
+    "palabra": "Contento",
+    "video": "hwuAvaqnyW4",
+    "categoria": "Emociones",
+    "nivel": "Medio",
+    "imagen": "img/vocabulario/contento.webp",
+    "variantes": "satisfecho"
+  },
+  {
+    "palabra": "Enojado",
+    "video": "wZPUtS_IcOQ",
+    "categoria": "Emociones",
+    "nivel": "Difícil",
+    "imagen": "img/vocabulario/enojado.webp",
+    "variantes": "molesto, enfadado, colérico"
+  },
+  {
+    "palabra": "Envidia",
+    "video": "tFKh3xaoJ8w",
+    "categoria": "Emociones",
+    "nivel": "Difícil",
+    "imagen": "img/vocabulario/envidia.webp",
+    "variantes": "envidiar"
+  },
+  {
+    "palabra": "Esperanza",
+    "video": "Fnn-BSvMFrQ",
+    "categoria": "Emociones",
+    "nivel": "Medio",
+    "imagen": "img/vocabulario/esperanza.webp",
+    "variantes": ""
+  },
+  {
+    "palabra": "Feliz",
+    "video": "KIvr7-_nGl4",
+    "categoria": "Emociones",
+    "nivel": "Fácil",
+    "imagen": "img/vocabulario/feliz.webp",
+    "variantes": "alegría, gozo, gososo, jubilo, jubiloso,"
+  },
+  {
+    "palabra": "Extrañar",
+    "video": "INp7zYkKhAs",
+    "categoria": "Emociones",
+    "nivel": "Difícil",
+    "imagen": "img/vocabulario/extrañar.webp",
+    "variantes": "Añoranza, Melancolía, Nostalgia"
+  },
+  {
+    "palabra": "Orgullo (negativo)",
+    "video": "IDFBNMPMKKU",
+    "categoria": "Emociones",
+    "nivel": "Difícil",
+    "imagen": "img/vocabulario/orgullo.webp",
+    "variantes": "Orgulloso, Soberbia, Arrogancia"
+  },
+  {
+    "palabra": "Soledad",
+    "video": "ZjCGoTxSAsw",
+    "categoria": "Emociones",
+    "nivel": "Fácil",
+    "imagen": "img/vocabulario/soledad.webp",
+    "variantes": ""
+  },
+  {
+    "palabra": "Sorprendido",
+    "video": "bhNMEM6VvuU",
+    "categoria": "Emociones",
+    "nivel": "Medio",
+    "imagen": "img/vocabulario/sorprendido.webp",
+    "variantes": "Asombrado, Atónito, Pasmado, Estupefacto, Impresionado, Maravillado"
+  },
+  {
+    "palabra": "Triste",
+    "video": "TK0kSpZc_IU",
+    "categoria": "Emociones",
+    "nivel": "Medio",
+    "imagen": "img/vocabulario/tristeza.webp",
+    "variantes": "Desanimado, Apenado, Mustio, Entristecido"
+  },
+  {
+    "palabra": "Vergüenza",
+    "video": "ZD43qjF_F5Q",
+    "categoria": "Emociones",
+    "nivel": "Medio",
+    "imagen": "img/vocabulario/verguenza.webp",
+    "variantes": "Verguenza, Bochorno, Timidez, Pena, Palta"
+  },
+  {
+    "palabra": "Abril",
+    "video": "-2vcQ_jmUzw",
+    "categoria": "Tiempo",
+    "nivel": "Medio",
+    "imagen": "img/vocabulario/abril.webp",
+    "variantes": "mes, año"
+  },
+  {
+    "palabra": "Agosto",
+    "video": "LLU9rAGCPME",
+    "categoria": "Tiempo",
+    "nivel": "Medio",
+    "imagen": "img/vocabulario/agosto.webp",
+    "variantes": "mes, año"
+  },
+  {
+    "palabra": "Diciembre",
+    "video": "21FZr-lKrAA",
+    "categoria": "Tiempo",
+    "nivel": "Medio",
+    "imagen": "img/vocabulario/diciembre.webp",
+    "variantes": "mes, año"
+  },
+  {
+    "palabra": "Domingo",
+    "video": "LnVYWOHqOnY",
+    "categoria": "Tiempo",
+    "nivel": "Fácil",
+    "imagen": "img/vocabulario/domingo.webp",
+    "variantes": "semana, día"
+  },
+  {
+    "palabra": "Enero",
+    "video": "sAE-4g5Yzr8",
+    "categoria": "Tiempo",
+    "nivel": "Medio",
+    "imagen": "img/vocabulario/enero.webp",
+    "variantes": "mes, año"
+  },
+  {
+    "palabra": "Febrero",
+    "video": "o0X5xe2zfXI",
+    "categoria": "Tiempo",
+    "nivel": "Medio",
+    "imagen": "img/vocabulario/febrero.webp",
+    "variantes": "mes, año"
+  },
+  {
+    "palabra": "Jueves",
+    "video": "8ghAOAvYBTQ",
+    "categoria": "Tiempo",
+    "nivel": "Fácil",
+    "imagen": "img/vocabulario/jueves.webp",
+    "variantes": "semana, día"
+  },
+  {
+    "palabra": "Julio",
+    "video": "9i8kZZgf1NM",
+    "categoria": "Tiempo",
+    "nivel": "Medio",
+    "imagen": "img/vocabulario/julio.webp",
+    "variantes": "mes, año"
+  },
+  {
+    "palabra": "Junio",
+    "video": "74GetK6J0yo",
+    "categoria": "Tiempo",
+    "nivel": "Medio",
+    "imagen": "img/vocabulario/junio.webp",
+    "variantes": "mes, año"
+  },
+  {
+    "palabra": "Lunes",
+    "video": "Ex11PR9uc7w",
+    "categoria": "Tiempo",
+    "nivel": "Fácil",
+    "imagen": "img/vocabulario/lunes.webp",
+    "variantes": "semana, día"
+  },
+  {
+    "palabra": "Martes",
+    "video": "hh44BbiPZaM",
+    "categoria": "Tiempo",
+    "nivel": "Fácil",
+    "imagen": "img/vocabulario/martes.webp",
+    "variantes": "semana, día"
+  },
+  {
+    "palabra": "Marzo",
+    "video": "6SiNsQP_BEs",
+    "categoria": "Tiempo",
+    "nivel": "Medio",
+    "imagen": "img/vocabulario/marzo.webp",
+    "variantes": "mes, año"
+  },
+  {
+    "palabra": "Mayo",
+    "video": "aNRzLlotzYc",
+    "categoria": "Tiempo",
+    "nivel": "Medio",
+    "imagen": "img/vocabulario/mayo.webp",
+    "variantes": "mes, año"
+  },
+  {
+    "palabra": "Miércoles",
+    "video": "hMv1A-p7aus",
+    "categoria": "Tiempo",
+    "nivel": "Fácil",
+    "imagen": "img/vocabulario/miercoles.webp",
+    "variantes": ""
+  },
+  {
+    "palabra": "Noviembre",
+    "video": "xJ1tPsO8Dd0",
+    "categoria": "Tiempo",
+    "nivel": "Medio",
+    "imagen": "img/vocabulario/noviembre.webp",
+    "variantes": "mes, año"
+  },
+  {
+    "palabra": "Octubre",
+    "video": "MjNo4c-1mf4",
+    "categoria": "Tiempo",
+    "nivel": "Medio",
+    "imagen": "img/vocabulario/octubre.webp",
+    "variantes": "mes, año"
+  },
+  {
+    "palabra": "Sábado",
+    "video": "9ANOv7T9CGI",
+    "categoria": "Tiempo",
+    "nivel": "Fácil",
+    "imagen": "img/vocabulario/sabado.webp",
+    "variantes": "semana, día"
+  },
+  {
+    "palabra": "Septiembre",
+    "video": "_0P32vWx-Ho",
+    "categoria": "Tiempo",
+    "nivel": "Medio",
+    "imagen": "img/vocabulario/septiembre.webp",
+    "variantes": "mes, año"
+  },
+  {
+    "palabra": "Viernes",
+    "video": "zEm4vLs2tNM",
+    "categoria": "Tiempo",
+    "nivel": "Fácil",
+    "imagen": "img/vocabulario/viernes.webp",
+    "variantes": "semana, día"
+  },
+  {
+    "palabra": "Apoyar",
+    "video": "cIJtdN0GDXY",
+    "categoria": "Verbos",
+    "nivel": "Medio",
+    "imagen": "img/vocabulario/apoyar.webp",
+    "variantes": "Asistir, Colaborar, Patrocinar, Amparar,"
+  },
+  {
+    "palabra": "Ayudar",
+    "video": "Utus3cLjdFs",
+    "categoria": "Verbos",
+    "nivel": "Fácil",
+    "imagen": "img/vocabulario/ayudar.webp",
+    "variantes": "Echar una mano, auxiliar, socorrer,"
+  },
+  {
+    "palabra": "Examinar",
+    "video": "7KTpBruPiSc",
+    "categoria": "Verbos",
+    "nivel": "Difícil",
+    "imagen": "img/vocabulario/examinar.webp",
+    "variantes": "Analizar, Inspeccionar, Revisar,"
+  },
+  {
+    "palabra": "Advertir",
+    "video": "JkOyOQCQlv0",
+    "categoria": "Verbos",
+    "nivel": "Difícil",
+    "imagen": "img/vocabulario/advertir.webp",
+    "variantes": "Advierto, adviertes, advierte, advierten"
+  },
+  {
+    "palabra": "Practicar",
+    "video": "YmAvynbhbaY",
+    "categoria": "Verbos",
+    "nivel": "Medio",
+    "imagen": "img/vocabulario/practicar.webp",
+    "variantes": "Práctica, Ensayar"
+  },
+  {
+    "palabra": "Aceptar",
+    "video": "LD4yaNyjK9Q",
+    "categoria": "Verbos",
+    "nivel": "Difícil",
+    "imagen": "img/vocabulario/aceptar.webp",
+    "variantes": "Admitir, Recibir, Acoger, Asumir"
+  },
+  {
+    "palabra": "Añadir",
+    "video": "F3vQHAqtLog",
+    "categoria": "Verbos",
+    "nivel": "Difícil",
+    "imagen": "img/vocabulario/añadir.webp",
+    "variantes": "agregar"
+  },
+  {
+    "palabra": "Abrir",
+    "video": "vMNN0Ta7L-k",
+    "categoria": "Verbos",
+    "nivel": "Medio",
+    "imagen": "img/vocabulario/abrir.webp",
+    "variantes": "Abro, Abro, Abierto"
+  },
+  {
+    "palabra": "Bromear",
+    "video": "EcXfUAJxdco",
+    "categoria": "Verbos",
+    "nivel": "Difícil",
+    "imagen": "img/vocabulario/bromear.webp",
+    "variantes": "Chacotear, Vacilar, Chistear, chiste, broma"
+  },
+  {
+    "palabra": "Abrazar",
+    "video": "uYAwJi9w0mc",
+    "categoria": "Verbos",
+    "nivel": "Fácil",
+    "imagen": "img/vocabulario/abrazar.webp",
+    "variantes": "Apapachar, Abrazo"
+  },
+  {
+    "palabra": "Atender",
+    "video": "BXpOVcxw7xs",
+    "categoria": "Verbos",
+    "nivel": "Fácil",
+    "imagen": "img/vocabulario/atender.webp",
+    "variantes": "Atención, Atento"
+  },
+  {
+    "palabra": "Aplaudir",
+    "video": "q6Uh6W-W7qg",
+    "categoria": "Verbos",
+    "nivel": "Fácil",
+    "imagen": "img/vocabulario/aplaudir.webp",
+    "variantes": "Palmotear, Batir palmas,"
+  },
+  {
+    "palabra": "Escuchar",
+    "video": "zABXcgbW9Zg",
+    "categoria": "Verbos",
+    "nivel": "Medio",
+    "imagen": "img/vocabulario/oir.webp",
+    "variantes": "Oír"
+  },
+  {
+    "palabra": "Agradecer",
+    "video": "xhNF9DOQgjY",
+    "categoria": "Verbos",
+    "nivel": "Fácil",
+    "imagen": "img/vocabulario/agradecer.webp",
+    "variantes": "gracias"
+  },
+  {
+    "palabra": "Jugar",
+    "video": "0LcFm8IkLyo",
+    "categoria": "Verbos",
+    "nivel": "Medio",
+    "imagen": "img/vocabulario/jugar.webp",
+    "variantes": "Juego"
+  }
+]

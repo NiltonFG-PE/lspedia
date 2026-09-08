@@ -2,13 +2,10 @@
    LSPedia - QUIZ v2 (independiente del diccionario)
    ------------------------------------------------------------
    Este archivo es 100% independiente de script.js y de
-   data/palabras.json. Todas las preguntas se cargan en vivo
-   desde la Hoja 2 de tu Google Sheets, a través de un Web App
-   de Google Apps Script.
-
-   ⚠️ CONFIGURACIÓN OBLIGATORIA:
-   Reemplaza la URL de abajo por la URL de TU despliegue de
-   Apps Script (ver INSTRUCCIONES.md, paso 4).
+   data/palabras.json. Vocabulario y Quiz leen primero el archivo
+   local data/vocabulario.json, que se sincroniza automáticamente
+   desde la Hoja 2 de Google Sheets. Apps Script queda únicamente
+   como respaldo de emergencia si el JSON local no está disponible.
    ============================================================ */
 
 const QuizV2 = (function () {
@@ -17,16 +14,16 @@ const QuizV2 = (function () {
     // CONFIGURACIÓN
     // ---------------------------------------------------------
     const CONFIG = {
-        // 👉 Pega aquí la URL de tu Web App de Apps Script (termina en /exec)
+        // Fuente principal rápida: archivo servido por LSPedia.
+        DATA_URL: "data/vocabulario.json",
+
+        // Respaldo de emergencia. Solo se consulta si vocabulario.json
+        // falta, está vacío o llega dañado.
         APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbw9d7br5C8C4gfk4dJAY6FHRKTKTMI23bNQvO58OQ5TlPe9z5awMWjNIlCLILNLH0t51w/exec",
 
-        // v2: se cambió el nombre de la clave a propósito para invalidar
-        // cualquier caché guardada ANTES de normalizar el campo "nivel"
-        // (ver normalizarNivel más abajo). Sin este cambio, quien ya
-        // había abierto el Quiz seguiría viendo el banco viejo (con
-        // "difícil" en minúscula) hasta que esa caché expirara sola.
-        CLAVE_CACHE: "lspedia_quiz_cache_v2",
-        DURACION_CACHE_MS: 5 * 60 * 1000, // 5 minutos: evita golpear el Sheet en cada clic
+        // v3 invalida la caché antigua que provenía directamente del Sheet.
+        CLAVE_CACHE: "lspedia_quiz_cache_v3",
+        DURACION_CACHE_MS: 24 * 60 * 60 * 1000,
         PREGUNTAS_POR_RONDA: 8,
         PARES_MEMORIA: 6,
         TIEMPOS_POR_NIVEL: { "Fácil": 20, "Medio": 15, "Difícil": 10 },
@@ -107,7 +104,7 @@ const QuizV2 = (function () {
     function asegurarBancoCargado() {
         if (estado.banco && estado.banco.length > 0) return;
         if (cargaEnCurso) return;
-        fetchRemoto(true);
+        fetchLocal(true);
     }
 
     // Registra una función para que se ejecute apenas el banco tenga datos.
@@ -145,7 +142,7 @@ const QuizV2 = (function () {
             mostrarIntro();
             // refresca en segundo plano sin bloquear al usuario, pero solo
             // si no hay ya una petición en camino (ver más abajo).
-            if (!cargaEnCurso) fetchRemoto(true);
+            if (!cargaEnCurso) fetchLocal(true);
             return;
         }
 
@@ -165,7 +162,50 @@ const QuizV2 = (function () {
             return;
         }
 
-        fetchRemoto(false);
+        fetchLocal(false);
+    }
+
+    // Fuente principal: JSON local. Si falla, se usa Apps Script como respaldo.
+    function fetchLocal(silencioso) {
+        if (cargaEnCurso) return;
+        cargaEnCurso = true;
+
+        const controlador = (typeof AbortController !== "undefined") ? new AbortController() : null;
+        const separador = CONFIG.DATA_URL.indexOf("?") > -1 ? "&" : "?";
+        const url = CONFIG.DATA_URL + separador + "_lspedia=" + Date.now();
+        const opciones = { cache: "no-store" };
+        if (controlador) opciones.signal = controlador.signal;
+
+        let timeoutId = setTimeout(() => {
+            if (controlador) { try { controlador.abort(); } catch (e) {} }
+        }, 6000);
+
+        fetch(url, opciones)
+            .then((res) => {
+                if (!res.ok) throw new Error("HTTP " + res.status);
+                return res.json();
+            })
+            .then((data) => {
+                const lista = Array.isArray(data) ? data : (data && Array.isArray(data.preguntas) ? data.preguntas : []);
+                const banco = lista
+                    .filter((p) => p && p.palabra && p.video)
+                    .map((p) => ({ ...p, nivel: normalizarNivel(p.nivel) }));
+                if (!banco.length) throw new Error("vocabulario.json está vacío o no tiene palabras con video.");
+
+                cargaEnCurso = false;
+                estado.banco = banco;
+                guardarCache(estado.banco);
+                if (!silencioso) mostrarIntro();
+                notificarBancoListo();
+            })
+            .catch((err) => {
+                cargaEnCurso = false;
+                console.warn("No se pudo cargar data/vocabulario.json; usando Apps Script como respaldo:", err);
+                fetchRemoto(silencioso);
+            })
+            .finally(() => {
+                if (timeoutId) clearTimeout(timeoutId);
+            });
     }
 
     function fetchRemoto(silencioso) {
@@ -1249,7 +1289,7 @@ const QuizV2 = (function () {
         // esperar a que el navegador esté "idle" ni retrasarla con un
         // setTimeout: se dispara de una vez para que los datos reales
         // lleguen lo antes posible.
-        fetchRemoto(true);
+        fetchLocal(true);
     });
 
     // obtenerBanco() se usa desde script.js para que el buscador principal
