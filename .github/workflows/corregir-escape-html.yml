@@ -1,0 +1,57 @@
+name: Corregir escape HTML
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - '.github/workflows/corregir-escape-html.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  corregir:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Corregir helper y cache
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p = Path('js/script.js')
+          s = p.read_text(encoding='utf-8')
+          viejo = 'return String(valor ?? "").replace(/[&<>"\\\']/g, caracter => ({\n        "&": "&amp;", "<": "&lt;", ">": "&gt;", \'"\': "&quot;", "\\\'": "&#39;"\n    })[caracter]);'
+          nuevo = 'return String(valor ?? "").replace(/[&<>"\']/g, caracter => ({\n        "&": "&amp;", "<": "&lt;", ">": "&gt;", \'"\': "&quot;", "\'": "&#39;"\n    })[caracter]);'
+          if viejo not in s:
+              raise SystemExit('No se encontró la versión a corregir de escaparHtml.')
+          s = s.replace(viejo, nuevo, 1)
+          p.write_text(s, encoding='utf-8')
+          sw = Path('sw.js')
+          t = sw.read_text(encoding='utf-8')
+          t = re.sub(r'const VERSION_APP = "v\d+";', 'const VERSION_APP = "v25";', t, count=1)
+          sw.write_text(t, encoding='utf-8')
+          PY
+
+      - name: Validar
+        shell: bash
+        run: |
+          node --check js/script.js
+          git diff --check
+          grep -q 'const VERSION_APP = "v25"' sw.js
+
+      - name: Guardar en develop
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add js/script.js sw.js
+          git commit -m 'Corregir escape de apóstrofes en HTML dinámico'
+          git push origin develop
