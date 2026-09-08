@@ -2,7 +2,8 @@ name: Mejorar Herramientas y Jugar V2
 
 on:
   push:
-    branches: [develop]
+    branches:
+      - develop
     paths:
       - .github/workflows/aplicar-mejoras-herramientas-juegos-v2.yml
 
@@ -13,56 +14,19 @@ jobs:
   mejorar:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Descargar develop
+        uses: actions/checkout@v4
         with:
           ref: develop
           fetch-depth: 0
 
-      - name: Ajustar parche a la versión actual
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          p=Path('.tmp/aplicar_mejoras_herramientas_juegos_v2.py')
-          s=p.read_text(encoding='utf-8')
-
-          # La versión actual de alfabetizacion.js inicia Completar creando
-          # directamente el banco de palabras; adapta ese encabezado.
-          viejo='''    function iniciarJuegoCompletar() {\n        const nivel = nivelCompletarActual();'''
-          nuevo='''    function iniciarJuegoCompletar() {\n        const banco = barajar(bancoPalabrasCompletar());'''
-          reemplazo_viejo='''    function iniciarJuegoCompletar() {\n        if(window.HistorialJuegosLSPedia && typeof HistorialJuegosLSPedia.registrarJuego === "function"){\n            HistorialJuegosLSPedia.registrarJuego("completar", "partida", { nivel: estado.completar.nivelId || "" });\n        }\n        const nivel = nivelCompletarActual();'''
-          reemplazo_nuevo='''    function iniciarJuegoCompletar() {\n        if(window.HistorialJuegosLSPedia && typeof HistorialJuegosLSPedia.registrarJuego === "function"){\n            HistorialJuegosLSPedia.registrarJuego("completar", "partida", { nivel: estado.completar.nivelId || "" });\n        }\n        const banco = barajar(bancoPalabrasCompletar());'''
-          if viejo in s:
-              s=s.replace(viejo,nuevo,1)
-          if reemplazo_viejo in s:
-              s=s.replace(reemplazo_viejo,reemplazo_nuevo,1)
-
-          # Reemplaza la inserción frágil de la mano guía por una operación
-          # acotada exclusivamente a renderOpcionesBlancoActual().
-          inicio=s.index('# Programa la guía cada vez que se redibujan las opciones.')
-          fin=s.index('# Feedback común en Completar.', inicio)
-          bloque=r'''# Programa la guía cada vez que se redibujan las opciones.
-render_inicio = a.index("    function renderOpcionesBlancoActual() {")
-render_fin = a.index("    function animarLetraHaciaCasilla", render_inicio)
-segmento = a[render_inicio:render_fin]
-needle = '            filaOpciones.appendChild(btn);\n        });\n'
-if needle not in segmento:
-    raise RuntimeError("No se pudo localizar el cierre de opciones para la mano guia")
-segmento = segmento.replace(
-    needle,
-    needle + '        programarGuiaVisualCompletar();\n',
-    1
-)
-a = a[:render_inicio] + segmento + a[render_fin:]
-
-'''
-          s=s[:inicio]+bloque+s[fin:]
-          p.write_text(s,encoding='utf-8')
-          PY
+      - name: Adaptar parche
+        run: python .tmp/ajustar_mejoras_herramientas_v2.py
 
       - name: Aplicar mejoras
         run: python .tmp/aplicar_mejoras_herramientas_juegos_v2.py
 
-      - name: Validar archivos clave
+      - name: Validar JavaScript e integración
         run: |
           node --check js/script.js
           node --check js/alfabetizacion.js
@@ -76,11 +40,12 @@ a = a[:render_inicio] + segmento + a[render_fin:]
           grep -q 'animarLetraHaciaCasilla' js/alfabetizacion.js
           grep -q 'programarGuiaVisualCompletar' js/alfabetizacion.js
 
-      - name: Guardar en develop y limpiar archivos temporales
+      - name: Guardar mejoras en develop
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           rm -f .tmp/aplicar_mejoras_herramientas_juegos_v2.py
+          rm -f .tmp/ajustar_mejoras_herramientas_v2.py
           rm -f .github/workflows/aplicar-mejoras-herramientas-juegos-v2.yml
           git add -A
           git commit -m "Mejorar navegación visual y juegos de Herramientas"
