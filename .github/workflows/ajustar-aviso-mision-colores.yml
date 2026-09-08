@@ -39,20 +39,11 @@ jobs:
               re.S
           )
 
-          nuevo_cuerpo = '''\n                            <p class="aviso-mision-linea1">\n                                <span class="aviso-diccionario-destacado">📚Diccionario visual de español</span> con apoyo en Lengua de Señas Peruana.<br>\n                                Su función es facilitar la comprensión de palabras y significados,\n                            </p>\n                            <p class="aviso-mision-linea2">\n                                <span class="aviso-lsp-aclaracion">🪧No es un curso, ni enseñamos LSP.</span>\n                            </p>\n                        '''
+          nuevo_cuerpo = '''\n                            <p class="aviso-mision-linea1">\n                                <span style="color:#42a5f5;font-weight:700;">📚Diccionario visual de español</span> con apoyo en Lengua de Señas Peruana.<br>\n                                Su función es facilitar la comprensión de palabras y significados,\n                            </p>\n                            <p class="aviso-mision-linea2">\n                                <span style="color:#a66a00;font-weight:700;">🪧No es un curso, ni enseñamos LSP.</span>\n                            </p>\n                        '''
 
           texto, cambios = patron.subn(lambda m: m.group(1) + nuevo_cuerpo + m.group(2), texto, count=1)
           if cambios != 1:
               raise SystemExit(f'No se pudo reemplazar de forma segura el aviso. Coincidencias: {cambios}')
-
-          estilos = '''\n\n        .aviso-diccionario-destacado {\n            color: #42a5f5;\n            font-weight: 700;\n        }\n\n        .aviso-lsp-aclaracion {\n            color: #a66a00;\n            font-weight: 700;\n        }\n'''
-
-          if '.aviso-diccionario-destacado {' not in texto:
-              marca = '        /* Aviso "No enseñamos lengua de señas"'
-              pos = texto.find(marca)
-              if pos == -1:
-                  raise SystemExit('No se encontró la zona de estilos del aviso.')
-              texto = texto[:pos] + estilos + '\n' + texto[pos:]
 
           index.write_text(texto, encoding='utf-8')
 
@@ -68,8 +59,8 @@ jobs:
           git diff --check
           grep -q '📚Diccionario visual de español' index.html
           grep -q '🪧No es un curso, ni enseñamos LSP.' index.html
-          grep -q 'color: #42a5f5;' index.html
-          grep -q 'color: #a66a00;' index.html
+          grep -q 'color:#42a5f5;font-weight:700;' index.html
+          grep -q 'color:#a66a00;font-weight:700;' index.html
           grep -q 'const VERSION_APP = "v21"' sw.js
 
       - name: Guardar en develop
