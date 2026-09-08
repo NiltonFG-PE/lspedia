@@ -158,12 +158,42 @@ function crearSlugIdPalabra(valor){
         .replace(/^-+|-+$/g, "");
 }
 
+function obtenerFuentePalabra(p){
+    const fuente = String((p && p._fuenteLspedia) || "").trim().toLowerCase();
+    return fuente === "vocabulario" ? "vocabulario" : "diccionario";
+}
+
+function marcarFuenteVocabulario(p){
+    if(!p || typeof p !== "object") return p;
+    if(p._fuenteLspedia === "vocabulario") return p;
+    return { ...p, _fuenteLspedia: "vocabulario" };
+}
+
 function obtenerIdPalabra(p){
     if(!p) return "";
     const id = String(p.id || "").trim();
     if(id) return id;
-    // Respaldo para datos externos (por ejemplo Hoja 2) que aún no traen ID.
-    return crearSlugIdPalabra(p.palabra);
+
+    const base = crearSlugIdPalabra(p.palabra) || "palabra";
+    // Hoja 2 todavía no tiene una columna `id`. Para que una palabra del
+    // Vocabulario nunca choque con otra del Diccionario, su referencia de
+    // respaldo incorpora la categoría. Si en el futuro Hoja 2 trae `id`,
+    // ese valor tendrá prioridad automáticamente por el bloque de arriba.
+    if(obtenerFuentePalabra(p) === "vocabulario"){
+        const categoria = crearSlugIdPalabra(p.categoria);
+        return categoria ? base + "-" + categoria : base;
+    }
+    return base;
+}
+
+function construirUrlPalabra(base, p){
+    const referencia = obtenerIdPalabra(p);
+    if(obtenerFuentePalabra(p) === "vocabulario"){
+        return base
+            + "?vista=vocabulario&p=" + encodeURIComponent(referencia)
+            + "&fuente=vocabulario";
+    }
+    return base + "?p=" + encodeURIComponent(referencia);
 }
 
 function buscarPalabraPorReferencia(referencia, coleccion = App.datos){
@@ -237,10 +267,12 @@ function recortarTextoSeo(texto, maximo = 158){
 }
 
 function urlCanonicaPalabra(palabraOReferencia){
-    const referencia = (palabraOReferencia && typeof palabraOReferencia === "object")
-        ? obtenerIdPalabra(palabraOReferencia)
-        : String(palabraOReferencia || "").trim();
-    return SEO_LSPEDIA_BASE.url + "?p=" + encodeURIComponent(referencia);
+    if(palabraOReferencia && typeof palabraOReferencia === "object"){
+        return construirUrlPalabra(SEO_LSPEDIA_BASE.url, palabraOReferencia);
+    }
+    // Compatibilidad: una referencia suelta, sin información de fuente,
+    // continúa significando Diccionario como en los enlaces históricos.
+    return SEO_LSPEDIA_BASE.url + "?p=" + encodeURIComponent(String(palabraOReferencia || "").trim());
 }
 
 function obtenerImagenSeoPalabra(palabra){
@@ -1676,7 +1708,29 @@ function procesarDatosApp(data) {
             }
 
             if (palabraEnUrl) {
-                restaurarPalabraDesdeUrl(palabraEnUrl, { noActualizarHistorial: true });
+                const fuentePalabraEnUrl = String(urlParams.get("fuente") || "").toLowerCase();
+                if(fuentePalabraEnUrl === "vocabulario"){
+                    // Restauramos primero la pantalla Vocabulario sin crear
+                    // una nueva entrada de historial; después se abre la
+                    // ficha exacta de Hoja 2 cuando su banco esté listo.
+                    restaurandoHistorialNavegador = true;
+                    saltarScrollAlAbrirVocabulario = true;
+                    omitirAvisoVocabularioUnaVez = true;
+                    const btnCategorias = document.getElementById("btnCategorias");
+                    if(btnCategorias) btnCategorias.click();
+                    restaurandoHistorialNavegador = false;
+                    restaurarPalabraDesdeUrl(palabraEnUrl, {
+                        noActualizarHistorial: true,
+                        fuente: "vocabulario",
+                        enCategorias: true
+                    });
+                } else {
+                    restaurarPalabraDesdeUrl(palabraEnUrl, {
+                        noActualizarHistorial: true,
+                        fuente: "diccionario",
+                        enCategorias: false
+                    });
+                }
             } else {
                 // Si no hay una palabra específica que restaurar, revisa si
                 // el usuario estaba en "Temas orden" o "Herramientas" antes
@@ -1845,32 +1899,14 @@ if(indiceAlfabetico){
     desplegarIndiceAlfabetico();
 }
 
-// --- BANCO DE LA HOJA 2 (solo para Categorías y para fusionar el video
-//     del Quiz cuando falta en la Hoja 1; el buscador YA NO la usa) ---
+// --- BANCO DE LA HOJA 2 (VOCABULARIO / QUIZ) ---
 // QuizV2 (js/quiz.js) ya precarga la Hoja 2 en segundo plano apenas
-// carga la página (para que el juego abra al instante). Reutilizamos
-// esa misma data en vivo en vez de conectarnos otra vez a Google Sheets.
+// carga la página. Vocabulario reutiliza esa data en vivo, pero desde
+// ahora NUNCA se fusiona con App.datos (Diccionario): que ambas fuentes
+// tengan una palabra con el mismo nombre es válido y cada ficha conserva
+// su propio video, categoría y navegación.
 function obtenerBancoHoja2() {
     return (window.QuizV2 && typeof QuizV2.obtenerBanco === "function") ? QuizV2.obtenerBanco() : [];
-}
-
-// --- FUSIÓN DE RESULTADOS ENTRE HOJA 1 Y HOJA 2 ---
-// Cuando una misma palabra existe tanto en el diccionario (Hoja 1) como
-// en el banco del Quiz (Hoja 2), en vez de mostrar dos tarjetas separadas
-// se fusiona en un solo resultado: se usa el video de la Hoja 2 solo como
-// respaldo (si en la Hoja 1 todavía no hay video cargado) y se agrega el
-// nivel del Quiz como dato extra para mostrar una insignia.
-function fusionarConHoja2(p) {
-    const enHoja2 = obtenerBancoHoja2().find(
-        q => q.palabra && q.palabra.trim().toLowerCase() === p.palabra.trim().toLowerCase()
-    );
-    if (!enHoja2) return p;
-    return {
-        ...p,
-        video: (p.video && p.video.trim() !== "") ? p.video : enHoja2.video,
-        nivel: p.nivel || enHoja2.nivel,
-        _tambienEnQuiz: true
-    };
 }
 
 // La precarga en segundo plano de QuizV2 puede tardar unos segundos en
@@ -2174,10 +2210,9 @@ function extraerIdYouTube(valor) {
 }
 
 // --- COMPARTIR ENLACE DE UNA PALABRA (Diccionario y Vocabulario) ---
-// Genera el botón que va junto al título de la ficha. Usa la misma URL
-// "?p=..." que ya arma mostrarPalabra()/mostrarPalabraSimplificada() al
-// hacer history.pushState(), así que el enlace compartido, al abrirse,
-// restaura directamente esa palabra (ver restaurarPalabraDesdeUrl()).
+// Genera el botón que va junto al título de la ficha. Diccionario mantiene
+// sus enlaces ?p=..., mientras Vocabulario agrega fuente=vocabulario para
+// que una palabra homónima se restaure desde la colección correcta.
 function generarBotonCompartir(){
     return `<button type="button" id="btnCompartir" class="btn btn-sm btn-compartir py-1 px-3" title="Compartir esta seña" aria-label="Compartir esta seña"><span class="btn-compartir-icono">🔗</span> Compartir</button>`;
 }
@@ -2194,7 +2229,10 @@ function compartirPalabra(palabraOReferencia){
         : buscarPalabraPorReferencia(palabraOReferencia, App.datos);
     const nombrePalabra = p && p.palabra ? p.palabra : String(palabraOReferencia || "");
     const referencia = p ? obtenerIdPalabra(p) : String(palabraOReferencia || "");
-    const url = window.location.origin + window.location.pathname + "?p=" + encodeURIComponent(referencia);
+    const base = window.location.origin + window.location.pathname;
+    const url = p
+        ? construirUrlPalabra(base, p)
+        : base + "?p=" + encodeURIComponent(referencia);
     const textoCompartir = `Descubre el significado de "${nombrePalabra}" en LSPedia 📖`;
     if (navigator.share) {
         navigator.share({ title: "LSPedia", text: textoCompartir, url: url }).catch(() => {});
@@ -2232,9 +2270,8 @@ function mostrarPalabra(p, opciones = {}){
     // #resultado (que queda por encima del buscador de categorías y
     // provocaba que el botón "Atrás" y la lista de resultados aparecieran
     // debajo del video en vez de arriba).
-    // Si la misma palabra también existe en la Hoja 2 (banco del Quiz),
-    // se fusiona el resultado en vez de tratarlas por separado.
-    p = fusionarConHoja2(p);
+    // Esta ficha pertenece exclusivamente al Diccionario (Hoja 1).
+    // Una entrada homónima de Vocabulario se mantiene independiente.
     cerrarPantallaCompletaVideoPalabra();
     const enCategorias = !!opciones.enCategorias;
     ocultarQuiz();
@@ -2271,11 +2308,12 @@ function mostrarPalabra(p, opciones = {}){
     }
     ocultarPanelesGuardados();
     const referenciaPalabra = obtenerIdPalabra(p);
-    const nuevaUrl = window.location.pathname + "?p=" + encodeURIComponent(referenciaPalabra);
+    const nuevaUrl = construirUrlPalabra(window.location.pathname, p);
     if(!opciones.noActualizarHistorial){
         registrarUrlEnHistorial(nuevaUrl, {
             tipo: "palabra",
             palabra: referenciaPalabra,
+            fuente: "diccionario",
             enCategorias: enCategorias
         });
     }
@@ -2341,19 +2379,12 @@ function mostrarPalabra(p, opciones = {}){
            </div>`
         : "";
 
-    // Insignia opcional cuando la palabra también aparece en el banco del
-    // Quiz (Hoja 2), resultado de fusionarConHoja2() más arriba.
-    const bloqueBadgeQuiz = p._tambienEnQuiz
-        ? `<span class="badge bg-warning text-dark mb-2 ms-1" style="font-size: 11px;">🎮 También en el Quiz${p.nivel ? " · " + p.nivel : ""}</span>`
-        : "";
-
     const contenedorDestino = enCategorias ? resultadoCategorias : resultado;
     contenedorDestino.innerHTML = `
     ${enCategorias ? botonAtrasCategorias() : ""}
     <div class="card shadow-sm mb-4 animate-fade-in" style="border-radius: 15px; border-color: #dceefc;">
         <div class="card-body p-4">
             <span class="badge bg-primary mb-2" style="font-size: 11px;">${p.categoria.trim()}</span>
-            ${bloqueBadgeQuiz}
             <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
                 <h3 class="fw-bold mb-0" style="color: #0d6efd;">${p.palabra}</h3>
                 <div class="d-flex gap-2 flex-shrink-0 flex-wrap justify-content-end">
@@ -2416,6 +2447,7 @@ function mostrarPalabra(p, opciones = {}){
 // actualiza la URL (?p=...) para que restaurarPalabraDesdeUrl() pueda
 // recuperar este mismo resultado si el usuario refresca la página.
 function mostrarPalabraSimplificada(p, opciones = {}){
+    p = marcarFuenteVocabulario(p);
     // opciones.enCategorias === true -> viene de "Temas orden" (categorías):
     // se pinta en #resultadoCategorias con el botón "Atrás" arriba del
     // video, y no se tocan el buscador principal ni las tarjetas de
@@ -2440,12 +2472,13 @@ function mostrarPalabraSimplificada(p, opciones = {}){
     ocultarPanelesGuardados();
     document.getElementById("senalDelDia").style.display = "none";
     const referenciaPalabra = obtenerIdPalabra(p);
-    const nuevaUrl = window.location.pathname + "?p=" + encodeURIComponent(referenciaPalabra);
+    const nuevaUrl = construirUrlPalabra(window.location.pathname, p);
     if(!opciones.noActualizarHistorial){
         registrarUrlEnHistorial(nuevaUrl, {
             tipo: "palabra",
             palabra: referenciaPalabra,
-            enCategorias: enCategorias
+            fuente: "vocabulario",
+            enCategorias: true
         });
     }
     actualizarSeoPalabra(p);
@@ -2481,7 +2514,7 @@ function mostrarPalabraSimplificada(p, opciones = {}){
     ${enCategorias ? botonAtrasCategorias() : ""}
     <div class="card shadow-sm mb-4 animate-fade-in" style="border-radius: 15px; border-color: #dceefc;">
         <div class="card-body p-4">
-            <span class="badge bg-warning text-dark mb-2" style="font-size: 11px;">🎮 Banco del Quiz</span>
+            <span class="badge bg-warning text-dark mb-2" style="font-size: 11px;">📚 Vocabulario</span>
             ${p.categoria ? `<span class="badge bg-primary mb-2 ms-1" style="font-size: 11px;">${p.categoria.trim()}</span>` : ""}
             ${p.nivel ? `<span class="badge bg-secondary mb-2 ms-1" style="font-size: 11px;">${p.nivel}</span>` : ""}
             <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
@@ -3466,12 +3499,10 @@ function inicializarZoomImagenAmpliada(){
 }
 
 // --- ESTADÍSTICAS ---
-// Ahora son "generales": combinan el Diccionario (Hoja 1, App.datos, ya
-// filtrado a solo palabras con video) y el Vocabulario (Hoja 2, el mismo
-// banco que usa el Quiz), no solo el Diccionario como antes. El número
-// grande de cada tarjeta es el total sin repetir (una palabra o categoría
-// que exista en ambas cuenta una sola vez); el texto pequeño de abajo
-// muestra cuánto aporta cada sección por separado.
+// Son generales, pero Diccionario y Vocabulario se cuentan como colecciones
+// independientes. Si "Casa" existe en ambas, son dos entradas válidas y
+// ambas cuentan; lo mismo ocurre con categorías del mismo nombre. El texto
+// pequeño sigue mostrando cuánto aporta cada sección por separado.
 function actualizarEstadisticas(){
     const bancoHoja2 = obtenerBancoHoja2();
     const normalizar = (s) => (s || "").trim().toLowerCase();
@@ -3481,9 +3512,9 @@ function actualizarEstadisticas(){
     const palabrasVocabulario = bancoHoja2
         .filter(p => p.palabra && p.video && p.video.trim() !== "")
         .map(p => normalizar(p.palabra));
-    const totalPalabrasUnicas = new Set(palabrasDiccionario.concat(palabrasVocabulario)).size;
+    const totalEntradasPalabras = palabrasDiccionario.length + palabrasVocabulario.length;
 
-    totalPalabras.textContent = totalPalabrasUnicas;
+    totalPalabras.textContent = totalEntradasPalabras;
     const detallePalabras = document.getElementById("detallePalabrasStats");
     if (detallePalabras) {
         const elPalDic = document.getElementById("detallePalabrasDic");
@@ -3497,15 +3528,17 @@ function actualizarEstadisticas(){
     const categoriasVocabulario = bancoHoja2
         .filter(p => p.categoria && p.categoria.trim() !== "")
         .map(p => normalizar(p.categoria));
-    const totalCategoriasUnicas = new Set(categoriasDiccionario.concat(categoriasVocabulario)).size;
+    const categoriasDiccionarioUnicas = new Set(categoriasDiccionario).size;
+    const categoriasVocabularioUnicas = new Set(categoriasVocabulario).size;
+    const totalCategoriasSeparadas = categoriasDiccionarioUnicas + categoriasVocabularioUnicas;
 
-    totalCategorias.textContent = totalCategoriasUnicas;
+    totalCategorias.textContent = totalCategoriasSeparadas;
     const detalleCategorias = document.getElementById("detalleCategoriasStats");
     if (detalleCategorias) {
         const elCatDic = document.getElementById("detalleCategoriasDic");
         const elCatVoc = document.getElementById("detalleCategoriasVoc");
-        if (elCatDic) elCatDic.textContent = new Set(categoriasDiccionario).size;
-        if (elCatVoc) elCatVoc.textContent = new Set(categoriasVocabulario).size;
+        if (elCatDic) elCatDic.textContent = categoriasDiccionarioUnicas;
+        if (elCatVoc) elCatVoc.textContent = categoriasVocabularioUnicas;
     }
 
     // --- Videos ---
@@ -4254,7 +4287,7 @@ function ejecutarBusquedaDirectaCategorias() {
     if(encontrado){
         buscarCategorias.value = "";
         if(sugerenciasCategorias){ sugerenciasCategorias.innerHTML = ""; sugerenciasCategorias.style.display = "none"; }
-        mostrarPalabraPorNombreUnificado(obtenerIdPalabra(encontrado));
+        mostrarPalabraVocabularioPorReferencia(obtenerIdPalabra(encontrado));
     }
 }
 
@@ -4324,7 +4357,7 @@ function buscarEnCategorias(){
                     buscarCategorias.value = "";
                     sugerenciasCategorias.innerHTML = "";
                     sugerenciasCategorias.style.display = "none";
-                    mostrarPalabraPorNombreUnificado(obtenerIdPalabra(p));
+                    mostrarPalabraVocabularioPorReferencia(obtenerIdPalabra(p));
                 };
                 sugerenciasCategorias.appendChild(boton);
             });
@@ -4357,7 +4390,7 @@ function buscarEnCategorias(){
             buscarCategorias.value = "";
             sugerenciasCategorias.innerHTML = "";
             sugerenciasCategorias.style.display = "none";
-            mostrarPalabraPorNombreUnificado(obtenerIdPalabra(p));
+            mostrarPalabraVocabularioPorReferencia(obtenerIdPalabra(p));
         };
         sugerenciasCategorias.appendChild(boton);
     });
@@ -4375,7 +4408,9 @@ document.addEventListener("click", (e) => {
 // Quiz), sin mezclarlas con el diccionario de la Hoja 1. Solo se incluyen
 // las que ya tienen categoría, para que el agrupamiento tenga sentido.
 function obtenerDatosVocabulario(){
-    return obtenerBancoHoja2().filter(p => p.palabra && p.categoria && p.categoria.trim() !== "");
+    return obtenerBancoHoja2()
+        .filter(p => p.palabra && p.categoria && p.categoria.trim() !== "")
+        .map(marcarFuenteVocabulario);
 }
 
 // Genera el mismo bloque de miniatura (imagen de YouTube + ícono de
@@ -4411,7 +4446,7 @@ function mostrarCategoria(nombre, opciones = {}){
     <div class="categoria-resultados-grid">`;
     obtenerDatosVocabulario().filter(p => p.categoria.trim() === nombre).forEach((p, i) => {
         const nombreEscapado = obtenerIdPalabra(p).replace(/'/g, "\\'");
-        html += `<button type="button" class="categoria-resultado-item shadow-sm" style="animation-delay: ${Math.min(i, 20) * 0.04}s" onclick="mostrarPalabraPorNombreUnificado('${nombreEscapado}')">
+        html += `<button type="button" class="categoria-resultado-item shadow-sm" style="animation-delay: ${Math.min(i, 20) * 0.04}s" onclick="mostrarPalabraVocabularioPorReferencia('${nombreEscapado}')">
             ${generarMiniaturaVocabulario(p)}
             <span class="categoria-resultado-titulo">${p.palabra}</span>
             <span class="btn btn-sm btn-primary fw-bold categoria-resultado-boton">${ICONO_OJO_SVG} Ver Seña</span>
@@ -4422,52 +4457,96 @@ function mostrarCategoria(nombre, opciones = {}){
     scrollAlPrimerResultado(resultadoCategorias);
 }
 
-// Igual que mostrarPalabraPorNombre(), pero también busca en el banco
-// del Quiz (Hoja 2) cuando la palabra no está en el diccionario principal.
-function mostrarPalabraPorNombreUnificado(referencia){
-    const enHoja1 = buscarPalabraPorReferencia(referencia, App.datos);
-    if(enHoja1){ mostrarPalabra(enHoja1, { enCategorias: true }); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
-    const enHoja2 = buscarPalabraPorReferencia(referencia, obtenerBancoHoja2());
-    if(enHoja2){ mostrarPalabraSimplificada(enHoja2, { enCategorias: true }); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+// Abre una palabra exclusivamente desde Vocabulario. Aunque exista otra
+// entrada con el mismo texto en el Diccionario, aquí jamás se consulta
+// App.datos: las dos fuentes son independientes.
+function mostrarPalabraVocabularioPorReferencia(referencia){
+    const enVocabulario = buscarPalabraPorReferencia(referencia, obtenerDatosVocabulario());
+    if(enVocabulario){
+        mostrarPalabraSimplificada(enVocabulario, { enCategorias: true });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 }
+window.mostrarPalabraVocabularioPorReferencia = mostrarPalabraVocabularioPorReferencia;
 
 function mostrarPalabraPorNombre(referencia){
     const palabra = buscarPalabraPorReferencia(referencia, App.datos);
     if(palabra){ window.scrollTo({ top: 0, behavior: 'smooth' }); mostrarPalabra(palabra); }
 }
 
-function normalizarUrlLegadaPalabra(p, referencia){
+function normalizarUrlLegadaPalabra(p, referencia, fuenteSolicitada){
+    const fuente = fuenteSolicitada || obtenerFuentePalabra(p);
     const id = obtenerIdPalabra(p);
     const ref = String(referencia || "").trim();
-    if(!id || !ref || id.toLowerCase() === ref.toLowerCase()) return;
+    if(!id || !ref) return;
 
     const params = new URLSearchParams(window.location.search);
     if(params.get("p") !== ref) return;
     params.set("p", id);
-    const nuevaUrl = window.location.pathname + "?" + params.toString();
+
+    if(fuente === "vocabulario"){
+        params.set("vista", "vocabulario");
+        params.set("fuente", "vocabulario");
+    } else {
+        // Diccionario es la fuente histórica/predeterminada; no necesita
+        // parámetro extra y conserva las URLs cortas que ya están indexadas.
+        params.delete("fuente");
+        if(params.get("vista") === "vocabulario") params.delete("vista");
+    }
+
+    const query = params.toString();
+    const nuevaUrl = window.location.pathname + (query ? "?" + query : "");
+    if(nuevaUrl === urlRelativaActual()) return;
+
     const estadoActual = window.history.state || {};
-    window.history.replaceState({ ...estadoActual, palabra: id }, "", nuevaUrl);
+    window.history.replaceState({ ...estadoActual, palabra: id, fuente }, "", nuevaUrl);
 }
 
 // --- RESTAURAR RESULTADO AL CARGAR/REFRESCAR LA PÁGINA (?p=...) ---
-// Primero busca por ID. Como compatibilidad también acepta el nombre visible
-// usado por las URLs antiguas y, al encontrarlo, reemplaza la URL por su ID
-// sin crear una entrada extra en el historial del navegador.
+// Los enlaces nuevos de Vocabulario llevan `fuente=vocabulario`; por eso
+// una palabra homónima nunca salta al Diccionario. Los enlaces históricos
+// sin `fuente` conservan el comportamiento anterior: Diccionario tiene
+// prioridad y, solo si allí no existe, se intenta Vocabulario.
 function restaurarPalabraDesdeUrl(referencia, opciones = {}){
-    const enHoja1 = buscarPalabraPorReferencia(referencia, App.datos);
-    if(enHoja1){
-        normalizarUrlLegadaPalabra(enHoja1, referencia);
-        mostrarPalabra(enHoja1, opciones);
-        return;
+    const paramsActuales = new URLSearchParams(window.location.search);
+    const fuenteParam = String(opciones.fuente || paramsActuales.get("fuente") || "").toLowerCase();
+    const vocabularioExplicito = fuenteParam === "vocabulario";
+    const diccionarioExplicito = fuenteParam === "diccionario";
+
+    if(!vocabularioExplicito){
+        const enDiccionario = buscarPalabraPorReferencia(referencia, App.datos);
+        if(enDiccionario){
+            normalizarUrlLegadaPalabra(enDiccionario, referencia, "diccionario");
+            mostrarPalabra(enDiccionario, { ...opciones, enCategorias: false });
+            return;
+        }
+        if(diccionarioExplicito) return;
     }
+
+    // Vocabulario se carga desde Hoja 2 y puede llegar unos instantes
+    // después que palabras.json. onBancoListo funciona tanto si ya está
+    // cargado como si todavía está en camino.
     if(window.QuizV2 && typeof QuizV2.onBancoListo === "function"){
         if(typeof QuizV2.asegurarBancoCargado === "function") QuizV2.asegurarBancoCargado();
         QuizV2.onBancoListo((banco) => {
-            const enHoja2 = buscarPalabraPorReferencia(referencia, banco || []);
-            // Solo mostramos si el usuario sigue en el resultado esperado (no navegó a otra pantalla mientras cargaba).
-            if(enHoja2 && new URLSearchParams(window.location.search).get("p") === referencia){
-                normalizarUrlLegadaPalabra(enHoja2, referencia);
-                mostrarPalabraSimplificada(enHoja2, opciones);
+            const datosVocabulario = (banco || [])
+                .filter(p => p && p.palabra && p.categoria)
+                .map(marcarFuenteVocabulario);
+            const enVocabulario = buscarPalabraPorReferencia(referencia, datosVocabulario);
+            const paramsAhora = new URLSearchParams(window.location.search);
+            const sigueEnMismaPalabra = paramsAhora.get("p") === referencia;
+            const fuenteAhora = String(paramsAhora.get("fuente") || "").toLowerCase();
+            const fuenteCompatible = vocabularioExplicito
+                ? fuenteAhora === "vocabulario"
+                : fuenteAhora !== "diccionario";
+
+            if(enVocabulario && sigueEnMismaPalabra && fuenteCompatible){
+                normalizarUrlLegadaPalabra(enVocabulario, referencia, "vocabulario");
+                mostrarPalabraSimplificada(enVocabulario, {
+                    ...opciones,
+                    fuente: "vocabulario",
+                    enCategorias: true
+                });
             }
         });
     }
@@ -4480,6 +4559,7 @@ function restaurarInterfazDesdeHistorial(estado = {}){
     const params = new URLSearchParams(window.location.search);
     const palabra = params.get("p");
     const vista = params.get("vista");
+    const fuentePalabra = String(params.get("fuente") || estado.fuente || "").toLowerCase();
     const letra = params.get("letra");
     const categoriaDiccionario = params.get("categoriaDiccionario");
     const categoriaVocabulario = params.get("categoria");
@@ -4502,10 +4582,11 @@ function restaurarInterfazDesdeHistorial(estado = {}){
         if(contenidoPrincipal) contenidoPrincipal.classList.remove("contenido-desenfocado");
 
         if(palabra){
-            // Primero reconstruimos la pantalla "madre" de la ficha. Esto es
-            // importante si Atrás/Adelante viene desde Herramientas o Nosotros:
-            // mostrarPalabra() por sí sola no tiene por qué ocultar esas secciones.
-            if(estado.enCategorias){
+            // La fuente decide qué pantalla madre reconstruir. Ya no usamos
+            // el nombre de la palabra para decidirlo, porque puede existir
+            // simultáneamente en Diccionario y Vocabulario.
+            const esVocabulario = fuentePalabra === "vocabulario" || estado.enCategorias === true;
+            if(esVocabulario){
                 const boton = document.getElementById("btnCategorias");
                 saltarScrollAlAbrirVocabulario = true;
                 omitirAvisoVocabularioUnaVez = true;
@@ -4518,7 +4599,8 @@ function restaurarInterfazDesdeHistorial(estado = {}){
             // misma palabra otra vez al historial.
             restaurarPalabraDesdeUrl(palabra, {
                 noActualizarHistorial: true,
-                enCategorias: !!estado.enCategorias
+                fuente: esVocabulario ? "vocabulario" : "diccionario",
+                enCategorias: esVocabulario
             });
             return;
         }
