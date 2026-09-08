@@ -8,6 +8,7 @@ on:
       - "data/palabras.json"
       - "js/script.js"
       - "scripts/migrar_ids_palabras.py"
+      - "scripts/separar_diccionario_vocabulario.py"
       - "scripts/generar_sitemap.py"
       - ".github/workflows/actualizar-sitemap.yml"
   workflow_dispatch:
@@ -38,6 +39,9 @@ jobs:
       - name: Crear y migrar IDs únicos
         run: python scripts/migrar_ids_palabras.py
 
+      - name: Separar Diccionario y Vocabulario
+        run: python scripts/separar_diccionario_vocabulario.py
+
       - name: Generar sitemap.xml
         run: python scripts/generar_sitemap.py
 
@@ -51,12 +55,12 @@ jobs:
         shell: bash
         run: |
           if git diff --quiet -- data/palabras.json js/script.js sitemap.xml; then
-            echo "IDs y sitemap ya estaban actualizados."
+            echo "IDs, separación de fuentes y sitemap ya estaban actualizados."
             exit 0
           fi
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/palabras.json js/script.js sitemap.xml
-          git commit -m "Actualizar IDs únicos y sitemap automáticamente"
+          git commit -m "Separar Diccionario y Vocabulario automáticamente"
           git push origin HEAD:develop
