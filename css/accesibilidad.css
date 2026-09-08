@@ -1,0 +1,119 @@
+/* ============================================================
+   LSPedia - Accesibilidad global
+   Mantiene el diseño visual y mejora foco, tacto y movimiento.
+   ============================================================ */
+
+/* Solo visible para lectores de pantalla. */
+.a11y-sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* Enlace para saltar directamente al contenido usando teclado. */
+.a11y-skip-link {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 20000;
+    transform: translateY(-150%);
+    padding: 12px 18px;
+    border-radius: 12px;
+    background: #0f172a;
+    color: #fff;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.28);
+    transition: transform 0.18s ease;
+}
+
+.a11y-skip-link:focus {
+    transform: translateY(0);
+    color: #fff;
+}
+
+/* Foco claramente visible para quienes navegan con teclado. */
+.a11y-ready :where(
+    a[href],
+    button,
+    input,
+    select,
+    textarea,
+    summary,
+    [role="button"],
+    [tabindex]:not([tabindex="-1"])
+):focus-visible {
+    outline: 3px solid #0d6efd !important;
+    outline-offset: 3px !important;
+    box-shadow: 0 0 0 5px rgba(13, 110, 253, 0.18) !important;
+}
+
+/* Elementos que visualmente son tarjetas pero funcionan como botones. */
+.a11y-clickable {
+    cursor: pointer;
+}
+
+/* Los controles que son solo un icono mantienen un objetivo táctil cómodo. */
+.a11y-icon-control {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* No se depende solo del color para saber dónde está el teclado. */
+[aria-pressed="true"]:focus-visible,
+[aria-selected="true"]:focus-visible,
+[aria-current="page"]:focus-visible {
+    outline-width: 4px !important;
+}
+
+/* Estados deshabilitados también son perceptibles sin modificar el diseño base. */
+[aria-disabled="true"] {
+    cursor: not-allowed;
+}
+
+/* En pantallas táctiles se garantiza un área mínima para controles compactos. */
+@media (pointer: coarse) {
+    .a11y-icon-control,
+    button.btn-sm.a11y-icon-control,
+    a.a11y-icon-control {
+        min-width: 44px !important;
+        min-height: 44px !important;
+    }
+}
+
+/* Si la persona solicita menos movimiento en el sistema, LSPedia lo respeta.
+   No se elimina ninguna función: los cambios de estado siguen ocurriendo. */
+@media (prefers-reduced-motion: reduce) {
+    html:focus-within {
+        scroll-behavior: auto !important;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Mejora adicional cuando el sistema solicita más contraste. */
+@media (prefers-contrast: more) {
+    .a11y-ready :where(button, .btn, [role="button"], input, select, textarea) {
+        border-width: 2px;
+    }
+
+    .a11y-ready :where(a[href], button, [role="button"]):focus-visible {
+        outline-color: currentColor !important;
+    }
+}
