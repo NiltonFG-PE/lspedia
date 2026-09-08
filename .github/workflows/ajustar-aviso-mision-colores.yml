@@ -1,0 +1,82 @@
+name: Ajustar aviso misión y colores
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - '.github/workflows/ajustar-aviso-mision-colores.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  ajustar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Aplicar texto y estilos
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          index = Path('index.html')
+          texto = index.read_text(encoding='utf-8')
+
+          patron = re.compile(
+              r'(<div class="aviso-mision" id="subtituloPrincipal">\s*'
+              r'<span class="aviso-mision-icono"[^>]*>.*?</span>\s*'
+              r'<div class="aviso-mision-texto">)'
+              r'.*?'
+              r'(</div>\s*</div>)',
+              re.S
+          )
+
+          nuevo_cuerpo = '''\n                            <p class="aviso-mision-linea1">\n                                <span class="aviso-diccionario-destacado">📚Diccionario visual de español</span> con apoyo en Lengua de Señas Peruana.<br>\n                                Su función es facilitar la comprensión de palabras y significados,\n                            </p>\n                            <p class="aviso-mision-linea2">\n                                <span class="aviso-lsp-aclaracion">🪧No es un curso, ni enseñamos LSP.</span>\n                            </p>\n                        '''
+
+          texto, cambios = patron.subn(lambda m: m.group(1) + nuevo_cuerpo + m.group(2), texto, count=1)
+          if cambios != 1:
+              raise SystemExit(f'No se pudo reemplazar de forma segura el aviso. Coincidencias: {cambios}')
+
+          estilos = '''\n\n        .aviso-diccionario-destacado {\n            color: #42a5f5;\n            font-weight: 700;\n        }\n\n        .aviso-lsp-aclaracion {\n            color: #a66a00;\n            font-weight: 700;\n        }\n'''
+
+          if '.aviso-diccionario-destacado {' not in texto:
+              marca = '        /* Aviso "No enseñamos lengua de señas"'
+              pos = texto.find(marca)
+              if pos == -1:
+                  raise SystemExit('No se encontró la zona de estilos del aviso.')
+              texto = texto[:pos] + estilos + '\n' + texto[pos:]
+
+          index.write_text(texto, encoding='utf-8')
+
+          sw = Path('sw.js')
+          sw_texto = sw.read_text(encoding='utf-8')
+          sw_texto = re.sub(r'const VERSION_APP = "v\d+";', 'const VERSION_APP = "v21";', sw_texto, count=1)
+          sw.write_text(sw_texto, encoding='utf-8')
+          PY
+
+      - name: Validar cambios
+        shell: bash
+        run: |
+          git diff --check
+          grep -q '📚Diccionario visual de español' index.html
+          grep -q '🪧No es un curso, ni enseñamos LSP.' index.html
+          grep -q 'color: #42a5f5;' index.html
+          grep -q 'color: #a66a00;' index.html
+          grep -q 'const VERSION_APP = "v21"' sw.js
+
+      - name: Guardar en develop
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html sw.js
+          git commit -m 'Actualizar mensaje visual de misión del Diccionario'
+          git push origin develop
