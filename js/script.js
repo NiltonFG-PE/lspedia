@@ -45,8 +45,8 @@ const listaFavoritos = document.getElementById("listaFavoritos");
 // Escapa cualquier dato externo antes de insertarlo dentro de innerHTML.
 // Se usa para palabras, categorías, variantes y texto escrito por el usuario.
 function escaparHtml(valor){
-    return String(valor ?? "").replace(/[&<>"\']/g, caracter => ({
-        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "\'": "&#39;"
+    return String(valor ?? "").replace(/[&<>"']/g, caracter => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
     })[caracter]);
 }
 
