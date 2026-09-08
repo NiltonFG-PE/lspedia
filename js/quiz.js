@@ -362,10 +362,14 @@ const QuizV2 = (function () {
         renderSelectorNivel();
         renderSelectorModo();
         actualizarConteoDisponibles();
-        const config = el("quizConfiguracion");
-        const btnConfig = el("btnQuizConfigurar");
-        if(config) config.classList.add("d-none");
-        if(btnConfig) btnConfig.setAttribute("aria-expanded","false");
+        const panelNivel = el("quizPanelNivel");
+        const panelModo = el("quizPanelModo");
+        const btnNivel = el("btnQuizNivel");
+        const btnModo = el("btnQuizModo");
+        if (panelNivel) panelNivel.classList.add("d-none");
+        if (panelModo) panelModo.classList.add("d-none");
+        if (btnNivel) btnNivel.setAttribute("aria-expanded", "false");
+        if (btnModo) btnModo.setAttribute("aria-expanded", "false");
     }
 
     function renderSelectorNivel() {
@@ -437,14 +441,29 @@ const QuizV2 = (function () {
         const disponibles = bancoFiltrado().length;
         const texto = el("quizTotalDisponibles");
         const btn = el("btnEmpezarQuiz");
+        const btnRapido = el("btnQuizJugarRapido");
         const minimoNecesario = estado.modo === "4" ? Math.min(CONFIG.PARES_MEMORIA, 3) : 4;
-        if (disponibles < minimoNecesario) {
-            texto.innerHTML = `⚠️ Solo hay <strong>${disponibles}</strong> palabras disponibles en este nivel. Elige "Todos" o prueba con otro nivel.`;
-            btn.disabled = true;
-        } else {
-            texto.innerHTML = `✅ <strong>${disponibles}</strong> palabras disponibles para esta partida.`;
-            btn.disabled = false;
+        const deshabilitar = disponibles < minimoNecesario;
+        if (texto) {
+            if (deshabilitar) {
+                texto.innerHTML = `⚠️ Solo hay <strong>${disponibles}</strong> palabras disponibles en este nivel. Elige "Todos" o prueba con otro nivel.`;
+            } else {
+                texto.innerHTML = `✅ <strong>${disponibles}</strong> palabras disponibles · ${estado.nivel} · ${nombreModoActual()}.`;
+            }
         }
+        if (btn) btn.disabled = deshabilitar;
+        if (btnRapido) btnRapido.disabled = deshabilitar;
+    }
+
+    function nombreModoActual() {
+        const nombres = {
+            "1": "Video → Palabra",
+            "2": "Palabra → Video",
+            "3": "Verdadero/Falso",
+            "4": "Memoria",
+            "5": "Aleatorio"
+        };
+        return nombres[estado.modo] || "Aleatorio";
     }
 
     // ---------------------------------------------------------
@@ -1223,19 +1242,34 @@ const QuizV2 = (function () {
         if (btnEmpezar) btnEmpezar.addEventListener("click", empezarPartida);
 
         const btnRapido = el("btnQuizJugarRapido");
-        if(btnRapido) btnRapido.addEventListener("click", () => {
-            estado.nivel = "Todos";
-            estado.modo = "5";
+        if (btnRapido) btnRapido.addEventListener("click", () => {
+            // JUGAR usa la configuración que esté elegida. Al entrar por
+            // primera vez sigue siendo Todos + Aleatorio, pero si la persona
+            // cambia nivel o modo, JUGAR respeta esa elección.
             empezarPartida();
         });
 
-        const btnConfig = el("btnQuizConfigurar");
-        if(btnConfig) btnConfig.addEventListener("click", () => {
-            const panel = el("quizConfiguracion");
-            if(!panel) return;
+        function alternarPanelQuiz(panelId, botonId, otroPanelId, otroBotonId) {
+            const panel = el(panelId);
+            const boton = el(botonId);
+            const otroPanel = el(otroPanelId);
+            const otroBoton = el(otroBotonId);
+            if (!panel || !boton) return;
             const abrir = panel.classList.contains("d-none");
             panel.classList.toggle("d-none", !abrir);
-            btnConfig.setAttribute("aria-expanded", abrir ? "true" : "false");
+            boton.setAttribute("aria-expanded", abrir ? "true" : "false");
+            if (otroPanel) otroPanel.classList.add("d-none");
+            if (otroBoton) otroBoton.setAttribute("aria-expanded", "false");
+        }
+
+        const btnNivel = el("btnQuizNivel");
+        if (btnNivel) btnNivel.addEventListener("click", () => {
+            alternarPanelQuiz("quizPanelNivel", "btnQuizNivel", "quizPanelModo", "btnQuizModo");
+        });
+
+        const btnModo = el("btnQuizModo");
+        if (btnModo) btnModo.addEventListener("click", () => {
+            alternarPanelQuiz("quizPanelModo", "btnQuizModo", "quizPanelNivel", "btnQuizNivel");
         });
 
         const btnSiguiente = el("btnSiguientePregunta");

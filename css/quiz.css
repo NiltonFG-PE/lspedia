@@ -605,3 +605,74 @@
 .lsp-game-flash-ok,.lsp-game-flash-error,.lsp-game-reaccion,.lsp-game-confeti{position:fixed;inset:0;pointer-events:none}.lsp-game-flash-ok{z-index:12050;background:radial-gradient(circle,rgba(255,255,255,.96),rgba(220,252,231,.78) 45%,transparent 76%);animation:lspGameFlashV3 .72s ease-out forwards}.lsp-game-flash-error{z-index:12050;background:rgba(220,38,38,.54);animation:lspGameFlashV3 .48s ease-out forwards}@keyframes lspGameFlashV3{0%{opacity:0}18%{opacity:1}100%{opacity:0}}.lsp-game-reaccion{z-index:12052;display:grid;place-items:center}.lsp-game-reaccion>div{font-size:3.1rem;background:rgba(255,255,255,.94);border-radius:24px;padding:12px 18px;box-shadow:0 14px 38px rgba(15,23,42,.25);animation:jpPreviewInV3 .42s ease}.lsp-game-confeti{z-index:12051;overflow:hidden}.lsp-game-confeti i{position:absolute;top:-28px;width:9px;height:18px;border-radius:3px;animation:lspGameCaerV3 1.45s linear forwards}@keyframes lspGameCaerV3{to{transform:translateY(112vh) rotate(640deg)}}
 @media(max-width:420px){#quizMenuJuegos .menu-juego-btn{min-height:166px;padding:14px 7px}.juego-preview{width:106px}.quiz-inicio-rapido{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){.menu-juego-anim .juego-preview,.menu-juego-anim .juego-preview *,.lsp-game-flash-ok,.lsp-game-flash-error,.lsp-game-reaccion>div,.lsp-game-confeti i{animation:none!important}}
+
+
+/* ===== LSPedia UX Juegos V15: Quiz 3 botones + previews más visibles ===== */
+.quiz-inicio-rapido-tres {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+}
+.quiz-inicio-rapido-tres .quiz-btn-jugar-rapido {
+    grid-column: 1 / -1;
+    min-height: 54px;
+}
+.quiz-inicio-rapido-tres .quiz-btn-configurar {
+    min-height: 48px;
+    border-radius: 14px;
+    font-weight: 800;
+    border: 2px solid #dbe5ef;
+    background: #ffffff;
+    color: #334155;
+    box-shadow: 0 3px 10px rgba(15, 23, 42, .07);
+    transition: transform .18s ease, border-color .18s ease, background-color .18s ease, box-shadow .18s ease;
+}
+.quiz-inicio-rapido-tres .quiz-btn-nivel:hover,
+.quiz-inicio-rapido-tres .quiz-btn-nivel[aria-expanded="true"] {
+    border-color: #22c55e;
+    background: #f0fdf4;
+    color: #166534;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, .10);
+}
+.quiz-inicio-rapido-tres .quiz-btn-modo:hover,
+.quiz-inicio-rapido-tres .quiz-btn-modo[aria-expanded="true"] {
+    border-color: #8b5cf6;
+    background: #f5f3ff;
+    color: #6d28d9;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, .10);
+}
+.quiz-inicio-rapido-tres .quiz-btn-configurar:active {
+    transform: scale(.97);
+}
+.quiz-panel-config {
+    margin-top: 10px;
+    padding: 13px;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    animation: quizPanelAbre .26s ease-out;
+}
+@keyframes quizPanelAbre {
+    from { opacity: 0; transform: translateY(-5px) scale(.985); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Las mini-demostraciones del menú antes terminaban demasiado rápido.
+   Se repiten tres veces para que la persona tenga tiempo de entender qué
+   hace cada juego sin convertir la pantalla en una animación permanente. */
+#quizMenuJuegos .juego-preview,
+#quizMenuJuegos .juego-preview * {
+    animation-iteration-count: 3 !important;
+}
+
+@media (max-width: 420px) {
+    .quiz-inicio-rapido-tres { gap: 7px; }
+    .quiz-inicio-rapido-tres .quiz-btn-configurar { font-size: .84rem; padding: 9px 7px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    #quizMenuJuegos .juego-preview,
+    #quizMenuJuegos .juego-preview * {
+        animation: none !important;
+    }
+    .quiz-panel-config { animation: none; }
+}

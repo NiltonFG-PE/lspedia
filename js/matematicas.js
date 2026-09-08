@@ -49,7 +49,8 @@ const MatematicasV2 = (function () {
         tutorialActivo: false,
         respondida: false,
         finalizada: false,
-        uiLista: false
+        uiLista: false,
+        audioCtx: null
     };
 
     let root = null;
@@ -944,6 +945,45 @@ const MatematicasV2 = (function () {
         }
     }
 
+    function obtenerAudioCtx() {
+        if (!estado.audioCtx) {
+            const AC = window.AudioContext || window.webkitAudioContext;
+            if (AC) estado.audioCtx = new AC();
+        }
+        const ctx = estado.audioCtx;
+        if (ctx && ctx.state === "suspended") {
+            try { ctx.resume(); } catch (_) {}
+        }
+        return ctx;
+    }
+
+    function tono(frecuencia, duracionMs, retrasoMs, tipo, volumen) {
+        const ctx = obtenerAudioCtx();
+        if (!ctx) return;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const inicio = ctx.currentTime + (retrasoMs / 1000);
+        osc.type = tipo || "sine";
+        osc.frequency.value = frecuencia;
+        gain.gain.setValueAtTime(volumen || 0.14, inicio);
+        gain.gain.exponentialRampToValueAtTime(0.001, inicio + (duracionMs / 1000));
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(inicio);
+        osc.stop(inicio + (duracionMs / 1000) + 0.05);
+    }
+
+    function reproducirSonidoCorrectoMat() {
+        tono(523, 105, 0, "triangle", 0.14);
+        tono(659, 110, 90, "triangle", 0.14);
+        tono(880, 170, 180, "triangle", 0.16);
+    }
+
+    function reproducirSonidoIncorrectoMat() {
+        tono(235, 115, 0, "sawtooth", 0.10);
+        tono(175, 190, 105, "sawtooth", 0.11);
+    }
+
     function vibrarError() {
         if (navigator.vibrate) {
             try { navigator.vibrate([180, 70, 180]); } catch (_) {}
@@ -1004,6 +1044,7 @@ const MatematicasV2 = (function () {
     function fallo(texto) {
         feedback("matv9-feedback-mal", texto || "Intenta otra vez.");
         mostrarReaccion(false, texto || "Intenta otra vez.");
+        reproducirSonidoIncorrectoMat();
         vibrarError();
         destelloRojo();
     }
@@ -1052,6 +1093,7 @@ const MatematicasV2 = (function () {
                     estado.puntaje++;
                     feedback("matv9-feedback-bien", "¡Excelente!");
                     mostrarReaccion(true, "¡Excelente!");
+                    reproducirSonidoCorrectoMat();
                     celebrar();
                     $("matv9Siguiente").classList.remove("matv9-oculto");
                 } else {

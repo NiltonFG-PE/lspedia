@@ -353,12 +353,27 @@ const OracionesV2 = (function(){
      setTimeout(()=>{state.tutorial=true;const r=input.getBoundingClientRect();const h=document.createElement("div");h.className="hand";h.textContent="👆";h.style.left=(r.left+r.width/2)+"px";h.style.top=(r.top+r.height+5)+"px";shadow.appendChild(h);setTimeout(()=>{h.remove();state.tutorial=false;input.focus();startTimer()},1000)},450);
     }
     
+    let audioCtxJuego=null;
+    function obtenerAudioCtxJuego(){
+     if(!audioCtxJuego){const AC=window.AudioContext||window.webkitAudioContext;if(AC)audioCtxJuego=new AC()}
+     if(audioCtxJuego&&audioCtxJuego.state==="suspended")try{audioCtxJuego.resume()}catch(e){}
+     return audioCtxJuego;
+    }
+    function tonoJuego(freq,dur,delay,tipo,vol){
+     const ctx=obtenerAudioCtxJuego();if(!ctx)return;
+     const o=ctx.createOscillator(),g=ctx.createGain(),ini=ctx.currentTime+(delay||0)/1000;
+     o.type=tipo||"sine";o.frequency.value=freq;g.gain.setValueAtTime(vol||.14,ini);g.gain.exponentialRampToValueAtTime(.001,ini+dur/1000);
+     o.connect(g);g.connect(ctx.destination);o.start(ini);o.stop(ini+dur/1000+.05);
+    }
+    function sonidoCorrectoJuego(){tonoJuego(523,105,0,"triangle",.14);tonoJuego(659,110,90,"triangle",.14);tonoJuego(880,170,180,"triangle",.16)}
+    function sonidoIncorrectoJuego(){tonoJuego(235,115,0,"sawtooth",.10);tonoJuego(175,190,105,"sawtooth",.11)}
+
     function success(msg){
      if(state.locked)return;state.locked=true;stopTimer();state.score++;$("score").textContent="⭐ "+state.score;$("feedback").className="feedback ok";$("feedback").textContent=msg;
-     flashOk();confetti();react("🥳👏🏻");$("next").classList.remove("hidden");
+     sonidoCorrectoJuego();flashOk();confetti();react("🥳👏🏻");$("next").classList.remove("hidden");
     }
     function error(msg){
-     $("feedback").className="feedback bad";$("feedback").textContent=msg;flashRed();react("😢👎🏻",700);if(navigator.vibrate)try{navigator.vibrate([160,70,160])}catch(e){}
+     $("feedback").className="feedback bad";$("feedback").textContent=msg;sonidoIncorrectoJuego();flashRed();react("😢👎🏻",700);if(navigator.vibrate)try{navigator.vibrate([160,70,160])}catch(e){}
     }
     function flashRed(){const x=document.createElement("div");x.className="flash-red";shadow.appendChild(x);setTimeout(()=>x.remove(),500)}
     function flashOk(){const x=document.createElement("div");x.className="flash-ok";shadow.appendChild(x);setTimeout(()=>x.remove(),950)}

@@ -3737,23 +3737,24 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                         </div>
                         <p class="text-muted small text-center mb-4">Elige el nivel y el modo de juego para tu ronda de práctica.</p>
 
-                        <div class="quiz-inicio-rapido mb-3">
+                        <div class="quiz-inicio-rapido quiz-inicio-rapido-tres mb-3">
                             <button type="button" id="btnQuizJugarRapido" class="quiz-btn-jugar-rapido">▶ JUGAR</button>
-                            <button type="button" id="btnQuizConfigurar" class="quiz-btn-configurar" aria-expanded="false" aria-controls="quizConfiguracion">⚙️ Elegir nivel</button>
+                            <button type="button" id="btnQuizNivel" class="quiz-btn-configurar quiz-btn-nivel" aria-expanded="false" aria-controls="quizPanelNivel">🌱 Elegir nivel</button>
+                            <button type="button" id="btnQuizModo" class="quiz-btn-configurar quiz-btn-modo" aria-expanded="false" aria-controls="quizPanelModo">🎲 Modo de juego</button>
                         </div>
 
-                        <div id="quizConfiguracion" class="quiz-configuracion d-none">
+                        <div id="quizPanelNivel" class="quiz-configuracion quiz-panel-config d-none">
                             <p class="text-uppercase small fw-bold mb-2" style="color:#64748b; letter-spacing:0.05em;">Nivel</p>
-                            <div class="row g-2 mb-4" id="quizSelectorNivel"></div>
-
-                            <p class="text-uppercase small fw-bold mb-2" style="color:#64748b; letter-spacing:0.05em;">Modo de juego</p>
-                            <div class="row g-2 mb-4" id="quizSelectorModo"></div>
-
-                            <p class="text-center small mb-3" id="quizTotalDisponibles"></p>
-                            <div class="text-center">
-                                <button id="btnEmpezarQuiz" class="btn btn-warning fw-bold py-2 px-4 rounded-pill">▶ Empezar</button>
-                            </div>
+                            <div class="row g-2 mb-2" id="quizSelectorNivel"></div>
                         </div>
+
+                        <div id="quizPanelModo" class="quiz-configuracion quiz-panel-config d-none">
+                            <p class="text-uppercase small fw-bold mb-2" style="color:#64748b; letter-spacing:0.05em;">Modo de juego</p>
+                            <div class="row g-2 mb-2" id="quizSelectorModo"></div>
+                        </div>
+
+                        <p class="text-center small mt-3 mb-0" id="quizTotalDisponibles"></p>
+                        <button id="btnEmpezarQuiz" class="d-none" type="button" aria-hidden="true" tabindex="-1">Empezar</button>
                     </div>
                 </div>
             </div>
