@@ -10,6 +10,8 @@ on:
       - "scripts/migrar_ids_palabras.py"
       - "scripts/separar_diccionario_vocabulario.py"
       - "scripts/generar_sitemap.py"
+      - "scripts/normalizar_categorias.py"
+      - "scripts/validar_lspedia.py"
       - ".github/workflows/actualizar-sitemap.yml"
   workflow_dispatch:
 
@@ -45,10 +47,11 @@ jobs:
       - name: Generar sitemap.xml
         run: python scripts/generar_sitemap.py
 
-      - name: Validar JSON y JavaScript
+      - name: Validar Diccionario antes de guardar
         shell: bash
         run: |
           python -m json.tool data/palabras.json > /dev/null
+          python scripts/validar_lspedia.py --fuente diccionario
           node --check js/script.js
 
       - name: Guardar cambios automáticos
