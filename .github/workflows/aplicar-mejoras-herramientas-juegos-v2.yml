@@ -1,4 +1,4 @@
-name: Mejorar Herramientas y Jugar V2
+name: Mejorar Herramientas y Jugar V3
 
 on:
   push:
@@ -20,25 +20,23 @@ jobs:
           ref: develop
           fetch-depth: 0
 
-      - name: Adaptar parche
-        run: python .tmp/ajustar_mejoras_herramientas_v2.py
+      - name: Aplicar mejoras V3
+        run: python .tmp/aplicar_mejoras_herramientas_juegos_v3.py
 
-      - name: Aplicar mejoras
-        run: python .tmp/aplicar_mejoras_herramientas_juegos_v2.py
-
-      - name: Validar JavaScript e integración
+      - name: Validar integración
         run: |
           node --check js/script.js
           node --check js/alfabetizacion.js
           node --check js/quiz.js
           node --check js/matematicas.js
           node --check js/oraciones.js
-          grep -q 'btnMenuJuegoOraciones' index.html
           grep -q 'btnQuizJugarRapido' index.html
-          grep -q 'HistorialJuegosLSPedia' js/script.js
+          grep -q 'preview-oraciones' index.html
+          grep -q 'FeedbackJuegosLSPedia' js/script.js
           grep -q 'activarArrastreVisualUnir' js/alfabetizacion.js
-          grep -q 'animarLetraHaciaCasilla' js/alfabetizacion.js
           grep -q 'programarGuiaVisualCompletar' js/alfabetizacion.js
+          grep -q 'volverAlMenuJuegosDesdeBoton' js/matematicas.js
+          grep -q 'VERSION_APP = "v14"' sw.js
 
       - name: Guardar mejoras en develop
         run: |
@@ -46,6 +44,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           rm -f .tmp/aplicar_mejoras_herramientas_juegos_v2.py
           rm -f .tmp/ajustar_mejoras_herramientas_v2.py
+          rm -f .tmp/aplicar_mejoras_herramientas_juegos_v3.py
           rm -f .github/workflows/aplicar-mejoras-herramientas-juegos-v2.yml
           git add -A
           git commit -m "Mejorar navegación visual y juegos de Herramientas"
