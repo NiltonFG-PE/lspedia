@@ -1,0 +1,67 @@
+name: Normalizar categorias por fuente
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - "data/palabras.json"
+      - "data/vocabulario.json"
+      - "scripts/normalizar_categorias.py"
+      - ".github/workflows/normalizar-categorias.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: normalizar-categorias-develop
+  cancel-in-progress: true
+
+jobs:
+  normalizar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Normalizar Diccionario y Vocabulario por separado
+        run: python scripts/normalizar_categorias.py
+
+      - name: Validar JSON y categorias
+        shell: bash
+        run: |
+          python -m json.tool data/palabras.json > /dev/null
+          python -m json.tool data/vocabulario.json > /dev/null
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          dicc=json.loads(Path('data/palabras.json').read_text(encoding='utf-8'))
+          vocab=json.loads(Path('data/vocabulario.json').read_text(encoding='utf-8'))
+          cats_dicc=sorted({str(x.get('categoria') or '').strip() for x in dicc if isinstance(x,dict)})
+          cats_vocab=sorted({str(x.get('categoria') or '').strip() for x in vocab if isinstance(x,dict)})
+          if any('/' in c for c in cats_dicc):
+              raise SystemExit('Todavía quedan categorías compuestas con / en Diccionario: '+repr(cats_dicc))
+          permitidas_vocab={'Adjetivos','Emociones','Tiempo','Verbos'}
+          inesperadas=set(cats_vocab)-permitidas_vocab
+          if inesperadas:
+              raise SystemExit('Categorías inesperadas en Vocabulario: '+repr(sorted(inesperadas)))
+          print('Diccionario:',len(cats_dicc),'categorías canónicas')
+          print('Vocabulario:',cats_vocab)
+          PY
+
+      - name: Guardar cambios si fueron necesarios
+        shell: bash
+        run: |
+          if git diff --quiet -- data/palabras.json data/vocabulario.json; then
+            echo "Las categorías ya estaban normalizadas."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/palabras.json data/vocabulario.json
+          git commit -m "Normalizar categorías por fuente"
+          git push origin HEAD:develop
