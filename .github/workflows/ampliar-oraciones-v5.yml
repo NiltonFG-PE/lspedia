@@ -1,0 +1,94 @@
+name: Ampliar Oraciones V5
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - .github/workflows/ampliar-oraciones-v5.yml
+
+permissions:
+  contents: write
+
+jobs:
+  ampliar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Ampliar banco de actividades
+        shell: bash
+        run: |
+          python - <<'PYCODE'
+          from pathlib import Path
+          import base64, gzip, json, re, subprocess
+
+          extra = json.loads(gzip.decompress(base64.b64decode("H4sIAHoToGoC/61cW48UR5b+K6F+bqHlfnmxmqZnYAQN042RkIVQVGZ0dzJZGUVeym4sS6OV52UXptcN7HphsadXhl7wINnLzF5mvWOJ+if9B9Y/Yc+JiIyIExlZVdB+AXVWVpxzvjj3OFGfLhxdOPfRpwtZunBuQZbp0VMLiwtVIgoBf//09Rf/dvDbBz99/fuH7KevHz6DjwpZ4yfLMhebmYQHCS/TSi1Rw/OVnPG8GRb4SQl/f7wlFz5b1J+VohrJIhXmI57UmSzspzlno1JsNkXN7Xd5vfDZLfgDiCEJtdpi+8VF/QJ8zovqY1HiC4S8I+evfQsJWmlPU2lfKml3vkVp/3W2tJdxXbkhKlnyiMDik1GeJbxX3lwkSTZ5U7y/vAEDjqC/OpX4TGx/H+0z/MdJfL3kA34nur/15GVSZEl8h0e87Jd3ONm322TF4fbXJ9+S89em0p6N7e/uD7i/c0gL8FYiKUXNyyy6wcV48rpH3qZgiSxLIQ+1u4S8JefWJtIe+5vu3h48efx//7UD8u7+nZN3HYwkje3tcPIy7dvaRNS9ogL+Ar542L31yLfkyNpU2qPB3oKQOy+ckOd5kfRs6eT7uMEC1Fmf/qZZIcrDbqYl3B")) .decode("utf-8"))
+
+          path = Path("js/oraciones.js")
+          text = path.read_text(encoding="utf-8")
+
+          m = re.search(r'const DATA = (\{.*?\});\n\s*let state=', text, re.S)
+          if not m:
+              raise SystemExit("No se encontró DATA en js/oraciones.js")
+
+          data = json.loads(m.group(1))
+
+          for level, items in extra.items():
+              data.setdefault(level, [])
+              existing = {x.get("id") for x in data[level]}
+              for item in items:
+                  if item.get("id") not in existing:
+                      data[level].append(item)
+                      existing.add(item.get("id"))
+
+          for level in map(str, range(1, 7)):
+              if len(data[level]) != 30:
+                  raise SystemExit(f"Nivel {level} quedó con {len(data[level])} actividades, se esperaban 30")
+
+          packed = json.dumps(data, ensure_ascii=False, separators=(",", ":"))
+          text = text[:m.start(1)] + packed + text[m.end(1):]
+
+          text = text.replace("Construye la oración V4 integrada", "Construye la oración V5 integrada")
+          text = text.replace("93 actividades de español cotidiano (Perú)", "180 actividades de español cotidiano (Perú)")
+          text = text.replace("🧠 más de 90 actividades", "🧠 180 actividades")
+          text = text.replace("15 situaciones: casa, colegio, trabajo, salud, compras y transporte.", "30 situaciones: casa, colegio, trabajo, salud, compras, trámites y transporte.")
+          text = text.replace("15 verbos: mira de dónde nace la conjugación y cómo cambia con el tiempo.", "30 verbos: mira de dónde nace la conjugación y cómo cambia con el tiempo.")
+          text = text.replace("15 situaciones para aprender y, pero, porque, entonces, por eso y cuando.", "30 situaciones para aprender conectores como y, pero, porque, entonces, por eso y cuando.")
+          text = text.replace("15 ejercicios de escritura: verbos, artículos, preposiciones y palabras útiles.", "30 ejercicios de escritura: verbos, artículos, preposiciones y palabras útiles.")
+          text = text.replace("18 conversaciones reales: familia, colegio, trabajo, salud, mercado, bus, banco y más.", "30 conversaciones reales: familia, colegio, trabajo, salud, mercado, bus, banco, trámites y más.")
+          text = text.replace("15 oraciones más completas con tiempo, conectores, causas y detalles.", "30 oraciones más completas con tiempo, conectores, causas y detalles.")
+
+          path.write_text(text, encoding="utf-8")
+
+          index = Path("index.html")
+          html = index.read_text(encoding="utf-8")
+          html = html.replace('js/oraciones.js?v=20260908"', 'js/oraciones.js?v=20260908b"')
+          index.write_text(html, encoding="utf-8")
+
+          sw = Path("sw.js")
+          sw_text = sw.read_text(encoding="utf-8")
+          sw_text = re.sub(r'const VERSION_APP = "v\d+";', 'const VERSION_APP = "v12";', sw_text, count=1)
+          sw.write_text(sw_text, encoding="utf-8")
+
+          subprocess.run(["node", "--check", "js/oraciones.js"], check=True)
+
+          final_text = path.read_text(encoding="utf-8")
+          m2 = re.search(r'const DATA = (\{.*?\});\n\s*let state=', final_text, re.S)
+          final_data = json.loads(m2.group(1))
+          assert all(len(final_data[str(i)]) == 30 for i in range(1, 7))
+          assert sum(len(final_data[str(i)]) for i in range(1, 7)) == 180
+          assert 'js/oraciones.js?v=20260908b' in index.read_text(encoding="utf-8")
+          assert 'const VERSION_APP = "v12";' in sw.read_text(encoding="utf-8")
+          PYCODE
+
+      - name: Guardar ampliación
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/oraciones.js index.html sw.js
+          git commit -m "Ampliar juego Oraciones a 180 actividades"
+          git push origin develop
