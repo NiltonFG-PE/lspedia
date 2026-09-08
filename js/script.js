@@ -3299,6 +3299,11 @@ const CATEGORIAS_DICCIONARIO_INFO = {
         descripcion: "Aprende y enseña",
         fondo: "#fce4ef", borde: "#f8c7dd", texto: "#be185d"
     },
+    "universidad": {
+        icono: "img/categorias/universidad.webp",
+        descripcion: "Vida y estudios universitarios",
+        fondo: "#e0e7ff", borde: "#c7d2fe", texto: "#3730a3"
+    },
     "reflexión": {
         icono: "img/categorias/reflexion.webp",
         descripcion: "Pensamientos y emociones",
