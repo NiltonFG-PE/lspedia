@@ -212,7 +212,7 @@ const MatematicasV2 = (function () {
             if (estado.finalizada) {
                 estado.finalizada = false;
                 $("matv9Siguiente").textContent = "Siguiente →";
-                mostrarMenu();
+                volverMenu();
             } else {
                 siguientePregunta();
             }
@@ -615,8 +615,6 @@ const MatematicasV2 = (function () {
 
         const zonas = escena.querySelector(".matv9-zonas");
 
-        // La primera cantidad ya está en la cesta. La segunda (azul) es
-        // la que el usuario agrega, igual que 5 + 3: 5 ya está y 3 se mueve.
         const cesta = document.createElement("div");
         cesta.className = "matv9-zona matv9-destino";
         cesta.innerHTML = `<div class="matv9-contador">${p.a}</div>`;
@@ -897,7 +895,6 @@ const MatematicasV2 = (function () {
             pinguinos.push({ unidad, plato: unidad.querySelector(".matv9-plato"), lleno: false });
         }
 
-        // Un paquete por pingüino. Todos tienen exactamente la misma cantidad.
         const paquetes = [];
         for (let i = 0; i < p.b; i++) {
             const paquete = crearPaquetePeces(p.resultado);
@@ -1222,13 +1219,18 @@ const MatematicasV2 = (function () {
 
 window.MatematicasV2 = MatematicasV2;
 
-
 /* ============================================================
    HISTORIAL INTERNO DE HERRAMIENTAS > JUGAR
    ------------------------------------------------------------
-   El botón Atrás del navegador/celular ahora retrocede una pantalla:
+   El botón/gesto Atrás del celular retrocede una pantalla:
    partida Matemáticas -> menú Matemáticas -> menú de juegos -> Herramientas.
    Los otros juegos también vuelven primero al menú de juegos.
+
+   El listener popstate usa CAPTURA para resolver las pantallas internas
+   de Jugar antes que el router general de script.js. Solo intercepta
+   cuando el destino continúa dentro de ?vista=herramientas-jugar.
+   Si el destino ya es Herramientas u otra sección, deja actuar al router
+   principal normalmente.
    ============================================================ */
 const HistorialJuegosLSPedia = (function () {
     "use strict";
@@ -1242,6 +1244,11 @@ const HistorialJuegosLSPedia = (function () {
         quiz: "btnMenuJuegoQuiz",
         matematicas: "btnMenuJuegoMatematicas"
     };
+
+    const PANTALLAS = [
+        "quizMenuJuegos", "quizCargando", "quizIntro", "quizActivo", "quizMemoria", "quizResultados",
+        "alfabCompletar", "alfabUnir", "alfabResultados", "matApp"
+    ];
 
     function construirUrl(juego, pantalla, operacion) {
         const url = new URL(window.location.href);
@@ -1261,14 +1268,53 @@ const HistorialJuegosLSPedia = (function () {
     }
 
     function registrarJuego(juego) {
-        registrar(construirUrl(juego), { tipo: "juego", vista: "herramientas-jugar", juego });
+        registrar(
+            construirUrl(juego),
+            { tipo: "juego", vista: "herramientas-jugar", juego }
+        );
     }
 
     function registrarPantallaMatematicas(pantalla, operacion) {
         registrar(
             construirUrl("matematicas", pantalla, operacion),
-            { tipo: "juego-matematicas", vista: "herramientas-jugar", juego: "matematicas", pantalla, operacion }
+            {
+                tipo: "juego-matematicas",
+                vista: "herramientas-jugar",
+                juego: "matematicas",
+                pantalla,
+                operacion
+            }
         );
+    }
+
+    function jugarEstaVisible() {
+        const seccion = document.getElementById("seccionQuiz");
+        return !!(seccion && !seccion.classList.contains("d-none"));
+    }
+
+    function ocultarPantallas() {
+        PANTALLAS.forEach((id) => {
+            const el = document.getElementById(id);
+            if (el) el.classList.add("d-none");
+        });
+    }
+
+    function mostrarMenuJuegosSinHistorial() {
+        if (window.QuizV2 && typeof QuizV2.salir === "function") QuizV2.salir();
+        if (window.AlfabetizacionV2 && typeof AlfabetizacionV2.detenerJuegosActivos === "function") {
+            AlfabetizacionV2.detenerJuegosActivos();
+        }
+        if (window.MatematicasV2 && typeof MatematicasV2.salir === "function") {
+            MatematicasV2.salir();
+        }
+
+        if (document.fullscreenElement && document.exitFullscreen) {
+            Promise.resolve(document.exitFullscreen()).catch(() => {});
+        }
+
+        ocultarPantallas();
+        const menu = document.getElementById("quizMenuJuegos");
+        if (menu) menu.classList.remove("d-none");
     }
 
     function abrirJuegoSinRegistrar(juego) {
@@ -1277,19 +1323,48 @@ const HistorialJuegosLSPedia = (function () {
         if (btn) btn.click();
     }
 
+    function restaurarJuegoDesdeParametros(params) {
+        const juego = params.get("juego");
+        if (!juego || !BOTONES[juego]) {
+            mostrarMenuJuegosSinHistorial();
+            return;
+        }
+
+        abrirJuegoSinRegistrar(juego);
+
+        if (juego === "matematicas" &&
+            window.MatematicasV2 &&
+            typeof MatematicasV2.restaurarHistorial === "function") {
+            MatematicasV2.restaurarHistorial(
+                params.get("pantalla") || "menu",
+                params.get("op") || ""
+            );
+        }
+    }
+
     function restaurarDesdeUrl() {
         const params = new URLSearchParams(window.location.search);
         if (params.get("vista") !== "herramientas-jugar") return;
 
-        const juego = params.get("juego");
-        if (!juego || !BOTONES[juego]) return;
-
         restaurando = true;
         try {
-            abrirJuegoSinRegistrar(juego);
-            if (juego === "matematicas" && window.MatematicasV2 && typeof MatematicasV2.restaurarHistorial === "function") {
-                MatematicasV2.restaurarHistorial(params.get("pantalla") || "menu", params.get("op") || "");
-            }
+            restaurarJuegoDesdeParametros(params);
+        } finally {
+            restaurando = false;
+        }
+    }
+
+    function manejarPopstateInterno(evento) {
+        const params = new URLSearchParams(window.location.search);
+
+        if (params.get("vista") !== "herramientas-jugar" || !jugarEstaVisible()) {
+            return;
+        }
+
+        evento.stopImmediatePropagation();
+        restaurando = true;
+        try {
+            restaurarJuegoDesdeParametros(params);
         } finally {
             restaurando = false;
         }
@@ -1300,11 +1375,29 @@ const HistorialJuegosLSPedia = (function () {
         if (params.get("vista") !== "herramientas-jugar" || !params.get("juego")) return;
 
         if (params.get("juego") === "matematicas" && params.get("pantalla") === "partida") {
-            if (window.history.length > 2) window.history.go(-2);
+            if (window.history.length > 2) {
+                window.history.go(-2);
+            } else {
+                window.history.replaceState(
+                    { tipo: "jugar", vista: "herramientas-jugar" },
+                    "",
+                    construirUrl()
+                );
+                mostrarMenuJuegosSinHistorial();
+            }
             return;
         }
 
-        if (window.history.length > 1) window.history.back();
+        if (window.history.length > 1) {
+            window.history.back();
+        } else {
+            window.history.replaceState(
+                { tipo: "jugar", vista: "herramientas-jugar" },
+                "",
+                construirUrl()
+            );
+            mostrarMenuJuegosSinHistorial();
+        }
     }
 
     function enlazar() {
@@ -1314,6 +1407,7 @@ const HistorialJuegosLSPedia = (function () {
         Object.entries(BOTONES).forEach(([juego, id]) => {
             const btn = document.getElementById(id);
             if (!btn) return;
+
             btn.addEventListener("click", () => {
                 if (!restaurando) registrarJuego(juego);
             });
@@ -1325,16 +1419,19 @@ const HistorialJuegosLSPedia = (function () {
             });
         });
 
-        window.addEventListener("popstate", () => {
-            setTimeout(restaurarDesdeUrl, 0);
-        });
+        window.addEventListener("popstate", manejarPopstateInterno, true);
 
         setTimeout(restaurarDesdeUrl, 0);
+        setTimeout(restaurarDesdeUrl, 900);
     }
 
     enlazar();
 
-    return { registrarJuego, registrarPantallaMatematicas, restaurarDesdeUrl };
+    return {
+        registrarJuego,
+        registrarPantallaMatematicas,
+        restaurarDesdeUrl
+    };
 })();
 
 window.HistorialJuegosLSPedia = HistorialJuegosLSPedia;
