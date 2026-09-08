@@ -30,25 +30,29 @@ jobs:
           index = Path('index.html')
           texto = index.read_text(encoding='utf-8')
 
-          anterior = '''                            <p class="aviso-mision-linea1">No enseñamos lengua de señas, <strong>eso le pertenece a los sordos</strong>.</p>
-                            <p class="aviso-mision-linea2">Esta herramienta es para ti: te ayudamos a aprender palabras del español con <span class="subtitulo-resaltado">videos en Lengua de Señas Peruana</span>.</p>'''
+          patron = re.compile(
+              r'<p class="aviso-mision-linea1">No enseñamos lengua de señas, <strong>eso le pertenece a los sordos</strong>\.</p>\s*'
+              r'<p class="aviso-mision-linea2">Esta herramienta es para ti: te ayudamos a aprender palabras del español con <span class="subtitulo-resaltado">videos en Lengua de Señas Peruana</span>\.</p>'
+          )
 
-          nuevo = '''                            <p class="aviso-mision-linea1">LSPedia es un diccionario visual de español con apoyo en Lengua de Señas Peruana.<br>Su función es facilitar la comprensión de palabras y significados,</p>
-                            <p class="aviso-mision-linea2"><strong>No es un curso, ni enseñamos LSP.</strong></p>'''
+          nuevo = (
+              '<p class="aviso-mision-linea1">LSPedia es un diccionario visual de español con apoyo en Lengua de Señas Peruana.<br>'
+              'Su función es facilitar la comprensión de palabras y significados,</p>\n'
+              '                            <p class="aviso-mision-linea2"><strong>No es un curso, ni enseñamos LSP.</strong></p>'
+          )
 
-          if anterior not in texto:
-              raise SystemExit('No se encontró el texto anterior del aviso; se detiene para no modificar otra zona.')
+          texto, cambios = patron.subn(nuevo, texto, count=1)
+          if cambios != 1:
+              raise SystemExit(f'Se esperaban 1 reemplazo y se hicieron {cambios}. Se detiene para no tocar otra zona.')
 
-          texto = texto.replace(anterior, nuevo, 1)
-          texto = texto.replace('''                    <!-- Aviso "No enseñamos lengua de señas": reemplaza al
-                         subtítulo simple de antes. Franja de acento dorada +
-                         ícono para que resalte visualmente (regla central
-                         del proyecto: LSPedia no enseña LSP -eso pertenece a
-                         los sordos-, ayuda a aprender español mediante
-                         videos en LSP). Dos líneas, una idea por línea. -->''',
-                         '''                    <!-- Aviso de misión del Diccionario: explica de forma breve
-                         que LSPedia es un diccionario visual de español con apoyo
-                         en LSP y aclara que no es un curso ni enseña LSP. -->''', 1)
+          texto = re.sub(
+              r'\s*<!-- Aviso "No enseñamos lengua de señas": reemplaza al.*?videos en LSP\)\. Dos líneas, una idea por línea\. -->',
+              '\n                    <!-- Aviso de misión del Diccionario: explica de forma breve que LSPedia es un diccionario visual de español con apoyo en LSP y aclara que no es un curso ni enseña LSP. -->',
+              texto,
+              count=1,
+              flags=re.S
+          )
+
           index.write_text(texto, encoding='utf-8')
 
           sw = Path('sw.js')
@@ -64,6 +68,7 @@ jobs:
           grep -q 'LSPedia es un diccionario visual de español con apoyo en Lengua de Señas Peruana.' index.html
           grep -q 'Su función es facilitar la comprensión de palabras y significados,' index.html
           grep -q 'No es un curso, ni enseñamos LSP.' index.html
+          ! grep -q 'eso le pertenece a los sordos' index.html
           grep -q 'const VERSION_APP = "v20"' sw.js
 
       - name: Guardar en develop
