@@ -5,15 +5,9 @@
    caché local + alfabetizacion-mock.json como respaldo. El navegador
    ya no ejecuta JSONP ni consulta directamente Google Apps Script.
 
-   ⚠️ MODO MOCK (mientras el Apps Script no está listo):
-   Con MOCK_ACTIVO en true, los datos se leen de
-   data/alfabetizacion-mock.json (mismo origen, sin problemas de
-   CORS). Cuando el doGet combinado esté desplegado, basta con:
-     1) Pegar la URL real en CONFIG.APPS_SCRIPT_URL
-     2) Poner MOCK_ACTIVO en false
-   El resto del módulo no necesita cambios: cargarDatos() ya
-   entrega los datos en la misma forma { alfabeto, ejemplos }
-   sin importar el origen.
+   MODO MOCK: data/alfabetizacion-mock.json se conserva únicamente
+   como respaldo local y para pruebas. En uso normal la fuente real
+   es data/alfabetizacion.json, sincronizada desde Google Sheets.
 
    ARCHIVOS POR CARÁCTER (todos generados por ti, en el propio repo):
      img/alfabetizacion/boca/{CARACTER}.png                              (fonética, sí viene del Sheet -> campo imagenBoca)
@@ -38,7 +32,7 @@ const AlfabetizacionV2 = (function () {
     // CONFIGURACIÓN
     // ---------------------------------------------------------
     const CONFIG = {
-        MOCK_ACTIVO: false, // 👉 ya conectado al Apps Script real (Sheet). Poner en true para volver al mock local si hace falta debuggear sin depender de Google.
+        MOCK_ACTIVO: false, // true solo para pruebas o respaldo manual.
         MOCK_URL: "data/alfabetizacion-mock.json",
         // Fuente principal: JSON estático servido por LSPedia.
         DATA_URL: "data/alfabetizacion.json",
@@ -153,7 +147,7 @@ const AlfabetizacionV2 = (function () {
     const el = (id) => document.getElementById(id);
 
     // ---------------------------------------------------------
-    // CARGA DE DATOS (mock local o Apps Script real, mismo contrato)
+    // CARGA DE DATOS (JSON local + caché/mock de respaldo)
     // ---------------------------------------------------------
     function cargarDatos(forzar) {
         el("alfabError").classList.add("d-none");
@@ -173,7 +167,7 @@ const AlfabetizacionV2 = (function () {
         // entra y sale de Herramientas varias veces seguidas, por ejemplo
         // pasando antes por Jugar/Quiz). Cada una de esas llamadas terminaba
         // en cargarDatos(false) sin fijarse si YA había una carga en camino,
-        // así que se apilaban varias peticiones (JSONP + fetch del mock) al
+        // así que se apilaban varias peticiones (JSON local + fetch del mock) al
         // mismo tiempo. Con conexión lenta/inestable, la que terminaba
         // primero podía no ser la más reciente, y su callback llamaba a
         // mostrarBloque()/mostrarError() por su cuenta, pisando lo que la
@@ -267,19 +261,6 @@ const AlfabetizacionV2 = (function () {
             .catch(() => { /* silencioso: el dato real sigue en camino */ });
     }
 
-    // Igual que quiz.js: JSONP porque Apps Script + GitHub Pages suele
-    // bloquear la lectura por CORS aunque la URL funcione directamente.
-    //
-    // ⚠️ Los Web Apps de Apps Script "duermen" cuando nadie los usa por un
-    // rato: la primera petición después de inactividad ("cold start") puede
-    // tardar bastante más que una normal. Como <script src> no dispara
-    // onerror mientras sigue cargando (solo si la red falla de verdad), un
-    // cold start lento se ve exactamente igual que uno roto: el spinner se
-    // queda quieto hasta que se cumple el timeout. Por eso: (1) el primer
-    // intento usa un timeout corto, (2) si no respondió a tiempo se
-    // reintenta UNA vez con un timeout más largo antes de rendirse, y
-    // (3) el spinner avisa en pantalla si el segundo intento está en curso,
-    // para que no parezca que la pantalla quedó colgada sin explicación.
     function guardarDatos(data) {
         estado.cargando = false;
         estado.datos = { alfabeto: data.alfabeto || [], ejemplos: data.ejemplos || [] };
@@ -331,7 +312,7 @@ const AlfabetizacionV2 = (function () {
         // suele ganar la carrera y pinta primero (p.ej. con la ruta de
         // imagenBoca del mock, que puede no coincidir con el archivo real
         // ya subido). Como la rama de arriba SOLO pinta la primera vez,
-        // cuando el dato real de Google Sheets llegaba después, quedaba
+        // cuando el dato real de alfabetizacion.json llegaba después, quedaba
         // guardado en silencio en estado.datos pero la pantalla seguía
         // mostrando la imagen rota del mock — hasta que el usuario
         // cambiaba de letra y volvía, forzando un render nuevo que ya
@@ -398,17 +379,6 @@ const AlfabetizacionV2 = (function () {
         cont.appendChild(btnReintentar);
 
         cont.classList.remove("d-none");
-    }
-
-    // Cambia el texto bajo el spinner de "alfabCargando" sin tocar el resto
-    // del bloque, para que el usuario vea que la carga sigue intentando
-    // (y no piense que la pantalla quedó colgada) mientras dura un
-    // reintento de conexión con Google Sheets.
-    function actualizarMensajeCargando(msg) {
-        const cont = el("alfabCargando");
-        if (!cont) return;
-        const p = cont.querySelector("p");
-        if (p) p.textContent = msg;
     }
 
     // ---------------------------------------------------------
