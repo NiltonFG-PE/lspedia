@@ -1,0 +1,201 @@
+from pathlib import Path
+
+# 1) Reemplazar el confirm() nativo del Quiz por un modal visual propio.
+p = Path("js/quiz.js")
+s = p.read_text(encoding="utf-8")
+old = '''    function volverAlMenu() {
+        const rondaEnCurso = estado.ronda.preguntas.length > 0 && estado.ronda.indice < estado.ronda.preguntas.length;
+        const memoriaEnCurso = estado.memoria.cartas.length > 0 && estado.memoria.aciertos < estado.memoria.cartas.length / 2;
+        if ((rondaEnCurso || memoriaEnCurso) && !window.confirm("¿Volver al menú? Perderás el progreso de esta partida.")) {
+            return;
+        }
+        detenerTemporizador();
+        cancelarAvanceAutomatico();
+        detenerCronoMemoria();
+        destruirReproductorQuizVideo();
+        const params = new URLSearchParams(window.location.search);
+        if(params.get("vista") === "herramientas-jugar" && params.get("juego") === "quiz" && params.get("pantalla") === "partida" && window.history.length > 1){
+            window.history.back();
+            return;
+        }
+        mostrarIntro();
+    }
+'''
+new = '''    function cerrarConfirmacionVolverQuiz() {
+        const anterior = el("quizConfirmarVolver");
+        if (anterior) anterior.remove();
+    }
+
+    function mostrarConfirmacionVolverQuiz(alConfirmar) {
+        cerrarConfirmacionVolverQuiz();
+
+        const capa = document.createElement("div");
+        capa.id = "quizConfirmarVolver";
+        capa.className = "quiz-confirm-overlay";
+        capa.innerHTML = `
+            <div class="quiz-confirm-card" role="dialog" aria-modal="true" aria-labelledby="quizConfirmTitulo">
+                <div class="quiz-confirm-icono" aria-hidden="true">↩️</div>
+                <h5 id="quizConfirmTitulo" class="quiz-confirm-titulo">¿Volver al menú?</h5>
+                <p class="quiz-confirm-texto">La partida actual se cerrará.</p>
+                <div class="quiz-confirm-acciones">
+                    <button type="button" class="quiz-confirm-seguir">Seguir jugando</button>
+                    <button type="button" class="quiz-confirm-volver">Volver al menú</button>
+                </div>
+            </div>`;
+
+        document.body.appendChild(capa);
+
+        const seguir = capa.querySelector(".quiz-confirm-seguir");
+        const volver = capa.querySelector(".quiz-confirm-volver");
+        const cerrar = () => cerrarConfirmacionVolverQuiz();
+
+        if (seguir) seguir.addEventListener("click", cerrar);
+        if (volver) volver.addEventListener("click", () => {
+            cerrar();
+            alConfirmar();
+        });
+        capa.addEventListener("click", (ev) => {
+            if (ev.target === capa) cerrar();
+        });
+        setTimeout(() => { if (seguir) seguir.focus(); }, 30);
+    }
+
+    function ejecutarVolverAlMenuQuiz() {
+        detenerTemporizador();
+        cancelarAvanceAutomatico();
+        detenerCronoMemoria();
+        destruirReproductorQuizVideo();
+        const params = new URLSearchParams(window.location.search);
+        if(params.get("vista") === "herramientas-jugar" && params.get("juego") === "quiz" && params.get("pantalla") === "partida" && window.history.length > 1){
+            window.history.back();
+            return;
+        }
+        mostrarIntro();
+    }
+
+    function volverAlMenu() {
+        const rondaEnCurso = estado.ronda.preguntas.length > 0 && estado.ronda.indice < estado.ronda.preguntas.length;
+        const memoriaEnCurso = estado.memoria.cartas.length > 0 && estado.memoria.aciertos < estado.memoria.cartas.length / 2;
+        if (rondaEnCurso || memoriaEnCurso) {
+            mostrarConfirmacionVolverQuiz(ejecutarVolverAlMenuQuiz);
+            return;
+        }
+        ejecutarVolverAlMenuQuiz();
+    }
+'''
+if old not in s:
+    raise SystemExit("No se encontró el bloque esperado volverAlMenu en js/quiz.js")
+s = s.replace(old, new, 1)
+p.write_text(s, encoding="utf-8")
+
+# 2) Restaurar las mini animaciones a una sola reproducción.
+p = Path("css/quiz.css")
+s = p.read_text(encoding="utf-8")
+repeticion = '''/* Las mini-demostraciones del menú antes terminaban demasiado rápido.
+   Se repiten tres veces para que la persona tenga tiempo de entender qué
+   hace cada juego sin convertir la pantalla en una animación permanente. */
+#quizMenuJuegos .juego-preview,
+#quizMenuJuegos .juego-preview * {
+    animation-iteration-count: 3 !important;
+}
+
+'''
+if repeticion not in s:
+    raise SystemExit("No se encontró el bloque de repetición x3 en css/quiz.css")
+s = s.replace(repeticion, "", 1)
+
+modal_css = r'''
+/* ===== Confirmación visual del Quiz: reemplaza window.confirm del navegador ===== */
+.quiz-confirm-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 14000;
+    display: grid;
+    place-items: center;
+    padding: 22px;
+    background: rgba(15, 23, 42, .58);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    animation: quizConfirmFondo .18s ease-out both;
+}
+.quiz-confirm-card {
+    width: min(100%, 360px);
+    padding: 24px 20px 18px;
+    border-radius: 26px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 24px 70px rgba(15, 23, 42, .28);
+    text-align: center;
+    animation: quizConfirmEntrada .24s cubic-bezier(.22,.9,.28,1) both;
+}
+.quiz-confirm-icono {
+    width: 58px;
+    height: 58px;
+    margin: 0 auto 10px;
+    display: grid;
+    place-items: center;
+    border-radius: 18px;
+    background: #eef2ff;
+    font-size: 1.85rem;
+}
+.quiz-confirm-titulo {
+    margin: 0 0 6px;
+    color: #172033;
+    font-weight: 900;
+    font-size: 1.2rem;
+}
+.quiz-confirm-texto {
+    margin: 0 0 18px;
+    color: #64748b;
+    font-size: .92rem;
+}
+.quiz-confirm-acciones {
+    display: grid;
+    gap: 9px;
+}
+.quiz-confirm-acciones button {
+    min-height: 48px;
+    border-radius: 15px;
+    font-weight: 850;
+    transition: transform .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+.quiz-confirm-seguir {
+    border: 0;
+    background: linear-gradient(135deg, #2563eb, #4f46e5);
+    color: #fff;
+    box-shadow: 0 8px 18px rgba(37, 99, 235, .23);
+}
+.quiz-confirm-volver {
+    border: 2px solid #fecaca;
+    background: #fff7f7;
+    color: #b91c1c;
+}
+.quiz-confirm-acciones button:active { transform: scale(.98); }
+.quiz-confirm-acciones button:focus-visible {
+    outline: 3px solid rgba(59, 130, 246, .28);
+    outline-offset: 2px;
+}
+@keyframes quizConfirmFondo {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+@keyframes quizConfirmEntrada {
+    from { opacity: 0; transform: translateY(14px) scale(.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .quiz-confirm-overlay,
+    .quiz-confirm-card { animation: none; }
+}
+'''
+if "/* ===== Confirmación visual del Quiz" not in s:
+    s += "\n" + modal_css
+p.write_text(s, encoding="utf-8")
+
+# 3) Renovar la caché PWA.
+p = Path("sw.js")
+s = p.read_text(encoding="utf-8")
+if 'const VERSION_APP = "v15";' not in s:
+    raise SystemExit("sw.js no está en v15 como se esperaba")
+s = s.replace('const VERSION_APP = "v15";', 'const VERSION_APP = "v16";', 1)
+p.write_text(s, encoding="utf-8")
