@@ -1,8 +1,9 @@
 /* ============================================================
    LSPedia - ALFABETIZACIÓN v2 (independiente del diccionario y del Quiz)
    ------------------------------------------------------------
-   Sigue el mismo patrón que js/quiz.js (namespace QuizV2):
-   caché local de 5 min + JSONP contra el Web App de Apps Script.
+   Lee data/alfabetizacion.json desde el propio sitio y conserva
+   caché local + alfabetizacion-mock.json como respaldo. El navegador
+   ya no ejecuta JSONP ni consulta directamente Google Apps Script.
 
    ⚠️ MODO MOCK (mientras el Apps Script no está listo):
    Con MOCK_ACTIVO en true, los datos se leen de
@@ -39,11 +40,8 @@ const AlfabetizacionV2 = (function () {
     const CONFIG = {
         MOCK_ACTIVO: false, // 👉 ya conectado al Apps Script real (Sheet). Poner en true para volver al mock local si hace falta debuggear sin depender de Google.
         MOCK_URL: "data/alfabetizacion-mock.json",
-
-        // 👉 Pega aquí la URL de tu Web App de Apps Script (termina en /exec)
-        //    (puede ser la misma del Quiz si el doGet combinado responde
-        //     también a este endpoint, o una nueva si prefieres separarlo)
-        APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbw2OCpT7GlBL_UkyUxqD6o-YBmmR5TAzKBywPaVGO9UbdEG4_f2eqrCVpQV6If9IouoDA/exec",
+        // Fuente principal: JSON estático servido por LSPedia.
+        DATA_URL: "data/alfabetizacion.json",
 
         CLAVE_CACHE: "lspedia_alfabetizacion_cache_v1",
         DURACION_CACHE_MS: 5 * 60 * 1000, // 5 minutos, igual que el Quiz
@@ -202,16 +200,35 @@ const AlfabetizacionV2 = (function () {
             return;
         }
 
-        // Modo real: el mock local (mismo origen, sin CORS/JSONP) se usa
-        // como "cascarón" para pintar el abecedario casi al instante,
-        // mientras en paralelo se pide el dato real a Google Sheets. En
-        // cuanto llegue el real, reemplaza en silencio lo que se esté
-        // viendo (guardarDatos ya deja todo en caché para la próxima
-        // vez). Así el módulo se siente listo en menos de 1 segundo aunque
-        // Apps Script tarde varios segundos en responder, sin depender de
-        // activar MOCK_ACTIVO ni desconectar el Sheet real.
+        // Modo normal: mostramos el respaldo local de inmediato mientras
+        // se lee alfabetizacion.json desde el mismo dominio. El JSON real
+        // reemplaza al mock en cuanto llega, sin ejecutar código externo.
         pintarMockDeInmediato();
-        fetchRemoto();
+        cargarJsonLocal();
+    }
+
+    // Fuente principal de Alfabetización: JSON del propio sitio.
+    // Se agrega un parámetro de versión para evitar copias antiguas del navegador;
+    // el Service Worker ya deja pasar los .json directamente a la red.
+    function cargarJsonLocal() {
+        const separador = CONFIG.DATA_URL.indexOf("?") > -1 ? "&" : "?";
+        const url = CONFIG.DATA_URL + separador + "_lspedia=" + Date.now();
+
+        fetchConTimeout(url, 6000)
+            .then((res) => {
+                if (!res.ok) throw new Error("HTTP " + res.status + " al leer alfabetizacion.json");
+                return res.json();
+            })
+            .then((data) => {
+                if (!data || data.ok !== true || !Array.isArray(data.alfabeto) || !Array.isArray(data.ejemplos)) {
+                    throw new Error("alfabetizacion.json tiene una estructura inválida.");
+                }
+                if (!data.alfabeto.length) {
+                    throw new Error("alfabetizacion.json no contiene caracteres.");
+                }
+                guardarDatos(data);
+            })
+            .catch((err) => manejarErrorCarga(err));
     }
 
     // Límite de tiempo "duro" para el fetch del mock local: igual que en
@@ -263,67 +280,6 @@ const AlfabetizacionV2 = (function () {
     // reintenta UNA vez con un timeout más largo antes de rendirse, y
     // (3) el spinner avisa en pantalla si el segundo intento está en curso,
     // para que no parezca que la pantalla quedó colgada sin explicación.
-    function fetchRemoto(esReintento) {
-        if (!CONFIG.APPS_SCRIPT_URL || CONFIG.APPS_SCRIPT_URL.indexOf("PEGA_AQUI") > -1) {
-            estado.cargando = false;
-            mostrarError("Alfabetización aún no está conectada a Google Sheets. Falta pegar la URL de Apps Script en js/alfabetizacion.js.");
-            return;
-        }
-
-        if (esReintento) actualizarMensajeCargando("Google Sheets está tardando más de lo normal, reintentando...");
-
-        const nombreCallback = "alfabV2Callback_" + Date.now() + "_" + Math.floor(Math.random() * 1e6);
-        let resuelto = false;
-
-        const limpiar = () => {
-            delete window[nombreCallback];
-            const s = document.getElementById(nombreCallback);
-            if (s) s.remove();
-        };
-
-        window[nombreCallback] = function (data) {
-            resuelto = true;
-            limpiar();
-            try {
-                if (!data.ok) throw new Error(data.error || "Respuesta inválida del servidor.");
-                guardarDatos(data);
-            } catch (err) {
-                manejarErrorCarga(err);
-            }
-        };
-
-        const separador = CONFIG.APPS_SCRIPT_URL.indexOf("?") > -1 ? "&" : "?";
-        const script = document.createElement("script");
-        script.id = nombreCallback;
-        // "modo=alfabetizacion" le dice al doGet único del proyecto (en
-        // QuizAPI.gs, compartido con el Quiz) que debe responder con los
-        // datos de Alfabetización y no con el banco de preguntas del Quiz.
-        script.src = CONFIG.APPS_SCRIPT_URL + separador + "modo=alfabetizacion&callback=" + nombreCallback;
-        script.onerror = () => {
-            if (resuelto) return;
-            limpiar();
-            if (!esReintento) {
-                fetchRemoto(true);
-            } else {
-                manejarErrorCarga(new Error("No se pudo conectar con Google Apps Script (revisa la URL o el despliegue)."));
-            }
-        };
-        document.body.appendChild(script);
-
-        // Primer intento: timeout corto (puede ser solo un cold start).
-        // Reintento: timeout largo antes de mostrar el error definitivo.
-        const espera = esReintento ? 15000 : 6000;
-        setTimeout(() => {
-            if (resuelto) return;
-            limpiar();
-            if (!esReintento) {
-                fetchRemoto(true);
-            } else {
-                manejarErrorCarga(new Error("Tiempo de espera agotado al conectar con Google Sheets. El servicio puede estar lento o el despliegue del Apps Script tiene un problema."));
-            }
-        }, espera);
-    }
-
     function guardarDatos(data) {
         estado.cargando = false;
         estado.datos = { alfabeto: data.alfabeto || [], ejemplos: data.ejemplos || [] };
@@ -401,9 +357,9 @@ const AlfabetizacionV2 = (function () {
         } else if (estado.datos.alfabeto.length > 0) {
             // Ya se alcanzó a pintar el mock local (ver pintarMockDeInmediato):
             // seguimos con eso en vez de tapar la pantalla con un error.
-            console.warn("Alfabetización: usando datos de respaldo (mock) porque falló la conexión con Google Sheets.");
+            console.warn("Alfabetización: usando datos de respaldo (mock) porque no se pudo leer alfabetizacion.json.");
         } else {
-            mostrarError("No se pudo cargar Alfabetización. Detalle técnico: " + (err && err.message ? err.message : err));
+            mostrarError("No se pudo cargar Alfabetización. " + (err && err.message ? err.message : err));
         }
     }
 
