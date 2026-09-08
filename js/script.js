@@ -237,10 +237,10 @@ function migrarFavoritosEHistorialAIds(){
 // actualizamos título, descripción, canonical, Open Graph, Twitter y JSON-LD
 // desde JavaScript. Al salir de la ficha se restauran los valores generales.
 const SEO_LSPEDIA_BASE = {
-    titulo: "LSPedia - Diccionario de Lengua de Señas Peruana (LSP)",
-    descripcion: "LSPedia es el diccionario digital gratuito de Lengua de Señas Peruana (LSP). Aprende el significado de palabras en español con el apoyo de videos en señas.",
-    ogTitulo: "LSPedia - Diccionario de Lengua de Señas Peruana",
-    ogDescripcion: "Diccionario digital gratuito para aprender el significado de palabras en español con el apoyo de videos en Lengua de Señas Peruana (LSP).",
+    titulo: "LSPedia - Diccionario visual de español con apoyo en Lengua de Señas Peruana",
+    descripcion: "Diccionario visual gratuito para aprender y comprender palabras en español con apoyo de videos en Lengua de Señas Peruana (LSP).",
+    ogTitulo: "LSPedia - Diccionario visual de español con apoyo en Lengua de Señas Peruana",
+    ogDescripcion: "Diccionario visual gratuito para aprender y comprender palabras en español con apoyo de videos en Lengua de Señas Peruana (LSP).",
     url: "https://lspedia.site/",
     imagen: "https://lspedia.site/img/lspedia.png"
 };
