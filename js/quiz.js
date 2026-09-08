@@ -1202,12 +1202,46 @@ const QuizV2 = (function () {
     // Se usa desde la pregunta activa o el modo memoria para elegir
     // otro nivel/modo sin tener que "Salir" del todo.
     // ---------------------------------------------------------
-    function volverAlMenu() {
-        const rondaEnCurso = estado.ronda.preguntas.length > 0 && estado.ronda.indice < estado.ronda.preguntas.length;
-        const memoriaEnCurso = estado.memoria.cartas.length > 0 && estado.memoria.aciertos < estado.memoria.cartas.length / 2;
-        if ((rondaEnCurso || memoriaEnCurso) && !window.confirm("¿Volver al menú? Perderás el progreso de esta partida.")) {
-            return;
-        }
+    function cerrarConfirmacionVolverQuiz() {
+        const anterior = el("quizConfirmarVolver");
+        if (anterior) anterior.remove();
+    }
+
+    function mostrarConfirmacionVolverQuiz(alConfirmar) {
+        cerrarConfirmacionVolverQuiz();
+
+        const capa = document.createElement("div");
+        capa.id = "quizConfirmarVolver";
+        capa.className = "quiz-confirm-overlay";
+        capa.innerHTML = `
+            <div class="quiz-confirm-card" role="dialog" aria-modal="true" aria-labelledby="quizConfirmTitulo">
+                <div class="quiz-confirm-icono" aria-hidden="true">↩️</div>
+                <h5 id="quizConfirmTitulo" class="quiz-confirm-titulo">¿Volver al menú?</h5>
+                <p class="quiz-confirm-texto">La partida actual se cerrará.</p>
+                <div class="quiz-confirm-acciones">
+                    <button type="button" class="quiz-confirm-seguir">Seguir jugando</button>
+                    <button type="button" class="quiz-confirm-volver">Volver al menú</button>
+                </div>
+            </div>`;
+
+        document.body.appendChild(capa);
+
+        const seguir = capa.querySelector(".quiz-confirm-seguir");
+        const volver = capa.querySelector(".quiz-confirm-volver");
+        const cerrar = () => cerrarConfirmacionVolverQuiz();
+
+        if (seguir) seguir.addEventListener("click", cerrar);
+        if (volver) volver.addEventListener("click", () => {
+            cerrar();
+            alConfirmar();
+        });
+        capa.addEventListener("click", (ev) => {
+            if (ev.target === capa) cerrar();
+        });
+        setTimeout(() => { if (seguir) seguir.focus(); }, 30);
+    }
+
+    function ejecutarVolverAlMenuQuiz() {
         detenerTemporizador();
         cancelarAvanceAutomatico();
         detenerCronoMemoria();
@@ -1218,6 +1252,16 @@ const QuizV2 = (function () {
             return;
         }
         mostrarIntro();
+    }
+
+    function volverAlMenu() {
+        const rondaEnCurso = estado.ronda.preguntas.length > 0 && estado.ronda.indice < estado.ronda.preguntas.length;
+        const memoriaEnCurso = estado.memoria.cartas.length > 0 && estado.memoria.aciertos < estado.memoria.cartas.length / 2;
+        if (rondaEnCurso || memoriaEnCurso) {
+            mostrarConfirmacionVolverQuiz(ejecutarVolverAlMenuQuiz);
+            return;
+        }
+        ejecutarVolverAlMenuQuiz();
     }
 
     // ---------------------------------------------------------
