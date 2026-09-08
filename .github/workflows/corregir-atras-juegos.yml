@@ -1,0 +1,71 @@
+name: Corregir navegación Atrás en Juegos
+
+on:
+  push:
+    branches: [develop]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  corregir:
+    if: github.event_name == 'workflow_dispatch' || github.event.head_commit.message != 'Aplicar navegación Atrás por niveles en Juegos'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Corregir historial interno de Juegos
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path('js/matematicas.js')
+          s = p.read_text(encoding='utf-8')
+
+          inicio = s.index('    function manejarPopstateInterno(evento) {')
+          fin = s.index('\n    function volverAlMenuJuegosDesdeBoton()', inicio)
+          nuevo = '''    function manejarPopstateInterno() {
+              const params = new URLSearchParams(window.location.search);
+              if (params.get("vista") !== "herramientas-jugar") return;
+
+              // script.js se carga antes que matematicas.js. Dejamos que el
+              // router general reconstruya Herramientas > Jugar y después
+              // restauramos la pantalla interna exacta indicada por la URL.
+              setTimeout(() => {
+                  const actuales = new URLSearchParams(window.location.search);
+                  if (actuales.get("vista") !== "herramientas-jugar") return;
+                  restaurando = true;
+                  try {
+                      restaurarJuegoDesdeParametros(actuales);
+                  } finally {
+                      restaurando = false;
+                  }
+              }, 0);
+          }
+          '''
+          s = s[:inicio] + nuevo + s[fin:]
+          s = s.replace(
+              'window.addEventListener("popstate", manejarPopstateInterno, true);',
+              'window.addEventListener("popstate", manejarPopstateInterno);'
+          )
+          p.write_text(s, encoding='utf-8')
+          PY
+
+      - name: Validar JavaScript
+        run: node --check js/matematicas.js
+
+      - name: Guardar corrección
+        run: |
+          if git diff --quiet -- js/matematicas.js; then
+            echo "No hay cambios pendientes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/matematicas.js
+          git commit -m "Aplicar navegación Atrás por niveles en Juegos"
+          git push origin HEAD:develop
