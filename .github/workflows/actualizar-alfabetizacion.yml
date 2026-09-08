@@ -1,0 +1,64 @@
+name: Actualizar alfabetizacion desde Google Sheets
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - "js/alfabetizacion.js"
+      - "scripts/generar_alfabetizacion.py"
+      - "scripts/migrar_alfabetizacion_json_local.py"
+      - "scripts/validar_alfabetizacion.py"
+      - ".github/workflows/actualizar-alfabetizacion.yml"
+  schedule:
+    - cron: "7,37 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: actualizar-alfabetizacion-develop
+  cancel-in-progress: true
+
+jobs:
+  actualizar-alfabetizacion:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Migrar navegador a JSON local
+        run: python scripts/migrar_alfabetizacion_json_local.py
+
+      - name: Descargar Alfabetizacion y generar JSON
+        run: python scripts/generar_alfabetizacion.py
+
+      - name: Validar antes de publicar
+        shell: bash
+        run: |
+          python -m json.tool data/alfabetizacion.json > /dev/null
+          python scripts/validar_alfabetizacion.py
+          node --check js/alfabetizacion.js
+
+      - name: Guardar cambios si hubo actualizacion
+        shell: bash
+        run: |
+          if git diff --quiet -- js/alfabetizacion.js data/alfabetizacion.json sw.js; then
+            echo "Alfabetizacion ya estaba actualizada."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/alfabetizacion.js data/alfabetizacion.json sw.js
+          git commit -m "Usar JSON local para Alfabetizacion"
+          git push origin HEAD:develop
