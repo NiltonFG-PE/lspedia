@@ -1,0 +1,76 @@
+name: Actualizar aviso misión LSPedia
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - '.github/workflows/actualizar-aviso-mision.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Reemplazar texto del aviso
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          index = Path('index.html')
+          texto = index.read_text(encoding='utf-8')
+
+          anterior = '''                            <p class="aviso-mision-linea1">No enseñamos lengua de señas, <strong>eso le pertenece a los sordos</strong>.</p>
+                            <p class="aviso-mision-linea2">Esta herramienta es para ti: te ayudamos a aprender palabras del español con <span class="subtitulo-resaltado">videos en Lengua de Señas Peruana</span>.</p>'''
+
+          nuevo = '''                            <p class="aviso-mision-linea1">LSPedia es un diccionario visual de español con apoyo en Lengua de Señas Peruana.<br>Su función es facilitar la comprensión de palabras y significados,</p>
+                            <p class="aviso-mision-linea2"><strong>No es un curso, ni enseñamos LSP.</strong></p>'''
+
+          if anterior not in texto:
+              raise SystemExit('No se encontró el texto anterior del aviso; se detiene para no modificar otra zona.')
+
+          texto = texto.replace(anterior, nuevo, 1)
+          texto = texto.replace('''                    <!-- Aviso "No enseñamos lengua de señas": reemplaza al
+                         subtítulo simple de antes. Franja de acento dorada +
+                         ícono para que resalte visualmente (regla central
+                         del proyecto: LSPedia no enseña LSP -eso pertenece a
+                         los sordos-, ayuda a aprender español mediante
+                         videos en LSP). Dos líneas, una idea por línea. -->''',
+                         '''                    <!-- Aviso de misión del Diccionario: explica de forma breve
+                         que LSPedia es un diccionario visual de español con apoyo
+                         en LSP y aclara que no es un curso ni enseña LSP. -->''', 1)
+          index.write_text(texto, encoding='utf-8')
+
+          sw = Path('sw.js')
+          sw_texto = sw.read_text(encoding='utf-8')
+          sw_texto = re.sub(r'const VERSION_APP = "v\d+";', 'const VERSION_APP = "v20";', sw_texto, count=1)
+          sw.write_text(sw_texto, encoding='utf-8')
+          PY
+
+      - name: Validar cambios
+        shell: bash
+        run: |
+          git diff --check
+          grep -q 'LSPedia es un diccionario visual de español con apoyo en Lengua de Señas Peruana.' index.html
+          grep -q 'Su función es facilitar la comprensión de palabras y significados,' index.html
+          grep -q 'No es un curso, ni enseñamos LSP.' index.html
+          grep -q 'const VERSION_APP = "v20"' sw.js
+
+      - name: Guardar en develop
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html sw.js
+          git commit -m 'Actualizar mensaje de misión del Diccionario'
+          git push origin develop
