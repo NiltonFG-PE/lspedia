@@ -18,6 +18,22 @@ jobs:
           ref: develop
           fetch-depth: 0
 
+      - name: Ajustar parche a la versión actual
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('.tmp/aplicar_mejoras_herramientas_juegos_v2.py')
+          s=p.read_text(encoding='utf-8')
+          viejo='''    function iniciarJuegoCompletar() {\n        const nivel = nivelCompletarActual();'''
+          nuevo='''    function iniciarJuegoCompletar() {\n        const banco = barajar(bancoPalabrasCompletar());'''
+          reemplazo_viejo='''    function iniciarJuegoCompletar() {\n        if(window.HistorialJuegosLSPedia && typeof HistorialJuegosLSPedia.registrarJuego === "function"){\n            HistorialJuegosLSPedia.registrarJuego("completar", "partida", { nivel: estado.completar.nivelId || "" });\n        }\n        const nivel = nivelCompletarActual();'''
+          reemplazo_nuevo='''    function iniciarJuegoCompletar() {\n        if(window.HistorialJuegosLSPedia && typeof HistorialJuegosLSPedia.registrarJuego === "function"){\n            HistorialJuegosLSPedia.registrarJuego("completar", "partida", { nivel: estado.completar.nivelId || "" });\n        }\n        const banco = barajar(bancoPalabrasCompletar());'''
+          if viejo not in s or reemplazo_viejo not in s:
+              raise SystemExit('No se encontro el patron interno a ajustar')
+          s=s.replace(viejo,nuevo,1).replace(reemplazo_viejo,reemplazo_nuevo,1)
+          p.write_text(s,encoding='utf-8')
+          PY
+
       - name: Aplicar mejoras
         run: python .tmp/aplicar_mejoras_herramientas_juegos_v2.py
 
@@ -31,6 +47,7 @@ jobs:
           grep -q 'btnMenuJuegoOraciones' index.html
           grep -q 'btnQuizJugarRapido' index.html
           grep -q 'HistorialJuegosLSPedia' js/script.js
+          grep -q 'activarArrastreVisualUnir' js/alfabetizacion.js
 
       - name: Guardar en develop y limpiar archivos temporales
         run: |
