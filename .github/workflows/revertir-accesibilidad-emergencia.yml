@@ -1,0 +1,68 @@
+name: Revertir accesibilidad emergencia
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - '.github/workflows/revertir-accesibilidad-emergencia.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  revertir:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Retirar integración de accesibilidad
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          index = Path('index.html')
+          texto = index.read_text(encoding='utf-8')
+          texto = texto.replace('    <link rel="stylesheet" href="css/accesibilidad.css?v=20260908">\n', '')
+          texto = texto.replace('    <script src="js/accesibilidad.js?v=20260908" defer></script>\n', '')
+          index.write_text(texto, encoding='utf-8')
+
+          sw = Path('sw.js')
+          texto_sw = sw.read_text(encoding='utf-8')
+          texto_sw = re.sub(r'const VERSION_APP = "v\d+";', 'const VERSION_APP = "v18";', texto_sw, count=1)
+          texto_sw = texto_sw.replace('    "css/accesibilidad.css",\n', '')
+          texto_sw = texto_sw.replace('    "js/accesibilidad.js",\n', '')
+          sw.write_text(texto_sw, encoding='utf-8')
+          PY
+
+      - name: Validar JavaScript existente
+        shell: bash
+        run: |
+          find js -type f -name '*.js' -print0 | xargs -0 -n1 node --check
+
+      - name: Validar reversión
+        shell: bash
+        run: |
+          git diff --check
+          ! grep -q 'css/accesibilidad.css' index.html
+          ! grep -q 'js/accesibilidad.js' index.html
+          grep -q 'const VERSION_APP = "v18"' sw.js
+
+      - name: Guardar restauración en develop
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo 'No hay cambios pendientes.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html sw.js
+          git commit -m 'Restaurar carga de LSPedia y retirar accesibilidad temporalmente'
+          git push origin develop
