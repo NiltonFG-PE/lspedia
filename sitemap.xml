@@ -546,6 +546,16 @@
         <priority>0.8</priority>
     </url>
     <url>
+        <loc>https://lspedia.site/?p=Diccionario</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/?p=Vocabulario</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
         <loc>https://lspedia.site/?p=Gracias</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
@@ -817,6 +827,11 @@
     </url>
     <url>
         <loc>https://lspedia.site/?p=Grado</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/?p=Uniformidad</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
@@ -1392,6 +1407,11 @@
     </url>
     <url>
         <loc>https://lspedia.site/?p=Bater%C3%ADa</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/?p=Inteligencia%20artificial</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
