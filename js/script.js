@@ -129,18 +129,183 @@ function colapsarIndiceAlfabetico(){
     if (indice && btn && indice.classList.contains("show")) btn.click();
 }
 
-// --- RECORDAR LA VISTA ACTUAL EN LA URL (para que un refresh no vuelva
-//     siempre a Inicio) ---
-// Usa replaceState (no pushState) a propósito: cambiar de "Temas orden" a
-// "Herramientas" varias veces no debe ir llenando el historial del
-// navegador, solo necesitamos que la URL actual refleje dónde está el
-// usuario para poder restaurarlo al recargar. Cuando se muestra una
-// palabra (?p=...) o se filtra por letra, esas rutas ya arman su propia
-// URL desde cero (pathname + su propio parámetro), así que la vista
-// guardada queda reemplazada sola sin que haga falta limpiarla a mano.
+// --- NAVEGACIÓN Y HISTORIAL DEL NAVEGADOR ---
+// Cada pantalla importante de LSPedia tiene ahora una URL propia. Al usar
+// pushState (en vez de replaceState) el botón Atrás/Adelante del navegador
+// puede recorrer Diccionario, Vocabulario, Herramientas, palabras, letras y
+// categorías como una navegación normal.
+//
+// Mientras estamos RESPONDIENDO a un evento popstate se activa esta bandera:
+// así las funciones de pantalla pueden reutilizarse para reconstruir la vista
+// sin volver a crear otra entrada y sin formar un bucle de historial.
+let restaurandoHistorialNavegador = false;
+
+function urlRelativaActual(){
+    return window.location.pathname + window.location.search;
+}
+
+// --- SEO DINÁMICO PARA CADA PALABRA ---
+// LSPedia es una SPA: al abrir ?p=Palabra no se carga otro HTML, por eso
+// actualizamos título, descripción, canonical, Open Graph, Twitter y JSON-LD
+// desde JavaScript. Al salir de la ficha se restauran los valores generales.
+const SEO_LSPEDIA_BASE = {
+    titulo: "LSPedia - Diccionario de Lengua de Señas Peruana (LSP)",
+    descripcion: "LSPedia es el diccionario digital gratuito de Lengua de Señas Peruana (LSP). Aprende el significado de palabras en español con el apoyo de videos en señas.",
+    ogTitulo: "LSPedia - Diccionario de Lengua de Señas Peruana",
+    ogDescripcion: "Diccionario digital gratuito para aprender el significado de palabras en español con el apoyo de videos en Lengua de Señas Peruana (LSP).",
+    url: "https://lspedia.site/",
+    imagen: "https://lspedia.site/img/lspedia.png"
+};
+
+function cambiarMetaPorId(id, atributo, valor){
+    const elemento = document.getElementById(id);
+    if(elemento && valor) elemento.setAttribute(atributo, valor);
+}
+
+function limpiarTextoSeo(valor){
+    return String(valor || "")
+        .replace(/<[^>]*>/g, " ")
+        .replace(/\*/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
+function recortarTextoSeo(texto, maximo = 158){
+    const limpio = limpiarTextoSeo(texto);
+    if(limpio.length <= maximo) return limpio;
+    const cortado = limpio.slice(0, maximo - 1);
+    const ultimoEspacio = cortado.lastIndexOf(" ");
+    return (ultimoEspacio > 90 ? cortado.slice(0, ultimoEspacio) : cortado).trim() + "…";
+}
+
+function urlCanonicaPalabra(nombre){
+    return SEO_LSPEDIA_BASE.url + "?p=" + encodeURIComponent(String(nombre || "").trim());
+}
+
+function obtenerImagenSeoPalabra(palabra){
+    const primeraImagen = String((palabra && palabra.imagen) || "")
+        .split(",")
+        .map(v => v.trim())
+        .find(Boolean);
+
+    if(primeraImagen){
+        try {
+            return new URL(primeraImagen, SEO_LSPEDIA_BASE.url).href;
+        } catch(_error) {}
+    }
+
+    const idVideo = extraerIdYouTube((palabra && palabra.video) || "");
+    if(idVideo) return "https://i.ytimg.com/vi/" + idVideo + "/maxresdefault.jpg";
+    return SEO_LSPEDIA_BASE.imagen;
+}
+
+function actualizarJsonLdPalabra(palabra, descripcion, url, imagen){
+    let script = document.getElementById("seoPalabraJsonLd");
+    if(!script){
+        script = document.createElement("script");
+        script.id = "seoPalabraJsonLd";
+        script.type = "application/ld+json";
+        document.head.appendChild(script);
+    }
+
+    const definicion = limpiarTextoSeo(palabra.definicion || descripcion);
+    const datos = {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": palabra.palabra + " | LSPedia",
+        "url": url,
+        "description": descripcion,
+        "inLanguage": "es-PE",
+        "isPartOf": {
+            "@type": "WebSite",
+            "name": "LSPedia",
+            "url": SEO_LSPEDIA_BASE.url
+        },
+        "mainEntity": {
+            "@type": "DefinedTerm",
+            "name": palabra.palabra,
+            "description": definicion,
+            "inDefinedTermSet": {
+                "@type": "DefinedTermSet",
+                "name": "LSPedia",
+                "url": SEO_LSPEDIA_BASE.url
+            }
+        }
+    };
+    if(imagen) datos.image = imagen;
+    script.textContent = JSON.stringify(datos);
+}
+
+function actualizarSeoPalabra(p){
+    if(!p || !p.palabra) return;
+
+    const nombre = String(p.palabra).trim();
+    const definicion = limpiarTextoSeo(p.definicion);
+    const titulo = nombre + ": significado con apoyo en LSP | LSPedia";
+    const descripcion = recortarTextoSeo(
+        definicion
+            ? nombre + ": " + definicion
+            : "Consulta el significado de " + nombre + " con apoyo visual y videos en Lengua de Señas Peruana (LSP) en LSPedia."
+    );
+    const url = urlCanonicaPalabra(nombre);
+    const imagen = obtenerImagenSeoPalabra(p);
+
+    document.title = titulo;
+    cambiarMetaPorId("metaDescription", "content", descripcion);
+    cambiarMetaPorId("canonicalLink", "href", url);
+    cambiarMetaPorId("ogType", "content", "article");
+    cambiarMetaPorId("ogUrl", "content", url);
+    cambiarMetaPorId("ogTitle", "content", titulo);
+    cambiarMetaPorId("ogDescription", "content", descripcion);
+    cambiarMetaPorId("ogImage", "content", imagen);
+    cambiarMetaPorId("twitterTitle", "content", titulo);
+    cambiarMetaPorId("twitterDescription", "content", descripcion);
+    cambiarMetaPorId("twitterImage", "content", imagen);
+    actualizarJsonLdPalabra(p, descripcion, url, imagen);
+}
+
+function restaurarSeoBase(){
+    document.title = SEO_LSPEDIA_BASE.titulo;
+    cambiarMetaPorId("metaDescription", "content", SEO_LSPEDIA_BASE.descripcion);
+    cambiarMetaPorId("canonicalLink", "href", SEO_LSPEDIA_BASE.url);
+    cambiarMetaPorId("ogType", "content", "website");
+    cambiarMetaPorId("ogUrl", "content", SEO_LSPEDIA_BASE.url);
+    cambiarMetaPorId("ogTitle", "content", SEO_LSPEDIA_BASE.ogTitulo);
+    cambiarMetaPorId("ogDescription", "content", SEO_LSPEDIA_BASE.ogDescripcion);
+    cambiarMetaPorId("ogImage", "content", SEO_LSPEDIA_BASE.imagen);
+    cambiarMetaPorId("twitterTitle", "content", SEO_LSPEDIA_BASE.ogTitulo);
+    cambiarMetaPorId("twitterDescription", "content", SEO_LSPEDIA_BASE.ogDescripcion);
+    cambiarMetaPorId("twitterImage", "content", SEO_LSPEDIA_BASE.imagen);
+
+    const jsonLdPalabra = document.getElementById("seoPalabraJsonLd");
+    if(jsonLdPalabra) jsonLdPalabra.remove();
+}
+
+function registrarUrlEnHistorial(nuevaUrl, estado = {}){
+    if(restaurandoHistorialNavegador) return;
+
+    // Cualquier navegación que ya no apunte a ?p=Palabra debe recuperar el
+    // SEO general de LSPedia. Así el título/canonical de una ficha no queda
+    // pegado al pasar a Inicio, Vocabulario, Herramientas, etc.
+    const destino = new URL(nuevaUrl, window.location.origin);
+    if(!destino.searchParams.get("p")) restaurarSeoBase();
+
+    // Si ya estamos exactamente en esa URL no agregamos una entrada
+    // duplicada; solo refrescamos el estado asociado (por ejemplo, para
+    // recordar que una palabra fue abierta dentro de Vocabulario).
+    if(urlRelativaActual() === nuevaUrl){
+        window.history.replaceState(estado, '', nuevaUrl);
+        return;
+    }
+
+    window.history.pushState(estado, '', nuevaUrl);
+}
+
 function actualizarVistaUrl(vista){
-    const nuevaUrl = vista ? (window.location.pathname + "?vista=" + vista) : window.location.pathname;
-    window.history.replaceState({}, '', nuevaUrl);
+    const nuevaUrl = vista
+        ? (window.location.pathname + "?vista=" + encodeURIComponent(vista))
+        : window.location.pathname;
+    registrarUrlEnHistorial(nuevaUrl, { tipo: "vista", vista: vista || "diccionario" });
 }
 
 // El título y subtítulo de arriba del todo cambian según la vista:
@@ -233,7 +398,7 @@ function cerrarMenuPrincipalSiEstaAbierto(){
     instancia.hide();
 }
 
-function irAlBuscador(){
+function irAlBuscador(opciones = {}){
     ocultarSeccionHerramientas();
     ocultarSeccionNosotros();
     ocultarPanelesGuardados();
@@ -257,9 +422,11 @@ function irAlBuscador(){
     desplegarIndiceAlfabetico();
     if (sugerencias) sugerencias.innerHTML = "";
     if (buscar) buscar.value = "";
-    if (buscar) {
+    if (buscar && !opciones.sinEnfoque) {
         buscar.scrollIntoView({ behavior: "smooth", block: "center" });
         setTimeout(() => buscar.focus(), 250);
+    } else if (opciones.irArriba) {
+        window.scrollTo({ top: 0, behavior: "auto" });
     }
 }
 
@@ -274,32 +441,62 @@ function irAlBuscador(){
 // clic durante la restauración inicial y el handler la apaga después de
 // leerla.
 let saltarScrollAlAbrirVocabulario = false;
+// Al volver/avanzar con el navegador no repetimos el aviso modal de
+// Vocabulario: la persona no está entrando por un toque nuevo del menú,
+// solo está restaurando una pantalla que ya visitó.
+let omitirAvisoVocabularioUnaVez = false;
 
 // --- AVISO DE VOCABULARIO EN FASE DE PRUEBA ---
-// Ventana flotante (modal de Bootstrap) que se muestra cada vez que la
-// persona toca el botón del menú "VOCABULARIO", recordando que la
-// sección está en fase de prueba y que a futuro sus videos serán
-// grabados solo por personas sordas. Mientras el modal está abierto,
-// el contenido de fondo se ve desenfocado (clase "contenido-desenfocado"
-// sobre #contenidoPrincipalApp) y no se puede tocar ni leer con
-// normalidad; el modal es "static" (no se cierra con clic afuera ni con
-// Escape ni con una X), así que la única forma de quitar el desenfoque
-// es tocando el botón "ENTIENDO, CONTINUAR".
+// El aviso se muestra una sola vez por sesión del navegador. Al aceptar
+// "ENTIENDO, CONTINUAR" guardamos el reconocimiento en sessionStorage.
+// Así, si la persona vuelve a entrar a Vocabulario durante la misma
+// sesión, puede hacerlo directamente sin repetir el modal. Al cerrar la
+// sesión del navegador, sessionStorage se limpia y el aviso podrá volver
+// a mostrarse en una visita posterior.
+const CLAVE_AVISO_VOCABULARIO_SESION = "lspedia_aviso_vocabulario_aceptado";
+let avisoVocabularioAceptadoEnMemoria = false;
+
+function avisoVocabularioYaAceptado() {
+    if (avisoVocabularioAceptadoEnMemoria) return true;
+    try {
+        return sessionStorage.getItem(CLAVE_AVISO_VOCABULARIO_SESION) === "1";
+    } catch (error) {
+        // Si el navegador bloquea sessionStorage, usamos la memoria de la
+        // página actual como respaldo para no repetir el aviso en cada toque.
+        return avisoVocabularioAceptadoEnMemoria;
+    }
+}
+
+function registrarAvisoVocabularioAceptado() {
+    avisoVocabularioAceptadoEnMemoria = true;
+    try {
+        sessionStorage.setItem(CLAVE_AVISO_VOCABULARIO_SESION, "1");
+    } catch (error) {
+        // El respaldo en memoria ya quedó activado.
+    }
+}
+
 function mostrarAvisoVocabulario() {
+    // Si ya fue aceptado en esta sesión, no mostramos ni desenfocamos nada.
+    if (avisoVocabularioYaAceptado()) return;
+
     const modalEl = document.getElementById("modalAvisoVocabulario");
+    if (!modalEl) return;
+
     const contenidoPrincipal = document.getElementById("contenidoPrincipalApp");
     if (contenidoPrincipal) contenidoPrincipal.classList.add("contenido-desenfocado");
-    if (!modalEl) return;
+
     const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
     modal.show();
 }
 
-// Al tocar "ENTIENDO, CONTINUAR" se retira el desenfoque del contenido.
-// El listener se registra una sola vez (fuera de mostrarAvisoVocabulario)
-// para no duplicarse cada vez que se abre el aviso.
+// Al tocar "ENTIENDO, CONTINUAR" guardamos el reconocimiento para toda
+// la sesión y retiramos el desenfoque del contenido. El listener se
+// registra una sola vez para evitar duplicados.
 const btnAceptarAvisoVocabulario = document.getElementById("btnAceptarAvisoVocabulario");
 if (btnAceptarAvisoVocabulario) {
     btnAceptarAvisoVocabulario.addEventListener("click", () => {
+        registrarAvisoVocabularioAceptado();
         const contenidoPrincipal = document.getElementById("contenidoPrincipalApp");
         if (contenidoPrincipal) contenidoPrincipal.classList.remove("contenido-desenfocado");
     });
@@ -310,7 +507,11 @@ if (btnAceptarAvisoVocabulario) {
 // (cada uno sigue siendo su propio bloque independiente en el HTML).
 document.getElementById("btnCategorias").addEventListener("click", (e) => {
     e.preventDefault();
-    mostrarAvisoVocabulario();
+    if(omitirAvisoVocabularioUnaVez){
+        omitirAvisoVocabularioUnaVez = false;
+    } else {
+        mostrarAvisoVocabulario();
+    }
     ocultarSeccionHerramientas();
     ocultarSeccionNosotros();
     mostrarBloqueInicio();
@@ -1104,19 +1305,48 @@ const App = {
 };
 
 // Guarda en el dispositivo la última copia de palabras.json que sí se pudo
-// cargar con éxito. Es el respaldo que se usa cuando, tras varios
-// reintentos, la red sigue sin responder: en vez de dejar "Seña del día" y
-// "Categorías" vacíos (o con el aviso de error), se muestra igual el
-// diccionario con los datos de la última visita, aunque no sean los más
-// recientes.
+// cargar con éxito. Es el respaldo que se usa cuando la red no responde.
+//
+// IMPORTANTE (2026-09): la caché ya no es "guardar y usar hasta la próxima
+// visita". Ahora funciona como stale-while-revalidate:
+//   1) se muestra la copia local de inmediato;
+//   2) se comprueba la versión real del servidor en segundo plano;
+//   3) si cambió, App.datos se actualiza EN ESTA MISMA SESIÓN;
+//   4) una respuesta vacía/dañada nunca reemplaza una copia buena.
 const CLAVE_CACHE_PALABRAS = "lspedia_cache_palabras_v1";
 
-function guardarCachePalabras(data) {
+function datosPalabrasValidos(data) {
+    return Array.isArray(data) && data.length > 0 && data.some(p =>
+        p && typeof p === "object" && p.palabra && p.categoria
+    );
+}
+
+// Firma sencilla y determinista para saber si palabras.json cambió. No es
+// criptográfica ni necesita serlo: solo se usa para evitar repintados y
+// escrituras innecesarias cuando el JSON recién descargado es idéntico al
+// que ya estaba guardado.
+function firmaPalabras(data) {
     try {
-        localStorage.setItem(CLAVE_CACHE_PALABRAS, JSON.stringify({ datos: data, guardadoEn: Date.now() }));
+        return JSON.stringify(data);
+    } catch (e) {
+        return "";
+    }
+}
+
+function guardarCachePalabras(data) {
+    if (!datosPalabrasValidos(data)) return false;
+    try {
+        const payload = {
+            datos: data,
+            guardadoEn: Date.now(),
+            firma: firmaPalabras(data)
+        };
+        localStorage.setItem(CLAVE_CACHE_PALABRAS, JSON.stringify(payload));
+        return true;
     } catch (e) {
         // localStorage lleno, en modo privado, o no disponible: no es
-        // crítico, simplemente no habrá respaldo la próxima vez.
+        // crítico. Los datos de red igualmente pueden usarse en memoria.
+        return false;
     }
 }
 
@@ -1125,60 +1355,137 @@ function leerCachePalabras() {
         const crudo = localStorage.getItem(CLAVE_CACHE_PALABRAS);
         if (!crudo) return null;
         const parsed = JSON.parse(crudo);
-        return (parsed && Array.isArray(parsed.datos) && parsed.datos.length) ? parsed.datos : null;
+
+        // Compatibilidad con una posible caché antigua guardada directamente
+        // como array. La versión anterior de LSPedia guardaba un objeto, pero
+        // aceptar ambos formatos evita perder el respaldo por una migración.
+        if (Array.isArray(parsed)) {
+            if (!datosPalabrasValidos(parsed)) return null;
+            return { datos: parsed, guardadoEn: 0, firma: firmaPalabras(parsed) };
+        }
+
+        if (!parsed || !datosPalabrasValidos(parsed.datos)) return null;
+        return {
+            datos: parsed.datos,
+            guardadoEn: Number(parsed.guardadoEn) || 0,
+            firma: parsed.firma || firmaPalabras(parsed.datos)
+        };
     } catch (e) {
         return null;
     }
 }
 
+function mismaVersionPalabras(cache, dataNueva) {
+    if (!cache || !datosPalabrasValidos(cache.datos) || !datosPalabrasValidos(dataNueva)) return false;
+    const firmaNueva = firmaPalabras(dataNueva);
+    const firmaCache = cache.firma || firmaPalabras(cache.datos);
+    return !!firmaNueva && firmaNueva === firmaCache;
+}
+
+// Centraliza el filtro real del Diccionario. Mantenerlo en una función
+// evita que la carga inicial y la actualización en segundo plano terminen
+// aplicando reglas distintas.
+function obtenerDatosDiccionarioPublicables(data) {
+    if (!Array.isArray(data)) return [];
+    return data.filter(p => p && p.palabra && p.categoria && p.video && String(p.video).trim());
+}
+
+// Aplica una versión nueva de palabras.json sin reiniciar toda la interfaz.
+// Así una persona que ya está leyendo una ficha no es expulsada de ella ni
+// sufre un salto de scroll cuando termina el fetch de segundo plano.
+function aplicarPalabrasActualizadasEnSesion(data) {
+    if (!datosPalabrasValidos(data)) return;
+
+    App.datos = obtenerDatosDiccionarioPublicables(data);
+
+    // Estas zonas dependen directamente de App.datos y pueden refrescarse
+    // sin alterar la pantalla en la que está el usuario.
+    renderCategoriasDiccionario();
+    actualizarEstadisticas();
+    mostrarFavoritos();
+
+    const params = new URLSearchParams(window.location.search);
+    const palabraAbierta = params.get("p");
+    const letraAbierta = params.get("letra");
+    const categoriaAbierta = params.get("categoriaDiccionario");
+
+    // Si hay una ficha abierta, no la repintamos automáticamente: puede
+    // contener video en reproducción y no vale la pena interrumpirlo. App.datos
+    // ya quedó actualizado y la próxima interacción usará la versión nueva.
+    if (!palabraAbierta) {
+        if (letraAbierta) {
+            filtrarPorLetra(letraAbierta, { noActualizarHistorial: true });
+        } else if (categoriaAbierta) {
+            filtrarPorCategoriaDiccionario(categoriaAbierta, {
+                noActualizarHistorial: true,
+                sinScroll: true
+            });
+        } else if (buscar && buscar.value && buscar.value.trim() && sugerencias && sugerencias.style.display !== "none") {
+            // Si estaba escribiendo en el buscador, actualiza las sugerencias
+            // en ese mismo momento para que una palabra recién publicada pueda
+            // aparecer sin que el usuario tenga que recargar la página.
+            buscarPalabras();
+        }
+    }
+
+    // Evento opcional para otros módulos presentes/futuros. No muestra ningún
+    // aviso al usuario; simplemente informa que los datos en memoria cambiaron.
+    try {
+        document.dispatchEvent(new CustomEvent("lspedia:palabrasActualizadas", {
+            detail: { total: App.datos.length }
+        }));
+    } catch (e) {
+        // CustomEvent no disponible en un navegador muy antiguo: no es crítico.
+    }
+}
+
 // Avisa al resto de la página (ver index.html, splash screen) que ya se
 // sabe si hay datos para mostrar o no, sea porque llegaron de la red, de
-// la copia guardada, o porque definitivamente no se pudo conseguir
-// ninguna. El splash usa este aviso para no ocultarse antes de tiempo.
+// la copia guardada, o porque definitivamente no se pudo conseguir ninguna.
 function avisarDatosListos() {
     document.dispatchEvent(new Event("lspedia:datosListos"));
 }
 
-// --- CARGA DE data/palabras.json: RÁPIDO PRIMERO, CONFIABLE DESPUÉS ---
+// --- CARGA DE data/palabras.json: CACHÉ RÁPIDA + REVALIDACIÓN REAL ---
 //
-// Estrategia "caché primero" (igual a como se sentía la página antes de
-// que la conexión del operador empezara a dar problemas puntuales):
-//   1) Si ya hay una copia guardada en este dispositivo de una visita
-//      anterior (ver guardarCachePalabras), se pinta TODO el contenido
-//      de inmediato, sin esperar nada a la red. La persona ve la página
-//      completa al instante, como antes.
-//   2) En paralelo, y sin bloquear ni mostrar ningún aviso, se pide la
-//      versión más reciente en segundo plano. Si llega, se guarda para
-//      la próxima carga; si falla o tarda, no importa, ya se está
-//      viendo contenido completo y no hace falta molestar con errores.
-//   3) Solo en la PRIMERA visita de un dispositivo (todavía sin ninguna
-//      copia guardada) hace falta esperar a la red sí o sí. Ahí se usan
-//      tiempos cortos (6s por intento, máximo 2 intentos) para no dejar
-//      a la persona esperando mucho: si de verdad no hay conexión, se
-//      avisa con un botón "Reintentar" en vez de quedarse pegado.
+// Se fuerza una petición fresca con `cache: "no-store"` y un parámetro
+// temporal. Esto evita que el navegador/CDN responda con una copia vieja
+// justo cuando estamos intentando comprobar si palabras.json cambió.
 const TIMEOUT_INTENTO_PALABRAS_MS = 6000;
 
-// Un intento de red con límite de tiempo "duro": el timeout es un
-// temporizador independiente (Promise.race), no depende de que
-// AbortController.abort() logre cancelar el fetch. En algunos
-// navegadores móviles (o cuando el Service Worker intercepta la
-// petición, ver sw.js) abort() no propaga bien y el fetch original se
-// queda colgado; con Promise.race el límite de tiempo se cumple igual y
-// el código sigue adelante pase lo que pase con esa petición.
 function unIntentoDeCargaPalabras() {
     const controlador = (typeof AbortController !== "undefined") ? new AbortController() : null;
-    const promesaFetch = fetch("data/palabras.json", controlador ? { signal: controlador.signal } : undefined)
+    const separador = "data/palabras.json".includes("?") ? "&" : "?";
+    const urlFresca = "data/palabras.json" + separador + "_lspedia=" + Date.now();
+
+    const opcionesFetch = { cache: "no-store" };
+    if (controlador) opcionesFetch.signal = controlador.signal;
+
+    const promesaFetch = fetch(urlFresca, opcionesFetch)
         .then(res => {
             if (!res.ok) throw new Error("HTTP " + res.status);
             return res.json();
+        })
+        .then(data => {
+            if (!datosPalabrasValidos(data)) {
+                throw new Error("palabras.json llegó vacío o con un formato inválido");
+            }
+            return data;
         });
+
+    let idTimeout = null;
     const promesaTimeout = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error("Tiempo de espera agotado")), TIMEOUT_INTENTO_PALABRAS_MS);
+        idTimeout = setTimeout(() => reject(new Error("Tiempo de espera agotado")), TIMEOUT_INTENTO_PALABRAS_MS);
     });
-    return Promise.race([promesaFetch, promesaTimeout]).catch(error => {
-        if (controlador) { try { controlador.abort(); } catch (e) { /* no crítico */ } }
-        throw error;
-    });
+
+    return Promise.race([promesaFetch, promesaTimeout])
+        .finally(() => {
+            if (idTimeout) clearTimeout(idTimeout);
+        })
+        .catch(error => {
+            if (controlador) { try { controlador.abort(); } catch (e) { /* no crítico */ } }
+            throw error;
+        });
 }
 
 // Reintenta unos pocos intentos rápidos, sin esperas largas entre ellos.
@@ -1198,21 +1505,27 @@ function cargarPalabrasConReintentos(intentosRestantes, alExito, alFallar) {
 function cargarPalabrasJson() {
     const cache = leerCachePalabras();
 
-    if (cache && cache.length) {
-        // Contenido completo al instante con lo último guardado.
-        procesarDatosApp(cache);
+    if (cache && cache.datos.length) {
+        // 1) Inicio instantáneo con la copia guardada.
+        procesarDatosApp(cache.datos);
         avisarDatosListos();
-        // Actualiza en segundo plano y en silencio (sin reintentos
-        // largos ni avisos de error): si hay datos nuevos, quedan
-        // guardados para la próxima visita.
-        cargarPalabrasConReintentos(2, (data) => guardarCachePalabras(data), () => {
-            // Sin conexión ahora mismo: no importa, ya se está viendo
-            // el contenido guardado. Se reintentará en la próxima visita.
+
+        // 2) Revalidación silenciosa. Si palabras.json cambió, además de
+        // guardarlo se aplica a App.datos AHORA, no en la visita siguiente.
+        cargarPalabrasConReintentos(2, (data) => {
+            const cambio = !mismaVersionPalabras(cache, data);
+            guardarCachePalabras(data);
+            if (cambio) {
+                aplicarPalabrasActualizadasEnSesion(data);
+                console.info("LSPedia: palabras.json actualizado en esta sesión.");
+            }
+        }, () => {
+            // Sin conexión ahora mismo: se conserva la copia buena que ya se
+            // está mostrando. Nunca se borra ni se reemplaza por datos vacíos.
         });
     } else {
-        // Primera vez en este dispositivo: no hay nada guardado
-        // todavía, así que sí hace falta esperar a la red, pero con
-        // límites cortos para no dejar a la persona esperando mucho.
+        // Primera visita (o caché inválida): hace falta una respuesta válida
+        // de red. Solo después de validarla se guarda y se muestra.
         cargarPalabrasConReintentos(2, (data) => {
             guardarCachePalabras(data);
             procesarDatosApp(data);
@@ -1275,7 +1588,7 @@ function procesarDatosApp(data) {
             // cargado. Si agregas una palabra nueva en la Hoja 1 y aún no
             // le pusiste el video, se queda oculta hasta que el campo
             // "video" tenga algo escrito.
-            App.datos = data.filter(p => p.palabra && p.categoria && p.video && String(p.video).trim());
+            App.datos = obtenerDatosDiccionarioPublicables(data);
             // Las categorías reales del diccionario (Hoja 1, columna C)
             // recién están disponibles acá, así que se pintan las tarjetas
             // en cuanto llegan las palabras.
@@ -1300,14 +1613,25 @@ function procesarDatosApp(data) {
             }
 
             if (palabraEnUrl) {
-                restaurarPalabraDesdeUrl(palabraEnUrl);
+                restaurarPalabraDesdeUrl(palabraEnUrl, { noActualizarHistorial: true });
             } else {
                 // Si no hay una palabra específica que restaurar, revisa si
                 // el usuario estaba en "Temas orden" o "Herramientas" antes
                 // del refresh (ver actualizarVistaUrl) y lo deja ahí mismo
                 // en vez de mandarlo siempre a Inicio.
                 const vistaEnUrl = urlParams.get("vista");
-                if (vistaEnUrl === "vocabulario" || vistaEnUrl === "temas") {
+                const letraEnUrl = urlParams.get("letra");
+                const categoriaDiccionarioEnUrl = urlParams.get("categoriaDiccionario");
+                // Esta navegación es una RESTAURACIÓN de la URL que ya
+                // existe al cargar/F5; no debe crear nuevas entradas.
+                restaurandoHistorialNavegador = true;
+                if (letraEnUrl) {
+                    irAlBuscador({ sinEnfoque: true, irArriba: true });
+                    filtrarPorLetra(letraEnUrl, { noActualizarHistorial: true });
+                } else if (categoriaDiccionarioEnUrl) {
+                    irAlBuscador({ sinEnfoque: true, irArriba: true });
+                    filtrarPorCategoriaDiccionario(categoriaDiccionarioEnUrl, { noActualizarHistorial: true });
+                } else if (vistaEnUrl === "vocabulario" || vistaEnUrl === "temas") {
                     const btnCategorias = document.getElementById("btnCategorias");
                     // Evita que el clic simulado dispare el scroll que centra
                     // el panel de categorías: acá se está restaurando la
@@ -1356,8 +1680,10 @@ function procesarDatosApp(data) {
                         btnHerrMovilAlfabetizacion.click();
                     }
                 }
+                restaurandoHistorialNavegador = false;
             }
           } catch (error) {
+            restaurandoHistorialNavegador = false;
             console.error("Error al procesar los datos del diccionario:", error);
             mostrarErrorCargaInicial();
           }
@@ -1501,8 +1827,10 @@ document.addEventListener("DOMContentLoaded", () => {
             // visible antes de que llegaran los datos de la Hoja 2, se
             // refresca solo para que las palabras del Quiz aparezcan sin
             // que el usuario tenga que volver a hacer clic.
-            if (categoriaActualMostrada) {
-                mostrarCategoria(categoriaActualMostrada);
+            if (categoriaActualMostrada && !new URLSearchParams(window.location.search).get("p")) {
+                // Es un refresco silencioso de los datos de la categoría, no
+                // una navegación nueva: conserva la URL y el historial.
+                mostrarCategoria(categoriaActualMostrada, { noActualizarHistorial: true });
             } else if (document.body.classList.contains("vista-temas-movil")) {
                 // Antes se usaba "panelCategorias.children.length > 0" para
                 // decidir si tocaba refrescar. Pero justo al refrescar la
@@ -1875,7 +2203,14 @@ function mostrarPalabra(p, opciones = {}){
     }
     ocultarPanelesGuardados();
     const nuevaUrl = window.location.pathname + "?p=" + encodeURIComponent(p.palabra);
-    window.history.pushState({path: nuevaUrl}, '', nuevaUrl);
+    if(!opciones.noActualizarHistorial){
+        registrarUrlEnHistorial(nuevaUrl, {
+            tipo: "palabra",
+            palabra: p.palabra,
+            enCategorias: enCategorias
+        });
+    }
+    actualizarSeoPalabra(p);
     agregarAHistorial(p.palabra); 
     const enFavoritos = esFavorito(p.palabra);
     const textoBoton = enFavoritos ? "★ En favoritos" : "⭐ Agregar a favoritos";
@@ -2036,7 +2371,14 @@ function mostrarPalabraSimplificada(p, opciones = {}){
     ocultarPanelesGuardados();
     document.getElementById("senalDelDia").style.display = "none";
     const nuevaUrl = window.location.pathname + "?p=" + encodeURIComponent(p.palabra);
-    window.history.pushState({path: nuevaUrl}, '', nuevaUrl);
+    if(!opciones.noActualizarHistorial){
+        registrarUrlEnHistorial(nuevaUrl, {
+            tipo: "palabra",
+            palabra: p.palabra,
+            enCategorias: enCategorias
+        });
+    }
+    actualizarSeoPalabra(p);
 
     const idVideo = extraerIdYouTube(p.video);
     const bloqueVideo = idVideo
@@ -3117,7 +3459,7 @@ function actualizarEstadisticas(){
 }
 
 // --- FILTRO ABC ---
-function filtrarPorLetra(letra) {
+function filtrarPorLetra(letra, opciones = {}) {
     ocultarQuiz();
     ocultarAlfabetizacion();
     document.querySelectorAll(".btn-abc").forEach(boton => {
@@ -3141,7 +3483,10 @@ function filtrarPorLetra(letra) {
     if(statsPanelLetra) statsPanelLetra.style.display = "none";
     const statsHeaderLetra = document.querySelector(".stats-header");
     if(statsHeaderLetra) statsHeaderLetra.style.display = "none";
-    window.history.pushState({}, '', window.location.pathname);
+    if(!opciones.noActualizarHistorial){
+        const urlLetra = window.location.pathname + "?letra=" + encodeURIComponent(letra);
+        registrarUrlEnHistorial(urlLetra, { tipo: "letra", letra });
+    }
     const filtradas = App.datos.filter(p => p.palabra.toUpperCase().startsWith(letra.toUpperCase()));
     if (filtradas.length === 0) {
         resultado.innerHTML = `<div class="alert alert-light border text-center text-muted small py-3" style="border-radius: 12px;">No hay resultados con <strong>${letra}</strong>.</div>`;
@@ -3669,7 +4014,7 @@ function scrollArribaEstable(){
 // no se notaba como una unidad. Pintando acá abajo, el resultado aparece
 // justo donde el usuario ya está mirando y el scroll es siempre hacia
 // abajo, sin pelear contra nada.
-function filtrarPorCategoriaDiccionario(nombre){
+function filtrarPorCategoriaDiccionario(nombre, opciones = {}){
     // Si el teclado móvil está abierto (el usuario venía de buscar), se
     // cierra ANTES de medir/scrollear, para que su animación de cierre no
     // desacomode el cálculo del scroll.
@@ -3702,11 +4047,14 @@ function filtrarPorCategoriaDiccionario(nombre){
     if(statsPanelCat) statsPanelCat.style.display = "none";
     const statsHeaderCat = document.querySelector(".stats-header");
     if(statsHeaderCat) statsHeaderCat.style.display = "none";
-    window.history.pushState({}, '', window.location.pathname);
+    if(!opciones.noActualizarHistorial){
+        const urlCategoria = window.location.pathname + "?categoriaDiccionario=" + encodeURIComponent(nombre);
+        registrarUrlEnHistorial(urlCategoria, { tipo: "categoriaDiccionario", categoria: nombre });
+    }
     const filtradas = App.datos.filter(p => String(p.categoria || "").trim().toLowerCase() === nombre.trim().toLowerCase());
     if (filtradas.length === 0) {
         resultadoCategoriasDiccionario.innerHTML = `<div class="alert alert-light border text-center text-muted small py-3" style="border-radius: 12px;">No hay palabras en la categoría <strong>${nombre}</strong> todavía.</div>`;
-        scrollAlPrimerResultado(resultadoCategoriasDiccionario);
+        if (!opciones.sinScroll) scrollAlPrimerResultado(resultadoCategoriasDiccionario);
         return;
     }
     // Se arma todo el HTML en una sola variable y se asigna de una vez
@@ -3732,7 +4080,7 @@ function filtrarPorCategoriaDiccionario(nombre){
     });
     htmlResultado += `</div>`;
     resultadoCategoriasDiccionario.innerHTML = htmlResultado;
-    scrollAlPrimerResultado(resultadoCategoriasDiccionario);
+    if (!opciones.sinScroll) scrollAlPrimerResultado(resultadoCategoriasDiccionario);
 }
 window.filtrarPorCategoriaDiccionario = filtrarPorCategoriaDiccionario;
 
@@ -3799,7 +4147,7 @@ function mostrarCategorias(){
 function mostrarBuscadorDeCategorias(){
     if(bloqueBuscador) bloqueBuscador.classList.add("d-none");
     if(bloqueBuscadorCategorias) bloqueBuscadorCategorias.classList.remove("d-none");
-    limpiarResultadoCategorias();
+    limpiarResultadoCategorias({ noActualizarHistorial: true });
 }
 
 if(buscarCategorias){
@@ -3847,7 +4195,7 @@ function botonAtrasCategorias(){
 // Limpia la búsqueda/categoría seleccionada y deja solo las tarjetas de
 // categoría visibles (usado por el botón "Atrás" y al entrar de nuevo a
 // "Temas orden").
-function limpiarResultadoCategorias(){
+function limpiarResultadoCategorias(opciones = {}){
     if(resultadoCategorias) resultadoCategorias.innerHTML = "";
     if(buscarCategorias) buscarCategorias.value = "";
     if(sugerenciasCategorias){ sugerenciasCategorias.innerHTML = ""; sugerenciasCategorias.style.display = "none"; }
@@ -3856,6 +4204,9 @@ function limpiarResultadoCategorias(){
     // palabra se quedaban pegadas debajo de las tarjetas.
     if(ultimasPalabrasCategorias) ultimasPalabrasCategorias.innerHTML = "";
     categoriaActualMostrada = null;
+    if(!opciones.noActualizarHistorial){
+        actualizarVistaUrl("vocabulario");
+    }
 }
 window.limpiarResultadoCategorias = limpiarResultadoCategorias;
 
@@ -3977,8 +4328,13 @@ function generarMiniaturaVocabulario(p){
         : `<div class="sugerencia-thumb-wrap sin-video">🤟</div>`;
 }
 
-function mostrarCategoria(nombre){
+function mostrarCategoria(nombre, opciones = {}){
     categoriaActualMostrada = nombre;
+    if(!opciones.noActualizarHistorial){
+        const urlCategoria = window.location.pathname
+            + "?vista=vocabulario&categoria=" + encodeURIComponent(nombre);
+        registrarUrlEnHistorial(urlCategoria, { tipo: "categoriaVocabulario", categoria: nombre });
+    }
     if(buscarCategorias) buscarCategorias.value = "";
     if(sugerenciasCategorias){ sugerenciasCategorias.innerHTML = ""; sugerenciasCategorias.style.display = "none"; }
     let html = botonAtrasCategorias() + `<h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">Categoría: ${nombre}</h6>
@@ -4015,10 +4371,10 @@ function mostrarPalabraPorNombre(nombre){
 // Si no está ahí, puede ser una palabra que solo vive en el banco del
 // Quiz (Hoja 2): en ese caso esperamos (o forzamos) su carga y recién
 // entonces la mostramos, en vez de simplemente volver al inicio.
-function restaurarPalabraDesdeUrl(nombre){
+function restaurarPalabraDesdeUrl(nombre, opciones = {}){
     const enHoja1 = App.datos.find(p => p.palabra.toLowerCase() === nombre.toLowerCase());
     if(enHoja1){
-        mostrarPalabra(enHoja1);
+        mostrarPalabra(enHoja1, opciones);
         return;
     }
     if(window.QuizV2 && typeof QuizV2.onBancoListo === "function"){
@@ -4027,11 +4383,115 @@ function restaurarPalabraDesdeUrl(nombre){
             const enHoja2 = (banco || []).find(p => p.palabra && p.palabra.toLowerCase() === nombre.toLowerCase());
             // Solo mostramos si el usuario sigue en el resultado esperado (no navegó a otra pantalla mientras cargaba).
             if(enHoja2 && new URLSearchParams(window.location.search).get("p") === nombre){
-                mostrarPalabraSimplificada(enHoja2);
+                mostrarPalabraSimplificada(enHoja2, opciones);
             }
         });
     }
 }
+
+// Reconstruye la interfaz cuando el usuario usa Atrás o Adelante. La URL
+// es la fuente de verdad y event.state aporta contexto extra (por ejemplo,
+// si una palabra estaba abierta dentro de Vocabulario).
+function restaurarInterfazDesdeHistorial(estado = {}){
+    const params = new URLSearchParams(window.location.search);
+    const palabra = params.get("p");
+    const vista = params.get("vista");
+    const letra = params.get("letra");
+    const categoriaDiccionario = params.get("categoriaDiccionario");
+    const categoriaVocabulario = params.get("categoria");
+
+    // Atrás/Adelante no llama registrarUrlEnHistorial(), por lo que el SEO
+    // general se restaura aquí cuando el destino ya no es una palabra.
+    if(!palabra) restaurarSeoBase();
+
+    restaurandoHistorialNavegador = true;
+
+    try {
+        // Si quedó abierto el aviso de Vocabulario, lo cerramos para que no
+        // tape la pantalla que el historial acaba de restaurar.
+        const modalAviso = document.getElementById("modalAvisoVocabulario");
+        if(modalAviso && typeof bootstrap !== "undefined" && bootstrap.Modal){
+            const instancia = bootstrap.Modal.getInstance(modalAviso);
+            if(instancia) instancia.hide();
+        }
+        const contenidoPrincipal = document.getElementById("contenidoPrincipalApp");
+        if(contenidoPrincipal) contenidoPrincipal.classList.remove("contenido-desenfocado");
+
+        if(palabra){
+            // Primero reconstruimos la pantalla "madre" de la ficha. Esto es
+            // importante si Atrás/Adelante viene desde Herramientas o Nosotros:
+            // mostrarPalabra() por sí sola no tiene por qué ocultar esas secciones.
+            if(estado.enCategorias){
+                const boton = document.getElementById("btnCategorias");
+                saltarScrollAlAbrirVocabulario = true;
+                omitirAvisoVocabularioUnaVez = true;
+                if(boton) boton.click();
+            } else {
+                irAlBuscador({ sinEnfoque: true, irArriba: true });
+            }
+
+            // noActualizarHistorial evita que al reconstruir se agregue la
+            // misma palabra otra vez al historial.
+            restaurarPalabraDesdeUrl(palabra, {
+                noActualizarHistorial: true,
+                enCategorias: !!estado.enCategorias
+            });
+            return;
+        }
+
+        if(vista === "vocabulario" || vista === "temas") {
+            const boton = document.getElementById("btnCategorias");
+            saltarScrollAlAbrirVocabulario = true;
+            omitirAvisoVocabularioUnaVez = true;
+            if(boton) boton.click();
+            if(categoriaVocabulario && typeof mostrarCategoria === "function") {
+                mostrarCategoria(categoriaVocabulario, { noActualizarHistorial: true });
+            }
+            return;
+        }
+
+        if(vista === "nosotros") {
+            const boton = document.getElementById("btnSobreNosotros");
+            if(boton) boton.click();
+            return;
+        }
+
+        if(vista && vista.indexOf("herramientas") === 0) {
+            activarBotonMenu("btnHerramientas");
+            mostrarSeccionHerramientas();
+            if(vista === "herramientas-subtitulos" && btnHerrMovilSubtitulos) {
+                btnHerrMovilSubtitulos.click();
+            } else if(vista === "herramientas-jugar" && btnHerrMovilJugar) {
+                btnHerrMovilJugar.click();
+            } else if(vista === "herramientas-alfabetizacion" && btnHerrMovilAlfabetizacion) {
+                btnHerrMovilAlfabetizacion.click();
+            }
+            return;
+        }
+
+        // Letras y categorías del Diccionario parten de la pantalla principal.
+        if(letra){
+            irAlBuscador({ sinEnfoque: true, irArriba: true });
+            filtrarPorLetra(letra, { noActualizarHistorial: true });
+            return;
+        }
+
+        if(categoriaDiccionario){
+            irAlBuscador({ sinEnfoque: true, irArriba: true });
+            filtrarPorCategoriaDiccionario(categoriaDiccionario, { noActualizarHistorial: true });
+            return;
+        }
+
+        // Sin parámetros = Diccionario / Inicio.
+        irAlBuscador({ sinEnfoque: true, irArriba: true });
+    } finally {
+        restaurandoHistorialNavegador = false;
+    }
+}
+
+window.addEventListener("popstate", (evento) => {
+    restaurarInterfazDesdeHistorial(evento.state || {});
+});
 
 // Miniatura de 70x70 para las tarjetas de "Puede que también te interese"
 // (Diccionario y Vocabulario). Antes usaba via.placeholder.com como

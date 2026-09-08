@@ -15,23 +15,59 @@
     </script>
 
     <title>LSPedia - Diccionario de Lengua de Señas Peruana (LSP)</title>
-    <meta name="description" content="LSPedia es el diccionario digital gratuito de Lengua de Señas Peruana (LSP). Aprende el significado de palabras en español con el apoyo de videos en señas.">
-    <link rel="canonical" href="https://lspedia.site/">
+    <meta id="metaDescription" name="description" content="LSPedia es el diccionario digital gratuito de Lengua de Señas Peruana (LSP). Aprende el significado de palabras en español con el apoyo de videos en señas.">
+    <link id="canonicalLink" rel="canonical" href="https://lspedia.site/">
 
     <!-- Open Graph / vista previa al compartir en redes y WhatsApp -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://lspedia.site/">
-    <meta property="og:title" content="LSPedia - Diccionario de Lengua de Señas Peruana">
-    <meta property="og:description" content="Diccionario digital gratuito para aprender el significado de palabras en español con el apoyo de videos en Lengua de Señas Peruana (LSP).">
-    <meta property="og:image" content="https://lspedia.site/img/lspedia.png">
+    <meta id="ogType" property="og:type" content="website">
+    <meta id="ogUrl" property="og:url" content="https://lspedia.site/">
+    <meta id="ogTitle" property="og:title" content="LSPedia - Diccionario de Lengua de Señas Peruana">
+    <meta id="ogDescription" property="og:description" content="Diccionario digital gratuito para aprender el significado de palabras en español con el apoyo de videos en Lengua de Señas Peruana (LSP).">
+    <meta id="ogImage" property="og:image" content="https://lspedia.site/img/lspedia.png">
+    <meta property="og:site_name" content="LSPedia">
     <meta property="og:locale" content="es_PE">
 
     <!-- Twitter Card: misma vista previa que Open Graph, para cuando el
          link se comparte en X/Twitter. -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="LSPedia - Diccionario de Lengua de Señas Peruana">
-    <meta name="twitter:description" content="Diccionario digital gratuito para aprender el significado de palabras en español con el apoyo de videos en Lengua de Señas Peruana (LSP).">
-    <meta name="twitter:image" content="https://lspedia.site/img/lspedia.png">
+    <meta id="twitterTitle" name="twitter:title" content="LSPedia - Diccionario de Lengua de Señas Peruana">
+    <meta id="twitterDescription" name="twitter:description" content="Diccionario digital gratuito para aprender el significado de palabras en español con el apoyo de videos en Lengua de Señas Peruana (LSP).">
+    <meta id="twitterImage" name="twitter:image" content="https://lspedia.site/img/lspedia.png">
+
+    <!-- SEO temprano para URLs ?p=Palabra. Se ejecuta en el <head> antes de
+         cargar el resto de la aplicación, para que una visita directa a una
+         palabra no conserve temporalmente el canonical y el título de Inicio.
+         Cuando palabras.json termina de cargar, script.js reemplaza estos
+         valores por una descripción más específica basada en la definición. -->
+    <script>
+        (function () {
+            const palabra = (new URLSearchParams(window.location.search).get("p") || "").trim();
+            if (!palabra) return;
+
+            const url = "https://lspedia.site/?p=" + encodeURIComponent(palabra);
+            const titulo = palabra + ": significado con apoyo en LSP | LSPedia";
+            const descripcion = "Consulta el significado de " + palabra + " con apoyo visual y videos en Lengua de Señas Peruana (LSP) en LSPedia.";
+
+            document.title = titulo;
+            const metaDescripcion = document.getElementById("metaDescription");
+            const canonical = document.getElementById("canonicalLink");
+            const ogType = document.getElementById("ogType");
+            const ogUrl = document.getElementById("ogUrl");
+            const ogTitle = document.getElementById("ogTitle");
+            const ogDescription = document.getElementById("ogDescription");
+            const twitterTitle = document.getElementById("twitterTitle");
+            const twitterDescription = document.getElementById("twitterDescription");
+
+            if (metaDescripcion) metaDescripcion.setAttribute("content", descripcion);
+            if (canonical) canonical.setAttribute("href", url);
+            if (ogType) ogType.setAttribute("content", "article");
+            if (ogUrl) ogUrl.setAttribute("content", url);
+            if (ogTitle) ogTitle.setAttribute("content", titulo);
+            if (ogDescription) ogDescription.setAttribute("content", descripcion);
+            if (twitterTitle) twitterTitle.setAttribute("content", titulo);
+            if (twitterDescription) twitterDescription.setAttribute("content", descripcion);
+        })();
+    </script>
 
     <!-- Datos estructurados (JSON-LD): le confirman a Google, de forma
          explícita y sin ambigüedad, qué es LSPedia y de qué trata, lo que
@@ -4433,8 +4469,20 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
     <script src="js/script.js"></script>
     <script>
     if ("serviceWorker" in navigator) {
-        window.addEventListener("load", () => {
-            navigator.serviceWorker.register("sw.js").catch(console.error);
+        window.addEventListener("load", async () => {
+            try {
+                // updateViaCache: "none" evita que una copia HTTP antigua de
+                // sw.js retrase la detección de una nueva versión de LSPedia.
+                const registro = await navigator.serviceWorker.register("sw.js", {
+                    updateViaCache: "none"
+                });
+
+                // Comprobación silenciosa. No recargamos la página ni interrumpimos
+                // al usuario si está viendo un video o usando una herramienta.
+                registro.update().catch(() => {});
+            } catch (error) {
+                console.error("No se pudo registrar el Service Worker de LSPedia:", error);
+            }
         });
     }
 </script>
