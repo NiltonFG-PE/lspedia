@@ -15,6 +15,8 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 
+from normalizar_categorias import normalizar_categoria_vocabulario
+
 ROOT = Path(__file__).resolve().parent.parent
 DESTINO = ROOT / "data" / "vocabulario.json"
 APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw9d7br5C8C4gfk4dJAY6FHRKTKTMI23bNQvO58OQ5TlPe9z5awMWjNIlCLILNLH0t51w/exec"
@@ -75,7 +77,7 @@ def descargar() -> list[dict]:
         nueva["palabra"] = palabra
         nueva["video"] = video
         if "categoria" in nueva:
-            nueva["categoria"] = str(nueva.get("categoria") or "").strip()
+            nueva["categoria"] = normalizar_categoria_vocabulario(nueva.get("categoria"))
         if "nivel" in nueva:
             nueva["nivel"] = normalizar_nivel(nueva.get("nivel"))
         salida.append(nueva)
@@ -95,7 +97,7 @@ def main() -> int:
         if not isinstance(comprobacion, list) or not comprobacion:
             raise RuntimeError("El JSON temporal no pasó la validación.")
         temporal.replace(DESTINO)
-        print(f"Vocabulario actualizado: {len(datos)} palabras con video.")
+        print(f"Vocabulario actualizado: {len(datos)} palabras con video y categorías normalizadas.")
         return 0
     except Exception as exc:
         print(f"ERROR: no se pudo actualizar vocabulario.json: {exc}", file=sys.stderr)
