@@ -144,6 +144,64 @@ function urlRelativaActual(){
     return window.location.pathname + window.location.search;
 }
 
+// --- IDENTIFICADORES ÚNICOS DE PALABRAS ---
+// Cada registro de palabras.json tiene un `id` estable. Desde esta versión las
+// URLs, Favoritos e Historial usan ese ID en vez del texto visible de la
+// palabra. buscarPalabraPorReferencia() también acepta el nombre antiguo para
+// que enlaces ya compartidos como ?p=Tesis sigan funcionando.
+function crearSlugIdPalabra(valor){
+    return String(valor || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+}
+
+function obtenerIdPalabra(p){
+    if(!p) return "";
+    const id = String(p.id || "").trim();
+    if(id) return id;
+    // Respaldo para datos externos (por ejemplo Hoja 2) que aún no traen ID.
+    return crearSlugIdPalabra(p.palabra);
+}
+
+function buscarPalabraPorReferencia(referencia, coleccion = App.datos){
+    const ref = String(referencia || "").trim();
+    if(!ref) return null;
+    const refMinuscula = ref.toLowerCase();
+    const lista = Array.isArray(coleccion) ? coleccion : [];
+
+    return lista.find(p => p && obtenerIdPalabra(p).toLowerCase() === refMinuscula)
+        || lista.find(p => p && p.palabra && String(p.palabra).trim().toLowerCase() === refMinuscula)
+        || null;
+}
+
+function migrarListaGuardadaAIds(clave){
+    try {
+        const lista = JSON.parse(localStorage.getItem(clave) || "[]");
+        if(!Array.isArray(lista)) return;
+        const migrada = [];
+
+        lista.forEach(referencia => {
+            const p = buscarPalabraPorReferencia(referencia, App.datos);
+            const nuevaReferencia = p ? obtenerIdPalabra(p) : String(referencia || "").trim();
+            if(nuevaReferencia && !migrada.includes(nuevaReferencia)) migrada.push(nuevaReferencia);
+        });
+
+        if(JSON.stringify(lista) !== JSON.stringify(migrada)){
+            localStorage.setItem(clave, JSON.stringify(migrada));
+        }
+    } catch(error){
+        console.warn("No se pudo migrar una lista guardada a IDs:", error);
+    }
+}
+
+function migrarFavoritosEHistorialAIds(){
+    migrarListaGuardadaAIds(CLAVE_FAVORITOS);
+    migrarListaGuardadaAIds(CLAVE_HISTORIAL);
+}
+
 // --- SEO DINÁMICO PARA CADA PALABRA ---
 // LSPedia es una SPA: al abrir ?p=Palabra no se carga otro HTML, por eso
 // actualizamos título, descripción, canonical, Open Graph, Twitter y JSON-LD
@@ -178,8 +236,11 @@ function recortarTextoSeo(texto, maximo = 158){
     return (ultimoEspacio > 90 ? cortado.slice(0, ultimoEspacio) : cortado).trim() + "…";
 }
 
-function urlCanonicaPalabra(nombre){
-    return SEO_LSPEDIA_BASE.url + "?p=" + encodeURIComponent(String(nombre || "").trim());
+function urlCanonicaPalabra(palabraOReferencia){
+    const referencia = (palabraOReferencia && typeof palabraOReferencia === "object")
+        ? obtenerIdPalabra(palabraOReferencia)
+        : String(palabraOReferencia || "").trim();
+    return SEO_LSPEDIA_BASE.url + "?p=" + encodeURIComponent(referencia);
 }
 
 function obtenerImagenSeoPalabra(palabra){
@@ -247,7 +308,7 @@ function actualizarSeoPalabra(p){
             ? nombre + ": " + definicion
             : "Consulta el significado de " + nombre + " con apoyo visual y videos en Lengua de Señas Peruana (LSP) en LSPedia."
     );
-    const url = urlCanonicaPalabra(nombre);
+    const url = urlCanonicaPalabra(p);
     const imagen = obtenerImagenSeoPalabra(p);
 
     document.title = titulo;
@@ -1398,6 +1459,7 @@ function aplicarPalabrasActualizadasEnSesion(data) {
 
     App.datos = obtenerDatosDiccionarioPublicables(data);
 
+    migrarFavoritosEHistorialAIds();
     // Estas zonas dependen directamente de App.datos y pueden refrescarse
     // sin alterar la pantalla en la que está el usuario.
     renderCategoriasDiccionario();
@@ -1589,6 +1651,7 @@ function procesarDatosApp(data) {
             // le pusiste el video, se queda oculta hasta que el campo
             // "video" tenga algo escrito.
             App.datos = obtenerDatosDiccionarioPublicables(data);
+            migrarFavoritosEHistorialAIds();
             // Las categorías reales del diccionario (Hoja 1, columna C)
             // recién están disponibles acá, así que se pintan las tarjetas
             // en cuanto llegan las palabras.
@@ -2125,8 +2188,13 @@ function generarBotonCompartir(){
 // con un pequeño mensaje flotante. Como último respaldo (navegadores muy
 // viejos o sin permiso de portapapeles), muestra un prompt con el enlace
 // ya seleccionado para copiar a mano.
-function compartirPalabra(nombrePalabra){
-    const url = window.location.origin + window.location.pathname + "?p=" + encodeURIComponent(nombrePalabra);
+function compartirPalabra(palabraOReferencia){
+    const p = (palabraOReferencia && typeof palabraOReferencia === "object")
+        ? palabraOReferencia
+        : buscarPalabraPorReferencia(palabraOReferencia, App.datos);
+    const nombrePalabra = p && p.palabra ? p.palabra : String(palabraOReferencia || "");
+    const referencia = p ? obtenerIdPalabra(p) : String(palabraOReferencia || "");
+    const url = window.location.origin + window.location.pathname + "?p=" + encodeURIComponent(referencia);
     const textoCompartir = `Descubre el significado de "${nombrePalabra}" en LSPedia 📖`;
     if (navigator.share) {
         navigator.share({ title: "LSPedia", text: textoCompartir, url: url }).catch(() => {});
@@ -2202,17 +2270,18 @@ function mostrarPalabra(p, opciones = {}){
         if(ultimasPalabrasCategorias) ultimasPalabrasCategorias.innerHTML = "";
     }
     ocultarPanelesGuardados();
-    const nuevaUrl = window.location.pathname + "?p=" + encodeURIComponent(p.palabra);
+    const referenciaPalabra = obtenerIdPalabra(p);
+    const nuevaUrl = window.location.pathname + "?p=" + encodeURIComponent(referenciaPalabra);
     if(!opciones.noActualizarHistorial){
         registrarUrlEnHistorial(nuevaUrl, {
             tipo: "palabra",
-            palabra: p.palabra,
+            palabra: referenciaPalabra,
             enCategorias: enCategorias
         });
     }
     actualizarSeoPalabra(p);
-    agregarAHistorial(p.palabra); 
-    const enFavoritos = esFavorito(p.palabra);
+    agregarAHistorial(referenciaPalabra);
+    const enFavoritos = esFavorito(referenciaPalabra);
     const textoBoton = enFavoritos ? "★ En favoritos" : "⭐ Agregar a favoritos";
     const botonCompartir = generarBotonCompartir();
     // La columna "imagen" puede traer varias URLs separadas por coma para
@@ -2315,12 +2384,12 @@ function mostrarPalabra(p, opciones = {}){
         </div>
     </div>`;
     document.getElementById("btnFavorito").addEventListener("click", () => {
-        const ahoraEnFavoritos = alternarFavorito(p.palabra);
+        const ahoraEnFavoritos = alternarFavorito(referenciaPalabra);
         document.getElementById("btnFavorito").textContent = ahoraEnFavoritos ? "★ En favoritos" : "⭐ Agregar a favoritos";
         mostrarFavoritos();
     });
     const btnCompartirDicc = document.getElementById("btnCompartir");
-    if (btnCompartirDicc) btnCompartirDicc.addEventListener("click", () => compartirPalabra(p.palabra));
+    if (btnCompartirDicc) btnCompartirDicc.addEventListener("click", () => compartirPalabra(p));
     if (!enCategorias) {
         mostrarSugerenciasRelacionadas(p, ultimasPalabras);
     } else {
@@ -2370,11 +2439,12 @@ function mostrarPalabraSimplificada(p, opciones = {}){
     }
     ocultarPanelesGuardados();
     document.getElementById("senalDelDia").style.display = "none";
-    const nuevaUrl = window.location.pathname + "?p=" + encodeURIComponent(p.palabra);
+    const referenciaPalabra = obtenerIdPalabra(p);
+    const nuevaUrl = window.location.pathname + "?p=" + encodeURIComponent(referenciaPalabra);
     if(!opciones.noActualizarHistorial){
         registrarUrlEnHistorial(nuevaUrl, {
             tipo: "palabra",
-            palabra: p.palabra,
+            palabra: referenciaPalabra,
             enCategorias: enCategorias
         });
     }
@@ -2440,7 +2510,7 @@ function mostrarPalabraSimplificada(p, opciones = {}){
     </div>`;
 
     const btnCompartirVoc = document.getElementById("btnCompartir");
-    if (btnCompartirVoc) btnCompartirVoc.addEventListener("click", () => compartirPalabra(p.palabra));
+    if (btnCompartirVoc) btnCompartirVoc.addEventListener("click", () => compartirPalabra(p));
     if (!enCategorias) {
         mostrarSugerenciasRelacionadasVocabulario(p, ultimasPalabras);
     } else {
@@ -3500,7 +3570,7 @@ function filtrarPorLetra(letra, opciones = {}) {
     let htmlResultado = `<h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">Resultados con: ${letra}</h6>
     <div class="categoria-resultados-grid">`;
     filtradas.forEach((p, i) => {
-        const nombreEscapado = p.palabra.replace(/'/g, "\\'");
+        const nombreEscapado = obtenerIdPalabra(p).replace(/'/g, "\\'");
         htmlResultado += `
         <button type="button" class="categoria-resultado-item shadow-sm" style="animation-delay: ${Math.min(i, 20) * 0.04}s" onclick="mostrarPalabraPorNombre('${nombreEscapado}')">
             ${generarMiniaturaVocabulario(p)}
@@ -4070,7 +4140,7 @@ function filtrarPorCategoriaDiccionario(nombre, opciones = {}){
     let htmlResultado = `<h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">Categoría: ${nombre}</h6>
     <div class="categoria-resultados-grid">`;
     filtradas.forEach((p, i) => {
-        const nombreEscapado = p.palabra.replace(/'/g, "\\'");
+        const nombreEscapado = obtenerIdPalabra(p).replace(/'/g, "\\'");
         htmlResultado += `
         <button type="button" class="categoria-resultado-item shadow-sm" style="animation-delay: ${Math.min(i, 20) * 0.04}s" onclick="mostrarPalabraPorNombre('${nombreEscapado}')">
             ${generarMiniaturaVocabulario(p)}
@@ -4184,7 +4254,7 @@ function ejecutarBusquedaDirectaCategorias() {
     if(encontrado){
         buscarCategorias.value = "";
         if(sugerenciasCategorias){ sugerenciasCategorias.innerHTML = ""; sugerenciasCategorias.style.display = "none"; }
-        mostrarPalabraPorNombreUnificado(encontrado.palabra);
+        mostrarPalabraPorNombreUnificado(obtenerIdPalabra(encontrado));
     }
 }
 
@@ -4254,7 +4324,7 @@ function buscarEnCategorias(){
                     buscarCategorias.value = "";
                     sugerenciasCategorias.innerHTML = "";
                     sugerenciasCategorias.style.display = "none";
-                    mostrarPalabraPorNombreUnificado(p.palabra);
+                    mostrarPalabraPorNombreUnificado(obtenerIdPalabra(p));
                 };
                 sugerenciasCategorias.appendChild(boton);
             });
@@ -4287,7 +4357,7 @@ function buscarEnCategorias(){
             buscarCategorias.value = "";
             sugerenciasCategorias.innerHTML = "";
             sugerenciasCategorias.style.display = "none";
-            mostrarPalabraPorNombreUnificado(p.palabra);
+            mostrarPalabraPorNombreUnificado(obtenerIdPalabra(p));
         };
         sugerenciasCategorias.appendChild(boton);
     });
@@ -4340,7 +4410,7 @@ function mostrarCategoria(nombre, opciones = {}){
     let html = botonAtrasCategorias() + `<h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">Categoría: ${nombre}</h6>
     <div class="categoria-resultados-grid">`;
     obtenerDatosVocabulario().filter(p => p.categoria.trim() === nombre).forEach((p, i) => {
-        const nombreEscapado = p.palabra.replace(/'/g, "\\'");
+        const nombreEscapado = obtenerIdPalabra(p).replace(/'/g, "\\'");
         html += `<button type="button" class="categoria-resultado-item shadow-sm" style="animation-delay: ${Math.min(i, 20) * 0.04}s" onclick="mostrarPalabraPorNombreUnificado('${nombreEscapado}')">
             ${generarMiniaturaVocabulario(p)}
             <span class="categoria-resultado-titulo">${p.palabra}</span>
@@ -4354,35 +4424,49 @@ function mostrarCategoria(nombre, opciones = {}){
 
 // Igual que mostrarPalabraPorNombre(), pero también busca en el banco
 // del Quiz (Hoja 2) cuando la palabra no está en el diccionario principal.
-function mostrarPalabraPorNombreUnificado(nombre){
-    const enHoja1 = App.datos.find(p => p.palabra.toLowerCase() === nombre.toLowerCase());
+function mostrarPalabraPorNombreUnificado(referencia){
+    const enHoja1 = buscarPalabraPorReferencia(referencia, App.datos);
     if(enHoja1){ mostrarPalabra(enHoja1, { enCategorias: true }); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
-    const enHoja2 = obtenerBancoHoja2().find(p => p.palabra && p.palabra.toLowerCase() === nombre.toLowerCase());
+    const enHoja2 = buscarPalabraPorReferencia(referencia, obtenerBancoHoja2());
     if(enHoja2){ mostrarPalabraSimplificada(enHoja2, { enCategorias: true }); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 }
 
-function mostrarPalabraPorNombre(nombre){
-    const palabra = App.datos.find(p => p.palabra.toLowerCase() === nombre.toLowerCase());
+function mostrarPalabraPorNombre(referencia){
+    const palabra = buscarPalabraPorReferencia(referencia, App.datos);
     if(palabra){ window.scrollTo({ top: 0, behavior: 'smooth' }); mostrarPalabra(palabra); }
 }
 
+function normalizarUrlLegadaPalabra(p, referencia){
+    const id = obtenerIdPalabra(p);
+    const ref = String(referencia || "").trim();
+    if(!id || !ref || id.toLowerCase() === ref.toLowerCase()) return;
+
+    const params = new URLSearchParams(window.location.search);
+    if(params.get("p") !== ref) return;
+    params.set("p", id);
+    const nuevaUrl = window.location.pathname + "?" + params.toString();
+    const estadoActual = window.history.state || {};
+    window.history.replaceState({ ...estadoActual, palabra: id }, "", nuevaUrl);
+}
+
 // --- RESTAURAR RESULTADO AL CARGAR/REFRESCAR LA PÁGINA (?p=...) ---
-// Si la palabra está en el diccionario (Hoja 1) se muestra de inmediato.
-// Si no está ahí, puede ser una palabra que solo vive en el banco del
-// Quiz (Hoja 2): en ese caso esperamos (o forzamos) su carga y recién
-// entonces la mostramos, en vez de simplemente volver al inicio.
-function restaurarPalabraDesdeUrl(nombre, opciones = {}){
-    const enHoja1 = App.datos.find(p => p.palabra.toLowerCase() === nombre.toLowerCase());
+// Primero busca por ID. Como compatibilidad también acepta el nombre visible
+// usado por las URLs antiguas y, al encontrarlo, reemplaza la URL por su ID
+// sin crear una entrada extra en el historial del navegador.
+function restaurarPalabraDesdeUrl(referencia, opciones = {}){
+    const enHoja1 = buscarPalabraPorReferencia(referencia, App.datos);
     if(enHoja1){
+        normalizarUrlLegadaPalabra(enHoja1, referencia);
         mostrarPalabra(enHoja1, opciones);
         return;
     }
     if(window.QuizV2 && typeof QuizV2.onBancoListo === "function"){
         if(typeof QuizV2.asegurarBancoCargado === "function") QuizV2.asegurarBancoCargado();
         QuizV2.onBancoListo((banco) => {
-            const enHoja2 = (banco || []).find(p => p.palabra && p.palabra.toLowerCase() === nombre.toLowerCase());
+            const enHoja2 = buscarPalabraPorReferencia(referencia, banco || []);
             // Solo mostramos si el usuario sigue en el resultado esperado (no navegó a otra pantalla mientras cargaba).
-            if(enHoja2 && new URLSearchParams(window.location.search).get("p") === nombre){
+            if(enHoja2 && new URLSearchParams(window.location.search).get("p") === referencia){
+                normalizarUrlLegadaPalabra(enHoja2, referencia);
                 mostrarPalabraSimplificada(enHoja2, opciones);
             }
         });
@@ -4560,7 +4644,7 @@ function mostrarFavoritos(){
     if(!listaFavoritos) return;
     listaFavoritos.innerHTML = obtenerFavoritos().length === 0 ? '<p class="text-muted small">Aún no tienes favoritos.</p>' : "";
     obtenerFavoritos().forEach(nombre => {
-        const p = App.datos.find(i => i.palabra === nombre);
+        const p = buscarPalabraPorReferencia(nombre, App.datos);
         if(p){ const col = document.createElement("div"); col.className="col-6 col-md-3"; col.innerHTML=`<div class="card h-100 shadow-sm border-0" style="border-radius: 12px;"><div class="card-body text-center py-2"><h6 class="mb-0 fw-bold small text-primary">${p.palabra}</h6></div></div>`; col.onclick=()=>mostrarPalabra(p); listaFavoritos.appendChild(col); }
     });
 }
@@ -4578,7 +4662,7 @@ function renderizarListaHistorial(){
     const historial = JSON.parse(localStorage.getItem(CLAVE_HISTORIAL) || "[]");
     listaHistorial.innerHTML = historial.length === 0 ? '<p class="text-muted small mb-0">Aún no tienes búsquedas recientes.</p>' : "";
     historial.forEach(nombre => {
-        const p = App.datos.find(i => i.palabra === nombre);
+        const p = buscarPalabraPorReferencia(nombre, App.datos);
         if(p){ const col = document.createElement("div"); col.className="col-6 col-md-3"; col.innerHTML=`<div class="card h-100 shadow-sm border-0" style="border-radius: 12px;"><div class="card-body text-center py-2"><h6 class="mb-0 fw-bold small text-primary">${p.palabra}</h6></div></div>`; col.onclick=()=>mostrarPalabra(p); listaHistorial.appendChild(col); }
     });
 }

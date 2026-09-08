@@ -11,1752 +11,1782 @@
         <priority>0.2</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Equilibrio</loc>
+        <loc>https://lspedia.site/?p=equilibrio</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Sem%C3%A1foro</loc>
+        <loc>https://lspedia.site/?p=semaforo</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Polic%C3%ADa</loc>
+        <loc>https://lspedia.site/?p=policia</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Mercado</loc>
+        <loc>https://lspedia.site/?p=mercado</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Transporte%20p%C3%BAblico</loc>
+        <loc>https://lspedia.site/?p=transporte-publico</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Vecino</loc>
+        <loc>https://lspedia.site/?p=vecino</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Tienda</loc>
+        <loc>https://lspedia.site/?p=tienda</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Farmacia</loc>
+        <loc>https://lspedia.site/?p=farmacia</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Dinero</loc>
+        <loc>https://lspedia.site/?p=dinero</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Hospital</loc>
+        <loc>https://lspedia.site/?p=hospital</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Emergencia</loc>
+        <loc>https://lspedia.site/?p=emergencia</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Ayuda</loc>
+        <loc>https://lspedia.site/?p=ayuda</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Cita</loc>
+        <loc>https://lspedia.site/?p=cita</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Mucho</loc>
+        <loc>https://lspedia.site/?p=mucho</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Poco</loc>
+        <loc>https://lspedia.site/?p=poco</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Todo</loc>
+        <loc>https://lspedia.site/?p=todo</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Nada</loc>
+        <loc>https://lspedia.site/?p=nada</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Igual</loc>
+        <loc>https://lspedia.site/?p=igual</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Diferente</loc>
+        <loc>https://lspedia.site/?p=diferente</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Mitad</loc>
+        <loc>https://lspedia.site/?p=mitad</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Doble</loc>
+        <loc>https://lspedia.site/?p=doble</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Primero</loc>
+        <loc>https://lspedia.site/?p=primero</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=%C3%9Altimo</loc>
+        <loc>https://lspedia.site/?p=ultimo</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Cocina</loc>
+        <loc>https://lspedia.site/?p=cocina</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Dormitorio</loc>
+        <loc>https://lspedia.site/?p=dormitorio</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Ba%C3%B1o</loc>
+        <loc>https://lspedia.site/?p=bano</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Sala</loc>
+        <loc>https://lspedia.site/?p=sala</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Puerta</loc>
+        <loc>https://lspedia.site/?p=puerta</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Ventana</loc>
+        <loc>https://lspedia.site/?p=ventana</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Llave</loc>
+        <loc>https://lspedia.site/?p=llave</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Limpieza</loc>
+        <loc>https://lspedia.site/?p=limpieza</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Lavar</loc>
+        <loc>https://lspedia.site/?p=lavar</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Basura</loc>
+        <loc>https://lspedia.site/?p=basura</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Electricidad</loc>
+        <loc>https://lspedia.site/?p=electricidad</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Alquiler</loc>
+        <loc>https://lspedia.site/?p=alquiler</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Mudanza</loc>
+        <loc>https://lspedia.site/?p=mudanza</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Muebles</loc>
+        <loc>https://lspedia.site/?p=muebles</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Techo</loc>
+        <loc>https://lspedia.site/?p=techo</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Ciclo</loc>
+        <loc>https://lspedia.site/?p=ciclo</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Ecosistema</loc>
+        <loc>https://lspedia.site/?p=ecosistema</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Elemento</loc>
+        <loc>https://lspedia.site/?p=elemento</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Espectro</loc>
+        <loc>https://lspedia.site/?p=espectro</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Experimento</loc>
+        <loc>https://lspedia.site/?p=experimento</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Exploraci%C3%B3n</loc>
+        <loc>https://lspedia.site/?p=exploracion</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Fen%C3%B3meno</loc>
+        <loc>https://lspedia.site/?p=fenomeno</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=F%C3%B3rmula</loc>
+        <loc>https://lspedia.site/?p=formula</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Frecuencia</loc>
+        <loc>https://lspedia.site/?p=frecuencia</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Gravedad</loc>
+        <loc>https://lspedia.site/?p=gravedad</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Flujo</loc>
+        <loc>https://lspedia.site/?p=flujo</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Parque</loc>
+        <loc>https://lspedia.site/?p=parque</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Plaza</loc>
+        <loc>https://lspedia.site/?p=plaza</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Iglesia</loc>
+        <loc>https://lspedia.site/?p=iglesia</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Municipalidad</loc>
+        <loc>https://lspedia.site/?p=municipalidad</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Correo</loc>
+        <loc>https://lspedia.site/?p=correo</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Cine</loc>
+        <loc>https://lspedia.site/?p=cine</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Restaurante</loc>
+        <loc>https://lspedia.site/?p=restaurante</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Hotel</loc>
+        <loc>https://lspedia.site/?p=hotel</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Playa</loc>
+        <loc>https://lspedia.site/?p=playa</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Aeropuerto</loc>
+        <loc>https://lspedia.site/?p=aeropuerto</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Estadio</loc>
+        <loc>https://lspedia.site/?p=estadio</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Museo</loc>
+        <loc>https://lspedia.site/?p=museo</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Universidad</loc>
+        <loc>https://lspedia.site/?p=universidad</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Colegio</loc>
+        <loc>https://lspedia.site/?p=colegio</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Barrio</loc>
+        <loc>https://lspedia.site/?p=barrio</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Profesor</loc>
+        <loc>https://lspedia.site/?p=profesor</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Examen</loc>
+        <loc>https://lspedia.site/?p=examen-colegio</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Tarea</loc>
+        <loc>https://lspedia.site/?p=tarea</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Recreo</loc>
+        <loc>https://lspedia.site/?p=recreo</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Aula</loc>
+        <loc>https://lspedia.site/?p=aula</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Biblioteca</loc>
+        <loc>https://lspedia.site/?p=biblioteca</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Nota</loc>
+        <loc>https://lspedia.site/?p=nota</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Compa%C3%B1ero%20de%20clase</loc>
+        <loc>https://lspedia.site/?p=companero-de-clase</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Matr%C3%ADcula</loc>
+        <loc>https://lspedia.site/?p=matricula</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Uniforme</loc>
+        <loc>https://lspedia.site/?p=uniforme</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Desayuno</loc>
+        <loc>https://lspedia.site/?p=desayuno</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Almuerzo</loc>
+        <loc>https://lspedia.site/?p=almuerzo</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Cena</loc>
+        <loc>https://lspedia.site/?p=cena</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Arroz</loc>
+        <loc>https://lspedia.site/?p=arroz</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Pollo</loc>
+        <loc>https://lspedia.site/?p=pollo</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Pan</loc>
+        <loc>https://lspedia.site/?p=pan</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Fruta</loc>
+        <loc>https://lspedia.site/?p=fruta</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Verdura</loc>
+        <loc>https://lspedia.site/?p=verdura</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Agua</loc>
+        <loc>https://lspedia.site/?p=agua</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Jugo</loc>
+        <loc>https://lspedia.site/?p=jugo</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Leche</loc>
+        <loc>https://lspedia.site/?p=leche</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Huevo</loc>
+        <loc>https://lspedia.site/?p=huevo</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Carne</loc>
+        <loc>https://lspedia.site/?p=carne</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Pescado</loc>
+        <loc>https://lspedia.site/?p=pescado</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Sopa</loc>
+        <loc>https://lspedia.site/?p=sopa</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Postre</loc>
+        <loc>https://lspedia.site/?p=postre</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Sal</loc>
+        <loc>https://lspedia.site/?p=sal</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Az%C3%BAcar</loc>
+        <loc>https://lspedia.site/?p=azucar</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Cocinar</loc>
+        <loc>https://lspedia.site/?p=cocinar</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Receta%20de%20cocina</loc>
+        <loc>https://lspedia.site/?p=receta-de-cocina</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Gregario</loc>
+        <loc>https://lspedia.site/?p=gregario</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Conversar</loc>
+        <loc>https://lspedia.site/?p=conversar</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Preguntar</loc>
+        <loc>https://lspedia.site/?p=preguntar</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Responder</loc>
+        <loc>https://lspedia.site/?p=responder</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Explicar</loc>
+        <loc>https://lspedia.site/?p=explicar</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Entender</loc>
+        <loc>https://lspedia.site/?p=entender</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Escuchar</loc>
+        <loc>https://lspedia.site/?p=escuchar</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Mirar</loc>
+        <loc>https://lspedia.site/?p=mirar</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Lengua%20de%20se%C3%B1as</loc>
+        <loc>https://lspedia.site/?p=lengua-de-senas</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Int%C3%A9rprete</loc>
+        <loc>https://lspedia.site/?p=interprete</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Comunicaci%C3%B3n</loc>
+        <loc>https://lspedia.site/?p=comunicacion</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Di%C3%A1logo</loc>
+        <loc>https://lspedia.site/?p=dialogo</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Expresi%C3%B3n</loc>
+        <loc>https://lspedia.site/?p=expresion</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Diccionario</loc>
+        <loc>https://lspedia.site/?p=diccionario</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Vocabulario</loc>
+        <loc>https://lspedia.site/?p=vocabulario</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Gracias</loc>
+        <loc>https://lspedia.site/?p=gracias</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Por%20favor</loc>
+        <loc>https://lspedia.site/?p=por-favor</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Disculpa</loc>
+        <loc>https://lspedia.site/?p=disculpa</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=De%20nada</loc>
+        <loc>https://lspedia.site/?p=de-nada</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Con%20gusto</loc>
+        <loc>https://lspedia.site/?p=con-gusto</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Felicitaciones</loc>
+        <loc>https://lspedia.site/?p=felicitaciones</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=F%C3%BAtbol</loc>
+        <loc>https://lspedia.site/?p=futbol</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=V%C3%B3ley</loc>
+        <loc>https://lspedia.site/?p=voley</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Nataci%C3%B3n</loc>
+        <loc>https://lspedia.site/?p=natacion</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Gimnasio</loc>
+        <loc>https://lspedia.site/?p=gimnasio</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Partido</loc>
+        <loc>https://lspedia.site/?p=partido</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Equipo</loc>
+        <loc>https://lspedia.site/?p=equipo-deportes</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Entrenar</loc>
+        <loc>https://lspedia.site/?p=entrenar</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Empate</loc>
+        <loc>https://lspedia.site/?p=empate</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=%C3%81rbitro</loc>
+        <loc>https://lspedia.site/?p=arbitro</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Juego</loc>
+        <loc>https://lspedia.site/?p=juego</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=M%C3%BAsica</loc>
+        <loc>https://lspedia.site/?p=musica</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Baile</loc>
+        <loc>https://lspedia.site/?p=baile</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Pel%C3%ADcula</loc>
+        <loc>https://lspedia.site/?p=pelicula</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Fiesta</loc>
+        <loc>https://lspedia.site/?p=fiesta</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Campeonato</loc>
+        <loc>https://lspedia.site/?p=campeonato</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Err%C3%A1tico</loc>
+        <loc>https://lspedia.site/?p=erratico</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Espec%C3%ADfico</loc>
+        <loc>https://lspedia.site/?p=especifico</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Fundamental</loc>
+        <loc>https://lspedia.site/?p=fundamental</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Gen%C3%A9rico</loc>
+        <loc>https://lspedia.site/?p=generico</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Financiero</loc>
+        <loc>https://lspedia.site/?p=financiero</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Gravamen</loc>
+        <loc>https://lspedia.site/?p=gravamen</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Hip%C3%B3tesis</loc>
+        <loc>https://lspedia.site/?p=hipotesis</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=An%C3%A1lisis</loc>
+        <loc>https://lspedia.site/?p=analisis-educacion</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Argumento</loc>
+        <loc>https://lspedia.site/?p=argumento</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Bibliograf%C3%ADa</loc>
+        <loc>https://lspedia.site/?p=bibliografia</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Conclusi%C3%B3n</loc>
+        <loc>https://lspedia.site/?p=conclusion</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Contexto</loc>
+        <loc>https://lspedia.site/?p=contexto</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Cr%C3%ADtica</loc>
+        <loc>https://lspedia.site/?p=critica</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Cuestionario</loc>
+        <loc>https://lspedia.site/?p=cuestionario</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Discrepancia</loc>
+        <loc>https://lspedia.site/?p=discrepancia</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Docencia</loc>
+        <loc>https://lspedia.site/?p=docencia</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Enfoque</loc>
+        <loc>https://lspedia.site/?p=enfoque</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Enumeraci%C3%B3n</loc>
+        <loc>https://lspedia.site/?p=enumeracion</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Error</loc>
+        <loc>https://lspedia.site/?p=error</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Escenario</loc>
+        <loc>https://lspedia.site/?p=escenario</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Especializaci%C3%B3n</loc>
+        <loc>https://lspedia.site/?p=especializacion</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Estructura</loc>
+        <loc>https://lspedia.site/?p=estructura</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Estudio</loc>
+        <loc>https://lspedia.site/?p=estudio</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Evaluaci%C3%B3n</loc>
+        <loc>https://lspedia.site/?p=evaluacion</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Evidencia</loc>
+        <loc>https://lspedia.site/?p=evidencia</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Exactitud</loc>
+        <loc>https://lspedia.site/?p=exactitud</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Explicaci%C3%B3n</loc>
+        <loc>https://lspedia.site/?p=examen-educacion</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Exposici%C3%B3n</loc>
+        <loc>https://lspedia.site/?p=explicacion</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Facultad</loc>
+        <loc>https://lspedia.site/?p=exposicion</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Filosof%C3%ADa</loc>
+        <loc>https://lspedia.site/?p=facultad-educacion</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Funci%C3%B3n</loc>
+        <loc>https://lspedia.site/?p=filosofia</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Funcionamiento</loc>
+        <loc>https://lspedia.site/?p=funcion</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Fundamentaci%C3%B3n</loc>
+        <loc>https://lspedia.site/?p=funcionamiento</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Grado</loc>
+        <loc>https://lspedia.site/?p=fundamentacion</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Uniformidad</loc>
+        <loc>https://lspedia.site/?p=grado</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Dominio</loc>
+        <loc>https://lspedia.site/?p=uniformidad</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Democracia</loc>
+        <loc>https://lspedia.site/?p=dominio</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Feedback</loc>
+        <loc>https://lspedia.site/?p=democracia</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Feliz</loc>
+        <loc>https://lspedia.site/?p=feedback</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Triste</loc>
+        <loc>https://lspedia.site/?p=feliz</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Enojado</loc>
+        <loc>https://lspedia.site/?p=triste</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Asustado</loc>
+        <loc>https://lspedia.site/?p=enojado</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Sorprendido</loc>
+        <loc>https://lspedia.site/?p=asustado</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Nervioso</loc>
+        <loc>https://lspedia.site/?p=sorprendido</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Tranquilo</loc>
+        <loc>https://lspedia.site/?p=nervioso</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Cansado</loc>
+        <loc>https://lspedia.site/?p=tranquilo</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Preocupado</loc>
+        <loc>https://lspedia.site/?p=cansado</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Avergonzado</loc>
+        <loc>https://lspedia.site/?p=preocupado</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Celoso</loc>
+        <loc>https://lspedia.site/?p=avergonzado</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Orgulloso</loc>
+        <loc>https://lspedia.site/?p=celoso</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Aburrido</loc>
+        <loc>https://lspedia.site/?p=orgulloso</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Confundido</loc>
+        <loc>https://lspedia.site/?p=aburrido</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Emocionado</loc>
+        <loc>https://lspedia.site/?p=confundido</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Frustrado</loc>
+        <loc>https://lspedia.site/?p=emocionado</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Agradecido</loc>
+        <loc>https://lspedia.site/?p=frustrado</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Solo</loc>
+        <loc>https://lspedia.site/?p=agradecido</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Enamorado</loc>
+        <loc>https://lspedia.site/?p=solo</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Estresado</loc>
+        <loc>https://lspedia.site/?p=enamorado</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Frustraci%C3%B3n</loc>
+        <loc>https://lspedia.site/?p=estresado</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Gratificaci%C3%B3n</loc>
+        <loc>https://lspedia.site/?p=frustracion</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Fraude</loc>
+        <loc>https://lspedia.site/?p=gratificacion</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Diligencia</loc>
+        <loc>https://lspedia.site/?p=fraude</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Pap%C3%A1</loc>
+        <loc>https://lspedia.site/?p=diligencia</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Mam%C3%A1</loc>
+        <loc>https://lspedia.site/?p=papa</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Hermano</loc>
+        <loc>https://lspedia.site/?p=mama</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Hermana</loc>
+        <loc>https://lspedia.site/?p=hermano</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Abuelo</loc>
+        <loc>https://lspedia.site/?p=hermana</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Abuela</loc>
+        <loc>https://lspedia.site/?p=abuelo</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=T%C3%ADo</loc>
+        <loc>https://lspedia.site/?p=abuela</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=T%C3%ADa</loc>
+        <loc>https://lspedia.site/?p=tio</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Primo</loc>
+        <loc>https://lspedia.site/?p=tia</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Hijo</loc>
+        <loc>https://lspedia.site/?p=primo</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Esposo</loc>
+        <loc>https://lspedia.site/?p=hijo</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Esposa</loc>
+        <loc>https://lspedia.site/?p=esposo</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Sobrino</loc>
+        <loc>https://lspedia.site/?p=esposa</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Nieto</loc>
+        <loc>https://lspedia.site/?p=sobrino</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Cu%C3%B1ado</loc>
+        <loc>https://lspedia.site/?p=nieto</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Deducci%C3%B3n</loc>
+        <loc>https://lspedia.site/?p=cunado</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Epistemolog%C3%ADa</loc>
+        <loc>https://lspedia.site/?p=deduccion</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Escepticismo</loc>
+        <loc>https://lspedia.site/?p=epistemologia</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Esencia</loc>
+        <loc>https://lspedia.site/?p=escepticismo</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=%C3%89tica</loc>
+        <loc>https://lspedia.site/?p=esencia</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Falacia</loc>
+        <loc>https://lspedia.site/?p=etica</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Flexibilidad</loc>
+        <loc>https://lspedia.site/?p=falacia</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Sol</loc>
+        <loc>https://lspedia.site/?p=flexibilidad</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Lluvia</loc>
+        <loc>https://lspedia.site/?p=sol</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Viento</loc>
+        <loc>https://lspedia.site/?p=lluvia</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Calor</loc>
+        <loc>https://lspedia.site/?p=viento</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Fr%C3%ADo</loc>
+        <loc>https://lspedia.site/?p=calor</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Nube</loc>
+        <loc>https://lspedia.site/?p=frio</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Mar</loc>
+        <loc>https://lspedia.site/?p=nube</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=R%C3%ADo</loc>
+        <loc>https://lspedia.site/?p=mar</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Monta%C3%B1a</loc>
+        <loc>https://lspedia.site/?p=rio</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=%C3%81rbol</loc>
+        <loc>https://lspedia.site/?p=montana</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Animal</loc>
+        <loc>https://lspedia.site/?p=arbol</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Perro</loc>
+        <loc>https://lspedia.site/?p=animal</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Gato</loc>
+        <loc>https://lspedia.site/?p=perro</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Terremoto</loc>
+        <loc>https://lspedia.site/?p=gato</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Estaci%C3%B3n%20del%20a%C3%B1o</loc>
+        <loc>https://lspedia.site/?p=terremoto</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Gobierno</loc>
+        <loc>https://lspedia.site/?p=estacion-del-ano</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Autonom%C3%ADa</loc>
+        <loc>https://lspedia.site/?p=gobierno</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Autenticidad</loc>
+        <loc>https://lspedia.site/?p=autonomia</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Cognici%C3%B3n</loc>
+        <loc>https://lspedia.site/?p=autenticidad</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Creatividad</loc>
+        <loc>https://lspedia.site/?p=cognicion</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Dependencia</loc>
+        <loc>https://lspedia.site/?p=creatividad</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Dilema</loc>
+        <loc>https://lspedia.site/?p=dependencia</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Empat%C3%ADa</loc>
+        <loc>https://lspedia.site/?p=dilema</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Fobia</loc>
+        <loc>https://lspedia.site/?p=empatia</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Abismo</loc>
+        <loc>https://lspedia.site/?p=fobia</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Trascender</loc>
+        <loc>https://lspedia.site/?p=abismo</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Dolor</loc>
+        <loc>https://lspedia.site/?p=trascender</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Fiebre</loc>
+        <loc>https://lspedia.site/?p=dolor</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Enfermedad</loc>
+        <loc>https://lspedia.site/?p=fiebre</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Medicina</loc>
+        <loc>https://lspedia.site/?p=enfermedad</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Doctor</loc>
+        <loc>https://lspedia.site/?p=medicina</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Enfermera</loc>
+        <loc>https://lspedia.site/?p=doctor</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Vacuna</loc>
+        <loc>https://lspedia.site/?p=enfermera</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Receta%20m%C3%A9dica</loc>
+        <loc>https://lspedia.site/?p=vacuna</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Operaci%C3%B3n</loc>
+        <loc>https://lspedia.site/?p=receta-medica</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Alergia</loc>
+        <loc>https://lspedia.site/?p=analisis-salud</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Herida</loc>
+        <loc>https://lspedia.site/?p=operacion</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Tos</loc>
+        <loc>https://lspedia.site/?p=alergia</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Gripe</loc>
+        <loc>https://lspedia.site/?p=herida</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Dieta</loc>
+        <loc>https://lspedia.site/?p=tos</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Ejercicio</loc>
+        <loc>https://lspedia.site/?p=gripe</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Descanso</loc>
+        <loc>https://lspedia.site/?p=dieta</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Presi%C3%B3n%20arterial</loc>
+        <loc>https://lspedia.site/?p=ejercicio</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Diabetes</loc>
+        <loc>https://lspedia.site/?p=descanso</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Embarazo</loc>
+        <loc>https://lspedia.site/?p=presion-arterial</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Hola</loc>
+        <loc>https://lspedia.site/?p=diabetes</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Adi%C3%B3s</loc>
+        <loc>https://lspedia.site/?p=embarazo</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Buenos%20d%C3%ADas</loc>
+        <loc>https://lspedia.site/?p=hola</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Buenas%20tardes</loc>
+        <loc>https://lspedia.site/?p=adios</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Buenas%20noches</loc>
+        <loc>https://lspedia.site/?p=buenos-dias</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Bienvenido</loc>
+        <loc>https://lspedia.site/?p=buenas-tardes</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Diversidad</loc>
+        <loc>https://lspedia.site/?p=buenas-noches</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Generaci%C3%B3n</loc>
+        <loc>https://lspedia.site/?p=bienvenido</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Globalizaci%C3%B3n</loc>
+        <loc>https://lspedia.site/?p=diversidad</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Digno</loc>
+        <loc>https://lspedia.site/?p=generacion</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Fundaci%C3%B3n</loc>
+        <loc>https://lspedia.site/?p=globalizacion</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Celular</loc>
+        <loc>https://lspedia.site/?p=digno</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Internet</loc>
+        <loc>https://lspedia.site/?p=fundacion</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Wifi</loc>
+        <loc>https://lspedia.site/?p=celular</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Aplicaci%C3%B3n</loc>
+        <loc>https://lspedia.site/?p=internet</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Contrase%C3%B1a</loc>
+        <loc>https://lspedia.site/?p=wifi</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Mensaje%20de%20texto</loc>
+        <loc>https://lspedia.site/?p=aplicacion</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Videollamada</loc>
+        <loc>https://lspedia.site/?p=contrasena-tecnologia</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Correo%20electr%C3%B3nico</loc>
+        <loc>https://lspedia.site/?p=mensaje-de-texto</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Cargador</loc>
+        <loc>https://lspedia.site/?p=videollamada</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Bater%C3%ADa</loc>
+        <loc>https://lspedia.site/?p=correo-electronico</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Inteligencia%20artificial</loc>
+        <loc>https://lspedia.site/?p=cargador</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Computadora</loc>
+        <loc>https://lspedia.site/?p=bateria</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Redes%20sociales</loc>
+        <loc>https://lspedia.site/?p=inteligencia-artificial</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Descargar</loc>
+        <loc>https://lspedia.site/?p=computadora</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Actualizar</loc>
+        <loc>https://lspedia.site/?p=redes-sociales</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Usuario</loc>
+        <loc>https://lspedia.site/?p=descargar</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Algoritmo</loc>
+        <loc>https://lspedia.site/?p=actualizar</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Buffer</loc>
+        <loc>https://lspedia.site/?p=usuario</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Dashboard</loc>
+        <loc>https://lspedia.site/?p=algoritmo</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Digital</loc>
+        <loc>https://lspedia.site/?p=buffer</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Encriptaci%C3%B3n</loc>
+        <loc>https://lspedia.site/?p=contrasena-tecnologia-2</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Escalabilidad</loc>
+        <loc>https://lspedia.site/?p=dashboard</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Formato</loc>
+        <loc>https://lspedia.site/?p=digital</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Grafo</loc>
+        <loc>https://lspedia.site/?p=encriptacion</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Branding</loc>
+        <loc>https://lspedia.site/?p=escalabilidad</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Cat%C3%A1logo</loc>
+        <loc>https://lspedia.site/?p=formato</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Jefe</loc>
+        <loc>https://lspedia.site/?p=grafo</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Sueldo</loc>
+        <loc>https://lspedia.site/?p=branding</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Contrato</loc>
+        <loc>https://lspedia.site/?p=catalogo</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Reuni%C3%B3n</loc>
+        <loc>https://lspedia.site/?p=jefe</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Entrevista%20de%20trabajo</loc>
+        <loc>https://lspedia.site/?p=sueldo</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Renunciar</loc>
+        <loc>https://lspedia.site/?p=contrato</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Horario</loc>
+        <loc>https://lspedia.site/?p=reunion</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Compa%C3%B1ero%20de%20trabajo</loc>
+        <loc>https://lspedia.site/?p=entrevista-de-trabajo</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Curr%C3%ADculum</loc>
+        <loc>https://lspedia.site/?p=renunciar</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Vacaciones</loc>
+        <loc>https://lspedia.site/?p=horario</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Consenso</loc>
+        <loc>https://lspedia.site/?p=companero-de-trabajo</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Desempe%C3%B1o</loc>
+        <loc>https://lspedia.site/?p=curriculum</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Eficiencia</loc>
+        <loc>https://lspedia.site/?p=vacaciones</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Ejecuci%C3%B3n</loc>
+        <loc>https://lspedia.site/?p=consenso</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Est%C3%A1ndar</loc>
+        <loc>https://lspedia.site/?p=desempeno</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Estrategia</loc>
+        <loc>https://lspedia.site/?p=eficiencia</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Experiencia</loc>
+        <loc>https://lspedia.site/?p=ejecucion</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Fabricaci%C3%B3n</loc>
+        <loc>https://lspedia.site/?p=equipo-trabajo</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Firma</loc>
+        <loc>https://lspedia.site/?p=estandar</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Gesti%C3%B3n</loc>
+        <loc>https://lspedia.site/?p=estrategia</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Gremio</loc>
+        <loc>https://lspedia.site/?p=experiencia</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Env%C3%ADo</loc>
+        <loc>https://lspedia.site/?p=fabricacion</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Distribuci%C3%B3n</loc>
+        <loc>https://lspedia.site/?p=firma-trabajo</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Banco</loc>
+        <loc>https://lspedia.site/?p=gestion</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Tarjeta</loc>
+        <loc>https://lspedia.site/?p=gremio</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Cuenta%20bancaria</loc>
+        <loc>https://lspedia.site/?p=envio</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Pr%C3%A9stamo</loc>
+        <loc>https://lspedia.site/?p=distribucion</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Deuda</loc>
+        <loc>https://lspedia.site/?p=banco</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Ahorro</loc>
+        <loc>https://lspedia.site/?p=tarjeta</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Recibo</loc>
+        <loc>https://lspedia.site/?p=cuenta-bancaria</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Factura</loc>
+        <loc>https://lspedia.site/?p=prestamo</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=DNI</loc>
+        <loc>https://lspedia.site/?p=deuda</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Pasaporte</loc>
+        <loc>https://lspedia.site/?p=ahorro</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Tr%C3%A1mite</loc>
+        <loc>https://lspedia.site/?p=recibo</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Cola</loc>
+        <loc>https://lspedia.site/?p=factura</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Impuesto</loc>
+        <loc>https://lspedia.site/?p=dni</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Presupuesto</loc>
+        <loc>https://lspedia.site/?p=pasaporte</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Taxi</loc>
+        <loc>https://lspedia.site/?p=tramite</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Carro</loc>
+        <loc>https://lspedia.site/?p=firma-tramites</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Bicicleta</loc>
+        <loc>https://lspedia.site/?p=cola</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Moto</loc>
+        <loc>https://lspedia.site/?p=impuesto</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Tren</loc>
+        <loc>https://lspedia.site/?p=presupuesto</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Avi%C3%B3n</loc>
+        <loc>https://lspedia.site/?p=taxi</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Pasaje</loc>
+        <loc>https://lspedia.site/?p=carro</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Estaci%C3%B3n</loc>
+        <loc>https://lspedia.site/?p=bicicleta</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Gasolina</loc>
+        <loc>https://lspedia.site/?p=moto</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Licencia%20de%20conducir</loc>
+        <loc>https://lspedia.site/?p=tren</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Carrera</loc>
+        <loc>https://lspedia.site/?p=avion</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Semestre</loc>
+        <loc>https://lspedia.site/?p=pasaje</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Beca</loc>
+        <loc>https://lspedia.site/?p=estacion</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Tesis</loc>
+        <loc>https://lspedia.site/?p=gasolina</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Pr%C3%A1ctica%20pre-profesional</loc>
+        <loc>https://lspedia.site/?p=licencia-de-conducir</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Titulaci%C3%B3n</loc>
+        <loc>https://lspedia.site/?p=carrera</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/?p=Aula%20virtual</loc>
+        <loc>https://lspedia.site/?p=semestre</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/?p=beca</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/?p=tesis</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/?p=practica-pre-profesional</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/?p=facultad-universidad</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/?p=titulacion</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/?p=aula-virtual</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
