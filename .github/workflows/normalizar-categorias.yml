@@ -7,6 +7,7 @@ on:
       - "data/palabras.json"
       - "data/vocabulario.json"
       - "scripts/normalizar_categorias.py"
+      - "scripts/validar_lspedia.py"
       - ".github/workflows/normalizar-categorias.yml"
   workflow_dispatch:
 
@@ -35,23 +36,7 @@ jobs:
         run: |
           python -m json.tool data/palabras.json > /dev/null
           python -m json.tool data/vocabulario.json > /dev/null
-          python - <<'PY'
-          import json
-          from pathlib import Path
-
-          dicc=json.loads(Path('data/palabras.json').read_text(encoding='utf-8'))
-          vocab=json.loads(Path('data/vocabulario.json').read_text(encoding='utf-8'))
-          cats_dicc=sorted({str(x.get('categoria') or '').strip() for x in dicc if isinstance(x,dict)})
-          cats_vocab=sorted({str(x.get('categoria') or '').strip() for x in vocab if isinstance(x,dict)})
-          if any('/' in c for c in cats_dicc):
-              raise SystemExit('Todavía quedan categorías compuestas con / en Diccionario: '+repr(cats_dicc))
-          permitidas_vocab={'Adjetivos','Emociones','Tiempo','Verbos'}
-          inesperadas=set(cats_vocab)-permitidas_vocab
-          if inesperadas:
-              raise SystemExit('Categorías inesperadas en Vocabulario: '+repr(sorted(inesperadas)))
-          print('Diccionario:',len(cats_dicc),'categorías canónicas')
-          print('Vocabulario:',cats_vocab)
-          PY
+          python scripts/validar_lspedia.py
 
       - name: Guardar cambios si fueron necesarios
         shell: bash
