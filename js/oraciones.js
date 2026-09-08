@@ -348,11 +348,84 @@ const OracionesV2 = (function(){
     
     function renderWriting(){
      const a=$("activity");
-     a.innerHTML=`<div class="write-wrap"><div class="write-line">${current.parts.map(x=>x==="___"?'<input id="writeInput" class="write-input" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="✍️">':`<span>${x}</span>`).join(" ")}</div><div class="help">Pista: ${current.hint}</div><button id="check" class="check">Comprobar</button></div>`;
-     const input=$("writeInput");$("check").onclick=()=>{if(state.locked||state.tutorial)return;const v=input.value.trim().toLowerCase();if(v===current.correct.toLowerCase())success("¡Lo escribiste bien!");else error("Pista: "+current.hint)};
-     setTimeout(()=>{state.tutorial=true;const r=input.getBoundingClientRect();const h=document.createElement("div");h.className="hand";h.textContent="👆";h.style.left=(r.left+r.width/2)+"px";h.style.top=(r.top+r.height+5)+"px";shadow.appendChild(h);setTimeout(()=>{h.remove();state.tutorial=false;input.focus();startTimer()},1000)},450);
+     a.innerHTML=`<div class="write-wrap"><div class="write-line">${current.parts.map(x=>x==="___"?'<input id="writeInput" class="write-input" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="✍️">':`<span>${x}</span>`).join(" ")}</div><div class="help">Pista: ${current.hint}</div></div>`;
+
+     const input=$("writeInput");
+     const actividadId=current.id;
+     const AUTO_COMPROBAR_MS=1400;
+     const AUTO_SIGUIENTE_MS=1200;
+     let autoCheckId=null;
+     let resuelto=false;
+     let componiendo=false;
+
+     const normalizarRespuesta=(valor)=>String(valor||"").trim().replace(/\s+/g," ").toLocaleLowerCase("es-PE");
+
+     const avanzarAutomaticamente=()=>{
+       setTimeout(()=>{
+         const gameEl=$("game");
+         if(!current||current.id!==actividadId||!gameEl||gameEl.classList.contains("hidden"))return;
+         state.index++;
+         if(state.index>=5)finish();
+         else loadRound();
+       },AUTO_SIGUIENTE_MS);
+     };
+
+     const evaluar=()=>{
+       if(resuelto||state.locked||state.tutorial)return;
+       const valor=normalizarRespuesta(input.value);
+       if(!valor)return;
+       resuelto=true;
+       clearTimeout(autoCheckId);
+       input.disabled=true;
+       stopTimer();
+
+       if(valor===normalizarRespuesta(current.correct)){
+         success("¡Lo escribiste bien!");
+       }else{
+         state.locked=true;
+         error("Respuesta: "+current.correct);
+       }
+
+       $("next").classList.add("hidden");
+       avanzarAutomaticamente();
+     };
+
+     const programarEvaluacion=()=>{
+       clearTimeout(autoCheckId);
+       if(resuelto||state.locked||state.tutorial)return;
+       if(!normalizarRespuesta(input.value))return;
+       autoCheckId=setTimeout(evaluar,AUTO_COMPROBAR_MS);
+     };
+
+     input.addEventListener("input",()=>{if(!componiendo)programarEvaluacion()});
+     input.addEventListener("compositionstart",()=>{componiendo=true;clearTimeout(autoCheckId)});
+     input.addEventListener("compositionend",()=>{componiendo=false;programarEvaluacion()});
+     input.addEventListener("keydown",e=>{
+       if(e.key==="Enter"){
+         e.preventDefault();
+         clearTimeout(autoCheckId);
+         evaluar();
+       }
+     });
+
+     setTimeout(()=>{
+       state.tutorial=true;
+       const r=input.getBoundingClientRect();
+       const h=document.createElement("div");
+       h.className="hand";
+       h.textContent="👆";
+       h.style.left=(r.left+r.width/2)+"px";
+       h.style.top=(r.top+r.height+5)+"px";
+       shadow.appendChild(h);
+       setTimeout(()=>{
+         h.remove();
+         state.tutorial=false;
+         input.focus();
+         startTimer();
+       },1000)
+     },450);
     }
-    
+
     let audioCtxJuego=null;
     function obtenerAudioCtxJuego(){
      if(!audioCtxJuego){const AC=window.AudioContext||window.webkitAudioContext;if(AC)audioCtxJuego=new AC()}
