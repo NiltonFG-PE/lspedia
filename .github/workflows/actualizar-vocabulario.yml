@@ -1,0 +1,62 @@
+name: Actualizar vocabulario desde Hoja 2
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - "js/quiz.js"
+      - "scripts/generar_vocabulario.py"
+      - "scripts/migrar_quiz_vocabulario_local.py"
+      - ".github/workflows/actualizar-vocabulario.yml"
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: actualizar-vocabulario-develop
+  cancel-in-progress: true
+
+jobs:
+  actualizar-vocabulario:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Migrar Quiz a vocabulario local
+        run: python scripts/migrar_quiz_vocabulario_local.py
+
+      - name: Descargar Hoja 2 y generar vocabulario.json
+        run: python scripts/generar_vocabulario.py
+
+      - name: Validar archivos
+        shell: bash
+        run: |
+          python -m json.tool data/vocabulario.json > /dev/null
+          node --check js/quiz.js
+
+      - name: Guardar cambios si hubo actualización
+        shell: bash
+        run: |
+          if git diff --quiet -- js/quiz.js data/vocabulario.json; then
+            echo "Quiz y vocabulario ya estaban actualizados."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/quiz.js data/vocabulario.json
+          git commit -m "Usar vocabulario local para Vocabulario y Quiz"
+          git push origin HEAD:develop
