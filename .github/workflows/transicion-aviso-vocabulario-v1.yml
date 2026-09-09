@@ -1,0 +1,45 @@
+name: Transicion aviso Vocabulario V1
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - .github/workflows/transicion-aviso-vocabulario-v1.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  aplicar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Aplicar mejora
+        run: python scripts/transicion_aviso_vocabulario_v1.py
+
+      - name: Validar JavaScript y cambios
+        run: |
+          set -euo pipefail
+          node --check js/script.js
+          grep -q 'TRANSICION_AVISO_VOCABULARIO_V1_20260909' css/estilos.css
+          grep -q 'revelarBuscadorTrasCerrarAvisoVocabulario' js/script.js
+          grep -q 'const VERSION_APP = "v52";' sw.js
+          grep -q 'id="btnAceptarAvisoVocabulario">ENTIENDO, CONTINUAR</button>' index.html
+          test -f 'video/lspedia_transparente anterior.webm'
+          git diff --check
+
+      - name: Guardar cambio funcional
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html css/estilos.css js/script.js sw.js
+          git commit -m "Mejorar transición del aviso de Vocabulario"
+          git push origin develop
