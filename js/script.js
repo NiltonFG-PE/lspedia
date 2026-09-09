@@ -510,7 +510,6 @@ function activarBotonMenu(idActivo){
     document.querySelectorAll(".mbn-item").forEach((boton) => {
         boton.classList.toggle("active", boton.dataset.vinculado === idActivo);
     });
-    actualizarIndicadorBarraMovil();
 }
 
 // Cierra el menú superior (#menuPrincipal) si está desplegado como lista
@@ -725,39 +724,19 @@ document.getElementById("btnCategorias").addEventListener("click", (e) => {
 });
 
 // --- BARRA DE NAVEGACIÓN INFERIOR (solo móvil/tablet) ---
-// MOBILE_BOTTOM_NAV_SLIDER_JS_V2_20260909
-// El indicador amarillo es único y su posición se guarda en una variable CSS.
-// Así puede deslizarse entre botones en vez de desaparecer y reaparecer.
-function actualizarIndicadorBarraMovil(){
-    const barra = document.getElementById("mobileBottomNav");
-    if(!barra) return;
-
-    const botones = Array.from(barra.querySelectorAll(".mbn-item"));
-    if(!botones.length) return;
-
-    let indice = botones.findIndex(boton => boton.classList.contains("active"));
-    if(indice < 0) indice = 0;
-
-    const posicion = ((indice + 0.5) / botones.length) * 100;
-    barra.style.setProperty("--mbn-posicion", posicion + "%");
-}
-
-// Cada botón de la barra de abajo simula el clic del enlace equivalente
-// del menú superior, manteniendo una sola lógica de navegación.
+// Cada botón de la barra de abajo solo simula el clic del enlace
+// equivalente del menú de arriba (data-vinculado guarda su id), así
+// que no duplicamos ninguna lógica: toda la navegación real sigue
+// pasando por los mismos handlers de siempre.
 document.querySelectorAll(".mbn-item").forEach(boton => {
     boton.addEventListener("click", () => {
         const idVinculado = boton.dataset.vinculado;
         document.querySelectorAll(".mbn-item").forEach(b => b.classList.remove("active"));
         boton.classList.add("active");
-        actualizarIndicadorBarraMovil();
-
         const elementoOriginal = idVinculado && document.getElementById(idVinculado);
         if(elementoOriginal) elementoOriginal.click();
     });
 });
-
-// Posición inicial al cargar la página.
-actualizarIndicadorBarraMovil();
 
 // "Jugar", "Alfabetización" y "Subtítulos" ya no tienen botón propio en
 // el menú: viven todos juntos, cada uno en su bloque independiente,
