@@ -1149,6 +1149,14 @@ function ocultarBloqueInicio(){
     if(bloqueBuscador) bloqueBuscador.classList.add("d-none");
     const bloqueBuscadorCategorias = document.getElementById("bloqueBuscadorCategorias");
     if(bloqueBuscadorCategorias) bloqueBuscadorCategorias.classList.add("d-none");
+    // CORRECCION_FUGA_VOCABULARIO_HERRAMIENTAS_20260909
+    // Esta lista informativa pertenece exclusivamente a Vocabulario. Antes
+    // no formaba parte de ocultarBloqueInicio(), por eso podía quedarse
+    // visible al pasar a Herramientas y también al abrir uno de sus módulos.
+    // Se oculta de forma centralizada acá; actualizarTituloPrincipal()
+    // vuelve a mostrarla únicamente cuando la vista activa es Vocabulario.
+    const listaVocabulario = document.getElementById("vocabularioIntroLista");
+    if(listaVocabulario) listaVocabulario.classList.add("d-none");
     const filaBotonIndice = document.getElementById("filaBotonIndiceAlfabetico");
     if(filaBotonIndice) filaBotonIndice.style.display = "none";
     const filaIndice = document.getElementById("filaIndiceAlfabetico");
