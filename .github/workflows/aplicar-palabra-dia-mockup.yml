@@ -1,0 +1,54 @@
+name: Aplicar Palabra del día aprobada
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - .github/workflows/aplicar-palabra-dia-mockup.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  aplicar-palabra-dia:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Aplicar diseño aprobado
+        run: python scripts/aplicar_palabra_dia_mockup.py
+
+      - name: Validar cambios
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'id="palabra-dia-modernizada"' index.html
+          grep -q 'id="btnVerDelDia">Ver</button>' index.html
+          grep -q 'dia-colapsada' index.html
+          grep -q 'lspedia_palabra_dia_colapsada' js/script.js
+          grep -q 'video/lspedia_transparente.webm' index.html
+          grep -q 'img/avatar_lupa.webm' index.html
+          grep -q 'autoplay loop muted playsinline' index.html
+          grep -q 'const VERSION_APP = "v31";' sw.js
+          git diff --check
+
+      - name: Guardar en develop
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html js/script.js sw.js
+          git commit -m "Modernizar Palabra del día sin perder animaciones"
+          git push origin HEAD:develop
