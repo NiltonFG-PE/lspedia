@@ -1,0 +1,55 @@
+name: Ajustar pie de página compacto
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - .github/workflows/ajustar-footer-compacto.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  aplicar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Aplicar ajuste
+        run: python scripts/ajustar_footer_compacto.py
+
+      - name: Validar cambios
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -q 'Conocimiento sin barreras, un Perú más inclusivo.' index.html; then
+            echo 'La frase del footer todavía existe' >&2
+            exit 1
+          fi
+          grep -q 'padding: 16px 16px 14px !important;' index.html
+          grep -q 'width: 44px;' index.html
+          grep -q 'min-height: 38px;' index.html
+          grep -q 'const VERSION_APP = "v41";' sw.js
+          test -f 'video/lspedia_transparente anterior.webm'
+          git diff --check
+
+      - name: Guardar en develop
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html sw.js
+          git commit -m "Compactar tarjeta legal del pie de página"
+          git push origin HEAD:develop
