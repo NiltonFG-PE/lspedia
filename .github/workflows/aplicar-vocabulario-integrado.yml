@@ -1,0 +1,52 @@
+name: Aplicar Vocabulario integrado
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - .github/workflows/aplicar-vocabulario-integrado.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  aplicar-vocabulario-integrado:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Aplicar diseño aprobado
+        run: python scripts/aplicar_vocabulario_integrado.py
+
+      - name: Validar cambios
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'id="vocabulario-buscador-protagonista"' index.html
+          grep -q 'grid-template-areas:' index.html
+          grep -q '"info info"' index.html
+          grep -q 'img/avatar_lupa.webm' index.html
+          grep -q 'video/lspedia_transparente.webm' index.html
+          grep -q 'const VERSION_APP = "v33";' sw.js
+          git diff --check
+
+      - name: Guardar en develop
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html sw.js
+          git commit -m "Integrar avatar y buscador en Vocabulario"
+          git push origin HEAD:develop
