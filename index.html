@@ -3053,10 +3053,10 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
     .splash-barra {
         position: absolute;
         inset: 0 auto 0 0;
-        width: 42%;
+        width: 0%;
         border-radius: inherit;
         background: linear-gradient(90deg, #1789df 0%, #3cbcf1 100%);
-        animation: splashCargando 1.75s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+        animation: splashCargando 1.65s cubic-bezier(0.22, 0.68, 0.25, 1) forwards;
         will-change: width, transform;
     }
 
@@ -3069,7 +3069,7 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
         border-radius: 999px;
         background: linear-gradient(90deg, transparent, rgba(255,255,255,0.95), transparent);
         filter: blur(0.5px);
-        animation: splashBrillo 1.75s ease-in-out infinite;
+        animation: splashBrillo 1.65s ease-out forwards;
         pointer-events: none;
     }
 
@@ -3137,10 +3137,12 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
     }
 
     @keyframes splashCargando {
-        0%   { width: 18%; transform: translateX(-8%); }
-        48%  { width: 64%; transform: translateX(18%); }
-        76%  { width: 82%; transform: translateX(10%); }
-        100% { width: 34%; transform: translateX(190%); }
+        0%   { width: 0%; }
+        18%  { width: 14%; }
+        42%  { width: 39%; }
+        67%  { width: 68%; }
+        84%  { width: 86%; }
+        100% { width: 100%; }
     }
 
     @keyframes splashBrillo {
