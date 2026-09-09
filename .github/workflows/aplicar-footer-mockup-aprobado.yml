@@ -1,0 +1,51 @@
+name: Aplicar footer aprobado de LSPedia
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - .github/workflows/aplicar-footer-mockup-aprobado.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  aplicar-footer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Aplicar diseño aprobado
+        run: python scripts/aplicar_footer_mockup_aprobado.py
+
+      - name: Validar cambios
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'footer-derechos-principal' index.html
+          grep -q 'Conocimiento sin barreras, un Perú más inclusivo.' index.html
+          grep -q 'footer-red-instagram { color: #d62976' index.html
+          grep -q 'footer-red-youtube { color: #ff0000' index.html
+          grep -q 'const VERSION_APP = "v30";' sw.js
+          git diff --check
+
+      - name: Guardar en develop
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html sw.js
+          git commit -m "Aplicar footer aprobado con redes a color"
+          git push origin HEAD:develop
