@@ -4961,12 +4961,25 @@ function mostrarSenalDelDia(offset = offsetSenalDelDia){
 
     const btnCerrarDelDia = document.getElementById("btnCerrarDelDia");
     if(btnCerrarDelDia){
+        const tarjetaDelDia = document.getElementById("senalDelDia");
+        const CLAVE_PALABRA_DIA_COLAPSADA = "lspedia_palabra_dia_colapsada";
+
+        const aplicarEstadoPalabraDia = (colapsada) => {
+            if(!tarjetaDelDia) return;
+            tarjetaDelDia.classList.toggle("dia-colapsada", colapsada);
+            btnCerrarDelDia.setAttribute("aria-expanded", colapsada ? "false" : "true");
+            btnCerrarDelDia.setAttribute("aria-label", colapsada ? "Expandir Palabra del día" : "Contraer Palabra del día");
+            document.body.classList.remove("senal-cerrada");
+        };
+
+        let colapsadaInicial = false;
+        try { colapsadaInicial = sessionStorage.getItem(CLAVE_PALABRA_DIA_COLAPSADA) === "1"; } catch(_error) {}
+        aplicarEstadoPalabraDia(colapsadaInicial);
+
         btnCerrarDelDia.onclick = () => {
-            document.getElementById("senalDelDia").style.display = "none";
-            // El avatar se achica y se acomoda al costado del título (en
-            // vez de quedar solo y grande arriba, empujando el título
-            // debajo): ver la regla "body.senal-cerrada" en index.html.
-            document.body.classList.add("senal-cerrada");
+            const colapsada = !tarjetaDelDia.classList.contains("dia-colapsada");
+            aplicarEstadoPalabraDia(colapsada);
+            try { sessionStorage.setItem(CLAVE_PALABRA_DIA_COLAPSADA, colapsada ? "1" : "0"); } catch(_error) {}
         };
     }
 
