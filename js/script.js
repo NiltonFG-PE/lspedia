@@ -479,6 +479,87 @@ function actualizarTituloPrincipal(vista){
     if(subtitulo && !esVocabulario && datos.subtituloHtml) subtitulo.innerHTML = datos.subtituloHtml;
 }
 
+// TRANSICION_SECCIONES_PRINCIPALES_JS_V1_20260909
+// Las cuatro secciones principales comparten #contenidoPrincipalApp. Antes
+// cambiaban de golpe; ahora una pulsación primero atenúa muy brevemente el
+// contenido actual y, tras ejecutar la navegación existente, la nueva vista
+// entra desde 10 px más abajo. No se reescribe ninguna función de pantalla.
+const IDS_SECCIONES_PRINCIPALES = new Set([
+    "btnInicio", "btnCategorias", "btnHerramientas", "btnSobreNosotros"
+]);
+
+let idSeccionPrincipalActiva = (document.querySelector(".navbar-nav .nav-link.active") || {}).id || "btnInicio";
+let omitirIntercepcionTransicionPrincipal = false;
+let timerEntradaSeccionPrincipal = null;
+
+function contenidoPrincipalParaTransicion(){
+    return document.getElementById("contenidoPrincipalApp");
+}
+
+function iniciarSalidaSeccionPrincipal(){
+    const contenido = contenidoPrincipalParaTransicion();
+    if(!contenido || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    clearTimeout(timerEntradaSeccionPrincipal);
+    contenido.classList.remove("lsp-seccion-entrando");
+    contenido.classList.add("lsp-seccion-saliendo");
+}
+
+function reproducirEntradaSeccionPrincipal(){
+    const contenido = contenidoPrincipalParaTransicion();
+    if(!contenido) return;
+    contenido.classList.remove("lsp-seccion-saliendo", "lsp-seccion-entrando");
+
+    if(window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    // Forzar reflow permite reiniciar la animación aunque se cambie de
+    // sección varias veces seguidas.
+    void contenido.offsetWidth;
+    contenido.classList.add("lsp-seccion-entrando");
+    clearTimeout(timerEntradaSeccionPrincipal);
+    timerEntradaSeccionPrincipal = setTimeout(() => {
+        contenido.classList.remove("lsp-seccion-entrando");
+    }, 210);
+}
+
+function idDestinoDesdeControlPrincipal(control){
+    if(!control) return "";
+    if(control.classList && control.classList.contains("mbn-item")){
+        return control.dataset.vinculado || "";
+    }
+    return control.id || "";
+}
+
+// Captura la pulsación ANTES de los handlers ya existentes para poder mostrar
+// 70 ms de salida. Después vuelve a disparar exactamente el mismo control;
+// la bandera evita interceptar ese segundo clic y toda la lógica original
+// continúa intacta.
+document.addEventListener("click", (evento) => {
+    if(omitirIntercepcionTransicionPrincipal) return;
+
+    const control = evento.target.closest(
+        "#btnInicio, #btnCategorias, #btnHerramientas, #btnSobreNosotros, .mobile-bottom-nav .mbn-item"
+    );
+    if(!control) return;
+
+    const idDestino = idDestinoDesdeControlPrincipal(control);
+    if(!IDS_SECCIONES_PRINCIPALES.has(idDestino) || idDestino === idSeccionPrincipalActiva) return;
+
+    if(window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    evento.preventDefault();
+    evento.stopImmediatePropagation();
+    iniciarSalidaSeccionPrincipal();
+
+    setTimeout(() => {
+        omitirIntercepcionTransicionPrincipal = true;
+        try {
+            control.click();
+        } finally {
+            omitirIntercepcionTransicionPrincipal = false;
+        }
+    }, 70);
+}, true);
+
 // Marca cuál botón del menú superior (escritorio) está activo, quitando
 // la clase de los demás. Antes esta clase solo existía de entrada en
 // "Diccionario" (hardcodeada en el HTML) y nunca se actualizaba al
@@ -487,6 +568,11 @@ function actualizarTituloPrincipal(vista){
 // Vocabulario, Herramientas, Sobre Nosotros) para que el subrayado se
 // mueva junto con la navegación real.
 function activarBotonMenu(idActivo){
+    const cambioSeccionPrincipal = IDS_SECCIONES_PRINCIPALES.has(idActivo) && idActivo !== idSeccionPrincipalActiva;
+    if(cambioSeccionPrincipal){
+        idSeccionPrincipalActiva = idActivo;
+        reproducirEntradaSeccionPrincipal();
+    }
     document.querySelectorAll(".navbar-nav .nav-link").forEach((link) => {
         link.classList.toggle("active", link.id === idActivo);
     });
