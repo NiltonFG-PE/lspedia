@@ -1,0 +1,53 @@
+name: Ajustar Vocabulario móvil compacto
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - .github/workflows/ajustar-vocabulario-movil-compacto.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  ajustar-vocabulario:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Aplicar ajuste aprobado
+        run: python scripts/ajustar_vocabulario_movil_compacto.py
+
+      - name: Validar cambios
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'id="vocabulario-buscador-protagonista"' index.html
+          grep -q 'id="vocabulario-layout-movil"' index.html
+          grep -q 'height: 124px' index.html
+          grep -q 'buscador.insertAdjacentElement' index.html
+          grep -q 'img/avatar_lupa.webm' index.html
+          grep -q 'video/lspedia_transparente.webm' index.html
+          grep -q 'const VERSION_APP = "v34";' sw.js
+          git diff --check
+
+      - name: Guardar en develop
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html sw.js
+          git commit -m "Afinar Vocabulario móvil y ordenar contenido"
+          git push origin HEAD:develop
