@@ -450,8 +450,8 @@ const TITULOS_PRINCIPALES = {
         titulo: '<span class="titulo-acento">Diccionario</span> de Lengua de Señas Peruana (LSP) y Español',
         subtituloHtml: '<span class="aviso-mision-icono" aria-hidden="true">🤟</span>'
             + '<div class="aviso-mision-texto">'
-            + '<p class="aviso-mision-linea1">No enseñamos lengua de señas, <strong>eso le pertenece a los sordos</strong>.</p>'
-            + '<p class="aviso-mision-linea2">Te ayudamos a aprender palabras del español con <span class="subtitulo-resaltado">videos en Lengua de Señas Peruana</span>.</p>'
+            + '<p class="aviso-mision-linea1"><span style="color:#42a5f5;font-weight:700;">Diccionario visual de español</span> con apoyo en Lengua de Señas Peruana.<br>Su función es facilitar la comprensión de palabras y significados,</p>'
+            + '<p class="aviso-mision-linea2"><span style="color:#a66a00;font-weight:700;">🪧No es un curso, ni enseñamos LSP.</span></p>'
             + '</div>'
     },
     vocabulario: {
