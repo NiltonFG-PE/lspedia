@@ -997,17 +997,17 @@ body.subtitulos-bloquear-scroll {
     padding: 13px 26px !important;
     border: 0 !important;
     border-radius: 999px !important;
-    color: #fff !important;
+    color: #10224b !important;
     font-weight: 800 !important;
     font-size: 1.08rem !important;
-    background: linear-gradient(100deg, #2563eb 0%, #0ea5e9 100%) !important;
-    box-shadow: 0 10px 24px rgba(37,99,235,.28);
+    background: linear-gradient(100deg, #ffd54a 0%, #fbbc04 100%) !important;
+    box-shadow: 0 10px 24px rgba(251,188,4,.34);
     transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
 }
 .subtitulos-btn-principal-v5:hover,
 .subtitulos-btn-principal-v5:focus-visible {
     transform: translateY(-2px);
-    box-shadow: 0 14px 30px rgba(37,99,235,.34);
+    box-shadow: 0 14px 30px rgba(251,188,4,.42);
     filter: saturate(1.06);
 }
 .subtitulos-accion-ayuda-v5 {
@@ -1181,4 +1181,27 @@ body.subtitulos-bloquear-scroll {
 
 @media (prefers-reduced-motion: reduce) {
     .subtitulos-btn-principal-v5 { transition: none; }
+}
+
+/* SUBTITULOS_V6_ICONO_AMARILLO_20260909
+   Ajuste de identidad visual LSPedia: botón principal amarillo e icono
+   oficial de Subtítulos en lugar del bloque con letras CC. */
+.subtitulos-hero-icono.subtitulos-hero-icono-imagen {
+    padding: 9px;
+    overflow: hidden;
+    background: linear-gradient(180deg, #fff7d6 0%, #ffed9b 100%);
+    border: 1px solid rgba(251,188,4,.34);
+    box-shadow: 0 8px 20px rgba(251,188,4,.16);
+}
+.subtitulos-hero-icono-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+.subtitulos-btn-principal-v5 .subtitulos-icono-grabar {
+    box-shadow: 0 0 0 5px rgba(239,68,68,.13);
+}
+@media (max-width: 767.98px) {
+    .subtitulos-hero-icono.subtitulos-hero-icono-imagen { padding: 7px; }
 }

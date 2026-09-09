@@ -114,7 +114,9 @@ const SubtitulosV2 = (function () {
             const hero = document.createElement("div");
             hero.className = "subtitulos-intro-hero-v3";
             hero.innerHTML = `
-                <div class="subtitulos-hero-icono" aria-hidden="true">CC</div>
+                <div class="subtitulos-hero-icono subtitulos-hero-icono-imagen" aria-hidden="true">
+                    <img src="img/categorias/Subtítulos.webp" alt="" class="subtitulos-hero-icono-img">
+                </div>
                 <div class="subtitulos-hero-textos">
                     <span class="subtitulos-hero-eyebrow">ACCESIBILIDAD EN TIEMPO REAL</span>
                     <h3>Convierte voz en texto al instante</h3>
@@ -192,6 +194,9 @@ const SubtitulosV2 = (function () {
         organizarIntroCompactaV5();
     }
 
+    // SUBTITULOS_V6_ICONO_AMARILLO_20260909
+    // Usa el icono oficial existente de img/categorias/Subtítulos.webp y
+    // mantiene la interfaz V5 reordenada.
     // SUBTITULOS_V5_ORDEN_VISUAL_20260909
     // Reordena la pantalla inicial para que la acción principal aparezca
     // antes que las opciones secundarias. Conserva exactamente los mismos
