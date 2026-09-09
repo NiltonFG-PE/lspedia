@@ -31,24 +31,18 @@ jobs:
           texto = index.read_text(encoding='utf-8')
 
           texto, c1 = re.subn(
-              r'''(?s)(\.splash-barra \{\s*position: absolute;\s*inset: 0 auto 0 0;\s*)width: 42%;(\s*border-radius: inherit;\s*background: linear-gradient\(90deg, #1789df 0%, #3cbcf1 100%\);\s*)animation: splashCargando 1\.75s cubic-bezier\(0\.45, 0, 0\.25, 1\) infinite;''',
-              r'''\1width: 0%;\2animation: splashCargando 1.65s cubic-bezier(0.22, 0.68, 0.25, 1) forwards;''',
+              r'(?s)(\.splash-barra \{\s*position: absolute;\s*inset: 0 auto 0 0;\s*)width: 42%;(\s*border-radius: inherit;\s*background: linear-gradient\(90deg, #1789df 0%, #3cbcf1 100%\);\s*)animation: splashCargando 1\.75s cubic-bezier\(0\.45, 0, 0\.25, 1\) infinite;',
+              r'\1width: 0%;\2animation: splashCargando 1.65s cubic-bezier(0.22, 0.68, 0.25, 1) forwards;',
               texto,
               count=1,
           )
           if c1 != 1:
               raise SystemExit(f'ERROR: bloque .splash-barra no encontrado ({c1}).')
 
+          nuevos_keyframes = '@keyframes splashCargando {\n        0%   { width: 0%; }\n        18%  { width: 14%; }\n        42%  { width: 39%; }\n        67%  { width: 68%; }\n        84%  { width: 86%; }\n        100% { width: 100%; }\n    }'
           texto, c2 = re.subn(
-              r'''(?s)@keyframes splashCargando \{\s*0%\s*\{[^}]*\}\s*48%\s*\{[^}]*\}\s*76%\s*\{[^}]*\}\s*100%\s*\{[^}]*\}\s*\}''',
-              '''@keyframes splashCargando {
-        0%   { width: 0%; }
-        18%  { width: 14%; }
-        42%  { width: 39%; }
-        67%  { width: 68%; }
-        84%  { width: 86%; }
-        100% { width: 100%; }
-    }''',
+              r'(?s)@keyframes splashCargando \{\s*0%\s*\{[^}]*\}\s*48%\s*\{[^}]*\}\s*76%\s*\{[^}]*\}\s*100%\s*\{[^}]*\}\s*\}',
+              nuevos_keyframes,
               texto,
               count=1,
           )
@@ -56,8 +50,8 @@ jobs:
               raise SystemExit(f'ERROR: keyframes splashCargando no encontrado ({c2}).')
 
           texto, c3 = re.subn(
-              r'''animation: splashBrillo 1\.75s ease-in-out infinite;''',
-              '''animation: splashBrillo 1.65s ease-out forwards;''',
+              r'animation: splashBrillo 1\.75s ease-in-out infinite;',
+              'animation: splashBrillo 1.65s ease-out forwards;',
               texto,
               count=1,
           )
@@ -68,12 +62,7 @@ jobs:
 
           sw = Path('sw.js')
           sw_texto = sw.read_text(encoding='utf-8')
-          sw_nuevo, c4 = re.subn(
-              r'const VERSION_APP = "v27";',
-              'const VERSION_APP = "v28";',
-              sw_texto,
-              count=1,
-          )
+          sw_nuevo, c4 = re.subn(r'const VERSION_APP = "v27";', 'const VERSION_APP = "v28";', sw_texto, count=1)
           if c4 != 1:
               raise SystemExit('ERROR: no se encontró VERSION_APP v27.')
           sw.write_text(sw_nuevo, encoding='utf-8', newline='\n')
