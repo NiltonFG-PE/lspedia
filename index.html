@@ -2704,6 +2704,70 @@ body.video-palabra-pantalla-completa-activa .controles-video {
     background-color: #fdeaad;
 }
 
+/* MOBILE_BOTTOM_NAV_SLIDER_V2_20260909
+   El círculo amarillo ya no pertenece a cada botón: es un único indicador
+   que se desliza entre las cuatro posiciones, como en una app nativa. */
+.mobile-bottom-nav {
+    --mbn-posicion: 12.5%;
+}
+.mobile-bottom-nav::before {
+    content: "";
+    position: absolute;
+    top: -17px;
+    left: var(--mbn-posicion);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #fff3bf 0%, #fdeaad 58%, #ffe17a 100%);
+    border: 1px solid rgba(198, 145, 22, 0.16);
+    box-shadow: 0 10px 20px rgba(146, 103, 11, 0.30),
+                0 0 0 7px rgba(255, 193, 7, 0.08);
+    transform: translateX(-50%);
+    transition: left 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.28s ease,
+                transform 0.28s ease;
+    pointer-events: none;
+    z-index: 1;
+    will-change: left;
+}
+
+/* El contenedor del icono sigue subiendo sobre la barra, pero ahora es
+   transparente: el color amarillo lo aporta el indicador que se desliza. */
+.mbn-icon-wrap {
+    transition: width 0.30s cubic-bezier(0.22, 1, 0.36, 1),
+                height 0.30s cubic-bezier(0.22, 1, 0.36, 1),
+                border-radius 0.30s ease,
+                transform 0.36s cubic-bezier(0.22, 1, 0.36, 1),
+                background-color 0.20s ease,
+                box-shadow 0.20s ease;
+}
+.mbn-item.active .mbn-icon-wrap {
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Al llegar a una sección nueva, el icono hace un micro-salto de 3 px
+   y vuelve a su lugar. Es deliberadamente corto para no distraer. */
+.mbn-item.active .mbn-icon {
+    animation: mbnIconoLlega 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes mbnIconoLlega {
+    0%   { transform: translateY(0) scale(1.06); }
+    48%  { transform: translateY(-3px) scale(1.13); }
+    100% { transform: translateY(0) scale(1.10); }
+}
+
+/* Reduce movimiento para quien lo tenga desactivado en su dispositivo. */
+@media (prefers-reduced-motion: reduce) {
+    .mobile-bottom-nav::before,
+    .mbn-icon-wrap {
+        transition: none !important;
+    }
+    .mbn-item.active .mbn-icon {
+        animation: none !important;
+    }
+}
+
 /* Deja espacio abajo para que el footer y el contenido no queden
    tapados detrás de la barra fija, y sube el stack de botones
    flotantes (Jugar/Subtítulos/Buscar) para que no se solapen con
