@@ -83,6 +83,13 @@ const SubtitulosV2 = (function () {
         _intentosReinicio: 0,
         _timeoutReinicio: null,
         wakeLock: null,
+        // SUBTITULOS_V4_OFFLINE_PRECISION_20260909
+        modoLocalDisponible: false,
+        modoLocalActivo: false,
+        idiomaLocal: "",
+        calidadLocal: "",
+        frasesContextuales: [],
+        _comprobandoLocal: false,
         // --- Medidor de nivel de audio (pantalla intro, ver más abajo) ---
         medidor: {
             activo: false,
@@ -119,6 +126,41 @@ const SubtitulosV2 = (function () {
                     <span><b>3</b> Inicia</span>
                 </div>`;
             introCard.insertBefore(hero, introCard.firstChild);
+        }
+
+        if (introCard && !el("subtitulosOfflineCard")) {
+            const bloque = document.createElement("div");
+            bloque.id = "subtitulosOfflineCard";
+            bloque.className = "subtitulos-offline-card-v4";
+            bloque.innerHTML = `
+                <div class="subtitulos-offline-icono" aria-hidden="true">⬇️</div>
+                <div class="subtitulos-offline-contenido">
+                    <div class="subtitulos-offline-titulo">Modo sin internet</div>
+                    <div id="subtitulosOfflineEstado" class="subtitulos-offline-estado">Comprobando si este navegador puede usar reconocimiento local…</div>
+                    <div class="subtitulos-offline-acciones">
+                        <button id="btnSubtitulosOffline" type="button" class="btn btn-sm subtitulos-btn-offline">Descargar idioma</button>
+                        <label class="subtitulos-switch-offline">
+                            <input id="subtitulosUsarOffline" type="checkbox" disabled>
+                            <span>Usar sin internet</span>
+                        </label>
+                    </div>
+                </div>`;
+            const hero = introCard.querySelector(".subtitulos-intro-hero-v3");
+            if (hero && hero.nextSibling) introCard.insertBefore(bloque, hero.nextSibling);
+            else introCard.insertBefore(bloque, introCard.firstChild);
+        }
+
+        if (introCard && !el("subtitulosContextoPalabras")) {
+            const precision = document.createElement("div");
+            precision.className = "subtitulos-precision-card-v4";
+            precision.innerHTML = `
+                <label for="subtitulosContextoPalabras" class="subtitulos-precision-titulo">🎯 Palabras importantes <span>(opcional)</span></label>
+                <input id="subtitulosContextoPalabras" class="form-control" maxlength="240" placeholder="Ej.: LSPedia, RENIEC, María, Barranco">
+                <small>Agrega nombres, lugares o términos difíciles separados por comas. Si el navegador lo permite, LSPedia les da prioridad al reconocer.</small>`;
+            const medidor = el("subtitulosMedidorCaja");
+            const medidorWrap = medidor ? medidor.parentElement : null;
+            if (medidorWrap) introCard.insertBefore(precision, medidorWrap);
+            else introCard.appendChild(precision);
         }
 
         const barra = el("subtitulosBarraControles");
@@ -165,6 +207,179 @@ const SubtitulosV2 = (function () {
     }
 
     // ---------------------------------------------------------
+    // MODO LOCAL / SIN INTERNET Y PRECISIÓN CONTEXTUAL
+    // ---------------------------------------------------------
+    function obtenerConstructorLocal() {
+        // Las funciones modernas available()/install() se exponen sin prefijo.
+        return window.SpeechRecognition || null;
+    }
+
+    function soportaModoLocal() {
+        const Ctor = obtenerConstructorLocal();
+        return !!(Ctor && typeof Ctor.available === "function" && typeof Ctor.install === "function");
+    }
+
+    function idiomaSeleccionado() {
+        const select = el("subtitulosSelectIdioma");
+        return (select && select.value) || estado.idioma || CONFIG.IDIOMA_POR_DEFECTO;
+    }
+
+    function nombreIdioma(codigo) {
+        return NOMBRES_IDIOMA[codigo] || codigo;
+    }
+
+    function actualizarUiOffline(tipo, texto, calidad) {
+        const estadoEl = el("subtitulosOfflineEstado");
+        const btn = el("btnSubtitulosOffline");
+        const toggle = el("subtitulosUsarOffline");
+        const idioma = idiomaSeleccionado();
+        const etiqueta = nombreIdioma(idioma);
+
+        if (estadoEl) {
+            estadoEl.className = "subtitulos-offline-estado estado-" + tipo;
+            estadoEl.textContent = texto;
+        }
+        if (btn) {
+            btn.disabled = tipo === "comprobando" || tipo === "instalando" || tipo === "no-soportado";
+            if (tipo === "listo") btn.textContent = "✓ Idioma descargado";
+            else if (tipo === "instalando") btn.textContent = "Descargando…";
+            else btn.textContent = "⬇ Descargar " + etiqueta;
+        }
+        if (toggle) {
+            const listo = tipo === "listo";
+            toggle.disabled = !listo;
+            if (!listo) toggle.checked = false;
+        }
+        if (calidad) estado.calidadLocal = calidad;
+    }
+
+    async function buscarCalidadLocal(idioma) {
+        const Ctor = obtenerConstructorLocal();
+        if (!Ctor) return null;
+        // Para subtítulos priorizamos conversation: está pensado para habla
+        // continua, ruido y varios hablantes. Si no existe, probamos dictation.
+        for (const calidad of ["conversation", "dictation"]) {
+            try {
+                const estadoDisp = await Ctor.available({ langs: [idioma], processLocally: true, quality: calidad });
+                if (estadoDisp !== "unavailable") return { estado: estadoDisp, calidad };
+            } catch (e) {
+                // Algunos navegadores implementan la API parcialmente.
+            }
+        }
+        return null;
+    }
+
+    async function comprobarDisponibilidadLocal(interactivo) {
+        if (estado._comprobandoLocal) return;
+        const idioma = idiomaSeleccionado();
+        estado.modoLocalActivo = false;
+        estado.modoLocalDisponible = false;
+        estado.idiomaLocal = "";
+
+        if (!soportaModoLocal()) {
+            actualizarUiOffline("no-soportado", "Este navegador todavía no permite descargar el reconocimiento de voz desde la web. LSPedia seguirá usando el modo en línea.");
+            return;
+        }
+
+        estado._comprobandoLocal = true;
+        actualizarUiOffline("comprobando", "Comprobando paquete de " + nombreIdioma(idioma) + "…");
+        try {
+            const info = await buscarCalidadLocal(idioma);
+            if (!info) {
+                actualizarUiOffline("no-disponible", "No hay un paquete local compatible para " + nombreIdioma(idioma) + " en este navegador.");
+                return;
+            }
+
+            if (info.estado === "available") {
+                estado.modoLocalDisponible = true;
+                estado.idiomaLocal = idioma;
+                estado.calidadLocal = info.calidad;
+                actualizarUiOffline("listo", "Listo para usar sin internet · calidad " + (info.calidad === "conversation" ? "conversación" : "dictado") + ".", info.calidad);
+                const toggle = el("subtitulosUsarOffline");
+                if (toggle && !toggle.dataset.usuarioCambio) toggle.checked = true;
+                estado.modoLocalActivo = !!(toggle && toggle.checked);
+                return;
+            }
+
+            if (!interactivo) {
+                const mensaje = info.estado === "downloading"
+                    ? "El paquete se está descargando. Vuelve a comprobar en unos instantes."
+                    : "Hay un paquete disponible para descargar y usar sin internet.";
+                actualizarUiOffline("descargable", mensaje, info.calidad);
+                return;
+            }
+
+            actualizarUiOffline("instalando", "Descargando " + nombreIdioma(idioma) + " para usarlo sin internet…", info.calidad);
+            const Ctor = obtenerConstructorLocal();
+            const ok = await Ctor.install({ langs: [idioma], processLocally: true, quality: info.calidad });
+            if (ok) {
+                estado.modoLocalDisponible = true;
+                estado.modoLocalActivo = true;
+                estado.idiomaLocal = idioma;
+                estado.calidadLocal = info.calidad;
+                actualizarUiOffline("listo", "Paquete instalado. Ya puedes usar Subtítulos sin internet en este navegador.", info.calidad);
+                const toggle = el("subtitulosUsarOffline");
+                if (toggle) toggle.checked = true;
+            } else {
+                actualizarUiOffline("error", "No se pudo descargar el paquete. Puedes seguir usando el modo en línea.");
+            }
+        } catch (e) {
+            console.warn("No se pudo comprobar/instalar reconocimiento local:", e);
+            actualizarUiOffline("error", "El navegador no pudo preparar el modo sin internet. LSPedia seguirá funcionando en línea.");
+        } finally {
+            estado._comprobandoLocal = false;
+        }
+    }
+
+    function leerFrasesContextuales() {
+        const input = el("subtitulosContextoPalabras");
+        if (!input) return [];
+        const vistas = new Set();
+        return input.value.split(",")
+            .map((v) => v.trim())
+            .filter((v) => {
+                if (!v || v.length > 45) return false;
+                const clave = v.toLocaleLowerCase("es");
+                if (vistas.has(clave)) return false;
+                vistas.add(clave);
+                return true;
+            })
+            .slice(0, 20);
+    }
+
+    function aplicarSesgoContextual(reconocimiento) {
+        if (!reconocimiento || !estado.frasesContextuales.length) return;
+        if (!("phrases" in reconocimiento) || typeof window.SpeechRecognitionPhrase !== "function") return;
+        try {
+            reconocimiento.phrases = estado.frasesContextuales.map((frase) => new window.SpeechRecognitionPhrase(frase, 5.5));
+        } catch (e) {
+            console.warn("Sesgo contextual no disponible en este navegador:", e);
+        }
+    }
+
+    function elegirAlternativa(resultado) {
+        if (!resultado || !resultado.length) return null;
+        let mejor = resultado[0];
+        if (!resultado.isFinal || resultado.length === 1 || !estado.frasesContextuales.length) return mejor;
+
+        const contexto = estado.frasesContextuales.map((f) => normalizar(f)).filter(Boolean);
+        let mejorPuntaje = -Infinity;
+        for (let i = 0; i < resultado.length; i++) {
+            const alt = resultado[i];
+            const texto = normalizar(alt.transcript || "");
+            let puntaje = Number.isFinite(alt.confidence) ? alt.confidence : 0;
+            contexto.forEach((frase) => {
+                if (frase && texto.includes(frase)) puntaje += 0.10;
+            });
+            if (puntaje > mejorPuntaje) {
+                mejorPuntaje = puntaje;
+                mejor = alt;
+            }
+        }
+        return mejor;
+    }
+
+    // ---------------------------------------------------------
     // SOPORTE DEL NAVEGADOR
     // ---------------------------------------------------------
     function obtenerConstructorReconocimiento() {
@@ -188,6 +403,7 @@ const SubtitulosV2 = (function () {
         // sin pulsar "Detener" y volvió), mostramos la pantalla en vivo
         // otra vez en lugar de reiniciar desde cero.
         mostrarPantalla(estado.activo ? "enVivo" : "intro");
+        if (!estado.activo) comprobarDisponibilidadLocal(false);
     }
 
     function salir() {
@@ -232,7 +448,12 @@ const SubtitulosV2 = (function () {
         // igual de bien en Chrome de escritorio.
         r.continuous = false;
         r.interimResults = true;
-        r.maxAlternatives = 1;
+        r.maxAlternatives = 3;
+
+        if (estado.modoLocalActivo && estado.modoLocalDisponible && estado.idiomaLocal === estado.idioma && "processLocally" in r) {
+            r.processLocally = true;
+        }
+        aplicarSesgoContextual(r);
 
         r.onresult = manejarResultado;
         r.onerror = manejarError;
@@ -252,7 +473,7 @@ const SubtitulosV2 = (function () {
         }
 
         estado.reconocimiento = reconocimiento;
-        actualizarEstadoMotor("escuchando");
+        actualizarEstadoMotor("escuchando", estado.modoLocalActivo ? "Escuchando · sin internet" : "Escuchando");
         try {
             reconocimiento.start();
         } catch (err) {
@@ -268,6 +489,9 @@ const SubtitulosV2 = (function () {
 
         const selectIdioma = el("subtitulosSelectIdioma");
         if (selectIdioma) estado.idioma = selectIdioma.value || CONFIG.IDIOMA_POR_DEFECTO;
+        estado.frasesContextuales = leerFrasesContextuales();
+        const toggleOffline = el("subtitulosUsarOffline");
+        estado.modoLocalActivo = !!(toggleOffline && toggleOffline.checked && estado.modoLocalDisponible && estado.idiomaLocal === estado.idioma);
 
         if (!obtenerConstructorReconocimiento()) {
             mostrarPantalla("noSoportado");
@@ -288,7 +512,7 @@ const SubtitulosV2 = (function () {
         actualizarEtiquetaIdioma();
         actualizarBotonPausa();
         mostrarPantalla("enVivo");
-        actualizarEstadoMotor("escuchando");
+        actualizarEstadoMotor("escuchando", estado.modoLocalActivo ? "Escuchando · sin internet" : "Escuchando");
         solicitarWakeLock();
         arrancarReconocimientoNuevo();
     }
@@ -502,7 +726,8 @@ const SubtitulosV2 = (function () {
         let interina = "";
         for (let i = evento.resultIndex; i < evento.results.length; i++) {
             const resultado = evento.results[i];
-            const texto = resultado[0].transcript;
+            const alternativa = elegirAlternativa(resultado);
+            const texto = alternativa ? alternativa.transcript : "";
             if (resultado.isFinal) {
                 agregarTextoFinal(texto.trim());
             } else {
@@ -512,7 +737,7 @@ const SubtitulosV2 = (function () {
         estado.textoInterino = interina;
         estado._ultimoError = "";
         estado._intentosReinicio = 0;
-        if (estado.activo && !estado.pausado) actualizarEstadoMotor("escuchando");
+        if (estado.activo && !estado.pausado) actualizarEstadoMotor("escuchando", estado.modoLocalActivo ? "Escuchando · sin internet" : "Escuchando");
         renderizarTexto();
     }
 
@@ -586,7 +811,16 @@ const SubtitulosV2 = (function () {
             return;
         }
 
-        if (error === "language-not-supported") {
+        if (error === "phrases-not-supported") {
+            // El sesgo contextual es opcional: si el motor no lo soporta,
+            // seguimos transcribiendo normalmente.
+            estado.frasesContextuales = [];
+            estado._ultimoError = "aborted";
+            actualizarEstadoMotor("reconectando", "Ajustando reconocimiento…");
+            return;
+        }
+
+        if (error === "language-unavailable" || error === "language-not-supported") {
             estado.activo = false;
             actualizarEstadoMotor("error", "Idioma no disponible");
             liberarWakeLock();
@@ -964,6 +1198,25 @@ const SubtitulosV2 = (function () {
 
         const btnProbarNivel = el("btnSubtitulosProbarNivel");
         if (btnProbarNivel) btnProbarNivel.addEventListener("click", iniciarMedidorNivel);
+
+        const btnOffline = el("btnSubtitulosOffline");
+        if (btnOffline) btnOffline.addEventListener("click", () => comprobarDisponibilidadLocal(true));
+
+        const toggleOffline = el("subtitulosUsarOffline");
+        if (toggleOffline) toggleOffline.addEventListener("change", () => {
+            toggleOffline.dataset.usuarioCambio = "1";
+            estado.modoLocalActivo = !!(toggleOffline.checked && estado.modoLocalDisponible && estado.idiomaLocal === idiomaSeleccionado());
+        });
+
+        const selectIdioma = el("subtitulosSelectIdioma");
+        if (selectIdioma) selectIdioma.addEventListener("change", () => {
+            estado.modoLocalActivo = false;
+            estado.modoLocalDisponible = false;
+            estado.idiomaLocal = "";
+            const toggle = el("subtitulosUsarOffline");
+            if (toggle) { toggle.checked = false; toggle.disabled = true; delete toggle.dataset.usuarioCambio; }
+            comprobarDisponibilidadLocal(false);
+        });
 
         const btnDetener = el("btnSubtitulosDetener");
         if (btnDetener) btnDetener.addEventListener("click", detenerEscucha);
