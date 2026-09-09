@@ -37,7 +37,8 @@ jobs:
           grep -q 'width: 46px !important;' index.html
           grep -q 'background: #fff1e8 !important;' index.html
           grep -q 'width: min(100%, 520px);' index.html
-          grep -q 'const VERSION_APP = "v40";' sw.js
+          grep -Eq 'const VERSION_APP = "v[0-9]+";' sw.js
+          git diff -- sw.js | grep -q '^+const VERSION_APP = "v'
           if grep -qi 'Conocimiento sin barreras, un Perú más inclusivo' index.html; then
             echo 'La frase eliminada del footer reapareció' >&2
             exit 1
