@@ -1,0 +1,53 @@
+name: Animar barra inferior movil V2
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - .github/workflows/animar-barra-inferior-v2.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  aplicar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Aplicar mejora
+        run: python scripts/animar_barra_inferior_v2.py
+
+      - name: Validar cambios
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'MOBILE_BOTTOM_NAV_SLIDER_V2_20260909' index.html
+          grep -q 'MOBILE_BOTTOM_NAV_SLIDER_JS_V2_20260909' js/script.js
+          grep -q -- '--mbn-posicion' index.html
+          grep -q 'actualizarIndicadorBarraMovil' js/script.js
+          grep -q 'const VERSION_APP = "v48";' sw.js
+          node --check js/script.js
+          test -f 'video/lspedia_transparente anterior.webm'
+          git diff --check
+
+      - name: Guardar cambios en develop
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html js/script.js sw.js
+          git commit -m "Animar barra inferior movil con indicador deslizante"
+          git push origin HEAD:develop
