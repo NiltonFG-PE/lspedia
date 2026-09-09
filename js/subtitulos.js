@@ -188,6 +188,115 @@ const SubtitulosV2 = (function () {
         if (btnIniciar) {
             btnIniciar.innerHTML = '🎙️ Iniciar subtítulos <span class="subtitulos-icono-grabar" aria-hidden="true"></span>';
         }
+
+        organizarIntroCompactaV5();
+    }
+
+    // SUBTITULOS_V5_ORDEN_VISUAL_20260909
+    // Reordena la pantalla inicial para que la acción principal aparezca
+    // antes que las opciones secundarias. Conserva exactamente los mismos
+    // controles/IDs, así que no cambia la lógica del micrófono ni del modo
+    // offline: solo mueve los nodos ya existentes dentro de una jerarquía
+    // visual más clara.
+    function organizarIntroCompactaV5() {
+        const introCard = document.querySelector("#subtitulosIntro .card");
+        const hero = introCard && introCard.querySelector(".subtitulos-intro-hero-v3");
+        const btnIniciar = el("btnSubtitulosIniciar");
+        if (!introCard || !hero || !btnIniciar) return;
+
+        // El pequeño paso a paso acompaña ahora el flujo real: primero se
+        // inicia, luego se escucha y finalmente se lee el texto en pantalla.
+        const pasos = hero.querySelector(".subtitulos-pasos-v3");
+        if (pasos) {
+            pasos.innerHTML = '<span><b>1</b> Inicia</span><span><b>2</b> Escucha</span><span><b>3</b> Lee</span>';
+        }
+        const textoHero = hero.querySelector(".subtitulos-hero-textos p");
+        if (textoHero) textoHero.textContent = "Toca iniciar y acerca el celular a quien habla o al parlante.";
+
+        // 1) ACCIÓN PRINCIPAL: queda inmediatamente debajo del hero.
+        let accion = el("subtitulosAccionPrincipalV5");
+        if (!accion) {
+            accion = document.createElement("div");
+            accion.id = "subtitulosAccionPrincipalV5";
+            accion.className = "subtitulos-accion-principal-v5";
+            const ayuda = document.createElement("small");
+            ayuda.className = "subtitulos-accion-ayuda-v5";
+            ayuda.textContent = "Toca aquí para comenzar a convertir voz en texto.";
+            hero.insertAdjacentElement("afterend", accion);
+            accion.appendChild(btnIniciar);
+            accion.appendChild(ayuda);
+        }
+        btnIniciar.className = "btn subtitulos-btn-principal-v5";
+
+        // 2) CONTROLES BÁSICOS: idioma + prueba de audio en una sola zona.
+        let basicos = el("subtitulosBasicosV5");
+        if (!basicos) {
+            basicos = document.createElement("div");
+            basicos.id = "subtitulosBasicosV5";
+            basicos.className = "subtitulos-basicos-v5";
+            accion.insertAdjacentElement("afterend", basicos);
+        }
+
+        const selectIdioma = el("subtitulosSelectIdioma");
+        const filaIdioma = selectIdioma ? selectIdioma.closest(".row") : null;
+        if (filaIdioma && filaIdioma.parentElement !== basicos) basicos.appendChild(filaIdioma);
+
+        const medidorCaja = el("subtitulosMedidorCaja");
+        const medidorWrap = medidorCaja ? medidorCaja.parentElement : null;
+        if (medidorWrap && medidorWrap.parentElement !== basicos) basicos.appendChild(medidorWrap);
+
+        // 3) OPCIONES AVANZADAS: plegadas por defecto para que no compitan
+        // con el botón principal. Incluyen modo offline y palabras clave.
+        let avanzadas = el("subtitulosAvanzadasV5");
+        if (!avanzadas) {
+            avanzadas = document.createElement("details");
+            avanzadas.id = "subtitulosAvanzadasV5";
+            avanzadas.className = "subtitulos-details-v5";
+            avanzadas.innerHTML = '<summary><span>⚙️ Opciones avanzadas</span><small>Sin internet y precisión</small></summary><div class="subtitulos-details-contenido-v5"></div>';
+            basicos.insertAdjacentElement("afterend", avanzadas);
+        }
+        const contenidoAvanzadas = avanzadas.querySelector(".subtitulos-details-contenido-v5");
+        const offline = el("subtitulosOfflineCard");
+        const inputContexto = el("subtitulosContextoPalabras");
+        const precision = inputContexto ? inputContexto.closest(".subtitulos-precision-card-v4") : null;
+        if (contenidoAvanzadas && offline && offline.parentElement !== contenidoAvanzadas) contenidoAvanzadas.appendChild(offline);
+        if (contenidoAvanzadas && precision && precision.parentElement !== contenidoAvanzadas) contenidoAvanzadas.appendChild(precision);
+
+        // 4) CONSEJOS: también plegados. Buscamos el bloque existente y lo
+        // movemos, sin duplicar sus textos ni cambiar su funcionalidad.
+        let consejos = el("subtitulosConsejosV5");
+        if (!consejos) {
+            consejos = document.createElement("details");
+            consejos.id = "subtitulosConsejosV5";
+            consejos.className = "subtitulos-details-v5 subtitulos-consejos-v5";
+            consejos.innerHTML = '<summary><span>📢 Consejos para captar mejor el audio</span><small>Ver recomendaciones</small></summary><div class="subtitulos-details-contenido-v5"></div>';
+            avanzadas.insertAdjacentElement("afterend", consejos);
+        }
+        const contenidoConsejos = consejos.querySelector(".subtitulos-details-contenido-v5");
+        if (contenidoConsejos && !contenidoConsejos.querySelector(".subtitulos-consejos-original-v5")) {
+            const candidatos = Array.from(introCard.querySelectorAll("div"));
+            const bloqueConsejos = candidatos.find((nodo) => {
+                const p = nodo.querySelector(":scope > p");
+                const ul = nodo.querySelector(":scope > ul");
+                return p && ul && p.textContent.includes("Consejos para captar mejor el audio");
+            });
+            if (bloqueConsejos) {
+                bloqueConsejos.classList.add("subtitulos-consejos-original-v5");
+                bloqueConsejos.removeAttribute("style");
+                const p = bloqueConsejos.querySelector(":scope > p");
+                const ul = bloqueConsejos.querySelector(":scope > ul");
+                if (p) p.removeAttribute("style");
+                if (ul) ul.removeAttribute("style");
+                contenidoConsejos.appendChild(bloqueConsejos);
+            }
+        }
+
+        // El aviso de compatibilidad queda al final, en formato discreto.
+        const aviso = el("subtitulosAvisoCompat");
+        if (aviso) {
+            aviso.classList.add("subtitulos-aviso-compacto-v5");
+            if (aviso.previousElementSibling !== consejos) consejos.insertAdjacentElement("afterend", aviso);
+        }
     }
 
     function actualizarEstadoMotor(tipo, textoPersonalizado) {
