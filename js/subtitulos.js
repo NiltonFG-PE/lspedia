@@ -77,6 +77,12 @@ const SubtitulosV2 = (function () {
         _reinicioProgramado: false,
         _eventosListos: false,
         _flashTextoNuevo: false, // dispara la animación de "llegada" del texto (ver renderizarTexto)
+        // SUBTITULOS_V3_ESTABLE_20260909
+        pausado: false,
+        _ultimoError: "",
+        _intentosReinicio: 0,
+        _timeoutReinicio: null,
+        wakeLock: null,
         // --- Medidor de nivel de audio (pantalla intro, ver más abajo) ---
         medidor: {
             activo: false,
@@ -90,6 +96,74 @@ const SubtitulosV2 = (function () {
 
     function el(id) { return document.getElementById(id); }
 
+
+    // ---------------------------------------------------------
+    // INTERFAZ V3: guía visual, estado del motor y pausa/reanudar.
+    // Se crea desde JS para mantener el HTML principal más liviano.
+    // ---------------------------------------------------------
+    function asegurarMejorasInterfaz() {
+        const introCard = document.querySelector("#subtitulosIntro .card");
+        if (introCard && !introCard.querySelector(".subtitulos-intro-hero-v3")) {
+            const hero = document.createElement("div");
+            hero.className = "subtitulos-intro-hero-v3";
+            hero.innerHTML = `
+                <div class="subtitulos-hero-icono" aria-hidden="true">CC</div>
+                <div class="subtitulos-hero-textos">
+                    <span class="subtitulos-hero-eyebrow">ACCESIBILIDAD EN TIEMPO REAL</span>
+                    <h3>Convierte voz en texto al instante</h3>
+                    <p>Acerca el celular a quien habla o al parlante y sigue la conversación en pantalla.</p>
+                </div>
+                <div class="subtitulos-pasos-v3" aria-label="Cómo usar Subtítulos">
+                    <span><b>1</b> Prueba el audio</span>
+                    <span><b>2</b> Elige idioma</span>
+                    <span><b>3</b> Inicia</span>
+                </div>`;
+            introCard.insertBefore(hero, introCard.firstChild);
+        }
+
+        const barra = el("subtitulosBarraControles");
+        if (barra && !el("subtitulosEstadoMotor")) {
+            const grupoIzq = barra.firstElementChild || barra;
+            const estadoMotor = document.createElement("span");
+            estadoMotor.id = "subtitulosEstadoMotor";
+            estadoMotor.className = "subtitulos-estado-motor estado-listo";
+            estadoMotor.innerHTML = '<i aria-hidden="true"></i><span>Listo</span>';
+            grupoIzq.appendChild(estadoMotor);
+        }
+
+        const inferiores = el("subtitulosControlesInferiores");
+        if (inferiores && !el("btnSubtitulosPausar")) {
+            const btn = document.createElement("button");
+            btn.id = "btnSubtitulosPausar";
+            btn.type = "button";
+            btn.className = "btn subtitulos-btn-pausa fw-bold rounded-pill px-4 me-2";
+            btn.innerHTML = '<span aria-hidden="true">⏸</span> Pausar';
+            btn.title = "Pausar temporalmente el micrófono";
+            inferiores.insertBefore(btn, inferiores.firstChild);
+        }
+
+        const btnIniciar = el("btnSubtitulosIniciar");
+        if (btnIniciar) {
+            btnIniciar.innerHTML = '🎙️ Iniciar subtítulos <span class="subtitulos-icono-grabar" aria-hidden="true"></span>';
+        }
+    }
+
+    function actualizarEstadoMotor(tipo, textoPersonalizado) {
+        const chip = el("subtitulosEstadoMotor");
+        if (!chip) return;
+        const info = {
+            listo: ["Listo", "estado-listo"],
+            escuchando: ["Escuchando", "estado-escuchando"],
+            reconectando: ["Reconectando…", "estado-reconectando"],
+            pausado: ["Pausado", "estado-pausado"],
+            error: ["Revisa el micrófono", "estado-error"]
+        }[tipo] || ["Listo", "estado-listo"];
+        chip.className = "subtitulos-estado-motor " + info[1];
+        chip.innerHTML = '<i aria-hidden="true"></i><span>' + (textoPersonalizado || info[0]) + '</span>';
+        const seccion = el("seccionSubtitulos");
+        if (seccion) seccion.dataset.estadoSubtitulos = tipo;
+    }
+
     // ---------------------------------------------------------
     // SOPORTE DEL NAVEGADOR
     // ---------------------------------------------------------
@@ -101,7 +175,9 @@ const SubtitulosV2 = (function () {
     // PUNTO DE ENTRADA / SALIDA (llamados desde script.js)
     // ---------------------------------------------------------
     function iniciar() {
+        asegurarMejorasInterfaz();
         enlazarEventos();
+        actualizarEstadoMotor(estado.activo ? (estado.pausado ? "pausado" : "escuchando") : "listo");
 
         if (!obtenerConstructorReconocimiento()) {
             mostrarPantalla("noSoportado");
@@ -156,6 +232,7 @@ const SubtitulosV2 = (function () {
         // igual de bien en Chrome de escritorio.
         r.continuous = false;
         r.interimResults = true;
+        r.maxAlternatives = 1;
 
         r.onresult = manejarResultado;
         r.onerror = manejarError;
@@ -164,47 +241,117 @@ const SubtitulosV2 = (function () {
         return r;
     }
 
+    function arrancarReconocimientoNuevo() {
+        if (!estado.activo || estado.pausado) return;
+
+        const reconocimiento = crearReconocimiento();
+        if (!reconocimiento) {
+            estado.activo = false;
+            mostrarPantalla("noSoportado");
+            return;
+        }
+
+        estado.reconocimiento = reconocimiento;
+        actualizarEstadoMotor("escuchando");
+        try {
+            reconocimiento.start();
+        } catch (err) {
+            console.warn("No se pudo iniciar el reconocimiento de voz:", err);
+            estado.reconocimiento = null;
+            estado._ultimoError = "aborted";
+            programarReinicioReconocimiento();
+        }
+    }
+
     function iniciarEscucha() {
-        // Si el usuario estaba probando el nivel de audio, apagamos ese
-        // stream antes de arrancar el reconocimiento real: no deben
-        // competir por el micrófono al mismo tiempo.
         detenerMedidorNivel();
 
         const selectIdioma = el("subtitulosSelectIdioma");
         if (selectIdioma) estado.idioma = selectIdioma.value || CONFIG.IDIOMA_POR_DEFECTO;
 
-        estado.reconocimiento = crearReconocimiento();
-        if (!estado.reconocimiento) {
+        if (!obtenerConstructorReconocimiento()) {
             mostrarPantalla("noSoportado");
             return;
         }
 
+        clearTimeout(estado._timeoutReinicio);
+        estado._timeoutReinicio = null;
         estado.activo = true;
+        estado.pausado = false;
+        estado._ultimoError = "";
+        estado._intentosReinicio = 0;
         estado.textoAcumulado = "";
         estado.textoCompleto = "";
         estado.ultimaFraseFinal = "";
         estado.textoInterino = "";
         renderizarTexto();
         actualizarEtiquetaIdioma();
+        actualizarBotonPausa();
         mostrarPantalla("enVivo");
+        actualizarEstadoMotor("escuchando");
+        solicitarWakeLock();
+        arrancarReconocimientoNuevo();
+    }
 
+    function detenerMotorActual() {
+        if (!estado.reconocimiento) return;
+        const r = estado.reconocimiento;
+        estado.reconocimiento = null;
         try {
-            estado.reconocimiento.start();
-        } catch (err) {
-            console.warn("No se pudo iniciar el reconocimiento de voz:", err);
-        }
+            r.onend = null;
+            r.onerror = null;
+            r.stop();
+        } catch (e) { /* noop */ }
     }
 
     function detenerEscucha() {
         estado.activo = false;
-        if (estado.reconocimiento) {
-            try {
-                estado.reconocimiento.onend = null; // evitamos que se auto-reinicie al detenerlo a propósito
-                estado.reconocimiento.stop();
-            } catch (e) { /* noop */ }
-            estado.reconocimiento = null;
-        }
+        estado.pausado = false;
+        estado._ultimoError = "";
+        estado._intentosReinicio = 0;
+        clearTimeout(estado._timeoutReinicio);
+        estado._timeoutReinicio = null;
+        detenerMotorActual();
+        liberarWakeLock();
+        actualizarBotonPausa();
+        actualizarEstadoMotor("listo");
         mostrarPantalla("intro");
+    }
+
+    function alternarPausa() {
+        if (!estado.activo) return;
+        if (!estado.pausado) {
+            estado.pausado = true;
+            clearTimeout(estado._timeoutReinicio);
+            estado._timeoutReinicio = null;
+            detenerMotorActual();
+            liberarWakeLock();
+            actualizarEstadoMotor("pausado");
+            actualizarBotonPausa();
+            return;
+        }
+
+        estado.pausado = false;
+        estado._ultimoError = "";
+        estado._intentosReinicio = 0;
+        actualizarBotonPausa();
+        actualizarEstadoMotor("escuchando");
+        solicitarWakeLock();
+        arrancarReconocimientoNuevo();
+    }
+
+    function actualizarBotonPausa() {
+        const btn = el("btnSubtitulosPausar");
+        if (!btn) return;
+        if (estado.pausado) {
+            btn.classList.add("esta-pausado");
+            btn.innerHTML = '<span aria-hidden="true">▶</span> Reanudar';
+            btn.title = "Reanudar los subtítulos";
+        } else {
+            btn.classList.remove("esta-pausado");
+            btn.innerHTML = '<span aria-hidden="true">⏸</span> Pausar';
+            btn.title = "Pausar temporalmente el micrófono";
+        }
     }
 
     // ---------------------------------------------------------
@@ -363,6 +510,9 @@ const SubtitulosV2 = (function () {
             }
         }
         estado.textoInterino = interina;
+        estado._ultimoError = "";
+        estado._intentosReinicio = 0;
+        if (estado.activo && !estado.pausado) actualizarEstadoMotor("escuchando");
         renderizarTexto();
     }
 
@@ -423,59 +573,103 @@ const SubtitulosV2 = (function () {
     }
 
     function manejarError(evento) {
-        console.warn("Error de reconocimiento de voz:", evento.error);
-        if (evento.error === "not-allowed" || evento.error === "service-not-allowed") {
+        const error = evento && evento.error ? evento.error : "unknown";
+        estado._ultimoError = error;
+        console.warn("Error de reconocimiento de voz:", error);
+
+        if (error === "not-allowed" || error === "service-not-allowed") {
             estado.activo = false;
-            alert("LSPedia necesita permiso para usar el micrófono para mostrar los subtítulos en tiempo real. Por favor, permite el acceso al micrófono e inténtalo de nuevo.");
+            actualizarEstadoMotor("error", "Micrófono bloqueado");
+            liberarWakeLock();
+            alert("LSPedia necesita permiso para usar el micrófono. Permite el acceso desde el navegador e inténtalo de nuevo.");
             mostrarPantalla("intro");
             return;
         }
-        if (evento.error === "language-not-supported") {
-            // Común en algunos Android: el motor de voz del teléfono no tiene
-            // instalado ese idioma/variante exacta (ej. es-419).
+
+        if (error === "language-not-supported") {
             estado.activo = false;
+            actualizarEstadoMotor("error", "Idioma no disponible");
+            liberarWakeLock();
             alert("El idioma seleccionado no está disponible en el motor de voz de este celular. Prueba con 'Español (Perú)' o 'Español (España)'.");
             mostrarPantalla("intro");
             return;
         }
-        // Otros errores (no-speech, network, aborted) se resuelven solos en
-        // onend, reintentando automáticamente mientras estado.activo sea true.
+
+        if (error === "audio-capture") {
+            estado.activo = false;
+            actualizarEstadoMotor("error", "No se detecta micrófono");
+            liberarWakeLock();
+            alert("No se pudo usar el micrófono. Comprueba que no esté siendo usado por otra aplicación y vuelve a intentarlo.");
+            mostrarPantalla("intro");
+            return;
+        }
+
+        if (error === "network") {
+            actualizarEstadoMotor("reconectando", "Conexión inestable…");
+        } else if (error !== "no-speech" && estado.activo && !estado.pausado) {
+            actualizarEstadoMotor("reconectando");
+        }
+        // onend llamará a programarReinicioReconocimiento().
+    }
+
+    function programarReinicioReconocimiento() {
+        if (!estado.activo || estado.pausado || estado._reinicioProgramado) return;
+
+        estado._reinicioProgramado = true;
+        clearTimeout(estado._timeoutReinicio);
+
+        let espera = 120;
+        if (estado._ultimoError === "no-speech") {
+            espera = 140;
+        } else if (estado._ultimoError === "network") {
+            // Backoff progresivo: 0.9s, 1.8s, 3.6s y máximo 5s.
+            espera = Math.min(5000, 900 * Math.pow(2, Math.min(estado._intentosReinicio, 3)));
+            estado._intentosReinicio += 1;
+            actualizarEstadoMotor("reconectando", estado._intentosReinicio >= 3 ? "Reconectando a voz…" : "Conexión inestable…");
+        } else if (estado._ultimoError === "aborted") {
+            espera = 260;
+        }
+
+        estado._timeoutReinicio = setTimeout(() => {
+            estado._reinicioProgramado = false;
+            estado._timeoutReinicio = null;
+            if (!estado.activo || estado.pausado) return;
+            arrancarReconocimientoNuevo();
+        }, espera);
     }
 
     function manejarFin() {
-        // Con continuous:false, cada sesión termina apenas se detecta una
-        // pausa (o al terminar una frase); si el usuario sigue con los
-        // subtítulos activos, reiniciamos AL INSTANTE (sin el retraso fijo
-        // que tenía antes) para que la escucha se sienta continua, sin
-        // huecos perceptibles entre frase y frase.
-        //
-        // reconocimiento.start() puede lanzar "already started" si el
-        // navegador todavía no soltó del todo la sesión anterior; en ese
-        // caso (poco común) reintentamos una sola vez con un margen mínimo,
-        // en vez de esperar siempre los 120ms fijos de antes.
-        if (estado.activo && !estado._reinicioProgramado) {
-            estado._reinicioProgramado = true;
-            const intentarReiniciar = () => {
-                estado._reinicioProgramado = false;
-                if (!estado.activo || !estado.reconocimiento) return;
-                try {
-                    estado.reconocimiento.start();
-                } catch (e) {
-                    // "already started" o similar: el navegador necesita un
-                    // instante más para soltar el micrófono del intento
-                    // anterior. Reintentamos una vez, no en bucle.
-                    setTimeout(() => {
-                        if (estado.activo && estado.reconocimiento) {
-                            try { estado.reconocimiento.start(); } catch (e2) { /* se ignora */ }
-                        }
-                    }, 60);
-                }
-            };
-            // Se dispara en el siguiente "tick" (no de forma 100% síncrona
-            // dentro de onend), que es lo más rápido que permite el
-            // navegador de forma confiable, en vez del setTimeout de 120ms
-            // fijo que había antes.
-            setTimeout(intentarReiniciar, 0);
+        estado.reconocimiento = null;
+        programarReinicioReconocimiento();
+    }
+
+    // Mantiene la pantalla encendida durante una sesión larga cuando el
+    // navegador soporta Screen Wake Lock. Si no existe, no altera nada.
+    async function solicitarWakeLock() {
+        if (!("wakeLock" in navigator) || !estado.activo || estado.pausado || document.visibilityState !== "visible") return;
+        if (estado.wakeLock) return;
+        try {
+            const lock = await navigator.wakeLock.request("screen");
+            estado.wakeLock = lock;
+            lock.addEventListener("release", () => {
+                if (estado.wakeLock === lock) estado.wakeLock = null;
+            });
+        } catch (e) {
+            // No todos los móviles permiten Wake Lock; no es un error crítico.
+        }
+    }
+
+    function liberarWakeLock() {
+        const lock = estado.wakeLock;
+        estado.wakeLock = null;
+        if (lock && typeof lock.release === "function") {
+            Promise.resolve(lock.release()).catch(() => {});
+        }
+    }
+
+    function manejarVisibilidadDocumento() {
+        if (document.visibilityState === "visible" && estado.activo && !estado.pausado) {
+            solicitarWakeLock();
         }
     }
 
@@ -774,6 +968,9 @@ const SubtitulosV2 = (function () {
         const btnDetener = el("btnSubtitulosDetener");
         if (btnDetener) btnDetener.addEventListener("click", detenerEscucha);
 
+        const btnPausar = el("btnSubtitulosPausar");
+        if (btnPausar) btnPausar.addEventListener("click", alternarPausa);
+
         const btnMas = el("btnSubtitulosTextoMas");
         if (btnMas) btnMas.addEventListener("click", () => ajustarTamano(1));
 
@@ -798,6 +995,7 @@ const SubtitulosV2 = (function () {
         ["fullscreenchange", "webkitfullscreenchange", "MSFullscreenChange"].forEach((evt) => {
             document.addEventListener(evt, manejarCambioPantallaCompleta);
         });
+        document.addEventListener("visibilitychange", manejarVisibilidadDocumento);
 
         aplicarTamano();
         actualizarBotonColor();
@@ -807,7 +1005,7 @@ const SubtitulosV2 = (function () {
         if (aviso) {
             const soportado = !!obtenerConstructorReconocimiento();
             aviso.textContent = soportado
-                ? "Funciona mejor en Google Chrome. Se te pedirá permiso para usar el micrófono."
+                ? "Chrome recomendado · Micrófono necesario · La pantalla se mantendrá activa durante la sesión cuando el dispositivo lo permita."
                 : "Este navegador no admite el reconocimiento de voz en vivo. Ábrelo en Google Chrome.";
         }
 
