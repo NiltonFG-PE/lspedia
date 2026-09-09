@@ -1,0 +1,51 @@
+name: Revertir barra inferior deslizante
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - .github/workflows/revertir-barra-inferior-deslizante.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  revertir:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Revertir animación deslizante
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git revert --no-commit af266e2e1b83be956b62296cb221a2f1a1d12d02
+          sed -i 's/const VERSION_APP = "v47";/const VERSION_APP = "v49";/' sw.js
+
+      - name: Validar restauración
+        shell: bash
+        run: |
+          set -euo pipefail
+          ! grep -q 'MOBILE_BOTTOM_NAV_SLIDER_V2_20260909' index.html
+          ! grep -q 'MOBILE_BOTTOM_NAV_SLIDER_JS_V2_20260909' js/script.js
+          ! grep -q 'actualizarIndicadorBarraMovil' js/script.js
+          grep -q 'const VERSION_APP = "v49";' sw.js
+          node --check js/script.js
+          test -f 'video/lspedia_transparente anterior.webm'
+          git diff --check
+
+      - name: Guardar restauración en develop
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add index.html js/script.js sw.js
+          git commit -m "Restaurar barra inferior móvil anterior"
+          git push origin HEAD:develop
