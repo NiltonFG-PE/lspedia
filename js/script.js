@@ -694,27 +694,65 @@ function registrarAvisoVocabularioAceptado() {
 
 function mostrarAvisoVocabulario() {
     // Si ya fue aceptado en esta sesión, no mostramos ni desenfocamos nada.
-    if (avisoVocabularioYaAceptado()) return;
+    if (avisoVocabularioYaAceptado()) return false;
 
     const modalEl = document.getElementById("modalAvisoVocabulario");
-    if (!modalEl) return;
+    if (!modalEl) return false;
 
     const contenidoPrincipal = document.getElementById("contenidoPrincipalApp");
     if (contenidoPrincipal) contenidoPrincipal.classList.add("contenido-desenfocado");
+    document.body.classList.add("vocab-aviso-activo");
+    modalEl.classList.remove("lsp-aviso-cerrando");
 
     const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
     modal.show();
+    return true;
 }
 
 // Al tocar "ENTIENDO, CONTINUAR" guardamos el reconocimiento para toda
 // la sesión y retiramos el desenfoque del contenido. El listener se
 // registra una sola vez para evitar duplicados.
+// TRANSICION_AVISO_VOCABULARIO_V1_20260909
+let revelarBuscadorTrasCerrarAvisoVocabulario = false;
+const modalAvisoVocabulario = document.getElementById("modalAvisoVocabulario");
 const btnAceptarAvisoVocabulario = document.getElementById("btnAceptarAvisoVocabulario");
-if (btnAceptarAvisoVocabulario) {
+
+if (btnAceptarAvisoVocabulario && modalAvisoVocabulario) {
     btnAceptarAvisoVocabulario.addEventListener("click", () => {
         registrarAvisoVocabularioAceptado();
+        revelarBuscadorTrasCerrarAvisoVocabulario = true;
+        btnAceptarAvisoVocabulario.disabled = true;
+        modalAvisoVocabulario.classList.add("lsp-aviso-cerrando");
+
+        const modal = bootstrap.Modal.getOrCreateInstance(modalAvisoVocabulario);
+        modal.hide();
+    });
+
+    modalAvisoVocabulario.addEventListener("hidden.bs.modal", () => {
         const contenidoPrincipal = document.getElementById("contenidoPrincipalApp");
         if (contenidoPrincipal) contenidoPrincipal.classList.remove("contenido-desenfocado");
+        document.body.classList.remove("vocab-aviso-activo");
+        modalAvisoVocabulario.classList.remove("lsp-aviso-cerrando");
+        btnAceptarAvisoVocabulario.disabled = false;
+
+        if (!revelarBuscadorTrasCerrarAvisoVocabulario) return;
+        revelarBuscadorTrasCerrarAvisoVocabulario = false;
+
+        const destino = bloqueBuscadorCategorias || panelCategorias;
+        if (!destino || !document.body.classList.contains("vista-temas-movil")) return;
+
+        destino.classList.remove("vocab-buscador-revelado");
+        void destino.offsetWidth;
+        destino.classList.add("vocab-buscador-revelado");
+        scrollAlPrimerResultado(destino);
+
+        setTimeout(() => {
+            destino.classList.remove("vocab-buscador-revelado");
+            if (buscarCategorias) {
+                try { buscarCategorias.focus({ preventScroll: true }); }
+                catch (_error) { buscarCategorias.focus(); }
+            }
+        }, 320);
     });
 }
 
@@ -723,10 +761,11 @@ if (btnAceptarAvisoVocabulario) {
 // (cada uno sigue siendo su propio bloque independiente en el HTML).
 document.getElementById("btnCategorias").addEventListener("click", (e) => {
     e.preventDefault();
+    let avisoVocabularioMostrado = false;
     if(omitirAvisoVocabularioUnaVez){
         omitirAvisoVocabularioUnaVez = false;
     } else {
-        mostrarAvisoVocabulario();
+        avisoVocabularioMostrado = mostrarAvisoVocabulario();
     }
     ocultarSeccionHerramientas();
     ocultarSeccionNosotros();
@@ -792,11 +831,10 @@ document.getElementById("btnCategorias").addEventListener("click", (e) => {
         // de espera + vigilancia que ya usa scrollAlPrimerResultado(), pero
         // apuntando al techo de la página (top:0) en vez de a un elemento.
         scrollArribaEstable();
-    } else {
-        // Al entrar a Vocabulario, la primera referencia visual debe ser el
-        // buscador. Antes se centraba #panelCategorias y, al cerrar el aviso
-        // inicial, la pantalla quedaba a mitad de la sección. Reutilizamos el
-        // scroll estable para dejar el buscador justo debajo del navbar fijo.
+    } else if (!avisoVocabularioMostrado) {
+        // Al entrar a Vocabulario sin aviso (ya aceptado en esta sesión), la
+        // primera referencia visual sigue siendo el buscador. Si el aviso se
+        // mostró, el scroll se hace al terminar su animación de salida.
         scrollAlPrimerResultado(bloqueBuscadorCategorias || panelCategorias);
         panelCategorias.classList.add("highlight-anim");
         seccionFavoritos.classList.add("highlight-anim");
