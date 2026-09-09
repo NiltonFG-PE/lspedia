@@ -1,0 +1,53 @@
+name: Transicion secciones principales V1
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - .github/workflows/transicion-secciones-principales-v1.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  aplicar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Aplicar transición
+        run: python scripts/transicion_secciones_principales_v1.py
+
+      - name: Validar cambios
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'TRANSICION_SECCIONES_PRINCIPALES_V1_20260909' index.html
+          grep -q 'TRANSICION_SECCIONES_PRINCIPALES_JS_V1_20260909' js/script.js
+          grep -q 'lsp-seccion-saliendo' index.html
+          grep -q 'reproducirEntradaSeccionPrincipal' js/script.js
+          grep -q 'const VERSION_APP = "v50";' sw.js
+          node --check js/script.js
+          test -f 'video/lspedia_transparente anterior.webm'
+          git diff --check
+
+      - name: Guardar cambios en develop
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html js/script.js sw.js
+          git commit -m "Agregar transición suave entre secciones principales"
+          git push origin HEAD:develop
