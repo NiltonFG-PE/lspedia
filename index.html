@@ -3210,69 +3210,135 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
 
 
     <style id="vocabulario-buscador-protagonista">
-        /* Vocabulario móvil: composición más compacta y buscador como
-           protagonista. Se apoya en la clase vista-temas-movil que ya
-           activa script.js únicamente mientras Vocabulario está abierto. */
+        /* Vocabulario móvil — composición aprobada: título + avatar animado
+           integrados arriba, bloque informativo compacto a todo el ancho y
+           buscador como protagonista. No reemplaza los videos existentes. */
         @media (max-width: 991.98px) {
             body.vista-temas-movil #filaHeroPrincipal {
-                grid-template-columns: minmax(0, 1.7fr) minmax(112px, 0.7fr) !important;
-                grid-template-areas: "titulo avatar" !important;
-                column-gap: 8px !important;
+                display: grid !important;
+                grid-template-columns: minmax(0, 1.18fr) minmax(138px, 0.82fr) !important;
+                grid-template-areas:
+                    "titulo avatar"
+                    "raya avatar"
+                    "info info" !important;
+                column-gap: 6px !important;
                 row-gap: 0 !important;
-                margin-top: 10px !important;
-                margin-bottom: 6px !important;
-                --bs-gutter-y: 0.35rem;
+                align-items: end !important;
+                margin-top: 8px !important;
+                margin-bottom: 8px !important;
+                --bs-gutter-y: 0 !important;
             }
 
+            /* Hace que los hijos del bloque de título participen directamente
+               en la grilla del hero, permitiendo que la caja informativa ocupe
+               todo el ancho debajo de título + avatar. */
             body.vista-temas-movil #bloqueTituloPrincipal {
-                margin-bottom: 0 !important;
-                text-align: left !important;
+                display: contents !important;
             }
 
             body.vista-temas-movil #tituloPrincipal {
-                font-size: clamp(1.62rem, 7vw, 1.95rem) !important;
-                line-height: 1.13 !important;
-                margin-bottom: 6px !important;
-                letter-spacing: -0.025em;
+                grid-area: titulo;
+                align-self: end;
+                text-align: left !important;
+                font-size: clamp(1.65rem, 7.2vw, 2.05rem) !important;
+                line-height: 1.12 !important;
+                margin: 0 !important;
+                letter-spacing: -0.03em;
             }
 
             body.vista-temas-movil #bloqueTituloPrincipal .titulo-raya {
-                width: 46px !important;
+                grid-area: raya;
+                justify-self: start;
+                width: 54px !important;
                 height: 4px !important;
-                margin: 8px 0 10px !important;
+                margin: 10px 0 12px !important;
             }
 
             body.vista-temas-movil #subtituloPrincipal {
                 display: none !important;
             }
 
-            /* Las tres ideas pasan a una sola tarjeta compacta. */
+            /* Avatar: conserva avatar_lupa.webm, pero gana presencia y queda
+               visualmente unido al título mediante un halo amarillo suave. */
+            body.vista-temas-movil #colAvatarHero {
+                grid-area: avatar !important;
+                display: flex !important;
+                position: relative;
+                align-self: end !important;
+                justify-content: center !important;
+                align-items: end !important;
+                min-width: 0;
+                margin: 0 !important;
+                padding: 0 !important;
+                overflow: visible;
+                isolation: isolate;
+            }
+
+            body.vista-temas-movil #colAvatarHero::before {
+                content: "";
+                position: absolute;
+                z-index: 0;
+                width: 132px;
+                height: 132px;
+                right: 2px;
+                bottom: 8px;
+                border-radius: 46% 54% 48% 52%;
+                background: radial-gradient(circle at 45% 42%, rgba(255, 211, 64, 0.34), rgba(255, 193, 7, 0.12) 62%, rgba(255, 193, 7, 0) 73%);
+                filter: blur(0.3px);
+            }
+
+            body.vista-temas-movil #colAvatarHero .avatar-hero-img {
+                position: relative;
+                z-index: 1;
+                height: clamp(188px, 52vw, 225px) !important;
+                width: auto !important;
+                max-width: 155% !important;
+                object-fit: contain;
+                object-position: center bottom;
+                transform: scale(1.1);
+                transform-origin: center bottom;
+                filter: drop-shadow(0 9px 14px rgba(15, 23, 42, 0.10));
+            }
+
+            /* Las tres ideas se convierten en una sola franja visual a todo
+               el ancho, como en el mockup, eliminando el hueco que antes
+               quedaba junto al avatar. */
             body.vista-temas-movil #vocabularioIntroLista {
+                grid-area: info;
+                display: grid !important;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
                 gap: 0 !important;
-                margin: 6px 0 2px !important;
-                padding: 8px 10px !important;
-                border-radius: 18px;
-                border: 1px solid #d9eaff;
-                background: linear-gradient(145deg, #f8fbff 0%, #eef6ff 100%);
-                box-shadow: 0 6px 18px rgba(30, 100, 200, 0.07);
+                width: 100%;
+                margin: 2px 0 8px !important;
+                padding: 10px 8px !important;
+                border-radius: 20px;
+                border: 1px solid #d4e8ff;
+                background: linear-gradient(145deg, #fbfdff 0%, #eef7ff 100%);
+                box-shadow: 0 7px 20px rgba(24, 95, 180, 0.08);
+                overflow: hidden;
             }
 
             body.vista-temas-movil #vocabularioIntroLista .vocab-intro-item {
-                gap: 9px !important;
-                padding: 8px 0 !important;
+                display: flex !important;
+                flex-direction: column !important;
                 align-items: center !important;
-                border-bottom: 1px solid rgba(13, 110, 253, 0.09);
+                justify-content: flex-start !important;
+                gap: 7px !important;
+                padding: 4px 8px !important;
+                text-align: center !important;
+                border: 0 !important;
+                min-width: 0;
             }
 
-            body.vista-temas-movil #vocabularioIntroLista .vocab-intro-item:last-child {
-                border-bottom: 0;
+            body.vista-temas-movil #vocabularioIntroLista .vocab-intro-item:not(:last-child) {
+                border-right: 1px solid rgba(13, 110, 253, 0.10) !important;
             }
 
             body.vista-temas-movil #vocabularioIntroLista .vocab-intro-icono {
-                width: 38px !important;
-                height: 38px !important;
-                min-width: 38px !important;
-                font-size: 14px !important;
+                width: 40px !important;
+                height: 40px !important;
+                min-width: 40px !important;
+                font-size: 15px !important;
                 box-shadow: 0 5px 12px rgba(13, 110, 253, 0.16);
             }
 
@@ -3282,30 +3348,21 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
 
             body.vista-temas-movil #vocabularioIntroLista .vocab-intro-texto {
                 margin: 0 !important;
-                font-size: clamp(0.82rem, 3.25vw, 0.96rem) !important;
-                line-height: 1.38 !important;
+                font-size: clamp(0.72rem, 2.85vw, 0.82rem) !important;
+                line-height: 1.34 !important;
+                color: #4b5563;
             }
 
-            body.vista-temas-movil #colAvatarHero {
-                align-self: end !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                min-width: 0;
+            body.vista-temas-movil #vocabularioIntroLista .vocab-intro-texto strong {
+                color: #1475ea;
             }
 
-            /* Conserva el video animado avatar_lupa.webm; solo cambia
-               su tamaño y posición dentro del nuevo layout compacto. */
-            body.vista-temas-movil #colAvatarHero .avatar-hero-img {
-                height: clamp(128px, 29vw, 158px) !important;
-                max-width: 100% !important;
-                object-fit: contain;
-                object-position: center bottom;
-            }
-
-            /* BUSCADOR PROTAGONISTA */
+            /* Buscador protagonista: ancho completo, gran contraste y una
+               animación de entrada/pulso única para atraer la atención sin
+               movimiento permanente. */
             body.vista-temas-movil #bloqueBuscadorCategorias {
                 margin-top: 0 !important;
-                margin-bottom: 18px !important;
+                margin-bottom: 14px !important;
                 padding: 0 2px;
             }
 
@@ -3317,14 +3374,13 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
             }
 
             body.vista-temas-movil #bloqueBuscadorCategorias .input-group {
-                min-height: 66px;
+                min-height: 68px;
                 border: 3px solid #1976f3 !important;
                 border-radius: 999px !important;
                 background: #ffffff !important;
-                box-shadow: 0 10px 26px rgba(25, 118, 243, 0.18),
+                box-shadow: 0 11px 27px rgba(25, 118, 243, 0.20),
                             0 0 0 5px rgba(25, 118, 243, 0.045) !important;
                 overflow: hidden !important;
-                position: relative;
                 flex-wrap: nowrap;
                 animation: vocabBuscadorEntrada 0.46s ease-out both,
                            vocabBuscadorPulso 1.25s ease-in-out 0.7s 1;
@@ -3333,33 +3389,35 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
 
             body.vista-temas-movil #bloqueBuscadorCategorias .input-group::before {
                 content: "🔎";
-                width: 54px;
-                flex: 0 0 54px;
+                width: 46px;
+                flex: 0 0 46px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                font-size: 1.32rem;
+                font-size: 1.15rem;
                 background: #fff;
+                opacity: 0.72;
             }
 
             body.vista-temas-movil #buscarCategorias {
                 min-width: 0;
-                height: 60px !important;
-                padding: 0 10px 0 0 !important;
+                height: 62px !important;
+                padding: 0 8px 0 0 !important;
                 font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-                font-size: clamp(1rem, 4.25vw, 1.18rem) !important;
+                font-size: clamp(0.96rem, 4vw, 1.1rem) !important;
                 font-weight: 500;
                 color: #46566c !important;
+                text-overflow: ellipsis;
             }
 
             body.vista-temas-movil #buscarCategorias::placeholder {
-                color: #6b7280;
+                color: #747b88;
                 opacity: 1;
             }
 
             body.vista-temas-movil #btnBuscarCategorias {
-                min-width: 82px;
-                padding: 0 20px !important;
+                min-width: 76px;
+                padding: 0 18px !important;
                 border: 0 !important;
                 border-radius: 0 !important;
                 background: linear-gradient(135deg, #2785ff 0%, #0867ea 100%) !important;
@@ -3378,7 +3436,7 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
 
             body.vista-temas-movil #bloqueBuscadorCategorias .input-group:focus-within {
                 transform: translateY(-1px);
-                box-shadow: 0 13px 30px rgba(25, 118, 243, 0.24),
+                box-shadow: 0 14px 31px rgba(25, 118, 243, 0.25),
                             0 0 0 6px rgba(25, 118, 243, 0.08) !important;
             }
 
@@ -3387,8 +3445,6 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                 border-radius: 18px !important;
             }
 
-            /* Las categorías quedan cerca del buscador para evitar el gran
-               vacío que se veía antes de las tarjetas. */
             body.vista-temas-movil #panelCategorias {
                 margin-top: 0 !important;
                 padding-top: 0 !important;
@@ -3401,13 +3457,25 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
 
             @keyframes vocabBuscadorPulso {
                 0%, 100% {
-                    box-shadow: 0 10px 26px rgba(25, 118, 243, 0.18),
+                    box-shadow: 0 11px 27px rgba(25, 118, 243, 0.20),
                                 0 0 0 5px rgba(25, 118, 243, 0.045);
                 }
                 50% {
-                    box-shadow: 0 13px 31px rgba(25, 118, 243, 0.27),
+                    box-shadow: 0 14px 32px rgba(25, 118, 243, 0.28),
                                 0 0 0 8px rgba(25, 118, 243, 0.09);
                 }
+            }
+        }
+
+        @media (max-width: 390px) {
+            body.vista-temas-movil #filaHeroPrincipal {
+                grid-template-columns: minmax(0, 1.12fr) minmax(126px, 0.88fr) !important;
+            }
+            body.vista-temas-movil #colAvatarHero .avatar-hero-img {
+                height: 184px !important;
+            }
+            body.vista-temas-movil #vocabularioIntroLista .vocab-intro-texto {
+                font-size: 0.69rem !important;
             }
         }
 
