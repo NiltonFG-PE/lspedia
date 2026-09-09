@@ -672,33 +672,54 @@ const MatematicasV2 = (function () {
         return `
         <svg viewBox="0 0 180 180" class="matv9-leon-svg matv9-leon-enojado" id="matv9Leon" role="img" aria-label="León hambriento">
             <g class="matv9-melena">
-                <circle cx="90" cy="90" r="72"/>
-                <circle cx="90" cy="16" r="18"/><circle cx="132" cy="28" r="18"/>
-                <circle cx="160" cy="60" r="18"/><circle cx="164" cy="100" r="18"/>
-                <circle cx="146" cy="138" r="18"/><circle cx="110" cy="160" r="18"/>
-                <circle cx="70" cy="160" r="18"/><circle cx="34" cy="138" r="18"/>
-                <circle cx="16" cy="100" r="18"/><circle cx="20" cy="60" r="18"/>
-                <circle cx="48" cy="28" r="18"/>
+                <path d="M90 8
+                    C112 8 108 26 128 22
+                    C148 18 150 -2 168 12
+                    C182 24 168 36 182 46
+                    C196 56 194 76 178 82
+                    C192 90 188 110 172 114
+                    C182 124 174 142 158 140
+                    C162 154 148 168 134 160
+                    C132 174 114 178 106 166
+                    C98 176 82 176 74 166
+                    C66 178 48 174 46 160
+                    C32 168 18 154 22 140
+                    C6 142 -2 124 8 114
+                    C-8 110 -12 90 2 82
+                    C-14 76 -16 56 -2 46
+                    C12 36 -2 24 12 12
+                    C30 -2 32 18 52 22
+                    C72 26 68 8 90 8 Z"/>
             </g>
-            <circle class="matv9-oreja-ext" cx="54" cy="48" r="16"/><circle class="matv9-oreja-ext" cx="126" cy="48" r="16"/>
-            <circle class="matv9-oreja-int" cx="54" cy="48" r="8"/><circle class="matv9-oreja-int" cx="126" cy="48" r="8"/>
-            <circle class="matv9-cara" cx="90" cy="92" r="54"/>
-            <ellipse class="matv9-hocico" cx="90" cy="112" rx="30" ry="23"/>
-            <line class="matv9-ceja matv9-ceja-i" x1="64" y1="74" x2="84" y2="68"/>
-            <line class="matv9-ceja matv9-ceja-d" x1="96" y1="68" x2="116" y2="74"/>
-            <circle class="matv9-ojo matv9-ojo-i" cx="74" cy="84" r="6"/>
-            <circle class="matv9-ojo matv9-ojo-d" cx="106" cy="84" r="6"/>
-            <path class="matv9-ojo-feliz" d="M67 84 Q74 78 81 84"/>
-            <path class="matv9-ojo-feliz" d="M99 84 Q106 78 113 84"/>
-            <path class="matv9-nariz" d="M82 100 Q90 94 98 100 Q97 107 90 109 Q83 107 82 100 Z"/>
+            <circle class="matv9-oreja-ext" cx="46" cy="44" r="17"/><circle class="matv9-oreja-ext" cx="134" cy="44" r="17"/>
+            <circle class="matv9-oreja-int" cx="46" cy="46" r="8"/><circle class="matv9-oreja-int" cx="134" cy="46" r="8"/>
+            <ellipse class="matv9-cara" cx="90" cy="94" rx="50" ry="46"/>
+            <path class="matv9-hocico" d="M90 92
+                C108 92 122 104 120 120
+                C118 134 105 142 90 142
+                C75 142 62 134 60 120
+                C58 104 72 92 90 92 Z"/>
+            <line class="matv9-bigote" x1="58" y1="112" x2="24" y2="106"/>
+            <line class="matv9-bigote" x1="58" y1="120" x2="22" y2="120"/>
+            <line class="matv9-bigote" x1="58" y1="128" x2="24" y2="134"/>
+            <line class="matv9-bigote" x1="122" y1="112" x2="156" y2="106"/>
+            <line class="matv9-bigote" x1="122" y1="120" x2="158" y2="120"/>
+            <line class="matv9-bigote" x1="122" y1="128" x2="156" y2="134"/>
+            <line class="matv9-ceja matv9-ceja-i" x1="62" y1="72" x2="82" y2="66"/>
+            <line class="matv9-ceja matv9-ceja-d" x1="98" y1="66" x2="118" y2="72"/>
+            <circle class="matv9-ojo matv9-ojo-i" cx="72" cy="82" r="6"/>
+            <circle class="matv9-ojo matv9-ojo-d" cx="108" cy="82" r="6"/>
+            <path class="matv9-ojo-feliz" d="M65 82 Q72 76 79 82"/>
+            <path class="matv9-ojo-feliz" d="M101 82 Q108 76 115 82"/>
+            <path class="matv9-nariz" d="M82 98 Q90 92 98 98 Q97 106 90 108 Q83 106 82 98 Z"/>
             <g class="matv9-boca-abierta">
-                <ellipse cx="90" cy="123" rx="18" ry="16"/>
-                <ellipse class="matv9-lengua" cx="90" cy="132" rx="10" ry="6"/>
-                <rect class="matv9-diente" x="80" y="113" width="6" height="7" rx="2"/>
-                <rect class="matv9-diente" x="94" y="113" width="6" height="7" rx="2"/>
+                <path d="M90 108 Q68 110 66 128 Q66 142 90 144 Q114 142 114 128 Q112 110 90 108 Z"/>
+                <ellipse class="matv9-lengua" cx="90" cy="130" rx="11" ry="7"/>
+                <path class="matv9-diente" d="M74 112 L80 112 L77 120 Z"/>
+                <path class="matv9-diente" d="M100 112 L106 112 L103 120 Z"/>
             </g>
-            <path class="matv9-boca-neutral" d="M80 126 Q90 132 100 126"/>
-            <path class="matv9-boca-feliz" d="M76 122 Q90 138 104 122"/>
+            <path class="matv9-boca-neutral" d="M74 120 Q90 126 106 120"/>
+            <path class="matv9-boca-feliz" d="M66 108 Q90 134 114 108"/>
         </svg>`;
     }
 

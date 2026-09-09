@@ -385,11 +385,17 @@
     overflow: visible;
     filter: drop-shadow(0 4px 10px rgba(120,53,15,.18));
 }
-#matApp .matv9-melena { fill: #7c3f0f; }
-#matApp .matv9-oreja-ext { fill: #8b4513; }
+#matApp .matv9-melena { fill: #b45309; stroke: #7c3f0f; stroke-width: 2; stroke-linejoin: round; }
+#matApp .matv9-oreja-ext { fill: #b45309; stroke: #7c3f0f; stroke-width: 2; }
 #matApp .matv9-oreja-int { fill: #f7b267; }
 #matApp .matv9-cara { fill: #f4a51c; stroke: #92400e; stroke-width: 4; }
-#matApp .matv9-hocico { fill: #f8e27b; }
+#matApp .matv9-hocico { fill: #fdf1c7; stroke: #e2b04a; stroke-width: 2; }
+#matApp .matv9-bigote {
+    stroke: #92400e;
+    stroke-width: 2;
+    stroke-linecap: round;
+    opacity: .55;
+}
 #matApp .matv9-nariz { fill: #7c2d12; }
 #matApp .matv9-ojo { fill: #1f2937; }
 #matApp .matv9-ceja {
@@ -397,7 +403,7 @@
     stroke-width: 5;
     stroke-linecap: round;
 }
-#matApp .matv9-boca-abierta ellipse:first-child { fill: #7c2d12; }
+#matApp .matv9-boca-abierta path:first-child { fill: #7c2d12; }
 #matApp .matv9-lengua { fill: #ef4444; }
 #matApp .matv9-diente { fill: #fff; }
 #matApp .matv9-boca-neutral,
