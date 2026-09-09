@@ -314,10 +314,15 @@ if "</head>" not in index:
 index = index.replace("</head>", bloque + "\n</head>", 1)
 index_path.write_text(index, encoding="utf-8")
 
+# Incrementa automáticamente la versión PWA existente. Así este ajuste no
+# depende de que la rama esté todavía en una versión concreta: si develop ya
+# avanzó a v52, por ejemplo, este cambio pasa a v53 sin pisar trabajo nuevo.
 sw = sw_path.read_text(encoding="utf-8")
-old_version = 'const VERSION_APP = "v39";'
-new_version = 'const VERSION_APP = "v40";'
-if sw.count(old_version) != 1:
-    raise SystemExit("No se encontró exactamente una VERSION_APP v39")
-sw = sw.replace(old_version, new_version, 1)
+match = re.search(r'const VERSION_APP = "v(\d+)";', sw)
+if not match:
+    raise SystemExit("No se encontró VERSION_APP en sw.js")
+version_actual = int(match.group(1))
+version_nueva = version_actual + 1
+sw = sw[:match.start()] + f'const VERSION_APP = "v{version_nueva}";' + sw[match.end():]
 sw_path.write_text(sw, encoding="utf-8")
+print(f"VERSION_APP actualizada: v{version_actual} -> v{version_nueva}")
