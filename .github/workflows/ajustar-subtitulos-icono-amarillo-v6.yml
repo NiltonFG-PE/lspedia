@@ -1,0 +1,54 @@
+name: Ajustar Subtitulos V6
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - .github/workflows/ajustar-subtitulos-icono-amarillo-v6.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  aplicar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Aplicar ajuste visual
+        run: python scripts/ajustar_subtitulos_icono_amarillo_v6.py
+
+      - name: Validar cambios
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check js/subtitulos.js
+          grep -q 'SUBTITULOS_V6_ICONO_AMARILLO_20260909' js/subtitulos.js
+          grep -q 'SUBTITULOS_V6_ICONO_AMARILLO_20260909' css/subtitulos.css
+          grep -q 'img/categorias/Subtítulos.webp' js/subtitulos.js
+          grep -q '#fbbc04' css/subtitulos.css
+          grep -q 'const VERSION_APP = "v46";' sw.js
+          test -f 'img/categorias/Subtítulos.webp'
+          test -f 'video/lspedia_transparente anterior.webm'
+          git diff --check
+
+      - name: Guardar cambios en develop
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/subtitulos.js css/subtitulos.css sw.js
+          git commit -m "Usar icono oficial y boton amarillo en Subtitulos"
+          git push origin HEAD:develop
