@@ -26,6 +26,23 @@ jobs:
         with:
           python-version: '3.x'
 
+      - name: Adaptar script temporal a PWA v34
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          ruta = Path('scripts/ajustar_vocabulario_movil_compacto.py')
+          texto = ruta.read_text(encoding='utf-8')
+          viejo = '''r'const VERSION_APP = \"v33\";',
+              'const VERSION_APP = \"v34\";','''
+          nuevo = '''r'const VERSION_APP = \"v34\";',
+              'const VERSION_APP = \"v35\";','''
+          if texto.count(viejo) != 1:
+              raise SystemExit('ERROR: no se encontró exactamente una transición v33 -> v34 en el script temporal')
+          ruta.write_text(texto.replace(viejo, nuevo, 1), encoding='utf-8', newline='\n')
+          PY
+
       - name: Aplicar ajuste aprobado
         run: python scripts/ajustar_vocabulario_movil_compacto.py
 
@@ -39,7 +56,8 @@ jobs:
           grep -q 'buscador.insertAdjacentElement' index.html
           grep -q 'img/avatar_lupa.webm' index.html
           grep -q 'video/lspedia_transparente.webm' index.html
-          grep -q 'const VERSION_APP = "v34";' sw.js
+          grep -q 'const VERSION_APP = "v35";' sw.js
+          test -f 'video/lspedia_transparente anterior.webm'
           git diff --check
 
       - name: Guardar en develop
@@ -49,5 +67,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html sw.js
-          git commit -m "Afinar Vocabulario móvil y ordenar contenido"
+          git commit -m "Afinar orden móvil de Vocabulario"
           git push origin HEAD:develop
