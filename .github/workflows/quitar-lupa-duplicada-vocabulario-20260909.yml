@@ -1,0 +1,52 @@
+name: Quitar lupa duplicada Vocabulario
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - ".github/workflows/quitar-lupa-duplicada-vocabulario-20260909.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  corregir:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Quitar lupa decorativa izquierda
+        run: python scripts/quitar_lupa_duplicada_vocabulario_20260909.py
+
+      - name: Validar
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -q 'content: "🔎";' index.html; then
+            echo "La lupa duplicada sigue presente" >&2
+            exit 1
+          fi
+          grep -q 'padding: 0 18px 0 20px !important;' index.html
+          node --check js/script.js
+          git diff --check
+          test -f 'video/lspedia_transparente anterior.webm'
+
+      - name: Guardar en develop
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html sw.js
+          git commit -m "Quitar lupa duplicada del buscador de Vocabulario"
+          git push origin HEAD:develop
