@@ -707,7 +707,11 @@ document.getElementById("btnCategorias").addEventListener("click", (e) => {
         // apuntando al techo de la página (top:0) en vez de a un elemento.
         scrollArribaEstable();
     } else {
-        panelCategorias.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Al entrar a Vocabulario, la primera referencia visual debe ser el
+        // buscador. Antes se centraba #panelCategorias y, al cerrar el aviso
+        // inicial, la pantalla quedaba a mitad de la sección. Reutilizamos el
+        // scroll estable para dejar el buscador justo debajo del navbar fijo.
+        scrollAlPrimerResultado(bloqueBuscadorCategorias || panelCategorias);
         panelCategorias.classList.add("highlight-anim");
         seccionFavoritos.classList.add("highlight-anim");
         seccionHistorial.classList.add("highlight-anim");
