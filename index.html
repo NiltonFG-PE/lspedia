@@ -3649,6 +3649,138 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
         }
     </style>
 
+
+    <style id="loader-lspedia-marca-v1">
+        /* LOADER_LSPEDIA_MARCA_V1_20260909
+           Indicador de carga propio de LSPedia: el símbolo central de la
+           marca permanece quieto y una flecha circular azul/amarilla gira
+           alrededor. Reemplaza los spinners genéricos de Bootstrap. */
+        .lsp-loader {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: #64748b;
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+        }
+        .lsp-loader-inline {
+            flex-direction: row;
+            gap: 8px;
+            vertical-align: middle;
+        }
+        .lsp-loader-marca {
+            --lsp-loader-size: 54px;
+            position: relative;
+            width: var(--lsp-loader-size);
+            height: var(--lsp-loader-size);
+            display: inline-grid;
+            place-items: center;
+            flex: 0 0 auto;
+        }
+        .lsp-loader-sm .lsp-loader-marca { --lsp-loader-size: 30px; }
+        .lsp-loader-lg .lsp-loader-marca { --lsp-loader-size: 62px; }
+
+        .lsp-loader-flecha {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            animation: lspLoaderGiro .9s linear infinite;
+            filter: drop-shadow(0 3px 5px rgba(28, 119, 198, .13));
+        }
+        .lsp-loader-flecha::before {
+            content: "";
+            position: absolute;
+            inset: 3px;
+            border-radius: 50%;
+            border: 4px solid rgba(35, 139, 222, .16);
+            border-top-color: #238bde;
+            border-right-color: #238bde;
+            border-bottom-color: #f2b91f;
+        }
+        .lsp-loader-flecha::after {
+            content: "";
+            position: absolute;
+            top: 1px;
+            right: 8px;
+            width: 0;
+            height: 0;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+            border-left: 8px solid #238bde;
+            transform: rotate(28deg);
+        }
+        .lsp-loader-sm .lsp-loader-flecha::before {
+            inset: 2px;
+            border-width: 3px;
+        }
+        .lsp-loader-sm .lsp-loader-flecha::after {
+            top: 0;
+            right: 4px;
+            border-top-width: 4px;
+            border-bottom-width: 4px;
+            border-left-width: 6px;
+        }
+
+        .lsp-loader-logo {
+            position: relative;
+            z-index: 2;
+            width: 45%;
+            height: 45%;
+            object-fit: contain;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, .08);
+        }
+        .lsp-loader-texto {
+            font-size: .88rem;
+            font-weight: 600;
+            color: #64748b;
+        }
+        .lsp-loader-lg .lsp-loader-texto {
+            font-size: .94rem;
+        }
+
+        @keyframes lspLoaderGiro {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .lsp-loader-flecha { animation: none; transform: rotate(35deg); }
+        }
+    </style>
+
+    <script id="lspedia-loader-api-v1">
+        /* API pequeña y reutilizable para futuros procesos de LSPedia.
+           Ejemplo: LSPediaLoader.mostrarEn(elemento, 'Procesando…', 'sm') */
+        window.LSPediaLoader = (function () {
+            function escapar(valor) {
+                return String(valor == null ? '' : valor).replace(/[&<>"']/g, function (c) {
+                    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];
+                });
+            }
+            function html(texto, tamano) {
+                var claseTamano = tamano === 'sm' ? ' lsp-loader-sm lsp-loader-inline' : (tamano === 'lg' ? ' lsp-loader-lg' : '');
+                var textoSeguro = escapar(texto || 'Cargando…');
+                return '<div class="lsp-loader' + claseTamano + '" role="status" aria-live="polite">'
+                    + '<span class="lsp-loader-marca" aria-hidden="true">'
+                    + '<span class="lsp-loader-flecha"></span>'
+                    + '<img class="lsp-loader-logo" src="img/favicon.png" alt="">'
+                    + '</span>'
+                    + '<span class="lsp-loader-texto">' + textoSeguro + '</span>'
+                    + '</div>';
+            }
+            function mostrarEn(elemento, texto, tamano) {
+                if (typeof elemento === 'string') elemento = document.querySelector(elemento);
+                if (!elemento) return null;
+                elemento.innerHTML = html(texto, tamano);
+                return elemento;
+            }
+            return { html: html, mostrarEn: mostrarEn };
+        })();
+    </script>
+
 </head>
 
 <body>
@@ -4267,8 +4399,13 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                 </div>
                 <div id="panelCategoriasDiccionario" class="row g-2 mb-4">
                     <div class="col-12 text-center text-muted small py-3" id="categoriasCargandoPlaceholder">
-                        <div class="spinner-border spinner-border-sm text-primary me-2" role="status" aria-hidden="true"></div>
-                        Cargando categorías…
+                        <div class="lsp-loader lsp-loader-sm lsp-loader-inline" role="status" aria-live="polite">
+                            <span class="lsp-loader-marca" aria-hidden="true">
+                                <span class="lsp-loader-flecha"></span>
+                                <img class="lsp-loader-logo" src="img/favicon.png" alt="">
+                            </span>
+                            <span class="lsp-loader-texto">Cargando categorías…</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -4659,8 +4796,13 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
 
             <!-- CARGANDO PREGUNTAS DESDE GOOGLE SHEETS -->
             <div id="quizCargando" class="text-center py-5 d-none">
-                <div class="spinner-border text-primary" role="status"></div>
-                <p class="text-muted small mt-3 mb-0">Cargando...</p>
+                <div class="lsp-loader lsp-loader-lg" role="status" aria-live="polite">
+                    <span class="lsp-loader-marca" aria-hidden="true">
+                        <span class="lsp-loader-flecha"></span>
+                        <img class="lsp-loader-logo" src="img/favicon.png" alt="">
+                    </span>
+                    <span class="lsp-loader-texto">Preparando el juego…</span>
+                </div>
             </div>
 
             <!-- ERROR DE CARGA -->
@@ -4999,8 +5141,13 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
 
             <!-- CARGANDO DATOS DESDE GOOGLE SHEETS (Hoja "Alfabetización" / "AlfabetizacionEjemplos" / Hoja2) -->
             <div id="alfabCargando" class="text-center py-5 d-none">
-                <div class="spinner-border text-primary" role="status"></div>
-                <p class="text-muted small mt-3 mb-0">Cargando contenido de Alfabetización...</p>
+                <div class="lsp-loader lsp-loader-lg" role="status" aria-live="polite">
+                    <span class="lsp-loader-marca" aria-hidden="true">
+                        <span class="lsp-loader-flecha"></span>
+                        <img class="lsp-loader-logo" src="img/favicon.png" alt="">
+                    </span>
+                    <span class="lsp-loader-texto">Preparando contenido…</span>
+                </div>
             </div>
 
             <!-- ERROR DE CARGA -->
