@@ -44,3 +44,5 @@ jobs:
           fi
           git commit -m 'Proteger LSPedia contra imágenes rotas'
           git push origin HEAD:develop
+
+# reintento 2
