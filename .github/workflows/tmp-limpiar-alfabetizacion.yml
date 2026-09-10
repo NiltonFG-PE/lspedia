@@ -28,6 +28,45 @@ jobs:
       - name: Probar generador con Google Sheets
         run: python scripts/generar_alfabetizacion.py
 
+      - name: Auditar recursos derivados
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path('.')
+          datos = json.loads((root / 'data/alfabetizacion.json').read_text(encoding='utf-8'))
+          variantes = ('mayuscula', 'minuscula', 'cursiva-mayuscula', 'cursiva-minuscula')
+          faltan_grafias = []
+          faltan_circulo = []
+          for fila in datos.get('alfabeto', []):
+              tipo = fila.get('tipo')
+              c = str(fila.get('caracter', '')).strip()
+              if not c:
+                  continue
+              if tipo == 'letra':
+                  for v in variantes:
+                      for ext in ('mp4', 'png'):
+                          p = root / f'img/alfabetizacion/grafias/{c}-{v}.{ext}'
+                          if not p.is_file():
+                              faltan_grafias.append(str(p))
+              elif tipo == 'numero':
+                  for ext in ('mp4', 'png'):
+                      p = root / f'img/alfabetizacion/grafias/{c}.{ext}'
+                      if not p.is_file():
+                          faltan_grafias.append(str(p))
+              # 16-19 tienen fallback compuesto en la interfaz.
+              p_circulo = root / f'img/alfabetizacion/circulo/{c}.webp'
+              if not p_circulo.is_file() and c not in {'16','17','18','19'}:
+                  faltan_circulo.append(str(p_circulo))
+          print(f'Grafias derivadas faltantes: {len(faltan_grafias)}')
+          for p in faltan_grafias:
+              print('  -', p)
+          print(f'Circulos sin archivo propio (sin contar 16-19): {len(faltan_circulo)}')
+          for p in faltan_circulo:
+              print('  -', p)
+          PY
+
       - name: Validar Alfabetizacion
         shell: bash
         run: |
