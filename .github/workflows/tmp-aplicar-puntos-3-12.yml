@@ -1,0 +1,83 @@
+name: TMP aplicar puntos 3-12
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - '.github/workflows/tmp-aplicar-puntos-3-12.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  aplicar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Aplicar cambios
+        run: python scripts/tmp_aplicar_puntos_3_12.py
+      - name: Normalizar imágenes de ejemplos
+        run: python scripts/normalizar_media_alfabetizacion.py
+      - name: Sincronizar Alfabetización real
+        run: python scripts/generar_alfabetizacion.py
+      - name: Generar Nuevas palabras
+        run: python scripts/actualizar_nuevas_palabras.py
+      - name: Validar todo
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/normalizar_media_alfabetizacion.py --check
+          python scripts/validar_alfabetizacion.py
+          python scripts/auditar_alfabetizacion.py
+          python scripts/validar_lspedia.py
+          python scripts/validar_imagenes.py
+          python -m json.tool data/alfabetizacion.json >/dev/null
+          python -m json.tool data/nuevas-palabras.json >/dev/null
+          node --check js/script.js
+          node --check js/alfabetizacion.js
+          node --check js/mejoras-producto.js
+          node --check sw.js
+          python - <<'PY'
+          import re, pathlib, subprocess
+          for name in ('admin/busquedas.html','admin/estado.html'):
+              text=pathlib.Path(name).read_text(encoding='utf-8')
+              scripts=re.findall(r'<script>(.*?)</script>',text,re.S)
+              for i,code in enumerate(scripts):
+                  p=pathlib.Path('/tmp')/(pathlib.Path(name).stem+f'-{i}.js')
+                  p.write_text(code,encoding='utf-8')
+                  subprocess.run(['node','--check',str(p)],check=True)
+          PY
+          grep -q '✨ La palabra del día' index.html
+          grep -q '✨ La palabra del día' js/script.js
+          grep -q 'css/mejoras-producto.css' index.html
+          grep -q 'js/mejoras-producto.js' index.html
+          grep -q 'const VERSION_APP = "v65";' sw.js
+          test -f img/alfabetizacion/ejemplos/una.webp
+          test -f img/alfabetizacion/ejemplos/nandu.webp
+          test -f img/alfabetizacion/ejemplos/noquis.webp
+          test ! -f img/alfabetizacion/ejemplos/uña.webp
+          test ! -f img/alfabetizacion/ejemplos/ñandu.webp
+          test ! -f img/alfabetizacion/ejemplos/ñoquis.webp
+          test -f 'video/lspedia_transparente anterior.webm'
+          test "$(git hash-object 'video/lspedia_transparente anterior.webm')" = 'ca9a110b75384b534f8ebdcae45406fb178df083'
+          git diff --check
+      - name: Guardar mejoras
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html sw.js js/script.js scripts/generar_alfabetizacion.py scripts/normalizar_media_alfabetizacion.py scripts/auditar_alfabetizacion.py scripts/actualizar_nuevas_palabras.py data/alfabetizacion.json data/alfabetizacion-mock.json data/nuevas-palabras.json img/alfabetizacion/ejemplos admin/busquedas.html admin/estado.html css/mejoras-producto.css js/mejoras-producto.js .github/workflows/actualizar-alfabetizacion.yml .github/workflows/actualizar-sitemap.yml .github/workflows/validar-lspedia.yml
+          if git diff --cached --quiet; then
+            echo 'No hay cambios funcionales pendientes.'
+            exit 0
+          fi
+          git commit -m 'Completar mejoras de contenido aprendizaje y administracion'
+          git push origin HEAD:develop
