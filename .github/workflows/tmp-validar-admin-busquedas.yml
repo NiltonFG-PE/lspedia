@@ -17,6 +17,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: develop
+          fetch-depth: 8
 
       - name: Validar archivos del panel
         shell: bash
@@ -55,4 +56,4 @@ jobs:
 
       - name: Verificar diff limpio de whitespace
         shell: bash
-        run: git diff --check HEAD~4..HEAD
+        run: git diff --check HEAD~5..HEAD
