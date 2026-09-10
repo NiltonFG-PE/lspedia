@@ -1,0 +1,59 @@
+name: TMP Limpiar Alfabetizacion
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - '.github/workflows/tmp-limpiar-alfabetizacion.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  limpiar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Aplicar limpieza
+        run: python scripts/tmp_limpiar_alfabetizacion.py
+
+      - name: Validar Alfabetizacion
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m json.tool data/alfabetizacion.json > /dev/null
+          python -m json.tool data/alfabetizacion-mock.json > /dev/null
+          python scripts/validar_alfabetizacion.py
+          python scripts/validar_imagenes.py --solo-data data/alfabetizacion.json
+          node --check js/alfabetizacion.js
+          node --check sw.js
+          git diff --check
+          ! grep -q 'trazoVideo' scripts/generar_alfabetizacion.py
+          ! grep -q 'trazoVideo' scripts/validar_alfabetizacion.py
+          ! grep -q 'trazoVideo' data/alfabetizacion.json
+          ! grep -q 'trazoVideo' data/alfabetizacion-mock.json
+          grep -q 'const VERSION_APP = "v63";' sw.js
+          test -f 'video/lspedia_transparente anterior.webm'
+          test "$(git hash-object 'video/lspedia_transparente anterior.webm')" = 'ca9a110b75384b534f8ebdcae45406fb178df083'
+
+      - name: Guardar mejora
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/generar_alfabetizacion.py scripts/validar_alfabetizacion.py data/alfabetizacion.json data/alfabetizacion-mock.json js/alfabetizacion.js sw.js
+          if git diff --cached --quiet; then
+            echo 'Sin cambios que guardar.'
+            exit 0
+          fi
+          git commit -m 'Simplificar y sanear datos de Alfabetizacion'
+          git push origin HEAD:develop
