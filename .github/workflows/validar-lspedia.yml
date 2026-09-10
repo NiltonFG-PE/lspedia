@@ -5,16 +5,22 @@ on:
     branches: [develop]
     paths:
       - "data/**"
+      - "img/**"
+      - "css/**"
       - "js/**"
       - "scripts/validar_lspedia.py"
+      - "scripts/validar_imagenes.py"
       - "scripts/normalizar_categorias.py"
       - ".github/workflows/validar-lspedia.yml"
   pull_request:
     branches: [develop]
     paths:
       - "data/**"
+      - "img/**"
+      - "css/**"
       - "js/**"
       - "scripts/validar_lspedia.py"
+      - "scripts/validar_imagenes.py"
       - "scripts/normalizar_categorias.py"
   workflow_dispatch:
 
@@ -58,3 +64,6 @@ jobs:
           python -m json.tool data/palabras.json > /dev/null
           python -m json.tool data/vocabulario.json > /dev/null
           echo "JSON válidos."
+
+      - name: Validar imágenes locales
+        run: python scripts/validar_imagenes.py
