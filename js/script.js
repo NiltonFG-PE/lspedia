@@ -5622,3 +5622,58 @@ function mostrarSenalDelDia(offset = offsetSenalDelDia){
 
     window.LSPediaImagenes = Object.freeze({ aplicarFallback });
 })();
+
+
+
+/* ============================================================
+   ACTUALIZACIÓN PWA SIN CACHÉ HTTP — 20260910
+   ------------------------------------------------------------
+   Fuerza la comprobación de sw.js contra la red real al abrir LSPedia y
+   al volver a una pestaña que estuvo un rato en segundo plano.
+
+   IMPORTANTE: NO recarga la página automáticamente. Una actualización
+   nunca debe interrumpir un video, un formulario o una actividad del juego.
+   La nueva versión queda activa gracias a skipWaiting()/clients.claim() y
+   será usada en la siguiente navegación/recarga normal.
+   ============================================================ */
+(function asegurarActualizacionPwaLSPedia(){
+    "use strict";
+    if (!("serviceWorker" in navigator)) return;
+
+    const INTERVALO_REVISION_MS = 5 * 60 * 1000;
+    let ultimaRevision = 0;
+
+    async function revisarActualizacionPwa(forzar = false){
+        const ahora = Date.now();
+        if (!forzar && ahora - ultimaRevision < INTERVALO_REVISION_MS) return;
+        ultimaRevision = ahora;
+
+        try {
+            // updateViaCache:"none" evita que el propio script del Service
+            // Worker (y sus imports futuros) se resuelva desde la caché HTTP.
+            const registro = await navigator.serviceWorker.register("sw.js", {
+                updateViaCache: "none"
+            });
+
+            if (registro && typeof registro.update === "function") {
+                await registro.update();
+            }
+        } catch (error) {
+            // Sin conexión no es un error crítico: el Service Worker conserva
+            // el cascarón offline y se comprobará otra vez más adelante.
+            console.info("LSPedia: actualización PWA pendiente de conexión.", error);
+        }
+    }
+
+    if (document.readyState === "complete") {
+        setTimeout(() => revisarActualizacionPwa(true), 0);
+    } else {
+        window.addEventListener("load", () => revisarActualizacionPwa(true), { once: true });
+    }
+
+    document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") {
+            revisarActualizacionPwa(false);
+        }
+    });
+})();

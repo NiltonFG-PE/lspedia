@@ -10,7 +10,7 @@
    ============================================================ */
 
 // Cambia esta versión cuando modifiques el cascarón de la aplicación.
-const VERSION_APP = "v60";
+const VERSION_APP = "v61";
 const PREFIJO_CACHE = "lspedia-shell-";
 const CACHE_NOMBRE = PREFIJO_CACHE + VERSION_APP;
 
@@ -50,7 +50,20 @@ const RUTA_INDEX = URL_INDEX.pathname;
 self.addEventListener("install", (evento) => {
     evento.waitUntil((async () => {
         const cache = await caches.open(CACHE_NOMBRE);
-        await cache.addAll(ARCHIVOS_CASCARON);
+
+        // Precarga realmente fresca: cache.addAll() puede apoyarse en la
+        // caché HTTP del navegador. cache:"reload" obliga a revalidar cada
+        // archivo antes de guardarlo dentro de la nueva versión de la PWA.
+        await Promise.all(ARCHIVOS_CASCARON.map(async (archivo) => {
+            const urlArchivo = new URL(archivo, self.registration.scope);
+            const requestFresco = new Request(urlArchivo.href, { cache: "reload" });
+            const respuesta = await fetch(requestFresco);
+            if (!respuesta || !respuesta.ok) {
+                throw new Error(`No se pudo precargar ${urlArchivo.pathname}`);
+            }
+            await cache.put(new Request(urlArchivo.href), respuesta.clone());
+        }));
+
         await self.skipWaiting();
     })());
 });
@@ -103,7 +116,7 @@ self.addEventListener("fetch", (evento) => {
     if (esNavegacionApp) {
         evento.respondWith((async () => {
             try {
-                const respuestaRed = await fetch(request);
+                const respuestaRed = await fetch(request, { cache: "no-store" });
 
                 if (respuestaRed && respuestaRed.ok) {
                     const cache = await caches.open(CACHE_NOMBRE);
@@ -130,7 +143,7 @@ self.addEventListener("fetch", (evento) => {
     if (RUTAS_CASCARON.has(url.pathname)) {
         evento.respondWith((async () => {
             try {
-                const respuestaRed = await fetch(request);
+                const respuestaRed = await fetch(request, { cache: "no-store" });
 
                 if (respuestaRed && respuestaRed.ok) {
                     const cache = await caches.open(CACHE_NOMBRE);
