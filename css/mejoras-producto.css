@@ -9,3 +9,12 @@
 @keyframes lspShareUp{from{transform:translateY(20px);opacity:.6}to{transform:translateY(0);opacity:1}}
 @media(max-width:767.98px){#lspMejorasInicio{margin-bottom:16px}.lsp-mejoras-grid{grid-template-columns:1fr}.lsp-mejora-card{padding:14px;border-radius:16px}.lsp-share-overlay{padding:0;align-items:flex-end}.lsp-share-sheet{border-radius:22px 22px 0 0;padding:17px 14px calc(17px + env(safe-area-inset-bottom))}.lsp-share-actions{grid-template-columns:repeat(3,1fr)}.lsp-aprender-bar{position:sticky;top:72px;z-index:100;padding:9px 10px}}
 @media(prefers-reduced-motion:reduce){.lsp-share-sheet{animation:none!important}}
+
+
+/* Aprendizaje unificado: reemplaza la tarjeta separada Tu progreso. */
+#panelProgresoPersonal{display:none!important}
+.lsp-aprender-estado{display:flex;flex-direction:column;gap:3px;margin:-2px 0 12px;padding:10px 12px;background:#f7fbff;border:1px solid #dcecf8;border-radius:12px;color:#52657a;font-size:.76rem;line-height:1.4}
+.lsp-aprender-estado strong{color:#17324f;font-family:'Poppins',sans-serif;font-size:.86rem;font-weight:800}
+.lsp-aprender-estado span{display:block}
+.lsp-aprendizaje-unificado .lsp-aprender-btn{margin-top:1px}
+@media(max-width:767.98px){.lsp-aprendizaje-unificado .lsp-mejora-sub{margin-bottom:9px}.lsp-aprender-estado{margin-bottom:11px}}

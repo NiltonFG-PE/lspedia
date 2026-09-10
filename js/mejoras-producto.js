@@ -149,6 +149,16 @@
         $('lspAprenderFin').onclick=finalizarModo;
     }
 
+    function leerResumenProgreso(){
+        try{
+            const p=JSON.parse(localStorage.getItem(CLAVE_PROGRESO)||'null');
+            const items=(p&&Array.isArray(p.items)?p.items:[])
+                .filter(x=>x&&x.fuente==='diccionario'&&x.referencia&&x.palabra)
+                .sort((a,b)=>(Number(b.ultimaVez)||0)-(Number(a.ultimaVez)||0));
+            return {cantidad:items.length,ultima:items[0]||null};
+        }catch(_e){return {cantidad:0,ultima:null};}
+    }
+
     function asegurarInicio(){
         const hero=$('filaHeroPrincipal'); if(!hero) return null;
         let sec=$('lspMejorasInicio');
@@ -157,29 +167,50 @@
         sec.id='lspMejorasInicio';
         sec.setAttribute('aria-label','Aprender y descubrir palabras');
         sec.innerHTML='<div class="lsp-mejoras-grid">'+
-          '<article class="lsp-mejora-card" id="lspModoCard"><div class="lsp-mejora-head"><h2 class="lsp-mejora-titulo"><span class="lsp-mejora-icono">📘</span>Modo Aprender</h2></div><p class="lsp-mejora-sub">Recorre el Diccionario palabra por palabra: significado, video e imagen.</p><button class="lsp-aprender-btn" id="lspModoBtn" type="button">Empezar</button><div class="lsp-aprender-meta" id="lspModoMeta">Tu avance se guarda solo en este dispositivo.</div></article>'+
-          '<article class="lsp-mejora-card" id="lspNuevasCard"><div class="lsp-mejora-head"><h2 class="lsp-mejora-titulo"><span class="lsp-mejora-icono">✨</span>Nuevas palabras</h2></div><p class="lsp-mejora-sub">Descubre palabras agregadas recientemente al Diccionario.</p><div class="lsp-nuevas-lista" id="lspNuevasLista"><span class="lsp-mejora-sub">Cargando…</span></div></article>'+
+          '<article class="lsp-mejora-card lsp-aprendizaje-unificado" id="lspModoCard"><div class="lsp-mejora-head"><h2 class="lsp-mejora-titulo"><span class="lsp-mejora-icono">📘</span>Tu aprendizaje</h2></div><p class="lsp-mejora-sub">Recorre el Diccionario palabra por palabra cuando tú quieras.</p><div class="lsp-aprender-estado" id="lspModoEstado"></div><button class="lsp-aprender-btn" id="lspModoBtn" type="button">Empezar a aprender</button><div class="lsp-aprender-meta" id="lspModoMeta">Tú decides cuándo entrar. Tu avance se guarda solo en este dispositivo.</div></article>'+
+          '<article class="lsp-mejora-card" id="lspNuevasCard"><div class="lsp-mejora-head"><h2 class="lsp-mejora-titulo"><span class="lsp-mejora-icono">✨</span>Nuevas palabras</h2></div><p class="lsp-mejora-sub">Descubre palabras publicadas recientemente en el Diccionario.</p><div class="lsp-nuevas-lista" id="lspNuevasLista"><span class="lsp-mejora-sub">Cargando…</span></div></article>'+
           '</div>';
         hero.insertAdjacentElement('afterend',sec);
         $('lspModoBtn').onclick=iniciarOContinuar;
         return sec;
     }
     function actualizarTarjetaModo(){
-        const btn=$('lspModoBtn'),meta=$('lspModoMeta'); if(!btn||!meta)return;
-        const modo=leerModo(),lista=listaAprender();
-        if(!lista.length){btn.disabled=true;btn.textContent='Sin datos';return;}
+        const btn=$('lspModoBtn'),meta=$('lspModoMeta'),estado=$('lspModoEstado');
+        if(!btn||!meta)return;
+        const modo=leerModo(),lista=listaAprender(),progreso=leerResumenProgreso();
+        if(!lista.length){
+            btn.disabled=true;
+            btn.textContent='Sin palabras disponibles';
+            if(estado) estado.innerHTML='<strong>Aún no hay palabras disponibles.</strong>';
+            return;
+        }
         btn.disabled=false;
-        btn.textContent=modo.iniciado?'Continuar':'Empezar';
-        meta.textContent=modo.iniciado?'Continuarás desde '+(Math.min((Number(modo.indice)||0)+1,lista.length))+' de '+lista.length+'.':'Tu avance se guarda solo en este dispositivo.';
+        btn.textContent=modo.iniciado?'Continuar aprendiendo':'Empezar a aprender';
+        if(estado){
+            const cantidad=progreso.cantidad;
+            const base=cantidad===0
+                ? '<strong>Aún no has empezado.</strong><span>Entra cuando quieras.</span>'
+                : '<strong>Has explorado '+cantidad+' '+(cantidad===1?'palabra':'palabras')+'.</strong>'+(progreso.ultima?'<span>Última palabra: '+escapeHtml(texto(progreso.ultima.palabra))+'</span>':'');
+            const paso=modo.iniciado?'<span>Modo Aprender: '+Math.min((Number(modo.indice)||0)+1,lista.length)+' de '+lista.length+'.</span>':'';
+            estado.innerHTML=base+paso;
+        }
+        meta.textContent='Tú decides cuándo entrar. Tu avance se guarda solo en este dispositivo.';
     }
     function renderNuevas(){
         const caja=$('lspNuevasLista');if(!caja)return;
-        if(!nuevas.length){caja.innerHTML='<span class="lsp-mejora-sub">Todavía no hay incorporaciones recientes detectadas.</span>';return;}
-        caja.innerHTML=nuevas.slice(0,8).map((x,i)=>'<button type="button" class="lsp-nueva-palabra" data-nueva="'+i+'"><span class="lsp-nueva-badge">NUEVA</span><span class="lsp-nueva-nombre">'+escapeHtml(texto(x.palabra))+'</span><span class="lsp-nueva-cat">'+escapeHtml(texto(x.categoria)||'Diccionario')+'</span></button>').join('');
+        const actuales=datosDiccionario();
+        const publicadas=nuevas.map(x=>{
+            const p=actuales.find(y=>refPalabra(y)===texto(x.id))||actuales.find(y=>texto(y.palabra).toLocaleLowerCase('es-PE')===texto(x.palabra).toLocaleLowerCase('es-PE'));
+            return p?{registro:x,palabra:p}:null;
+        }).filter(Boolean);
+        if(!publicadas.length){
+            caja.innerHTML='<span class="lsp-mejora-sub">Las próximas palabras publicadas aparecerán aquí.</span>';
+            return;
+        }
+        caja.innerHTML=publicadas.slice(0,8).map((x,i)=>'<button type="button" class="lsp-nueva-palabra" data-nueva="'+i+'"><span class="lsp-nueva-badge">NUEVA</span><span class="lsp-nueva-nombre">'+escapeHtml(texto(x.palabra.palabra))+'</span><span class="lsp-nueva-cat">'+escapeHtml(texto(x.palabra.categoria)||'Diccionario')+'</span></button>').join('');
         caja.querySelectorAll('[data-nueva]').forEach(btn=>btn.onclick=()=>{
-            const x=nuevas[Number(btn.dataset.nueva)]; if(!x)return;
-            const p=datosDiccionario().find(y=>refPalabra(y)===texto(x.id))||datosDiccionario().find(y=>texto(y.palabra).toLocaleLowerCase('es-PE')===texto(x.palabra).toLocaleLowerCase('es-PE'));
-            if(p&&typeof window.mostrarPalabra==='function'){window.mostrarPalabra(p);window.scrollTo({top:0,behavior:'smooth'});}
+            const x=publicadas[Number(btn.dataset.nueva)]; if(!x||!x.palabra)return;
+            if(typeof window.mostrarPalabra==='function'){window.mostrarPalabra(x.palabra);window.scrollTo({top:0,behavior:'smooth'});}
         });
     }
     function escapeHtml(v){return String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
