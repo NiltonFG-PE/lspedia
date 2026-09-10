@@ -10,7 +10,7 @@
    es data/alfabetizacion.json, sincronizada desde Google Sheets.
 
    ARCHIVOS POR CARÁCTER (todos generados por ti, en el propio repo):
-     img/alfabetizacion/boca/{CARACTER}.png                              (fonética, sí viene del Sheet -> campo imagenBoca)
+     img/alfabetizacion/boca/{CARACTER}.webm                             (fonética; la ruta viene del Sheet -> imagenBoca)
      img/alfabetizacion/grafias/{CARACTER}-mayuscula.mp4                 (video de grafía, variante mayúscula)
      img/alfabetizacion/grafias/{CARACTER}-minuscula.mp4                 (video de grafía, variante minúscula)
      img/alfabetizacion/grafias/{CARACTER}-cursiva-mayuscula.mp4         (video de grafía, variante cursiva mayúscula)
@@ -46,9 +46,9 @@ const AlfabetizacionV2 = (function () {
         // Las 4 variantes tipográficas, en el mismo orden que los chips del HTML.
         VARIANTES_TIPO: ["mayuscula", "minuscula", "cursiva-mayuscula", "cursiva-minuscula"],
 
-        // Los números 0-19 se pronuncian como palabra (ej. 13 = TRECE), así que
-        // la fonética se arma reutilizando la boca de cada letra de la palabra
-        // (img/alfabetizacion/boca/{LETRA}.png), no una imagen por número.
+        // Los números 0-19 se pronuncian completos mediante su propio recurso
+        // de imagenBoca (ej. 13 -> img/alfabetizacion/boca/13.webm). Este mapa
+        // solo se usa para los juegos que necesitan la palabra escrita del número.
         PALABRA_NUMERO: {
             "0": "CERO", "1": "UNO", "2": "DOS", "3": "TRES", "4": "CUATRO",
             "5": "CINCO", "6": "SEIS", "7": "SIETE", "8": "OCHO", "9": "NUEVE",

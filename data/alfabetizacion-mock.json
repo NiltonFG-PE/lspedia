@@ -4,284 +4,237 @@
     {
       "tipo": "letra",
       "caracter": "A",
-      "imagenBoca": "img/alfabetizacion/boca/A.png",
-      "trazoVideo": "img/alfabetizacion/grafias/A-mayuscula.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/A.webm"
     },
     {
       "tipo": "letra",
       "caracter": "B",
-      "imagenBoca": "img/alfabetizacion/boca/B.png",
-      "trazoVideo": "img/alfabetizacion/grafias/B-mayuscula.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/B.webm"
     },
     {
       "tipo": "letra",
       "caracter": "C",
-      "imagenBoca": "img/alfabetizacion/boca/C.png",
-      "trazoVideo": "img/alfabetizacion/grafias/C-mayuscula.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/C.webm"
     },
     {
       "tipo": "letra",
       "caracter": "D",
-      "imagenBoca": "img/alfabetizacion/boca/D.png",
-      "trazoVideo": "img/alfabetizacion/grafias/D-mayuscula.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/D.webm"
     },
     {
       "tipo": "letra",
       "caracter": "E",
-      "imagenBoca": "img/alfabetizacion/boca/E.png",
-      "trazoVideo": "img/alfabetizacion/grafias/E-mayuscula.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/E.webm"
     },
     {
       "tipo": "letra",
       "caracter": "F",
-      "imagenBoca": "img/alfabetizacion/boca/F.png",
-      "trazoVideo": "img/alfabetizacion/grafias/F-mayuscula.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/F.webm"
     },
     {
       "tipo": "letra",
       "caracter": "G",
-      "imagenBoca": "img/alfabetizacion/boca/G.png",
-      "trazoVideo": "img/alfabetizacion/grafias/G-mayuscula.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/G.webm"
     },
     {
       "tipo": "letra",
       "caracter": "H",
-      "imagenBoca": "img/alfabetizacion/boca/H.png",
-      "trazoVideo": "img/alfabetizacion/grafias/H-mayuscula.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/H.webm"
     },
     {
       "tipo": "letra",
       "caracter": "I",
-      "imagenBoca": "img/alfabetizacion/boca/I.png",
-      "trazoVideo": "img/alfabetizacion/grafias/I-mayuscula.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/I.webm"
     },
     {
       "tipo": "letra",
       "caracter": "J",
-      "imagenBoca": "img/alfabetizacion/boca/J.png",
-      "trazoVideo": "img/alfabetizacion/grafias/J-mayuscula.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/J.webm"
     },
     {
       "tipo": "letra",
       "caracter": "K",
-      "imagenBoca": "img/alfabetizacion/boca/K.png",
-      "trazoVideo": "img/alfabetizacion/grafias/K-mayuscula.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/K.webm"
     },
     {
       "tipo": "letra",
       "caracter": "L",
-      "imagenBoca": "img/alfabetizacion/boca/L.png",
-      "trazoVideo": "img/alfabetizacion/grafias/L-mayuscula.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/L.webm"
     },
     {
       "tipo": "letra",
       "caracter": "M",
-      "imagenBoca": "img/alfabetizacion/boca/M.png",
-      "trazoVideo": "img/alfabetizacion/grafias/M-mayuscula.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/M.webm"
     },
     {
       "tipo": "letra",
       "caracter": "N",
-      "imagenBoca": "img/alfabetizacion/boca/N.png",
-      "trazoVideo": "img/alfabetizacion/grafias/N-mayuscula.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/N.webm"
     },
     {
       "tipo": "letra",
       "caracter": "Ñ",
-      "imagenBoca": "img/alfabetizacion/boca/Ñ.png",
-      "trazoVideo": "img/alfabetizacion/grafias/Ñ-mayuscula.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/Ñ.webm"
     },
     {
       "tipo": "letra",
       "caracter": "O",
-      "imagenBoca": "img/alfabetizacion/boca/O.png",
-      "trazoVideo": "img/alfabetizacion/grafias/O-mayuscula.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/O.webm"
     },
     {
       "tipo": "letra",
       "caracter": "P",
-      "imagenBoca": "img/alfabetizacion/boca/P.png",
-      "trazoVideo": "img/alfabetizacion/grafias/P-mayuscula.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/P.webm"
     },
     {
       "tipo": "letra",
       "caracter": "Q",
-      "imagenBoca": "img/alfabetizacion/boca/Q.png",
-      "trazoVideo": "img/alfabetizacion/grafias/Q-mayuscula.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/Q.webm"
     },
     {
       "tipo": "letra",
       "caracter": "R",
-      "imagenBoca": "img/alfabetizacion/boca/R.png",
-      "trazoVideo": "img/alfabetizacion/grafias/R-mayuscula.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/R.webm"
     },
     {
       "tipo": "letra",
       "caracter": "S",
-      "imagenBoca": "img/alfabetizacion/boca/S.png",
-      "trazoVideo": "img/alfabetizacion/grafias/S-mayuscula.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/S.webm"
     },
     {
       "tipo": "letra",
       "caracter": "T",
-      "imagenBoca": "img/alfabetizacion/boca/T.png",
-      "trazoVideo": "img/alfabetizacion/grafias/T-mayuscula.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/T.webm"
     },
     {
       "tipo": "letra",
       "caracter": "U",
-      "imagenBoca": "img/alfabetizacion/boca/U.png",
-      "trazoVideo": "img/alfabetizacion/grafias/U-mayuscula.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/U.webm"
     },
     {
       "tipo": "letra",
       "caracter": "V",
-      "imagenBoca": "img/alfabetizacion/boca/V.png",
-      "trazoVideo": "img/alfabetizacion/grafias/V-mayuscula.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/V.webm"
     },
     {
       "tipo": "letra",
       "caracter": "W",
-      "imagenBoca": "img/alfabetizacion/boca/W.png",
-      "trazoVideo": "img/alfabetizacion/grafias/W-mayuscula.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/W.webm"
     },
     {
       "tipo": "letra",
       "caracter": "X",
-      "imagenBoca": "img/alfabetizacion/boca/X.png",
-      "trazoVideo": "img/alfabetizacion/grafias/X-mayuscula.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/X.webm"
     },
     {
       "tipo": "letra",
       "caracter": "Y",
-      "imagenBoca": "img/alfabetizacion/boca/Y.png",
-      "trazoVideo": "img/alfabetizacion/grafias/Y-mayuscula.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/Y.webm"
     },
     {
       "tipo": "letra",
       "caracter": "Z",
-      "imagenBoca": "img/alfabetizacion/boca/Z.png",
-      "trazoVideo": "img/alfabetizacion/grafias/Z-mayuscula.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/Z.webm"
     },
     {
       "tipo": "numero",
       "caracter": "0",
-      "imagenBoca": "img/alfabetizacion/boca/0.png",
-      "trazoVideo": "img/alfabetizacion/grafias/0.mp4"
+      "imagenBoca": ""
     },
     {
       "tipo": "numero",
       "caracter": "1",
-      "imagenBoca": "img/alfabetizacion/boca/1.webm",
-      "trazoVideo": "img/alfabetizacion/grafias/1.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/1.webm"
     },
     {
       "tipo": "numero",
       "caracter": "2",
-      "imagenBoca": "img/alfabetizacion/boca/2.png",
-      "trazoVideo": "img/alfabetizacion/grafias/2.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/2.webm"
     },
     {
       "tipo": "numero",
       "caracter": "3",
-      "imagenBoca": "img/alfabetizacion/boca/3.png",
-      "trazoVideo": "img/alfabetizacion/grafias/3.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/3.webm"
     },
     {
       "tipo": "numero",
       "caracter": "4",
-      "imagenBoca": "img/alfabetizacion/boca/4.png",
-      "trazoVideo": "img/alfabetizacion/grafias/4.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/4.webm"
     },
     {
       "tipo": "numero",
       "caracter": "5",
-      "imagenBoca": "img/alfabetizacion/boca/5.png",
-      "trazoVideo": "img/alfabetizacion/grafias/5.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/5.webm"
     },
     {
       "tipo": "numero",
       "caracter": "6",
-      "imagenBoca": "img/alfabetizacion/boca/6.png",
-      "trazoVideo": "img/alfabetizacion/grafias/6.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/6.webm"
     },
     {
       "tipo": "numero",
       "caracter": "7",
-      "imagenBoca": "img/alfabetizacion/boca/7.png",
-      "trazoVideo": "img/alfabetizacion/grafias/7.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/7.webm"
     },
     {
       "tipo": "numero",
       "caracter": "8",
-      "imagenBoca": "img/alfabetizacion/boca/8.png",
-      "trazoVideo": "img/alfabetizacion/grafias/8.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/8.webm"
     },
     {
       "tipo": "numero",
       "caracter": "9",
-      "imagenBoca": "img/alfabetizacion/boca/9.png",
-      "trazoVideo": "img/alfabetizacion/grafias/9.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/9.webm"
     },
     {
       "tipo": "numero",
       "caracter": "10",
-      "imagenBoca": "img/alfabetizacion/boca/10.png",
-      "trazoVideo": "img/alfabetizacion/grafias/10.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/10.webm"
     },
     {
       "tipo": "numero",
       "caracter": "11",
-      "imagenBoca": "img/alfabetizacion/boca/11.png",
-      "trazoVideo": "img/alfabetizacion/grafias/11.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/11.webm"
     },
     {
       "tipo": "numero",
       "caracter": "12",
-      "imagenBoca": "img/alfabetizacion/boca/12.png",
-      "trazoVideo": "img/alfabetizacion/grafias/12.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/12.webm"
     },
     {
       "tipo": "numero",
       "caracter": "13",
-      "imagenBoca": "img/alfabetizacion/boca/13.png",
-      "trazoVideo": "img/alfabetizacion/grafias/13.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/13.webm"
     },
     {
       "tipo": "numero",
       "caracter": "14",
-      "imagenBoca": "img/alfabetizacion/boca/14.png",
-      "trazoVideo": "img/alfabetizacion/grafias/14.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/14.webm"
     },
     {
       "tipo": "numero",
       "caracter": "15",
-      "imagenBoca": "img/alfabetizacion/boca/15.png",
-      "trazoVideo": "img/alfabetizacion/grafias/15.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/15.webm"
     },
     {
       "tipo": "numero",
       "caracter": "16",
-      "imagenBoca": "img/alfabetizacion/boca/16.png",
-      "trazoVideo": "img/alfabetizacion/grafias/16.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/16.webm"
     },
     {
       "tipo": "numero",
       "caracter": "17",
-      "imagenBoca": "img/alfabetizacion/boca/17.png",
-      "trazoVideo": "img/alfabetizacion/grafias/17.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/17.webm"
     },
     {
       "tipo": "numero",
       "caracter": "18",
-      "imagenBoca": "img/alfabetizacion/boca/18.png",
-      "trazoVideo": "img/alfabetizacion/grafias/18.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/18.webm"
     },
     {
       "tipo": "numero",
       "caracter": "19",
-      "imagenBoca": "img/alfabetizacion/boca/19.png",
-      "trazoVideo": "img/alfabetizacion/grafias/19.mp4"
+      "imagenBoca": "img/alfabetizacion/boca/19.webm"
     }
   ],
   "ejemplos": [

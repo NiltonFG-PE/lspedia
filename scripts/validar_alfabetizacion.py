@@ -14,6 +14,18 @@ def texto(valor: object) -> str:
     return "" if valor is None else str(valor).strip()
 
 
+def ruta_local_media(valor: object) -> Path | None:
+    ruta = texto(valor).replace("\\", "/")
+    if not ruta or ruta.startswith(("http://", "https://")):
+        return None
+    while ruta.startswith("./"):
+        ruta = ruta[2:]
+    ruta = ruta.lstrip("/")
+    if not ruta.startswith("img/"):
+        return None
+    return ROOT / ruta
+
+
 def main() -> int:
     errores: list[str] = []
     advertencias: list[str] = []
@@ -43,7 +55,7 @@ def main() -> int:
         if not isinstance(fila, dict):
             errores.append(f"Alfabeto #{i}: no es un objeto.")
             continue
-        permitidos = {"tipo", "caracter", "imagenBoca", "trazoVideo"}
+        permitidos = {"tipo", "caracter", "imagenBoca"}
         extras = set(fila) - permitidos
         if extras:
             errores.append(f"Alfabeto #{i}: campos no permitidos: {sorted(extras)}")
@@ -62,8 +74,13 @@ def main() -> int:
             letras += 1
         elif tipo == "numero":
             numeros += 1
-        if not texto(fila.get("imagenBoca")):
+        imagen_boca = texto(fila.get("imagenBoca"))
+        if not imagen_boca:
             advertencias.append(f"Alfabeto #{i} ({caracter}): sin imagenBoca.")
+        else:
+            local = ruta_local_media(imagen_boca)
+            if local is not None and not local.is_file():
+                errores.append(f"Alfabeto #{i} ({caracter}): imagenBoca local no existe: {imagen_boca}")
 
     for i, fila in enumerate(ejemplos, 1):
         if not isinstance(fila, dict):

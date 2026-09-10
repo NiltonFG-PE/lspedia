@@ -26,7 +26,7 @@ SPREADSHEET_ID = "1fqC1aUpwdz6l0xRyYYfki7vJtjIql6sOEzpfWElknT0"
 HOJA_ALFABETO = "Alfabetización"
 HOJA_EJEMPLOS = "AlfabetizacionEjemplos"
 
-CAMPOS_ALFABETO = ("tipo", "caracter", "imagenBoca", "trazoVideo")
+CAMPOS_ALFABETO = ("tipo", "caracter", "imagenBoca")
 CAMPOS_EJEMPLOS = ("caracter", "palabra", "imagen", "orden")
 
 
@@ -35,13 +35,23 @@ def texto(valor: object) -> str:
 
 
 def ruta_media(valor: object) -> str:
-    """Acepta solo rutas locales de LSPedia o URL http/https."""
+    """Acepta URL http/https o una ruta local que exista realmente en el repo."""
     valor = texto(valor)
     if not valor:
         return ""
-    if valor.startswith(("img/", "./img/", "/img/", "http://", "https://")):
+    if valor.startswith(("http://", "https://")):
         return valor
-    return ""
+
+    normalizada = valor.replace("\\", "/")
+    while normalizada.startswith("./"):
+        normalizada = normalizada[2:]
+    normalizada = normalizada.lstrip("/")
+    if not normalizada.startswith("img/"):
+        return ""
+    if not (ROOT / normalizada).is_file():
+        print(f"ADVERTENCIA: recurso local no encontrado, se omite: {normalizada}")
+        return ""
+    return normalizada
 
 
 def convertir_orden(valor: object) -> int:
@@ -121,7 +131,6 @@ def limpiar_alfabeto(filas: object) -> list[dict]:
             "tipo": tipo,
             "caracter": caracter,
             "imagenBoca": ruta_media(fila.get("imagenBoca")),
-            "trazoVideo": ruta_media(fila.get("trazoVideo")),
         }
         salida.append({campo: limpio[campo] for campo in CAMPOS_ALFABETO})
 
