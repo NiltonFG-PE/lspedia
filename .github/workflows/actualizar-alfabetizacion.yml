@@ -7,8 +7,11 @@ on:
       - "js/alfabetizacion.js"
       - "scripts/generar_alfabetizacion.py"
       - "scripts/migrar_alfabetizacion_json_local.py"
+      - "scripts/normalizar_media_alfabetizacion.py"
+      - "scripts/auditar_alfabetizacion.py"
       - "scripts/validar_alfabetizacion.py"
       - "scripts/validar_imagenes.py"
+      - "img/alfabetizacion/**"
       - ".github/workflows/actualizar-alfabetizacion.yml"
   schedule:
     - cron: "7,37 * * * *"
@@ -24,43 +27,41 @@ concurrency:
 jobs:
   actualizar-alfabetizacion:
     runs-on: ubuntu-latest
-
     steps:
       - name: Descargar develop
         uses: actions/checkout@v4
         with:
           ref: develop
           fetch-depth: 0
-
       - name: Preparar Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.x"
-
+      - name: Normalizar nombres de recursos
+        run: python scripts/normalizar_media_alfabetizacion.py
       - name: Migrar navegador a JSON local
         run: python scripts/migrar_alfabetizacion_json_local.py
-
       - name: Descargar Alfabetizacion y generar JSON
         run: python scripts/generar_alfabetizacion.py
-
-      - name: Validar antes de publicar
+      - name: Validar y auditar antes de publicar
         shell: bash
         run: |
           python -m json.tool data/alfabetizacion.json > /dev/null
+          python scripts/normalizar_media_alfabetizacion.py --check
           python scripts/validar_alfabetizacion.py
+          python scripts/auditar_alfabetizacion.py
           python scripts/validar_imagenes.py --solo-data data/alfabetizacion.json
           node --check js/alfabetizacion.js
-
+          git diff --check
       - name: Guardar cambios si hubo actualizacion
         shell: bash
         run: |
-          if git diff --quiet -- js/alfabetizacion.js data/alfabetizacion.json sw.js; then
+          if git diff --quiet -- js/alfabetizacion.js data/alfabetizacion.json sw.js img/alfabetizacion/ejemplos; then
             echo "Alfabetizacion ya estaba actualizada."
             exit 0
           fi
-
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add js/alfabetizacion.js data/alfabetizacion.json sw.js
-          git commit -m "Usar JSON local para Alfabetizacion"
+          git add js/alfabetizacion.js data/alfabetizacion.json sw.js img/alfabetizacion/ejemplos
+          git commit -m "Sincronizar Alfabetizacion y normalizar recursos"
           git push origin HEAD:develop
