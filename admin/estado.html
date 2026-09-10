@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="googlebot" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#0f172a">
+  <title>Estado de sincronización | Admin LSPedia</title>
+  <link rel="icon" type="image/png" href="../img/favicon.png">
+  <style>
+    :root{--navy:#0f172a;--blue:#0284c7;--bg:#f3f6fa;--card:#fff;--text:#172033;--muted:#64748b;--border:#dce3ec;--green:#16845b;--amber:#b77900;--red:#b42318;--shadow:0 8px 26px rgba(15,23,42,.08)}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}button,a{font:inherit}.top{background:var(--navy);color:#fff;padding:15px 18px}.topin{max-width:1050px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{font-weight:900}.brand small{display:block;font-weight:500;color:#b8c5d5;margin-top:3px}.badge{font-size:11px;font-weight:800;border:1px solid rgba(255,255,255,.2);padding:7px 10px;border-radius:999px}.wrap{max-width:1050px;margin:auto;padding:25px 16px 50px}.nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.nav a{text-decoration:none;color:#334155;background:#fff;border:1px solid var(--border);padding:9px 12px;border-radius:10px;font-size:12px;font-weight:800}.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:15px;margin-bottom:18px}.hero h1{margin:0 0 6px;font-size:clamp(1.55rem,4vw,2.1rem)}.hero p{margin:0;color:var(--muted);line-height:1.45}.btn{border:0;background:var(--blue);color:#fff;font-weight:800;padding:11px 15px;border-radius:10px;cursor:pointer;white-space:nowrap}.summary{background:#eef8ff;border:1px solid #c9e8fb;color:#175979;padding:12px 14px;border-radius:13px;margin-bottom:16px;font-size:13px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.card{background:var(--card);border:1px solid var(--border);border-radius:17px;box-shadow:var(--shadow);padding:17px}.head{display:flex;align-items:center;justify-content:space-between;gap:12px}.title{font-size:16px;font-weight:900}.state{font-size:11px;font-weight:900;border-radius:999px;padding:6px 9px}.ok{background:#eaf8f1;color:var(--green)}.warn{background:#fff5d8;color:var(--amber)}.bad{background:#fff1ef;color:var(--red)}.wait{background:#eef2f7;color:#64748b}.big{font-size:25px;font-weight:900;margin-top:14px}.meta{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.5}.details{margin-top:13px;padding-top:12px;border-top:1px solid #edf1f5;font-size:12px;color:#475569;line-height:1.55}.footer{margin-top:18px;color:#8a97a7;font-size:11px;text-align:center;line-height:1.5}@media(max-width:680px){.grid{grid-template-columns:1fr}.hero{align-items:flex-start;flex-direction:column}.wrap{padding:18px 12px 35px}}
+  </style>
+</head>
+<body>
+<header class="top"><div class="topin"><div class="brand">LSPedia Admin<small>Salud de contenido y automatizaciones</small></div><span class="badge">🔒 Vista privada</span></div></header>
+<main class="wrap">
+  <nav class="nav"><a href="busquedas.html">🔎 Búsquedas sin resultado</a><a href="estado.html">🩺 Estado</a></nav>
+  <div class="hero"><div><h1>Estado de LSPedia</h1><p>Comprueba sincronizaciones, validación, contenido y versión PWA desde un solo lugar.</p></div><button class="btn" id="refresh" type="button">↻ Actualizar</button></div>
+  <div class="summary" id="summary">Consultando el estado actual…</div>
+  <section class="grid" id="grid"></section>
+  <p class="footer">Este panel no modifica contenido ni necesita claves. Consulta los datos publicados y el estado público de las automatizaciones del repositorio.</p>
+</main>
+<script>
+(function(){
+  'use strict';
+  const REPO='NiltonFG-PE/lspedia';
+  const workflows=[
+    {id:'alfabetizacion',title:'Alfabetización',file:'actualizar-alfabetizacion.yml'},
+    {id:'vocabulario',title:'Vocabulario',file:'actualizar-vocabulario.yml'},
+    {id:'sitemap',title:'Diccionario + sitemap',file:'actualizar-sitemap.yml'},
+    {id:'validacion',title:'Validación general',file:'validar-lspedia.yml'}
+  ];
+  const grid=document.getElementById('grid'), summary=document.getElementById('summary'), refresh=document.getElementById('refresh');
+  const fmtDate=v=>{const d=new Date(v);return Number.isNaN(d.getTime())?'—':new Intl.DateTimeFormat('es-PE',{dateStyle:'medium',timeStyle:'short'}).format(d)};
+  const ageHours=v=>(Date.now()-new Date(v).getTime())/36e5;
+  async function json(url){const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}
+  async function text(url){const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);return r.text()}
+  async function workflow(w){
+    try{
+      const data=await json('https://api.github.com/repos/'+REPO+'/actions/workflows/'+encodeURIComponent(w.file)+'/runs?branch=develop&per_page=1&_='+Date.now());
+      const run=data.workflow_runs&&data.workflow_runs[0];
+      if(!run)return {...w,state:'warn',label:'Sin ejecuciones',when:null,detail:'No se encontró una ejecución reciente.'};
+      let state='wait',label='En curso';
+      if(run.status==='completed'&&run.conclusion==='success'){state='ok';label='Correcto'}
+      else if(run.status==='completed'){state='bad';label='Falló: '+(run.conclusion||'error')}
+      const hours=ageHours(run.updated_at||run.created_at);
+      if(state==='ok'&&((w.id==='vocabulario'&&hours>1)||(w.id==='alfabetizacion'&&hours>1.5)||(w.id==='validacion'&&hours>72))) {state='warn';label='Sincronización antigua'}
+      return {...w,state,label,when:run.updated_at||run.created_at,detail:'Ejecución #'+run.run_number+' · '+(run.conclusion||run.status)};
+    }catch(e){return {...w,state:'warn',label:'No comprobado',when:null,detail:'No se pudo consultar la automatización: '+e.message}}
+  }
+  async function contentDetails(){
+    const out={};
+    try{const a=await json('../data/alfabetizacion.json?_='+Date.now());out.alfabetizacion=(a.alfabeto?.length||0)+' caracteres · '+(a.ejemplos?.length||0)+' ejemplos'}catch(_e){}
+    try{const v=await json('../data/vocabulario.json?_='+Date.now());out.vocabulario=(Array.isArray(v)?v.length:0)+' entradas publicadas'}catch(_e){}
+    try{const p=await json('../data/palabras.json?_='+Date.now());out.sitemap=(Array.isArray(p)?p.length:0)+' palabras en Diccionario'}catch(_e){}
+    try{const s=await text('../sw.js?_='+Date.now());const m=s.match(/VERSION_APP\s*=\s*["']([^"']+)/);out.validacion='PWA '+(m?m[1]:'versión no detectada')}catch(_e){}
+    return out;
+  }
+  function card(x,detail){return '<article class="card"><div class="head"><div class="title">'+x.title+'</div><span class="state '+x.state+'">'+x.label+'</span></div><div class="big">'+(x.when?fmtDate(x.when):'—')+'</div><div class="meta">Última ejecución conocida</div><div class="details">'+(detail||'Sin datos de contenido')+'<br>'+x.detail+'</div></article>'}
+  async function load(){
+    refresh.disabled=true;summary.textContent='Consultando el estado actual…';grid.innerHTML=workflows.map(w=>card({...w,state:'wait',label:'Consultando',when:null,detail:'…'},'…')).join('');
+    const [runs,details]=await Promise.all([Promise.all(workflows.map(workflow)),contentDetails()]);
+    grid.innerHTML=runs.map(x=>card(x,details[x.id])).join('');
+    const bad=runs.filter(x=>x.state==='bad').length,warn=runs.filter(x=>x.state==='warn').length;
+    summary.textContent=bad?'⚠️ Hay '+bad+' automatización(es) con fallo. Revisa la tarjeta correspondiente.':warn?'🟡 LSPedia funciona, pero hay '+warn+' elemento(s) que conviene revisar.':'✅ Sincronizaciones y validaciones recientes aparecen correctas.';
+    summary.style.background=bad?'#fff1ef':warn?'#fff8e6':'#eaf8f1';summary.style.borderColor=bad?'#ffd3ce':warn?'#ffe2a3':'#c6ead8';summary.style.color=bad?'#8e241b':warn?'#795600':'#126947';
+    refresh.disabled=false;
+  }
+  refresh.addEventListener('click',load);load();
+})();
+</script>
+</body>
+</html>
