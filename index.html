@@ -4,17 +4,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Google Analytics (GA4) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RJX3RP2CBR"></script>
+    <!-- Google Analytics (GA4) — solo dominio oficial.
+         LSPEDIA_GA_ONLY_OFFICIAL: una copia del frontend en otro dominio no
+         reutiliza ni contamina la propiedad Analytics de LSPedia. -->
     <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-        gtag('config', 'G-RJX3RP2CBR');
+        (function () {
+            const host = String(window.location.hostname || "").toLowerCase();
+            const esOficial = host === "lspedia.site" || host === "www.lspedia.site";
+            window.dataLayer = window.dataLayer || [];
+            window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+            if (!esOficial) return;
+
+            const ga = document.createElement("script");
+            ga.async = true;
+            ga.src = "https://www.googletagmanager.com/gtag/js?id=G-RJX3RP2CBR";
+            document.head.appendChild(ga);
+            window.gtag("js", new Date());
+            window.gtag("config", "G-RJX3RP2CBR");
+        })();
     </script>
 
-    <title>LSPedia - Diccionario visual de español con apoyo en Lengua de Señas Peruana</title>
+<title>LSPedia - Diccionario visual de español con apoyo en Lengua de Señas Peruana</title>
     <meta id="metaDescription" name="description" content="Diccionario visual gratuito para aprender y comprender palabras en español con apoyo de videos en Lengua de Señas Peruana (LSP).">
     <link id="canonicalLink" rel="canonical" href="https://lspedia.site/">
 
@@ -5929,10 +5939,11 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
          #seccionNosotros, mostrada como una pantalla más dentro del
          flujo normal de navegación, igual que Temas orden o Herramientas.) -->
 
+    <script src="js/security.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/script.js"></script>
     <script>
-    if ("serviceWorker" in navigator) {
+    if ("serviceWorker" in navigator && (!window.LSPediaSecurity || window.LSPediaSecurity.permitirPWA())) {
         window.addEventListener("load", async () => {
             try {
                 // updateViaCache: "none" evita que una copia HTTP antigua de

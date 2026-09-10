@@ -4,8 +4,8 @@
    Este archivo es 100% independiente de script.js y de
    data/palabras.json. Vocabulario y Quiz leen primero el archivo
    local data/vocabulario.json, que se sincroniza automáticamente
-   desde la Hoja 2 de Google Sheets. Apps Script queda únicamente
-   como respaldo de emergencia si el JSON local no está disponible.
+   desde la Hoja 2 de Google Sheets. El navegador no contiene
+   endpoints privados de sincronización: esos quedan fuera del frontend.
    ============================================================ */
 
 const QuizV2 = (function () {
@@ -16,10 +16,6 @@ const QuizV2 = (function () {
     const CONFIG = {
         // Fuente principal rápida: archivo servido por LSPedia.
         DATA_URL: "data/vocabulario.json",
-
-        // Respaldo de emergencia. Solo se consulta si vocabulario.json
-        // falta, está vacío o llega dañado.
-        APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbw9d7br5C8C4gfk4dJAY6FHRKTKTMI23bNQvO58OQ5TlPe9z5awMWjNIlCLILNLH0t51w/exec",
 
         // v3 invalida la caché antigua que provenía directamente del Sheet.
         CLAVE_CACHE: "lspedia_quiz_cache_v3",
@@ -200,73 +196,12 @@ const QuizV2 = (function () {
             })
             .catch((err) => {
                 cargaEnCurso = false;
-                console.warn("No se pudo cargar data/vocabulario.json; usando Apps Script como respaldo:", err);
-                fetchRemoto(silencioso);
+                console.warn("No se pudo cargar data/vocabulario.json:", err);
+                manejarErrorCarga(err, silencioso);
             })
             .finally(() => {
                 if (timeoutId) clearTimeout(timeoutId);
             });
-    }
-
-    function fetchRemoto(silencioso) {
-        if (!CONFIG.APPS_SCRIPT_URL || CONFIG.APPS_SCRIPT_URL.indexOf("PEGA_AQUI") > -1) {
-            if (!silencioso) mostrarError("El juego aún no está conectado a Google Sheets. Falta pegar la URL de Apps Script en js/quiz.js.");
-            return;
-        }
-
-        cargaEnCurso = true;
-
-        // Usamos JSONP (una etiqueta <script>) en vez de fetch() porque
-        // Apps Script + GitHub Pages suele bloquear la lectura de la
-        // respuesta por CORS ("Failed to fetch"), aunque la URL sí
-        // funcione al abrirla directo en el navegador.
-        const nombreCallback = "quizV2Callback_" + Date.now();
-        let resuelto = false;
-
-        const limpiar = () => {
-            delete window[nombreCallback];
-            const s = document.getElementById(nombreCallback);
-            if (s) s.remove();
-        };
-
-        window[nombreCallback] = function (data) {
-            resuelto = true;
-            cargaEnCurso = false;
-            limpiar();
-            try {
-                if (!data.ok) throw new Error(data.error || "Respuesta inválida del servidor.");
-                estado.banco = data.preguntas
-                    .filter((p) => p.palabra && p.video)
-                    .map((p) => ({ ...p, nivel: normalizarNivel(p.nivel) }));
-                guardarCache(estado.banco);
-                if (!silencioso) mostrarIntro();
-                notificarBancoListo();
-            } catch (err) {
-                manejarErrorCarga(err, silencioso);
-            }
-        };
-
-        const separador = CONFIG.APPS_SCRIPT_URL.indexOf("?") > -1 ? "&" : "?";
-        const script = document.createElement("script");
-        script.id = nombreCallback;
-        script.src = CONFIG.APPS_SCRIPT_URL + separador + "callback=" + nombreCallback;
-        script.onerror = () => {
-            if (!resuelto) {
-                cargaEnCurso = false;
-                limpiar();
-                manejarErrorCarga(new Error("No se pudo conectar con Google Apps Script (revisa la URL o el despliegue)."), silencioso);
-            }
-        };
-        document.body.appendChild(script);
-
-        // Si en 10s no hay respuesta, mostramos error en vez de dejarlo cargando para siempre.
-        setTimeout(() => {
-            if (!resuelto) {
-                cargaEnCurso = false;
-                limpiar();
-                manejarErrorCarga(new Error("Tiempo de espera agotado al conectar con Google Sheets."), silencioso);
-            }
-        }, 10000);
     }
 
     function manejarErrorCarga(err, silencioso) {
