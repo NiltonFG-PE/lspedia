@@ -1,0 +1,49 @@
+name: TMP Sincronizar alfabetizacion
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - '.github/workflows/tmp-sincronizar-alfabetizacion.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Descargar Google Sheets y generar JSON
+        run: python scripts/generar_alfabetizacion.py
+      - name: Validar Tiburón
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('data/alfabetizacion.json').read_text(encoding='utf-8'))
+          filas=[x for x in d.get('ejemplos',[]) if x.get('palabra')=='Tiburón']
+          print('FILAS_TIBURON=', filas)
+          assert filas, 'No llegó Tiburón desde el endpoint'
+          print('RUTA_TIBURON=', filas[0].get('imagen'))
+          PY
+      - name: Guardar cambio
+        shell: bash
+        run: |
+          if git diff --quiet -- data/alfabetizacion.json; then
+            echo 'SIN_CAMBIOS'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/alfabetizacion.json
+          git commit -m 'Sincronizar ejemplos de Alfabetización'
+          git push origin HEAD:develop
