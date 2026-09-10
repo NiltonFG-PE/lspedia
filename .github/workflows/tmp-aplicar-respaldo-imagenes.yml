@@ -31,13 +31,13 @@ jobs:
           node --check js/script.js
           git diff --check
           test -f 'video/lspedia_transparente anterior.webm'
-      - name: Guardar cambios
+      - name: Guardar cambios de aplicación
         shell: bash
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add js/script.js css/estilos.css sw.js img/imagen-no-disponible.svg scripts/validar_imagenes.py .github/workflows/validar-lspedia.yml .github/workflows/actualizar-alfabetizacion.yml
+          git add js/script.js css/estilos.css sw.js img/imagen-no-disponible.svg scripts/validar_imagenes.py
           if git diff --cached --quiet; then
             echo 'Sin cambios que guardar.'
             exit 0
@@ -45,4 +45,4 @@ jobs:
           git commit -m 'Proteger LSPedia contra imágenes rotas'
           git push origin HEAD:develop
 
-# reintento 2
+# los workflows permanentes se actualizan después con el conector autorizado
