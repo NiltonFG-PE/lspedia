@@ -10,6 +10,7 @@ on:
       - "scripts/migrar_ids_palabras.py"
       - "scripts/separar_diccionario_vocabulario.py"
       - "scripts/generar_sitemap.py"
+      - "scripts/actualizar_nuevas_palabras.py"
       - "scripts/normalizar_categorias.py"
       - "scripts/validar_lspedia.py"
       - ".github/workflows/actualizar-sitemap.yml"
@@ -25,45 +26,41 @@ concurrency:
 jobs:
   actualizar-datos:
     runs-on: ubuntu-latest
-
     steps:
       - name: Descargar repositorio
         uses: actions/checkout@v4
         with:
           ref: develop
           fetch-depth: 0
-
       - name: Preparar Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.x"
-
       - name: Crear y migrar IDs únicos
         run: python scripts/migrar_ids_palabras.py
-
       - name: Separar Diccionario y Vocabulario
         run: python scripts/separar_diccionario_vocabulario.py
-
       - name: Generar sitemap.xml
         run: python scripts/generar_sitemap.py
-
+      - name: Detectar nuevas palabras reales
+        run: python scripts/actualizar_nuevas_palabras.py
       - name: Validar Diccionario antes de guardar
         shell: bash
         run: |
           python -m json.tool data/palabras.json > /dev/null
+          python -m json.tool data/nuevas-palabras.json > /dev/null
           python scripts/validar_lspedia.py --fuente diccionario
           node --check js/script.js
-
+          git diff --check
       - name: Guardar cambios automáticos
         shell: bash
         run: |
-          if git diff --quiet -- data/palabras.json js/script.js sitemap.xml; then
-            echo "IDs, separación de fuentes y sitemap ya estaban actualizados."
+          if git diff --quiet -- data/palabras.json data/nuevas-palabras.json js/script.js sitemap.xml; then
+            echo "IDs, nuevas palabras y sitemap ya estaban actualizados."
             exit 0
           fi
-
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/palabras.json js/script.js sitemap.xml
-          git commit -m "Separar Diccionario y Vocabulario automáticamente"
+          git add data/palabras.json data/nuevas-palabras.json js/script.js sitemap.xml
+          git commit -m "Actualizar Diccionario nuevas palabras y sitemap"
           git push origin HEAD:develop
