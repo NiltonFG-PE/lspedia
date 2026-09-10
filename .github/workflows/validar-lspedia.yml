@@ -8,10 +8,14 @@ on:
       - "img/**"
       - "css/**"
       - "js/**"
+      - "admin/**"
+      - "apps-script/**"
       - "index.html"
+      - "CNAME"
       - "sw.js"
       - "scripts/validar_lspedia.py"
       - "scripts/validar_imagenes.py"
+      - "scripts/validar_seguridad.py"
       - "scripts/validar_alfabetizacion.py"
       - "scripts/auditar_alfabetizacion.py"
       - "scripts/normalizar_media_alfabetizacion.py"
@@ -24,14 +28,19 @@ on:
       - "img/**"
       - "css/**"
       - "js/**"
+      - "admin/**"
+      - "apps-script/**"
       - "index.html"
+      - "CNAME"
       - "sw.js"
       - "scripts/validar_lspedia.py"
       - "scripts/validar_imagenes.py"
+      - "scripts/validar_seguridad.py"
       - "scripts/validar_alfabetizacion.py"
       - "scripts/auditar_alfabetizacion.py"
       - "scripts/normalizar_media_alfabetizacion.py"
       - "scripts/normalizar_categorias.py"
+      - ".github/workflows/validar-lspedia.yml"
   workflow_dispatch:
 
 permissions:
@@ -61,6 +70,8 @@ jobs:
           python scripts/normalizar_media_alfabetizacion.py --check
           python scripts/validar_alfabetizacion.py
           python scripts/auditar_alfabetizacion.py
+      - name: Validar seguridad anti-clon
+        run: python scripts/validar_seguridad.py
       - name: Validar sintaxis de JavaScript
         shell: bash
         run: |
