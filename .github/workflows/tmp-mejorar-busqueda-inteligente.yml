@@ -20,6 +20,20 @@ jobs:
           ref: develop
           fetch-depth: 0
 
+      - name: Corregir reemplazo temporal
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('scripts/tmp_mejorar_busqueda_inteligente.py')
+          s = p.read_text(encoding='utf-8')
+          viejo = 'src_nuevo, cantidad = patron.subn(nuevo.rstrip() + "\\n", src, count=1)'
+          nuevo = 'src_nuevo, cantidad = patron.subn(lambda _m: nuevo.rstrip() + "\\n", src, count=1)'
+          if viejo not in s:
+              raise SystemExit('No se encontró la línea temporal a corregir')
+          p.write_text(s.replace(viejo, nuevo, 1), encoding='utf-8')
+          PY
+
       - name: Aplicar mejora
         run: python scripts/tmp_mejorar_busqueda_inteligente.py
 
