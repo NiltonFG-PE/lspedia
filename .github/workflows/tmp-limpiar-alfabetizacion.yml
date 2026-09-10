@@ -22,52 +22,16 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Aplicar limpieza
+      - name: Mantener contrato limpio
         run: python scripts/tmp_limpiar_alfabetizacion.py
 
       - name: Probar generador con Google Sheets
         run: python scripts/generar_alfabetizacion.py
 
-      - name: Auditar recursos derivados
-        shell: bash
-        run: |
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          root = Path('.')
-          datos = json.loads((root / 'data/alfabetizacion.json').read_text(encoding='utf-8'))
-          variantes = ('mayuscula', 'minuscula', 'cursiva-mayuscula', 'cursiva-minuscula')
-          faltan_grafias = []
-          faltan_circulo = []
-          for fila in datos.get('alfabeto', []):
-              tipo = fila.get('tipo')
-              c = str(fila.get('caracter', '')).strip()
-              if not c:
-                  continue
-              if tipo == 'letra':
-                  for v in variantes:
-                      for ext in ('mp4', 'png'):
-                          p = root / f'img/alfabetizacion/grafias/{c}-{v}.{ext}'
-                          if not p.is_file():
-                              faltan_grafias.append(str(p))
-              elif tipo == 'numero':
-                  for ext in ('mp4', 'png'):
-                      p = root / f'img/alfabetizacion/grafias/{c}.{ext}'
-                      if not p.is_file():
-                          faltan_grafias.append(str(p))
-              # 16-19 tienen fallback compuesto en la interfaz.
-              p_circulo = root / f'img/alfabetizacion/circulo/{c}.webp'
-              if not p_circulo.is_file() and c not in {'16','17','18','19'}:
-                  faltan_circulo.append(str(p_circulo))
-          print(f'Grafias derivadas faltantes: {len(faltan_grafias)}')
-          for p in faltan_grafias:
-              print('  -', p)
-          print(f'Circulos sin archivo propio (sin contar 16-19): {len(faltan_circulo)}')
-          for p in faltan_circulo:
-              print('  -', p)
-          PY
+      - name: Añadir fallback de grafias
+        run: python scripts/tmp_fallback_grafias.py
 
-      - name: Validar Alfabetizacion
+      - name: Validar mejora
         shell: bash
         run: |
           set -euo pipefail
@@ -82,7 +46,9 @@ jobs:
           ! grep -q 'trazoVideo' scripts/validar_alfabetizacion.py
           ! grep -q 'trazoVideo' data/alfabetizacion.json
           ! grep -q 'trazoVideo' data/alfabetizacion-mock.json
-          grep -q 'const VERSION_APP = "v63";' sw.js
+          grep -q 'function cargarVideoGrafiaConFallback' js/alfabetizacion.js
+          grep -q 'validar_recursos_derivados' scripts/validar_alfabetizacion.py
+          grep -q 'const VERSION_APP = "v64";' sw.js
           test -f 'video/lspedia_transparente anterior.webm'
           test "$(git hash-object 'video/lspedia_transparente anterior.webm')" = 'ca9a110b75384b534f8ebdcae45406fb178df083'
 
@@ -97,5 +63,5 @@ jobs:
             echo 'Sin cambios que guardar.'
             exit 0
           fi
-          git commit -m 'Sincronizar Alfabetizacion con contrato limpio'
+          git commit -m 'Añadir fallback y validar recursos de grafia'
           git push origin HEAD:develop
