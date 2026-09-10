@@ -165,6 +165,12 @@
     },
     {
       "tipo": "numero",
+      "caracter": "0",
+      "imagenBoca": "img/alfabetizacion/boca/0.webm",
+      "trazoVideo": "img/alfabetizacion/trazo/0.mp4"
+    },
+    {
+      "tipo": "numero",
       "caracter": "1",
       "imagenBoca": "img/alfabetizacion/boca/1.webm",
       "trazoVideo": "img/alfabetizacion/trazo/1.mp4"
@@ -286,10 +292,40 @@
       "orden": 1
     },
     {
+      "caracter": "A",
+      "palabra": "Anillo",
+      "imagen": "img/alfabetizacion/ejemplos/anillo.webp",
+      "orden": 2
+    },
+    {
+      "caracter": "A",
+      "palabra": "Ardilla",
+      "imagen": "img/alfabetizacion/ejemplos/ardilla.webp",
+      "orden": 3
+    },
+    {
       "caracter": "B",
       "palabra": "Barco",
       "imagen": "img/alfabetizacion/ejemplos/barco.webp",
       "orden": 1
+    },
+    {
+      "caracter": "B",
+      "palabra": "Burro",
+      "imagen": "img/alfabetizacion/ejemplos/burro.webp",
+      "orden": 2
+    },
+    {
+      "caracter": "B",
+      "palabra": "Búho",
+      "imagen": "img/alfabetizacion/ejemplos/buho.webp",
+      "orden": 3
+    },
+    {
+      "caracter": "B",
+      "palabra": "Balón",
+      "imagen": "img/alfabetizacion/ejemplos/balon.webp",
+      "orden": 4
     },
     {
       "caracter": "C",
@@ -298,10 +334,34 @@
       "orden": 1
     },
     {
+      "caracter": "C",
+      "palabra": "Casa",
+      "imagen": "img/alfabetizacion/ejemplos/casa.webp",
+      "orden": 2
+    },
+    {
+      "caracter": "C",
+      "palabra": "Conejo",
+      "imagen": "img/alfabetizacion/ejemplos/conejo.webp",
+      "orden": 3
+    },
+    {
       "caracter": "D",
       "palabra": "Dado",
       "imagen": "img/alfabetizacion/ejemplos/dado.webp",
       "orden": 1
+    },
+    {
+      "caracter": "D",
+      "palabra": "Delfín",
+      "imagen": "img/alfabetizacion/ejemplos/delfin.webp",
+      "orden": 2
+    },
+    {
+      "caracter": "D",
+      "palabra": "Diente",
+      "imagen": "img/alfabetizacion/ejemplos/diente.webp",
+      "orden": 3
     },
     {
       "caracter": "E",
@@ -310,10 +370,34 @@
       "orden": 1
     },
     {
+      "caracter": "E",
+      "palabra": "Espejo",
+      "imagen": "img/alfabetizacion/ejemplos/espejo.webp",
+      "orden": 2
+    },
+    {
+      "caracter": "E",
+      "palabra": "Estrella",
+      "imagen": "img/alfabetizacion/ejemplos/estrella.webp",
+      "orden": 3
+    },
+    {
       "caracter": "F",
       "palabra": "Foca",
       "imagen": "img/alfabetizacion/ejemplos/foca.webp",
       "orden": 1
+    },
+    {
+      "caracter": "F",
+      "palabra": "Fresa",
+      "imagen": "img/alfabetizacion/ejemplos/fresa.webp",
+      "orden": 2
+    },
+    {
+      "caracter": "F",
+      "palabra": "Fuego",
+      "imagen": "img/alfabetizacion/ejemplos/fuego.webp",
+      "orden": 3
     },
     {
       "caracter": "G",
@@ -322,10 +406,34 @@
       "orden": 1
     },
     {
+      "caracter": "G",
+      "palabra": "Girasol",
+      "imagen": "img/alfabetizacion/ejemplos/girasol.webp",
+      "orden": 2
+    },
+    {
+      "caracter": "G",
+      "palabra": "Globo",
+      "imagen": "img/alfabetizacion/ejemplos/globo.webp",
+      "orden": 3
+    },
+    {
       "caracter": "H",
       "palabra": "Helado",
       "imagen": "img/alfabetizacion/ejemplos/helado.webp",
       "orden": 1
+    },
+    {
+      "caracter": "H",
+      "palabra": "Hoja",
+      "imagen": "img/alfabetizacion/ejemplos/hoja.webp",
+      "orden": 2
+    },
+    {
+      "caracter": "H",
+      "palabra": "Huevos",
+      "imagen": "img/alfabetizacion/ejemplos/huevo.webp",
+      "orden": 3
     },
     {
       "caracter": "I",
@@ -334,10 +442,34 @@
       "orden": 1
     },
     {
+      "caracter": "I",
+      "palabra": "Imán",
+      "imagen": "img/alfabetizacion/ejemplos/iman.webp",
+      "orden": 2
+    },
+    {
+      "caracter": "I",
+      "palabra": "Isla",
+      "imagen": "img/alfabetizacion/ejemplos/isla.webp",
+      "orden": 3
+    },
+    {
       "caracter": "J",
       "palabra": "Jarra",
       "imagen": "img/alfabetizacion/ejemplos/jarra.webp",
       "orden": 1
+    },
+    {
+      "caracter": "J",
+      "palabra": "Jaula",
+      "imagen": "img/alfabetizacion/ejemplos/jaula.webp",
+      "orden": 2
+    },
+    {
+      "caracter": "J",
+      "palabra": "Jirafa",
+      "imagen": "img/alfabetizacion/ejemplos/jirafa.webp",
+      "orden": 3
     },
     {
       "caracter": "K",
@@ -346,10 +478,34 @@
       "orden": 1
     },
     {
+      "caracter": "K",
+      "palabra": "ketchup",
+      "imagen": "img/alfabetizacion/ejemplos/ketchup.webp",
+      "orden": 2
+    },
+    {
+      "caracter": "K",
+      "palabra": "Koala",
+      "imagen": "img/alfabetizacion/ejemplos/koala.webp",
+      "orden": 3
+    },
+    {
       "caracter": "L",
       "palabra": "Limón",
       "imagen": "img/alfabetizacion/ejemplos/limon.webp",
       "orden": 1
+    },
+    {
+      "caracter": "L",
+      "palabra": "Luna",
+      "imagen": "img/alfabetizacion/ejemplos/luna.webp",
+      "orden": 2
+    },
+    {
+      "caracter": "L",
+      "palabra": "Lupa",
+      "imagen": "img/alfabetizacion/ejemplos/lupa.webp",
+      "orden": 3
     },
     {
       "caracter": "M",
@@ -358,10 +514,34 @@
       "orden": 1
     },
     {
+      "caracter": "M",
+      "palabra": "Manzana",
+      "imagen": "img/alfabetizacion/ejemplos/manzana.webp",
+      "orden": 2
+    },
+    {
+      "caracter": "M",
+      "palabra": "Mesa",
+      "imagen": "img/alfabetizacion/ejemplos/mesa.webp",
+      "orden": 3
+    },
+    {
       "caracter": "N",
       "palabra": "Naranja",
       "imagen": "img/alfabetizacion/ejemplos/naranja.webp",
       "orden": 1
+    },
+    {
+      "caracter": "N",
+      "palabra": "Nido",
+      "imagen": "img/alfabetizacion/ejemplos/nido.webp",
+      "orden": 2
+    },
+    {
+      "caracter": "N",
+      "palabra": "Nube",
+      "imagen": "img/alfabetizacion/ejemplos/nube.webp",
+      "orden": 3
     },
     {
       "caracter": "Ñ",
@@ -370,10 +550,28 @@
       "orden": 1
     },
     {
+      "caracter": "Ñ",
+      "palabra": "Ñoquis",
+      "imagen": "img/alfabetizacion/ejemplos/ñoquis.webp",
+      "orden": 2
+    },
+    {
       "caracter": "O",
       "palabra": "Ojo",
       "imagen": "img/alfabetizacion/ejemplos/ojo.webp",
       "orden": 1
+    },
+    {
+      "caracter": "O",
+      "palabra": "Oreja",
+      "imagen": "img/alfabetizacion/ejemplos/oreja.webp",
+      "orden": 2
+    },
+    {
+      "caracter": "O",
+      "palabra": "Oso",
+      "imagen": "img/alfabetizacion/ejemplos/oso.webp",
+      "orden": 3
     },
     {
       "caracter": "P",
@@ -382,10 +580,34 @@
       "orden": 1
     },
     {
+      "caracter": "P",
+      "palabra": "Puerta",
+      "imagen": "img/alfabetizacion/ejemplos/puerta.webp",
+      "orden": 2
+    },
+    {
+      "caracter": "P",
+      "palabra": "Pulpo",
+      "imagen": "img/alfabetizacion/ejemplos/pulpo.webp",
+      "orden": 3
+    },
+    {
       "caracter": "Q",
       "palabra": "Quena",
       "imagen": "img/alfabetizacion/ejemplos/quena.webp",
       "orden": 1
+    },
+    {
+      "caracter": "Q",
+      "palabra": "Queso",
+      "imagen": "img/alfabetizacion/ejemplos/queso.webp",
+      "orden": 2
+    },
+    {
+      "caracter": "Q",
+      "palabra": "Quinoa",
+      "imagen": "img/alfabetizacion/ejemplos/quinoa.webp",
+      "orden": 3
     },
     {
       "caracter": "R",
@@ -394,10 +616,34 @@
       "orden": 1
     },
     {
+      "caracter": "R",
+      "palabra": "Río",
+      "imagen": "img/alfabetizacion/ejemplos/rio.webp",
+      "orden": 2
+    },
+    {
+      "caracter": "R",
+      "palabra": "Rosa",
+      "imagen": "img/alfabetizacion/ejemplos/rosa.webp",
+      "orden": 3
+    },
+    {
       "caracter": "S",
       "palabra": "Silla",
       "imagen": "img/alfabetizacion/ejemplos/silla.webp",
       "orden": 1
+    },
+    {
+      "caracter": "S",
+      "palabra": "Sol",
+      "imagen": "img/alfabetizacion/ejemplos/sol.webp",
+      "orden": 2
+    },
+    {
+      "caracter": "S",
+      "palabra": "Sombrero",
+      "imagen": "img/alfabetizacion/ejemplos/sombrero.webp",
+      "orden": 3
     },
     {
       "caracter": "T",
@@ -406,10 +652,34 @@
       "orden": 1
     },
     {
+      "caracter": "T",
+      "palabra": "Tiburón",
+      "imagen": "img/alfabetizacion/ejemplos/tiburon.webp",
+      "orden": 2
+    },
+    {
+      "caracter": "T",
+      "palabra": "Tren",
+      "imagen": "img/alfabetizacion/ejemplos/tren.webp",
+      "orden": 3
+    },
+    {
       "caracter": "U",
       "palabra": "Universo",
       "imagen": "img/alfabetizacion/ejemplos/universo.webp",
       "orden": 1
+    },
+    {
+      "caracter": "U",
+      "palabra": "Uña",
+      "imagen": "img/alfabetizacion/ejemplos/uña.webp",
+      "orden": 2
+    },
+    {
+      "caracter": "U",
+      "palabra": "Uvas",
+      "imagen": "img/alfabetizacion/ejemplos/uvas.webp",
+      "orden": 3
     },
     {
       "caracter": "V",
@@ -418,10 +688,34 @@
       "orden": 1
     },
     {
+      "caracter": "V",
+      "palabra": "Vela",
+      "imagen": "img/alfabetizacion/ejemplos/vela.webp",
+      "orden": 2
+    },
+    {
+      "caracter": "V",
+      "palabra": "Ventana",
+      "imagen": "img/alfabetizacion/ejemplos/ventana.webp",
+      "orden": 3
+    },
+    {
       "caracter": "W",
       "palabra": "Wafle",
       "imagen": "img/alfabetizacion/ejemplos/wafle.webp",
       "orden": 1
+    },
+    {
+      "caracter": "W",
+      "palabra": "Web",
+      "imagen": "img/alfabetizacion/ejemplos/web.webp",
+      "orden": 2
+    },
+    {
+      "caracter": "W",
+      "palabra": "Wifi",
+      "imagen": "img/alfabetizacion/ejemplos/wifi.webp",
+      "orden": 3
     },
     {
       "caracter": "X",
@@ -436,304 +730,10 @@
       "orden": 1
     },
     {
-      "caracter": "Z",
-      "palabra": "Zanahoria",
-      "imagen": "img/alfabetizacion/ejemplos/zanahoria.webp",
-      "orden": 1
-    },
-    {
-      "caracter": "A",
-      "palabra": "Anillo",
-      "imagen": "img/alfabetizacion/ejemplos/anillo.webp",
-      "orden": 2
-    },
-    {
-      "caracter": "B",
-      "palabra": "Burro",
-      "imagen": "img/alfabetizacion/ejemplos/burro.webp",
-      "orden": 2
-    },
-    {
-      "caracter": "C",
-      "palabra": "Casa",
-      "imagen": "img/alfabetizacion/ejemplos/casa.webp",
-      "orden": 2
-    },
-    {
-      "caracter": "D",
-      "palabra": "Delfín",
-      "imagen": "img/alfabetizacion/ejemplos/delfin.webp",
-      "orden": 2
-    },
-    {
-      "caracter": "E",
-      "palabra": "Espejo",
-      "imagen": "img/alfabetizacion/ejemplos/espejo.webp",
-      "orden": 2
-    },
-    {
-      "caracter": "F",
-      "palabra": "Fresa",
-      "imagen": "img/alfabetizacion/ejemplos/fresa.webp",
-      "orden": 2
-    },
-    {
-      "caracter": "G",
-      "palabra": "Girasol",
-      "imagen": "img/alfabetizacion/ejemplos/girasol.webp",
-      "orden": 2
-    },
-    {
-      "caracter": "H",
-      "palabra": "Hoja",
-      "imagen": "img/alfabetizacion/ejemplos/hoja.webp",
-      "orden": 2
-    },
-    {
-      "caracter": "I",
-      "palabra": "Imán",
-      "imagen": "img/alfabetizacion/ejemplos/iman.webp",
-      "orden": 2
-    },
-    {
-      "caracter": "J",
-      "palabra": "Jaula",
-      "imagen": "img/alfabetizacion/ejemplos/jaula.webp",
-      "orden": 2
-    },
-    {
-      "caracter": "K",
-      "palabra": "ketchup",
-      "imagen": "img/alfabetizacion/ejemplos/ketchup.webp",
-      "orden": 2
-    },
-    {
-      "caracter": "L",
-      "palabra": "Luna",
-      "imagen": "img/alfabetizacion/ejemplos/luna.webp",
-      "orden": 2
-    },
-    {
-      "caracter": "M",
-      "palabra": "Manzana",
-      "imagen": "img/alfabetizacion/ejemplos/manzana.webp",
-      "orden": 2
-    },
-    {
-      "caracter": "N",
-      "palabra": "Nido",
-      "imagen": "img/alfabetizacion/ejemplos/nido.webp",
-      "orden": 2
-    },
-    {
-      "caracter": "Ñ",
-      "palabra": "Ñoquis",
-      "imagen": "img/alfabetizacion/ejemplos/ñoquis.webp",
-      "orden": 2
-    },
-    {
-      "caracter": "O",
-      "palabra": "Oreja",
-      "imagen": "img/alfabetizacion/ejemplos/oreja.webp",
-      "orden": 2
-    },
-    {
-      "caracter": "P",
-      "palabra": "Puerta",
-      "imagen": "img/alfabetizacion/ejemplos/puerta.webp",
-      "orden": 2
-    },
-    {
-      "caracter": "Q",
-      "palabra": "Queso",
-      "imagen": "img/alfabetizacion/ejemplos/queso.webp",
-      "orden": 2
-    },
-    {
-      "caracter": "R",
-      "palabra": "Río",
-      "imagen": "img/alfabetizacion/ejemplos/rio.webp",
-      "orden": 2
-    },
-    {
-      "caracter": "S",
-      "palabra": "Sol",
-      "imagen": "img/alfabetizacion/ejemplos/sol.webp",
-      "orden": 2
-    },
-    {
-      "caracter": "T",
-      "palabra": "Tiburón",
-      "imagen": "img/alfabetizacion/ejemplos/tiburón.webp",
-      "orden": 2
-    },
-    {
-      "caracter": "U",
-      "palabra": "Uña",
-      "imagen": "img/alfabetizacion/ejemplos/uña.webp",
-      "orden": 2
-    },
-    {
-      "caracter": "V",
-      "palabra": "Vela",
-      "imagen": "img/alfabetizacion/ejemplos/vela.webp",
-      "orden": 2
-    },
-    {
-      "caracter": "W",
-      "palabra": "Web",
-      "imagen": "img/alfabetizacion/ejemplos/web.webp",
-      "orden": 2
-    },
-    {
       "caracter": "Y",
       "palabra": "Yema",
       "imagen": "img/alfabetizacion/ejemplos/yema.webp",
       "orden": 2
-    },
-    {
-      "caracter": "Z",
-      "palabra": "Zapato",
-      "imagen": "img/alfabetizacion/ejemplos/zapato.webp",
-      "orden": 2
-    },
-    {
-      "caracter": "A",
-      "palabra": "Ardilla",
-      "imagen": "img/alfabetizacion/ejemplos/ardilla.webp",
-      "orden": 3
-    },
-    {
-      "caracter": "B",
-      "palabra": "Búho",
-      "imagen": "img/alfabetizacion/ejemplos/buho.webp",
-      "orden": 3
-    },
-    {
-      "caracter": "C",
-      "palabra": "Conejo",
-      "imagen": "img/alfabetizacion/ejemplos/conejo.webp",
-      "orden": 3
-    },
-    {
-      "caracter": "D",
-      "palabra": "Diente",
-      "imagen": "img/alfabetizacion/ejemplos/diente.webp",
-      "orden": 3
-    },
-    {
-      "caracter": "E",
-      "palabra": "Estrella",
-      "imagen": "img/alfabetizacion/ejemplos/estrella.webp",
-      "orden": 3
-    },
-    {
-      "caracter": "F",
-      "palabra": "Fuego",
-      "imagen": "img/alfabetizacion/ejemplos/fuego.webp",
-      "orden": 3
-    },
-    {
-      "caracter": "G",
-      "palabra": "Globo",
-      "imagen": "img/alfabetizacion/ejemplos/globo.webp",
-      "orden": 3
-    },
-    {
-      "caracter": "H",
-      "palabra": "Huevos",
-      "imagen": "img/alfabetizacion/ejemplos/huevo.webp",
-      "orden": 3
-    },
-    {
-      "caracter": "I",
-      "palabra": "Isla",
-      "imagen": "img/alfabetizacion/ejemplos/isla.webp",
-      "orden": 3
-    },
-    {
-      "caracter": "J",
-      "palabra": "Jirafa",
-      "imagen": "img/alfabetizacion/ejemplos/jirafa.webp",
-      "orden": 3
-    },
-    {
-      "caracter": "K",
-      "palabra": "Koala",
-      "imagen": "img/alfabetizacion/ejemplos/koala.webp",
-      "orden": 3
-    },
-    {
-      "caracter": "L",
-      "palabra": "Lupa",
-      "imagen": "img/alfabetizacion/ejemplos/lupa.webp",
-      "orden": 3
-    },
-    {
-      "caracter": "M",
-      "palabra": "Mesa",
-      "imagen": "img/alfabetizacion/ejemplos/mesa.webp",
-      "orden": 3
-    },
-    {
-      "caracter": "N",
-      "palabra": "Nube",
-      "imagen": "img/alfabetizacion/ejemplos/nube.webp",
-      "orden": 3
-    },
-    {
-      "caracter": "O",
-      "palabra": "Oso",
-      "imagen": "img/alfabetizacion/ejemplos/oso.webp",
-      "orden": 3
-    },
-    {
-      "caracter": "P",
-      "palabra": "Pulpo",
-      "imagen": "img/alfabetizacion/ejemplos/pulpo.webp",
-      "orden": 3
-    },
-    {
-      "caracter": "Q",
-      "palabra": "Quinoa",
-      "imagen": "img/alfabetizacion/ejemplos/quinoa.webp",
-      "orden": 3
-    },
-    {
-      "caracter": "R",
-      "palabra": "Rosa",
-      "imagen": "img/alfabetizacion/ejemplos/rosa.webp",
-      "orden": 3
-    },
-    {
-      "caracter": "S",
-      "palabra": "Sombrero",
-      "imagen": "img/alfabetizacion/ejemplos/sombrero.webp",
-      "orden": 3
-    },
-    {
-      "caracter": "T",
-      "palabra": "Tren",
-      "imagen": "img/alfabetizacion/ejemplos/tren.webp",
-      "orden": 3
-    },
-    {
-      "caracter": "U",
-      "palabra": "Uvas",
-      "imagen": "img/alfabetizacion/ejemplos/uvas.webp",
-      "orden": 3
-    },
-    {
-      "caracter": "V",
-      "palabra": "Ventana",
-      "imagen": "img/alfabetizacion/ejemplos/ventana.webp",
-      "orden": 3
-    },
-    {
-      "caracter": "W",
-      "palabra": "Wifi",
-      "imagen": "img/alfabetizacion/ejemplos/wifi.webp",
-      "orden": 3
     },
     {
       "caracter": "Y",
@@ -743,15 +743,21 @@
     },
     {
       "caracter": "Z",
+      "palabra": "Zanahoria",
+      "imagen": "img/alfabetizacion/ejemplos/zanahoria.webp",
+      "orden": 1
+    },
+    {
+      "caracter": "Z",
+      "palabra": "Zapato",
+      "imagen": "img/alfabetizacion/ejemplos/zapato.webp",
+      "orden": 2
+    },
+    {
+      "caracter": "Z",
       "palabra": "Zorro",
       "imagen": "img/alfabetizacion/ejemplos/zorro.webp",
       "orden": 3
-    },
-    {
-      "caracter": "B",
-      "palabra": "Balón",
-      "imagen": "img/alfabetizacion/ejemplos/balon.webp",
-      "orden": 4
     }
   ]
 }
