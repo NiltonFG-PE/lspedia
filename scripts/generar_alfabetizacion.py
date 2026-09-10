@@ -57,6 +57,7 @@ def descargar_hoja_csv(nombre_hoja: str) -> list[dict[str, str]]:
     parametros = urllib.parse.urlencode({
         "tqx": "out:csv",
         "sheet": nombre_hoja,
+        "headers": "1",
     })
     url = base + "?" + parametros
     solicitud = urllib.request.Request(
