@@ -68,13 +68,13 @@ jobs:
           test -f 'video/lspedia_transparente anterior.webm'
           test "$(git hash-object 'video/lspedia_transparente anterior.webm')" = 'ca9a110b75384b534f8ebdcae45406fb178df083'
           git diff --check
-      - name: Guardar mejoras
+      - name: Guardar mejoras funcionales
         shell: bash
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add index.html sw.js js/script.js scripts/generar_alfabetizacion.py scripts/normalizar_media_alfabetizacion.py scripts/auditar_alfabetizacion.py scripts/actualizar_nuevas_palabras.py data/alfabetizacion.json data/alfabetizacion-mock.json data/nuevas-palabras.json img/alfabetizacion/ejemplos admin/busquedas.html admin/estado.html css/mejoras-producto.css js/mejoras-producto.js .github/workflows/actualizar-alfabetizacion.yml .github/workflows/actualizar-sitemap.yml .github/workflows/validar-lspedia.yml
+          git add index.html sw.js js/script.js scripts/generar_alfabetizacion.py data/alfabetizacion.json data/alfabetizacion-mock.json data/nuevas-palabras.json img/alfabetizacion/ejemplos
           if git diff --cached --quiet; then
             echo 'No hay cambios funcionales pendientes.'
             exit 0
