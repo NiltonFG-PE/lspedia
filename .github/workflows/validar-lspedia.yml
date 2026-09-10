@@ -8,8 +8,13 @@ on:
       - "img/**"
       - "css/**"
       - "js/**"
+      - "index.html"
+      - "sw.js"
       - "scripts/validar_lspedia.py"
       - "scripts/validar_imagenes.py"
+      - "scripts/validar_alfabetizacion.py"
+      - "scripts/auditar_alfabetizacion.py"
+      - "scripts/normalizar_media_alfabetizacion.py"
       - "scripts/normalizar_categorias.py"
       - ".github/workflows/validar-lspedia.yml"
   pull_request:
@@ -19,8 +24,13 @@ on:
       - "img/**"
       - "css/**"
       - "js/**"
+      - "index.html"
+      - "sw.js"
       - "scripts/validar_lspedia.py"
       - "scripts/validar_imagenes.py"
+      - "scripts/validar_alfabetizacion.py"
+      - "scripts/auditar_alfabetizacion.py"
+      - "scripts/normalizar_media_alfabetizacion.py"
       - "scripts/normalizar_categorias.py"
   workflow_dispatch:
 
@@ -34,21 +44,23 @@ concurrency:
 jobs:
   validar:
     runs-on: ubuntu-latest
-
     steps:
       - name: Descargar repositorio
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || 'develop' }}
-
       - name: Preparar Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.x"
-
       - name: Validar Diccionario y Vocabulario
         run: python scripts/validar_lspedia.py
-
+      - name: Auditar Alfabetizacion completa
+        shell: bash
+        run: |
+          python scripts/normalizar_media_alfabetizacion.py --check
+          python scripts/validar_alfabetizacion.py
+          python scripts/auditar_alfabetizacion.py
       - name: Validar sintaxis de JavaScript
         shell: bash
         run: |
@@ -57,13 +69,20 @@ jobs:
             echo "Revisando $archivo"
             node --check "$archivo"
           done < <(find js -maxdepth 1 -type f -name '*.js' -print0 | sort -z)
-
+          node --check sw.js
       - name: Validar JSON principales
         shell: bash
         run: |
           python -m json.tool data/palabras.json > /dev/null
           python -m json.tool data/vocabulario.json > /dev/null
+          python -m json.tool data/alfabetizacion.json > /dev/null
+          if [ -f data/nuevas-palabras.json ]; then python -m json.tool data/nuevas-palabras.json > /dev/null; fi
           echo "JSON válidos."
-
       - name: Validar imágenes locales
         run: python scripts/validar_imagenes.py
+      - name: Verificar formato y archivo protegido
+        shell: bash
+        run: |
+          git diff --check
+          test -f 'video/lspedia_transparente anterior.webm'
+          test "$(git hash-object 'video/lspedia_transparente anterior.webm')" = 'ca9a110b75384b534f8ebdcae45406fb178df083'
