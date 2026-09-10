@@ -1,0 +1,52 @@
+name: TMP Mejorar búsqueda inteligente
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - ".github/workflows/tmp-mejorar-busqueda-inteligente.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  aplicar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Aplicar mejora
+        run: python scripts/tmp_mejorar_busqueda_inteligente.py
+
+      - name: Validar JavaScript
+        run: node --check js/script.js
+
+      - name: Validar archivos
+        shell: bash
+        run: |
+          set -e
+          grep -q 'search_no_results' js/script.js
+          grep -q 'normalizarFoneticoBusqueda' js/script.js
+          grep -q '(en el significado)' js/script.js
+          grep -q 'const VERSION_APP = "v57";' sw.js
+          test -f 'video/lspedia_transparente anterior.webm'
+          git diff --check
+
+      - name: Guardar cambios reales
+        shell: bash
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/script.js sw.js
+          if git diff --cached --quiet; then
+            echo "No hay cambios que guardar."
+            exit 0
+          fi
+          git commit -m "Mejorar búsqueda tolerante y registrar faltantes"
+          git push origin develop
