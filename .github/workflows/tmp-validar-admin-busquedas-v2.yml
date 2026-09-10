@@ -1,0 +1,39 @@
+name: TMP Validar admin busquedas v2
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - '.github/workflows/tmp-validar-admin-busquedas-v2.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 12
+      - name: Validar panel y backend
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import re, json
+          html = Path('admin/busquedas.html').read_text(encoding='utf-8')
+          scripts = re.findall(r'<script(?:\s[^>]*)?>(.*?)</script>', html, re.S | re.I)
+          assert scripts
+          Path('/tmp/admin.js').write_text('\n'.join(scripts), encoding='utf-8')
+          Path('/tmp/gas.js').write_text(Path('apps-script/admin_busquedas_ga4.gs').read_text(encoding='utf-8'), encoding='utf-8')
+          json.loads(Path('apps-script/appsscript-admin-busquedas.json').read_text(encoding='utf-8'))
+          assert 'G-RJX3RP2CBR' in Path('apps-script/admin_busquedas_ga4.gs').read_text(encoding='utf-8')
+          assert 'prepararPanelBusquedas' in Path('apps-script/admin_busquedas_ga4.gs').read_text(encoding='utf-8')
+          PY
+          node --check /tmp/admin.js
+          node --check /tmp/gas.js
+          git diff --check HEAD~8..HEAD
+          test "$(git hash-object 'video/lspedia_transparente anterior.webm')" = 'ca9a110b75384b534f8ebdcae45406fb178df083'
