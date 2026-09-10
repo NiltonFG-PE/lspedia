@@ -30,8 +30,6 @@ jobs:
 
           root = Path('.')
 
-          # 1) Analytics solo en el dominio oficial: evita que un clon reutilice
-          #    la propiedad GA4 y contamine las estadísticas de LSPedia.
           index = root / 'index.html'
           txt = index.read_text(encoding='utf-8')
           patron_ga = re.compile(
@@ -41,28 +39,25 @@ jobs:
               re.S,
           )
           bloque_ga = '''\n    <!-- Google Analytics (GA4) — solo dominio oficial.\n         LSPEDIA_GA_ONLY_OFFICIAL: una copia del frontend en otro dominio no\n         reutiliza ni contamina la propiedad Analytics de LSPedia. -->\n    <script>\n        (function () {\n            const host = String(window.location.hostname || "").toLowerCase();\n            const esOficial = host === "lspedia.site" || host === "www.lspedia.site";\n            window.dataLayer = window.dataLayer || [];\n            window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };\n            if (!esOficial) return;\n\n            const ga = document.createElement("script");\n            ga.async = true;\n            ga.src = "https://www.googletagmanager.com/gtag/js?id=G-RJX3RP2CBR";\n            document.head.appendChild(ga);\n            window.gtag("js", new Date());\n            window.gtag("config", "G-RJX3RP2CBR");\n        })();\n    </script>\n\n'''
-          txt2, n = patron_ga.subn(bloque_ga, txt, count=1)
+          txt, n = patron_ga.subn(bloque_ga, txt, count=1)
           if n != 1:
-              raise SystemExit('No se encontró el bloque GA4 esperado en index.html')
-          txt = txt2
+              raise SystemExit('No se encontró el bloque GA4 esperado')
 
           marca = '<script src="js/security.js"></script>'
           if marca not in txt:
               objetivo = '    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>'
               if objetivo not in txt:
-                  raise SystemExit('No se encontró el punto de inserción de security.js')
+                  raise SystemExit('No se encontró inserción para security.js')
               txt = txt.replace(objetivo, '    ' + marca + '\n' + objetivo, 1)
 
-          sw_old = 'if ("serviceWorker" in navigator) {'
-          sw_new = 'if ("serviceWorker" in navigator && (!window.LSPediaSecurity || window.LSPediaSecurity.permitirPWA())) {'
-          if sw_new not in txt:
-              if sw_old not in txt:
-                  raise SystemExit('No se encontró el registro del Service Worker en index.html')
-              txt = txt.replace(sw_old, sw_new, 1)
+          viejo = 'if ("serviceWorker" in navigator) {'
+          nuevo = 'if ("serviceWorker" in navigator && (!window.LSPediaSecurity || window.LSPediaSecurity.permitirPWA())) {'
+          if nuevo not in txt:
+              if viejo not in txt:
+                  raise SystemExit('No se encontró registro Service Worker')
+              txt = txt.replace(viejo, nuevo, 1)
           index.write_text(txt, encoding='utf-8')
 
-          # 2) El Quiz ya tiene vocabulario.json sincronizado. Quitamos del
-          #    navegador el endpoint Apps Script que un clon podía reutilizar.
           quiz = root / 'js' / 'quiz.js'
           q = quiz.read_text(encoding='utf-8')
           q = q.replace(
@@ -75,40 +70,29 @@ jobs:
           )
           q, n_url = re.subn(
               r'\n\s*// Respaldo de emergencia\. Solo se consulta si vocabulario\.json\n\s*// falta, está vacío o llega dañado\.\n\s*APPS_SCRIPT_URL:\s*"https://script\.google\.com/macros/s/[^\"]+/exec",\n',
-              '\n',
-              q,
-              count=1,
+              '\n', q, count=1,
           )
           if n_url != 1:
-              raise SystemExit('No se encontró el endpoint Apps Script esperado en quiz.js')
+              raise SystemExit('No se encontró endpoint Apps Script del Quiz')
 
           patron_catch = re.compile(
-              r'\.catch\(\(err\) => \{\s*'
-              r'cargaEnCurso = false;\s*'
+              r'\.catch\(\(err\) => \{\s*cargaEnCurso = false;\s*'
               r'console\.warn\("No se pudo cargar data/vocabulario\.json; usando Apps Script como respaldo:", err\);\s*'
-              r'fetchRemoto\(silencioso\);\s*'
-              r'\}\)',
-              re.S,
+              r'fetchRemoto\(silencioso\);\s*\}\)', re.S,
           )
-          reemplazo_catch = '''.catch((err) => {\n                cargaEnCurso = false;\n                console.warn("No se pudo cargar data/vocabulario.json:", err);\n                manejarErrorCarga(err, silencioso);\n            })'''
-          q, n_catch = patron_catch.subn(reemplazo_catch, q, count=1)
+          reemplazo = '''.catch((err) => {\n                cargaEnCurso = false;\n                console.warn("No se pudo cargar data/vocabulario.json:", err);\n                manejarErrorCarga(err, silencioso);\n            })'''
+          q, n_catch = patron_catch.subn(reemplazo, q, count=1)
           if n_catch != 1:
-              raise SystemExit('No se encontró el fallback remoto esperado en quiz.js')
+              raise SystemExit('No se encontró fallback remoto del Quiz')
 
-          # Elimina la función JSONP ya innecesaria para que el frontend no tenga
-          # código reutilizable para llamar Apps Script.
           q, n_fn = re.subn(
               r'\n\s*function fetchRemoto\(silencioso\) \{.*?\n\s*function manejarErrorCarga\(err, silencioso\) \{',
-              '\n\n    function manejarErrorCarga(err, silencioso) {',
-              q,
-              count=1,
-              flags=re.S,
+              '\n\n    function manejarErrorCarga(err, silencioso) {', q, count=1, flags=re.S,
           )
           if n_fn != 1:
-              raise SystemExit('No se encontró fetchRemoto() para retirarlo')
+              raise SystemExit('No se encontró fetchRemoto()')
           quiz.write_text(q, encoding='utf-8')
 
-          # 3) Service Worker: incorporar el guard y forzar actualización del shell.
           sw = root / 'sw.js'
           s = sw.read_text(encoding='utf-8')
           if 'const VERSION_APP = "v65";' in s:
@@ -118,37 +102,14 @@ jobs:
           if '"js/security.js"' not in s:
               s = s.replace('    "js/script.js",', '    "js/security.js",\n    "js/script.js",', 1)
           sw.write_text(s, encoding='utf-8')
-
-          # 4) Conectar el validador de seguridad al CI permanente.
-          wf = root / '.github' / 'workflows' / 'validar-lspedia.yml'
-          w = wf.read_text(encoding='utf-8')
-          if 'scripts/validar_seguridad.py' not in w:
-              w = w.replace('      - "scripts/validar_imagenes.py"', '      - "scripts/validar_imagenes.py"\n      - "scripts/validar_seguridad.py"')
-          if '      - "admin/**"' not in w:
-              w = w.replace('      - "index.html"', '      - "index.html"\n      - "admin/**"\n      - "apps-script/**"')
-          paso = '      - name: Validar seguridad anti-clon\n        run: python scripts/validar_seguridad.py\n'
-          if 'name: Validar seguridad anti-clon' not in w:
-              objetivo = '      - name: Validar sintaxis de JavaScript\n'
-              if objetivo not in w:
-                  raise SystemExit('No se encontró el punto para añadir validación de seguridad')
-              w = w.replace(objetivo, paso + objetivo, 1)
-          wf.write_text(w, encoding='utf-8')
           PY
 
           cat > js/security.js <<'EOF'
           /* ============================================================
              LSPedia - Guardia de entorno / anti-clon (fase 1)
-             ------------------------------------------------------------
-             Esto NO pretende ocultar HTML/CSS/JS públicos. Su objetivo es que
-             copiar el frontend no reutilice automáticamente servicios de LSPedia.
-
-             En el dominio oficial todo funciona con normalidad. En localhost/file
-             se mantiene un modo de desarrollo. En otro dominio público se bloquean
-             integraciones sensibles conocidas y no se registra la PWA.
              ============================================================ */
           (function () {
               'use strict';
-
               const HOSTS_OFICIALES = new Set(['lspedia.site', 'www.lspedia.site']);
               const HOSTS_DESARROLLO = new Set(['localhost', '127.0.0.1', '[::1]', '::1']);
               const host = String(window.location.hostname || '').toLowerCase();
@@ -162,7 +123,6 @@ jobs:
                   try { return new URL(String(url || ''), window.location.href).hostname.toLowerCase(); }
                   catch (_e) { return ''; }
               }
-
               function esServicioSensible(url) {
                   const h = hostDe(url);
                   return h === 'script.google.com' ||
@@ -170,23 +130,16 @@ jobs:
                       h === 'forms.gle' ||
                       (h === 'docs.google.com' && /\/forms(?:\/|$)/i.test(String(url || '')));
               }
-
               function permitirServicio(url) {
                   if (!esCopiaPublica) return true;
                   return !esServicioSensible(url);
               }
-
-              function permitirPWA() {
-                  return !esCopiaPublica;
-              }
-
+              function permitirPWA() { return !esCopiaPublica; }
               function urlOficialActual() {
                   return ORIGEN_OFICIAL + window.location.pathname + window.location.search + window.location.hash;
               }
-
               function avisoServicioOficial() {
-                  const mensaje = 'Esta función está disponible únicamente en el sitio oficial lspedia.site.';
-                  try { window.alert(mensaje); } catch (_e) {}
+                  try { window.alert('Esta función está disponible únicamente en el sitio oficial lspedia.site.'); } catch (_e) {}
                   try { console.warn('[LSPedia seguridad] Integración bloqueada fuera del dominio oficial.'); } catch (_e) {}
               }
 
@@ -201,11 +154,8 @@ jobs:
               });
               window.__LSPEDIA_OFFICIAL__ = esOficial;
               document.documentElement.dataset.lspediaEntorno = esOficial ? 'oficial' : (esDesarrollo ? 'desarrollo' : 'copia');
-
               if (!esCopiaPublica) return;
 
-              // Evita que una copia literal use enlaces a formularios/servicios de
-              // LSPedia. Los enlaces siguen intactos y disponibles en lspedia.site.
               document.addEventListener('click', function (evento) {
                   const enlace = evento.target && evento.target.closest ? evento.target.closest('a[href]') : null;
                   if (!enlace || permitirServicio(enlace.href)) return;
@@ -214,7 +164,6 @@ jobs:
                   avisoServicioOficial();
               }, true);
 
-              // Cubre botones que abren formularios con window.open().
               const abrirOriginal = window.open;
               window.open = function (url) {
                   if (!permitirServicio(url)) {
@@ -228,25 +177,14 @@ jobs:
 
           cat > scripts/validar_seguridad.py <<'EOF'
           #!/usr/bin/env python3
-          """Validaciones preventivas de seguridad para el frontend de LSPedia.
-
-          No intenta hacer secreto el código público. Evita, en cambio, que claves
-          privadas o endpoints operativos terminen accidentalmente en archivos que
-          cualquier visitante (o clon) puede descargar.
-          """
           from __future__ import annotations
-
           import re
-          import sys
           from pathlib import Path
 
           ROOT = Path(__file__).resolve().parent.parent
-          ERRORES: list[str] = []
-          AVISOS: list[str] = []
-
-          EXT_TEXTO = {'.html', '.js', '.css', '.json', '.yml', '.yaml', '.py', '.md', '.gs', '.txt', '.xml'}
-          EXCLUIR_DIR = {'.git', 'node_modules', '.venv', 'venv'}
-
+          ERRORES = []
+          EXT_TEXTO = {'.html','.js','.css','.json','.yml','.yaml','.py','.md','.gs','.txt','.xml'}
+          EXCLUIR_DIR = {'.git','node_modules','.venv','venv'}
           SECRETOS = {
               'clave privada PEM': re.compile(r'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----'),
               'token GitHub clásico': re.compile(r'\bgh[pousr]_[A-Za-z0-9]{20,}\b'),
@@ -255,74 +193,39 @@ jobs:
               'AWS access key': re.compile(r'\bAKIA[0-9A-Z]{16}\b'),
               'OpenAI API key': re.compile(r'\bsk-(?:proj-)?[A-Za-z0-9_-]{20,}\b'),
           }
-
-          def archivos_texto():
-              for p in ROOT.rglob('*'):
-                  if not p.is_file() or p.suffix.lower() not in EXT_TEXTO:
-                      continue
-                  if any(parte in EXCLUIR_DIR for parte in p.parts):
-                      continue
-                  yield p
-
-          def leer(p: Path) -> str:
-              try:
-                  return p.read_text(encoding='utf-8')
-              except UnicodeDecodeError:
-                  return ''
-
-          # 1) Secretos de alto riesgo: nunca deben existir en Git.
-          for p in archivos_texto():
-              texto = leer(p)
-              rel = p.relative_to(ROOT)
+          def leer(p):
+              try: return p.read_text(encoding='utf-8')
+              except UnicodeDecodeError: return ''
+          for p in ROOT.rglob('*'):
+              if not p.is_file() or p.suffix.lower() not in EXT_TEXTO or any(x in EXCLUIR_DIR for x in p.parts):
+                  continue
+              t = leer(p)
               for nombre, patron in SECRETOS.items():
-                  if patron.search(texto):
-                      ERRORES.append(f'{rel}: posible {nombre} expuesto.')
+                  if patron.search(t): ERRORES.append(f'{p.relative_to(ROOT)}: posible {nombre} expuesto.')
 
-          # 2) El frontend público no debe distribuir endpoints Apps Script /exec.
-          #    Los fuentes .gs y la documentación de configuración no son frontend.
-          publicos = [ROOT / 'index.html'] + sorted((ROOT / 'js').glob('*.js'))
           patron_exec = re.compile(r'https://script\.google\.com/macros/s/[^\s\"\'<>]+/exec', re.I)
-          for p in publicos:
+          for p in [ROOT/'index.html', *sorted((ROOT/'js').glob('*.js'))]:
               if p.exists() and patron_exec.search(leer(p)):
                   ERRORES.append(f'{p.relative_to(ROOT)}: endpoint Apps Script /exec incrustado en frontend público.')
 
-          # 3) Contrato anti-clon mínimo.
-          index = leer(ROOT / 'index.html')
-          security = leer(ROOT / 'js' / 'security.js')
-          quiz = leer(ROOT / 'js' / 'quiz.js')
-          cname = leer(ROOT / 'CNAME').strip().lower()
-
-          if cname != 'lspedia.site':
-              ERRORES.append(f'CNAME inesperado: {cname!r}; se esperaba lspedia.site.')
-          if '<script src="js/security.js"></script>' not in index:
-              ERRORES.append('index.html no carga js/security.js.')
-          if 'LSPEDIA_GA_ONLY_OFFICIAL' not in index:
-              ERRORES.append('GA4 no tiene la marca de ejecución solo en dominio oficial.')
-          if 'LSPediaSecurity.permitirPWA()' not in index:
-              ERRORES.append('El registro PWA no está protegido por el guard de dominio.')
-          if 'lspedia.site' not in security or 'permitirServicio' not in security:
-              ERRORES.append('js/security.js no contiene el contrato de dominio esperado.')
-          if 'script.google.com/macros/s/' in quiz:
-              ERRORES.append('Quiz todavía expone un endpoint Apps Script.')
-
-          # 4) La protección nunca debe romper los formularios del sitio oficial.
-          if 'if (!esCopiaPublica) return;' not in security:
-              ERRORES.append('El guard no deja explícitamente intacto el dominio oficial/desarrollo.')
+          index = leer(ROOT/'index.html')
+          security = leer(ROOT/'js'/'security.js')
+          quiz = leer(ROOT/'js'/'quiz.js')
+          cname = leer(ROOT/'CNAME').strip().lower()
+          if cname != 'lspedia.site': ERRORES.append(f'CNAME inesperado: {cname!r}.')
+          if '<script src="js/security.js"></script>' not in index: ERRORES.append('index.html no carga js/security.js.')
+          if 'LSPEDIA_GA_ONLY_OFFICIAL' not in index: ERRORES.append('GA4 no está limitado al dominio oficial.')
+          if 'LSPediaSecurity.permitirPWA()' not in index: ERRORES.append('PWA no está protegida por el guard de dominio.')
+          if 'lspedia.site' not in security or 'permitirServicio' not in security: ERRORES.append('security.js incompleto.')
+          if 'script.google.com/macros/s/' in quiz: ERRORES.append('Quiz todavía expone Apps Script.')
+          if 'if (!esCopiaPublica) return;' not in security: ERRORES.append('El guard no preserva explícitamente el sitio oficial/desarrollo.')
 
           print('\n=== SEGURIDAD LSPedia / anti-clon fase 1 ===')
-          print('ℹ️  Dominio oficial esperado: https://lspedia.site')
-          print('ℹ️  Se revisaron secretos comunes, endpoints públicos, Analytics y PWA.')
-          for x in AVISOS:
-              print('⚠️ ', x)
-          for x in ERRORES:
-              print('❌', x)
-          print(f'Resumen: {len(ERRORES)} error(es), {len(AVISOS)} advertencia(s).')
+          print('ℹ️ Dominio oficial: https://lspedia.site')
+          for x in ERRORES: print('❌', x)
+          print(f'Resumen: {len(ERRORES)} error(es).')
           raise SystemExit(1 if ERRORES else 0)
           EOF
-
-          # Limpieza pendiente de tandas anteriores.
-          rm -f .github/workflows/tmp-aplicar-puntos-3-12.yml
-          rm -f .github/workflows/tmp-diagnostico-puntos3-12.yml
 
       - name: Validar cambios
         shell: bash
@@ -341,13 +244,13 @@ jobs:
           test -f 'video/lspedia_transparente anterior.webm'
           test "$(git hash-object 'video/lspedia_transparente anterior.webm')" = 'ca9a110b75384b534f8ebdcae45406fb178df083'
 
-      - name: Publicar en develop
+      - name: Publicar cambios funcionales en develop
         shell: bash
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add index.html js/security.js js/quiz.js sw.js scripts/validar_seguridad.py .github/workflows/validar-lspedia.yml .github/workflows/tmp-aplicar-puntos-3-12.yml .github/workflows/tmp-diagnostico-puntos3-12.yml || true
+          git add index.html js/security.js js/quiz.js sw.js scripts/validar_seguridad.py
           if git diff --cached --quiet; then
             echo 'No hay cambios para publicar.'
             exit 0
