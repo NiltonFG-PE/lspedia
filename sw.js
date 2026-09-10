@@ -10,7 +10,7 @@
    ============================================================ */
 
 // Cambia esta versión cuando modifiques el cascarón de la aplicación.
-const VERSION_APP = "v59";
+const VERSION_APP = "v60";
 const PREFIJO_CACHE = "lspedia-shell-";
 const CACHE_NOMBRE = PREFIJO_CACHE + VERSION_APP;
 
@@ -33,7 +33,8 @@ const ARCHIVOS_CASCARON = [
     "manifest.json",
     "img/icons/icon-192.png",
     "img/icons/icon-512.png",
-    "img/icons/icon-512-maskable.png"
+    "img/icons/icon-512-maskable.png",
+    "img/imagen-no-disponible.svg"
 ];
 
 // Convertimos los archivos anteriores a rutas absolutas de pathname para

@@ -5586,3 +5586,39 @@ function mostrarSenalDelDia(offset = offsetSenalDelDia){
         iniciarObservadoresFicha();
     }
 })();
+
+
+/* ============================================================
+   SISTEMA GLOBAL ANTI-IMÁGENES ROTAS
+   ------------------------------------------------------------
+   Si cualquier <img> falla, incluso uno creado dinámicamente por
+   Diccionario, Vocabulario, Quiz o Juegos, se sustituye por un
+   respaldo visual local y se registra la ruta técnica en Analytics.
+   ============================================================ */
+(function activarRespaldoGlobalImagenesLSPedia(){
+    "use strict";
+    const FALLBACK = "img/imagen-no-disponible.svg";
+
+    function aplicarFallback(img){
+        if(!img || img.tagName !== "IMG" || img.dataset.lspediaImagenFallback === "1") return;
+        const original = img.currentSrc || img.getAttribute("src") || "";
+        if(!original || original.indexOf("imagen-no-disponible.svg") !== -1) return;
+        img.dataset.lspediaImagenFallback = "1";
+        img.dataset.lspediaSrcOriginal = original;
+        img.classList.add("lspedia-imagen-fallback");
+        img.src = FALLBACK;
+        try {
+            if(typeof window.gtag === "function"){
+                const ruta = new URL(original, window.location.href).pathname.slice(0, 180);
+                window.gtag("event", "image_load_error", { image_path: ruta });
+            }
+        } catch (_) { /* el respaldo no depende de Analytics */ }
+    }
+
+    document.addEventListener("error", function(evento){
+        const destino = evento.target;
+        if(destino && destino.tagName === "IMG") aplicarFallback(destino);
+    }, true);
+
+    window.LSPediaImagenes = Object.freeze({ aplicarFallback });
+})();
