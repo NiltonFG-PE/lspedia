@@ -25,6 +25,9 @@ jobs:
       - name: Aplicar limpieza
         run: python scripts/tmp_limpiar_alfabetizacion.py
 
+      - name: Probar generador con Google Sheets
+        run: python scripts/generar_alfabetizacion.py
+
       - name: Validar Alfabetizacion
         shell: bash
         run: |
@@ -55,5 +58,5 @@ jobs:
             echo 'Sin cambios que guardar.'
             exit 0
           fi
-          git commit -m 'Simplificar y sanear datos de Alfabetizacion'
+          git commit -m 'Sincronizar Alfabetizacion con contrato limpio'
           git push origin HEAD:develop
