@@ -1,0 +1,49 @@
+name: TMP Mejorar ficha de palabra
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - ".github/workflows/tmp-mejorar-ficha-palabra.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  aplicar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Aplicar mejora
+        run: python scripts/tmp_mejorar_ficha_palabra.py
+
+      - name: Validar JavaScript y archivos
+        shell: bash
+        run: |
+          set -e
+          node --check js/script.js
+          grep -q 'FICHA DE PALABRA — NAVEGACIÓN VISUAL ANTERIOR / SIGUIENTE' js/script.js
+          grep -q 'ficha-palabra-browse' css/estilos.css
+          grep -q 'const VERSION_APP = "v58";' sw.js
+          test -f 'video/lspedia_transparente anterior.webm'
+          git diff --check
+
+      - name: Guardar cambios reales
+        shell: bash
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/script.js css/estilos.css sw.js
+          if git diff --cached --quiet; then
+            echo "No hay cambios que guardar."
+            exit 0
+          fi
+          git commit -m "Mejorar ficha visual y navegación entre palabras"
+          git push origin develop
