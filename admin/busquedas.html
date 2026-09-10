@@ -2,260 +2,100 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="robots" content="noindex,nofollow,noarchive">
   <meta name="googlebot" content="noindex,nofollow,noarchive">
   <meta name="theme-color" content="#0f172a">
-  <title>Busquedas sin resultados | Admin LSPedia</title>
+  <title>Búsquedas sin resultados | Admin LSPedia</title>
   <link rel="icon" type="image/png" href="../img/favicon.png">
   <style>
     :root{--navy:#0f172a;--blue:#0284c7;--amber:#f5b818;--bg:#f3f6fa;--card:#fff;--text:#172033;--muted:#64748b;--border:#dce3ec;--green:#16845b;--greenbg:#eaf8f1;--red:#b42318;--redbg:#fff1ef;--shadow:0 8px 26px rgba(15,23,42,.08)}
-    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased}
-    button,input,select{font:inherit} button{cursor:pointer}.d-none{display:none!important}
-    .topbar{background:var(--navy);color:#fff;padding:15px 18px;box-shadow:0 2px 15px rgba(0,0,0,.14)}
-    .topbar-inner{max-width:1120px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:14px}
-    .brand{display:flex;align-items:center;gap:11px}.brand-mark{width:38px;height:38px;border-radius:11px;background:var(--amber);color:var(--navy);display:grid;place-items:center;font-weight:900;font-size:17px}.brand strong{display:block;font-size:17px}.brand small{display:block;color:#b7c4d4;margin-top:2px}
-    .private-badge{font-size:12px;font-weight:800;color:#dce7f3;border:1px solid rgba(255,255,255,.2);padding:7px 10px;border-radius:999px;white-space:nowrap}
-    main{max-width:1120px;margin:0 auto;padding:24px 16px 50px}
-    .hero{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:18px}.hero h1{font-size:clamp(1.55rem,4vw,2.15rem);margin:0 0 6px;letter-spacing:-.035em}.hero p{margin:0;color:var(--muted);line-height:1.45;max-width:660px}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:17px;box-shadow:var(--shadow)}
-    .setup{padding:18px;margin-bottom:18px}.setup-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:13px}.setup-head strong{font-size:15px}.setup-status{font-size:11px;font-weight:800;padding:6px 9px;border-radius:999px;background:#eef2f7;color:#546274}
-    .setup-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(180px,.8fr) auto;gap:10px;align-items:end}.field label{display:block;font-size:11px;font-weight:800;letter-spacing:.04em;color:#596779;margin:0 0 6px}.field input,.field select,.search-input{width:100%;border:1px solid #cfd8e4;background:#fff;color:var(--text);border-radius:10px;padding:11px 12px;outline:none;min-height:43px}.field input:focus,.field select:focus,.search-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(2,132,199,.12)}
-    .btn{border:0;border-radius:10px;min-height:43px;padding:10px 15px;font-weight:800}.btn-primary{background:var(--blue);color:#fff}.btn-primary:hover{filter:brightness(.94)}.btn-soft{background:#eef3f8;color:#334155;border:1px solid #d7e0ea}.btn:disabled{opacity:.55;cursor:default}
-    .setup-note{font-size:12px;color:var(--muted);margin:10px 0 0;line-height:1.45}.setup-note b{color:#475569}
-    .alert{border-radius:12px;padding:12px 14px;margin:0 0 18px;font-size:13px;line-height:1.45}.alert-error{background:var(--redbg);border:1px solid #ffd3ce;color:#8e241b}.alert-info{background:#eef8ff;border:1px solid #c9e8fb;color:#175979}
-    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}.stat{padding:16px}.stat-label{font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}.stat-value{font-size:28px;font-weight:900;line-height:1.1;margin-top:6px;letter-spacing:-.03em}.stat-sub{font-size:11px;color:#7b8898;margin-top:5px}
-    .panel{overflow:hidden}.toolbar{padding:14px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:minmax(180px,1fr) auto auto;gap:9px;align-items:center}.toolbar-actions{display:flex;gap:7px}.filter-btn{border:1px solid #d7e0ea;background:#fff;color:#536174;border-radius:9px;padding:9px 12px;font-size:12px;font-weight:800}.filter-btn.active{background:var(--navy);border-color:var(--navy);color:#fff}
-    .table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:720px}.table th{position:sticky;top:0;background:#f8fafc;color:#657386;font-size:10px;text-transform:uppercase;letter-spacing:.07em;text-align:left;padding:11px 14px;border-bottom:1px solid var(--border)}.table td{padding:13px 14px;border-bottom:1px solid #edf1f5;vertical-align:middle;font-size:13px}.table tr:last-child td{border-bottom:0}.rank{font-weight:900;color:#94a3b8;width:38px}.term{font-size:15px;font-weight:800;color:#1d2939}.count{font-size:15px;font-weight:900;color:#0f172a}.last{color:#64748b;white-space:nowrap}.state{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:6px 9px;font-size:11px;font-weight:800;white-space:nowrap}.state-pending{background:#fff6dd;color:#805b00}.state-added{background:var(--greenbg);color:var(--green)}.copy-btn{border:1px solid #d9e1ea;background:#fff;color:#425166;border-radius:8px;padding:7px 9px;font-size:11px;font-weight:800}.copy-btn:hover{background:#f5f8fb}
-    .empty{padding:42px 18px;text-align:center;color:var(--muted)}.empty strong{display:block;color:#334155;margin-bottom:5px}.loading{padding:40px;text-align:center;color:var(--muted)}.spinner{width:25px;height:25px;border:3px solid #dbe4ec;border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 10px}@keyframes spin{to{transform:rotate(360deg)}}
-    .footer-note{text-align:center;color:#8a97a7;font-size:11px;margin-top:16px;line-height:1.5}
-    @media(max-width:760px){main{padding:18px 12px 35px}.topbar{padding:12px}.brand small{display:none}.private-badge{font-size:10px}.hero{align-items:flex-start;flex-direction:column}.setup-grid{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.stats .stat:last-child{grid-column:1/-1}.toolbar{grid-template-columns:1fr}.toolbar-actions{overflow:auto;padding-bottom:2px}.filter-btn{white-space:nowrap}.stat-value{font-size:23px}}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased}button,input,select{font:inherit}button{cursor:pointer}.d-none{display:none!important}
+    .topbar{background:var(--navy);color:#fff;padding:15px 18px;box-shadow:0 2px 15px rgba(0,0,0,.14)}.topbar-inner{max-width:1120px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:14px}.brand{display:flex;align-items:center;gap:11px}.brand-mark{width:38px;height:38px;border-radius:11px;background:var(--amber);color:var(--navy);display:grid;place-items:center;font-weight:900;font-size:17px}.brand strong{display:block;font-size:17px}.brand small{display:block;color:#b7c4d4;margin-top:2px}.private-badge{font-size:12px;font-weight:800;color:#dce7f3;border:1px solid rgba(255,255,255,.2);padding:7px 10px;border-radius:999px;white-space:nowrap}
+    main{max-width:1120px;margin:0 auto;padding:24px 16px 50px}.admin-nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.admin-nav a{text-decoration:none;color:#334155;background:#fff;border:1px solid var(--border);padding:9px 12px;border-radius:10px;font-size:12px;font-weight:800}.hero{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:18px}.hero h1{font-size:clamp(1.55rem,4vw,2.15rem);margin:0 0 6px;letter-spacing:-.035em}.hero p{margin:0;color:var(--muted);line-height:1.45;max-width:700px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:17px;box-shadow:var(--shadow)}.setup{padding:18px;margin-bottom:18px}.setup-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:13px}.setup-head strong{font-size:15px}.setup-status{font-size:11px;font-weight:800;padding:6px 9px;border-radius:999px;background:#eef2f7;color:#546274}.setup-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(180px,.75fr) auto auto;gap:10px;align-items:end}.field label{display:block;font-size:11px;font-weight:800;letter-spacing:.04em;color:#596779;margin:0 0 6px}.field input,.field select,.search-input{width:100%;border:1px solid #cfd8e4;background:#fff;color:var(--text);border-radius:10px;padding:11px 12px;outline:none;min-height:43px}.field input:focus,.field select:focus,.search-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(2,132,199,.12)}.btn{border:0;border-radius:10px;min-height:43px;padding:10px 15px;font-weight:800}.btn-primary{background:var(--blue);color:#fff}.btn-primary:hover{filter:brightness(.94)}.btn-soft{background:#eef3f8;color:#334155;border:1px solid #d7e0ea}.btn-danger-soft{background:#fff1ef;color:#9d2b21;border:1px solid #ffd4cf}.btn:disabled{opacity:.55;cursor:default}.setup-note{font-size:12px;color:var(--muted);margin:10px 0 0;line-height:1.45}.setup-note b{color:#475569}
+    .alert{border-radius:12px;padding:12px 14px;margin:0 0 18px;font-size:13px;line-height:1.5}.alert-error{background:var(--redbg);border:1px solid #ffd3ce;color:#8e241b}.alert-info{background:#eef8ff;border:1px solid #c9e8fb;color:#175979}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}.stat{padding:16px}.stat-label{font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}.stat-value{font-size:28px;font-weight:900;line-height:1.1;margin-top:6px;letter-spacing:-.03em}.stat-sub{font-size:11px;color:#7b8898;margin-top:5px}
+    .priority-panel{padding:16px;margin-bottom:18px}.priority-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}.priority-head h2{font-size:16px;margin:0 0 4px}.priority-head p{font-size:12px;color:var(--muted);margin:0}.priority-list{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}.priority-item{border:1px solid #eadfb7;background:linear-gradient(145deg,#fffdf5,#fff8df);border-radius:12px;padding:10px;min-width:0}.priority-num{font-size:10px;font-weight:900;color:#a27900}.priority-term{font-size:14px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}.priority-count{font-size:11px;color:#75631f;margin-top:3px}.priority-empty{color:var(--muted);font-size:12px}
+    .panel{overflow:hidden}.toolbar{padding:14px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:minmax(180px,1fr) auto auto;gap:9px;align-items:center}.toolbar-actions{display:flex;gap:7px}.filter-btn{border:1px solid #d7e0ea;background:#fff;color:#536174;border-radius:9px;padding:9px 12px;font-size:12px;font-weight:800}.filter-btn.active{background:var(--navy);border-color:var(--navy);color:#fff}.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:810px}.table th{position:sticky;top:0;background:#f8fafc;color:#657386;font-size:10px;text-transform:uppercase;letter-spacing:.07em;text-align:left;padding:11px 14px;border-bottom:1px solid var(--border)}.table td{padding:13px 14px;border-bottom:1px solid #edf1f5;vertical-align:middle;font-size:13px}.table tr:last-child td{border-bottom:0}.rank{font-weight:900;color:#94a3b8;width:38px}.term{font-size:15px;font-weight:800;color:#1d2939}.count{font-size:15px;font-weight:900;color:#0f172a}.last{color:#64748b;white-space:nowrap}.state,.priority-badge{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:6px 9px;font-size:11px;font-weight:800;white-space:nowrap}.state-pending{background:#fff6dd;color:#805b00}.state-added{background:var(--greenbg);color:var(--green)}.priority-high{background:#fff0ed;color:#a73528}.priority-medium{background:#fff6dd;color:#805b00}.priority-low{background:#eef5fb;color:#496278}.copy-btn{border:1px solid #d9e1ea;background:#fff;color:#425166;border-radius:8px;padding:7px 9px;font-size:11px;font-weight:800}.copy-btn:hover{background:#f5f8fb}.empty{padding:42px 18px;text-align:center;color:var(--muted)}.empty strong{display:block;color:#334155;margin-bottom:5px}.loading{padding:40px;text-align:center;color:var(--muted)}.spinner{width:25px;height:25px;border:3px solid #dbe4ec;border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 10px}@keyframes spin{to{transform:rotate(360deg)}}.footer-note{text-align:center;color:#8a97a7;font-size:11px;margin-top:16px;line-height:1.5}
+    @media(max-width:900px){.priority-list{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:760px){main{padding:18px 12px 35px}.topbar{padding:12px}.brand small{display:none}.private-badge{font-size:10px}.hero{align-items:flex-start;flex-direction:column}.setup-grid{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.stats .stat:last-child{grid-column:1/-1}.toolbar{grid-template-columns:1fr}.toolbar-actions{overflow:auto;padding-bottom:2px}.filter-btn{white-space:nowrap}.stat-value{font-size:23px}.priority-list{grid-template-columns:1fr 1fr}}
   </style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="topbar-inner">
-      <div class="brand"><div class="brand-mark">L</div><div><strong>LSPedia Admin</strong><small>Panel de contenido</small></div></div>
-      <div class="private-badge">🔒 Vista privada</div>
-    </div>
-  </header>
+<header class="topbar"><div class="topbar-inner"><div class="brand"><div class="brand-mark">L</div><div><strong>LSPedia Admin</strong><small>Panel de contenido</small></div></div><div class="private-badge">🔒 Vista privada</div></div></header>
+<main>
+  <nav class="admin-nav"><a href="busquedas.html">🔎 Búsquedas sin resultado</a><a href="estado.html">🩺 Estado</a></nav>
+  <div class="hero"><div><h1>Palabras que LSPedia no encontró</h1><p>Ranking automático para decidir qué palabras conviene investigar, grabar y agregar primero.</p></div></div>
 
-  <main>
-    <div class="hero">
-      <div>
-        <h1>Palabras que LSPedia no encontró</h1>
-        <p>Ranking automático de búsquedas sin resultado. Úsalo para decidir qué palabras conviene grabar y agregar primero.</p>
-      </div>
+  <section class="card setup" id="setupPanel">
+    <div class="setup-head"><strong>Conexión con Google Analytics</strong><span class="setup-status" id="setupStatus">Sin conectar</span></div>
+    <div class="setup-grid">
+      <div class="field"><label for="apiUrl">URL del Apps Script</label><input id="apiUrl" type="url" inputmode="url" autocomplete="off" placeholder="https://script.google.com/macros/s/.../exec"></div>
+      <div class="field"><label for="adminKey">Clave privada</label><input id="adminKey" type="password" autocomplete="current-password" placeholder="Tu clave de administrador"></div>
+      <button class="btn btn-primary" id="btnConnect" type="button">Ver datos</button>
+      <button class="btn btn-danger-soft" id="btnReset" type="button">Restablecer conexión</button>
+    </div>
+    <p class="setup-note"><b>Privacidad:</b> la URL puede guardarse en este dispositivo. La clave solo vive durante esta pestaña. “Restablecer conexión” borra ambos valores locales del panel.</p>
+  </section>
+
+  <div id="alertBox" class="alert d-none"></div>
+  <section id="dashboard" class="d-none">
+    <div class="stats">
+      <article class="card stat"><div class="stat-label">Búsquedas sin resultado</div><div class="stat-value" id="statSearches">0</div><div class="stat-sub" id="statPeriod">Últimos 30 días</div></article>
+      <article class="card stat"><div class="stat-label">Términos diferentes</div><div class="stat-value" id="statTerms">0</div><div class="stat-sub">Palabras o expresiones distintas</div></article>
+      <article class="card stat"><div class="stat-label">Último registro</div><div class="stat-value" id="statLast" style="font-size:20px">—</div><div class="stat-sub" id="statGenerated">Actualizado ahora</div></article>
     </div>
 
-    <section class="card setup" id="setupPanel">
-      <div class="setup-head"><strong>Conexión con Google Analytics</strong><span class="setup-status" id="setupStatus">Sin conectar</span></div>
-      <div class="setup-grid">
-        <div class="field"><label for="apiUrl">URL del Apps Script</label><input id="apiUrl" type="url" inputmode="url" autocomplete="off" placeholder="https://script.google.com/macros/s/.../exec"></div>
-        <div class="field"><label for="adminKey">Clave privada</label><input id="adminKey" type="password" autocomplete="current-password" placeholder="Tu clave de administrador"></div>
-        <button class="btn btn-primary" id="btnConnect" type="button">Ver datos</button>
-      </div>
-      <p class="setup-note"><b>Privacidad:</b> la URL puede guardarse en este dispositivo. La clave se conserva solo durante esta pestaña y no se guarda en LSPedia ni en GitHub.</p>
+    <section class="card priority-panel">
+      <div class="priority-head"><div><h2>🎬 Prioridad para crear contenido</h2><p>Las primeras pendientes por número de búsquedas. Úsalo como cola práctica para decidir qué grabar primero.</p></div><button class="btn btn-soft" id="btnCopyTop" type="button">Copiar top 5</button></div>
+      <div class="priority-list" id="priorityList"></div>
     </section>
 
-    <div id="alertBox" class="alert d-none"></div>
-
-    <section id="dashboard" class="d-none">
-      <div class="stats">
-        <article class="card stat"><div class="stat-label">Búsquedas sin resultado</div><div class="stat-value" id="statSearches">0</div><div class="stat-sub" id="statPeriod">Últimos 30 días</div></article>
-        <article class="card stat"><div class="stat-label">Términos diferentes</div><div class="stat-value" id="statTerms">0</div><div class="stat-sub">Palabras o expresiones distintas</div></article>
-        <article class="card stat"><div class="stat-label">Último registro</div><div class="stat-value" id="statLast" style="font-size:20px">—</div><div class="stat-sub" id="statGenerated">Actualizado ahora</div></article>
+    <section class="card panel">
+      <div class="toolbar">
+        <input class="search-input" id="tableSearch" type="search" placeholder="Filtrar palabra…" aria-label="Filtrar palabra">
+        <div class="toolbar-actions" role="group" aria-label="Filtrar estado"><button class="filter-btn active" type="button" data-filter="pending">Pendientes</button><button class="filter-btn" type="button" data-filter="added">Ya agregadas</button><button class="filter-btn" type="button" data-filter="all">Todas</button></div>
+        <div style="display:flex;gap:7px"><select id="periodSelect" aria-label="Periodo" class="search-input" style="min-width:126px"><option value="7">7 días</option><option value="30" selected>30 días</option><option value="90">90 días</option><option value="365">1 año</option><option value="todo">Desde el inicio</option></select><button class="btn btn-soft" id="btnRefresh" type="button" title="Actualizar">↻</button><button class="btn btn-soft" id="btnCsv" type="button" title="Exportar CSV">CSV</button></div>
       </div>
-
-      <section class="card panel">
-        <div class="toolbar">
-          <input class="search-input" id="tableSearch" type="search" placeholder="Filtrar palabra…" aria-label="Filtrar palabra">
-          <div class="toolbar-actions" role="group" aria-label="Filtrar estado">
-            <button class="filter-btn active" type="button" data-filter="pending">Pendientes</button>
-            <button class="filter-btn" type="button" data-filter="added">Ya agregadas</button>
-            <button class="filter-btn" type="button" data-filter="all">Todas</button>
-          </div>
-          <div style="display:flex;gap:7px">
-            <select id="periodSelect" aria-label="Periodo" class="search-input" style="min-width:126px">
-              <option value="7">7 días</option>
-              <option value="30" selected>30 días</option>
-              <option value="90">90 días</option>
-              <option value="365">1 año</option>
-              <option value="todo">Desde el inicio</option>
-            </select>
-            <button class="btn btn-soft" id="btnRefresh" type="button" title="Actualizar">↻</button>
-            <button class="btn btn-soft" id="btnCsv" type="button" title="Exportar CSV">CSV</button>
-          </div>
-        </div>
-
-        <div id="loading" class="loading d-none"><div class="spinner"></div>Consultando Google Analytics…</div>
-        <div class="table-wrap" id="tableWrap">
-          <table class="table">
-            <thead><tr><th>#</th><th>Palabra buscada</th><th>Búsquedas</th><th>Última búsqueda</th><th>Estado</th><th></th></tr></thead>
-            <tbody id="tableBody"></tbody>
-          </table>
-        </div>
-        <div id="emptyState" class="empty d-none"><strong>No hay datos para este filtro.</strong><span>Prueba otro periodo o selecciona “Todas”.</span></div>
-      </section>
-      <p class="footer-note">Los términos provienen del evento <b>search_no_results</b> de Google Analytics. El estado “Ya está” se detecta comparando automáticamente con Diccionario y Vocabulario actuales.</p>
+      <div id="loading" class="loading d-none"><div class="spinner"></div>Consultando Google Analytics…</div>
+      <div class="table-wrap" id="tableWrap"><table class="table"><thead><tr><th>#</th><th>Palabra buscada</th><th>Búsquedas</th><th>Prioridad</th><th>Última búsqueda</th><th>Estado</th><th></th></tr></thead><tbody id="tableBody"></tbody></table></div>
+      <div id="emptyState" class="empty d-none"><strong>No hay datos para este filtro.</strong><span>Prueba otro periodo o selecciona “Todas”.</span></div>
     </section>
-  </main>
-
+    <p class="footer-note">Los términos provienen de <b>search_no_results</b>. “Ya está” se compara con Diccionario y Vocabulario actuales. La prioridad es una ayuda editorial; no agrega palabras automáticamente.</p>
+  </section>
+</main>
 <script>
 (function(){
   'use strict';
-  const $ = (id) => document.getElementById(id);
-  const el = {
-    api: $('apiUrl'), key: $('adminKey'), connect: $('btnConnect'), status: $('setupStatus'),
-    alert: $('alertBox'), dashboard: $('dashboard'), period: $('periodSelect'), refresh: $('btnRefresh'),
-    csv: $('btnCsv'), search: $('tableSearch'), body: $('tableBody'), loading: $('loading'),
-    wrap: $('tableWrap'), empty: $('emptyState'), searches: $('statSearches'), terms: $('statTerms'),
-    last: $('statLast'), generated: $('statGenerated'), statPeriod: $('statPeriod')
-  };
-  const STORE_URL = 'lspedia_admin_busquedas_api_v1';
-  const SESSION_KEY = 'lspedia_admin_busquedas_key_v1';
-  const state = { items: [], filter: 'pending', query: '', existing: new Set(), raw: null };
+  const $=id=>document.getElementById(id),el={api:$('apiUrl'),key:$('adminKey'),connect:$('btnConnect'),reset:$('btnReset'),status:$('setupStatus'),alert:$('alertBox'),dashboard:$('dashboard'),period:$('periodSelect'),refresh:$('btnRefresh'),csv:$('btnCsv'),search:$('tableSearch'),body:$('tableBody'),loading:$('loading'),wrap:$('tableWrap'),empty:$('emptyState'),searches:$('statSearches'),terms:$('statTerms'),last:$('statLast'),generated:$('statGenerated'),statPeriod:$('statPeriod'),priority:$('priorityList'),copyTop:$('btnCopyTop')};
+  const STORE_URL='lspedia_admin_busquedas_api_v1',SESSION_KEY='lspedia_admin_busquedas_key_v1';
+  const state={items:[],filter:'pending',query:'',existing:new Set(),raw:null};
+  const normalize=v=>String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toLocaleLowerCase('es-PE');
+  const escapeHtml=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const formatNumber=n=>new Intl.NumberFormat('es-PE').format(Number(n)||0);
+  function formatGaDate(v){const s=String(v||'');if(!/^\d{8}$/.test(s))return'—';const d=new Date(+s.slice(0,4),+s.slice(4,6)-1,+s.slice(6,8));return new Intl.DateTimeFormat('es-PE',{day:'2-digit',month:'short',year:'numeric'}).format(d)}
+  function formatTimestamp(v){const d=new Date(v);return Number.isNaN(d.getTime())?'Actualizado ahora':'Actualizado '+new Intl.DateTimeFormat('es-PE',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'short'}).format(d)}
+  const periodLabel=p=>({'7':'Últimos 7 días','30':'Últimos 30 días','90':'Últimos 90 días','365':'Último año','todo':'Desde el 10 sep 2026'})[p]||'Últimos 30 días';
+  function showAlert(m,t='error'){el.alert.textContent=m;el.alert.className='alert '+(t==='info'?'alert-info':'alert-error')}function hideAlert(){el.alert.className='alert d-none';el.alert.textContent=''}
+  function setLoading(on){el.loading.classList.toggle('d-none',!on);el.wrap.classList.toggle('d-none',on);el.empty.classList.add('d-none');el.connect.disabled=on;el.refresh.disabled=on;el.reset.disabled=on}
 
-  function normalize(value){
-    return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toLocaleLowerCase('es-PE');
-  }
+  async function loadExistingWords(){try{const[a,b]=await Promise.all([fetch('../data/palabras.json?_='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():[]).catch(()=>[]),fetch('../data/vocabulario.json?_='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():[]).catch(()=>[])]);const all=[];(Array.isArray(a)?a:[]).forEach(x=>{if(x&&x.palabra)all.push(normalize(x.palabra))});(Array.isArray(b)?b:[]).forEach(x=>{if(x&&x.palabra)all.push(normalize(x.palabra))});state.existing=new Set(all.filter(Boolean))}catch(_e){state.existing=new Set()}}
 
-  function escapeHtml(value){
-    return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-  }
+  function requestJsonp(apiUrl,key,period){return new Promise((resolve,reject)=>{let parsed;try{parsed=new URL(apiUrl)}catch(_e){reject(new Error('La URL no tiene un formato válido. Vuelve a copiar la URL /exec del despliegue de Apps Script.'));return}if(parsed.protocol!=='https:'){reject(new Error('La URL debe comenzar con https://'));return}if(!/\/exec\/?$/.test(parsed.pathname)){reject(new Error('La URL parece no ser la aplicación web publicada. Debe terminar en /exec.'));return}const cb='lspAdminCb_'+Date.now()+'_'+Math.random().toString(36).slice(2,8),script=document.createElement('script');let done=false;let timer;const cleanup=()=>{try{delete window[cb]}catch(_e){}script.remove();clearTimeout(timer)};window[cb]=data=>{if(done)return;done=true;cleanup();resolve(data)};parsed.searchParams.set('modo','admin_busquedas');parsed.searchParams.set('key',key);parsed.searchParams.set('periodo',period);parsed.searchParams.set('callback',cb);parsed.searchParams.set('_',String(Date.now()));script.src=parsed.toString();script.async=true;script.onerror=()=>{if(done)return;done=true;cleanup();reject(new Error('El navegador no pudo cargar Apps Script. Si la URL funciona en otro perfil o en incógnito, usa “Restablecer conexión” y prueba otra vez; también revisa permisos/bloqueos del navegador.'))};timer=setTimeout(()=>{if(done)return;done=true;cleanup();reject(new Error('Apps Script no respondió en 20 segundos. Revisa internet y el despliegue; luego pulsa Actualizar.'))},20000);document.head.appendChild(script)})}
 
-  function formatNumber(n){ return new Intl.NumberFormat('es-PE').format(Number(n)||0); }
-  function formatGaDate(v){
-    const s=String(v||''); if(!/^\d{8}$/.test(s)) return '—';
-    const d=new Date(Number(s.slice(0,4)),Number(s.slice(4,6))-1,Number(s.slice(6,8)));
-    return new Intl.DateTimeFormat('es-PE',{day:'2-digit',month:'short',year:'numeric'}).format(d);
-  }
-  function formatTimestamp(v){
-    const d=new Date(v); if(Number.isNaN(d.getTime())) return 'Actualizado ahora';
-    return 'Actualizado '+new Intl.DateTimeFormat('es-PE',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'short'}).format(d);
-  }
-  function periodLabel(p){ return ({'7':'Últimos 7 días','30':'Últimos 30 días','90':'Últimos 90 días','365':'Último año','todo':'Desde el 10 sep 2026'})[p] || 'Últimos 30 días'; }
+  function nivel(item){if(item.added)return{key:'done',text:'—',cls:''};if(item.busquedas>=5)return{key:'high',text:'Alta',cls:'priority-high'};if(item.busquedas>=2)return{key:'medium',text:'Media',cls:'priority-medium'};return{key:'low',text:'Baja',cls:'priority-low'}}
+  function pendientesTop(){return state.items.filter(x=>!x.added).slice().sort((a,b)=>b.busquedas-a.busquedas||String(b.ultimaFecha).localeCompare(String(a.ultimaFecha))).slice(0,5)}
+  function renderPriority(){const top=pendientesTop();if(!top.length){el.priority.innerHTML='<div class="priority-empty">No hay palabras pendientes en este periodo.</div>';return}el.priority.innerHTML=top.map((x,i)=>'<div class="priority-item"><div class="priority-num">#'+(i+1)+'</div><div class="priority-term" title="'+escapeHtml(x.termino)+'">'+escapeHtml(x.termino)+'</div><div class="priority-count">'+formatNumber(x.busquedas)+' búsqueda'+(x.busquedas===1?'':'s')+'</div></div>').join('')}
 
-  function showAlert(message,type='error'){
-    el.alert.textContent=message; el.alert.className='alert '+(type==='info'?'alert-info':'alert-error');
-  }
-  function hideAlert(){ el.alert.className='alert d-none'; el.alert.textContent=''; }
-  function setLoading(on){
-    el.loading.classList.toggle('d-none',!on); el.wrap.classList.toggle('d-none',on); el.empty.classList.add('d-none');
-    el.connect.disabled=on; el.refresh.disabled=on;
-  }
+  async function loadData(){hideAlert();const api=el.api.value.trim(),key=el.key.value.trim(),period=el.period.value;if(!api){showAlert('Pega primero la URL /exec de la aplicación web de Apps Script.');return}if(!key){showAlert('Escribe tu clave privada de administrador.');return}localStorage.setItem(STORE_URL,api);sessionStorage.setItem(SESSION_KEY,key);setLoading(true);el.status.textContent='Conectando…';try{await loadExistingWords();const data=await requestJsonp(api,key,period);if(!data||data.ok!==true)throw new Error(data&&data.error?data.error:'Apps Script respondió, pero los datos no tienen el formato esperado.');state.raw=data;state.items=(Array.isArray(data.items)?data.items:[]).map(x=>({termino:String(x.termino||'').trim(),busquedas:Number(x.busquedas)||0,ultimaFecha:String(x.ultimaFecha||''),added:state.existing.has(normalize(x.termino))}));el.searches.textContent=formatNumber(data.totalBusquedas);el.terms.textContent=formatNumber(data.totalTerminos);el.last.textContent=formatGaDate(data.ultimaBusqueda);el.generated.textContent=formatTimestamp(data.generadoEn);el.statPeriod.textContent=periodLabel(period);el.dashboard.classList.remove('d-none');el.status.textContent='Conectado';el.status.style.background='#eaf8f1';el.status.style.color='#16845b';render();renderPriority()}catch(err){el.status.textContent='Error';el.status.style.background='#fff1ef';el.status.style.color='#b42318';const m=err&&err.message?err.message:String(err);showAlert(/clave/i.test(m)?'Apps Script respondió, pero la clave fue rechazada. Vuelve a copiar la CLAVE PRIVADA generada en Apps Script.':m)}finally{setLoading(false)}}
+  function resetConnection(){try{localStorage.removeItem(STORE_URL);sessionStorage.removeItem(SESSION_KEY)}catch(_e){}el.api.value='';el.key.value='';state.items=[];state.raw=null;el.dashboard.classList.add('d-none');el.status.textContent='Sin conectar';el.status.style.background='#eef2f7';el.status.style.color='#546274';hideAlert();showAlert('Conexión local restablecida. Pega nuevamente la URL /exec y tu clave privada.','info');el.api.focus()}
+  function filtered(){const q=normalize(state.query);return state.items.filter(item=>{if(state.filter==='pending'&&item.added)return false;if(state.filter==='added'&&!item.added)return false;return!q||normalize(item.termino).includes(q)})}
+  function render(){const rows=filtered();el.body.innerHTML='';rows.forEach((item,i)=>{const n=nivel(item),tr=document.createElement('tr');tr.innerHTML='<td class="rank">'+(i+1)+'</td><td><div class="term">'+escapeHtml(item.termino)+'</div></td><td class="count">'+formatNumber(item.busquedas)+'</td><td>'+(item.added?'—':'<span class="priority-badge '+n.cls+'">'+n.text+'</span>')+'</td><td class="last">'+formatGaDate(item.ultimaFecha)+'</td><td><span class="state '+(item.added?'state-added':'state-pending')+'">'+(item.added?'✓ Ya está en LSPedia':'● Pendiente')+'</span></td><td><button class="copy-btn" type="button" data-copy="'+encodeURIComponent(item.termino)+'">Copiar</button></td>';el.body.appendChild(tr)});el.wrap.classList.toggle('d-none',rows.length===0);el.empty.classList.toggle('d-none',rows.length!==0);el.body.querySelectorAll('[data-copy]').forEach(btn=>btn.addEventListener('click',async()=>{const t=decodeURIComponent(btn.dataset.copy||'');try{await navigator.clipboard.writeText(t);btn.textContent='Copiado ✓';setTimeout(()=>btn.textContent='Copiar',1200)}catch(_e){showAlert('No se pudo copiar automáticamente.','info')}}))}
+  function exportCsv(){const rows=filtered();if(!rows.length){showAlert('No hay filas para exportar.','info');return}const quote=v=>'"'+String(v??'').replace(/"/g,'""')+'"',lines=[['N','Palabra buscada','Busquedas','Prioridad','Ultima busqueda','Estado'].map(quote).join(',')];rows.forEach((x,i)=>lines.push([i+1,x.termino,x.busquedas,nivel(x).text,formatGaDate(x.ultimaFecha),x.added?'Ya esta en LSPedia':'Pendiente'].map(quote).join(',')));const blob=new Blob(['\ufeff'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='lspedia-busquedas-sin-resultados.csv';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},0)}
+  async function copyTop(){const top=pendientesTop();if(!top.length){showAlert('No hay pendientes para copiar.','info');return}const t=top.map((x,i)=>(i+1)+'. '+x.termino+' — '+x.busquedas+' búsqueda'+(x.busquedas===1?'':'s')).join('\n');try{await navigator.clipboard.writeText(t);showAlert('Top 5 copiado. Ya puedes usarlo como lista de grabación.','info')}catch(_e){window.prompt('Copia esta lista:',t)}}
 
-  async function loadExistingWords(){
-    try{
-      const [a,b]=await Promise.all([
-        fetch('../data/palabras.json?_='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():[]).catch(()=>[]),
-        fetch('../data/vocabulario.json?_='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():[]).catch(()=>[])
-      ]);
-      const all=[];
-      (Array.isArray(a)?a:[]).forEach(x=>{if(x&&x.palabra) all.push(normalize(x.palabra));});
-      (Array.isArray(b)?b:[]).forEach(x=>{if(x&&x.palabra) all.push(normalize(x.palabra));});
-      state.existing=new Set(all.filter(Boolean));
-    }catch(_e){ state.existing=new Set(); }
-  }
-
-  function requestJsonp(apiUrl,key,period){
-    return new Promise((resolve,reject)=>{
-      let parsed;
-      try{ parsed=new URL(apiUrl); }catch(_e){ reject(new Error('La URL de Apps Script no es válida.')); return; }
-      if(parsed.protocol!=='https:'){ reject(new Error('La URL debe comenzar con https://')); return; }
-
-      const cb='lspAdminCb_'+Date.now()+'_'+Math.random().toString(36).slice(2,8);
-      const script=document.createElement('script'); let done=false;
-      const cleanup=()=>{delete window[cb];script.remove();clearTimeout(timer);};
-      window[cb]=(data)=>{if(done)return;done=true;cleanup();resolve(data);};
-      parsed.searchParams.set('modo','admin_busquedas');
-      parsed.searchParams.set('key',key);
-      parsed.searchParams.set('periodo',period);
-      parsed.searchParams.set('callback',cb);
-      parsed.searchParams.set('_',String(Date.now()));
-      script.src=parsed.toString(); script.async=true;
-      script.onerror=()=>{if(done)return;done=true;cleanup();reject(new Error('No se pudo conectar con Apps Script. Revisa la URL y el despliegue.'));};
-      const timer=setTimeout(()=>{if(done)return;done=true;cleanup();reject(new Error('La consulta tardó demasiado. Intenta otra vez.'));},15000);
-      document.head.appendChild(script);
-    });
-  }
-
-  async function loadData(){
-    hideAlert();
-    const api=el.api.value.trim(), key=el.key.value.trim(), period=el.period.value;
-    if(!api){showAlert('Pega primero la URL de la aplicación web de Apps Script.');return;}
-    if(!key){showAlert('Escribe tu clave privada de administrador.');return;}
-    localStorage.setItem(STORE_URL,api); sessionStorage.setItem(SESSION_KEY,key);
-    setLoading(true); el.status.textContent='Conectando…';
-    try{
-      await loadExistingWords();
-      const data=await requestJsonp(api,key,period);
-      if(!data||data.ok!==true) throw new Error(data&&data.error?data.error:'Respuesta inválida del servidor.');
-      state.raw=data;
-      state.items=(Array.isArray(data.items)?data.items:[]).map(x=>({
-        termino:String(x.termino||'').trim(), busquedas:Number(x.busquedas)||0, ultimaFecha:String(x.ultimaFecha||''),
-        added:state.existing.has(normalize(x.termino))
-      }));
-      el.searches.textContent=formatNumber(data.totalBusquedas);
-      el.terms.textContent=formatNumber(data.totalTerminos);
-      el.last.textContent=formatGaDate(data.ultimaBusqueda);
-      el.generated.textContent=formatTimestamp(data.generadoEn);
-      el.statPeriod.textContent=periodLabel(period);
-      el.dashboard.classList.remove('d-none'); el.status.textContent='Conectado';
-      el.status.style.background='#eaf8f1'; el.status.style.color='#16845b';
-      render();
-    }catch(err){
-      el.status.textContent='Error'; el.status.style.background='#fff1ef';el.status.style.color='#b42318';
-      showAlert(err&&err.message?err.message:String(err));
-    }finally{setLoading(false);}
-  }
-
-  function filtered(){
-    const q=normalize(state.query);
-    return state.items.filter(item=>{
-      if(state.filter==='pending'&&item.added)return false;
-      if(state.filter==='added'&&!item.added)return false;
-      return !q||normalize(item.termino).includes(q);
-    });
-  }
-
-  function render(){
-    const rows=filtered(); el.body.innerHTML='';
-    rows.forEach((item,i)=>{
-      const tr=document.createElement('tr');
-      tr.innerHTML='<td class="rank">'+(i+1)+'</td>'+
-        '<td><div class="term">'+escapeHtml(item.termino)+'</div></td>'+
-        '<td class="count">'+formatNumber(item.busquedas)+'</td>'+
-        '<td class="last">'+formatGaDate(item.ultimaFecha)+'</td>'+
-        '<td><span class="state '+(item.added?'state-added':'state-pending')+'">'+(item.added?'✓ Ya está en LSPedia':'● Pendiente')+'</span></td>'+
-        '<td><button class="copy-btn" type="button" data-copy="'+encodeURIComponent(item.termino)+'">Copiar</button></td>';
-      el.body.appendChild(tr);
-    });
-    el.wrap.classList.toggle('d-none',rows.length===0);el.empty.classList.toggle('d-none',rows.length!==0);
-    el.body.querySelectorAll('[data-copy]').forEach(btn=>btn.addEventListener('click',async()=>{
-      const text=decodeURIComponent(btn.dataset.copy||'');
-      try{await navigator.clipboard.writeText(text);btn.textContent='Copiado ✓';setTimeout(()=>btn.textContent='Copiar',1200);}catch(_e){showAlert('No se pudo copiar automáticamente.','info');}
-    }));
-  }
-
-  function exportCsv(){
-    const rows=filtered(); if(!rows.length){showAlert('No hay filas para exportar.','info');return;}
-    const quote=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
-    const lines=[['N','Palabra buscada','Busquedas','Ultima busqueda','Estado'].map(quote).join(',')];
-    rows.forEach((x,i)=>lines.push([i+1,x.termino,x.busquedas,formatGaDate(x.ultimaFecha),x.added?'Ya esta en LSPedia':'Pendiente'].map(quote).join(',')));
-    const blob=new Blob(['\ufeff'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='lspedia-busquedas-sin-resultados.csv';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},0);
-  }
-
-  document.querySelectorAll('.filter-btn').forEach(btn=>btn.addEventListener('click',()=>{
-    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');state.filter=btn.dataset.filter||'all';render();
-  }));
-  el.search.addEventListener('input',()=>{state.query=el.search.value;render();});
-  el.connect.addEventListener('click',loadData);el.refresh.addEventListener('click',loadData);el.period.addEventListener('change',()=>{if(!el.dashboard.classList.contains('d-none'))loadData();});el.csv.addEventListener('click',exportCsv);
-  el.key.addEventListener('keydown',e=>{if(e.key==='Enter')loadData();});el.api.addEventListener('keydown',e=>{if(e.key==='Enter')loadData();});
-
-  const savedUrl=localStorage.getItem(STORE_URL)||'';const savedKey=sessionStorage.getItem(SESSION_KEY)||'';
-  if(savedUrl)el.api.value=savedUrl;if(savedKey)el.key.value=savedKey;
-  if(savedUrl&&savedKey)loadData();
+  document.querySelectorAll('.filter-btn').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');state.filter=btn.dataset.filter||'all';render()}));
+  el.search.addEventListener('input',()=>{state.query=el.search.value;render()});el.connect.addEventListener('click',loadData);el.reset.addEventListener('click',resetConnection);el.refresh.addEventListener('click',loadData);el.period.addEventListener('change',()=>{if(!el.dashboard.classList.contains('d-none'))loadData()});el.csv.addEventListener('click',exportCsv);el.copyTop.addEventListener('click',copyTop);el.key.addEventListener('keydown',e=>{if(e.key==='Enter')loadData()});el.api.addEventListener('keydown',e=>{if(e.key==='Enter')loadData()});
+  const savedUrl=localStorage.getItem(STORE_URL)||'',savedKey=sessionStorage.getItem(SESSION_KEY)||'';if(savedUrl)el.api.value=savedUrl;if(savedKey)el.key.value=savedKey;if(savedUrl&&savedKey)loadData();
 })();
 </script>
 </body>
