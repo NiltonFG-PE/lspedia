@@ -10,7 +10,7 @@
    ============================================================ */
 
 // Cambia esta versión cuando modifiques el cascarón de la aplicación.
-const VERSION_APP = "v56";
+const VERSION_APP = "v57";
 const PREFIJO_CACHE = "lspedia-shell-";
 const CACHE_NOMBRE = PREFIJO_CACHE + VERSION_APP;
 
