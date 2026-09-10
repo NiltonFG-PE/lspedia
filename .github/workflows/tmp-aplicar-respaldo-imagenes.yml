@@ -1,0 +1,46 @@
+name: TMP Aplicar respaldo imagenes
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - '.github/workflows/tmp-aplicar-respaldo-imagenes.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  aplicar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Aplicar cambios
+        run: python scripts/tmp_aplicar_respaldo_imagenes.py
+      - name: Validar cambios
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/validar_imagenes.py
+          python -m json.tool data/alfabetizacion.json > /dev/null
+          node --check js/script.js
+          git diff --check
+          test -f 'video/lspedia_transparente anterior.webm'
+      - name: Guardar cambios
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add js/script.js css/estilos.css sw.js img/imagen-no-disponible.svg scripts/validar_imagenes.py .github/workflows/validar-lspedia.yml .github/workflows/actualizar-alfabetizacion.yml
+          if git diff --cached --quiet; then
+            echo 'Sin cambios que guardar.'
+            exit 0
+          fi
+          git commit -m 'Proteger LSPedia contra imágenes rotas'
+          git push origin HEAD:develop
