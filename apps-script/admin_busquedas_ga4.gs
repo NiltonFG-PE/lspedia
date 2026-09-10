@@ -1,25 +1,54 @@
 /* ============================================================
    LSPedia - Panel privado de búsquedas sin resultados (GA4)
    ------------------------------------------------------------
-   Este Apps Script consulta el evento GA4 `search_no_results` y devuelve
-   un ranking de términos buscados. NO modifica el sitio público.
+   Consulta el evento `search_no_results` que ya envía LSPedia y devuelve
+   un ranking de los términos que la web no encontró.
 
-   Requisitos de despliegue:
-   1) Crear un proyecto de Google Apps Script independiente.
-   2) Copiar este archivo y usar el manifest incluido en el repositorio.
-   3) Cambiar GA4_PROPERTY_ID por el ID NUMÉRICO de la propiedad GA4.
-   4) Cambiar ADMIN_KEY por una clave privada larga.
-   5) Implementar como Aplicación web: ejecutar como tú y acceso "Cualquiera".
-      Los datos siguen protegidos porque toda consulta exige ADMIN_KEY.
+   CONFIGURACIÓN UNA SOLA VEZ
+   1) Crea un proyecto independiente en Google Apps Script.
+   2) Copia este archivo y el manifest del repositorio.
+   3) Habilita Google Analytics Data API y Google Analytics Admin API en el
+      proyecto de Google Cloud asociado al Apps Script.
+   4) Ejecuta prepararPanelBusquedas() una vez y autoriza acceso de SOLO
+      LECTURA a Analytics. En el registro de ejecución aparecerá tu clave.
+   5) Implementa como Aplicación web: ejecutar como tú y acceso "Cualquiera".
 
-   IMPORTANTE: la URL del panel está fuera del menú público y el HTML lleva
-   noindex/nofollow. La clave nunca debe guardarse en GitHub.
+   No tienes que buscar el ID numérico de la propiedad: el script encuentra
+   automáticamente la propiedad cuyo flujo web usa G-RJX3RP2CBR.
+   La clave privada se guarda en Script Properties, no en GitHub.
    ============================================================ */
 
-const GA4_PROPERTY_ID = "PEGA_AQUI_EL_ID_NUMERICO_DE_GA4";
-const ADMIN_KEY = "CAMBIA_ESTA_CLAVE_POR_UNA_LARGA_Y_PRIVADA";
+const GA4_MEASUREMENT_ID = "G-RJX3RP2CBR";
 const EVENTO_SIN_RESULTADOS = "search_no_results";
 const FECHA_INICIO_REGISTRO = "2026-09-10";
+const PROP_ADMIN_KEY = "LSPEDIA_ADMIN_BUSQUEDAS_KEY";
+const PROP_GA4_ID = "LSPEDIA_GA4_PROPERTY_ID";
+
+/**
+ * Ejecutar manualmente UNA vez antes de desplegar.
+ * Genera la clave privada y comprueba que puede localizar la propiedad GA4.
+ * Copia la clave que aparecerá en el registro de ejecución.
+ */
+function prepararPanelBusquedas() {
+  const props = PropertiesService.getScriptProperties();
+  let key = props.getProperty(PROP_ADMIN_KEY);
+  if (!key) {
+    key = (Utilities.getUuid() + Utilities.getUuid()).replace(/-/g, "");
+    props.setProperty(PROP_ADMIN_KEY, key);
+  }
+
+  const propertyId = obtenerPropertyId_();
+  console.log("LSPedia Admin - configuración lista");
+  console.log("GA4 Property ID: " + propertyId);
+  console.log("CLAVE PRIVADA: " + key);
+  console.log("Guarda esta clave. No la publiques ni la subas a GitHub.");
+
+  return {
+    ok: true,
+    propertyId: propertyId,
+    adminKey: key
+  };
+}
 
 function doGet(e) {
   try {
@@ -34,18 +63,16 @@ function doGet(e) {
       return responder_(callback, { ok: false, error: "Clave incorrecta." });
     }
 
-    validarConfiguracion_();
-
+    const propertyId = obtenerPropertyId_();
     const periodo = normalizarPeriodo_(params.periodo);
     const fechas = fechasPeriodo_(periodo);
-    const datos = consultarBusquedas_(fechas.inicio, fechas.fin);
+    const datos = consultarBusquedas_(propertyId, fechas.inicio, fechas.fin);
 
     return responder_(callback, {
       ok: true,
-      periodo,
+      periodo: periodo,
       inicio: fechas.inicio,
       fin: fechas.fin,
-      propiedad: GA4_PROPERTY_ID,
       totalBusquedas: datos.totalBusquedas,
       totalTerminos: datos.items.length,
       ultimaBusqueda: datos.ultimaBusqueda,
@@ -63,11 +90,10 @@ function doGet(e) {
 
 function claveValida_(key) {
   const recibida = String(key || "");
-  const esperada = String(ADMIN_KEY || "");
-  if (!esperada || esperada.indexOf("CAMBIA_ESTA") === 0) return false;
-  if (recibida.length !== esperada.length) return false;
+  const esperada = String(PropertiesService.getScriptProperties().getProperty(PROP_ADMIN_KEY) || "");
+  if (!esperada || recibida.length !== esperada.length) return false;
 
-  // Comparación de tiempo constante sencilla para no cortar al primer carácter.
+  // Comparación sencilla de tiempo constante: evita cortar al primer carácter.
   let diferencia = 0;
   for (let i = 0; i < esperada.length; i++) {
     diferencia |= esperada.charCodeAt(i) ^ recibida.charCodeAt(i);
@@ -75,13 +101,102 @@ function claveValida_(key) {
   return diferencia === 0;
 }
 
-function validarConfiguracion_() {
-  if (!/^\d+$/.test(String(GA4_PROPERTY_ID || ""))) {
-    throw new Error("Falta configurar GA4_PROPERTY_ID con el ID numérico de la propiedad.");
+function obtenerPropertyId_() {
+  const props = PropertiesService.getScriptProperties();
+  const cache = String(props.getProperty(PROP_GA4_ID) || "");
+  if (/^\d+$/.test(cache)) return cache;
+
+  const propertyId = descubrirPropertyIdPorMeasurementId_();
+  props.setProperty(PROP_GA4_ID, propertyId);
+  return propertyId;
+}
+
+function descubrirPropertyIdPorMeasurementId_() {
+  const propiedades = listarPropiedadesAccesibles_();
+  if (!propiedades.length) {
+    throw new Error("La cuenta autorizada no tiene propiedades de Google Analytics accesibles.");
   }
-  if (!ADMIN_KEY || ADMIN_KEY.indexOf("CAMBIA_ESTA") === 0 || ADMIN_KEY.length < 16) {
-    throw new Error("Falta configurar una ADMIN_KEY privada de al menos 16 caracteres.");
+
+  for (let i = 0; i < propiedades.length; i++) {
+    const propertyName = propiedades[i];
+    const streams = listarDataStreams_(propertyName);
+    for (let j = 0; j < streams.length; j++) {
+      const stream = streams[j] || {};
+      const web = stream.webStreamData || {};
+      if (String(web.measurementId || "").trim() === GA4_MEASUREMENT_ID) {
+        const match = String(propertyName).match(/^properties\/(\d+)$/);
+        if (!match) break;
+        return match[1];
+      }
+    }
   }
+
+  throw new Error("No se encontró una propiedad GA4 con el flujo " + GA4_MEASUREMENT_ID + ". Autoriza el mismo Google que administra LSPedia.");
+}
+
+function listarPropiedadesAccesibles_() {
+  const propiedades = [];
+  let pageToken = "";
+
+  do {
+    let url = "https://analyticsadmin.googleapis.com/v1beta/accountSummaries?pageSize=200";
+    if (pageToken) url += "&pageToken=" + encodeURIComponent(pageToken);
+    const json = apiGetJson_(url, "Google Analytics Admin API");
+
+    (json.accountSummaries || []).forEach(function (cuenta) {
+      (cuenta.propertySummaries || []).forEach(function (prop) {
+        const name = String(prop.property || "");
+        if (/^properties\/\d+$/.test(name) && propiedades.indexOf(name) === -1) {
+          propiedades.push(name);
+        }
+      });
+    });
+
+    pageToken = String(json.nextPageToken || "");
+  } while (pageToken);
+
+  return propiedades;
+}
+
+function listarDataStreams_(propertyName) {
+  const streams = [];
+  let pageToken = "";
+
+  do {
+    let url = "https://analyticsadmin.googleapis.com/v1beta/" + propertyName + "/dataStreams?pageSize=200";
+    if (pageToken) url += "&pageToken=" + encodeURIComponent(pageToken);
+    const json = apiGetJson_(url, "Google Analytics Admin API");
+    (json.dataStreams || []).forEach(function (stream) { streams.push(stream); });
+    pageToken = String(json.nextPageToken || "");
+  } while (pageToken);
+
+  return streams;
+}
+
+function apiGetJson_(url, nombreApi) {
+  const respuesta = UrlFetchApp.fetch(url, {
+    method: "get",
+    muteHttpExceptions: true,
+    headers: { Authorization: "Bearer " + ScriptApp.getOAuthToken() }
+  });
+  return interpretarRespuestaApi_(respuesta, nombreApi);
+}
+
+function interpretarRespuestaApi_(respuesta, nombreApi) {
+  const codigo = respuesta.getResponseCode();
+  const texto = respuesta.getContentText();
+  let json;
+  try {
+    json = JSON.parse(texto || "{}");
+  } catch (_error) {
+    throw new Error(nombreApi + " devolvió una respuesta que no se pudo leer.");
+  }
+
+  if (codigo < 200 || codigo >= 300) {
+    const detalle = json && json.error && json.error.message ? json.error.message : ("HTTP " + codigo);
+    throw new Error(nombreApi + ": " + detalle);
+  }
+  return json;
 }
 
 function normalizarPeriodo_(valor) {
@@ -97,9 +212,9 @@ function fechasPeriodo_(periodo) {
   return { inicio: periodo + "daysAgo", fin: "today" };
 }
 
-function consultarBusquedas_(inicio, fin) {
+function consultarBusquedas_(propertyId, inicio, fin) {
   const endpoint = "https://analyticsdata.googleapis.com/v1beta/properties/" +
-    encodeURIComponent(GA4_PROPERTY_ID) + ":runReport";
+    encodeURIComponent(propertyId) + ":runReport";
 
   const payload = {
     dateRanges: [{ startDate: inicio, endDate: fin }],
@@ -126,25 +241,10 @@ function consultarBusquedas_(inicio, fin) {
     contentType: "application/json",
     payload: JSON.stringify(payload),
     muteHttpExceptions: true,
-    headers: {
-      Authorization: "Bearer " + ScriptApp.getOAuthToken()
-    }
+    headers: { Authorization: "Bearer " + ScriptApp.getOAuthToken() }
   });
 
-  const codigo = respuesta.getResponseCode();
-  const texto = respuesta.getContentText();
-  let json;
-  try {
-    json = JSON.parse(texto || "{}");
-  } catch (_error) {
-    throw new Error("Google Analytics devolvió una respuesta que no se pudo leer.");
-  }
-
-  if (codigo < 200 || codigo >= 300) {
-    const detalle = json && json.error && json.error.message ? json.error.message : ("HTTP " + codigo);
-    throw new Error("No se pudo consultar Google Analytics: " + detalle);
-  }
-
+  const json = interpretarRespuestaApi_(respuesta, "Google Analytics Data API");
   const acumulado = {};
   let totalBusquedas = 0;
   let ultimaBusqueda = "";
@@ -158,11 +258,7 @@ function consultarBusquedas_(inicio, fin) {
 
     const termino = terminoCrudo.toLocaleLowerCase("es-PE");
     if (!acumulado[termino]) {
-      acumulado[termino] = {
-        termino: termino,
-        busquedas: 0,
-        ultimaFecha: ""
-      };
+      acumulado[termino] = { termino: termino, busquedas: 0, ultimaFecha: "" };
     }
 
     acumulado[termino].busquedas += cantidad;
@@ -178,11 +274,7 @@ function consultarBusquedas_(inicio, fin) {
       return String(b.ultimaFecha || "").localeCompare(String(a.ultimaFecha || ""));
     });
 
-  return {
-    totalBusquedas: totalBusquedas,
-    ultimaBusqueda: ultimaBusqueda,
-    items: items
-  };
+  return { totalBusquedas: totalBusquedas, ultimaBusqueda: ultimaBusqueda, items: items };
 }
 
 function limpiarCallback_(valor) {
