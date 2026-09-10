@@ -587,6 +587,28 @@ const AlfabetizacionV2 = (function () {
         });
     }
 
+    // Carga la animación de grafía y deja SIEMPRE la imagen estática
+    // equivalente como poster. Así, si todavía falta un MP4 o falla su carga,
+    // el usuario ve la grafía correcta en vez de una caja vacía.
+    function cargarVideoGrafiaConFallback(video, c, variante) {
+        const poster = rutaImagenGrafia(c, variante);
+        const ruta = rutaVideoGrafia(c, variante);
+
+        video.poster = poster;
+        video.playbackRate = CONFIG.VELOCIDADES_TRAZO[estado.aprender.velocidadIndex];
+        video.onerror = function () {
+            // Quitar el recurso fallido hace que el navegador vuelva a mostrar
+            // el poster. Al cambiar de carácter/variante se asignará un src nuevo.
+            video.pause();
+            video.removeAttribute("src");
+            video.load();
+            video.poster = poster;
+        };
+        video.src = ruta;
+        video.load();
+        video.play().catch(() => { /* autoplay bloqueado o MP4 aún no disponible */ });
+    }
+
     // Pinta el chip activo y carga el video de grafía para el carácter
     // actual, conservando la velocidad ya elegida. En números no hay
     // variante que resaltar: solo se carga su único video de grafía.
@@ -598,10 +620,7 @@ const AlfabetizacionV2 = (function () {
         if (!video) return;
 
         if (c.tipo === "numero") {
-            video.src = rutaVideoGrafia(c, null);
-            video.playbackRate = CONFIG.VELOCIDADES_TRAZO[estado.aprender.velocidadIndex];
-            video.load();
-            video.play().catch(() => { /* el autoplay puede requerir un gesto del usuario en algunos navegadores */ });
+            cargarVideoGrafiaConFallback(video, c, null);
             return;
         }
 
@@ -610,10 +629,7 @@ const AlfabetizacionV2 = (function () {
             if (chip) chip.classList.toggle("active", v === estado.aprender.variante);
         });
 
-        video.src = rutaVideoGrafia(c, estado.aprender.variante);
-        video.playbackRate = CONFIG.VELOCIDADES_TRAZO[estado.aprender.velocidadIndex];
-        video.load();
-        video.play().catch(() => { /* el autoplay puede requerir un gesto del usuario en algunos navegadores */ });
+        cargarVideoGrafiaConFallback(video, c, estado.aprender.variante);
     }
 
     function cambiarVarianteTipo(variante) {

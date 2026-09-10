@@ -26,6 +26,52 @@ def ruta_local_media(valor: object) -> Path | None:
     return ROOT / ruta
 
 
+def validar_recursos_derivados(alfabeto: list[dict], errores: list[str], advertencias: list[str]) -> None:
+    variantes = ("mayuscula", "minuscula", "cursiva-mayuscula", "cursiva-minuscula")
+
+    for fila in alfabeto:
+        if not isinstance(fila, dict):
+            continue
+        tipo = texto(fila.get("tipo"))
+        caracter = texto(fila.get("caracter"))
+        if not caracter or tipo not in {"letra", "numero"}:
+            continue
+
+        if tipo == "letra":
+            recursos = [
+                (ROOT / f"img/alfabetizacion/grafias/{caracter}-{variante}.png", True, variante)
+                for variante in variantes
+            ] + [
+                (ROOT / f"img/alfabetizacion/grafias/{caracter}-{variante}.mp4", False, variante)
+                for variante in variantes
+            ]
+        else:
+            recursos = [
+                (ROOT / f"img/alfabetizacion/grafias/{caracter}.png", True, "numero"),
+                (ROOT / f"img/alfabetizacion/grafias/{caracter}.mp4", False, "numero"),
+            ]
+
+        for ruta, obligatoria, variante in recursos:
+            if ruta.is_file():
+                continue
+            relativa = ruta.relative_to(ROOT).as_posix()
+            if obligatoria:
+                errores.append(
+                    f"{tipo.capitalize()} {caracter}: falta imagen estática de grafía ({variante}): {relativa}"
+                )
+            else:
+                advertencias.append(
+                    f"{tipo.capitalize()} {caracter}: falta animación de grafía ({variante}); se usará la PNG: {relativa}"
+                )
+
+        circulo = ROOT / f"img/alfabetizacion/circulo/{caracter}.webp"
+        if not circulo.is_file() and not (tipo == "numero" and caracter in {"16", "17", "18", "19"}):
+            advertencias.append(
+                f"{tipo.capitalize()} {caracter}: falta imagen de seña circular; se usará texto: "
+                f"{circulo.relative_to(ROOT).as_posix()}"
+            )
+
+
 def main() -> int:
     errores: list[str] = []
     advertencias: list[str] = []
@@ -81,6 +127,8 @@ def main() -> int:
             local = ruta_local_media(imagen_boca)
             if local is not None and not local.is_file():
                 errores.append(f"Alfabeto #{i} ({caracter}): imagenBoca local no existe: {imagen_boca}")
+
+    validar_recursos_derivados(alfabeto, errores, advertencias)
 
     for i, fila in enumerate(ejemplos, 1):
         if not isinstance(fila, dict):
