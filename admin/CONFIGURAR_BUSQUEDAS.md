@@ -4,25 +4,23 @@ La vista está en `admin/busquedas.html` y consulta el evento GA4 `search_no_res
 
 ## Configuración una sola vez
 
-1. En Google Analytics abre **Administrar > Configuración de la propiedad** y copia el **ID de propiedad** numérico. No es `G-RJX3RP2CBR`; debe ser solo números.
-2. Crea un proyecto independiente en **Google Apps Script**.
-3. Copia `apps-script/admin_busquedas_ga4.gs` dentro de `Code.gs`.
-4. Cambia en la parte superior:
-   - `GA4_PROPERTY_ID` por el ID numérico.
-   - `ADMIN_KEY` por una clave larga privada de al menos 16 caracteres. Esa clave NO debe guardarse en GitHub.
-5. En **Configuración del proyecto**, activa la visualización del archivo de manifiesto `appsscript.json` y reemplázalo por el contenido de `apps-script/appsscript-admin-busquedas.json`.
-6. En el proyecto de Google Cloud asociado al Apps Script, habilita **Google Analytics Data API**. Si Google solicita autorización, acepta el permiso de solo lectura de Analytics.
+1. Crea un proyecto independiente en **Google Apps Script**.
+2. Copia `apps-script/admin_busquedas_ga4.gs` dentro de `Code.gs`.
+3. En **Configuración del proyecto**, activa la visualización del archivo de manifiesto `appsscript.json` y reemplázalo por el contenido de `apps-script/appsscript-admin-busquedas.json`.
+4. En el proyecto de Google Cloud asociado al Apps Script, habilita **Google Analytics Data API** y **Google Analytics Admin API**.
+5. En Apps Script selecciona la función **`prepararPanelBusquedas`** y pulsa **Ejecutar**. Autoriza el acceso de solo lectura a Analytics. El script localizará automáticamente la propiedad cuyo flujo web usa `G-RJX3RP2CBR`.
+6. Abre el registro de ejecución y copia la línea **CLAVE PRIVADA**. La clave se genera automáticamente y se guarda en Script Properties; no debe copiarse al repositorio.
 7. En Apps Script selecciona **Implementar > Nueva implementación > Aplicación web**:
    - Ejecutar como: **Yo**.
    - Quién tiene acceso: **Cualquiera**.
 8. Copia la URL terminada en `/exec`.
-9. Abre `https://lspedia.site/admin/busquedas.html`, pega esa URL y escribe la `ADMIN_KEY`.
+9. Abre `https://lspedia.site/admin/busquedas.html`, pega esa URL y escribe la clave privada del paso 6.
 
 ## Seguridad
 
 La página administrativa no aparece en el menú y lleva `noindex,nofollow`. Los datos de Analytics no se publican en GitHub. La URL de Apps Script puede guardarse localmente en el navegador; la clave privada solo se guarda en `sessionStorage`, es decir, durante la sesión de esa pestaña.
 
-El web app de Apps Script debe estar disponible para que la página de GitHub Pages pueda consultarlo mediante JSONP, pero toda respuesta con datos exige la clave privada. Usa una clave larga y no la compartas.
+La aplicación web de Apps Script debe estar disponible para que la página de LSPedia pueda consultarla mediante JSONP, pero toda respuesta con datos exige la clave privada. No compartas esa clave.
 
 ## Qué muestra
 
