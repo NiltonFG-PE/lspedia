@@ -8,6 +8,7 @@ on:
       - "scripts/generar_alfabetizacion.py"
       - "scripts/migrar_alfabetizacion_json_local.py"
       - "scripts/validar_alfabetizacion.py"
+      - "scripts/validar_imagenes.py"
       - ".github/workflows/actualizar-alfabetizacion.yml"
   schedule:
     - cron: "7,37 * * * *"
@@ -47,6 +48,7 @@ jobs:
         run: |
           python -m json.tool data/alfabetizacion.json > /dev/null
           python scripts/validar_alfabetizacion.py
+          python scripts/validar_imagenes.py --solo-data data/alfabetizacion.json
           node --check js/alfabetizacion.js
 
       - name: Guardar cambios si hubo actualizacion
