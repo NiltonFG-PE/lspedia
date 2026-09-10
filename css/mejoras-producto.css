@@ -18,3 +18,16 @@
 .lsp-aprender-estado span{display:block}
 .lsp-aprendizaje-unificado .lsp-aprender-btn{margin-top:1px}
 @media(max-width:767.98px){.lsp-aprendizaje-unificado .lsp-mejora-sub{margin-bottom:9px}.lsp-aprender-estado{margin-bottom:11px}}
+
+
+/* Ajuste 2026-09-10: navegación única de Modo Aprender + miniaturas */
+.lsp-nueva-palabra{min-width:164px;max-width:184px;padding:7px 7px 10px;overflow:hidden}
+.lsp-nueva-thumb-wrap{display:block;width:100%;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#e9eef5;margin-bottom:8px}
+.lsp-nueva-thumb{display:block;width:100%;height:100%;object-fit:cover}
+.lsp-nueva-badge,.lsp-nueva-nombre,.lsp-nueva-cat{margin-left:3px;margin-right:3px}
+.ficha-palabra-browse.lsp-aprender-activo{grid-template-columns:58px minmax(0,1fr) auto minmax(0,1fr)}
+.lsp-aprender-salir{min-width:0;border:0;border-radius:12px;background:#fff1f2;color:#b4233a;font-weight:800;padding:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
+.lsp-aprender-salir span{font-size:1.2rem;line-height:1}
+.lsp-aprender-salir small{font-size:.66rem;font-weight:800}
+.lsp-aprender-salir:hover,.lsp-aprender-salir:focus-visible{background:#ffe4e6;outline:2px solid rgba(190,24,93,.15);outline-offset:1px}
+@media(max-width:767.98px){.lsp-nueva-palabra{min-width:150px;max-width:168px}.ficha-palabra-browse.lsp-aprender-activo{grid-template-columns:46px minmax(0,1fr) 46px minmax(0,1fr);gap:5px}.lsp-aprender-salir{padding:5px 3px;border-radius:10px}.lsp-aprender-salir small{font-size:.58rem}}

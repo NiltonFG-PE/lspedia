@@ -100,6 +100,11 @@
         }catch(_e){return new Set();}
     }
     function indiceInicial(lista){
+        const progreso=leerResumenProgreso();
+        if(progreso.ultima && progreso.ultima.referencia){
+            const desdeProgreso=lista.findIndex(p=>refPalabra(p)===texto(progreso.ultima.referencia));
+            if(desdeProgreso>=0) return desdeProgreso;
+        }
         const modo=leerModo();
         if(modo.iniciado && Number.isInteger(modo.indice) && modo.indice>=0 && modo.indice<lista.length) return modo.indice;
         const vistas=referenciasVistas();
@@ -123,30 +128,56 @@
         const lista=listaAprender(); if(!lista.length) return;
         abrirAprender(indiceInicial(lista));
     }
-    function finalizarModo(){
+    function finalizarModo(volverInicio){
         const modo=leerModo(); modo.activo=false; guardarModo(modo);
-        const bar=$('lspAprenderBar'); if(bar) bar.remove();
+        const viejo=$('lspAprenderBar'); if(viejo) viejo.remove();
+        const nav=$('navegacionFichaPalabra');
+        if(nav){
+            nav.classList.remove('lsp-aprender-activo');
+            const salir=nav.querySelector('.lsp-aprender-salir');
+            if(salir) salir.remove();
+        }
         actualizarTarjetaModo();
         gtagEvento('learning_mode_step',{action:'finish'});
+        if(volverInicio){
+            if(typeof window.irAlBuscador==='function') window.irAlBuscador();
+            else location.href=location.pathname;
+        }
     }
+
+    // Modo Aprender ya no crea una segunda barra encima de la ficha.
+    // Reutiliza la navegación normal Anterior/Siguiente que ya existe abajo
+    // y solo añade ahí un botón pequeño para salir del recorrido.
     function renderBarraAprender(){
+        const viejo=$('lspAprenderBar'); if(viejo) viejo.remove();
+        const nav=$('navegacionFichaPalabra');
+        if(!nav) return;
+
+        const salirAnterior=nav.querySelector('.lsp-aprender-salir');
+        if(salirAnterior) salirAnterior.remove();
+        nav.classList.remove('lsp-aprender-activo');
+
         const modo=leerModo();
-        const destino=$('resultado');
-        if(!modo.activo||!destino||!destino.children.length){const viejo=$('lspAprenderBar');if(viejo)viejo.remove();return;}
-        const lista=listaAprender(); if(!lista.length) return;
-        let i=Number(modo.indice)||0;
-        const actual=texto($('buscar')&&$('buscar').value).toLocaleLowerCase('es-PE');
-        const hallado=lista.findIndex(p=>texto(p.palabra).toLocaleLowerCase('es-PE')===actual);
-        if(hallado>=0){i=hallado;modo.indice=i;modo.referencia=refPalabra(lista[i]);guardarModo(modo);}
-        let bar=$('lspAprenderBar');
-        if(!bar){bar=document.createElement('div');bar.id='lspAprenderBar';bar.className='lsp-aprender-bar';destino.insertBefore(bar,destino.firstChild);}
-        bar.innerHTML='<strong>📘 Modo Aprender</strong><span class="lsp-aprender-progreso">'+(i+1)+' / '+lista.length+'</span>'+
-          '<button class="lsp-aprender-nav" id="lspAprenderPrev" type="button" '+(i===0?'disabled':'')+'>← Anterior</button>'+
-          '<button class="lsp-aprender-nav primary" id="lspAprenderNext" type="button">'+(i>=lista.length-1?'Reiniciar':'Siguiente →')+'</button>'+
-          '<button class="lsp-aprender-fin" id="lspAprenderFin" type="button">Salir</button>';
-        $('lspAprenderPrev').onclick=()=>abrirAprender(Math.max(0,i-1));
-        $('lspAprenderNext').onclick=()=>abrirAprender(i>=lista.length-1?0:i+1);
-        $('lspAprenderFin').onclick=finalizarModo;
+        if(!modo.activo || nav.dataset.fuente==='vocabulario') return;
+
+        const lista=listaAprender();
+        const referencia=texto(nav.dataset.referencia);
+        const indice=lista.findIndex(p=>refPalabra(p)===referencia);
+        if(indice>=0){
+            modo.indice=indice;
+            modo.referencia=referencia;
+            modo.actualizado=Date.now();
+            guardarModo(modo);
+        }
+
+        const salir=document.createElement('button');
+        salir.type='button';
+        salir.className='lsp-aprender-salir';
+        salir.setAttribute('aria-label','Salir de Modo Aprender');
+        salir.innerHTML='<span aria-hidden="true">×</span><small>Salir</small>';
+        salir.onclick=()=>finalizarModo(true);
+        nav.classList.add('lsp-aprender-activo');
+        nav.insertBefore(salir,nav.firstChild);
     }
 
     function leerResumenProgreso(){
@@ -196,6 +227,37 @@
         }
         meta.textContent='Tú decides cuándo entrar. Tu avance se guarda solo en este dispositivo.';
     }
+    function extraerIdVideoMiniatura(valor){
+        try{
+            if(typeof window.extraerIdYouTube==='function'){
+                const id=texto(window.extraerIdYouTube(valor));
+                if(id) return id;
+            }
+        }catch(_e){}
+        const v=texto(valor);
+        if(/^[A-Za-z0-9_-]{11}$/.test(v)) return v;
+        try{
+            const u=new URL(v,location.href);
+            if(/(^|\.)youtu\.be$/i.test(u.hostname)) return texto(u.pathname.split('/').filter(Boolean)[0]);
+            if(/(^|\.)youtube\.com$/i.test(u.hostname) || /(^|\.)youtube-nocookie\.com$/i.test(u.hostname)){
+                const q=texto(u.searchParams.get('v'));
+                if(q) return q;
+                const partes=u.pathname.split('/').filter(Boolean);
+                const marca=partes.findIndex(x=>['embed','shorts','live'].includes(x));
+                if(marca>=0 && partes[marca+1]) return texto(partes[marca+1]);
+            }
+        }catch(_e){}
+        return '';
+    }
+
+    function obtenerMiniaturaNueva(p){
+        const imagen=texto(p&&p.imagen).split(',')[0].trim();
+        if(/^(?:https?:\/\/|\/|\.\.?\/|img\/)/i.test(imagen)) return imagen;
+        const videoId=extraerIdVideoMiniatura(p&&p.video);
+        if(videoId) return 'https://i.ytimg.com/vi/'+encodeURIComponent(videoId)+'/mqdefault.jpg';
+        return 'img/imagen-no-disponible.svg';
+    }
+
     function renderNuevas(){
         const caja=$('lspNuevasLista');if(!caja)return;
         const actuales=datosDiccionario();
@@ -207,7 +269,18 @@
             caja.innerHTML='<span class="lsp-mejora-sub">Las próximas palabras publicadas aparecerán aquí.</span>';
             return;
         }
-        caja.innerHTML=publicadas.slice(0,8).map((x,i)=>'<button type="button" class="lsp-nueva-palabra" data-nueva="'+i+'"><span class="lsp-nueva-badge">NUEVA</span><span class="lsp-nueva-nombre">'+escapeHtml(texto(x.palabra.palabra))+'</span><span class="lsp-nueva-cat">'+escapeHtml(texto(x.palabra.categoria)||'Diccionario')+'</span></button>').join('');
+        caja.innerHTML=publicadas.slice(0,8).map((x,i)=>{
+            const nombre=texto(x.palabra.palabra);
+            const miniatura=obtenerMiniaturaNueva(x.palabra);
+            return '<button type="button" class="lsp-nueva-palabra" data-nueva="'+i+'">'+
+              '<span class="lsp-nueva-thumb-wrap"><img class="lsp-nueva-thumb" src="'+escapeHtml(miniatura)+'" alt="Miniatura de '+escapeHtml(nombre)+'" loading="lazy" decoding="async"></span>'+
+              '<span class="lsp-nueva-badge">NUEVA</span><span class="lsp-nueva-nombre">'+escapeHtml(nombre)+'</span><span class="lsp-nueva-cat">'+escapeHtml(texto(x.palabra.categoria)||'Diccionario')+'</span></button>';
+        }).join('');
+        caja.querySelectorAll('.lsp-nueva-thumb').forEach(img=>img.addEventListener('error',()=>{
+            if(img.dataset.fallback) return;
+            img.dataset.fallback='1';
+            img.src='img/imagen-no-disponible.svg';
+        }));
         caja.querySelectorAll('[data-nueva]').forEach(btn=>btn.onclick=()=>{
             const x=publicadas[Number(btn.dataset.nueva)]; if(!x||!x.palabra)return;
             if(typeof window.mostrarPalabra==='function'){window.mostrarPalabra(x.palabra);window.scrollTo({top:0,behavior:'smooth'});}
