@@ -20,6 +20,8 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 
+from normalizar_media_alfabetizacion import canonicalizar_ruta_ejemplo
+
 ROOT = Path(__file__).resolve().parent.parent
 DESTINO = ROOT / "data" / "alfabetizacion.json"
 SPREADSHEET_ID = "1fqC1aUpwdz6l0xRyYYfki7vJtjIql6sOEzpfWElknT0"
@@ -48,6 +50,7 @@ def ruta_media(valor: object) -> str:
     normalizada = normalizada.lstrip("/")
     if not normalizada.startswith("img/"):
         return ""
+    normalizada = canonicalizar_ruta_ejemplo(normalizada)
     if not (ROOT / normalizada).is_file():
         print(f"ADVERTENCIA: recurso local no encontrado, se omite: {normalizada}")
         return ""

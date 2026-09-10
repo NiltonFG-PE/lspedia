@@ -499,13 +499,13 @@
     {
       "caracter": "Ñ",
       "palabra": "Ñandu",
-      "imagen": "img/alfabetizacion/ejemplos/ñandu.webp",
+      "imagen": "img/alfabetizacion/ejemplos/nandu.webp",
       "orden": 1
     },
     {
       "caracter": "Ñ",
       "palabra": "Ñoquis",
-      "imagen": "img/alfabetizacion/ejemplos/ñoquis.webp",
+      "imagen": "img/alfabetizacion/ejemplos/noquis.webp",
       "orden": 2
     },
     {
@@ -625,7 +625,7 @@
     {
       "caracter": "U",
       "palabra": "Uña",
-      "imagen": "img/alfabetizacion/ejemplos/uña.webp",
+      "imagen": "img/alfabetizacion/ejemplos/una.webp",
       "orden": 2
     },
     {

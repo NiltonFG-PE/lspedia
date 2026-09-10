@@ -2727,7 +2727,7 @@ function extraerIdYouTube(valor) {
 // sus enlaces ?p=..., mientras Vocabulario agrega fuente=vocabulario para
 // que una palabra homónima se restaure desde la colección correcta.
 function generarBotonCompartir(){
-    return `<button type="button" id="btnCompartir" class="btn btn-sm btn-compartir py-1 px-3" title="Compartir esta seña" aria-label="Compartir esta seña"><span class="btn-compartir-icono">🔗</span> Compartir</button>`;
+    return `<button type="button" id="btnCompartir" class="btn btn-sm btn-compartir py-1 px-3" title="Compartir esta palabra" aria-label="Compartir esta palabra"><span class="btn-compartir-icono">🔗</span> Compartir</button>`;
 }
 
 // Si el navegador soporta la Web Share API (la mayoría de celulares), abre
@@ -5362,9 +5362,9 @@ function mostrarSenalDelDia(offset = offsetSenalDelDia){
 
     const labelSenalDelDia = document.getElementById("labelSenalDelDia");
     if(labelSenalDelDia){
-        if(offset === 0) labelSenalDelDia.textContent = "✨ Palabra del día";
-        else if(offset === 1) labelSenalDelDia.textContent = "✨ Palabra de ayer";
-        else labelSenalDelDia.textContent = `✨ Palabra de hace ${offset} días`;
+        if(offset === 0) labelSenalDelDia.textContent = "✨ La palabra del día";
+        else if(offset === 1) labelSenalDelDia.textContent = "✨ La palabra de ayer";
+        else labelSenalDelDia.textContent = `✨ La palabra de hace ${offset} días`;
     }
 
     const btnSenalSiguiente = document.getElementById("btnSenalSiguiente");
@@ -5402,7 +5402,7 @@ function mostrarSenalDelDia(offset = offsetSenalDelDia){
             if(!tarjetaDelDia) return;
             tarjetaDelDia.classList.toggle("dia-colapsada", colapsada);
             btnCerrarDelDia.setAttribute("aria-expanded", colapsada ? "false" : "true");
-            btnCerrarDelDia.setAttribute("aria-label", colapsada ? "Expandir Palabra del día" : "Contraer Palabra del día");
+            btnCerrarDelDia.setAttribute("aria-label", colapsada ? "Expandir la palabra del día" : "Contraer la palabra del día");
             document.body.classList.remove("senal-cerrada");
         };
 

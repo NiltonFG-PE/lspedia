@@ -1,0 +1,78 @@
+{
+  "generadoEn": "2026-09-10T17:48:57Z",
+  "metodo": "historial-git",
+  "items": [
+    {
+      "id": "equilibrio",
+      "palabra": "Equilibrio",
+      "categoria": "Salud",
+      "fecha": "2026-09-08T16:59:25Z"
+    },
+    {
+      "id": "semaforo",
+      "palabra": "Semáforo",
+      "categoria": "Calle",
+      "fecha": "2026-09-08T16:59:25Z"
+    },
+    {
+      "id": "policia",
+      "palabra": "Policía",
+      "categoria": "Calle",
+      "fecha": "2026-09-08T16:59:25Z"
+    },
+    {
+      "id": "mercado",
+      "palabra": "Mercado",
+      "categoria": "Calle",
+      "fecha": "2026-09-08T16:59:25Z"
+    },
+    {
+      "id": "transporte-publico",
+      "palabra": "Transporte público",
+      "categoria": "Calle",
+      "fecha": "2026-09-08T16:59:25Z"
+    },
+    {
+      "id": "vecino",
+      "palabra": "Vecino",
+      "categoria": "Calle",
+      "fecha": "2026-09-08T16:59:25Z"
+    },
+    {
+      "id": "tienda",
+      "palabra": "Tienda",
+      "categoria": "Calle",
+      "fecha": "2026-09-08T16:59:25Z"
+    },
+    {
+      "id": "farmacia",
+      "palabra": "Farmacia",
+      "categoria": "Calle",
+      "fecha": "2026-09-08T16:59:25Z"
+    },
+    {
+      "id": "dinero",
+      "palabra": "Dinero",
+      "categoria": "Calle",
+      "fecha": "2026-09-08T16:59:25Z"
+    },
+    {
+      "id": "hospital",
+      "palabra": "Hospital",
+      "categoria": "Calle",
+      "fecha": "2026-09-08T16:59:25Z"
+    },
+    {
+      "id": "emergencia",
+      "palabra": "Emergencia",
+      "categoria": "Calle",
+      "fecha": "2026-09-08T16:59:25Z"
+    },
+    {
+      "id": "ayuda",
+      "palabra": "Ayuda",
+      "categoria": "Calle",
+      "fecha": "2026-09-08T16:59:25Z"
+    }
+  ]
+}
