@@ -1,0 +1,44 @@
+name: TMP Progreso personal
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - '.github/workflows/tmp-progreso-personal.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  aplicar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Aplicar mejora
+        run: python scripts/tmp_progreso_personal.py
+
+      - name: Validar JavaScript y cambios
+        run: |
+          node --check js/script.js
+          git diff --check
+          test -f 'video/lspedia_transparente anterior.webm'
+          grep -q 'PROGRESO PERSONAL — PALABRAS VISTAS Y CONTINUAR' js/script.js
+          grep -q 'panelProgresoPersonal' js/script.js
+          grep -q 'const VERSION_APP = "v59";' sw.js
+
+      - name: Guardar cambios reales
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add js/script.js css/estilos.css sw.js
+          if git diff --cached --quiet; then
+            echo 'No hay cambios para guardar.'
+            exit 0
+          fi
+          git commit -m 'Agregar progreso personal y continuar aprendizaje'
+          git push origin develop
