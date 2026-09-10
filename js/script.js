@@ -5258,3 +5258,167 @@ function mostrarSenalDelDia(offset = offsetSenalDelDia){
 // El motor del Quiz (niveles, modos, temporizador, sonidos, etc.)
 // vive ahora en js/quiz.js como el módulo independiente QuizV2,
 // que lee sus preguntas desde la Hoja 2 de Google Sheets.
+
+
+// ============================================================
+// FICHA DE PALABRA — NAVEGACIÓN VISUAL ANTERIOR / SIGUIENTE
+// ------------------------------------------------------------
+// Mejora la ficha sin cambiar la lógica de videos, formularios, favoritos
+// ni navegación existente. Cuando una palabra está abierta, agrega una barra
+// inferior para explorar la palabra anterior/siguiente dentro de la misma
+// fuente (Diccionario o Vocabulario), ordenadas alfabéticamente.
+// ============================================================
+(function configurarNavegacionVisualFichaPalabra(){
+    const ID_NAVEGACION = "navegacionFichaPalabra";
+    let rafPendiente = 0;
+
+    function obtenerEstadoFichaActual(){
+        const params = new URLSearchParams(window.location.search);
+        const referencia = String(params.get("p") || "").trim();
+        if(!referencia) return null;
+
+        const esVocabulario = params.get("fuente") === "vocabulario";
+        const coleccion = esVocabulario
+            ? (typeof obtenerDatosVocabulario === "function" ? obtenerDatosVocabulario() : [])
+            : (window.App && Array.isArray(App.datos) ? App.datos : []);
+
+        const palabras = (Array.isArray(coleccion) ? coleccion : [])
+            .filter(p => p && p.palabra && String(p.palabra).trim())
+            .slice()
+            .sort((a, b) => String(a.palabra).localeCompare(String(b.palabra), "es", { sensitivity: "base" }));
+
+        const actual = buscarPalabraPorReferencia(referencia, palabras);
+        if(!actual) return null;
+
+        const indice = palabras.findIndex(p => obtenerIdPalabra(p) === obtenerIdPalabra(actual));
+        if(indice < 0) return null;
+
+        return { esVocabulario, palabras, actual, indice };
+    }
+
+    function obtenerContenedorFicha(actual){
+        const candidatos = [
+            document.getElementById("resultado"),
+            document.getElementById("resultadoCategorias"),
+            document.getElementById("resultadoCategoriasDiccionario")
+        ].filter(Boolean);
+
+        // Primero buscamos señales inequívocas de que el contenedor tiene
+        // una ficha de palabra y no una lista/categoría o un estado vacío.
+        const porControles = candidatos.find(c => c.querySelector(
+            "#btnCompartir, #reproductorPalabra, .reproductor-palabra-wrap, .apoyo-panel"
+        ));
+        if(porControles) return porControles;
+
+        // Respaldo para palabras que todavía no tienen video ni imagen.
+        const nombre = String(actual && actual.palabra || "").trim().toLowerCase();
+        return candidatos.find(c => {
+            if(!c.querySelector(".card")) return false;
+            return nombre && String(c.textContent || "").toLowerCase().includes(nombre);
+        }) || null;
+    }
+
+    function abrirDesdeNavegacion(p, esVocabulario){
+        if(!p) return;
+        if(esVocabulario && typeof mostrarPalabraVocabularioPorReferencia === "function"){
+            mostrarPalabraVocabularioPorReferencia(obtenerIdPalabra(p));
+        } else if(typeof mostrarPalabra === "function") {
+            mostrarPalabra(p);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+    }
+
+    function crearBotonNavegacion(tipo, p, deshabilitado, esVocabulario){
+        const boton = document.createElement("button");
+        boton.type = "button";
+        boton.className = "ficha-palabra-browse-btn ficha-palabra-browse-btn-" + tipo;
+        boton.disabled = !!deshabilitado;
+
+        const esAnterior = tipo === "anterior";
+        const etiqueta = esAnterior ? "Anterior" : "Siguiente";
+        const flecha = esAnterior ? "←" : "→";
+        const nombre = p && p.palabra ? String(p.palabra) : "";
+
+        boton.innerHTML = esAnterior
+            ? `<span class="ficha-palabra-browse-flecha" aria-hidden="true">${flecha}</span><span class="ficha-palabra-browse-texto"><small>${etiqueta}</small><strong>${escaparHtml(nombre)}</strong></span>`
+            : `<span class="ficha-palabra-browse-texto"><small>${etiqueta}</small><strong>${escaparHtml(nombre)}</strong></span><span class="ficha-palabra-browse-flecha" aria-hidden="true">${flecha}</span>`;
+
+        if(!deshabilitado && p){
+            boton.addEventListener("click", () => abrirDesdeNavegacion(p, esVocabulario));
+        }
+        return boton;
+    }
+
+    function refrescarFichaVisual(){
+        const estado = obtenerEstadoFichaActual();
+        const existente = document.getElementById(ID_NAVEGACION);
+
+        if(!estado){
+            if(existente) existente.remove();
+            document.querySelectorAll(".ficha-palabra-visual").forEach(el => el.classList.remove("ficha-palabra-visual"));
+            return;
+        }
+
+        const referenciaActual = obtenerIdPalabra(estado.actual);
+        const fuenteActual = estado.esVocabulario ? "vocabulario" : "diccionario";
+        if(existente && existente.dataset.referencia === referenciaActual && existente.dataset.fuente === fuenteActual){
+            return;
+        }
+
+        const contenedor = obtenerContenedorFicha(estado.actual);
+        if(!contenedor) return;
+
+        if(existente) existente.remove();
+        document.querySelectorAll(".ficha-palabra-visual").forEach(el => el.classList.remove("ficha-palabra-visual"));
+
+        const tarjeta = contenedor.querySelector(".card");
+        if(tarjeta) tarjeta.classList.add("ficha-palabra-visual");
+
+        const anterior = estado.indice > 0 ? estado.palabras[estado.indice - 1] : null;
+        const siguiente = estado.indice < estado.palabras.length - 1 ? estado.palabras[estado.indice + 1] : null;
+
+        const nav = document.createElement("nav");
+        nav.id = ID_NAVEGACION;
+        nav.className = "ficha-palabra-browse";
+        nav.dataset.referencia = referenciaActual;
+        nav.dataset.fuente = fuenteActual;
+        nav.setAttribute("aria-label", "Navegar entre palabras");
+
+        const btnAnterior = crearBotonNavegacion("anterior", anterior, !anterior, estado.esVocabulario);
+        const btnSiguiente = crearBotonNavegacion("siguiente", siguiente, !siguiente, estado.esVocabulario);
+
+        const centro = document.createElement("div");
+        centro.className = "ficha-palabra-browse-centro";
+        centro.innerHTML = `<small>${estado.esVocabulario ? "Vocabulario" : "Diccionario"}</small><strong>${estado.indice + 1} / ${estado.palabras.length}</strong>`;
+
+        nav.append(btnAnterior, centro, btnSiguiente);
+        contenedor.appendChild(nav);
+    }
+
+    function programarRefrescoFichaVisual(){
+        cancelAnimationFrame(rafPendiente);
+        rafPendiente = requestAnimationFrame(refrescarFichaVisual);
+    }
+
+    function iniciarObservadoresFicha(){
+        const contenedores = [
+            document.getElementById("resultado"),
+            document.getElementById("resultadoCategorias"),
+            document.getElementById("resultadoCategoriasDiccionario")
+        ].filter(Boolean);
+
+        if("MutationObserver" in window){
+            const observer = new MutationObserver(programarRefrescoFichaVisual);
+            contenedores.forEach(c => observer.observe(c, { childList: true, subtree: true }));
+        }
+
+        window.addEventListener("popstate", () => setTimeout(programarRefrescoFichaVisual, 0));
+        programarRefrescoFichaVisual();
+    }
+
+    if(document.readyState === "loading"){
+        document.addEventListener("DOMContentLoaded", iniciarObservadoresFicha, { once: true });
+    } else {
+        iniciarObservadoresFicha();
+    }
+})();
