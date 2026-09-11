@@ -66,3 +66,37 @@
         return abrirOriginal.apply(window, arguments);
     };
 })();
+
+/* ============================================================
+   Carga diferida de LSPedia Aventura.
+   El banco de actividades se descarga recién cuando el usuario entra
+   al juego, para no hacer más pesada la carga inicial del sitio.
+   ============================================================ */
+(function cargarAventuraLSPedia() {
+    'use strict';
+    if (!document.getElementById('seccionQuiz')) return;
+    if (document.querySelector('script[data-lspedia-aventura]')) return;
+
+    const version = '20260911-1';
+
+    const estilo = document.createElement('link');
+    estilo.rel = 'stylesheet';
+    estilo.href = 'css/aventura-educativa.css?v=' + version;
+    estilo.dataset.lspediaAventura = '1';
+    document.head.appendChild(estilo);
+
+    const cargarScript = function () {
+        if (document.querySelector('script[data-lspedia-aventura]')) return;
+        const script = document.createElement('script');
+        script.src = 'js/aventura-educativa.js?v=' + version;
+        script.async = false;
+        script.dataset.lspediaAventura = '1';
+        document.body.appendChild(script);
+    };
+
+    if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(cargarScript, { timeout: 1200 });
+    } else {
+        window.setTimeout(cargarScript, 120);
+    }
+})();
