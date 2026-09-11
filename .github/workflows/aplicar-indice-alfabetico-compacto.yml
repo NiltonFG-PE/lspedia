@@ -40,11 +40,20 @@ jobs:
 
       - name: Comprobar estructura del índice
         run: |
-          test "$(grep -o 'id="'"'btnToggleAbc'"'"' index.html | wc -l)" -eq 1
-          test "$(grep -o 'id="'"'indiceAlfabetico'"'"' index.html | wc -l)" -eq 1
-          grep -q 'buscador-indice-linea' index.html
-          grep -q 'INDICE_ALFABETICO_COMPACTO_V1_20260910' css/mejoras-producto.css
-          grep -q 'function actualizarEstadoIndiceAlfabetico()' js/script.js
+          python - <<'PY'
+          from pathlib import Path
+          html = Path('index.html').read_text(encoding='utf-8')
+          css = Path('css/mejoras-producto.css').read_text(encoding='utf-8')
+          js = Path('js/script.js').read_text(encoding='utf-8')
+          assert html.count('id="btnToggleAbc"') == 1
+          assert html.count('id="indiceAlfabetico"') == 1
+          assert html.count('id="filaBotonIndiceAlfabetico"') == 1
+          assert html.count('id="filaIndiceAlfabetico"') == 1
+          assert 'buscador-indice-linea' in html
+          assert 'INDICE_ALFABETICO_COMPACTO_V1_20260910' in css
+          assert 'function actualizarEstadoIndiceAlfabetico()' in js
+          print('Estructura del índice A-Z correcta.')
+          PY
 
       - name: Limpiar migración temporal y publicar
         run: |
