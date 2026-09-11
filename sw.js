@@ -10,12 +10,12 @@
    ============================================================ */
 
 // Cambia esta versión cuando modifiques el cascarón de la aplicación.
-const VERSION_APP = "v69";
+const VERSION_APP = "v70";
 const PREFIJO_CACHE = "lspedia-shell-";
 const CACHE_NOMBRE = PREFIJO_CACHE + VERSION_APP;
 
 // Archivos necesarios para que la interfaz principal pueda abrir offline.
-// Se incluyen Matemáticas, LSPedia Aventura, el manifest y los iconos de instalación.
+// Se incluyen Matemáticas, el manifest y los iconos de instalación.
 const ARCHIVOS_CASCARON = [
     "./",
     "./index.html",
@@ -25,7 +25,6 @@ const ARCHIVOS_CASCARON = [
     "css/matematicas.css",
     "css/subtitulos.css",
     "css/mejoras-producto.css",
-    "css/aventura-educativa.css",
     "js/security.js",
     "js/script.js",
     "js/quiz.js",
@@ -34,7 +33,6 @@ const ARCHIVOS_CASCARON = [
     "js/oraciones.js",
     "js/subtitulos.js",
     "js/mejoras-producto.js",
-    "js/aventura-educativa.js",
     "manifest.json",
     "img/icons/icon-192.png",
     "img/icons/icon-512.png",
@@ -108,9 +106,7 @@ self.addEventListener("fetch", (evento) => {
     if (url.origin !== self.location.origin) return;
 
     // Los JSON de datos se dejan fuera del Service Worker para que su contenido
-    // se compruebe contra la red. LSPedia Aventura incluye además un pequeño
-    // banco de respaldo dentro de su JS para no quedar totalmente inutilizable
-    // si el banco JSON no está disponible temporalmente.
+    // se compruebe contra la red. palabras.json ya tiene respaldo en localStorage.
     const esManifest = url.pathname.endsWith("/manifest.json");
     if (url.pathname.endsWith(".json") && !esManifest) return;
 
