@@ -4296,11 +4296,32 @@ const CATEGORIAS_DICCIONARIO_INFO = {
     }
 };
 
+function slugIconoCategoria(nombre){
+    return String(nombre || "")
+        .trim()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+}
+
+function rutaIconoCategoriaDinamica(nombre){
+    const slug = slugIconoCategoria(nombre);
+    return slug ? `img/categorias/${slug}.webp` : "";
+}
+
 function infoCategoriaDiccionario(nombre, indiceFallback){
     const clave = nombre.trim().toLowerCase();
     if (CATEGORIAS_DICCIONARIO_INFO[clave]) return CATEGORIAS_DICCIONARIO_INFO[clave];
     const color = COLORES_CATEGORIAS[indiceFallback % COLORES_CATEGORIAS.length];
-    return { icono: null, descripcion: "Explora estas palabras", fondo: color.fondo, borde: color.borde, texto: color.texto };
+    return {
+        icono: rutaIconoCategoriaDinamica(nombre),
+        descripcion: "Explora estas palabras",
+        fondo: color.fondo,
+        borde: color.borde,
+        texto: color.texto
+    };
 }
 
 // Cuántas categorías se muestran de entrada (el resto queda oculto detrás
@@ -4745,7 +4766,7 @@ function mostrarCategorias(){
         const cantidad = datosVocabulario.filter(p => p.categoria.trim() === nombre).length;
         const color = COLORES_CATEGORIAS[indice % COLORES_CATEGORIAS.length];
         const nombreClave = nombre.trim().toLowerCase();
-        const icono = ICONOS_CATEGORIA_VOCABULARIO[nombreClave];
+        const icono = ICONOS_CATEGORIA_VOCABULARIO[nombreClave] || rutaIconoCategoriaDinamica(nombre);
         const emoji = EMOJIS_CATEGORIA_VOCABULARIO[nombreClave] || "📖";
         const iconoHtml = icono
             ? `<img src="${icono}" alt="${nombre}" loading="lazy" style="width: 48px; height: 48px; object-fit: contain; margin-bottom: 8px;">`
