@@ -8,6 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 RUTA = ROOT / "data" / "alfabetizacion.json"
+NIVELES_EJEMPLOS = {"", "Fácil", "Medio", "Difícil"}
 
 
 def texto(valor: object) -> str:
@@ -134,7 +135,7 @@ def main() -> int:
         if not isinstance(fila, dict):
             errores.append(f"Ejemplo #{i}: no es un objeto.")
             continue
-        permitidos = {"caracter", "palabra", "imagen", "orden"}
+        permitidos = {"caracter", "palabra", "imagen", "orden", "nivel"}
         extras = set(fila) - permitidos
         if extras:
             errores.append(f"Ejemplo #{i}: campos no permitidos: {sorted(extras)}")
@@ -146,6 +147,12 @@ def main() -> int:
             advertencias.append(f"Ejemplo #{i} ({texto(fila.get('palabra'))}): sin imagen.")
         if not isinstance(fila.get("orden"), int):
             errores.append(f"Ejemplo #{i}: orden debe ser entero.")
+        nivel = texto(fila.get("nivel"))
+        if nivel not in NIVELES_EJEMPLOS:
+            errores.append(
+                f"Ejemplo #{i} ({texto(fila.get('palabra'))}): nivel inválido {nivel!r}. "
+                "Usar Fácil, Medio, Difícil o vacío para contenido heredado."
+            )
 
     if letras == 0:
         errores.append("No hay letras en el alfabeto.")
