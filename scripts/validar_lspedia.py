@@ -9,6 +9,11 @@ En el Diccionario puede haber borradores todavía sin video. Esos registros se
 revisan, pero no cuentan como contenido publicable y sus duplicados de borrador
 no bloquean el sitio. Una palabra con video sí se valida con reglas más estrictas.
 
+Las categorías históricas siguen usando sus listas canónicas. Una categoría
+nueva también es válida si tiene el icono WEBP que crea el Publicador en
+``img/categorias/<slug>.webp``. Así se pueden ampliar categorías sin editar
+este archivo cada vez, pero un nombre nuevo sin icono continúa bloqueándose.
+
 Uso:
     python scripts/validar_lspedia.py
     python scripts/validar_lspedia.py --fuente diccionario
@@ -23,13 +28,14 @@ import sys
 import unicodedata
 from collections import Counter
 from pathlib import Path
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import parse_qs, unquote, urlparse
 
 from normalizar_categorias import CATEGORIAS_DICCIONARIO, CATEGORIAS_VOCABULARIO
 
 ROOT = Path(__file__).resolve().parent.parent
 DICCIONARIO = ROOT / "data" / "palabras.json"
 VOCABULARIO = ROOT / "data" / "vocabulario.json"
+CARPETA_ICONOS_CATEGORIA = ROOT / "img" / "categorias"
 
 NIVELES_VOCABULARIO = {"Fácil", "Medio", "Difícil"}
 PATRON_ID = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
@@ -62,6 +68,25 @@ def _clave(valor: object) -> str:
         c for c in unicodedata.normalize("NFD", texto)
         if unicodedata.category(c) != "Mn"
     )
+
+
+def _slug_categoria(valor: object) -> str:
+    """Replica el slug que usa Publicador.gs para nombres de categorías."""
+    texto = _clave(valor)
+    texto = re.sub(r"[^a-z0-9]+", "-", texto)
+    return texto.strip("-")
+
+
+def _ruta_icono_categoria(valor: object) -> Path | None:
+    slug = _slug_categoria(valor)
+    if not slug:
+        return None
+    return CARPETA_ICONOS_CATEGORIA / f"{slug}.webp"
+
+
+def _categoria_nueva_valida(valor: object) -> bool:
+    ruta = _ruta_icono_categoria(valor)
+    return bool(ruta and ruta.is_file())
 
 
 def _cargar(ruta: Path, nombre: str, informe: Informe) -> list[dict]:
@@ -131,12 +156,47 @@ def _revisar_campos_extranos(nombre: str, filas: list[dict], informe: Informe) -
         )
 
 
+def _validar_categoria(
+    nombre_fuente: str,
+    indice: int,
+    palabra: str,
+    categoria: str,
+    categorias_permitidas: set[str],
+    categorias_nuevas: set[str],
+    informe: Informe,
+) -> None:
+    if not categoria:
+        informe.error(
+            f"{nombre_fuente} #{indice} ({palabra or 'sin palabra'}): falta 'categoria'."
+        )
+        return
+
+    if categoria in categorias_permitidas:
+        return
+
+    if _categoria_nueva_valida(categoria):
+        categorias_nuevas.add(categoria)
+        return
+
+    ruta = _ruta_icono_categoria(categoria)
+    esperada = (
+        str(ruta.relative_to(ROOT))
+        if ruta is not None
+        else "img/categorias/<categoria>.webp"
+    )
+    informe.error(
+        f"{nombre_fuente} #{indice} ({palabra}): categoría nueva {categoria!r} "
+        f"sin icono. El Publicador debe crear {esperada!r}."
+    )
+
+
 def validar_diccionario(informe: Informe) -> list[dict]:
     filas = _cargar(DICCIONARIO, "Diccionario", informe)
     if not filas:
         return filas
 
     categorias_permitidas = set(CATEGORIAS_DICCIONARIO)
+    categorias_nuevas: set[str] = set()
     ids: dict[str, int] = {}
     palabras_categoria: dict[tuple[str, str], tuple[int, bool]] = {}
     palabras = Counter()
@@ -155,12 +215,15 @@ def validar_diccionario(informe: Informe) -> list[dict]:
 
         if not palabra:
             informe.error(f"Diccionario #{i}: falta 'palabra'.")
-        if not categoria:
-            informe.error(f"Diccionario #{i} ({palabra or 'sin palabra'}): falta 'categoria'.")
-        elif categoria not in categorias_permitidas:
-            informe.error(
-                f"Diccionario #{i} ({palabra}): categoría no canónica {categoria!r}."
-            )
+        _validar_categoria(
+            "Diccionario",
+            i,
+            palabra,
+            categoria,
+            categorias_permitidas,
+            categorias_nuevas,
+            informe,
+        )
 
         if not identificador:
             informe.error(f"Diccionario #{i} ({palabra}): falta ID estable.")
@@ -182,9 +245,6 @@ def validar_diccionario(informe: Informe) -> list[dict]:
             par = (clave_palabra, _clave(categoria))
             if par in palabras_categoria:
                 anterior_i, anterior_publicable = palabras_categoria[par]
-                # Solo bloqueamos si el duplicado podría llegar realmente a la
-                # web (alguno de los dos tiene video). Dos borradores sin video
-                # se señalan, pero no alteran las cifras ni la publicación.
                 if es_publicable or anterior_publicable:
                     informe.error(
                         f"Diccionario: palabra publicable duplicada en la misma categoría: "
@@ -226,6 +286,12 @@ def validar_diccionario(informe: Informe) -> list[dict]:
         informe.aviso(
             f"Diccionario: {sin_definicion_publicable} palabra(s) con video no tienen definición."
         )
+    if categorias_nuevas:
+        informe.dato(
+            "Diccionario: categorías adicionales reconocidas por su icono: "
+            + ", ".join(sorted(categorias_nuevas, key=str.casefold))
+            + "."
+        )
     _revisar_campos_extranos("Diccionario", filas, informe)
     informe.dato(
         f"Diccionario: {len(filas)} registros, {publicables} con video publicable, "
@@ -241,8 +307,10 @@ def validar_vocabulario(informe: Informe) -> list[dict]:
         return filas
 
     categorias_permitidas = set(CATEGORIAS_VOCABULARIO)
+    categorias_nuevas: set[str] = set()
     referencias: dict[tuple[str, str], int] = {}
     sin_imagen = 0
+    sin_definicion = 0
 
     for i, fila in enumerate(filas, 1):
         palabra = _texto(fila.get("palabra"))
@@ -250,15 +318,19 @@ def validar_vocabulario(informe: Informe) -> list[dict]:
         video = _texto(fila.get("video"))
         nivel = _texto(fila.get("nivel"))
         imagen = _texto(fila.get("imagen"))
+        definicion = _texto(fila.get("definicion"))
 
         if not palabra:
             informe.error(f"Vocabulario #{i}: falta 'palabra'.")
-        if not categoria:
-            informe.error(f"Vocabulario #{i} ({palabra or 'sin palabra'}): falta 'categoria'.")
-        elif categoria not in categorias_permitidas:
-            informe.error(
-                f"Vocabulario #{i} ({palabra}): categoría no canónica {categoria!r}."
-            )
+        _validar_categoria(
+            "Vocabulario",
+            i,
+            palabra,
+            categoria,
+            categorias_permitidas,
+            categorias_nuevas,
+            informe,
+        )
         if not video:
             informe.error(f"Vocabulario #{i} ({palabra}): falta video.")
         elif _youtube_id(video) is None:
@@ -272,10 +344,13 @@ def validar_vocabulario(informe: Informe) -> list[dict]:
                 f"Vocabulario #{i} ({palabra}): nivel no válido {nivel!r}. "
                 "Usar Fácil, Medio o Difícil."
             )
+        if not definicion:
+            sin_definicion += 1
         if not imagen:
             sin_imagen += 1
         elif imagen.startswith(("img/", "./img/")):
-            ruta = ROOT / imagen.removeprefix("./")
+            ruta_texto = unquote(imagen.removeprefix("./"))
+            ruta = ROOT / ruta_texto
             if not ruta.exists():
                 informe.aviso(
                     f"Vocabulario #{i} ({palabra}): imagen local no encontrada: {imagen}."
@@ -293,6 +368,17 @@ def validar_vocabulario(informe: Informe) -> list[dict]:
 
     if sin_imagen:
         informe.aviso(f"Vocabulario: {sin_imagen} palabra(s) sin imagen.")
+    if sin_definicion:
+        informe.aviso(
+            f"Vocabulario: {sin_definicion} palabra(s) todavía no tienen definición. "
+            "El Publicador nuevo ya guarda este campo para las publicaciones futuras."
+        )
+    if categorias_nuevas:
+        informe.dato(
+            "Vocabulario: categorías adicionales reconocidas por su icono: "
+            + ", ".join(sorted(categorias_nuevas, key=str.casefold))
+            + "."
+        )
     _revisar_campos_extranos("Vocabulario", filas, informe)
     informe.dato(
         f"Vocabulario: {len(filas)} registros con video, "
