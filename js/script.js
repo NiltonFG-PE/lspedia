@@ -5816,3 +5816,43 @@ function mostrarSenalDelDia(offset = offsetSenalDelDia){
         }
     });
 })();
+
+
+// VOCABULARIO_AZ_FUNCIONAL_V2_20260911
+// El índice A-Z de Vocabulario no depende de onclick inline: usa un listener
+// delegado propio, igual de fiable en escritorio, móvil y PWA.
+(function configurarIndiceVocabularioRobusto(){
+    function iniciar(){
+        const indice = document.getElementById('indiceAlfabeticoVocabulario');
+        if(!indice || indice.dataset.lspAzFuncional === '1') return;
+        indice.dataset.lspAzFuncional = '1';
+
+        // Evita doble ejecución si quedaron handlers inline del HTML.
+        indice.querySelectorAll('.btn-abc-vocabulario').forEach((boton) => {
+            boton.removeAttribute('onclick');
+        });
+
+        indice.addEventListener('click', (evento) => {
+            const objetivo = evento.target instanceof Element ? evento.target.closest('.btn-abc-vocabulario') : null;
+            if(!objetivo || !indice.contains(objetivo)) return;
+            evento.preventDefault();
+
+            const letra = String(objetivo.textContent || '').trim().toUpperCase();
+            if(!letra || typeof window.filtrarVocabularioPorLetra !== 'function') return;
+
+            // Mantiene visible el bloque correcto antes de pintar resultados.
+            if(bloqueBuscadorCategorias) bloqueBuscadorCategorias.classList.remove('d-none');
+            window.filtrarVocabularioPorLetra(letra);
+
+            // Si el navegador conserva el foco del botón, lo quitamos para que
+            // el scroll y la lectura visual del resultado se comporten como en Diccionario.
+            if(typeof objetivo.blur === 'function') objetivo.blur();
+        });
+    }
+
+    if(document.readyState === 'loading'){
+        document.addEventListener('DOMContentLoaded', iniciar, { once: true });
+    } else {
+        iniciar();
+    }
+})();
