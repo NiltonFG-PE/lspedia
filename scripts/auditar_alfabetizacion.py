@@ -11,6 +11,7 @@ DATA = ROOT / "data" / "alfabetizacion.json"
 JS = ROOT / "js" / "alfabetizacion.js"
 HTML = ROOT / "index.html"
 VARIANTES = ("mayuscula", "minuscula", "cursiva-mayuscula", "cursiva-minuscula")
+NIVELES_EJEMPLOS = {"", "Fácil", "Medio", "Difícil"}
 
 
 def txt(v: object) -> str:
@@ -79,7 +80,10 @@ def main() -> int:
         if not isinstance(fila, dict):
             errores.append(f"Ejemplo #{i}: formato inválido.")
             continue
-        c, palabra, imagen = txt(fila.get("caracter")), txt(fila.get("palabra")), txt(fila.get("imagen"))
+        c = txt(fila.get("caracter"))
+        palabra = txt(fila.get("palabra"))
+        imagen = txt(fila.get("imagen"))
+        nivel = txt(fila.get("nivel"))
         if not any(k[1].casefold() == c.casefold() for k in caracteres):
             errores.append(f"Ejemplo #{i} ({palabra or '?'}): carácter {c!r} no existe en alfabeto.")
         clave = (c.casefold(), palabra.casefold())
@@ -92,6 +96,11 @@ def main() -> int:
             avisos.append(f"Ejemplo {c}/{palabra}: sin imagen.")
         elif p is not None and not p.is_file():
             errores.append(f"Ejemplo {c}/{palabra}: imagen no existe: {imagen}")
+        if nivel not in NIVELES_EJEMPLOS:
+            errores.append(
+                f"Ejemplo #{i} ({palabra or '?'}): nivel inválido {nivel!r}. "
+                "Usar Fácil, Medio, Difícil o vacío para contenido heredado."
+            )
 
     js = JS.read_text(encoding="utf-8") if JS.is_file() else ""
     html = HTML.read_text(encoding="utf-8") if HTML.is_file() else ""
