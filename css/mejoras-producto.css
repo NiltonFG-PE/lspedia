@@ -187,3 +187,86 @@
         transition: none !important;
     }
 }
+
+/* INDICE_VOCABULARIO_V1_20260910
+   - A-Z a la izquierda en Diccionario y Vocabulario.
+   - Vocabulario usa el azul de su buscador y su propio collapse. */
+#bloqueBuscadorCategorias .buscador-indice-linea {
+    display: flex;
+    align-items: stretch;
+    gap: 9px;
+    width: 100%;
+}
+
+#bloqueBuscadorCategorias .buscador-indice-linea > .input-group {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+#filaBotonIndiceAlfabeticoVocabulario.indice-compacto-wrap {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: stretch;
+}
+
+.indice-compacto-btn-vocabulario {
+    border-color: #0d6efd;
+    background: linear-gradient(135deg, #2785ff 0%, #0867ea 100%);
+    color: #ffffff;
+    box-shadow: 0 6px 16px rgba(13, 110, 253, .22);
+}
+
+.indice-compacto-btn-vocabulario:hover,
+.indice-compacto-btn-vocabulario:focus-visible {
+    color: #ffffff;
+    background: linear-gradient(135deg, #1f7cf5 0%, #075fd8 100%);
+    box-shadow: 0 8px 20px rgba(13, 110, 253, .30);
+}
+
+.indice-compacto-btn-vocabulario .indice-compacto-az {
+    background: rgba(255,255,255,.17);
+    color: #ffffff;
+    border: 1px solid rgba(255,255,255,.28);
+}
+
+#filaIndiceAlfabeticoVocabulario.indice-compacto-desplegable {
+    width: 100%;
+}
+
+#filaIndiceAlfabeticoVocabulario .indice-alfabetico {
+    margin-top: 10px;
+    padding: 12px;
+    border: 1px solid rgba(13, 110, 253, .18);
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 8px 20px rgba(13, 110, 253, .08);
+}
+
+#indiceAlfabeticoVocabulario .btn-abc:hover,
+#indiceAlfabeticoVocabulario .btn-abc:focus-visible,
+#indiceAlfabeticoVocabulario .btn-abc.active {
+    background: #0d6efd;
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(13, 110, 253, .28);
+}
+
+@media (max-width: 767.98px) {
+    #bloqueBuscadorCategorias .buscador-indice-linea {
+        gap: 7px;
+    }
+
+    #filaIndiceAlfabeticoVocabulario .indice-alfabetico {
+        grid-template-columns: repeat(7, 1fr) !important;
+        gap: 7px !important;
+        padding: 10px;
+        margin-top: 8px;
+    }
+}
+
+@media (max-width: 380px) {
+    #btnBuscarCategorias {
+        padding-left: .8rem !important;
+        padding-right: .8rem !important;
+        min-width: 58px !important;
+    }
+}

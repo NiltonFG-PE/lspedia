@@ -353,6 +353,44 @@ if(indiceAlfabeticoCompacto){
     indiceAlfabeticoCompacto.addEventListener("hidden.bs.collapse", actualizarEstadoIndiceAlfabetico);
 }
 
+// ÍNDICE ALFABÉTICO DE VOCABULARIO
+// Es independiente del índice del Diccionario: usa el azul de esta sección,
+// arranca cerrado y se reinicia cada vez que se entra a Vocabulario.
+function actualizarEstadoIndiceVocabulario(){
+    const indice = document.getElementById("indiceAlfabeticoVocabulario");
+    const btn = document.getElementById("btnToggleAbcVocabulario");
+    if(!indice || !btn) return;
+
+    const abierto = indice.classList.contains("show") || btn.getAttribute("aria-expanded") === "true";
+    btn.setAttribute("aria-label", abierto ? "Cerrar índice alfabético de Vocabulario A a Z" : "Abrir índice alfabético de Vocabulario A a Z");
+    btn.setAttribute("title", abierto ? "Cerrar índice alfabético de Vocabulario" : "Abrir índice alfabético de Vocabulario");
+}
+
+function colapsarIndiceVocabulario(){
+    const indice = document.getElementById("indiceAlfabeticoVocabulario");
+    const btn = document.getElementById("btnToggleAbcVocabulario");
+    if(!indice || !btn) return;
+
+    if(indice.classList.contains("show")){
+        if(typeof bootstrap !== "undefined" && bootstrap.Collapse){
+            const instancia = bootstrap.Collapse.getInstance(indice) || new bootstrap.Collapse(indice, { toggle: false });
+            instancia.hide();
+        } else {
+            indice.classList.remove("show");
+            btn.setAttribute("aria-expanded", "false");
+        }
+    } else {
+        btn.setAttribute("aria-expanded", "false");
+    }
+    actualizarEstadoIndiceVocabulario();
+}
+
+const indiceAlfabeticoVocabulario = document.getElementById("indiceAlfabeticoVocabulario");
+if(indiceAlfabeticoVocabulario){
+    indiceAlfabeticoVocabulario.addEventListener("shown.bs.collapse", actualizarEstadoIndiceVocabulario);
+    indiceAlfabeticoVocabulario.addEventListener("hidden.bs.collapse", actualizarEstadoIndiceVocabulario);
+}
+
 // --- NAVEGACIÓN Y HISTORIAL DEL NAVEGADOR ---
 // Cada pantalla importante de LSPedia tiene ahora una URL propia. Al usar
 // pushState (en vez de replaceState) el botón Atrás/Adelante del navegador
@@ -4110,7 +4148,7 @@ function actualizarEstadisticas(){
 function filtrarPorLetra(letra, opciones = {}) {
     ocultarQuiz();
     ocultarAlfabetizacion();
-    document.querySelectorAll(".btn-abc").forEach(boton => {
+    document.querySelectorAll("#indiceAlfabetico .btn-abc").forEach(boton => {
         boton.classList.toggle("active", boton.textContent.trim().toUpperCase() === letra.toUpperCase());
     });
     buscar.value = ""; 
@@ -4815,6 +4853,7 @@ function mostrarCategorias(){
 // buscador Y debajo de las tarjetas de categoría, con un botón "Atrás"
 // para volver a la vista limpia de tarjetas.
 function mostrarBuscadorDeCategorias(){
+    colapsarIndiceVocabulario();
     if(bloqueBuscador) bloqueBuscador.classList.add("d-none");
     if(bloqueBuscadorCategorias) bloqueBuscadorCategorias.classList.remove("d-none");
     limpiarResultadoCategorias({ noActualizarHistorial: true });
@@ -4880,6 +4919,7 @@ function botonAtrasCategorias(){
 // "Temas orden").
 function limpiarResultadoCategorias(opciones = {}){
     if(resultadoCategorias) resultadoCategorias.innerHTML = "";
+    document.querySelectorAll("#indiceAlfabeticoVocabulario .btn-abc-vocabulario").forEach(boton => boton.classList.remove("active"));
     if(buscarCategorias) buscarCategorias.value = "";
     if(sugerenciasCategorias){ sugerenciasCategorias.innerHTML = ""; sugerenciasCategorias.style.display = "none"; }
     // Mismo bug: al volver de una palabra a las tarjetas de categoría con
@@ -5012,6 +5052,54 @@ function generarMiniaturaVocabulario(p){
            </div>`
         : `<div class="sugerencia-thumb-wrap sin-video">🤟</div>`;
 }
+
+function filtrarVocabularioPorLetra(letra){
+    const letraBuscada = String(letra || "").trim().toUpperCase();
+    if(!letraBuscada || !resultadoCategorias) return;
+
+    categoriaActualMostrada = null;
+    if(buscarCategorias) buscarCategorias.value = "";
+    if(sugerenciasCategorias){
+        sugerenciasCategorias.innerHTML = "";
+        sugerenciasCategorias.style.display = "none";
+    }
+
+    document.querySelectorAll("#indiceAlfabeticoVocabulario .btn-abc-vocabulario").forEach(boton => {
+        boton.classList.toggle("active", boton.textContent.trim().toUpperCase() === letraBuscada);
+    });
+
+    const letraInicial = (valor) => {
+        const primera = String(valor || "").trim().charAt(0).toUpperCase();
+        if(primera === "Ñ") return "Ñ";
+        return primera.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    };
+
+    const filtradas = obtenerDatosVocabulario()
+        .filter(p => letraInicial(p && p.palabra) === letraBuscada)
+        .sort((a, b) => String(a.palabra || "").localeCompare(String(b.palabra || ""), "es", { sensitivity: "base" }));
+
+    let html = botonAtrasCategorias();
+    if(filtradas.length === 0){
+        html += `<div class="alert alert-light border text-center text-muted small py-3" style="border-radius: 12px;">No hay palabras de Vocabulario con <strong>${escaparHtml(letraBuscada)}</strong>.</div>`;
+        resultadoCategorias.innerHTML = html;
+        scrollAlPrimerResultado(resultadoCategorias);
+        return;
+    }
+
+    html += `<h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">Vocabulario con: ${escaparHtml(letraBuscada)}</h6><div class="categoria-resultados-grid">`;
+    filtradas.forEach((p, i) => {
+        const referencia = escaparCadenaJsAtributo(obtenerIdPalabra(p));
+        html += `<button type="button" class="categoria-resultado-item shadow-sm" style="animation-delay: ${Math.min(i, 20) * 0.04}s" onclick="mostrarPalabraVocabularioPorReferencia('${referencia}')">
+            ${generarMiniaturaVocabulario(p)}
+            <span class="categoria-resultado-titulo">${escaparHtml(p.palabra)}</span>
+            <span class="btn btn-sm btn-primary fw-bold categoria-resultado-boton">${ICONO_OJO_SVG} Ver Seña</span>
+        </button>`;
+    });
+    html += `</div>`;
+    resultadoCategorias.innerHTML = html;
+    scrollAlPrimerResultado(resultadoCategorias);
+}
+window.filtrarVocabularioPorLetra = filtrarVocabularioPorLetra;
 
 function mostrarCategoria(nombre, opciones = {}){
     categoriaActualMostrada = nombre;

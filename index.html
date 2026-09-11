@@ -4652,18 +4652,18 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
 
                 <div class="position-relative" id="bloqueBuscador">
                     <div class="buscador-indice-linea">
-                        <div class="input-group input-group-lg shadow-sm" style="border-radius: 50px; border: 2px solid #ffc107; overflow: hidden; background-color: #fff;">
-                            <input id="buscar" type="text" class="form-control border-0 px-4 shadow-none text-secondary" placeholder="Buscar palabra y significado" style="font-size: 1.1rem; background: transparent;">
-                            <button class="btn px-4 d-flex align-items-center justify-content-center" type="button" id="btnBuscar">
-                                <span style="font-size: 1.3rem;">🔍</span>
-                            </button>
-                        </div>
-
                         <div id="filaBotonIndiceAlfabetico" class="indice-compacto-wrap">
                             <button type="button" class="indice-compacto-btn" data-bs-toggle="collapse" data-bs-target="#indiceAlfabetico" aria-expanded="false" aria-controls="indiceAlfabetico" aria-label="Abrir índice alfabético A a Z" title="Abrir índice alfabético" id="btnToggleAbc">
                                 <span class="indice-compacto-az">A-Z</span>
                                 <span class="indice-compacto-texto d-none d-sm-inline">Índice</span>
                                 <span class="indice-compacto-flecha" aria-hidden="true">⌄</span>
+                            </button>
+                        </div>
+
+                        <div class="input-group input-group-lg shadow-sm" style="border-radius: 50px; border: 2px solid #ffc107; overflow: hidden; background-color: #fff;">
+                            <input id="buscar" type="text" class="form-control border-0 px-4 shadow-none text-secondary" placeholder="Buscar palabra y significado" style="font-size: 1.1rem; background: transparent;">
+                            <button class="btn px-4 d-flex align-items-center justify-content-center" type="button" id="btnBuscar">
+                                <span style="font-size: 1.3rem;">🔍</span>
                             </button>
                         </div>
                     </div>
@@ -4795,13 +4795,57 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
              y el listener de btnCategorias en script.js). -->
         <div class="row justify-content-center mb-3 d-none" id="bloqueBuscadorCategorias">
             <div class="col-lg-8 position-relative">
-                <div class="input-group input-group-lg shadow-sm" style="border-radius: 50px; border: 2px solid #0d6efd; overflow: hidden; background-color: #fff;">
-                    <input id="buscarCategorias" type="text" class="form-control border-0 px-4 shadow-none text-secondary" placeholder="Buscar palabra del vocabulario" style="font-size: 1.1rem; background: transparent;">
-                    <button class="btn px-4 d-flex align-items-center justify-content-center" type="button" id="btnBuscarCategorias" style="background-color: #0d6efd; color: #fff;">
-                        <span style="font-size: 1.3rem;">🔍</span>
-                    </button>
+                <div class="buscador-indice-linea buscador-indice-linea-vocabulario">
+                    <div id="filaBotonIndiceAlfabeticoVocabulario" class="indice-compacto-wrap">
+                        <button type="button" class="indice-compacto-btn indice-compacto-btn-vocabulario" data-bs-toggle="collapse" data-bs-target="#indiceAlfabeticoVocabulario" aria-expanded="false" aria-controls="indiceAlfabeticoVocabulario" aria-label="Abrir índice alfabético de Vocabulario A a Z" title="Abrir índice alfabético de Vocabulario" id="btnToggleAbcVocabulario">
+                            <span class="indice-compacto-az">A-Z</span>
+                            <span class="indice-compacto-texto d-none d-sm-inline">Índice</span>
+                            <span class="indice-compacto-flecha" aria-hidden="true">⌄</span>
+                        </button>
+                    </div>
+
+                    <div class="input-group input-group-lg shadow-sm" style="border-radius: 50px; border: 2px solid #0d6efd; overflow: hidden; background-color: #fff;">
+                        <input id="buscarCategorias" type="text" class="form-control border-0 px-4 shadow-none text-secondary" placeholder="Buscar palabra del vocabulario" style="font-size: 1.1rem; background: transparent;">
+                        <button class="btn px-4 d-flex align-items-center justify-content-center" type="button" id="btnBuscarCategorias" style="background-color: #0d6efd; color: #fff;">
+                            <span style="font-size: 1.3rem;">🔍</span>
+                        </button>
+                    </div>
                 </div>
                 <div id="sugerenciasCategorias" class="list-group mt-2 shadow-sm position-absolute w-100 z-3" style="border-radius: 15px; overflow: hidden; display: none;"></div>
+
+                <div id="filaIndiceAlfabeticoVocabulario" class="indice-compacto-desplegable indice-compacto-desplegable-vocabulario">
+                    <div class="collapse" id="indiceAlfabeticoVocabulario">
+                        <div class="indice-alfabetico indice-alfabetico-vocabulario">
+                                <button class="btn btn-abc btn-abc-vocabulario" onclick="filtrarVocabularioPorLetra('A')">A</button>
+                                <button class="btn btn-abc btn-abc-vocabulario" onclick="filtrarVocabularioPorLetra('B')">B</button>
+                                <button class="btn btn-abc btn-abc-vocabulario" onclick="filtrarVocabularioPorLetra('C')">C</button>
+                                <button class="btn btn-abc btn-abc-vocabulario" onclick="filtrarVocabularioPorLetra('D')">D</button>
+                                <button class="btn btn-abc btn-abc-vocabulario" onclick="filtrarVocabularioPorLetra('E')">E</button>
+                                <button class="btn btn-abc btn-abc-vocabulario" onclick="filtrarVocabularioPorLetra('F')">F</button>
+                                <button class="btn btn-abc btn-abc-vocabulario" onclick="filtrarVocabularioPorLetra('G')">G</button>
+                                <button class="btn btn-abc btn-abc-vocabulario" onclick="filtrarVocabularioPorLetra('H')">H</button>
+                                <button class="btn btn-abc btn-abc-vocabulario" onclick="filtrarVocabularioPorLetra('I')">I</button>
+                                <button class="btn btn-abc btn-abc-vocabulario" onclick="filtrarVocabularioPorLetra('J')">J</button>
+                                <button class="btn btn-abc btn-abc-vocabulario" onclick="filtrarVocabularioPorLetra('K')">K</button>
+                                <button class="btn btn-abc btn-abc-vocabulario" onclick="filtrarVocabularioPorLetra('L')">L</button>
+                                <button class="btn btn-abc btn-abc-vocabulario" onclick="filtrarVocabularioPorLetra('M')">M</button>
+                                <button class="btn btn-abc btn-abc-vocabulario" onclick="filtrarVocabularioPorLetra('N')">N</button>
+                                <button class="btn btn-abc btn-abc-vocabulario" onclick="filtrarVocabularioPorLetra('Ñ')">Ñ</button>
+                                <button class="btn btn-abc btn-abc-vocabulario" onclick="filtrarVocabularioPorLetra('O')">O</button>
+                                <button class="btn btn-abc btn-abc-vocabulario" onclick="filtrarVocabularioPorLetra('P')">P</button>
+                                <button class="btn btn-abc btn-abc-vocabulario" onclick="filtrarVocabularioPorLetra('Q')">Q</button>
+                                <button class="btn btn-abc btn-abc-vocabulario" onclick="filtrarVocabularioPorLetra('R')">R</button>
+                                <button class="btn btn-abc btn-abc-vocabulario" onclick="filtrarVocabularioPorLetra('S')">S</button>
+                                <button class="btn btn-abc btn-abc-vocabulario" onclick="filtrarVocabularioPorLetra('T')">T</button>
+                                <button class="btn btn-abc btn-abc-vocabulario" onclick="filtrarVocabularioPorLetra('U')">U</button>
+                                <button class="btn btn-abc btn-abc-vocabulario" onclick="filtrarVocabularioPorLetra('V')">V</button>
+                                <button class="btn btn-abc btn-abc-vocabulario" onclick="filtrarVocabularioPorLetra('W')">W</button>
+                                <button class="btn btn-abc btn-abc-vocabulario" onclick="filtrarVocabularioPorLetra('X')">X</button>
+                                <button class="btn btn-abc btn-abc-vocabulario" onclick="filtrarVocabularioPorLetra('Y')">Y</button>
+                                <button class="btn btn-abc btn-abc-vocabulario" onclick="filtrarVocabularioPorLetra('Z')">Z</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
