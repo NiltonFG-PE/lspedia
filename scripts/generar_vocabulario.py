@@ -65,6 +65,20 @@ def descargar() -> list[dict]:
     if not isinstance(preguntas, list):
         raise RuntimeError("Apps Script no devolvió la lista 'preguntas'.")
 
+    campos_recibidos = sorted(
+        {
+            str(campo)
+            for fila in preguntas
+            if isinstance(fila, dict)
+            for campo in fila.keys()
+        },
+        key=str.casefold,
+    )
+    print(
+        "Campos recibidos desde Hoja 2/API: "
+        + (", ".join(campos_recibidos) if campos_recibidos else "ninguno")
+    )
+
     salida = []
     for fila in preguntas:
         if not isinstance(fila, dict):
