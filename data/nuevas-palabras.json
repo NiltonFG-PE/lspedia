@@ -1,78 +1,102 @@
 {
-  "generadoEn": "2026-09-10T18:38:25Z",
-  "metodo": "historial-git-publicacion-video",
+  "generadoEn": "2026-09-11T04:10:26Z",
+  "metodo": "fechaPublicacion-con-respaldo-imagen-git-e-historial",
   "items": [
-    {
-      "id": "ecosistema",
-      "palabra": "Ecosistema",
-      "categoria": "Ciencia",
-      "fecha": "2026-09-08T16:59:25Z"
-    },
-    {
-      "id": "diccionario",
-      "palabra": "Diccionario",
-      "categoria": "Comunicación",
-      "fecha": "2026-09-08T16:59:25Z"
-    },
-    {
-      "id": "vocabulario",
-      "palabra": "Vocabulario",
-      "categoria": "Comunicación",
-      "fecha": "2026-09-08T16:59:25Z"
-    },
-    {
-      "id": "gracias",
-      "palabra": "Gracias",
-      "categoria": "Cortesía",
-      "fecha": "2026-09-08T16:59:25Z"
-    },
-    {
-      "id": "por-favor",
-      "palabra": "Por favor",
-      "categoria": "Cortesía",
-      "fecha": "2026-09-08T16:59:25Z"
-    },
-    {
-      "id": "disculpa",
-      "palabra": "Disculpa",
-      "categoria": "Cortesía",
-      "fecha": "2026-09-08T16:59:25Z"
-    },
     {
       "id": "de-nada",
       "palabra": "De nada",
       "categoria": "Cortesía",
-      "fecha": "2026-09-08T16:59:25Z"
+      "imagen": "img/diccionario/de%20nada.webp",
+      "fecha": "2026-09-08T16:59:25Z",
+      "origenFecha": "historial-publicacion-video"
     },
     {
       "id": "con-gusto",
       "palabra": "Con gusto",
       "categoria": "Cortesía",
-      "fecha": "2026-09-08T16:59:25Z"
-    },
-    {
-      "id": "felicitaciones",
-      "palabra": "Felicitaciones",
-      "categoria": "Cortesía",
-      "fecha": "2026-09-08T16:59:25Z"
+      "imagen": "img/diccionario/con%20gusto.webp",
+      "fecha": "2026-09-08T16:59:25Z",
+      "origenFecha": "historial-publicacion-video"
     },
     {
       "id": "hipotesis",
       "palabra": "Hipótesis",
       "categoria": "Educación",
-      "fecha": "2026-09-08T16:59:25Z"
+      "imagen": "img/diccionario/Hip%C3%B3tesis.webp",
+      "fecha": "2026-09-08T16:59:25Z",
+      "origenFecha": "historial-publicacion-video"
     },
     {
-      "id": "discrepancia",
-      "palabra": "Discrepancia",
-      "categoria": "Educación",
-      "fecha": "2026-09-08T16:59:25Z"
+      "id": "adios",
+      "palabra": "Adiós",
+      "categoria": "Saludos",
+      "imagen": "img/diccionario/Adi%C3%B3s.webp",
+      "fecha": "2026-09-08T16:59:25Z",
+      "origenFecha": "historial-publicacion-video"
+    },
+    {
+      "id": "buenos-dias",
+      "palabra": "Buenos días",
+      "categoria": "Saludos",
+      "imagen": "img/diccionario/Buenos%20d%C3%ADas.webp",
+      "fecha": "2026-09-08T16:59:25Z",
+      "origenFecha": "historial-publicacion-video"
+    },
+    {
+      "id": "buenas-tardes",
+      "palabra": "Buenas tardes",
+      "categoria": "Saludos",
+      "imagen": "img/diccionario/buenas%20tardes.webp",
+      "fecha": "2026-09-08T16:59:25Z",
+      "origenFecha": "historial-publicacion-video"
+    },
+    {
+      "id": "buenas-noches",
+      "palabra": "Buenas noches",
+      "categoria": "Saludos",
+      "imagen": "img/diccionario/Buenas%20noches.webp",
+      "fecha": "2026-09-08T16:59:25Z",
+      "origenFecha": "historial-publicacion-video"
+    },
+    {
+      "id": "tesis",
+      "palabra": "Tesis",
+      "categoria": "Universidad",
+      "imagen": "img/diccionario/tesis.webp",
+      "fecha": "2026-09-08T01:20:28Z",
+      "origenFecha": "imagen-git"
+    },
+    {
+      "id": "inteligencia-artificial",
+      "palabra": "Inteligencia artificial",
+      "categoria": "Tecnología",
+      "imagen": "img/diccionario/ia.webp",
+      "fecha": "2026-09-05T02:05:26Z",
+      "origenFecha": "imagen-git"
+    },
+    {
+      "id": "vocabulario",
+      "palabra": "Vocabulario",
+      "categoria": "Comunicación",
+      "imagen": "img/diccionario/vocabulario.webp",
+      "fecha": "2026-09-03T18:38:22Z",
+      "origenFecha": "imagen-git"
     },
     {
       "id": "uniformidad",
       "palabra": "Uniformidad",
       "categoria": "Educación",
-      "fecha": "2026-09-08T16:59:25Z"
+      "imagen": "img/diccionario/uniformidad.webp",
+      "fecha": "2026-09-03T18:38:18Z",
+      "origenFecha": "imagen-git"
+    },
+    {
+      "id": "por-favor",
+      "palabra": "Por favor",
+      "categoria": "Cortesía",
+      "imagen": "img/diccionario/porfavor.webp",
+      "fecha": "2026-09-03T18:38:13Z",
+      "origenFecha": "imagen-git"
     }
   ]
 }
