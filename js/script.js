@@ -2860,6 +2860,86 @@ function mostrarAvisoCompartir(mensaje){
     toast._timeoutId = setTimeout(() => toast.classList.remove("mostrar"), 2200);
 }
 
+// DEFINICION_COLAPSABLE_DICCIONARIO_V1_20260911
+// Las definiciones largas del Diccionario se muestran resumidas para que el
+// video quede visible mucho antes. El contenido original no se modifica:
+// solo se limita visualmente a 4 líneas en móvil y 6 en escritorio.
+function inicializarDefinicionColapsable(contenedor){
+    if(!contenedor) return;
+    const bloque = contenedor.querySelector('[data-definicion-colapsable]');
+    if(!bloque) return;
+
+    const texto = bloque.querySelector('.definicion-colapsable-texto');
+    const boton = bloque.querySelector('[data-definicion-toggle]');
+    if(!texto || !boton) return;
+
+    const medir = () => {
+        const ancho = texto.getBoundingClientRect().width;
+        if(!ancho) return;
+
+        const estilos = window.getComputedStyle(texto);
+        const altoLinea = Number.parseFloat(estilos.lineHeight) || 24;
+        const lineasVisibles = window.matchMedia('(max-width: 767.98px)').matches ? 4 : 6;
+
+        // Se mide una copia sin line-clamp para saber si realmente hace falta
+        // el botón. Así las definiciones cortas siguen viéndose completas.
+        const copia = texto.cloneNode(true);
+        copia.removeAttribute('id');
+        copia.className = '';
+        copia.style.cssText = [
+            'position:absolute',
+            'visibility:hidden',
+            'pointer-events:none',
+            'display:block',
+            'overflow:visible',
+            'height:auto',
+            'max-height:none',
+            '-webkit-line-clamp:unset',
+            '-webkit-box-orient:initial',
+            'width:' + ancho + 'px',
+            'font-size:' + estilos.fontSize,
+            'font-family:' + estilos.fontFamily,
+            'font-weight:' + estilos.fontWeight,
+            'line-height:' + estilos.lineHeight,
+            'letter-spacing:' + estilos.letterSpacing,
+            'white-space:normal'
+        ].join(';');
+        bloque.appendChild(copia);
+        const alturaCompleta = copia.scrollHeight;
+        copia.remove();
+
+        const esLarga = alturaCompleta > (altoLinea * lineasVisibles + 2);
+        if(!esLarga){
+            bloque.classList.remove('definicion-colapsable-cerrada');
+            boton.hidden = true;
+            boton.setAttribute('aria-expanded', 'true');
+            return;
+        }
+
+        boton.hidden = false;
+        if(!bloque.dataset.definicionInicializada){
+            bloque.classList.add('definicion-colapsable-cerrada');
+            bloque.dataset.definicionInicializada = '1';
+        }
+    };
+
+    boton.addEventListener('click', () => {
+        const estabaCerrada = bloque.classList.contains('definicion-colapsable-cerrada');
+        bloque.classList.toggle('definicion-colapsable-cerrada', !estabaCerrada);
+        const expandida = estabaCerrada;
+        boton.setAttribute('aria-expanded', expandida ? 'true' : 'false');
+        boton.innerHTML = expandida ? 'Ver menos <span aria-hidden="true">↑</span>' : 'Ver más <span aria-hidden="true">↓</span>';
+
+        if(!expandida){
+            requestAnimationFrame(() => {
+                bloque.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            });
+        }
+    });
+
+    requestAnimationFrame(medir);
+}
+
 function mostrarPalabra(p, opciones = {}){
     // opciones.enCategorias === true  ->  este resultado viene de la vista
     // "Temas orden" (categorías): se pinta dentro de #resultadoCategorias,
@@ -2990,7 +3070,14 @@ function mostrarPalabra(p, opciones = {}){
                     <button id="btnFavorito" class="btn btn-sm btn-outline-primary py-1 px-3" style="border-radius: 15px; font-size: 12px; font-weight: bold;">${textoBoton}</button>
                 </div>
             </div>
-            <p class="mb-3 p-3 rounded" style="background-color: #eef6ff; border-left: 4px solid #0d6efd; font-size: 1rem; line-height: 1.5; color: #1e293b;">${formatearDefinicion(p.definicion)}</p>
+            <div class="definicion-colapsable definicion-colapsable-cerrada mb-3" data-definicion-colapsable>
+                <div class="definicion-colapsable-contenido">
+                    <div class="definicion-colapsable-texto" id="definicionPalabraTexto">${formatearDefinicion(p.definicion)}</div>
+                </div>
+                <button type="button" class="definicion-colapsable-toggle" data-definicion-toggle aria-expanded="false" aria-controls="definicionPalabraTexto" hidden>
+                    Ver más <span aria-hidden="true">↓</span>
+                </button>
+            </div>
             ${bloqueVariantes}
             <div class="row g-4 justify-content-center align-items-stretch">
                 <div class="col-lg-7 d-flex flex-column">
@@ -3012,6 +3099,7 @@ function mostrarPalabra(p, opciones = {}){
             </div>
         </div>
     </div>`;
+    inicializarDefinicionColapsable(contenedorDestino);
     document.getElementById("btnFavorito").addEventListener("click", () => {
         const ahoraEnFavoritos = alternarFavorito(referenciaPalabra);
         document.getElementById("btnFavorito").textContent = ahoraEnFavoritos ? "★ En favoritos" : "⭐ Agregar a favoritos";
