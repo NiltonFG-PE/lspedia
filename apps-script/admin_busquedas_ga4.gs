@@ -24,6 +24,7 @@
 
 const GA4_MEASUREMENT_ID = "G-RJX3RP2CBR";
 const EVENTO_SIN_RESULTADOS = "search_no_results";
+const EVENTO_BUSQUEDA_GENERAL = "view_search_results";
 const EVENTOS_ERROR = ["image_load_error", "media_load_error", "app_runtime_error"];
 const FECHA_INICIO_REGISTRO = "2026-09-10";
 const PROP_ADMIN_KEY = "LSPEDIA_ADMIN_BUSQUEDAS_KEY";
@@ -262,6 +263,12 @@ function construirPanelAnalytics_(propertyId, periodo, fechas) {
       }
     },
     {
+      key: "busquedasPopulares",
+      api: "Búsquedas más frecuentes",
+      url: coreEndpoint,
+      payload: payloadBusquedasPopulares_(fechas.inicio, fechas.fin)
+    },
+    {
       key: "busquedas",
       api: "Búsquedas sin resultado",
       url: coreEndpoint,
@@ -285,6 +292,7 @@ function construirPanelAnalytics_(propertyId, periodo, fechas) {
   const paginas = parseFilas_(lote.datos.paginas, ["pagina"], ["vistas", "usuarios"]);
   const eventos = parseFilas_(lote.datos.eventos, ["evento"], ["eventos", "usuarios"]);
   const errores = parseErrores_(lote.datos.errores);
+  const busquedasPopulares = parseBusquedasJson_(lote.datos.busquedasPopulares);
   const busquedas = parseBusquedasJson_(lote.datos.busquedas);
 
   return {
@@ -311,6 +319,12 @@ function construirPanelAnalytics_(propertyId, periodo, fechas) {
     paginas: paginas,
     eventos: eventos,
     errores: errores,
+    busquedasPopulares: {
+      totalBusquedas: busquedasPopulares.totalBusquedas,
+      totalTerminos: busquedasPopulares.items.length,
+      ultimaBusqueda: busquedasPopulares.ultimaBusqueda,
+      items: busquedasPopulares.items
+    },
     busquedas: {
       totalBusquedas: busquedas.totalBusquedas,
       totalTerminos: busquedas.items.length,
@@ -463,6 +477,25 @@ function parseErrores_(json) {
   });
 
   return out;
+}
+
+function payloadBusquedasPopulares_(inicio, fin) {
+  return {
+    dateRanges: [{ startDate: inicio, endDate: fin }],
+    dimensions: [{ name: "searchTerm" }, { name: "date" }],
+    metrics: [{ name: "eventCount" }],
+    dimensionFilter: {
+      filter: {
+        fieldName: "eventName",
+        stringFilter: {
+          matchType: "EXACT",
+          value: EVENTO_BUSQUEDA_GENERAL,
+          caseSensitive: true
+        }
+      }
+    },
+    limit: "10000"
+  };
 }
 
 function payloadBusquedas_(inicio, fin) {

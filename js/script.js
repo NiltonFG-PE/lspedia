@@ -2593,6 +2593,27 @@ function registrarBusquedaSinResultado(consulta, origen = "diccionario") {
     }
 }
 
+// BUSQUEDAS_POPULARES_GA4_V1_20260911
+// Registra únicamente búsquedas explícitas (Enter o lupa), no cada tecla.
+// GA4 usa el evento recomendado view_search_results y el parámetro search_term.
+function registrarBusquedaGA4(termino, origen){
+    const limpio = String(termino || "").trim().replace(/\s+/g, " ").slice(0, 80);
+    if(limpio.length < 2) return;
+    if(/@/.test(limpio) || /https?:\/\//i.test(limpio) || /www\./i.test(limpio)) return;
+    if(/(?:\d[\s.-]*){7,}/.test(limpio)) return;
+
+    try {
+        if(typeof window.gtag === "function"){
+            window.gtag("event", "view_search_results", {
+                search_term: limpio.toLocaleLowerCase("es-PE"),
+                search_origin: String(origen || "lspedia")
+            });
+        }
+    } catch(error){
+        console.warn("No se pudo registrar la búsqueda en GA4:", error);
+    }
+}
+
 function buscarPalabras(){
     const texto = norm(buscar.value.trim());
     ocultarQuiz();
@@ -2695,6 +2716,7 @@ function ejecutarBusquedaDirecta() {
     const consultaOriginal = buscar.value.trim();
     const texto = norm(consultaOriginal);
     if(texto === "") return;
+    registrarBusquedaGA4(consultaOriginal, "diccionario");
     sugerencias.innerHTML = "";
     sugerencias.style.display = "none";
 
@@ -4873,8 +4895,10 @@ if(btnBuscarCategorias) btnBuscarCategorias.addEventListener("click", ejecutarBu
 // parcial). Si no hay ninguna coincidencia, deja el input como estaba.
 function ejecutarBusquedaDirectaCategorias() {
     if(!buscarCategorias) return;
-    const texto = norm(buscarCategorias.value.trim());
+    const consultaOriginal = buscarCategorias.value.trim();
+    const texto = norm(consultaOriginal);
     if(texto === "") return;
+    registrarBusquedaGA4(consultaOriginal, "vocabulario");
 
     const datos = obtenerDatosVocabulario();
     const coincidencias = [];
