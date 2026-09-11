@@ -1,23 +1,7 @@
 {
-  "generadoEn": "2026-09-11T04:10:26Z",
+  "generadoEn": "2026-09-11T04:11:31Z",
   "metodo": "fechaPublicacion-con-respaldo-imagen-git-e-historial",
   "items": [
-    {
-      "id": "de-nada",
-      "palabra": "De nada",
-      "categoria": "Cortesía",
-      "imagen": "img/diccionario/de%20nada.webp",
-      "fecha": "2026-09-08T16:59:25Z",
-      "origenFecha": "historial-publicacion-video"
-    },
-    {
-      "id": "con-gusto",
-      "palabra": "Con gusto",
-      "categoria": "Cortesía",
-      "imagen": "img/diccionario/con%20gusto.webp",
-      "fecha": "2026-09-08T16:59:25Z",
-      "origenFecha": "historial-publicacion-video"
-    },
     {
       "id": "hipotesis",
       "palabra": "Hipótesis",
@@ -39,22 +23,6 @@
       "palabra": "Buenos días",
       "categoria": "Saludos",
       "imagen": "img/diccionario/Buenos%20d%C3%ADas.webp",
-      "fecha": "2026-09-08T16:59:25Z",
-      "origenFecha": "historial-publicacion-video"
-    },
-    {
-      "id": "buenas-tardes",
-      "palabra": "Buenas tardes",
-      "categoria": "Saludos",
-      "imagen": "img/diccionario/buenas%20tardes.webp",
-      "fecha": "2026-09-08T16:59:25Z",
-      "origenFecha": "historial-publicacion-video"
-    },
-    {
-      "id": "buenas-noches",
-      "palabra": "Buenas noches",
-      "categoria": "Saludos",
-      "imagen": "img/diccionario/Buenas%20noches.webp",
       "fecha": "2026-09-08T16:59:25Z",
       "origenFecha": "historial-publicacion-video"
     },
@@ -96,6 +64,38 @@
       "categoria": "Cortesía",
       "imagen": "img/diccionario/porfavor.webp",
       "fecha": "2026-09-03T18:38:13Z",
+      "origenFecha": "imagen-git"
+    },
+    {
+      "id": "hola",
+      "palabra": "Hola",
+      "categoria": "Saludos",
+      "imagen": "img/diccionario/hola.webp",
+      "fecha": "2026-09-03T18:38:08Z",
+      "origenFecha": "imagen-git"
+    },
+    {
+      "id": "gracias",
+      "palabra": "Gracias",
+      "categoria": "Cortesía",
+      "imagen": "img/diccionario/gracias.webp",
+      "fecha": "2026-09-03T18:38:04Z",
+      "origenFecha": "imagen-git"
+    },
+    {
+      "id": "felicitaciones",
+      "palabra": "Felicitaciones",
+      "categoria": "Cortesía",
+      "imagen": "img/diccionario/felicitaciones.webp",
+      "fecha": "2026-09-03T18:38:00Z",
+      "origenFecha": "imagen-git"
+    },
+    {
+      "id": "ecosistema",
+      "palabra": "Ecosistema",
+      "categoria": "Ciencia",
+      "imagen": "img/diccionario/ecosistema.webp",
+      "fecha": "2026-09-03T18:37:56Z",
       "origenFecha": "imagen-git"
     }
   ]
