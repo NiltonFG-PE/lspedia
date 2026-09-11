@@ -262,7 +262,7 @@
     </section>
     </div>
 
-    <p class="footer-note">Analytics es de solo lectura. La clave de administrador no se guarda de forma permanente: permanece únicamente en esta pestaña. Los errores técnicos de LSPedia se envían como conteos agregados y no incluyen el texto escrito por las personas.</p>
+    <p class="footer-note">Analytics es de solo lectura. La clave permanece solo durante la pestaña, salvo que elijas “Recordar acceso en este dispositivo”; en ese caso queda guardada localmente en ese navegador hasta que pulses “Olvidar acceso”. Úsalo únicamente en un dispositivo personal. Los errores técnicos se muestran como conteos agregados.</p>
   </section>
 </main>
 
@@ -603,7 +603,6 @@
     if(!api){showAlert('Pega primero la URL /exec de Apps Script.');return}
     if(!key){showAlert('Escribe tu clave privada de administrador.');return}
 
-    saveAccess(api,key);
     setLoading(true);
     el.status.textContent='Conectando…';
 
@@ -615,6 +614,7 @@
         if(/Modo no válido/i.test(msg)) throw new Error('Tu Apps Script todavía usa la versión antigua del panel. Reemplaza admin_busquedas_ga4.gs por la versión nueva y vuelve a desplegar la aplicación web.');
         throw new Error(msg);
       }
+      saveAccess(api,key);
       state.data=data;
       el.periodHeading.textContent='Resumen · '+periodLabel(period).toLowerCase();
       el.generated.textContent=formatTimestamp(data.generadoEn);
