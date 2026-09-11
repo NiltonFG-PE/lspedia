@@ -711,6 +711,12 @@
       "palabra": "Zorro",
       "imagen": "img/alfabetizacion/ejemplos/zorro.webp",
       "orden": 3
+    },
+    {
+      "caracter": "B",
+      "palabra": "Bicicleta",
+      "imagen": "img/alfabetizacion/ejemplos/bicicleta.webp",
+      "orden": 5
     }
   ]
 }
