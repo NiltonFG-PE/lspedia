@@ -10,12 +10,12 @@
    ============================================================ */
 
 // Cambia esta versión cuando modifiques el cascarón de la aplicación.
-const VERSION_APP = "v70";
+const VERSION_APP = "v71";
 const PREFIJO_CACHE = "lspedia-shell-";
 const CACHE_NOMBRE = PREFIJO_CACHE + VERSION_APP;
 
 // Archivos necesarios para que la interfaz principal pueda abrir offline.
-// Se incluyen Matemáticas, el manifest y los iconos de instalación.
+// Se incluyen Matemáticas, el control de instalación PWA, el manifest y los iconos.
 const ARCHIVOS_CASCARON = [
     "./",
     "./index.html",
@@ -26,6 +26,7 @@ const ARCHIVOS_CASCARON = [
     "css/subtitulos.css",
     "css/mejoras-producto.css",
     "js/security.js",
+    "js/pwa-install.js",
     "js/script.js",
     "js/quiz.js",
     "js/alfabetizacion.js",
