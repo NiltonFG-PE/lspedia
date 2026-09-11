@@ -66,3 +66,21 @@
         return abrirOriginal.apply(window, arguments);
     };
 })();
+
+/* ============================================================
+   Control visible de instalación PWA.
+   Se carga solo en el dominio oficial o en desarrollo local.
+   ============================================================ */
+(function cargarControlInstalacionPWA() {
+    'use strict';
+    try {
+        if (window.LSPediaSecurity && !window.LSPediaSecurity.permitirPWA()) return;
+        if (document.querySelector('script[data-lspedia-pwa-install]')) return;
+
+        const script = document.createElement('script');
+        script.src = 'js/pwa-install.js?v=20260911-1';
+        script.async = false;
+        script.dataset.lspediaPwaInstall = '1';
+        document.head.appendChild(script);
+    } catch (_e) {}
+})();
