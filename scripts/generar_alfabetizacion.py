@@ -29,7 +29,7 @@ HOJA_ALFABETO = "Alfabetización"
 HOJA_EJEMPLOS = "AlfabetizacionEjemplos"
 
 CAMPOS_ALFABETO = ("tipo", "caracter", "imagenBoca")
-CAMPOS_EJEMPLOS = ("caracter", "palabra", "imagen", "orden")
+CAMPOS_EJEMPLOS = ("caracter", "palabra", "imagen", "orden", "nivel")
 
 
 def texto(valor: object) -> str:
@@ -161,6 +161,7 @@ def limpiar_ejemplos(filas: object) -> list[dict]:
             "palabra": palabra,
             "imagen": ruta_media(fila.get("imagen")),
             "orden": convertir_orden(fila.get("orden")),
+            "nivel": texto(fila.get("nivel")),
         }
         salida.append({campo: limpio[campo] for campo in CAMPOS_EJEMPLOS})
     return salida
