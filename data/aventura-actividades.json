@@ -1,0 +1,178 @@
+{
+  "version": 1,
+  "titulo": "LSPedia Aventura",
+  "zonas": [
+    {
+      "id": "mercado",
+      "nombre": "Mercado",
+      "icono": "🛒",
+      "descripcion": "Compra, compara y forma oraciones.",
+      "desbloqueoEstrellas": 0
+    },
+    {
+      "id": "escuela",
+      "nombre": "Escuela",
+      "icono": "🏫",
+      "descripcion": "Palabras, verbos y problemas matemáticos.",
+      "desbloqueoEstrellas": 3
+    },
+    {
+      "id": "ciudad",
+      "nombre": "Ciudad",
+      "icono": "🏙️",
+      "descripcion": "Retos de español y matemáticas de la vida diaria.",
+      "desbloqueoEstrellas": 6
+    }
+  ],
+  "actividades": [
+    {
+      "id": "mercado-oracion-pan",
+      "zona": "mercado",
+      "area": "espanol",
+      "tipo": "ordenar",
+      "nivel": "facil",
+      "titulo": "Ordena la compra",
+      "instruccion": "Forma una oración correcta.",
+      "visual": "🥖 🛒",
+      "palabras": ["La", "niña", "compra", "pan"],
+      "respuesta": ["La", "niña", "compra", "pan"]
+    },
+    {
+      "id": "mercado-total-panes",
+      "zona": "mercado",
+      "area": "matematicas",
+      "tipo": "opcion",
+      "nivel": "facil",
+      "titulo": "¿Cuánto pagas?",
+      "instruccion": "Compras 2 panes. Cada pan cuesta S/ 3.",
+      "visual": "🥖🥖  ×  S/ 3",
+      "opciones": ["S/ 5", "S/ 6", "S/ 8", "S/ 9"],
+      "respuesta": "S/ 6"
+    },
+    {
+      "id": "mercado-adjetivo-manzana",
+      "zona": "mercado",
+      "area": "espanol",
+      "tipo": "opcion",
+      "nivel": "medio",
+      "titulo": "Elige la palabra",
+      "instruccion": "Completa: La manzana es ____.",
+      "visual": "🍎",
+      "opciones": ["rojo", "roja", "rojos", "rojas"],
+      "respuesta": "roja"
+    },
+    {
+      "id": "mercado-vuelto",
+      "zona": "mercado",
+      "area": "matematicas",
+      "tipo": "opcion",
+      "nivel": "medio",
+      "titulo": "Calcula el vuelto",
+      "instruccion": "Tu compra cuesta S/ 7. Pagas con S/ 10. ¿Cuánto recibes?",
+      "visual": "💵 S/ 10  →  🧺 S/ 7",
+      "opciones": ["S/ 2", "S/ 3", "S/ 4", "S/ 5"],
+      "respuesta": "S/ 3"
+    },
+    {
+      "id": "escuela-verbo",
+      "zona": "escuela",
+      "area": "espanol",
+      "tipo": "opcion",
+      "nivel": "facil",
+      "titulo": "Encuentra la acción",
+      "instruccion": "En «El estudiante escribe en su cuaderno», ¿qué palabra indica la acción?",
+      "visual": "✏️ 📓",
+      "opciones": ["estudiante", "escribe", "cuaderno", "el"],
+      "respuesta": "escribe"
+    },
+    {
+      "id": "escuela-cuadernos",
+      "zona": "escuela",
+      "area": "matematicas",
+      "tipo": "opcion",
+      "nivel": "facil",
+      "titulo": "Cuadernos para la clase",
+      "instruccion": "Hay 4 estudiantes. Cada uno recibe 2 cuadernos. ¿Cuántos cuadernos se necesitan?",
+      "visual": "👤📘📘  ×  4",
+      "opciones": ["6", "8", "10", "12"],
+      "respuesta": "8"
+    },
+    {
+      "id": "escuela-plural",
+      "zona": "escuela",
+      "area": "espanol",
+      "tipo": "opcion",
+      "nivel": "medio",
+      "titulo": "Uno y varios",
+      "instruccion": "Completa: Un libro → varios ____.",
+      "visual": "📕 → 📚",
+      "opciones": ["libro", "libros", "libra", "libras"],
+      "respuesta": "libros"
+    },
+    {
+      "id": "escuela-orden-profesora",
+      "zona": "escuela",
+      "area": "espanol",
+      "tipo": "ordenar",
+      "nivel": "medio",
+      "titulo": "Construye la oración",
+      "instruccion": "Ordena las palabras.",
+      "visual": "👩‍🏫 📖",
+      "palabras": ["La", "profesora", "explica", "la", "lección"],
+      "respuesta": ["La", "profesora", "explica", "la", "lección"]
+    },
+    {
+      "id": "ciudad-bus-asientos",
+      "zona": "ciudad",
+      "area": "matematicas",
+      "tipo": "opcion",
+      "nivel": "medio",
+      "titulo": "Asientos del bus",
+      "instruccion": "El bus tiene 20 asientos. 13 están ocupados. ¿Cuántos quedan libres?",
+      "visual": "🚌  20 − 13",
+      "opciones": ["5", "6", "7", "8"],
+      "respuesta": "7"
+    },
+    {
+      "id": "ciudad-preposicion",
+      "zona": "ciudad",
+      "area": "espanol",
+      "tipo": "opcion",
+      "nivel": "medio",
+      "titulo": "Completa la ubicación",
+      "instruccion": "Completa: El bus está ____ la avenida.",
+      "visual": "🚌 🛣️",
+      "opciones": ["en", "con", "por qué", "muy"],
+      "respuesta": "en"
+    },
+    {
+      "id": "ciudad-grupos",
+      "zona": "ciudad",
+      "area": "matematicas",
+      "tipo": "opcion",
+      "nivel": "dificil",
+      "titulo": "Grupos en el parque",
+      "instruccion": "Hay 24 personas y se forman 4 grupos iguales. ¿Cuántas personas hay en cada grupo?",
+      "visual": "👥 24  ÷  4",
+      "opciones": ["4", "5", "6", "8"],
+      "respuesta": "6"
+    },
+    {
+      "id": "ciudad-concordancia",
+      "zona": "ciudad",
+      "area": "espanol",
+      "tipo": "opcion",
+      "nivel": "dificil",
+      "titulo": "Elige la oración correcta",
+      "instruccion": "¿Cuál oración está escrita correctamente?",
+      "visual": "🚦 👥",
+      "opciones": [
+        "Las personas esperan el bus.",
+        "Las personas espera el bus.",
+        "La personas esperan el bus.",
+        "Las persona espera el bus."
+      ],
+      "respuesta": "Las personas esperan el bus."
+    }
+  ]
+}
