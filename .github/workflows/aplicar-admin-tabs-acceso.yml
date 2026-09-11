@@ -1,0 +1,88 @@
+name: Aplicar mejoras del panel Admin
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - 'scripts/aplicar_admin_tabs_y_acceso.py'
+      - '.github/workflows/aplicar-admin-tabs-acceso.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  aplicar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Aplicar migración
+        run: python scripts/aplicar_admin_tabs_y_acceso.py
+
+      - name: Validar JavaScript principal
+        run: node --check js/script.js
+
+      - name: Validar JavaScript del Admin
+        run: |
+          python - <<'PY'
+          import re
+          from pathlib import Path
+          html = Path('admin/busquedas.html').read_text(encoding='utf-8')
+          scripts = re.findall(r'<script>(.*?)</script>', html, flags=re.S)
+          if not scripts:
+              raise SystemExit('No se encontró script inline en admin/busquedas.html')
+          Path('/tmp/admin-inline.js').write_text(scripts[-1], encoding='utf-8')
+          PY
+          node --check /tmp/admin-inline.js
+
+      - name: Validar LSPedia
+        run: python scripts/validar_lspedia.py
+
+      - name: Validar estructura del Admin
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          admin = Path('admin/busquedas.html').read_text(encoding='utf-8')
+          estado = Path('admin/estado.html').read_text(encoding='utf-8')
+          backend = Path('apps-script/admin_busquedas_ga4.gs').read_text(encoding='utf-8')
+          principal = Path('js/script.js').read_text(encoding='utf-8')
+          checks = {
+              'tab búsquedas': 'data-admin-tab="busquedas"' in admin,
+              'tab estadísticas': 'data-admin-tab="estadisticas"' in admin,
+              'tab estado': '🩺 Estado' in admin and '🩺 Estado' in estado,
+              'recordar acceso': 'rememberAccess' in admin and 'STORE_ACCESS' in admin,
+              'ranking popular': 'popularSearchList' in admin and 'busquedasPopulares' in backend,
+              'evento general': 'view_search_results' in principal and 'EVENTO_BUSQUEDA_GENERAL' in backend,
+              'url admin corta': Path('admin/index.html').exists(),
+          }
+          faltan = [k for k,v in checks.items() if not v]
+          if faltan:
+              raise SystemExit('Faltan comprobaciones: ' + ', '.join(faltan))
+          print('Estructura Admin correcta.')
+          PY
+
+      - name: Revisar formato Git
+        run: git diff --check
+
+      - name: Publicar cambios y limpiar migración
+        run: |
+          rm -f scripts/aplicar_admin_tabs_y_acceso.py .github/workflows/aplicar-admin-tabs-acceso.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add admin/busquedas.html admin/estado.html admin/index.html apps-script/admin_busquedas_ga4.gs js/script.js scripts/aplicar_admin_tabs_y_acceso.py .github/workflows/aplicar-admin-tabs-acceso.yml
+          if git diff --cached --quiet; then
+            echo 'No hay cambios para publicar.'
+            exit 0
+          fi
+          git commit -m 'Reorganizar panel Admin y simplificar acceso'
+          git push origin HEAD:develop
