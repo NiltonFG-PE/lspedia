@@ -2953,10 +2953,10 @@ function mostrarPalabra(p, opciones = {}){
     setTimeout(() => contenedorDestino.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
 }
 
-// --- TARJETA SIMPLIFICADA PARA PALABRAS DE LA HOJA 2 (banco del Quiz) ---
-// La Hoja 2 solo tiene palabra, video, categoría y nivel (no definición,
-// imagen, variantes ni seña sugerida), así que esta es una versión
-// reducida de mostrarPalabra() con lo mínimo que hay disponible.
+// --- FICHA DE VOCABULARIO PARA PALABRAS DE LA HOJA 2 ---
+// Vocabulario sigue usando el mismo banco que el Quiz, pero su ficha puede
+// mostrar definición, variantes e ilustración propias cuando esos campos
+// existen. El Quiz conserva su miniatura del video de YouTube.
 // No toca favoritos ni historial (viven ligados a App.datos), pero SÍ
 // actualiza la URL (?p=...) para que restaurarPalabraDesdeUrl() pueda
 // recuperar este mismo resultado si el usuario refresca la página.
@@ -3024,6 +3024,11 @@ function mostrarPalabraSimplificada(p, opciones = {}){
     const bloqueImagen = generarBloqueImagenApoyo(imagenesPalabra, p.palabra);
     let bloqueVariantes = p.variantes && p.variantes.trim() !== "" ? `<div class="mb-3 p-2 bg-light rounded border"><span class="d-block fw-bold text-secondary mb-1" style="font-size: 10px; letter-spacing: 0.5px;">🔄 CONJUGACIONES O VARIANTES:</span><span class="text-muted small fst-italic">${escaparHtml(p.variantes)}</span></div>` : "";
 
+    const bloqueDefinicionVocabulario =
+        p.definicion && String(p.definicion).trim() !== ""
+            ? `<p class="mb-3 p-3 rounded" style="background-color: #eef6ff; border-left: 4px solid #0d6efd; font-size: 1rem; line-height: 1.5; color: #1e293b;">${formatearDefinicion(p.definicion)}</p>`
+            : "";
+
     const contenedorDestino = enCategorias ? resultadoCategorias : resultado;
     contenedorDestino.innerHTML = `
     ${enCategorias ? botonAtrasCategorias() : ""}
@@ -3036,6 +3041,7 @@ function mostrarPalabraSimplificada(p, opciones = {}){
                 <h3 class="fw-bold mb-0" style="color: #0d6efd;">${escaparHtml(p.palabra)}</h3>
                 ${generarBotonCompartir()}
             </div>
+            ${bloqueDefinicionVocabulario}
             ${bloqueVariantes}
             <div class="row g-4 justify-content-center align-items-stretch">
                 <div class="col-lg-7 d-flex flex-column">
