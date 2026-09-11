@@ -52,6 +52,14 @@ jobs:
           print('Estructura correcta')
           PY
 
+      - name: Normalizar final de CSS
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('css/mejoras-producto.css')
+          p.write_text(p.read_text(encoding='utf-8').rstrip() + '\n', encoding='utf-8')
+          PY
+
       - name: Revisar formato Git
         run: git diff --check
 
