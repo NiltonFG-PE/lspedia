@@ -27,7 +27,13 @@ jobs:
           python-version: '3.x'
 
       - name: Aplicar índice A-Z doble
-        run: python scripts/aplicar_indice_vocabulario.py
+        run: |
+          python scripts/aplicar_indice_vocabulario.py
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('css/mejoras-producto.css')
+          p.write_text(p.read_text(encoding='utf-8').rstrip() + '\n', encoding='utf-8')
+          PY
 
       - name: Validar JavaScript
         run: node --check js/script.js
