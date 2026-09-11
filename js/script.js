@@ -306,26 +306,51 @@ if(btnInicio) {
     });
 }
 
-// Solo en la versión de escritorio (ver detección en index.html) el
-// índice alfabético debe aparecer desplegado por defecto en el Inicio,
-// y colapsado (no desplegado) al entrar a "Temas orden". En móvil no
-// cambia nada: sigue arrancando colapsado como antes.
-function esModoEscritorioForzado(){
-    return document.documentElement.classList.contains("modo-escritorio-forzado");
+// ÍNDICE ALFABÉTICO COMPACTO
+// El control A-Z vive al lado del buscador y arranca cerrado tanto en móvil
+// como en escritorio. Al entrar a Vocabulario/Temas se cierra y se oculta;
+// al volver a Inicio se muestra de nuevo, sin duplicar navegación.
+function actualizarEstadoIndiceAlfabetico(){
+    const indice = document.getElementById("indiceAlfabetico");
+    const btn = document.getElementById("btnToggleAbc");
+    if(!indice || !btn) return;
+
+    const abierto = indice.classList.contains("show") || btn.getAttribute("aria-expanded") === "true";
+    btn.setAttribute("aria-label", abierto ? "Cerrar índice alfabético A a Z" : "Abrir índice alfabético A a Z");
+    btn.setAttribute("title", abierto ? "Cerrar índice alfabético" : "Abrir índice alfabético");
 }
 
 function desplegarIndiceAlfabetico(){
-    if (!esModoEscritorioForzado()) return;
-    const indice = document.getElementById("indiceAlfabetico");
-    const btn = document.getElementById("btnToggleAbc");
-    if (indice && btn && !indice.classList.contains("show")) btn.click();
+    const filaBoton = document.getElementById("filaBotonIndiceAlfabetico");
+    const filaIndice = document.getElementById("filaIndiceAlfabetico");
+    if(filaBoton) filaBoton.style.display = "";
+    if(filaIndice) filaIndice.style.display = "";
+    actualizarEstadoIndiceAlfabetico();
 }
 
 function colapsarIndiceAlfabetico(){
-    if (!esModoEscritorioForzado()) return;
     const indice = document.getElementById("indiceAlfabetico");
     const btn = document.getElementById("btnToggleAbc");
-    if (indice && btn && indice.classList.contains("show")) btn.click();
+    if(!indice || !btn) return;
+
+    if(indice.classList.contains("show")){
+        if(typeof bootstrap !== "undefined" && bootstrap.Collapse){
+            const instancia = bootstrap.Collapse.getInstance(indice) || new bootstrap.Collapse(indice, { toggle: false });
+            instancia.hide();
+        } else {
+            indice.classList.remove("show");
+            btn.setAttribute("aria-expanded", "false");
+        }
+    } else {
+        btn.setAttribute("aria-expanded", "false");
+    }
+    actualizarEstadoIndiceAlfabetico();
+}
+
+const indiceAlfabeticoCompacto = document.getElementById("indiceAlfabetico");
+if(indiceAlfabeticoCompacto){
+    indiceAlfabeticoCompacto.addEventListener("shown.bs.collapse", actualizarEstadoIndiceAlfabetico);
+    indiceAlfabeticoCompacto.addEventListener("hidden.bs.collapse", actualizarEstadoIndiceAlfabetico);
 }
 
 // --- NAVEGACIÓN Y HISTORIAL DEL NAVEGADOR ---
@@ -797,6 +822,8 @@ function irAlBuscador(opciones = {}){
     actualizarTituloPrincipal("diccionario");
     activarBotonMenu("btnInicio");
     actualizarVistaUrl(null);
+    // Inicio siempre vuelve al control A-Z compacto en estado cerrado.
+    colapsarIndiceAlfabetico();
     desplegarIndiceAlfabetico();
     if (sugerencias) sugerencias.innerHTML = "";
     if (buscar) buscar.value = "";
@@ -934,8 +961,9 @@ document.getElementById("btnCategorias").addEventListener("click", (e) => {
     mostrarBloqueInicio();
     actualizarTituloPrincipal("vocabulario");
     activarBotonMenu("btnCategorias");
-    // Vista "Temas" en móvil: solo deben quedar visibles el buscador, el
-    // índice A-Z, las categorías, Favoritos e Historial. La clase la lee
+    // Vista "Vocabulario/Temas": usa su propio buscador y categorías.
+    // El índice A-Z pertenece solo al Diccionario y se oculta por completo.
+    // La clase también controla el layout móvil de esta vista.
     // el CSS (@media max-width 1199.98px) para ocultar la seña del
     // día/ayer y el panel de Estadísticas; también aplica en escritorio.
     document.body.classList.add("vista-temas-movil");
@@ -955,11 +983,9 @@ document.getElementById("btnCategorias").addEventListener("click", (e) => {
     const statsPanelTemas = document.querySelector(".stats-panel-destacado");
     if (statsPanelTemas) statsPanelTemas.style.display = "none";
     colapsarIndiceAlfabetico();
-    // El botón "A-Z | Índice alfabético" no debe verse dentro de "Temas
-    // orden" (ahí ya se navega por las tarjetas de categoría y por el
-    // buscador azul de abajo): se oculta por completo, en escritorio y
-    // en móvil por igual. mostrarBloqueInicio() lo vuelve a mostrar al
-    // salir hacia "Buscar" (ver irAlBuscador()).
+    // El botón A-Z compacto y sus letras no deben verse dentro de
+    // Vocabulario/Temas. Se ocultan en cualquier tamaño; Inicio los vuelve a
+    // mostrar y el índice queda cerrado para no duplicar navegación.
     const filaBotonIndiceTemas = document.getElementById("filaBotonIndiceAlfabetico");
     if(filaBotonIndiceTemas) filaBotonIndiceTemas.style.display = "none";
     const filaIndiceTemas = document.getElementById("filaIndiceAlfabetico");
@@ -2283,11 +2309,9 @@ if (statCardVideos) {
 const indiceAlfabetico = document.getElementById("indiceAlfabetico");
 if(indiceAlfabetico){
     // El diseño actual ya no usa una flecha giratoria: el propio botón
-    // #btnToggleAbc alterna su texto ("Mostrar todas" / "Ocultar") solo
-    // con CSS, en base al atributo aria-expanded que Bootstrap actualiza
-    // por su cuenta al abrir/cerrar el collapse (ver estilos.css).
-    // En escritorio el índice alfabético arranca desplegado (en móvil
-    // sigue arrancando colapsado, como antes).
+    // El botón A-Z compacto se muestra en Diccionario, pero las letras
+    // arrancan cerradas en cualquier tamaño para ahorrar espacio.
+    colapsarIndiceAlfabetico();
     desplegarIndiceAlfabetico();
 }
 

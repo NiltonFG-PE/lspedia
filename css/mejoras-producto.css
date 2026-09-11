@@ -47,3 +47,143 @@
     #sugerencias .list-group-item,#sugerenciasCategorias .list-group-item{min-height:56px;padding:10px 12px;touch-action:manipulation}
     .sugerencia-fila{min-height:44px}
 }
+
+
+/* INDICE_ALFABETICO_COMPACTO_V1_20260910 */
+#bloqueBuscador .buscador-indice-linea {
+    display: flex;
+    align-items: stretch;
+    gap: 9px;
+    width: 100%;
+}
+
+#bloqueBuscador .buscador-indice-linea > .input-group {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+#filaBotonIndiceAlfabetico.indice-compacto-wrap {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: stretch;
+}
+
+.indice-compacto-btn {
+    min-height: 50px;
+    padding: 0 13px;
+    border: 2px solid #f1b514;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #fffdf5 0%, #fff5c8 100%);
+    color: #0f172a;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-weight: 800;
+    box-shadow: 0 5px 14px rgba(180, 127, 8, 0.13);
+    transition: transform .16s ease, box-shadow .16s ease, background-color .16s ease;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    white-space: nowrap;
+}
+
+.indice-compacto-btn:hover,
+.indice-compacto-btn:focus-visible {
+    color: #0f172a;
+    background: #ffefaa;
+    box-shadow: 0 7px 18px rgba(180, 127, 8, 0.20);
+    outline: none;
+}
+
+.indice-compacto-btn:active {
+    transform: scale(.97);
+}
+
+.indice-compacto-az {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 35px;
+    height: 27px;
+    padding: 0 7px;
+    border-radius: 8px;
+    background: #ffc107;
+    color: #172033;
+    font-size: .78rem;
+    letter-spacing: .02em;
+}
+
+.indice-compacto-texto {
+    font-size: .88rem;
+}
+
+.indice-compacto-flecha {
+    display: inline-block;
+    font-size: 1rem;
+    line-height: 1;
+    transition: transform .2s ease;
+}
+
+.indice-compacto-btn[aria-expanded="true"] .indice-compacto-flecha {
+    transform: rotate(180deg);
+}
+
+#filaIndiceAlfabetico.indice-compacto-desplegable {
+    width: 100%;
+}
+
+#filaIndiceAlfabetico .indice-alfabetico {
+    margin-top: 10px;
+    padding: 12px;
+    border: 1px solid rgba(148, 163, 184, .25);
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, .07);
+}
+
+@media (max-width: 767.98px) {
+    #bloqueBuscador .buscador-indice-linea {
+        gap: 7px;
+    }
+
+    .indice-compacto-btn {
+        min-width: 58px;
+        min-height: 52px;
+        padding: 0 8px;
+        gap: 5px;
+    }
+
+    .indice-compacto-az {
+        min-width: 33px;
+        height: 26px;
+        padding: 0 6px;
+        font-size: .74rem;
+    }
+
+    #filaIndiceAlfabetico .indice-alfabetico {
+        grid-template-columns: repeat(7, 1fr) !important;
+        gap: 7px !important;
+        padding: 10px;
+        margin-top: 8px;
+    }
+}
+
+@media (max-width: 380px) {
+    .indice-compacto-btn {
+        min-width: 54px;
+        padding: 0 6px;
+    }
+
+    #btnBuscar {
+        padding-left: .8rem !important;
+        padding-right: .8rem !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .indice-compacto-btn,
+    .indice-compacto-flecha {
+        transition: none !important;
+    }
+}

@@ -4651,53 +4651,25 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                 </div>
 
                 <div class="position-relative" id="bloqueBuscador">
-                    <div class="input-group input-group-lg shadow-sm" style="border-radius: 50px; border: 2px solid #ffc107; overflow: hidden; background-color: #fff;">
-                        <input id="buscar" type="text" class="form-control border-0 px-4 shadow-none text-secondary" placeholder="Buscar palabra y significado" style="font-size: 1.1rem; background: transparent;">
-                        <button class="btn px-4 d-flex align-items-center justify-content-center" type="button" id="btnBuscar">
-                            <span style="font-size: 1.3rem;">🔍</span>
-                        </button>
+                    <div class="buscador-indice-linea">
+                        <div class="input-group input-group-lg shadow-sm" style="border-radius: 50px; border: 2px solid #ffc107; overflow: hidden; background-color: #fff;">
+                            <input id="buscar" type="text" class="form-control border-0 px-4 shadow-none text-secondary" placeholder="Buscar palabra y significado" style="font-size: 1.1rem; background: transparent;">
+                            <button class="btn px-4 d-flex align-items-center justify-content-center" type="button" id="btnBuscar">
+                                <span style="font-size: 1.3rem;">🔍</span>
+                            </button>
+                        </div>
+
+                        <div id="filaBotonIndiceAlfabetico" class="indice-compacto-wrap">
+                            <button type="button" class="indice-compacto-btn" data-bs-toggle="collapse" data-bs-target="#indiceAlfabetico" aria-expanded="false" aria-controls="indiceAlfabetico" aria-label="Abrir índice alfabético A a Z" title="Abrir índice alfabético" id="btnToggleAbc">
+                                <span class="indice-compacto-az">A-Z</span>
+                                <span class="indice-compacto-texto d-none d-sm-inline">Índice</span>
+                                <span class="indice-compacto-flecha" aria-hidden="true">⌄</span>
+                            </button>
+                        </div>
                     </div>
                     <div id="sugerencias" class="list-group mt-2 shadow-sm position-absolute w-100 z-3" style="border-radius: 15px; overflow: hidden;"></div>
-                </div>
 
-                <div class="ejemplos-busqueda justify-content-center justify-content-lg-start" id="bloqueEjemplos">
-                    <span class="ejemplos-label">⭐ Palabras sugeridas</span>
-                    <!-- Estos 5 chips son solo un placeholder mientras carga el
-                         diccionario (data/palabras.json). En cuanto App.datos está
-                         listo, un script más abajo los reemplaza por 5 palabras
-                         tomadas en vivo de App.datos, para garantizar que los
-                         ejemplos SIEMPRE existan en el diccionario, aunque la
-                         Hoja de cálculo cambie a futuro. -->
-                    <button type="button" class="ejemplo-chip" data-palabra="Hola">Hola</button>
-                    <button type="button" class="ejemplo-chip" data-palabra="Gracias">Gracias</button>
-                    <button type="button" class="ejemplo-chip" data-palabra="Por favor">Por favor</button>
-                    <button type="button" class="ejemplo-chip" data-palabra="Adiós">Adiós</button>
-                    <button type="button" class="ejemplo-chip" data-palabra="Bienvenido">Bienvenido</button>
-                </div>
-            </div>
-
-            <div class="col-lg-3 order-first order-lg-last d-flex justify-content-center align-items-start mb-3 mb-lg-0" id="colAvatarHero">
-                <video class="avatar-hero-img" autoplay muted loop playsinline disablepictureinpicture poster="img/avatar_sin_fondo.png" aria-label="Personaje de LSPedia sosteniendo una lupa">
-                    <source src="img/avatar_lupa.webm" type="video/webm">
-                </video>
-            </div>
-
-        </div>
-
-        <div class="row justify-content-center mb-4 mt-4" id="filaBotonIndiceAlfabetico">
-            <div class="col-12">
-                <div class="indice-alfabetico-card">
-                    <div class="indice-alfabetico-header">
-                        <span class="indice-alfabetico-titulo-wrap">
-                            <span class="indice-badge">A-Z</span>
-                            <span class="indice-alfabetico-titulo">Índice Alfabético</span>
-                        </span>
-                        <button type="button" class="indice-alfabetico-toggle" data-bs-toggle="collapse" data-bs-target="#indiceAlfabetico" aria-expanded="false" aria-controls="indiceAlfabetico" id="btnToggleAbc">
-                            <span class="texto-mostrar">Mostrar todas</span>
-                            <span class="texto-ocultar">Ocultar</span>
-                        </button>
-                    </div>
-                    <div id="filaIndiceAlfabetico">
+                    <div id="filaIndiceAlfabetico" class="indice-compacto-desplegable">
                         <div class="collapse" id="indiceAlfabetico">
                             <div class="indice-alfabetico">
                                 <button class="btn btn-abc" onclick="filtrarPorLetra('A')">A</button>
@@ -4731,9 +4703,30 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
+                <div class="ejemplos-busqueda justify-content-center justify-content-lg-start" id="bloqueEjemplos">
+                    <span class="ejemplos-label">⭐ Palabras sugeridas</span>
+                    <!-- Estos 5 chips son solo un placeholder mientras carga el
+                         diccionario (data/palabras.json). En cuanto App.datos está
+                         listo, un script más abajo los reemplaza por 5 palabras
+                         tomadas en vivo de App.datos, para garantizar que los
+                         ejemplos SIEMPRE existan en el diccionario, aunque la
+                         Hoja de cálculo cambie a futuro. -->
+                    <button type="button" class="ejemplo-chip" data-palabra="Hola">Hola</button>
+                    <button type="button" class="ejemplo-chip" data-palabra="Gracias">Gracias</button>
+                    <button type="button" class="ejemplo-chip" data-palabra="Por favor">Por favor</button>
+                    <button type="button" class="ejemplo-chip" data-palabra="Adiós">Adiós</button>
+                    <button type="button" class="ejemplo-chip" data-palabra="Bienvenido">Bienvenido</button>
+                </div>
+            </div>
+
+            <div class="col-lg-3 order-first order-lg-last d-flex justify-content-center align-items-start mb-3 mb-lg-0" id="colAvatarHero">
+                <video class="avatar-hero-img" autoplay muted loop playsinline disablepictureinpicture poster="img/avatar_sin_fondo.png" aria-label="Personaje de LSPedia sosteniendo una lupa">
+                    <source src="img/avatar_lupa.webm" type="video/webm">
+                </video>
+            </div>
+
+        </div>
 
         <!-- Resultados de búsqueda del Diccionario: ahora aparecen ANTES de
              la sección Categorías (justo debajo del Índice Alfabético), no
