@@ -11,6 +11,7 @@ on:
       - "scripts/separar_diccionario_vocabulario.py"
       - "scripts/generar_sitemap.py"
       - "scripts/actualizar_nuevas_palabras.py"
+      - "scripts/aplicar_mejora_vocabulario.py"
       - "scripts/normalizar_categorias.py"
       - "scripts/validar_lspedia.py"
       - ".github/workflows/actualizar-sitemap.yml"
@@ -40,6 +41,8 @@ jobs:
         run: python scripts/migrar_ids_palabras.py
       - name: Separar Diccionario y Vocabulario
         run: python scripts/separar_diccionario_vocabulario.py
+      - name: Mejorar ficha de Vocabulario
+        run: python scripts/aplicar_mejora_vocabulario.py
       - name: Generar sitemap.xml
         run: python scripts/generar_sitemap.py
       - name: Detectar nuevas palabras reales
