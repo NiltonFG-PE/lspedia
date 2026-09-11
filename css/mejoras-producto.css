@@ -31,3 +31,19 @@
 .lsp-aprender-salir small{font-size:.66rem;font-weight:800}
 .lsp-aprender-salir:hover,.lsp-aprender-salir:focus-visible{background:#ffe4e6;outline:2px solid rgba(190,24,93,.15);outline-offset:1px}
 @media(max-width:767.98px){.lsp-nueva-palabra{min-width:150px;max-width:168px}.ficha-palabra-browse.lsp-aprender-activo{grid-template-columns:46px minmax(0,1fr) 46px minmax(0,1fr);gap:5px}.lsp-aprender-salir{padding:5px 3px;border-radius:10px}.lsp-aprender-salir small{font-size:.58rem}}
+
+/* Ajuste 2026-09-10: pulido táctil y áreas seguras en móvil/tablet. */
+@media(max-width:1199.98px){
+    body{padding-bottom:calc(82px + env(safe-area-inset-bottom,0px))!important}
+    .mobile-bottom-nav{min-height:72px}
+    .mbn-item{min-height:56px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+    .lsp-share-toast{bottom:calc(92px + env(safe-area-inset-bottom,0px))}
+}
+@media(max-width:767.98px){
+    .lsp-nuevas-lista{scroll-snap-type:x proximity;scroll-padding-inline:1px;overscroll-behavior-inline:contain;-webkit-overflow-scrolling:touch;padding-bottom:9px}
+    .lsp-nueva-palabra{scroll-snap-align:start;touch-action:manipulation}
+    .lsp-aprender-btn{min-height:46px;touch-action:manipulation}
+    .lsp-share-close{width:44px;height:44px;touch-action:manipulation}
+    #sugerencias .list-group-item,#sugerenciasCategorias .list-group-item{min-height:56px;padding:10px 12px;touch-action:manipulation}
+    .sugerencia-fila{min-height:44px}
+}
