@@ -16,6 +16,7 @@ import json
 import re
 import subprocess
 from pathlib import Path
+from urllib.parse import unquote
 from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -77,7 +78,6 @@ def parsear_fecha(valor: object) -> dt.datetime | None:
     if not texto:
         return None
 
-    # ISO 8601: 2026-09-10T22:15:00-05:00 / ...Z
     candidato = texto[:-1] + "+00:00" if texto.endswith("Z") else texto
     try:
         fecha = dt.datetime.fromisoformat(candidato)
@@ -87,7 +87,6 @@ def parsear_fecha(valor: object) -> dt.datetime | None:
     except ValueError:
         pass
 
-    # Fecha serializada como Date de JavaScript / Apps Script.
     # Ej.: Thu Sep 10 2026 22:15:00 GMT-0500 (Peru Standard Time)
     js = re.sub(r"\s*\([^)]*\)\s*$", "", texto)
     try:
@@ -127,12 +126,15 @@ def fecha_iso_utc(fecha: dt.datetime) -> str:
 
 
 def ruta_imagen_local(item: dict) -> str:
-    """Devuelve una ruta img/... si el registro usa una imagen local real."""
+    """Devuelve la ruta Git real de una imagen local ``img/...``."""
     valor = str(item.get("imagen") or "").split(",", 1)[0].strip()
     if not valor:
         return ""
 
-    valor = valor.replace("\\", "/")
+    # En palabras antiguas la hoja puede guardar la URL codificada para web,
+    # por ejemplo ``img/diccionario/de%20nada.webp`` o acentos como %C3%B3.
+    # Git, en cambio, conserva el nombre real con espacios/Unicode.
+    valor = unquote(valor).replace("\\", "/")
     while valor.startswith("./"):
         valor = valor[2:]
     valor = valor.lstrip("/")
