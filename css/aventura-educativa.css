@@ -1,0 +1,936 @@
+/* ============================================================
+   LSPedia Aventura — videojuego educativo visual
+   Ligero, táctil y sin dependencia de audio.
+   ============================================================ */
+
+.aventura-menu-col {
+    margin-bottom: .15rem;
+}
+
+.aventura-menu-card {
+    position: relative;
+    min-height: 176px !important;
+    padding: 0 !important;
+    overflow: hidden;
+    border: 1.5px solid rgba(47, 137, 216, .30) !important;
+    background:
+        radial-gradient(circle at 84% 18%, rgba(255, 212, 78, .30), transparent 22%),
+        linear-gradient(135deg, #071a3a 0%, #0b3971 48%, #167fc0 100%) !important;
+    color: #fff !important;
+    box-shadow: 0 14px 32px rgba(7, 35, 76, .18) !important;
+    text-align: left;
+}
+
+.aventura-menu-card::after {
+    content: "";
+    position: absolute;
+    inset: auto -10% -48% 36%;
+    height: 120%;
+    border-radius: 50%;
+    background: rgba(255,255,255,.08);
+    transform: rotate(-10deg);
+    pointer-events: none;
+}
+
+.aventura-menu-contenido {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: minmax(0,1.1fr) minmax(180px,.9fr);
+    min-height: 176px;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 22px;
+}
+
+.aventura-menu-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+}
+
+.aventura-menu-nuevo {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 9px;
+    border-radius: 999px;
+    background: #ffc107;
+    color: #213652;
+    font-size: .68rem;
+    font-weight: 900;
+    letter-spacing: .07em;
+}
+
+.aventura-menu-titulo {
+    font-size: clamp(1.15rem, 3vw, 1.55rem);
+    font-weight: 800;
+    line-height: 1.12;
+}
+
+.aventura-menu-desc {
+    max-width: 430px;
+    color: rgba(255,255,255,.82) !important;
+    font-size: .82rem !important;
+    line-height: 1.35 !important;
+}
+
+.aventura-menu-preview {
+    position: relative;
+    height: 130px;
+    min-width: 190px;
+    border-radius: 22px;
+    background: linear-gradient(#84cef2 0 48%, #a9dc78 48% 100%);
+    border: 1px solid rgba(255,255,255,.28);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 12px 24px rgba(0,0,0,.16);
+    overflow: hidden;
+}
+
+.aventura-menu-preview .amp-sol {
+    position: absolute;
+    width: 34px;
+    height: 34px;
+    right: 18px;
+    top: 13px;
+    border-radius: 50%;
+    background: #ffd95d;
+    box-shadow: 0 0 0 8px rgba(255,217,93,.18);
+}
+
+.aventura-menu-preview .amp-camino {
+    position: absolute;
+    width: 200px;
+    height: 70px;
+    left: 22px;
+    bottom: -28px;
+    border: 16px solid #f2dfb1;
+    border-radius: 50%;
+    transform: rotate(-9deg);
+}
+
+.aventura-menu-preview .amp-zona {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 15px;
+    background: rgba(255,255,255,.92);
+    box-shadow: 0 7px 16px rgba(21,61,81,.18);
+    font-size: 1.55rem;
+    animation: aventuraPreviewFlota 2.7s ease-in-out infinite;
+}
+
+.aventura-menu-preview .amp-zona:nth-of-type(1) { left: 18px; bottom: 22px; }
+.aventura-menu-preview .amp-zona:nth-of-type(2) { left: 82px; top: 16px; animation-delay: .25s; }
+.aventura-menu-preview .amp-zona:nth-of-type(3) { right: 16px; bottom: 24px; animation-delay: .5s; }
+
+@keyframes aventuraPreviewFlota {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+/* ---------- Aplicación ---------- */
+#aventuraApp {
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto 30px;
+}
+
+.aventura-shell {
+    --av-azul: #0b3a70;
+    --av-celeste: #1996d8;
+    --av-dorado: #ffc83d;
+    --av-verde: #35a96b;
+    position: relative;
+    overflow: hidden;
+    border-radius: 28px;
+    border: 1px solid #d9e7f5;
+    background: #f5f9fd;
+    box-shadow: 0 20px 55px rgba(15, 58, 112, .14);
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.aventura-topbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: linear-gradient(90deg, #071a3a 0%, #0b3569 55%, #0e4d83 100%);
+    color: #fff;
+}
+
+.aventura-btn-volver {
+    width: 42px;
+    height: 42px;
+    border: 1px solid rgba(255,255,255,.22);
+    border-radius: 13px;
+    background: rgba(255,255,255,.10);
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.aventura-btn-volver:active { transform: scale(.95); }
+
+.aventura-topbar-titulo {
+    min-width: 0;
+    margin-right: auto;
+}
+
+.aventura-topbar-titulo strong {
+    display: block;
+    font-size: 1.03rem;
+    line-height: 1.1;
+}
+
+.aventura-topbar-titulo span {
+    display: block;
+    margin-top: 3px;
+    color: rgba(255,255,255,.72);
+    font-size: .72rem;
+}
+
+.aventura-hud {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.aventura-hud-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    min-height: 34px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.13);
+    font-size: .78rem;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.aventura-hud-chip b { color: #ffe16e; }
+
+/* ---------- Mapa ---------- */
+.aventura-mapa-wrap {
+    position: relative;
+    min-height: 520px;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 78% 14%, rgba(255,229,118,.60) 0 5%, transparent 5.3%),
+        linear-gradient(#82c9ef 0 45%, #b8e393 45% 100%);
+}
+
+.aventura-nube {
+    position: absolute;
+    width: 88px;
+    height: 25px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.78);
+    filter: drop-shadow(0 4px 5px rgba(80,145,170,.10));
+    animation: aventuraNube 16s linear infinite;
+}
+
+.aventura-nube::before,
+.aventura-nube::after {
+    content: "";
+    position: absolute;
+    bottom: 4px;
+    border-radius: 50%;
+    background: inherit;
+}
+
+.aventura-nube::before { width: 36px; height: 36px; left: 15px; }
+.aventura-nube::after { width: 48px; height: 48px; right: 10px; }
+.aventura-nube-1 { left: 8%; top: 10%; }
+.aventura-nube-2 { left: 48%; top: 17%; transform: scale(.72); animation-delay: -7s; }
+
+@keyframes aventuraNube {
+    0%,100% { translate: 0 0; }
+    50% { translate: 42px 0; }
+}
+
+.aventura-colinas {
+    position: absolute;
+    left: -8%;
+    right: -8%;
+    top: 31%;
+    height: 170px;
+    background:
+        radial-gradient(ellipse at 18% 100%, #74bc70 0 42%, transparent 43%),
+        radial-gradient(ellipse at 50% 100%, #65af67 0 48%, transparent 49%),
+        radial-gradient(ellipse at 82% 100%, #79c574 0 43%, transparent 44%);
+    opacity: .92;
+}
+
+.aventura-ruta-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    filter: drop-shadow(0 4px 1px rgba(116,83,29,.08));
+}
+
+.aventura-ruta-svg .ruta-base {
+    fill: none;
+    stroke: #f0d8a3;
+    stroke-width: 34;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.aventura-ruta-svg .ruta-linea {
+    fill: none;
+    stroke: rgba(255,255,255,.75);
+    stroke-width: 3;
+    stroke-dasharray: 12 16;
+    stroke-linecap: round;
+}
+
+.aventura-mapa-titulo {
+    position: absolute;
+    left: 20px;
+    top: 18px;
+    z-index: 4;
+    max-width: 310px;
+    padding: 10px 13px;
+    border-radius: 16px;
+    background: rgba(255,255,255,.84);
+    border: 1px solid rgba(255,255,255,.68);
+    box-shadow: 0 8px 22px rgba(45,87,112,.12);
+    backdrop-filter: blur(7px);
+}
+
+.aventura-mapa-titulo strong {
+    display: block;
+    color: #123c62;
+    font-size: .95rem;
+}
+
+.aventura-mapa-titulo span {
+    display: block;
+    margin-top: 2px;
+    color: #52708a;
+    font-size: .72rem;
+}
+
+.aventura-zona {
+    position: absolute;
+    z-index: 5;
+    width: min(210px, 27%);
+    min-width: 150px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    text-align: center;
+    color: #183a58;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.aventura-zona[data-zona="mercado"] { left: 7%; bottom: 10%; }
+.aventura-zona[data-zona="escuela"] { left: 40%; top: 26%; }
+.aventura-zona[data-zona="ciudad"] { right: 6%; bottom: 12%; }
+
+.aventura-zona-edificio {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 106px;
+    height: 90px;
+    margin: 0 auto -2px;
+    border-radius: 24px 24px 13px 13px;
+    background: linear-gradient(145deg, #ffffff 0%, #e9f2f7 100%);
+    border: 1px solid rgba(63,107,138,.13);
+    box-shadow: 0 14px 22px rgba(36,85,91,.18), inset 0 1px 0 #fff;
+    font-size: 2.6rem;
+    transition: transform .22s ease, box-shadow .22s ease;
+}
+
+.aventura-zona-edificio::before {
+    content: "";
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    bottom: -10px;
+    height: 15px;
+    border-radius: 50%;
+    background: rgba(42,91,65,.14);
+    filter: blur(2px);
+    z-index: -1;
+}
+
+.aventura-zona:not(.bloqueada):hover .aventura-zona-edificio,
+.aventura-zona:not(.bloqueada):focus-visible .aventura-zona-edificio {
+    transform: translateY(-6px) scale(1.03);
+    box-shadow: 0 18px 26px rgba(36,85,91,.23), inset 0 1px 0 #fff;
+}
+
+.aventura-zona-info {
+    display: inline-flex;
+    flex-direction: column;
+    min-width: 128px;
+    max-width: 100%;
+    padding: 8px 11px;
+    border-radius: 14px;
+    background: rgba(255,255,255,.93);
+    box-shadow: 0 8px 16px rgba(38,82,69,.13);
+}
+
+.aventura-zona-info strong { font-size: .85rem; }
+.aventura-zona-info span { margin-top: 1px; color: #648198; font-size: .65rem; line-height: 1.25; }
+
+.aventura-zona.bloqueada {
+    cursor: not-allowed;
+    filter: saturate(.36);
+}
+
+.aventura-zona.bloqueada .aventura-zona-edificio::after {
+    content: "🔒";
+    position: absolute;
+    right: -8px;
+    top: -8px;
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #31495f;
+    border: 3px solid #fff;
+    font-size: 1rem;
+    box-shadow: 0 6px 12px rgba(17,41,59,.22);
+}
+
+.aventura-avatar {
+    position: absolute;
+    z-index: 7;
+    left: 23%;
+    top: 62%;
+    width: 62px;
+    height: 74px;
+    transition: left .8s cubic-bezier(.2,.75,.25,1), top .8s cubic-bezier(.2,.75,.25,1);
+    pointer-events: none;
+    filter: drop-shadow(0 9px 6px rgba(34,75,60,.22));
+}
+
+.aventura-avatar[data-pos="mercado"] { left: 23%; top: 68%; }
+.aventura-avatar[data-pos="escuela"] { left: 50%; top: 48%; }
+.aventura-avatar[data-pos="ciudad"] { left: 76%; top: 66%; }
+
+.aventura-avatar-cabeza {
+    position: absolute;
+    left: 15px;
+    top: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #ffd0ad;
+    border: 3px solid #fff;
+}
+
+.aventura-avatar-cabeza::before,
+.aventura-avatar-cabeza::after {
+    content: "";
+    position: absolute;
+    top: 13px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #17364d;
+}
+.aventura-avatar-cabeza::before { left: 8px; }
+.aventura-avatar-cabeza::after { right: 8px; }
+
+.aventura-avatar-cuerpo {
+    position: absolute;
+    left: 9px;
+    top: 28px;
+    width: 46px;
+    height: 42px;
+    border-radius: 15px 15px 10px 10px;
+    background: linear-gradient(145deg, #1389d2, #0c4e8b);
+    border: 3px solid #fff;
+}
+
+.aventura-avatar-cuerpo::before {
+    content: "LSP";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 9px;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 900;
+    text-align: center;
+    letter-spacing: .03em;
+}
+
+/* ---------- Panel de misiones ---------- */
+.aventura-panel {
+    position: absolute;
+    z-index: 20;
+    inset: 0;
+    display: flex;
+    align-items: stretch;
+    justify-content: flex-end;
+    background: rgba(7,26,58,.28);
+    backdrop-filter: blur(3px);
+}
+
+.aventura-panel.d-none { display: none !important; }
+
+.aventura-panel-card {
+    width: min(520px, 92%);
+    height: 100%;
+    overflow-y: auto;
+    padding: 22px;
+    background: rgba(248,251,254,.98);
+    box-shadow: -14px 0 38px rgba(7,26,58,.18);
+    animation: aventuraPanelEntra .32s cubic-bezier(.2,.8,.25,1) both;
+}
+
+@keyframes aventuraPanelEntra {
+    from { transform: translateX(38px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+.aventura-panel-cerrar {
+    float: right;
+    width: 38px;
+    height: 38px;
+    border: 0;
+    border-radius: 12px;
+    background: #e7eef5;
+    color: #294b68;
+    font-size: 1.1rem;
+    font-weight: 900;
+}
+
+.aventura-panel-zona {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 6px;
+    padding-right: 46px;
+}
+
+.aventura-panel-zona-icono {
+    display: grid;
+    place-items: center;
+    width: 54px;
+    height: 54px;
+    flex: 0 0 54px;
+    border-radius: 17px;
+    background: #e7f4ff;
+    font-size: 1.7rem;
+}
+
+.aventura-panel-zona h3 {
+    margin: 0;
+    color: #12395e;
+    font-size: 1.18rem;
+    font-weight: 800;
+}
+
+.aventura-panel-zona p {
+    margin: 3px 0 0;
+    color: #647f97;
+    font-size: .75rem;
+}
+
+.aventura-misiones {
+    display: grid;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.aventura-mision {
+    display: grid;
+    grid-template-columns: 46px minmax(0,1fr) auto;
+    align-items: center;
+    gap: 11px;
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d9e5ef;
+    border-radius: 17px;
+    background: #fff;
+    color: #173b59;
+    text-align: left;
+    box-shadow: 0 6px 15px rgba(27,67,95,.06);
+    cursor: pointer;
+    transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+
+.aventura-mision:hover,
+.aventura-mision:focus-visible {
+    transform: translateY(-2px);
+    border-color: #8fc7ed;
+    box-shadow: 0 9px 20px rgba(27,67,95,.10);
+}
+
+.aventura-mision-icono {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: #eef7ff;
+    font-size: 1.3rem;
+}
+
+.aventura-mision[data-area="matematicas"] .aventura-mision-icono { background: #fff2d9; }
+
+.aventura-mision-copy strong {
+    display: block;
+    font-size: .84rem;
+}
+
+.aventura-mision-copy span {
+    display: block;
+    margin-top: 3px;
+    color: #72889b;
+    font-size: .67rem;
+}
+
+.aventura-mision-estado {
+    display: grid;
+    place-items: center;
+    min-width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #eef2f6;
+    color: #718095;
+    font-size: .92rem;
+    font-weight: 900;
+}
+
+.aventura-mision.completada .aventura-mision-estado {
+    background: #fff2b9;
+    color: #9a6d00;
+}
+
+.aventura-nivel {
+    display: inline-flex !important;
+    width: fit-content;
+    margin-top: 5px !important;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: #edf2f7;
+    color: #617184 !important;
+    font-size: .58rem !important;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+
+/* ---------- Reto ---------- */
+.aventura-reto {
+    margin-top: 18px;
+    padding: 18px;
+    border-radius: 21px;
+    background: #fff;
+    border: 1px solid #dce7f0;
+    box-shadow: 0 10px 25px rgba(31,67,91,.08);
+}
+
+.aventura-reto-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.aventura-reto-area {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: #eaf5ff;
+    color: #0a6fae;
+    font-size: .67rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.aventura-reto-area.matematicas {
+    background: #fff0d2;
+    color: #a35f00;
+}
+
+.aventura-reto-visual {
+    display: grid;
+    place-items: center;
+    min-height: 92px;
+    margin: 8px 0 14px;
+    padding: 12px;
+    border-radius: 19px;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(54,161,232,.10), transparent 28%),
+        linear-gradient(145deg, #f4f9fd, #eaf3f9);
+    color: #173d5d;
+    font-size: clamp(1.65rem, 7vw, 2.55rem);
+    font-weight: 900;
+    letter-spacing: .03em;
+    text-align: center;
+}
+
+.aventura-reto h4 {
+    margin: 0 0 5px;
+    color: #143a5b;
+    font-size: 1.05rem;
+    font-weight: 800;
+}
+
+.aventura-reto-instruccion {
+    margin: 0 0 14px;
+    color: #566f83;
+    font-size: .82rem;
+    line-height: 1.45;
+}
+
+.aventura-opciones {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    gap: 9px;
+}
+
+.aventura-opcion {
+    min-height: 48px;
+    padding: 10px 12px;
+    border: 1.5px solid #cfdeea;
+    border-radius: 14px;
+    background: #fff;
+    color: #173b59;
+    font-size: .8rem;
+    font-weight: 750;
+    line-height: 1.25;
+    cursor: pointer;
+    transition: transform .13s ease, background .13s ease, border-color .13s ease;
+}
+
+.aventura-opcion:hover,
+.aventura-opcion:focus-visible { border-color: #72b7e6; background: #f4faff; }
+.aventura-opcion:active { transform: scale(.97); }
+.aventura-opcion.error { animation: aventuraError .28s ease; border-color: #ef7777; background: #fff0f0; }
+.aventura-opcion.acierto { border-color: #4fbd7b; background: #eaf9ef; }
+
+@keyframes aventuraError {
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-3px); }
+}
+
+.aventura-orden-zona {
+    display: grid;
+    gap: 11px;
+}
+
+.aventura-orden-respuesta {
+    min-height: 58px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+    padding: 9px;
+    border: 2px dashed #c6d8e6;
+    border-radius: 15px;
+    background: #f8fbfd;
+}
+
+.aventura-orden-respuesta.vacia::before {
+    content: "Toca las palabras en orden";
+    color: #90a1b0;
+    font-size: .72rem;
+}
+
+.aventura-palabras {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 7px;
+}
+
+.aventura-palabra-chip {
+    min-height: 40px;
+    padding: 8px 11px;
+    border: 1px solid #bed5e7;
+    border-radius: 12px;
+    background: #eef7ff;
+    color: #153e60;
+    font-size: .78rem;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.aventura-palabra-chip.seleccionada {
+    background: #0d75b8;
+    border-color: #0d75b8;
+    color: #fff;
+}
+
+.aventura-reto-acciones {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 13px;
+}
+
+.aventura-btn {
+    min-height: 42px;
+    padding: 9px 15px;
+    border: 0;
+    border-radius: 999px;
+    font-size: .76rem;
+    font-weight: 850;
+    cursor: pointer;
+}
+
+.aventura-btn-principal { background: #ffc83d; color: #26374a; }
+.aventura-btn-secundario { background: #e8eff5; color: #33526c; }
+
+.aventura-feedback {
+    min-height: 24px;
+    margin-top: 12px;
+    text-align: center;
+    font-size: .78rem;
+    font-weight: 850;
+}
+
+.aventura-feedback.ok { color: #16864d; }
+.aventura-feedback.error { color: #c74343; }
+
+.aventura-desbloqueo {
+    margin: 12px 0 0;
+    padding: 10px 12px;
+    border-radius: 14px;
+    background: #fff7d8;
+    color: #7b5900;
+    font-size: .72rem;
+    font-weight: 750;
+    text-align: center;
+}
+
+.aventura-confeti {
+    position: absolute;
+    z-index: 40;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.aventura-confeti i {
+    position: absolute;
+    top: -16px;
+    width: 10px;
+    height: 15px;
+    border-radius: 3px;
+    animation: aventuraConfetiCae 1.2s ease-in forwards;
+}
+
+@keyframes aventuraConfetiCae {
+    to { transform: translate3d(var(--x), 590px, 0) rotate(620deg); opacity: .15; }
+}
+
+.aventura-toast {
+    position: absolute;
+    z-index: 35;
+    left: 50%;
+    bottom: 18px;
+    translate: -50% 12px;
+    max-width: min(88%, 420px);
+    padding: 10px 14px;
+    border-radius: 14px;
+    background: rgba(14,44,72,.94);
+    color: #fff;
+    box-shadow: 0 10px 25px rgba(7,26,58,.23);
+    font-size: .76rem;
+    font-weight: 750;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s ease, translate .2s ease;
+}
+
+.aventura-toast.visible { opacity: 1; translate: -50% 0; }
+
+@media (max-width: 767.98px) {
+    .aventura-menu-contenido {
+        grid-template-columns: 1fr;
+        padding: 17px;
+    }
+    .aventura-menu-preview { display: none; }
+    .aventura-menu-card { min-height: 150px !important; }
+
+    #aventuraApp { margin-left: -4px; margin-right: -4px; width: calc(100% + 8px); }
+    .aventura-shell { border-radius: 22px; }
+    .aventura-topbar { gap: 8px; padding: 11px 10px; }
+    .aventura-topbar-titulo span { display: none; }
+    .aventura-hud { gap: 5px; }
+    .aventura-hud-chip { min-height: 31px; padding: 5px 7px; font-size: .68rem; }
+
+    .aventura-mapa-wrap { min-height: 560px; }
+    .aventura-mapa-titulo { left: 12px; top: 12px; max-width: 240px; padding: 8px 10px; }
+    .aventura-mapa-titulo strong { font-size: .82rem; }
+    .aventura-mapa-titulo span { font-size: .64rem; }
+
+    .aventura-zona { width: 40%; min-width: 128px; }
+    .aventura-zona[data-zona="mercado"] { left: 2%; bottom: 11%; }
+    .aventura-zona[data-zona="escuela"] { left: 31%; top: 31%; }
+    .aventura-zona[data-zona="ciudad"] { right: 1%; bottom: 12%; }
+    .aventura-zona-edificio { width: 84px; height: 74px; border-radius: 20px 20px 12px 12px; font-size: 2rem; }
+    .aventura-zona-info { min-width: 112px; padding: 7px 8px; }
+    .aventura-zona-info strong { font-size: .73rem; }
+    .aventura-zona-info span { font-size: .58rem; }
+
+    .aventura-avatar { transform: scale(.82); transform-origin: center bottom; }
+    .aventura-avatar[data-pos="mercado"] { left: 20%; top: 72%; }
+    .aventura-avatar[data-pos="escuela"] { left: 48%; top: 51%; }
+    .aventura-avatar[data-pos="ciudad"] { left: 73%; top: 70%; }
+
+    .aventura-panel { align-items: flex-end; }
+    .aventura-panel-card {
+        width: 100%;
+        height: min(82%, 690px);
+        border-radius: 24px 24px 0 0;
+        padding: 16px;
+        box-shadow: 0 -14px 35px rgba(7,26,58,.18);
+        animation-name: aventuraPanelSube;
+    }
+    @keyframes aventuraPanelSube {
+        from { transform: translateY(35px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    .aventura-opciones { grid-template-columns: 1fr; }
+    .aventura-opcion { min-height: 46px; }
+}
+
+@media (max-width: 420px) {
+    .aventura-topbar-titulo strong { font-size: .9rem; }
+    .aventura-hud-chip span { display: none; }
+    .aventura-mapa-wrap { min-height: 525px; }
+    .aventura-zona-info span { display: none; }
+    .aventura-zona[data-zona="escuela"] { top: 33%; }
+    .aventura-panel-card { padding: 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .aventura-menu-preview .amp-zona,
+    .aventura-nube,
+    .aventura-panel-card,
+    .aventura-confeti i {
+        animation: none !important;
+    }
+    .aventura-avatar,
+    .aventura-zona-edificio,
+    .aventura-mision,
+    .aventura-toast {
+        transition: none !important;
+    }
+}
