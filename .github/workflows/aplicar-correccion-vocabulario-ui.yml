@@ -1,0 +1,57 @@
+name: Aplicar corrección de Vocabulario UI
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - 'scripts/aplicar_correccion_vocabulario_ui.py'
+      - '.github/workflows/aplicar-correccion-vocabulario-ui.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  aplicar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Aplicar correcciones
+        run: python scripts/aplicar_correccion_vocabulario_ui.py
+
+      - name: Validar JavaScript
+        run: node --check js/script.js
+
+      - name: Validar LSPedia
+        run: python scripts/validar_lspedia.py
+
+      - name: Validar diferencias
+        run: git diff --check
+
+      - name: Comprobar correcciones
+        run: |
+          grep -q 'VOCABULARIO_AZ_FUNCIONAL_V2_20260911' js/script.js
+          grep -q 'CORRECCION_TARJETA_CATEGORIAS_V2_20260911' css/mejoras-producto.css
+
+      - name: Limpiar migración temporal y publicar
+        run: |
+          rm -f scripts/aplicar_correccion_vocabulario_ui.py
+          rm -f .github/workflows/aplicar-correccion-vocabulario-ui.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add js/script.js css/mejoras-producto.css scripts/aplicar_correccion_vocabulario_ui.py .github/workflows/aplicar-correccion-vocabulario-ui.yml
+          if git diff --cached --quiet; then
+            echo 'Sin cambios.'
+          else
+            git commit -m 'Corregir índice y tarjeta de Vocabulario'
+            git push origin develop
+          fi
