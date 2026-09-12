@@ -1,0 +1,37 @@
+name: Temporal controles video v86
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - ".github/workflows/tmp-video-controls-v86.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  aplicar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Aplicar rediseño
+        run: python scripts/tmp_video_controls_patch.py
+
+      - name: Validar cambios
+        run: |
+          grep -q "CONTROLES_VIDEO_PALABRA_V1_20260912" css/mejoras-producto.css
+          grep -q 'const VERSION_APP = "v86";' sw.js
+
+      - name: Guardar cambios
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add css/mejoras-producto.css sw.js
+          git diff --cached --quiet && exit 0
+          git commit -m "Mejorar controles de video y conservar velocidades visuales"
+          git push origin develop
