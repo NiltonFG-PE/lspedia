@@ -2,8 +2,11 @@
 """Genera data/vocabulario.json directamente desde Hoja 2 de Google Sheets.
 
 Vocabulario y Quiz comparten el mismo JSON, pero con reglas distintas:
-- Vocabulario puede consultar una palabra aunque todavía no tenga video.
+- Vocabulario puede consultar una palabra aunque todavía no tenga video,
+  siempre que la ficha visual ya esté preparada con definición e imagen.
 - QuizV2 filtra en el navegador y solo usa filas que sí tienen video.
+- Los borradores que solo tienen palabra/categoría permanecen en Google Sheets
+  y no se publican todavía en el JSON del sitio.
 
 Así una ficha puede empezar como concepto + imagen y recibir su video en LSP
 más adelante sin duplicar la palabra ni romper los juegos.
@@ -65,7 +68,7 @@ def descargar_csv() -> list[dict[str, str]]:
     solicitud = urllib.request.Request(
         base + "?" + parametros,
         headers={
-            "User-Agent": "LSPedia-vocabulario-sync/2.0",
+            "User-Agent": "LSPedia-vocabulario-sync/2.1",
             "Accept": "text/csv,text/plain,*/*",
         },
     )
@@ -93,12 +96,24 @@ def descargar_csv() -> list[dict[str, str]]:
 def limpiar(filas: list[dict[str, str]]) -> list[dict]:
     salida: list[dict] = []
     vistos: set[tuple[str, str]] = set()
+    borradores_omitidos = 0
 
     for fila in filas:
         mapa = {clave(k): v for k, v in fila.items()}
         palabra = texto(mapa.get("palabra"))
         categoria = texto(mapa.get("categoria"))
         if not palabra or not categoria:
+            continue
+
+        video = texto(mapa.get("video"))
+        imagen = texto(mapa.get("imagen"))
+        definicion = texto(mapa.get("definicion"))
+
+        # Una fila sin video solo se publica cuando la ficha visual está lista:
+        # concepto + al menos una imagen. Los borradores vacíos permanecen en
+        # Sheets y no llegan todavía al buscador ni a las categorías públicas.
+        if not video and not (definicion and imagen):
+            borradores_omitidos += 1
             continue
 
         # En Vocabulario una misma palabra/categoría no debe duplicarse.
@@ -110,12 +125,12 @@ def limpiar(filas: list[dict[str, str]]) -> list[dict]:
         registro = {
             "palabra": palabra,
             "variantes": texto(mapa.get("variantes")),
-            "video": texto(mapa.get("video")),
+            "video": video,
             "categoria": normalizar_categoria_vocabulario(categoria),
             "nivel": normalizar_nivel(mapa.get("nivel")),
             "orden": texto(mapa.get("orden")),
-            "imagen": texto(mapa.get("imagen")),
-            "definicion": texto(mapa.get("definicion")),
+            "imagen": imagen,
+            "definicion": definicion,
             "fechaPublicacion": texto(mapa.get("fechapublicacion")),
             "ingles": texto(mapa.get("ingles")),
             "definicionIngles": texto(mapa.get("definicioningles")),
@@ -123,7 +138,8 @@ def limpiar(filas: list[dict[str, str]]) -> list[dict]:
         salida.append({campo: registro[campo] for campo in CAMPOS})
 
     if not salida:
-        raise RuntimeError("Hoja 2 no devolvió ninguna palabra válida.")
+        raise RuntimeError("Hoja 2 no devolvió ninguna palabra preparada para publicar.")
+    print(f"Borradores de Vocabulario omitidos por no tener video ni ficha visual completa: {borradores_omitidos}.")
     return salida
 
 
@@ -142,13 +158,13 @@ def main() -> int:
             raise RuntimeError("El JSON temporal no pasó la validación.")
         temporal.replace(DESTINO)
         con_video = sum(1 for p in datos if texto(p.get("video")))
-        consultables = sum(
+        visuales_sin_video = sum(
             1 for p in datos
-            if texto(p.get("video")) or texto(p.get("definicion")) or texto(p.get("imagen"))
+            if not texto(p.get("video")) and texto(p.get("definicion")) and texto(p.get("imagen"))
         )
         print(
-            f"Vocabulario actualizado: {len(datos)} filas, {consultables} consultables, "
-            f"{con_video} con video para Quiz."
+            f"Vocabulario actualizado: {len(datos)} fichas consultables; "
+            f"{con_video} con video para Quiz y {visuales_sin_video} visuales sin video."
         )
         return 0
     except Exception as exc:
