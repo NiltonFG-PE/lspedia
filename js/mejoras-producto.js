@@ -1,5 +1,6 @@
 /* LSPedia — cargador de mejoras de producto.
-   Mantiene intacta la base existente y añade la sección general "Lo nuevo". */
+   Mantiene intacta la base existente y añade la sección general "Lo nuevo"
+   y la capa bilingüe Español/Inglés. */
 (function(){
     'use strict';
 
@@ -17,5 +18,6 @@
 
     cargar('js/mejoras-producto-base.js', function(){
         cargar('js/lo-nuevo.js');
+        cargar('js/i18n.js');
     });
 })();
