@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """Genera data/vocabulario.json directamente desde Hoja 2 de Google Sheets.
 
-Vocabulario y Quiz comparten el mismo JSON, pero con reglas distintas:
-- Vocabulario puede consultar una palabra aunque todavía no tenga video,
-  siempre que la ficha visual ya esté preparada con definición e imagen.
-- QuizV2 filtra en el navegador y solo usa filas que sí tienen video.
-- Los borradores que solo tienen palabra/categoría permanecen en Google Sheets
-  y no se publican todavía en el JSON del sitio.
+Vocabulario y Quiz comparten el mismo banco publicado y ambos requieren video:
+- Una fila entra a Vocabulario únicamente cuando ya tiene video de señas.
+- QuizV2 usa ese mismo banco y mantiene sus filtros por nivel/modo.
+- Las filas sin video permanecen como borradores en Google Sheets y no se
+  publican todavía en data/vocabulario.json.
 
-Así una ficha puede empezar como concepto + imagen y recibir su video en LSP
-más adelante sin duplicar la palabra ni romper los juegos.
+Las columnas de definición, imagen y traducción pueden acompañar una ficha que
+sí tiene video, pero nunca convierten por sí solas un borrador en una ficha de
+Vocabulario. Las fichas consultables sin video son exclusivas del Diccionario.
 """
 from __future__ import annotations
 
@@ -68,7 +68,7 @@ def descargar_csv() -> list[dict[str, str]]:
     solicitud = urllib.request.Request(
         base + "?" + parametros,
         headers={
-            "User-Agent": "LSPedia-vocabulario-sync/2.1",
+            "User-Agent": "LSPedia-vocabulario-sync/2.2",
             "Accept": "text/csv,text/plain,*/*",
         },
     )
@@ -106,15 +106,12 @@ def limpiar(filas: list[dict[str, str]]) -> list[dict]:
             continue
 
         video = texto(mapa.get("video"))
-        imagen = texto(mapa.get("imagen"))
-        definicion = texto(mapa.get("definicion"))
-
-        # Una fila sin video solo se publica cuando la ficha visual está lista:
-        # concepto + al menos una imagen. Los borradores vacíos permanecen en
-        # Sheets y no llegan todavía al buscador ni a las categorías públicas.
-        if not video and not (definicion and imagen):
+        if not video:
             borradores_omitidos += 1
             continue
+
+        imagen = texto(mapa.get("imagen"))
+        definicion = texto(mapa.get("definicion"))
 
         # En Vocabulario una misma palabra/categoría no debe duplicarse.
         identidad = (palabra.casefold(), categoria.casefold())
@@ -138,8 +135,8 @@ def limpiar(filas: list[dict[str, str]]) -> list[dict]:
         salida.append({campo: registro[campo] for campo in CAMPOS})
 
     if not salida:
-        raise RuntimeError("Hoja 2 no devolvió ninguna palabra preparada para publicar.")
-    print(f"Borradores de Vocabulario omitidos por no tener video ni ficha visual completa: {borradores_omitidos}.")
+        raise RuntimeError("Hoja 2 no devolvió ninguna palabra con video para publicar.")
+    print(f"Borradores de Vocabulario omitidos por no tener video: {borradores_omitidos}.")
     return salida
 
 
@@ -157,15 +154,7 @@ def main() -> int:
         if not isinstance(comprobacion, list) or not comprobacion:
             raise RuntimeError("El JSON temporal no pasó la validación.")
         temporal.replace(DESTINO)
-        con_video = sum(1 for p in datos if texto(p.get("video")))
-        visuales_sin_video = sum(
-            1 for p in datos
-            if not texto(p.get("video")) and texto(p.get("definicion")) and texto(p.get("imagen"))
-        )
-        print(
-            f"Vocabulario actualizado: {len(datos)} fichas consultables; "
-            f"{con_video} con video para Quiz y {visuales_sin_video} visuales sin video."
-        )
+        print(f"Vocabulario actualizado: {len(datos)} fichas con video de señas.")
         return 0
     except Exception as exc:
         try:
