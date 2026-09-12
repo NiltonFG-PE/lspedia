@@ -288,6 +288,13 @@
       "nivel": ""
     },
     {
+      "caracter": "B",
+      "palabra": "Bicicleta",
+      "imagen": "img/alfabetizacion/ejemplos/bicicleta.webp",
+      "orden": 5,
+      "nivel": "Fácil"
+    },
+    {
       "caracter": "C",
       "palabra": "Caballo",
       "imagen": "img/alfabetizacion/ejemplos/caballo.webp",
@@ -464,7 +471,7 @@
     },
     {
       "caracter": "K",
-      "palabra": "ketchup",
+      "palabra": "Ketchup",
       "imagen": "img/alfabetizacion/ejemplos/ketchup.webp",
       "orden": 2,
       "nivel": ""
@@ -541,7 +548,7 @@
     },
     {
       "caracter": "Ñ",
-      "palabra": "Ñandu",
+      "palabra": "Ñandú",
       "imagen": "img/alfabetizacion/ejemplos/nandu.webp",
       "orden": 1,
       "nivel": ""
@@ -790,13 +797,6 @@
       "imagen": "img/alfabetizacion/ejemplos/zorro.webp",
       "orden": 3,
       "nivel": ""
-    },
-    {
-      "caracter": "B",
-      "palabra": "Bicicleta",
-      "imagen": "img/alfabetizacion/ejemplos/bicicleta.webp",
-      "orden": 5,
-      "nivel": "Fácil"
     }
   ]
 }
