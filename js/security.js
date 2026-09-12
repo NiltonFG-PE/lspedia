@@ -96,7 +96,7 @@
         if (document.querySelector('script[data-lspedia-fullscreen-mobile-fix]')) return;
 
         const script = document.createElement('script');
-        script.src = 'js/fullscreen-mobile-fix.js?v=20260912-1';
+        script.src = 'js/fullscreen-mobile-fix.js?v=20260912-2';
         script.async = false;
         script.dataset.lspediaFullscreenMobileFix = '1';
         document.head.appendChild(script);
