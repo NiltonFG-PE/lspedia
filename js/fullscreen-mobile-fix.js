@@ -1,24 +1,17 @@
 /* ============================================================
-   LSPedia - fullscreen visual estable para móviles/tablets
+   LSPedia - fullscreen real y estable para móviles/tablets
    ------------------------------------------------------------
-   En pantallas táctiles no usa requestFullscreen(), porque Chrome/Android
-   muestra un aviso propio que puede tapar los controles.
+   En pantallas táctiles usamos la API nativa de fullscreen del navegador.
+   Esto evita que el reproductor parezca una tarjeta flotante dentro de la
+   página y mantiene el iframe de YouTube en el mismo contenedor, por lo que
+   no se reinicia el video.
 
-   IMPORTANTE:
-   - El iframe de YouTube NO se mueve de su contenedor original. Mover un
-     iframe entre padres puede reiniciar el video en algunos navegadores.
-   - Se neutralizan temporalmente transform/overflow/contain de los ancestros
-     para que position:fixed pueda ocupar realmente toda la ventana.
-   - El botón de salida intercepta el clic en fase de captura, evitando que el
-     listener normal de fullscreen se ejecute otra vez al tocar la X.
-   - Al abrir el fullscreen se crea una entrada temporal en history. Así el
-     botón Atrás del celular cierra primero el fullscreen sin salir de la ficha.
+   Los controles personalizados se mueven temporalmente DENTRO del wrapper
+   antes de entrar a fullscreen (el iframe no cambia de padre). Android puede
+   salir con su botón Atrás; fullscreenchange restaura automáticamente todo.
    ============================================================ */
 (function () {
     'use strict';
-
-    const CLAVE_HISTORIAL_FULLSCREEN = '__lspediaVideoFullscreen';
-    const CLAVE_HISTORIAL_WRAP = '__lspediaVideoFullscreenWrap';
 
     function esPantallaTactil() {
         return window.matchMedia('(pointer: coarse)').matches ||
@@ -34,94 +27,32 @@
     let cerrarOriginal = null;
     let cerrando = false;
 
+    function elementoFullscreenActual() {
+        return document.fullscreenElement ||
+            document.webkitFullscreenElement ||
+            document.msFullscreenElement ||
+            null;
+    }
+
     function restaurarAtributoStyle(elemento, valorOriginal) {
         if (!elemento) return;
         if (valorOriginal === null) elemento.removeAttribute('style');
         else elemento.setAttribute('style', valorOriginal);
     }
 
-    function prepararAncestros(wrap) {
-        const lista = [];
-        let actual = wrap.parentElement;
-
-        while (actual && actual !== document.documentElement) {
-            lista.push({
-                elemento: actual,
-                styleOriginal: actual.getAttribute('style')
-            });
-
-            actual.style.setProperty('transform', 'none', 'important');
-            actual.style.setProperty('filter', 'none', 'important');
-            actual.style.setProperty('perspective', 'none', 'important');
-            actual.style.setProperty('backdrop-filter', 'none', 'important');
-            actual.style.setProperty('contain', 'none', 'important');
-            actual.style.setProperty('clip-path', 'none', 'important');
-            actual.style.setProperty('overflow', 'visible', 'important');
-            actual.style.setProperty('overflow-x', 'visible', 'important');
-            actual.style.setProperty('overflow-y', 'visible', 'important');
-
-            actual = actual.parentElement;
-        }
-
-        return lista;
-    }
-
-    function restaurarAncestros(ancestros) {
-        if (!Array.isArray(ancestros)) return;
-        [...ancestros].reverse().forEach(item => {
-            if (!item || !item.elemento) return;
-            restaurarAtributoStyle(item.elemento, item.styleOriginal);
-        });
-    }
-
-    function crearEntradaHistorialFullscreen(wrapId) {
-        try {
-            const actual = history.state && typeof history.state === 'object'
-                ? history.state
-                : {};
-            const token = Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 9);
-            history.pushState({
-                ...actual,
-                [CLAVE_HISTORIAL_FULLSCREEN]: token,
-                [CLAVE_HISTORIAL_WRAP]: wrapId
-            }, '', window.location.href);
-            return token;
-        } catch (error) {
-            console.warn('[LSPedia] No se pudo crear la entrada temporal de fullscreen:', error);
-            return null;
-        }
-    }
-
-    function limpiarMarcadorHistorialActual(token) {
-        if (!token) return;
-        try {
-            const actual = history.state;
-            if (!actual || typeof actual !== 'object' || actual[CLAVE_HISTORIAL_FULLSCREEN] !== token) return;
-            const limpio = { ...actual };
-            delete limpio[CLAVE_HISTORIAL_FULLSCREEN];
-            delete limpio[CLAVE_HISTORIAL_WRAP];
-            history.replaceState(limpio, '', window.location.href);
-        } catch (_error) {}
-    }
-
-    function cerrarVisual(opciones = {}) {
+    function restaurarVisual() {
         if (!estado || cerrando) return;
         cerrando = true;
 
-        const desdeHistorial = opciones.desdeHistorial === true;
         const {
             wrap,
-            iframe,
             controles,
             btn,
             marcadorControles,
             styleWrap,
-            styleIframe,
             styleControles,
             styleBtn,
-            ancestros,
-            interceptarCierre,
-            tokenHistorial
+            interceptarCierre
         } = estado;
 
         if (btn && interceptarCierre) {
@@ -130,20 +61,17 @@
 
         wrap.classList.remove('video-palabra-pantalla-completa');
         wrap.classList.remove('video-palabra-pantalla-completa-fallback');
-        if (controles) controles.classList.remove('video-palabra-controles-pantalla-completa');
 
-        // Solo la barra de controles vuelve a su posición original. El iframe
-        // nunca cambia de padre, por lo que conserva tiempo y reproducción.
-        if (controles && marcadorControles && marcadorControles.parentNode) {
-            marcadorControles.parentNode.insertBefore(controles, marcadorControles);
-            marcadorControles.remove();
+        if (controles) {
+            controles.classList.remove('video-palabra-controles-pantalla-completa');
+            if (marcadorControles && marcadorControles.parentNode) {
+                marcadorControles.parentNode.insertBefore(controles, marcadorControles);
+                marcadorControles.remove();
+            }
         }
 
         restaurarAtributoStyle(wrap, styleWrap);
-        restaurarAtributoStyle(iframe, styleIframe);
         restaurarAtributoStyle(controles, styleControles);
-        restaurarAncestros(ancestros);
-
         document.body.classList.remove('video-palabra-pantalla-completa-activa');
 
         if (btn) {
@@ -154,46 +82,45 @@
             btn.setAttribute('title', 'Ver en pantalla completa');
         }
 
-        // Si el cierre fue programático y seguimos en la entrada temporal,
-        // quitamos su marca para no dejar un estado de fullscreen fantasma.
-        // Cuando el cierre viene del botón Atrás, el navegador ya hizo pop.
-        if (!desdeHistorial) limpiarMarcadorHistorialActual(tokenHistorial);
-
         estado = null;
-        window.setTimeout(() => { cerrando = false; }, 60);
+        window.setTimeout(function () { cerrando = false; }, 80);
     }
 
-    function solicitarCierreConHistorial() {
-        if (!estado || cerrando) return;
-
-        const token = estado.tokenHistorial;
-        const actual = history.state;
-        const entradaTemporalActiva = !!(
-            token &&
-            actual &&
-            typeof actual === 'object' &&
-            actual[CLAVE_HISTORIAL_FULLSCREEN] === token
-        );
-
-        if (entradaTemporalActiva) {
-            // El popstate en captura cerrará el fullscreen y bloqueará el
-            // router general de LSPedia para que la ficha/video no se reinicie.
-            history.back();
+    function salirFullscreenNativo() {
+        if (!elementoFullscreenActual()) {
+            restaurarVisual();
             return;
         }
 
-        cerrarVisual();
+        const salir = document.exitFullscreen ||
+            document.webkitExitFullscreen ||
+            document.msExitFullscreen;
+
+        if (!salir) {
+            restaurarVisual();
+            return;
+        }
+
+        try {
+            const resultado = salir.call(document);
+            if (resultado && typeof resultado.catch === 'function') {
+                resultado.catch(function () { restaurarVisual(); });
+            }
+        } catch (_error) {
+            restaurarVisual();
+        }
     }
 
-    function abrirVisual(wrapId, btnId) {
+    function abrirFullscreenNativo(wrapId, btnId) {
         const wrap = document.getElementById(wrapId);
         const btn = document.getElementById(btnId);
         if (!wrap || cerrando) return;
 
-        if (estado) cerrarVisual();
-        if (cerrando) return;
+        if (estado) {
+            salirFullscreenNativo();
+            return;
+        }
 
-        const iframe = wrap.querySelector('iframe');
         const hermano = wrap.nextElementSibling;
         const controles = hermano && hermano.classList.contains('controles-video')
             ? hermano
@@ -204,10 +131,8 @@
             : null;
 
         const styleWrap = wrap.getAttribute('style');
-        const styleIframe = iframe ? iframe.getAttribute('style') : null;
         const styleControles = controles ? controles.getAttribute('style') : null;
         const styleBtn = btn ? btn.getAttribute('style') : null;
-        const ancestros = prepararAncestros(wrap);
 
         if (controles && controles.parentNode && marcadorControles) {
             controles.parentNode.insertBefore(marcadorControles, controles);
@@ -216,76 +141,17 @@
         }
 
         wrap.classList.add('video-palabra-pantalla-completa');
-        wrap.classList.add('video-palabra-pantalla-completa-fallback');
         document.body.classList.add('video-palabra-pantalla-completa-activa');
 
-        Object.assign(wrap.style, {
-            position: 'fixed',
-            inset: '0',
-            width: '100vw',
-            height: '100dvh',
-            maxWidth: 'none',
-            maxHeight: 'none',
-            margin: '0',
-            padding: '0',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'stretch',
-            justifyContent: 'stretch',
-            overflow: 'hidden',
-            background: '#000',
-            border: '0',
-            borderRadius: '0',
-            zIndex: '2147483000'
-        });
-
-        if (iframe) {
-            Object.assign(iframe.style, {
-                position: 'relative',
-                inset: 'auto',
-                display: 'block',
-                flex: '1 1 0',
-                width: '100%',
-                height: '100%',
-                minWidth: '0',
-                minHeight: '0',
-                maxWidth: 'none',
-                maxHeight: 'none',
-                margin: '0',
-                border: '0',
-                borderRadius: '0',
-                background: '#000'
-            });
-        }
-
-        if (controles) {
-            Object.assign(controles.style, {
-                position: 'relative',
-                inset: 'auto',
-                left: 'auto',
-                right: 'auto',
-                top: 'auto',
-                bottom: 'auto',
-                flex: '0 0 auto',
-                width: '100%',
-                maxWidth: 'none',
-                margin: '0',
-                transform: 'none',
-                zIndex: '2147483646'
-            });
-        }
-
         let interceptarCierre = null;
-
         if (btn) {
             btn.textContent = '✕';
             btn.setAttribute('aria-label', 'Salir de pantalla completa');
             btn.setAttribute('title', 'Salir de pantalla completa');
             btn.classList.add('lsp-fullscreen-cerrar-rojo');
-
-            btn.style.setProperty('background', '#dc2626', 'important');
+            btn.style.setProperty('background', '#ef2b2d', 'important');
             btn.style.setProperty('background-image', 'none', 'important');
-            btn.style.setProperty('border-color', '#b91c1c', 'important');
+            btn.style.setProperty('border-color', '#d71920', 'important');
             btn.style.setProperty('color', '#ffffff', 'important');
             btn.style.setProperty('box-shadow', '0 6px 16px rgba(220,38,38,.35)', 'important');
 
@@ -296,27 +162,58 @@
                 if (typeof evento.stopImmediatePropagation === 'function') {
                     evento.stopImmediatePropagation();
                 }
-                solicitarCierreConHistorial();
+                salirFullscreenNativo();
             };
             btn.addEventListener('click', interceptarCierre, true);
         }
 
-        const tokenHistorial = crearEntradaHistorialFullscreen(wrapId);
-
         estado = {
             wrap,
-            iframe,
             controles,
             btn,
             marcadorControles,
             styleWrap,
-            styleIframe,
             styleControles,
             styleBtn,
-            ancestros,
-            interceptarCierre,
-            tokenHistorial
+            interceptarCierre
         };
+
+        const solicitar = wrap.requestFullscreen ||
+            wrap.webkitRequestFullscreen ||
+            wrap.msRequestFullscreen;
+
+        if (!solicitar) {
+            console.warn('[LSPedia] Este navegador no ofrece fullscreen nativo para el reproductor.');
+            restaurarVisual();
+            return;
+        }
+
+        try {
+            let resultado;
+            if (wrap.requestFullscreen) {
+                resultado = wrap.requestFullscreen({ navigationUI: 'hide' });
+            } else {
+                resultado = solicitar.call(wrap);
+            }
+
+            if (resultado && typeof resultado.catch === 'function') {
+                resultado.catch(function (error) {
+                    console.warn('[LSPedia] No se pudo abrir fullscreen nativo:', error);
+                    restaurarVisual();
+                });
+            }
+        } catch (error) {
+            console.warn('[LSPedia] No se pudo abrir fullscreen nativo:', error);
+            restaurarVisual();
+        }
+    }
+
+    function alCambiarFullscreen() {
+        if (!estado) return;
+        const actual = elementoFullscreenActual();
+        if (!actual || actual !== estado.wrap) {
+            restaurarVisual();
+        }
     }
 
     function instalarParche() {
@@ -334,56 +231,32 @@
             }
 
             const mismo = estado && estado.wrap && estado.wrap.id === wrapId;
-            if (forzarCerrar === true) {
-                cerrarVisual();
-                return;
-            }
-            if (mismo) {
-                solicitarCierreConHistorial();
+            if (forzarCerrar === true || mismo) {
+                salirFullscreenNativo();
                 return;
             }
 
-            abrirVisual(wrapId, btnId);
+            abrirFullscreenNativo(wrapId, btnId);
         };
 
         window.cerrarPantallaCompletaVideoPalabra = function () {
-            if (esPantallaTactil()) {
-                cerrarVisual();
+            if (esPantallaTactil() && estado) {
+                salirFullscreenNativo();
                 return;
             }
             if (cerrarOriginal) return cerrarOriginal.apply(this, arguments);
         };
 
-        // Se registra en CAPTURA para ejecutarse antes que el popstate general
-        // de LSPedia. Así Atrás solo cierra el fullscreen y no reconstruye la
-        // ficha, evitando reinicios del video o navegación inesperada.
-        window.addEventListener('popstate', function (evento) {
-            if (!estado) {
-                // Si el usuario vuelve hacia delante a una entrada temporal vieja,
-                // limpiamos la marca para que no quede un estado fantasma.
-                if (evento.state && evento.state[CLAVE_HISTORIAL_FULLSCREEN]) {
-                    const limpio = { ...evento.state };
-                    delete limpio[CLAVE_HISTORIAL_FULLSCREEN];
-                    delete limpio[CLAVE_HISTORIAL_WRAP];
-                    try { history.replaceState(limpio, '', window.location.href); } catch (_error) {}
-                }
-                return;
-            }
-
-            evento.preventDefault();
-            evento.stopPropagation();
-            if (typeof evento.stopImmediatePropagation === 'function') {
-                evento.stopImmediatePropagation();
-            }
-            cerrarVisual({ desdeHistorial: true });
-        }, true);
+        document.addEventListener('fullscreenchange', alCambiarFullscreen, true);
+        document.addEventListener('webkitfullscreenchange', alCambiarFullscreen, true);
+        document.addEventListener('MSFullscreenChange', alCambiarFullscreen, true);
 
         document.addEventListener('keydown', function (evento) {
-            if (evento.key === 'Escape' && estado) solicitarCierreConHistorial();
+            if (evento.key === 'Escape' && estado) salirFullscreenNativo();
         });
 
         window.addEventListener('pagehide', function () {
-            if (estado) cerrarVisual();
+            if (estado) restaurarVisual();
         });
 
         instalado = true;
