@@ -4087,6 +4087,14 @@ const estadoZoomImagen = {
     inicioY: 0,
     inicioDesplazX: 0,
     inicioDesplazY: 0,
+    pellizcando: false,
+    distanciaInicialPellizco: 0,
+    nivelInicialPellizco: 1,
+    centroInicialPellizcoX: 0,
+    centroInicialPellizcoY: 0,
+    desplazInicialPellizcoX: 0,
+    desplazInicialPellizcoY: 0,
+    ignorarClickHasta: 0,
     listenersListos: false
 };
 
@@ -4132,8 +4140,10 @@ function inicializarZoomImagenAmpliada(){
     if(!contenedor) return;
 
     // Clic simple: alterna entre 1x y 2.5x (comportamiento típico de "lightbox").
+    // Tras un pellizco o arrastre táctil se ignora el clic sintético que algunos
+    // navegadores disparan al levantar los dedos, para que el zoom no se resetee.
     contenedor.addEventListener("click", () => {
-        if(estadoZoomImagen.arrastrando) return; // que un arrastre no cuente como clic
+        if(estadoZoomImagen.arrastrando || Date.now() < estadoZoomImagen.ignorarClickHasta) return;
         if(estadoZoomImagen.nivel > 1){
             resetearZoomImagen();
         } else {
@@ -4174,13 +4184,97 @@ function inicializarZoomImagenAmpliada(){
     window.addEventListener("mousemove", (ev) => moverArrastre(ev.clientX, ev.clientY));
     window.addEventListener("mouseup", terminarArrastre);
 
+    // Gestos táctiles: pellizcar con dos dedos para ampliar/reducir y,
+    // cuando la imagen está ampliada, arrastrar con un dedo para recorrerla.
+    // Se usa el mismo modal tanto en Diccionario como en Vocabulario.
+    const distanciaToques = (a, b) => Math.hypot(b.clientX - a.clientX, b.clientY - a.clientY);
+    const centroToques = (a, b) => ({
+        x: (a.clientX + b.clientX) / 2,
+        y: (a.clientY + b.clientY) / 2
+    });
+    const terminarPellizco = () => {
+        if(!estadoZoomImagen.pellizcando) return;
+        estadoZoomImagen.pellizcando = false;
+        contenedor.classList.remove("pellizcando");
+        estadoZoomImagen.ignorarClickHasta = Date.now() + 450;
+        if(estadoZoomImagen.nivel <= estadoZoomImagen.minimo + 0.02){
+            resetearZoomImagen();
+        }
+    };
+
     contenedor.addEventListener("touchstart", (ev) => {
-        if(ev.touches.length === 1) empezarArrastre(ev.touches[0].clientX, ev.touches[0].clientY);
-    }, { passive: true });
-    contenedor.addEventListener("touchmove", (ev) => {
-        if(ev.touches.length === 1){ ev.preventDefault(); moverArrastre(ev.touches[0].clientX, ev.touches[0].clientY); }
+        if(ev.touches.length >= 2){
+            ev.preventDefault();
+            terminarArrastre();
+            const toqueA = ev.touches[0];
+            const toqueB = ev.touches[1];
+            const centro = centroToques(toqueA, toqueB);
+            estadoZoomImagen.pellizcando = true;
+            estadoZoomImagen.distanciaInicialPellizco = Math.max(1, distanciaToques(toqueA, toqueB));
+            estadoZoomImagen.nivelInicialPellizco = estadoZoomImagen.nivel;
+            estadoZoomImagen.centroInicialPellizcoX = centro.x;
+            estadoZoomImagen.centroInicialPellizcoY = centro.y;
+            estadoZoomImagen.desplazInicialPellizcoX = estadoZoomImagen.desplazX;
+            estadoZoomImagen.desplazInicialPellizcoY = estadoZoomImagen.desplazY;
+            estadoZoomImagen.ignorarClickHasta = Date.now() + 450;
+            contenedor.classList.add("pellizcando");
+            return;
+        }
+        if(ev.touches.length === 1 && !estadoZoomImagen.pellizcando){
+            empezarArrastre(ev.touches[0].clientX, ev.touches[0].clientY);
+        }
     }, { passive: false });
-    contenedor.addEventListener("touchend", terminarArrastre);
+
+    contenedor.addEventListener("touchmove", (ev) => {
+        if(ev.touches.length >= 2){
+            ev.preventDefault();
+            if(!estadoZoomImagen.pellizcando) return;
+            const toqueA = ev.touches[0];
+            const toqueB = ev.touches[1];
+            const distanciaActual = Math.max(1, distanciaToques(toqueA, toqueB));
+            const centroActual = centroToques(toqueA, toqueB);
+            const proporcion = distanciaActual / estadoZoomImagen.distanciaInicialPellizco;
+            const nuevoNivel = Math.min(
+                estadoZoomImagen.maximo,
+                Math.max(estadoZoomImagen.minimo, estadoZoomImagen.nivelInicialPellizco * proporcion)
+            );
+
+            estadoZoomImagen.nivel = nuevoNivel;
+            if(nuevoNivel <= estadoZoomImagen.minimo + 0.02){
+                estadoZoomImagen.desplazX = 0;
+                estadoZoomImagen.desplazY = 0;
+            } else {
+                estadoZoomImagen.desplazX = estadoZoomImagen.desplazInicialPellizcoX
+                    + (centroActual.x - estadoZoomImagen.centroInicialPellizcoX);
+                estadoZoomImagen.desplazY = estadoZoomImagen.desplazInicialPellizcoY
+                    + (centroActual.y - estadoZoomImagen.centroInicialPellizcoY);
+            }
+            estadoZoomImagen.ignorarClickHasta = Date.now() + 450;
+            aplicarTransformZoomImagen();
+            return;
+        }
+
+        if(ev.touches.length === 1 && !estadoZoomImagen.pellizcando && estadoZoomImagen.arrastrando){
+            ev.preventDefault();
+            moverArrastre(ev.touches[0].clientX, ev.touches[0].clientY);
+            estadoZoomImagen.ignorarClickHasta = Date.now() + 250;
+        }
+    }, { passive: false });
+
+    contenedor.addEventListener("touchend", (ev) => {
+        if(estadoZoomImagen.pellizcando && ev.touches.length < 2){
+            terminarPellizco();
+            if(ev.touches.length === 1 && estadoZoomImagen.nivel > 1){
+                empezarArrastre(ev.touches[0].clientX, ev.touches[0].clientY);
+            }
+            return;
+        }
+        if(ev.touches.length === 0) terminarArrastre();
+    });
+    contenedor.addEventListener("touchcancel", () => {
+        terminarPellizco();
+        terminarArrastre();
+    });
 
     if(btnMas) btnMas.addEventListener("click", (ev) => { ev.stopPropagation(); cambiarZoomImagen(estadoZoomImagen.paso); });
     if(btnMenos) btnMenos.addEventListener("click", (ev) => { ev.stopPropagation(); cambiarZoomImagen(-estadoZoomImagen.paso); });

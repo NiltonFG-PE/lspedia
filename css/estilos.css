@@ -897,8 +897,9 @@ iframe {
     transition: transform 0.15s ease;
     will-change: transform;
 }
-.zoom-imagen-contenedor.arrastrando .zoom-imagen-img {
-    transition: none; /* mientras se arrastra, que siga al dedo/mouse sin demora */
+.zoom-imagen-contenedor.arrastrando .zoom-imagen-img,
+.zoom-imagen-contenedor.pellizcando .zoom-imagen-img {
+    transition: none; /* al arrastrar o pellizcar, la imagen sigue los dedos sin demora */
 }
 .zoom-imagen-controles {
     position: absolute;
