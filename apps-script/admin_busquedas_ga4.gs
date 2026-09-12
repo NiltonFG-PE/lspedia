@@ -25,6 +25,8 @@
 const GA4_MEASUREMENT_ID = "G-RJX3RP2CBR";
 const EVENTO_SIN_RESULTADOS = "search_no_results";
 const EVENTO_BUSQUEDA_GENERAL = "view_search_results";
+const EVENTOS_BUSQUEDA_SECCION = ["lspedia_search_dictionary", "lspedia_search_vocabulary"];
+const EVENTOS_SIN_RESULTADOS_SECCION = ["lspedia_no_result_dictionary", "lspedia_no_result_vocabulary"];
 const EVENTOS_ERROR = ["image_load_error", "media_load_error", "app_runtime_error"];
 const FECHA_INICIO_REGISTRO = "2026-09-10";
 const PROP_ADMIN_KEY = "LSPEDIA_ADMIN_BUSQUEDAS_KEY";
@@ -269,6 +271,18 @@ function construirPanelAnalytics_(propertyId, periodo, fechas) {
       payload: payloadBusquedasPopulares_(fechas.inicio, fechas.fin)
     },
     {
+      key: "busquedasSeccion",
+      api: "Búsquedas por sección",
+      url: coreEndpoint,
+      payload: payloadBusquedasSeccion_(fechas.inicio, fechas.fin, false)
+    },
+    {
+      key: "busquedasSinResultadoSeccion",
+      api: "Búsquedas sin resultado por sección",
+      url: coreEndpoint,
+      payload: payloadBusquedasSeccion_(fechas.inicio, fechas.fin, true)
+    },
+    {
       key: "busquedas",
       api: "Búsquedas sin resultado",
       url: coreEndpoint,
@@ -293,6 +307,8 @@ function construirPanelAnalytics_(propertyId, periodo, fechas) {
   const eventos = parseFilas_(lote.datos.eventos, ["evento"], ["eventos", "usuarios"]);
   const errores = parseErrores_(lote.datos.errores);
   const busquedasPopulares = parseBusquedasJson_(lote.datos.busquedasPopulares);
+  const busquedasPorSeccion = parseBusquedasSeccionJson_(lote.datos.busquedasSeccion);
+  const busquedasSinResultadoPorSeccion = parseBusquedasSeccionJson_(lote.datos.busquedasSinResultadoSeccion);
   const busquedas = parseBusquedasJson_(lote.datos.busquedas);
 
   return {
@@ -325,6 +341,8 @@ function construirPanelAnalytics_(propertyId, periodo, fechas) {
       ultimaBusqueda: busquedasPopulares.ultimaBusqueda,
       items: busquedasPopulares.items
     },
+    busquedasPorSeccion: busquedasPorSeccion,
+    busquedasSinResultadoPorSeccion: busquedasSinResultadoPorSeccion,
     busquedas: {
       totalBusquedas: busquedas.totalBusquedas,
       totalTerminos: busquedas.items.length,
@@ -514,6 +532,69 @@ function payloadBusquedas_(inicio, fin) {
       }
     },
     limit: "10000"
+  };
+}
+
+function payloadBusquedasSeccion_(inicio, fin, sinResultado) {
+  const eventos = sinResultado ? EVENTOS_SIN_RESULTADOS_SECCION : EVENTOS_BUSQUEDA_SECCION;
+  return {
+    dateRanges: [{ startDate: inicio, endDate: fin }],
+    dimensions: [{ name: "eventName" }, { name: "searchTerm" }, { name: "date" }],
+    metrics: [{ name: "eventCount" }],
+    dimensionFilter: {
+      filter: {
+        fieldName: "eventName",
+        inListFilter: { values: eventos, caseSensitive: true }
+      }
+    },
+    limit: "10000"
+  };
+}
+
+function parseBusquedasSeccionJson_(json) {
+  const acumulado = {};
+  let totalBusquedas = 0;
+  let ultimaBusqueda = "";
+  let totalDiccionario = 0;
+  let totalVocabulario = 0;
+
+  (json && json.rows || []).forEach(function (row) {
+    const dims = row.dimensionValues || [];
+    const mets = row.metricValues || [];
+    const evento = String(dims[0] && dims[0].value || "").trim();
+    const terminoCrudo = String(dims[1] && dims[1].value || "").trim();
+    const fecha = String(dims[2] && dims[2].value || "").trim();
+    const cantidad = numero_(mets[0] && mets[0].value);
+    if (!terminoCrudo || terminoCrudo === "(not set)" || cantidad <= 0) return;
+
+    const seccion = /_vocabulary$/.test(evento) ? "Vocabulario" : "Diccionario";
+    const termino = terminoCrudo.toLocaleLowerCase("es-PE");
+    const clave = seccion + "\u0000" + termino;
+    if (!acumulado[clave]) {
+      acumulado[clave] = { termino: termino, seccion: seccion, busquedas: 0, ultimaFecha: "" };
+    }
+    acumulado[clave].busquedas += cantidad;
+    if (fecha && fecha > acumulado[clave].ultimaFecha) acumulado[clave].ultimaFecha = fecha;
+    if (fecha && fecha > ultimaBusqueda) ultimaBusqueda = fecha;
+    totalBusquedas += cantidad;
+    if (seccion === "Vocabulario") totalVocabulario += cantidad;
+    else totalDiccionario += cantidad;
+  });
+
+  const items = Object.keys(acumulado)
+    .map(function (clave) { return acumulado[clave]; })
+    .sort(function (a, b) {
+      if (b.busquedas !== a.busquedas) return b.busquedas - a.busquedas;
+      return String(b.ultimaFecha || "").localeCompare(String(a.ultimaFecha || ""));
+    });
+
+  return {
+    totalBusquedas: totalBusquedas,
+    totalTerminos: items.length,
+    ultimaBusqueda: ultimaBusqueda,
+    totalDiccionario: totalDiccionario,
+    totalVocabulario: totalVocabulario,
+    items: items
   };
 }
 

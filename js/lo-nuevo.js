@@ -158,7 +158,7 @@
 
         const publicadas = itemsLoNuevo
             .map(buscarContenido)
-            .filter(Boolean)
+            .filter(x => x && x.palabra && texto(x.palabra.video))
             .slice(0, 12);
 
         if(!publicadas.length){

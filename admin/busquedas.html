@@ -256,7 +256,7 @@
         <button class="btn btn-soft" id="btnCsv" type="button">CSV</button>
       </div>
       <div class="table-wrap" id="searchTableWrap">
-        <table class="table"><thead><tr><th>#</th><th>Palabra</th><th>Búsquedas</th><th>Última búsqueda</th><th>Estado</th><th></th></tr></thead><tbody id="searchTableBody"></tbody></table>
+        <table class="table"><thead><tr><th>#</th><th>Palabra</th><th>Sección</th><th>Búsquedas</th><th>Última búsqueda</th><th>Estado</th><th></th></tr></thead><tbody id="searchTableBody"></tbody></table>
       </div>
       <div id="searchEmpty" class="empty d-none"><strong>No hay datos para este filtro.</strong><span>Prueba otro filtro o periodo.</span></div>
     </section>
@@ -521,7 +521,7 @@
   function renderPriority(){
     const top=searchTop();
     if(!top.length){el.priority.innerHTML='<div class="empty" style="grid-column:1/-1"><strong>No hay palabras pendientes.</strong><span>Las nuevas búsquedas sin resultado aparecerán aquí.</span></div>';return}
-    el.priority.innerHTML=top.map((x,i)=>'<div class="priority-item"><div class="priority-num">#'+(i+1)+'</div><div class="priority-term" title="'+escapeHtml(x.termino)+'">'+escapeHtml(x.termino)+'</div><div class="priority-count">'+fmt(x.busquedas)+' búsqueda'+(x.busquedas===1?'':'s')+'</div></div>').join('');
+    el.priority.innerHTML=top.map((x,i)=>'<div class="priority-item"><div class="priority-num">#'+(i+1)+'</div><div class="priority-term" title="'+escapeHtml(x.termino)+'">'+escapeHtml(x.termino)+'</div><div class="priority-count">'+fmt(x.busquedas)+' búsqueda'+(x.busquedas===1?'':'s')+(x.seccion?' · '+escapeHtml(x.seccion):'')+'</div></div>').join('');
   }
   function filteredSearch(){
     const q=normalize(state.query);
@@ -536,7 +536,7 @@
     el.body.innerHTML='';
     rows.forEach((item,i)=>{
       const tr=document.createElement('tr');
-      tr.innerHTML='<td class="muted">'+(i+1)+'</td><td><strong>'+escapeHtml(item.termino)+'</strong></td><td><strong>'+fmt(item.busquedas)+'</strong></td><td>'+escapeHtml(gaDate(item.ultimaFecha))+'</td><td><span class="state '+(item.added?'state-added':'state-pending')+'">'+(item.added?'✓ Ya está':'● Pendiente')+'</span></td><td><button class="copy-btn" type="button" data-copy="'+encodeURIComponent(item.termino)+'">Copiar</button></td>';
+      tr.innerHTML='<td class="muted">'+(i+1)+'</td><td><strong>'+escapeHtml(item.termino)+'</strong></td><td><span class="state">'+escapeHtml(item.seccion||'—')+'</span></td><td><strong>'+fmt(item.busquedas)+'</strong></td><td>'+escapeHtml(gaDate(item.ultimaFecha))+'</td><td><span class="state '+(item.added?'state-added':'state-pending')+'">'+(item.added?'✓ Ya está':'● Pendiente')+'</span></td><td><button class="copy-btn" type="button" data-copy="'+encodeURIComponent(item.termino)+'">Copiar</button></td>';
       el.body.appendChild(tr);
     });
     el.wrap.classList.toggle('d-none',rows.length===0);
@@ -548,9 +548,12 @@
     }));
   }
   function renderPopularSearches(data){
-    const b=data.busquedasPopulares||{};
-    const rows=(Array.isArray(b.items)?b.items:[]).map(x=>({
+    const porSeccion=data.busquedasPorSeccion||{};
+    const general=data.busquedasPopulares||{};
+    const fuente=(Array.isArray(porSeccion.items)&&porSeccion.items.length)?porSeccion:general;
+    const rows=(Array.isArray(fuente.items)?fuente.items:[]).map(x=>({
       termino:String(x.termino||'').trim(),
+      seccion:String(x.seccion||'').trim(),
       busquedas:n(x.busquedas),
       ultimaFecha:String(x.ultimaFecha||''),
       added:state.existing.has(normalize(x.termino))
@@ -562,14 +565,17 @@
     }
     renderMetricList(el.popular,rows,{
       nameKey:'termino',valueKey:'busquedas',limit:15,
-      meta:x=>(x.added?'Disponible en LSPedia':'Sin resultado / por revisar')+(x.ultimaFecha?' · '+gaDate(x.ultimaFecha):'')
+      meta:x=>(x.seccion?x.seccion+' · ':'')+(x.added?'Disponible en LSPedia':'Sin resultado / por revisar')+(x.ultimaFecha?' · '+gaDate(x.ultimaFecha):'')
     });
   }
 
   function renderSearch(data){
-    const b=data.busquedas||{};
-    state.searchItems=(Array.isArray(b.items)?b.items:[]).map(x=>({
+    const porSeccion=data.busquedasSinResultadoPorSeccion||{};
+    const general=data.busquedas||{};
+    const fuente=(Array.isArray(porSeccion.items)&&porSeccion.items.length)?porSeccion:general;
+    state.searchItems=(Array.isArray(fuente.items)?fuente.items:[]).map(x=>({
       termino:String(x.termino||'').trim(),
+      seccion:String(x.seccion||'').trim(),
       busquedas:n(x.busquedas),
       ultimaFecha:String(x.ultimaFecha||''),
       added:state.existing.has(normalize(x.termino))
@@ -582,8 +588,8 @@
     const rows=filteredSearch();
     if(!rows.length){showAlert('No hay búsquedas para exportar.','info');return}
     const quote=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
-    const lines=[['N','Palabra buscada','Busquedas','Ultima busqueda','Estado'].map(quote).join(',')];
-    rows.forEach((x,i)=>lines.push([i+1,x.termino,x.busquedas,gaDate(x.ultimaFecha),x.added?'Ya esta en LSPedia':'Pendiente'].map(quote).join(',')));
+    const lines=[['N','Palabra buscada','Seccion','Busquedas','Ultima busqueda','Estado'].map(quote).join(',')];
+    rows.forEach((x,i)=>lines.push([i+1,x.termino,x.seccion||'',x.busquedas,gaDate(x.ultimaFecha),x.added?'Ya esta en LSPedia':'Pendiente'].map(quote).join(',')));
     const blob=new Blob(['\ufeff'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'});
     const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='lspedia-busquedas-sin-resultados.csv';document.body.appendChild(a);a.click();
     setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},0);
