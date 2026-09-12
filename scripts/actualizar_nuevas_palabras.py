@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""Genera data/nuevas-palabras.json con palabras realmente publicadas.
+"""Genera data/nuevas-palabras.json con lo último publicado en LSPedia.
 
-Prioridad para decidir la fecha de publicación:
-1. ``fechaPublicacion`` guardada por el Publicador, aceptando también variantes
-   de mayúsculas/minúsculas como ``fechapublicacion`` provenientes de Sheets.
-2. Fecha en que se agregó a Git la ilustración local de la palabra.
-3. Historial antiguo: commit en que la palabra pasó a tener video.
+Incluye contenido de Diccionario y Vocabulario, ordenado por fecha real de
+publicación. Se conservan respaldos históricos para contenido anterior al
+Publicador actual.
 
-La segunda y tercera reglas solo existen como compatibilidad para contenido
-publicado antes de que LSPedia empezara a guardar ``fechaPublicacion``.
+Prioridad para decidir la fecha:
+1. ``fechaPublicacion`` (también acepta ``fechapublicacion`` de Sheets).
+2. Fecha en que se agregó a Git la ilustración local.
+3. Historial del archivo de datos: commit en que el registro pasó a tener video.
 """
 from __future__ import annotations
 
@@ -21,14 +21,15 @@ from urllib.parse import unquote
 from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parent.parent
-DATA = ROOT / "data" / "palabras.json"
+DICCIONARIO = ROOT / "data" / "palabras.json"
+VOCABULARIO = ROOT / "data" / "vocabulario.json"
 DESTINO = ROOT / "data" / "nuevas-palabras.json"
 MAX_COMMITS = 160
 MAX_ITEMS = 12
 
 try:
     ZONA_LIMA = ZoneInfo("America/Lima")
-except Exception:  # pragma: no cover - respaldo para entornos sin tzdata
+except Exception:  # pragma: no cover
     ZONA_LIMA = dt.timezone(dt.timedelta(hours=-5))
 
 
@@ -42,6 +43,13 @@ def valor_fecha_publicacion(item: dict) -> object:
         if str(nombre).strip().casefold() == "fechapublicacion":
             return valor
     return None
+
+
+def cargar_archivo(ruta: Path) -> list[dict]:
+    data = json.loads(ruta.read_text(encoding="utf-8"))
+    if not isinstance(data, list):
+        raise SystemExit(f"{ruta.name} debe ser una lista")
+    return [x for x in data if isinstance(x, dict)]
 
 
 def cargar_texto_git(spec: str) -> list[dict]:
@@ -61,7 +69,11 @@ def cargar_texto_git(spec: str) -> list[dict]:
 
 def clave(item: dict) -> str:
     ident = str(item.get("id") or "").strip()
-    return "id:" + ident if ident else "p:" + normal(item.get("palabra"))
+    if ident:
+        return "id:" + ident
+    palabra = normal(item.get("palabra"))
+    categoria = normal(item.get("categoria"))
+    return "p:" + palabra + "|c:" + categoria
 
 
 def publicable(item: dict | None) -> bool:
@@ -82,12 +94,7 @@ def mapa(items: list[dict]) -> dict[str, dict]:
 
 
 def buscar_registro_historial(items: list[dict], referencia: dict) -> dict | None:
-    """Encuentra el mismo registro aunque el ID haya cambiado con una migración.
-
-    Primero intenta el ID estable. Si no existe en ese commit, usa la palabra
-    como respaldo. Esto evita considerar como "nueva" una palabra antigua solo
-    porque un proceso automático creó o modificó su ID.
-    """
+    """Encuentra el mismo registro aunque un ID haya cambiado."""
     ident = normal(referencia.get("id"))
     if ident:
         por_id = [
@@ -98,6 +105,7 @@ def buscar_registro_historial(items: list[dict], referencia: dict) -> dict | Non
             return por_id[0]
 
     palabra = normal(referencia.get("palabra"))
+    categoria = normal(referencia.get("categoria"))
     if not palabra:
         return None
 
@@ -108,8 +116,13 @@ def buscar_registro_historial(items: list[dict], referencia: dict) -> dict | Non
     if len(por_palabra) == 1:
         return por_palabra[0]
 
-    # Si existe más de un concepto con el mismo nombre, intenta distinguirlo
-    # por el video actual. Si no hay coincidencia única, no adivina.
+    if categoria:
+        por_categoria = [
+            x for x in por_palabra if normal(x.get("categoria")) == categoria
+        ]
+        if len(por_categoria) == 1:
+            return por_categoria[0]
+
     video = normal(referencia.get("video"))
     if video:
         por_video = [x for x in por_palabra if normal(x.get("video")) == video]
@@ -120,7 +133,7 @@ def buscar_registro_historial(items: list[dict], referencia: dict) -> dict | Non
 
 
 def parsear_fecha(valor: object) -> dt.datetime | None:
-    """Convierte fechas ISO o formatos habituales de Google Sheets."""
+    """Convierte ISO o formatos habituales de Google Sheets."""
     texto = str(valor or "").strip()
     if not texto:
         return None
@@ -134,13 +147,9 @@ def parsear_fecha(valor: object) -> dt.datetime | None:
     except ValueError:
         pass
 
-    # Ej.: Thu Sep 10 2026 22:15:00 GMT-0500 (Peru Standard Time)
     js = re.sub(r"\s*\([^)]*\)\s*$", "", texto)
     try:
-        return dt.datetime.strptime(
-            js,
-            "%a %b %d %Y %H:%M:%S GMT%z",
-        )
+        return dt.datetime.strptime(js, "%a %b %d %Y %H:%M:%S GMT%z")
     except ValueError:
         pass
 
@@ -157,7 +166,6 @@ def parsear_fecha(valor: object) -> dt.datetime | None:
             return dt.datetime.strptime(texto, formato).replace(tzinfo=ZONA_LIMA)
         except ValueError:
             continue
-
     return None
 
 
@@ -173,35 +181,21 @@ def fecha_iso_utc(fecha: dt.datetime) -> str:
 
 
 def ruta_imagen_local(item: dict) -> str:
-    """Devuelve la ruta Git real de una imagen local ``img/...``."""
     valor = str(item.get("imagen") or "").split(",", 1)[0].strip()
     if not valor:
         return ""
-
-    # En palabras antiguas la hoja puede guardar la URL codificada para web,
-    # por ejemplo ``img/diccionario/de%20nada.webp`` o acentos como %C3%B3.
-    # Git, en cambio, conserva el nombre real con espacios/Unicode.
     valor = unquote(valor).replace("\\", "/")
     while valor.startswith("./"):
         valor = valor[2:]
     valor = valor.lstrip("/")
-
-    if valor.startswith("img/"):
-        return valor
-    return ""
+    return valor if valor.startswith("img/") else ""
 
 
 def fechas_archivos_agregados() -> dict[str, dt.datetime]:
-    """Obtiene en una sola llamada Git la fecha de alta de imágenes locales."""
     r = subprocess.run(
         [
-            "git",
-            "log",
-            "--format=@@%cI",
-            "--diff-filter=A",
-            "--name-only",
-            "--",
-            "img",
+            "git", "log", "--format=@@%cI", "--diff-filter=A",
+            "--name-only", "--", "img",
         ],
         cwd=ROOT,
         text=True,
@@ -211,9 +205,6 @@ def fechas_archivos_agregados() -> dict[str, dt.datetime]:
 
     fechas: dict[str, dt.datetime] = {}
     fecha_actual: dt.datetime | None = None
-
-    # git log viene de más reciente a más antiguo. setdefault conserva la
-    # incorporación más reciente si un archivo fue borrado y agregado otra vez.
     for linea in r.stdout.splitlines():
         linea = linea.strip()
         if not linea:
@@ -223,22 +214,18 @@ def fechas_archivos_agregados() -> dict[str, dt.datetime]:
             continue
         if fecha_actual is not None:
             fechas.setdefault(linea.replace("\\", "/"), fecha_actual)
-
     return fechas
 
 
 def fechas_publicacion_historial(
     por_clave: dict[str, dict],
+    ruta_relativa: str,
 ) -> dict[str, dt.datetime]:
-    """Respaldo antiguo: detecta cuándo un registro pasó a tener video."""
+    """Detecta históricamente cuándo cada registro pasó a tener video."""
     log = subprocess.run(
         [
-            "git",
-            "log",
-            f"-n{MAX_COMMITS}",
-            "--format=%H|%cI",
-            "--",
-            "data/palabras.json",
+            "git", "log", f"-n{MAX_COMMITS}", "--format=%H|%cI",
+            "--", ruta_relativa,
         ],
         cwd=ROOT,
         text=True,
@@ -250,41 +237,34 @@ def fechas_publicacion_historial(
     for linea in log:
         if "|" not in linea:
             continue
-
         sha, fecha_texto = linea.split("|", 1)
         fecha = parsear_fecha(fecha_texto)
         if fecha is None:
             continue
 
-        ahora_items = cargar_texto_git(f"{sha}:data/palabras.json")
-        antes_items = cargar_texto_git(f"{sha}^:data/palabras.json")
+        ahora_items = cargar_texto_git(f"{sha}:{ruta_relativa}")
+        antes_items = cargar_texto_git(f"{sha}^:{ruta_relativa}")
 
         for k, referencia in por_clave.items():
             if k in detectadas:
                 continue
-
             ahora = buscar_registro_historial(ahora_items, referencia)
             antes = buscar_registro_historial(antes_items, referencia)
             if publicable(ahora) and not publicable(antes):
                 detectadas[k] = fecha
-
     return detectadas
 
 
-def main() -> int:
-    actual = json.loads(DATA.read_text(encoding="utf-8"))
-    if not isinstance(actual, list):
-        raise SystemExit("palabras.json debe ser una lista")
-
+def candidatos_fuente(
+    items: list[dict],
+    fuente: str,
+    ruta_relativa: str,
+    fechas_imagen: dict[str, dt.datetime],
+) -> list[tuple[dt.datetime, dict]]:
     por_clave = {
-        k: x
-        for k, x in mapa(actual).items()
-        if publicable(x)
+        k: x for k, x in mapa(items).items() if publicable(x)
     }
-
-    fechas_imagen = fechas_archivos_agregados()
-    fechas_historial = fechas_publicacion_historial(por_clave)
-
+    fechas_historial = fechas_publicacion_historial(por_clave, ruta_relativa)
     candidatos: list[tuple[dt.datetime, dict]] = []
 
     for k, item in por_clave.items():
@@ -313,16 +293,35 @@ def main() -> int:
                     "imagen": str(item.get("imagen") or "").strip(),
                     "fecha": fecha_iso_utc(fecha),
                     "origenFecha": origen,
+                    "fuente": fuente,
                 },
             )
         )
+    return candidatos
+
+
+def main() -> int:
+    diccionario = cargar_archivo(DICCIONARIO)
+    vocabulario = cargar_archivo(VOCABULARIO)
+    fechas_imagen = fechas_archivos_agregados()
+
+    candidatos = candidatos_fuente(
+        diccionario, "diccionario", "data/palabras.json", fechas_imagen
+    )
+    candidatos.extend(
+        candidatos_fuente(
+            vocabulario, "vocabulario", "data/vocabulario.json", fechas_imagen
+        )
+    )
 
     candidatos.sort(key=lambda par: par[0], reverse=True)
     items = [registro for _fecha, registro in candidatos[:MAX_ITEMS]]
 
     salida = {
         "generadoEn": fecha_iso_utc(dt.datetime.now(dt.timezone.utc)),
-        "metodo": "fechaPublicacion-con-respaldo-imagen-git-e-historial",
+        "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
+        "maxItems": MAX_ITEMS,
+        "diasEtiquetaNuevo": 14,
         "items": items,
     }
 
@@ -332,15 +331,18 @@ def main() -> int:
         newline="\n",
     )
 
-    fuentes: dict[str, int] = {}
+    conteo_fuente: dict[str, int] = {}
+    conteo_origen: dict[str, int] = {}
     for item in items:
+        fuente = item.get("fuente", "desconocida")
         origen = item.get("origenFecha", "desconocido")
-        fuentes[origen] = fuentes.get(origen, 0) + 1
+        conteo_fuente[fuente] = conteo_fuente.get(fuente, 0) + 1
+        conteo_origen[origen] = conteo_origen.get(origen, 0) + 1
 
-    resumen = ", ".join(f"{k}: {v}" for k, v in sorted(fuentes.items()))
+    fuentes = ", ".join(f"{k}: {v}" for k, v in sorted(conteo_fuente.items()))
+    origenes = ", ".join(f"{k}: {v}" for k, v in sorted(conteo_origen.items()))
     print(
-        f"✅ Nuevas palabras publicadas: {len(items)} elemento(s)."
-        + (f" Fuentes: {resumen}." if resumen else "")
+        f"✅ Lo nuevo: {len(items)} elemento(s). Fuentes: {fuentes}. Fechas: {origenes}."
     )
     return 0
 
