@@ -1,0 +1,122 @@
+name: Corregir audio de Sobre Nosotros
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - '.github/workflows/corregir-audio-sobre-nosotros.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  corregir:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Aplicar corrección
+        shell: python
+        run: |
+          from pathlib import Path
+
+          script = Path('js/script.js')
+          texto = script.read_text(encoding='utf-8')
+
+          viejo_ocultar = '''function ocultarSeccionNosotros(){
+    const seccion = document.getElementById("seccionNosotros");
+    if(seccion) seccion.classList.add("d-none");
+    if(nosotrosPantallaCompletaActiva) toggleNosotrosPantallaCompleta(true);
+    if(ytPlayerNosotros && typeof ytPlayerNosotros.pauseVideo === "function") ytPlayerNosotros.pauseVideo();
+}
+'''
+
+          nuevo_ocultar = '''function ocultarSeccionNosotros(){
+    const seccion = document.getElementById("seccionNosotros");
+    if(seccion) seccion.classList.add("d-none");
+
+    // Si la persona sale antes de que termine de cargar la API de YouTube,
+    // anulamos el video pendiente. Antes, la API podía terminar de cargar
+    // después y crear el reproductor con autoplay aunque esta sección ya
+    // estuviera oculta, por eso el audio seguía sonando en Herramientas.
+    ytVideoNosotrosPendiente = null;
+    nosotrosSegundoPendiente = null;
+
+    if(nosotrosPantallaCompletaActiva) toggleNosotrosPantallaCompleta(true);
+    if(ytPlayerNosotros && typeof ytPlayerNosotros.pauseVideo === "function") ytPlayerNosotros.pauseVideo();
+}
+'''
+
+          if texto.count(viejo_ocultar) != 1:
+              raise SystemExit('No se encontró exactamente una vez ocultarSeccionNosotros')
+          texto = texto.replace(viejo_ocultar, nuevo_ocultar, 1)
+
+          viejo_visible = '''function crearReproductorNosotrosCuandoVisible(videoId, intentosRestantes) {
+    if (typeof intentosRestantes !== "number") intentosRestantes = 60; // tope de seguridad: ~1s a 60fps
+    const contenedor = document.getElementById("reproductorNosotros");
+    const rect = contenedor ? contenedor.getBoundingClientRect() : null;
+    const yaTieneTamano = rect && rect.width > 0 && rect.height > 0;
+    if (yaTieneTamano || intentosRestantes <= 0) {
+        crearReproductorNosotros(videoId);
+        return;
+    }
+    requestAnimationFrame(() => crearReproductorNosotrosCuandoVisible(videoId, intentosRestantes - 1));
+}
+'''
+
+          nuevo_visible = '''function crearReproductorNosotrosCuandoVisible(videoId, intentosRestantes) {
+    // Este proceso puede quedar esperando varios frames mientras la sección
+    // aparece. Si durante esa espera la persona navega a otra sección, se
+    // cancela aquí para impedir que el reproductor nazca oculto con autoplay.
+    const seccion = document.getElementById("seccionNosotros");
+    if (!seccion || seccion.classList.contains("d-none")) {
+        ytVideoNosotrosPendiente = null;
+        return;
+    }
+
+    if (typeof intentosRestantes !== "number") intentosRestantes = 60; // tope de seguridad: ~1s a 60fps
+    const contenedor = document.getElementById("reproductorNosotros");
+    const rect = contenedor ? contenedor.getBoundingClientRect() : null;
+    const yaTieneTamano = rect && rect.width > 0 && rect.height > 0;
+    if (yaTieneTamano || intentosRestantes <= 0) {
+        crearReproductorNosotros(videoId);
+        return;
+    }
+    requestAnimationFrame(() => crearReproductorNosotrosCuandoVisible(videoId, intentosRestantes - 1));
+}
+'''
+
+          if texto.count(viejo_visible) != 1:
+              raise SystemExit('No se encontró exactamente una vez crearReproductorNosotrosCuandoVisible')
+          texto = texto.replace(viejo_visible, nuevo_visible, 1)
+          script.write_text(texto, encoding='utf-8')
+
+          sw = Path('sw.js')
+          sw_texto = sw.read_text(encoding='utf-8')
+          if sw_texto.count('const VERSION_APP = "v96";') != 1:
+              raise SystemExit('No se encontró VERSION_APP v96 exactamente una vez')
+          sw.write_text(sw_texto.replace('const VERSION_APP = "v96";', 'const VERSION_APP = "v97";', 1), encoding='utf-8')
+
+      - name: Verificar corrección
+        shell: bash
+        run: |
+          set -e
+          node --check js/script.js
+          grep -q 'ytVideoNosotrosPendiente = null;' js/script.js
+          grep -q 'seccion.classList.contains("d-none")' js/script.js
+          grep -q 'const VERSION_APP = "v97";' sw.js
+
+      - name: Guardar cambios en develop
+        shell: bash
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/script.js sw.js
+          git commit -m "Detener video de Sobre Nosotros al salir"
+          git push origin HEAD:develop
