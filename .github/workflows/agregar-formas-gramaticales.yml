@@ -1,0 +1,59 @@
+name: Agregar formas gramaticales consultables
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - ".github/workflows/agregar-formas-gramaticales.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: agregar-formas-gramaticales-develop
+  cancel-in-progress: true
+
+jobs:
+  aplicar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Agregar formas consultables
+        run: python scripts/agregar_formas_gramaticales.py
+
+      - name: Normalizar y actualizar derivados
+        shell: bash
+        run: |
+          python scripts/migrar_ids_palabras.py
+          python scripts/normalizar_categorias.py
+          python scripts/generar_sitemap.py
+          python scripts/actualizar_nuevas_palabras.py
+
+      - name: Validar
+        shell: bash
+        run: |
+          python -m json.tool data/palabras.json > /dev/null
+          python scripts/validar_lspedia.py --fuente diccionario
+          node --check js/buscador-visual.js
+          git diff --check
+
+      - name: Guardar y retirar archivos temporales
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/agregar-formas-gramaticales.yml
+          git rm scripts/agregar_formas_gramaticales.py
+          git add data/palabras.json data/vocabulario.json data/nuevas-palabras.json sitemap.xml js/script.js
+          git commit -m "Agregar formas gramaticales consultables"
+          git push origin HEAD:develop
