@@ -10,7 +10,7 @@
      su propia caché rápida + revalidación desde script.js.
    ============================================================ */
 
-const VERSION_APP = "v99";
+const VERSION_APP = "v100";
 const PREFIJO_CACHE = "lspedia-shell-";
 const PREFIJO_RUNTIME = "lspedia-runtime-";
 const CACHE_NOMBRE = PREFIJO_CACHE + VERSION_APP;
@@ -36,6 +36,7 @@ const ARCHIVOS_CASCARON = [
     "js/lo-nuevo.js",
     "js/i18n.js",
     "js/i18n-restaurar.js",
+    "js/i18n-auto.js",
     "manifest.json",
     "img/icons/icon-192-v82.png",
     "img/icons/icon-512-v82.png",
