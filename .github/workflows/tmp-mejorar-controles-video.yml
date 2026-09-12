@@ -1,4 +1,4 @@
-name: Temporal mejorar controles de video
+name: Temporal finalizar controles de video
 
 on:
   push:
@@ -19,19 +19,22 @@ jobs:
           ref: develop
           fetch-depth: 0
 
-      - name: Aplicar rediseño visual
+      - name: Limpiar bloque intermedio
         run: python scripts/tmp_mejorar_controles_video.py
 
-      - name: Validar cambios
+      - name: Validar diseño final
         run: |
-          grep -q "CONTROLES_VIDEO_VISUAL_V1_20260912" css/mejoras-producto.css
+          ! grep -q "CONTROLES_VIDEO_VISUAL_V1_20260912" css/mejoras-producto.css
+          grep -q "CONTROLES_VIDEO_PALABRA_V1_20260912" css/mejoras-producto.css
           grep -q 'const VERSION_APP = "v86";' sw.js
 
-      - name: Guardar cambios
+      - name: Retirar archivos temporales y guardar
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm -f .github/workflows/tmp-mejorar-controles-video.yml scripts/tmp_mejorar_controles_video.py || true
+          git rm -f .github/workflows/tmp-controles-video-visual.yml scripts/tmp_controles_video_visual.py || true
           git add css/mejoras-producto.css sw.js
           git diff --cached --quiet && exit 0
-          git commit -m "Mejorar controles visuales de video"
+          git commit -m "Finalizar rediseño de controles de video"
           git push origin develop
