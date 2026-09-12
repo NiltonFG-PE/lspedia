@@ -10,7 +10,7 @@
    ============================================================ */
 
 // Cambia esta versión cuando modifiques el cascarón de la aplicación.
-const VERSION_APP = "v89";
+const VERSION_APP = "v90";
 const PREFIJO_CACHE = "lspedia-shell-";
 const CACHE_NOMBRE = PREFIJO_CACHE + VERSION_APP;
 
@@ -26,6 +26,7 @@ const ARCHIVOS_CASCARON = [
     "css/subtitulos.css",
     "css/mejoras-producto.css",
     "js/security.js",
+    "js/fullscreen-mobile-fix.js",
     "js/pwa-install.js",
     "js/script.js",
     "js/quiz.js",
