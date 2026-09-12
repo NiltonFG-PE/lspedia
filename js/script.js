@@ -3842,18 +3842,7 @@ async function toggleVideoPalabraPantallaCompleta(wrapId, btnId, forzarCerrar) {
     }
 
     try {
-        const esPantallaTactil = (
-            window.matchMedia("(pointer: coarse)").matches ||
-            Number(navigator.maxTouchPoints || 0) > 0 ||
-            "ontouchstart" in window
-        );
-
-        // En celulares y tablets evitamos el fullscreen nativo de Chrome,
-        // porque muestra un aviso propio del navegador que tapa nuestros
-        // controles. El modo visual ocupa toda la ventana sin ese mensaje.
-        if(esPantallaTactil){
-            wrap.classList.add("video-palabra-pantalla-completa-fallback");
-        } else if(wrap.requestFullscreen){
+        if(wrap.requestFullscreen){
             await wrap.requestFullscreen({ navigationUI: "hide" });
         } else {
             wrap.classList.add("video-palabra-pantalla-completa-fallback");
