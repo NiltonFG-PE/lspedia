@@ -18,6 +18,8 @@
 
     cargar('js/mejoras-producto-base.js', function(){
         cargar('js/lo-nuevo.js');
-        cargar('js/i18n.js');
+        cargar('js/i18n.js', function(){
+            cargar('js/i18n-restaurar.js');
+        });
     });
 })();
