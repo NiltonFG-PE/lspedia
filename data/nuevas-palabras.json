@@ -1,13 +1,22 @@
 {
-  "generadoEn": "2026-09-12T19:15:00Z",
+  "generadoEn": "2026-09-12T19:36:40Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
   "items": [
     {
+      "id": "flexible",
+      "palabra": "Flexible",
+      "categoria": "Habilidades",
+      "imagen": "img/diccionario/flexible.webp",
+      "fecha": "2026-09-12T19:30:35Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "diccionario"
+    },
+    {
       "id": "retar",
       "palabra": "Retar",
-      "categoria": "Metas y desafíos",
+      "categoria": "Verbos",
       "imagen": "img/diccionario/retar.png",
       "fecha": "2026-09-12T19:14:40Z",
       "origenFecha": "fechaPublicacion",
@@ -100,15 +109,6 @@
       "categoria": "Cortesía",
       "imagen": "img/diccionario/porfavor.webp",
       "fecha": "2026-09-03T18:38:13Z",
-      "origenFecha": "imagen-git",
-      "fuente": "diccionario"
-    },
-    {
-      "id": "hola",
-      "palabra": "Hola",
-      "categoria": "Saludos",
-      "imagen": "img/diccionario/hola.webp",
-      "fecha": "2026-09-03T18:38:08Z",
       "origenFecha": "imagen-git",
       "fuente": "diccionario"
     }
