@@ -10,7 +10,7 @@
    ============================================================ */
 
 // Cambia esta versión cuando modifiques el cascarón de la aplicación.
-const VERSION_APP = "v81";
+const VERSION_APP = "v82";
 const PREFIJO_CACHE = "lspedia-shell-";
 const CACHE_NOMBRE = PREFIJO_CACHE + VERSION_APP;
 
@@ -37,9 +37,9 @@ const ARCHIVOS_CASCARON = [
     "js/mejoras-producto-base.js",
     "js/lo-nuevo.js",
     "manifest.json",
-    "img/icons/icon-192.png",
-    "img/icons/icon-512.png",
-    "img/icons/icon-512-maskable.png",
+    "img/icons/icon-192-v82.png",
+    "img/icons/icon-512-v82.png",
+    "img/icons/icon-512-maskable-v82.png",
     "img/imagen-no-disponible.svg"
 ];
 
