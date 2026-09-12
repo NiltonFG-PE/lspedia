@@ -19,101 +19,8 @@ jobs:
           ref: develop
           fetch-depth: 0
 
-      - name: Restaurar fullscreen nativo y proteger controles
-        shell: bash
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          import re
-
-          js_path = Path('js/script.js')
-          css_path = Path('css/mejoras-producto.css')
-          sw_path = Path('sw.js')
-
-          js = js_path.read_text(encoding='utf-8')
-
-          patron = re.compile(
-              r'''    try \{\n        const esPantallaTactil = \(.*?\n    \} catch\(error\)\{\n        console\.warn\("No se pudo activar fullscreen nativo; usando respaldo visual\.", error\);\n        wrap\.classList\.add\("video-palabra-pantalla-completa-fallback"\);\n    \}''',
-              re.S
-          )
-
-          nuevo = '''    try {
-        if(wrap.requestFullscreen){
-            await wrap.requestFullscreen({ navigationUI: "hide" });
-        } else {
-            wrap.classList.add("video-palabra-pantalla-completa-fallback");
-        }
-    } catch(error){
-        console.warn("No se pudo activar fullscreen nativo; usando respaldo visual.", error);
-        wrap.classList.add("video-palabra-pantalla-completa-fallback");
-    }'''
-
-          js2, n = patron.subn(nuevo, js, count=1)
-          if n != 1:
-              raise SystemExit(f'No se encontro el bloque tactil a revertir; reemplazos={n}')
-          js_path.write_text(js2, encoding='utf-8')
-
-          css = css_path.read_text(encoding='utf-8')
-          marcador = 'FULLSCREEN_VIDEO_MOVIL_NATIVE_TOAST_FIX_V2_20260912'
-          if marcador not in css:
-              css += r'''
-
-/* ============================================================
-   FULLSCREEN_VIDEO_MOVIL_NATIVE_TOAST_FIX_V2_20260912
-   En Android/Chrome se conserva fullscreen nativo (es el modo mas estable
-   para YouTube). Durante los primeros segundos los controles personalizados
-   quedan elevados para que el aviso de Chrome "Para salir de pantalla
-   completa..." no los tape. Despues bajan suavemente a su posicion normal.
-   ============================================================ */
-@keyframes lspControlesFullscreenEvitarAvisoChrome {
-    0%, 88% {
-        bottom: calc(154px + env(safe-area-inset-bottom, 0px));
-    }
-    100% {
-        bottom: calc(12px + env(safe-area-inset-bottom, 0px));
-    }
-}
-
-@media (pointer: coarse), (max-width: 900px) {
-    body .video-palabra-pantalla-completa:fullscreen > .video-palabra-controles-pantalla-completa,
-    body .video-palabra-pantalla-completa:-webkit-full-screen > .video-palabra-controles-pantalla-completa {
-        position: absolute !important;
-        left: 8px !important;
-        right: 8px !important;
-        top: auto !important;
-        width: auto !important;
-        max-width: none !important;
-        margin: 0 !important;
-        border-radius: 18px !important;
-        padding: 7px 8px calc(7px + env(safe-area-inset-bottom, 0px)) !important;
-        background: rgba(7, 12, 28, .96) !important;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, .34) !important;
-        z-index: 2147483646 !important;
-        animation: lspControlesFullscreenEvitarAvisoChrome 6.2s ease-out forwards !important;
-    }
-
-    body .video-palabra-pantalla-completa:fullscreen > .video-palabra-controles-pantalla-completa .controles-video-velocidad,
-    body .video-palabra-pantalla-completa:-webkit-full-screen > .video-palabra-controles-pantalla-completa .controles-video-velocidad {
-        min-width: 0 !important;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    body .video-palabra-pantalla-completa:fullscreen > .video-palabra-controles-pantalla-completa,
-    body .video-palabra-pantalla-completa:-webkit-full-screen > .video-palabra-controles-pantalla-completa {
-        animation-duration: 6.2s !important;
-        animation-timing-function: steps(1, end) !important;
-    }
-}
-'''
-              css_path.write_text(css, encoding='utf-8')
-
-          sw = sw_path.read_text(encoding='utf-8')
-          sw2, nsw = re.subn(r'const VERSION_APP = "v\d+";', 'const VERSION_APP = "v89";', sw, count=1)
-          if nsw != 1:
-              raise SystemExit('No se pudo actualizar VERSION_APP a v89')
-          sw_path.write_text(sw2, encoding='utf-8')
-          PY
+      - name: Aplicar parche
+        run: python scripts/tmp_fix_fullscreen_mobile_toast_v2.py
 
       - name: Validar correccion
         run: |
@@ -127,11 +34,12 @@ jobs:
           grep -q 'lspControlesFullscreenEvitarAvisoChrome' css/mejoras-producto.css
           grep -q 'const VERSION_APP = "v89";' sw.js
 
-      - name: Guardar y retirar flujo temporal
+      - name: Guardar y retirar temporales
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git rm .github/workflows/tmp-fix-fullscreen-mobile-toast-v2.yml
+          git rm scripts/tmp_fix_fullscreen_mobile_toast_v2.py
           git add js/script.js css/mejoras-producto.css sw.js
           git commit -m "Corregir fullscreen movil y evitar aviso sobre controles"
           git push origin develop
