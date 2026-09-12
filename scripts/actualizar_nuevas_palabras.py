@@ -81,6 +81,44 @@ def mapa(items: list[dict]) -> dict[str, dict]:
     }
 
 
+def buscar_registro_historial(items: list[dict], referencia: dict) -> dict | None:
+    """Encuentra el mismo registro aunque el ID haya cambiado con una migración.
+
+    Primero intenta el ID estable. Si no existe en ese commit, usa la palabra
+    como respaldo. Esto evita considerar como "nueva" una palabra antigua solo
+    porque un proceso automático creó o modificó su ID.
+    """
+    ident = normal(referencia.get("id"))
+    if ident:
+        por_id = [
+            x for x in items
+            if isinstance(x, dict) and normal(x.get("id")) == ident
+        ]
+        if len(por_id) == 1:
+            return por_id[0]
+
+    palabra = normal(referencia.get("palabra"))
+    if not palabra:
+        return None
+
+    por_palabra = [
+        x for x in items
+        if isinstance(x, dict) and normal(x.get("palabra")) == palabra
+    ]
+    if len(por_palabra) == 1:
+        return por_palabra[0]
+
+    # Si existe más de un concepto con el mismo nombre, intenta distinguirlo
+    # por el video actual. Si no hay coincidencia única, no adivina.
+    video = normal(referencia.get("video"))
+    if video:
+        por_video = [x for x in por_palabra if normal(x.get("video")) == video]
+        if len(por_video) == 1:
+            return por_video[0]
+
+    return None
+
+
 def parsear_fecha(valor: object) -> dt.datetime | None:
     """Convierte fechas ISO o formatos habituales de Google Sheets."""
     texto = str(valor or "").strip()
@@ -218,13 +256,16 @@ def fechas_publicacion_historial(
         if fecha is None:
             continue
 
-        ahora = mapa(cargar_texto_git(f"{sha}:data/palabras.json"))
-        antes = mapa(cargar_texto_git(f"{sha}^:data/palabras.json"))
+        ahora_items = cargar_texto_git(f"{sha}:data/palabras.json")
+        antes_items = cargar_texto_git(f"{sha}^:data/palabras.json")
 
-        for k in por_clave:
+        for k, referencia in por_clave.items():
             if k in detectadas:
                 continue
-            if publicable(ahora.get(k)) and not publicable(antes.get(k)):
+
+            ahora = buscar_registro_historial(ahora_items, referencia)
+            antes = buscar_registro_historial(antes_items, referencia)
+            if publicable(ahora) and not publicable(antes):
                 detectadas[k] = fecha
 
     return detectadas
