@@ -156,10 +156,18 @@ def limpiar_ejemplos(filas: object) -> list[dict]:
         palabra = texto(fila.get("palabra"))
         if not caracter or not palabra:
             continue
+        imagen = ruta_media(fila.get("imagen"))
+        # Una fila puede quedar preparada en Google Sheets mientras Nilton
+        # busca su ilustración. Hasta que exista una imagen válida no se
+        # publica en alfabetizacion.json, por lo que tampoco aparece vacía
+        # en Aprender ni entra a los juegos.
+        if not imagen:
+            continue
+
         limpio = {
             "caracter": caracter,
             "palabra": palabra,
-            "imagen": ruta_media(fila.get("imagen")),
+            "imagen": imagen,
             "orden": convertir_orden(fila.get("orden")),
             "nivel": texto(fila.get("nivel")),
         }
