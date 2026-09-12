@@ -1,21 +1,13 @@
 {
-  "generadoEn": "2026-09-12T11:12:51Z",
+  "generadoEn": "2026-09-12T11:13:13Z",
   "metodo": "fechaPublicacion-con-respaldo-imagen-git-e-historial",
   "items": [
-    {
-      "id": "resiliencia",
-      "palabra": "Resiliencia",
-      "categoria": "Psicología",
-      "imagen": "img/diccionario/resiliencia.webp",
-      "fecha": "2026-09-12T06:04:08Z",
-      "origenFecha": "imagen-git"
-    },
     {
       "id": "hipotesis",
       "palabra": "Hipótesis",
       "categoria": "Educación",
       "imagen": "img/diccionario/Hip%C3%B3tesis.webp",
-      "fecha": "2026-09-08T16:59:25Z",
+      "fecha": "2026-09-12T11:12:51Z",
       "origenFecha": "historial-publicacion-video"
     },
     {
@@ -23,7 +15,7 @@
       "palabra": "Adiós",
       "categoria": "Saludos",
       "imagen": "img/diccionario/Adi%C3%B3s.webp",
-      "fecha": "2026-09-08T16:59:25Z",
+      "fecha": "2026-09-12T11:12:51Z",
       "origenFecha": "historial-publicacion-video"
     },
     {
@@ -31,8 +23,16 @@
       "palabra": "Buenos días",
       "categoria": "Saludos",
       "imagen": "img/diccionario/Buenos%20d%C3%ADas.webp",
-      "fecha": "2026-09-08T16:59:25Z",
+      "fecha": "2026-09-12T11:12:51Z",
       "origenFecha": "historial-publicacion-video"
+    },
+    {
+      "id": "resiliencia",
+      "palabra": "Resiliencia",
+      "categoria": "Psicología",
+      "imagen": "img/diccionario/resiliencia.webp",
+      "fecha": "2026-09-12T06:04:09Z",
+      "origenFecha": "fechaPublicacion"
     },
     {
       "id": "tesis",
