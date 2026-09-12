@@ -3751,35 +3751,117 @@ function salirNosotrosPantallaCompletaConEscape(evento) {
 // Se cierra con el mismo botón, con Escape, o automáticamente al mostrar
 // otra palabra (ver cerrarPantallaCompletaVideoPalabra()).
 let wrapIdPantallaCompletaActiva = null;
+let wrapIdBtnPantallaCompletaActiva = null;
+let estadoPantallaCompletaVideoPalabra = null;
+let cerrandoPantallaCompletaVideoPalabra = false;
 
-function toggleVideoPalabraPantallaCompleta(wrapId, btnId, forzarCerrar) {
+function restaurarControlesPantallaCompletaVideoPalabra(){
+    const estado = estadoPantallaCompletaVideoPalabra;
+    if(!estado) return;
+
+    const { wrap, controles, marcadorControles, btn } = estado;
+
+    if(wrap){
+        wrap.classList.remove("video-palabra-pantalla-completa");
+        wrap.classList.remove("video-palabra-pantalla-completa-fallback");
+    }
+
+    if(controles){
+        controles.classList.remove("video-palabra-controles-pantalla-completa");
+        if(marcadorControles && marcadorControles.parentNode){
+            marcadorControles.parentNode.insertBefore(controles, marcadorControles);
+            marcadorControles.remove();
+        }
+    }
+
+    document.body.classList.remove("video-palabra-pantalla-completa-activa");
+
+    if(btn){
+        btn.textContent = "⛶";
+        btn.setAttribute("aria-label", "Ver en pantalla completa");
+        btn.setAttribute("title", "Ver en pantalla completa");
+    }
+
+    wrapIdPantallaCompletaActiva = null;
+    wrapIdBtnPantallaCompletaActiva = null;
+    estadoPantallaCompletaVideoPalabra = null;
+}
+
+async function toggleVideoPalabraPantallaCompleta(wrapId, btnId, forzarCerrar) {
     const wrap = document.getElementById(wrapId);
     const btn = document.getElementById(btnId);
     if (!wrap) return;
 
     const cerrar = forzarCerrar === true || wrapIdPantallaCompletaActiva === wrapId;
-    const activar = !cerrar;
 
-    wrap.classList.toggle("video-palabra-pantalla-completa", activar);
-    document.body.classList.toggle("video-palabra-pantalla-completa-activa", activar);
-
-    if (btn) {
-        btn.innerHTML = activar ? "✕ Salir" : "⛶";
-        btn.title = activar ? "Salir de pantalla completa" : "Ver en pantalla completa";
-        btn.setAttribute("aria-label", btn.title);
+    if(cerrar){
+        if(cerrandoPantallaCompletaVideoPalabra) return;
+        cerrandoPantallaCompletaVideoPalabra = true;
+        try {
+            if(document.fullscreenElement && document.exitFullscreen){
+                await document.exitFullscreen().catch(() => {});
+            }
+        } finally {
+            restaurarControlesPantallaCompletaVideoPalabra();
+            cerrandoPantallaCompletaVideoPalabra = false;
+        }
+        return;
     }
 
-    if (activar) {
-        wrapIdPantallaCompletaActiva = wrapId;
-        wrapIdBtnPantallaCompletaActiva = btnId;
-        document.addEventListener("keydown", salirVideoPalabraPantallaCompletaConEscape);
-    } else {
-        wrapIdPantallaCompletaActiva = null;
-        wrapIdBtnPantallaCompletaActiva = null;
-        document.removeEventListener("keydown", salirVideoPalabraPantallaCompletaConEscape);
+    if(wrapIdPantallaCompletaActiva){
+        await toggleVideoPalabraPantallaCompleta(
+            wrapIdPantallaCompletaActiva,
+            wrapIdBtnPantallaCompletaActiva,
+            true
+        );
+    }
+
+    const hermano = wrap.nextElementSibling;
+    const controles = hermano && hermano.classList.contains("controles-video")
+        ? hermano
+        : null;
+    let marcadorControles = null;
+
+    if(controles && controles.parentNode){
+        marcadorControles = document.createComment("lspedia-controles-video-origen");
+        controles.parentNode.insertBefore(marcadorControles, controles);
+        wrap.appendChild(controles);
+        controles.classList.add("video-palabra-controles-pantalla-completa");
+    }
+
+    wrap.classList.add("video-palabra-pantalla-completa");
+    document.body.classList.add("video-palabra-pantalla-completa-activa");
+    wrapIdPantallaCompletaActiva = wrapId;
+    wrapIdBtnPantallaCompletaActiva = btnId;
+    estadoPantallaCompletaVideoPalabra = { wrap, controles, marcadorControles, btn };
+
+    if(btn){
+        btn.textContent = "✕";
+        btn.setAttribute("aria-label", "Salir de pantalla completa");
+        btn.setAttribute("title", "Salir de pantalla completa");
+    }
+
+    try {
+        if(wrap.requestFullscreen){
+            await wrap.requestFullscreen({ navigationUI: "hide" });
+        } else {
+            wrap.classList.add("video-palabra-pantalla-completa-fallback");
+        }
+    } catch(error){
+        console.warn("No se pudo activar fullscreen nativo; usando respaldo visual.", error);
+        wrap.classList.add("video-palabra-pantalla-completa-fallback");
     }
 }
-let wrapIdBtnPantallaCompletaActiva = null;
+
+document.addEventListener("fullscreenchange", () => {
+    if(
+        wrapIdPantallaCompletaActiva &&
+        !document.fullscreenElement &&
+        !cerrandoPantallaCompletaVideoPalabra
+    ){
+        restaurarControlesPantallaCompletaVideoPalabra();
+    }
+});
 
 function salirVideoPalabraPantallaCompletaConEscape(evento) {
     if (evento.key === "Escape" && wrapIdPantallaCompletaActiva) {
