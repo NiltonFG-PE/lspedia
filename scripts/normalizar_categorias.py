@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 """Normaliza categorías de LSPedia sin mezclar Diccionario y Vocabulario.
 
-Cada fuente tiene sus propias categorías canónicas y sus propios alias.
-Los nombres desconocidos se conservan (solo se limpian espacios), para no
-impedir que en el futuro se agreguen categorías nuevas de forma intencional.
+Regla editorial de LSPedia:
+- Cada palabra pertenece a una sola categoría principal.
+- El nombre de la categoría debe ser una sola palabra.
+
+Cada fuente conserva su propia lista de categorías canónicas. Los alias
+históricos y los nombres compuestos conocidos se convierten a una categoría
+de una sola palabra para que una sincronización futura no deshaga la
+organización de las hojas.
 """
 from __future__ import annotations
 
@@ -28,14 +33,21 @@ def _clave(valor: object) -> str:
     return texto
 
 
+# Categorías canónicas del Diccionario. Todas son una sola palabra.
+# Se conservan categorías útiles y específicas que ya forman parte de la
+# organización editorial de LSPedia, como Bienestar, Comportamiento y
+# Habilidades.
 CATEGORIAS_DICCIONARIO = [
-    "Alimentos",
+    "Animales",
+    "Bienestar",
     "Calle",
     "Cantidad",
     "Casa",
     "Ciencia",
     "Ciudad",
     "Colegio",
+    "Comida",
+    "Comportamiento",
     "Comunicación",
     "Cortesía",
     "Deportes",
@@ -45,7 +57,9 @@ CATEGORIAS_DICCIONARIO = [
     "Emociones",
     "Familia",
     "Filosofía",
+    "Habilidades",
     "Naturaleza",
+    "Ocio",
     "Política",
     "Psicología",
     "Reflexión",
@@ -53,24 +67,25 @@ CATEGORIAS_DICCIONARIO = [
     "Saludos",
     "Sociedad",
     "Tecnología",
+    "Tiempo",
     "Trabajo",
     "Trámites",
     "Transporte",
     "Universidad",
+    "Valores",
+    "Verbos",
 ]
 
 _CANON_DICC = {_clave(nombre): nombre for nombre in CATEGORIAS_DICCIONARIO}
 
-# Alias del Diccionario. Se consolidan categorías compuestas o demasiado
-# específicas en la categoría principal más útil para navegar la web.
+# Alias históricos del Diccionario. Los nombres compuestos se consolidan en
+# una sola categoría principal. "Alimentos" se conserva como alias de Comida
+# para que los datos antiguos sigan siendo compatibles.
 _ALIAS_DICC = {
-    "comida": "Alimentos",
-    "bienestar": "Salud",
-    "comportamiento": "Psicología",
-    "habilidades": "Educación",
+    "alimentos": "Comida",
     "ciencia/tecnologia": "Ciencia",
     "tecnologia/ciencia": "Tecnología",
-    "educacion/habilidades": "Educación",
+    "educacion/habilidades": "Habilidades",
     "educacion/politica": "Política",
     "educacion/trabajo": "Trabajo",
     "sociedad/educacion": "Sociedad",
@@ -78,18 +93,62 @@ _ALIAS_DICC = {
     "tecnologia/trabajo": "Trabajo",
     "trabajo/comercio": "Trabajo",
     "trabajo/economia": "Economía",
-    "etica/legal": "Sociedad",
-    "etica/trabajo": "Trabajo",
+    "etica/legal": "Valores",
+    "etica/trabajo": "Valores",
+    "metas y desafios": "Verbos",
+    "metas/desafios": "Verbos",
 }
 
-CATEGORIAS_VOCABULARIO = ["Adjetivos", "Emociones", "Tiempo", "Verbos"]
+
+# Categorías canónicas de Vocabulario. La fuente mezcla categorías
+# gramaticales (Verbos, Adjetivos, Adverbios) y temáticas, pero todas usan un
+# nombre de una sola palabra.
+CATEGORIAS_VOCABULARIO = [
+    "Adjetivos",
+    "Adverbios",
+    "Animales",
+    "Cantidad",
+    "Casa",
+    "Colores",
+    "Comida",
+    "Comunicación",
+    "Cortesía",
+    "Cuerpo",
+    "Educación",
+    "Emociones",
+    "Familia",
+    "Geografía",
+    "Naturaleza",
+    "Números",
+    "Personas",
+    "Preguntas",
+    "Profesiones",
+    "Ropa",
+    "Sociedad",
+    "Tecnología",
+    "Tiempo",
+    "Trámites",
+    "Valores",
+    "Verbos",
+]
+
 _CANON_VOCAB = {_clave(nombre): nombre for nombre in CATEGORIAS_VOCABULARIO}
 _ALIAS_VOCAB = {
     "adjetivo": "Adjetivos",
+    "adverbio": "Adverbios",
+    "animal": "Animales",
+    "color": "Colores",
+    "alimentos": "Comida",
     "emocion": "Emociones",
     "emociones": "Emociones",
     "tiempos": "Tiempo",
     "verbo": "Verbos",
+    "profesiones/ocupaciones": "Profesiones",
+    "ocupaciones": "Profesiones",
+    "redes sociales/aplicaciones": "Tecnología",
+    "relaciones familiares y personales": "Familia",
+    "ropa y accesorios": "Ropa",
+    "sustantivo": "Personas",
 }
 
 
