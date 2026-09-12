@@ -1679,6 +1679,14 @@ function mostrarSeccionHerramientas(){
 function ocultarSeccionNosotros(){
     const seccion = document.getElementById("seccionNosotros");
     if(seccion) seccion.classList.add("d-none");
+
+    // Si la persona sale antes de que termine de cargar la API de YouTube,
+    // anulamos el video pendiente. Antes, la API podía terminar de cargar
+    // después y crear el reproductor con autoplay aunque esta sección ya
+    // estuviera oculta, por eso el audio seguía sonando en Herramientas.
+    ytVideoNosotrosPendiente = null;
+    nosotrosSegundoPendiente = null;
+
     if(nosotrosPantallaCompletaActiva) toggleNosotrosPantallaCompleta(true);
     if(ytPlayerNosotros && typeof ytPlayerNosotros.pauseVideo === "function") ytPlayerNosotros.pauseVideo();
 }
@@ -3352,6 +3360,15 @@ function iniciarReproductorNosotros() {
 // crea, para no quedarse esperando para siempre si algo impide que el
 // contenedor llegue a tener tamaño).
 function crearReproductorNosotrosCuandoVisible(videoId, intentosRestantes) {
+    // Este proceso puede quedar esperando varios frames mientras la sección
+    // aparece. Si durante esa espera la persona navega a otra sección, se
+    // cancela aquí para impedir que el reproductor nazca oculto con autoplay.
+    const seccion = document.getElementById("seccionNosotros");
+    if (!seccion || seccion.classList.contains("d-none")) {
+        ytVideoNosotrosPendiente = null;
+        return;
+    }
+
     if (typeof intentosRestantes !== "number") intentosRestantes = 60; // tope de seguridad: ~1s a 60fps
     const contenedor = document.getElementById("reproductorNosotros");
     const rect = contenedor ? contenedor.getBoundingClientRect() : null;
