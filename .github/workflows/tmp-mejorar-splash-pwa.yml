@@ -1,0 +1,155 @@
+name: Temporal mejorar splash PWA
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - ".github/workflows/tmp-mejorar-splash-pwa.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  mejorar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar Pillow
+        run: python -m pip install --disable-pip-version-check pillow
+
+      - name: Crear iconos PWA y fondo de inicio
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image, ImageDraw
+          import json
+          import re
+
+          ICONOS = Path('img/icons')
+          fuente = Image.open(ICONOS / 'icon-512.png').convert('RGB')
+
+          # Recorta el símbolo real ignorando el gran fondo blanco actual.
+          mascara = Image.new('L', fuente.size, 0)
+          mp = mascara.load()
+          sp = fuente.load()
+          for y in range(fuente.height):
+              for x in range(fuente.width):
+                  r, g, b = sp[x, y]
+                  if not (r >= 245 and g >= 245 and b >= 245):
+                      mp[x, y] = 255
+          bbox = mascara.getbbox()
+          if not bbox:
+              raise SystemExit('No se pudo detectar el símbolo del icono actual.')
+          simbolo = fuente.crop(bbox)
+
+          NAVY = '#0f172a'
+          AMARILLO = '#ffc107'
+          BLANCO = '#ffffff'
+
+          def crear_icono(tamano, proporcion_insignia):
+              lienzo = Image.new('RGB', (tamano, tamano), NAVY)
+              d = int(round(tamano * proporcion_insignia))
+              if d % 2:
+                  d -= 1
+              x0 = (tamano - d) // 2
+              y0 = (tamano - d) // 2
+
+              dib = ImageDraw.Draw(lienzo)
+              grosor = max(3, int(round(tamano * 0.012)))
+              dib.ellipse(
+                  (x0, y0, x0 + d, y0 + d),
+                  fill=BLANCO,
+                  outline=AMARILLO,
+                  width=grosor
+              )
+
+              # El símbolo se coloca sobre una superficie circular blanca.
+              interior = d - (grosor * 4)
+              tile = Image.new('RGB', (interior, interior), BLANCO)
+              max_lado = int(interior * 0.93)
+              escala = min(max_lado / simbolo.width, max_lado / simbolo.height)
+              nw = max(1, int(round(simbolo.width * escala)))
+              nh = max(1, int(round(simbolo.height * escala)))
+              red = simbolo.resize((nw, nh), Image.Resampling.LANCZOS)
+              tile.paste(red, ((interior - nw) // 2, (interior - nh) // 2))
+
+              clip = Image.new('L', (interior, interior), 0)
+              ImageDraw.Draw(clip).ellipse((0, 0, interior - 1, interior - 1), fill=255)
+              px = (tamano - interior) // 2
+              py = (tamano - interior) // 2
+              lienzo.paste(tile, (px, py), clip)
+              return lienzo
+
+          normal512 = crear_icono(512, 0.70)
+          maskable512 = crear_icono(512, 0.62)
+          normal192 = normal512.resize((192, 192), Image.Resampling.LANCZOS)
+
+          normal512.save(ICONOS / 'icon-512.png', optimize=True)
+          maskable512.save(ICONOS / 'icon-512-maskable.png', optimize=True)
+          normal192.save(ICONOS / 'icon-192.png', optimize=True)
+
+          manifest_path = Path('manifest.json')
+          manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+          manifest['background_color'] = NAVY
+          manifest['theme_color'] = NAVY
+          manifest_path.write_text(
+              json.dumps(manifest, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8'
+          )
+
+          sw_path = Path('sw.js')
+          sw = sw_path.read_text(encoding='utf-8')
+          sw, n = re.subn(
+              r'const VERSION_APP = "v\d+";',
+              'const VERSION_APP = "v79";',
+              sw,
+              count=1
+          )
+          if n != 1:
+              raise SystemExit('No se pudo actualizar VERSION_APP.')
+          sw_path.write_text(sw, encoding='utf-8')
+          PY
+
+      - name: Validar resultado
+        run: |
+          python - <<'PY'
+          from PIL import Image
+          import json
+          for ruta, tamano in [
+              ('img/icons/icon-192.png', (192, 192)),
+              ('img/icons/icon-512.png', (512, 512)),
+              ('img/icons/icon-512-maskable.png', (512, 512)),
+          ]:
+              im = Image.open(ruta)
+              if im.size != tamano:
+                  raise SystemExit(f'Tamaño incorrecto en {ruta}: {im.size}')
+              # La esquina debe ser azul marino, no blanca.
+              r, g, b = im.convert('RGB').getpixel((2, 2))
+              if r > 80 or g > 80 or b > 100:
+                  raise SystemExit(f'El fondo de {ruta} no quedó oscuro.')
+          manifest = json.load(open('manifest.json', encoding='utf-8'))
+          assert manifest['background_color'] == '#0f172a'
+          assert manifest['theme_color'] == '#0f172a'
+          PY
+          grep -q 'VERSION_APP = "v79"' sw.js
+          git diff --check
+
+      - name: Guardar cambios
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add img/icons/icon-192.png img/icons/icon-512.png img/icons/icon-512-maskable.png manifest.json sw.js
+          git commit -m "Mejorar icono y pantalla de inicio PWA"
+          git push origin HEAD:develop
