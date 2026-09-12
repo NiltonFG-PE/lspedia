@@ -1,0 +1,122 @@
+name: Temporal iconos PWA fondo claro
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - ".github/workflows/tmp-iconos-fondo-claro.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  iconos:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Instalar Pillow
+        run: python -m pip install --quiet pillow
+
+      - name: Crear iconos con fondo exactamente igual al splash
+        run: |
+          python - <<'PY'
+          from PIL import Image
+          from collections import deque
+          from pathlib import Path
+          import json, math, re
+
+          BG = (248, 250, 252, 255)  # #f8fafc, igual que background_color del manifest
+          pares = [
+              (Path('img/icons/icon-192.png'), Path('img/icons/icon-192-v82.png')),
+              (Path('img/icons/icon-512.png'), Path('img/icons/icon-512-v82.png')),
+              (Path('img/icons/icon-512-maskable.png'), Path('img/icons/icon-512-maskable-v82.png')),
+          ]
+
+          def dist(c1, c2):
+              return math.sqrt(sum((int(a)-int(b))**2 for a,b in zip(c1[:3], c2[:3])))
+
+          for src, dst in pares:
+              im = Image.open(src).convert('RGBA')
+              w, h = im.size
+              px = im.load()
+              corners = [px[0,0], px[w-1,0], px[0,h-1], px[w-1,h-1]]
+              opacos = [c for c in corners if c[3] > 40]
+              if opacos:
+                  ref = tuple(sorted(c[i] for c in opacos)[len(opacos)//2] for i in range(3)) + (255,)
+              else:
+                  ref = (0,0,0,0)
+
+              # Reemplaza SOLO el fondo conectado a los bordes. Así no cambia
+              # el azul del logo aunque sea parecido al fondo antiguo.
+              q = deque()
+              seen = set()
+              for x in range(w):
+                  q.append((x,0)); q.append((x,h-1))
+              for y in range(h):
+                  q.append((0,y)); q.append((w-1,y))
+
+              def es_fondo(c):
+                  if c[3] < 245:
+                      return True
+                  if ref[3] and dist(c, ref) <= 75:
+                      return True
+                  return False
+
+              while q:
+                  x,y = q.popleft()
+                  if (x,y) in seen:
+                      continue
+                  seen.add((x,y))
+                  c = px[x,y]
+                  if not es_fondo(c):
+                      continue
+                  px[x,y] = BG
+                  if x>0: q.append((x-1,y))
+                  if x<w-1: q.append((x+1,y))
+                  if y>0: q.append((x,y-1))
+                  if y<h-1: q.append((x,y+1))
+
+              # Elimina cualquier transparencia residual sobre el mismo fondo.
+              fondo = Image.new('RGBA', im.size, BG)
+              fondo.alpha_composite(im)
+              out = fondo.convert('RGB')
+              out.save(dst, 'PNG', optimize=True)
+
+              chk = Image.open(dst).convert('RGB')
+              for p in [(0,0),(w-1,0),(0,h-1),(w-1,h-1)]:
+                  assert chk.getpixel(p) == BG[:3], (dst, p, chk.getpixel(p))
+              print(f'{dst}: fondo verificado {BG[:3]}, tamaño {w}x{h}')
+
+          # Manifest: fondo del splash y nuevos nombres para evitar caché de Android.
+          mp = Path('manifest.json')
+          data = json.loads(mp.read_text(encoding='utf-8'))
+          data['background_color'] = '#f8fafc'
+          data['icons'] = [
+              {'src':'img/icons/icon-192-v82.png','sizes':'192x192','type':'image/png','purpose':'any'},
+              {'src':'img/icons/icon-512-v82.png','sizes':'512x512','type':'image/png','purpose':'any'},
+              {'src':'img/icons/icon-512-maskable-v82.png','sizes':'512x512','type':'image/png','purpose':'maskable'},
+          ]
+          mp.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+
+          # Service Worker: nueva versión y nuevos iconos en el shell.
+          sw = Path('sw.js')
+          txt = sw.read_text(encoding='utf-8')
+          txt = re.sub(r'const VERSION_APP = "v\d+";', 'const VERSION_APP = "v82";', txt, count=1)
+          txt = txt.replace('img/icons/icon-192.png', 'img/icons/icon-192-v82.png')
+          txt = txt.replace('img/icons/icon-512.png', 'img/icons/icon-512-v82.png')
+          txt = txt.replace('img/icons/icon-512-maskable.png', 'img/icons/icon-512-maskable-v82.png')
+          sw.write_text(txt, encoding='utf-8')
+          PY
+
+      - name: Guardar cambios
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add img/icons/icon-192-v82.png img/icons/icon-512-v82.png img/icons/icon-512-maskable-v82.png manifest.json sw.js
+          git commit -m "Usar iconos PWA con fondo igual al splash"
+          git push origin develop
