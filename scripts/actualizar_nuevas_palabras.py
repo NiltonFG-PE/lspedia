@@ -2,7 +2,8 @@
 """Genera data/nuevas-palabras.json con palabras realmente publicadas.
 
 Prioridad para decidir la fecha de publicación:
-1. ``fechaPublicacion`` guardada por el Publicador.
+1. ``fechaPublicacion`` guardada por el Publicador, aceptando también variantes
+   de mayúsculas/minúsculas como ``fechapublicacion`` provenientes de Sheets.
 2. Fecha en que se agregó a Git la ilustración local de la palabra.
 3. Historial antiguo: commit en que la palabra pasó a tener video.
 
@@ -33,6 +34,14 @@ except Exception:  # pragma: no cover - respaldo para entornos sin tzdata
 
 def normal(v: object) -> str:
     return str(v or "").strip().casefold()
+
+
+def valor_fecha_publicacion(item: dict) -> object:
+    """Obtiene fechaPublicacion sin depender de mayúsculas/minúsculas."""
+    for nombre, valor in item.items():
+        if str(nombre).strip().casefold() == "fechapublicacion":
+            return valor
+    return None
 
 
 def cargar_texto_git(spec: str) -> list[dict]:
@@ -238,7 +247,7 @@ def main() -> int:
     candidatos: list[tuple[dt.datetime, dict]] = []
 
     for k, item in por_clave.items():
-        fecha = parsear_fecha(item.get("fechaPublicacion"))
+        fecha = parsear_fecha(valor_fecha_publicacion(item))
         origen = "fechaPublicacion"
 
         if fecha is None:
