@@ -1,0 +1,89 @@
+name: Ajustar ejemplos pendientes
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - ".github/workflows/ajustar-ejemplos-pendientes.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ajustar-ejemplos-pendientes-develop
+  cancel-in-progress: true
+
+jobs:
+  ajustar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Evitar publicar ejemplos sin imagen
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          ruta = Path("scripts/generar_alfabetizacion.py")
+          texto = ruta.read_text(encoding="utf-8")
+
+          anterior = '''        limpio = {
+              "caracter": caracter,
+              "palabra": palabra,
+              "imagen": ruta_media(fila.get("imagen")),
+              "orden": convertir_orden(fila.get("orden")),
+              "nivel": texto(fila.get("nivel")),
+          }
+          salida.append({campo: limpio[campo] for campo in CAMPOS_EJEMPLOS})
+          '''
+
+          nuevo = '''        imagen = ruta_media(fila.get("imagen"))
+          # Una fila puede quedar preparada en Google Sheets mientras Nilton
+          # busca su ilustración. Hasta que exista una imagen válida no se
+          # publica en alfabetizacion.json, por lo que tampoco aparece vacía
+          # en Aprender ni entra a los juegos.
+          if not imagen:
+              continue
+
+          limpio = {
+              "caracter": caracter,
+              "palabra": palabra,
+              "imagen": imagen,
+              "orden": convertir_orden(fila.get("orden")),
+              "nivel": texto(fila.get("nivel")),
+          }
+          salida.append({campo: limpio[campo] for campo in CAMPOS_EJEMPLOS})
+          '''
+
+          if anterior not in texto:
+              raise SystemExit("No se encontró el bloque esperado en generar_alfabetizacion.py")
+
+          ruta.write_text(texto.replace(anterior, nuevo, 1), encoding="utf-8", newline="\n")
+          PY
+
+      - name: Validar cambio
+        shell: bash
+        run: |
+          python -m py_compile scripts/generar_alfabetizacion.py
+          git diff --check
+          grep -q "Una fila puede quedar preparada" scripts/generar_alfabetizacion.py
+
+      - name: Guardar cambio y retirar workflow temporal
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/ajustar-ejemplos-pendientes.yml
+          git add scripts/generar_alfabetizacion.py
+          git commit -m "Preparar ejemplos de Alfabetizacion sin imagen"
+          git push origin HEAD:develop
