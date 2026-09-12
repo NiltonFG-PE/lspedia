@@ -5613,9 +5613,9 @@ function mostrarSenalDelDia(offset = offsetSenalDelDia){
 
     const labelSenalDelDia = document.getElementById("labelSenalDelDia");
     if(labelSenalDelDia){
-        if(offset === 0) labelSenalDelDia.textContent = "✨ La palabra del día";
-        else if(offset === 1) labelSenalDelDia.textContent = "✨ La palabra de ayer";
-        else labelSenalDelDia.textContent = `✨ La palabra de hace ${offset} días`;
+        if(offset === 0) labelSenalDelDia.textContent = "✨ Descubre";
+        else if(offset === 1) labelSenalDelDia.textContent = "✨ Descubre";
+        else labelSenalDelDia.textContent = "✨ Descubre";
     }
 
     const btnSenalSiguiente = document.getElementById("btnSenalSiguiente");

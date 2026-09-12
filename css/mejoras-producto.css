@@ -414,3 +414,69 @@
     order: 2;
     grid-column: 1 / -1;
 }
+
+
+/* ANIMACION_LO_NUEVO_V1_20260912
+   Llama la atención al cargar sin dejar una animación permanente o molesta. */
+#lspNuevasCard {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    animation: lspLoNuevoPulso 1.35s cubic-bezier(.22, 1, .36, 1) .55s 2;
+}
+
+#lspNuevasCard::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(110deg,
+        transparent 18%,
+        rgba(255, 193, 7, .08) 38%,
+        rgba(56, 189, 248, .16) 50%,
+        rgba(255, 193, 7, .08) 62%,
+        transparent 82%);
+    transform: translateX(-125%);
+    animation: lspLoNuevoBrillo 1.35s ease-in-out .55s 2;
+}
+
+#lspNuevasCard > * {
+    position: relative;
+    z-index: 1;
+}
+
+#lspNuevasCard .lsp-mejora-icono {
+    transform-origin: center;
+    animation: lspLoNuevoIcono .9s cubic-bezier(.34, 1.56, .64, 1) .7s 2;
+}
+
+@keyframes lspLoNuevoPulso {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+        box-shadow: 0 7px 20px rgba(15, 23, 42, .065);
+    }
+    45% {
+        transform: translateY(-2px) scale(1.006);
+        box-shadow: 0 13px 30px rgba(37, 99, 235, .16), 0 0 0 2px rgba(255, 193, 7, .14);
+    }
+}
+
+@keyframes lspLoNuevoBrillo {
+    0% { transform: translateX(-125%); }
+    70%, 100% { transform: translateX(125%); }
+}
+
+@keyframes lspLoNuevoIcono {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    45% { transform: scale(1.13) rotate(-6deg); }
+    68% { transform: scale(1.08) rotate(5deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #lspNuevasCard,
+    #lspNuevasCard::before,
+    #lspNuevasCard .lsp-mejora-icono {
+        animation: none !important;
+    }
+}
