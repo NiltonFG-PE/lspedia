@@ -22,8 +22,8 @@ jobs:
           fetch-depth: 0
 
       - name: Colocar Lo nuevo encima de Tu aprendizaje
-        shell: python
         run: |
+          python - <<'PY'
           from pathlib import Path
           import re
 
@@ -33,26 +33,27 @@ jobs:
           if marca not in css:
               css += """
 
-/* LO_NUEVO_ENCIMA_APRENDIZAJE_V1_20260912
-   Lo nuevo ocupa una fila completa y aparece antes de Tu aprendizaje. */
-#lspMejorasInicio .lsp-mejoras-grid {
-    grid-template-columns: 1fr;
-}
-#lspNuevasCard {
-    order: 1;
-    grid-column: 1 / -1;
-}
-#lspModoCard {
-    order: 2;
-    grid-column: 1 / -1;
-}
-"""
+          /* LO_NUEVO_ENCIMA_APRENDIZAJE_V1_20260912
+             Lo nuevo ocupa una fila completa y aparece antes de Tu aprendizaje. */
+          #lspMejorasInicio .lsp-mejoras-grid {
+              grid-template-columns: 1fr;
+          }
+          #lspNuevasCard {
+              order: 1;
+              grid-column: 1 / -1;
+          }
+          #lspModoCard {
+              order: 2;
+              grid-column: 1 / -1;
+          }
+          """
               css_path.write_text(css, encoding="utf-8", newline="\n")
 
           sw_path = Path("sw.js")
           sw = sw_path.read_text(encoding="utf-8")
           sw = re.sub(r'const VERSION_APP = "v\d+";', 'const VERSION_APP = "v74";', sw, count=1)
           sw_path.write_text(sw, encoding="utf-8", newline="\n")
+          PY
 
       - name: Validar cambios
         run: |
@@ -61,7 +62,6 @@ jobs:
           git diff --check
 
       - name: Guardar cambios
-        shell: bash
         run: |
           if git diff --quiet -- css/mejoras-producto.css sw.js; then
             echo "El orden ya estaba aplicado."
