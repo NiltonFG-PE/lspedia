@@ -4318,5 +4318,35 @@
     "senasugerida": "",
     "": "",
     "fechapublicacion": "Sat Sep 12 2026 14:30:35 GMT-0500 (hora estándar de Perú)"
+  },
+  {
+    "id": "soy",
+    "palabra": "Soy",
+    "variantes": "yo soy",
+    "definicion": "Forma del verbo ser. Se usa con “yo” para decir quién eres, qué eres o cómo eres. Ejemplo: Yo soy estudiante.",
+    "categoria": "Verbos",
+    "video": "",
+    "imagen": "",
+    "senasugerida": ""
+  },
+  {
+    "id": "eres",
+    "palabra": "Eres",
+    "variantes": "tú eres",
+    "definicion": "Forma del verbo ser. Se usa con “tú” para decir quién es o cómo es la persona con quien hablas. Ejemplo: Tú eres amable.",
+    "categoria": "Verbos",
+    "video": "",
+    "imagen": "",
+    "senasugerida": ""
+  },
+  {
+    "id": "escupe",
+    "palabra": "Escupe",
+    "variantes": "escupir, escupió, escupiendo",
+    "definicion": "Forma del verbo escupir. Significa sacar saliva de la boca hacia afuera. También puede usarse como una orden: “Escupe”.",
+    "categoria": "Verbos",
+    "video": "",
+    "imagen": "",
+    "senasugerida": ""
   }
 ]
