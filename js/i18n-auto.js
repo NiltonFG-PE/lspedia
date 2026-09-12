@@ -38,7 +38,8 @@
 
         lista.forEach(item => {
             if(!item || !item.palabra || !item.ingles) return;
-            const fuente = norm(item.fuente) === 'vocabulario' ? 'vocabulario' : 'diccionario';
+            if(norm(item.fuente) === 'vocabulario') return;
+            const fuente = 'diccionario';
             const traduccion = {
                 es: String(item.palabra || '').trim(),
                 categoria: String(item.categoria || '').trim(),
@@ -131,9 +132,7 @@
 
     function resolverTraduccionVisible(palabra){
         const clavePalabra = norm(palabra);
-        return mapas.diccionario.palabra.get(clavePalabra) ||
-            mapas.vocabulario.palabra.get(clavePalabra) ||
-            null;
+        return mapas.diccionario.palabra.get(clavePalabra) || null;
     }
 
     function etiquetarResultado(root){
@@ -166,9 +165,7 @@
         if(window.App && Array.isArray(window.App.datos)){
             aplicarColeccion(window.App.datos, 'diccionario');
         }
-        aplicarColeccion(bancoVocabulario(), 'vocabulario');
         etiquetarResultado(document.getElementById('resultado'));
-        etiquetarResultado(document.getElementById('resultadoCategorias'));
         etiquetarResultado(document.getElementById('resultadoCategoriasDiccionario'));
     }
 
@@ -185,10 +182,9 @@
         const ref = params.get('p');
         if(!ref) return;
         const esVocab = params.get('fuente') === 'vocabulario' || params.get('vista') === 'vocabulario';
+        if(esVocab) return;
         try {
-            if(esVocab && typeof window.mostrarPalabraVocabularioPorReferencia === 'function'){
-                window.mostrarPalabraVocabularioPorReferencia(ref);
-            } else if(typeof window.mostrarPalabraPorNombre === 'function'){
+            if(typeof window.mostrarPalabraPorNombre === 'function'){
                 window.mostrarPalabraPorNombre(ref);
             }
         } catch(_e) {}
@@ -235,12 +231,7 @@
             if(evento.key === 'Enter') setTimeout(programar, 0);
         }, true);
 
-        let intentos = 0;
-        const timer = setInterval(() => {
-            intentos += 1;
-            programar();
-            if(bancoVocabulario().length || intentos >= 20) clearInterval(timer);
-        }, 500);
+        // Vocabulario no participa de esta capa bilingüe de conceptos.
     }
 
     window.LSPediaI18nAuto = {

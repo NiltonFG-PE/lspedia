@@ -10,7 +10,7 @@
      su propia caché rápida + revalidación desde script.js.
    ============================================================ */
 
-const VERSION_APP = "v101";
+const VERSION_APP = "v102";
 const PREFIJO_CACHE = "lspedia-shell-";
 const PREFIJO_RUNTIME = "lspedia-runtime-";
 const CACHE_NOMBRE = PREFIJO_CACHE + VERSION_APP;

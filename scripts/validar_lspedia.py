@@ -312,7 +312,6 @@ def validar_vocabulario(informe: Informe) -> list[dict]:
     sin_imagen = 0
     sin_definicion = 0
     con_video = 0
-    visuales_sin_video = 0
 
     for i, fila in enumerate(filas, 1):
         palabra = _texto(fila.get("palabra"))
@@ -334,21 +333,17 @@ def validar_vocabulario(informe: Informe) -> list[dict]:
             informe,
         )
 
-        if video:
+        if not video:
+            informe.error(
+                f"Vocabulario #{i} ({palabra}): falta video. "
+                "Vocabulario solo publica fichas con video de señas."
+            )
+        else:
             con_video += 1
             if _youtube_id(video) is None:
                 informe.error(
                     f"Vocabulario #{i} ({palabra}): referencia de YouTube no reconocida: {video!r}."
                 )
-        else:
-            # Una ficha sin video sí es válida cuando ya ofrece comprensión
-            # visual: concepto + imagen. QuizV2 no la usa porque filtra video.
-            if not definicion or not imagen:
-                informe.error(
-                    f"Vocabulario #{i} ({palabra}): sin video debe tener definición e imagen para ser consultable."
-                )
-            else:
-                visuales_sin_video += 1
 
         if not nivel:
             informe.aviso(f"Vocabulario #{i} ({palabra}): falta nivel.")
@@ -393,7 +388,7 @@ def validar_vocabulario(informe: Informe) -> list[dict]:
     if sin_definicion:
         informe.aviso(
             f"Vocabulario: {sin_definicion} palabra(s) con video todavía no tienen definición. "
-            "Las fichas visuales nuevas sin video sí requieren definición e imagen."
+            "La definición es apoyo textual; el video sigue siendo obligatorio."
         )
     if categorias_nuevas:
         informe.dato(
@@ -403,8 +398,7 @@ def validar_vocabulario(informe: Informe) -> list[dict]:
         )
     _revisar_campos_extranos("Vocabulario", filas, informe)
     informe.dato(
-        f"Vocabulario: {len(filas)} fichas consultables, {con_video} con video para Quiz, "
-        f"{visuales_sin_video} visuales sin video, "
+        f"Vocabulario: {len(filas)} fichas con video de señas, {con_video} validadas, "
         f"{len(set(_texto(x.get('categoria')) for x in filas))} categorías."
     )
     return filas

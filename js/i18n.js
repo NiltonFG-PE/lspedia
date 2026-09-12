@@ -157,10 +157,10 @@
     }
 
     function aplicarDatos(){
+        // Los conceptos bilingües pertenecen al Diccionario. Vocabulario
+        // conserva su banco original de videos de señas sin aliases ni
+        // definiciones inglesas inyectadas en los registros.
         if(window.App && Array.isArray(window.App.datos)) aplicarColeccion(window.App.datos, MAPA_DICC);
-        if(window.QuizV2 && typeof window.QuizV2.obtenerBanco === 'function'){
-            try { aplicarColeccion(window.QuizV2.obtenerBanco(), MAPA_VOCAB); } catch(_e) {}
-        }
     }
 
     function estaExcluido(node){
@@ -215,15 +215,16 @@
             }
         }
         setPlaceholder('buscar','Buscar palabra y significado','Search a Spanish word or type in English');
-        setPlaceholder('buscarCategorias','Buscar vocabulario','Search vocabulary in Spanish or English');
+        setPlaceholder('buscarCategorias','Buscar vocabulario','Search sign vocabulary');
     }
 
     function traducirResultado(root){
         if(!root) return;
         const titulo = root.querySelector('h3.fw-bold');
         if(!titulo) return;
-        const mapa = root === document.getElementById('resultado') ? MAPA_DICC : new Map([...MAPA_DICC, ...MAPA_VOCAB]);
-        const tr = mapa.get(norm(titulo.textContent));
+        const esDiccionario = root === document.getElementById('resultado') ||
+            root === document.getElementById('resultadoCategoriasDiccionario');
+        const tr = esDiccionario ? MAPA_DICC.get(norm(titulo.textContent)) : null;
         const filaTitulo = titulo.parentElement;
         let etiqueta = root.querySelector('.lspedia-en-term');
         if(idioma === 'en' && tr && filaTitulo){
@@ -305,10 +306,9 @@
         const ref = params.get('p');
         if(!ref) return;
         const esVocab = params.get('fuente') === 'vocabulario' || params.get('vista') === 'vocabulario';
+        if(esVocab) return;
         try {
-            if(esVocab && typeof window.mostrarPalabraVocabularioPorReferencia === 'function'){
-                window.mostrarPalabraVocabularioPorReferencia(ref);
-            } else if(typeof window.mostrarPalabraPorNombre === 'function'){
+            if(typeof window.mostrarPalabraPorNombre === 'function'){
                 window.mostrarPalabraPorNombre(ref);
             }
         } catch(_e) {}
@@ -339,23 +339,14 @@
             if(e.key === 'Enter') setTimeout(programarAplicacion, 0);
         }, true);
 
-        // Quiz/Vocabulario finishes loading asynchronously. Poll briefly so
-        // English aliases are attached as soon as that bank becomes available.
-        let intentos = 0;
-        const timer = setInterval(() => {
-            intentos += 1;
-            aplicarDatos();
-            if((window.QuizV2 && typeof window.QuizV2.obtenerBanco === 'function' && window.QuizV2.obtenerBanco().length) || intentos >= 20){
-                clearInterval(timer);
-                programarAplicacion();
-            }
-        }, 500);
+        // No se espera ni se modifica el banco de Vocabulario: la capa
+        // bilingüe de conceptos trabaja únicamente con el Diccionario.
     }
 
     window.LSPediaIdioma = {
         obtener: () => idioma,
         cambiar: cambiarIdioma,
-        traduccionIngles: (palabra) => MAPA_DICC.get(norm(palabra)) || MAPA_VOCAB.get(norm(palabra)) || null
+        traduccionIngles: (palabra) => MAPA_DICC.get(norm(palabra)) || null
     };
 
     if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar, { once:true });
