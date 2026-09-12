@@ -1,4 +1,4 @@
-name: Temporal animación Lo nuevo al entrar en pantalla
+name: Temporal animacion Lo nuevo al entrar en pantalla
 
 on:
   push:
@@ -25,116 +25,38 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+          import base64
           import re
+
+          css_b64 = 'Ci8qIEFOSU1BQ0lPTl9MT19OVUVWT19WSUVXUE9SVF9WMl8yMDI2MDkxMgogICBMYSBhbmltYWNpw7NuIHlhIG5vIHNlIGNvbnN1bWUgYXBlbmFzIGNhcmdhIGxhIHDDoWdpbmEuIFNlIGFjdGl2YSBjdWFuZG8KICAgbGEgdGFyamV0YSAiTG8gbnVldm8iIGVudHJhIHJlYWxtZW50ZSBlbiBsYSBwYW50YWxsYSB5IGR1cmEgfjYgcy4gKi8KI2xzcE51ZXZhc0NhcmQsCiNsc3BOdWV2YXNDYXJkOjpiZWZvcmUsCiNsc3BOdWV2YXNDYXJkIC5sc3AtbWVqb3JhLWljb25vIHsKICAgIGFuaW1hdGlvbjogbm9uZTsKfQoKI2xzcE51ZXZhc0NhcmQubHNwLWxvLW51ZXZvLWF0ZW5jaW9uIHsKICAgIGFuaW1hdGlvbjogbHNwTG9OdWV2b1B1bHNvIDEuNDVzIGN1YmljLWJlemllciguMjIsIDEsIC4zNiwgMSkgNDsKfQoKI2xzcE51ZXZhc0NhcmQubHNwLWxvLW51ZXZvLWF0ZW5jaW9uOjpiZWZvcmUgewogICAgYW5pbWF0aW9uOiBsc3BMb051ZXZvQnJpbGxvIDEuNDVzIGVhc2UtaW4tb3V0IDQ7Cn0KCiNsc3BOdWV2YXNDYXJkLmxzcC1sby1udWV2by1hdGVuY2lvbiAubHNwLW1lam9yYS1pY29ubyB7CiAgICBhbmltYXRpb246IGxzcExvTnVldm9JY29ubyAxLjA1cyBjdWJpYy1iZXppZXIoLjM0LCAxLjU2LCAuNjQsIDEpIDU7Cn0KCkBtZWRpYSAocHJlZmVycy1yZWR1Y2VkLW1vdGlvbjogcmVkdWNlKSB7CiAgICAjbHNwTnVldmFzQ2FyZC5sc3AtbG8tbnVldm8tYXRlbmNpb24sCiAgICAjbHNwTnVldmFzQ2FyZC5sc3AtbG8tbnVldm8tYXRlbmNpb246OmJlZm9yZSwKICAgICNsc3BOdWV2YXNDYXJkLmxzcC1sby1udWV2by1hdGVuY2lvbiAubHNwLW1lam9yYS1pY29ubyB7CiAgICAgICAgYW5pbWF0aW9uOiBub25lICFpbXBvcnRhbnQ7CiAgICB9Cn0K'
+          js_b64 = 'CiAgICAvLyBBTklNQUNJT05fTE9fTlVFVk9fVklFV1BPUlRfVjJfMjAyNjA5MTIKICAgIC8vIEVzcGVyYSBhIHF1ZSBsYSB0YXJqZXRhIHNlYSB2aXNpYmxlIGFudGVzIGRlIGxsYW1hciBsYSBhdGVuY2nDs24uCiAgICAvLyBBc8OtIGxhIGFuaW1hY2nDs24gbm8gdGVybWluYSBtaWVudHJhcyBlbCB1c3VhcmlvIHRvZGF2w61hIGVzdMOhIGFycmliYSwKICAgIC8vIG1pcmFuZG8gZWwgYnVzY2Fkb3IuIFNlIGVqZWN1dGEgdW5hIHNvbGEgdmV6IHBvciBjYXJnYSBkZSBww6FnaW5hLgogICAgZnVuY3Rpb24gcHJlcGFyYXJBbmltYWNpb25BdGVuY2lvbihpbnRlbnRvcyl7CiAgICAgICAgaW50ZW50b3MgPSBOdW1iZXIoaW50ZW50b3MpIHx8IDA7CiAgICAgICAgY29uc3QgY2FyZCA9ICQoJ2xzcE51ZXZhc0NhcmQnKTsKICAgICAgICBpZighY2FyZCl7CiAgICAgICAgICAgIGlmKGludGVudG9zIDwgMTIpewogICAgICAgICAgICAgICAgc2V0VGltZW91dCgoKSA9PiBwcmVwYXJhckFuaW1hY2lvbkF0ZW5jaW9uKGludGVudG9zICsgMSksIDMwMCk7CiAgICAgICAgICAgIH0KICAgICAgICAgICAgcmV0dXJuOwogICAgICAgIH0KCiAgICAgICAgaWYod2luZG93Lm1hdGNoTWVkaWEgJiYgd2luZG93Lm1hdGNoTWVkaWEoJyhwcmVmZXJzLXJlZHVjZWQtbW90aW9uOiByZWR1Y2UpJykubWF0Y2hlcyl7CiAgICAgICAgICAgIHJldHVybjsKICAgICAgICB9CgogICAgICAgIGxldCBhY3RpdmFkYSA9IGZhbHNlOwogICAgICAgIGZ1bmN0aW9uIGFjdGl2YXIoKXsKICAgICAgICAgICAgaWYoYWN0aXZhZGEpIHJldHVybjsKICAgICAgICAgICAgYWN0aXZhZGEgPSB0cnVlOwogICAgICAgICAgICBjYXJkLmNsYXNzTGlzdC5hZGQoJ2xzcC1sby1udWV2by1hdGVuY2lvbicpOwogICAgICAgICAgICBzZXRUaW1lb3V0KCgpID0+IGNhcmQuY2xhc3NMaXN0LnJlbW92ZSgnbHNwLWxvLW51ZXZvLWF0ZW5jaW9uJyksIDY1MDApOwogICAgICAgIH0KCiAgICAgICAgaWYoJ0ludGVyc2VjdGlvbk9ic2VydmVyJyBpbiB3aW5kb3cpewogICAgICAgICAgICBjb25zdCBvYnNlcnZlciA9IG5ldyBJbnRlcnNlY3Rpb25PYnNlcnZlcigoZW50cmFkYXMpID0+IHsKICAgICAgICAgICAgICAgIGNvbnN0IHZpc2libGUgPSBlbnRyYWRhcy5zb21lKGVudHJhZGEgPT4KICAgICAgICAgICAgICAgICAgICBlbnRyYWRhLmlzSW50ZXJzZWN0aW5nICYmIGVudHJhZGEuaW50ZXJzZWN0aW9uUmF0aW8gPj0gMC4yMgogICAgICAgICAgICAgICAgKTsKICAgICAgICAgICAgICAgIGlmKHZpc2libGUpewogICAgICAgICAgICAgICAgICAgIGFjdGl2YXIoKTsKICAgICAgICAgICAgICAgICAgICBvYnNlcnZlci5kaXNjb25uZWN0KCk7CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0sIHsKICAgICAgICAgICAgICAgIHRocmVzaG9sZDogWzAuMjIsIDAuNDVdLAogICAgICAgICAgICAgICAgcm9vdE1hcmdpbjogJzBweCAwcHggLTYlIDBweCcKICAgICAgICAgICAgfSk7CiAgICAgICAgICAgIG9ic2VydmVyLm9ic2VydmUoY2FyZCk7CiAgICAgICAgfWVsc2V7CiAgICAgICAgICAgIHNldFRpbWVvdXQoYWN0aXZhciwgMTgwMCk7CiAgICAgICAgfQogICAgfQo='
 
           css_path = Path('css/mejoras-producto.css')
           css = css_path.read_text(encoding='utf-8')
-          marca_css = 'ANIMACION_LO_NUEVO_VIEWPORT_V2_20260912'
-          if marca_css not in css:
-              css += r'''
-
-/* ANIMACION_LO_NUEVO_VIEWPORT_V2_20260912
-   La animación ya no se consume apenas carga la página. Se activa cuando
-   la tarjeta "Lo nuevo" entra realmente en la pantalla y dura ~6 s. */
-#lspNuevasCard,
-#lspNuevasCard::before,
-#lspNuevasCard .lsp-mejora-icono {
-    animation: none;
-}
-
-#lspNuevasCard.lsp-lo-nuevo-atencion {
-    animation: lspLoNuevoPulso 1.45s cubic-bezier(.22, 1, .36, 1) 4;
-}
-
-#lspNuevasCard.lsp-lo-nuevo-atencion::before {
-    animation: lspLoNuevoBrillo 1.45s ease-in-out 4;
-}
-
-#lspNuevasCard.lsp-lo-nuevo-atencion .lsp-mejora-icono {
-    animation: lspLoNuevoIcono 1.05s cubic-bezier(.34, 1.56, .64, 1) 5;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    #lspNuevasCard.lsp-lo-nuevo-atencion,
-    #lspNuevasCard.lsp-lo-nuevo-atencion::before,
-    #lspNuevasCard.lsp-lo-nuevo-atencion .lsp-mejora-icono {
-        animation: none !important;
-    }
-}
-'''
+          marca = 'ANIMACION_LO_NUEVO_VIEWPORT_V2_20260912'
+          if marca not in css:
+              css += base64.b64decode(css_b64).decode('utf-8')
               css_path.write_text(css, encoding='utf-8', newline='\n')
 
           js_path = Path('js/lo-nuevo.js')
           js = js_path.read_text(encoding='utf-8')
-          marca_js = 'ANIMACION_LO_NUEVO_VIEWPORT_V2_20260912'
-          if marca_js not in js:
-              bloque = r'''
-
-    // ANIMACION_LO_NUEVO_VIEWPORT_V2_20260912
-    // Espera a que la tarjeta sea visible antes de llamar la atención.
-    // Así la animación no termina mientras el usuario todavía está arriba,
-    // mirando el buscador. Se ejecuta una sola vez por carga de página.
-    function prepararAnimacionAtencion(intentos){
-        intentos = Number(intentos) || 0;
-        const card = $('lspNuevasCard');
-        if(!card){
-            if(intentos < 12){
-                setTimeout(() => prepararAnimacionAtencion(intentos + 1), 300);
-            }
-            return;
-        }
-
-        if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
-            return;
-        }
-
-        let activada = false;
-        function activar(){
-            if(activada) return;
-            activada = true;
-            card.classList.add('lsp-lo-nuevo-atencion');
-            setTimeout(() => card.classList.remove('lsp-lo-nuevo-atencion'), 6500);
-        }
-
-        if('IntersectionObserver' in window){
-            const observer = new IntersectionObserver((entradas) => {
-                const visible = entradas.some(entrada =>
-                    entrada.isIntersecting && entrada.intersectionRatio >= 0.22
-                );
-                if(visible){
-                    activar();
-                    observer.disconnect();
-                }
-            }, {
-                threshold: [0.22, 0.45],
-                rootMargin: '0px 0px -6% 0px'
-            });
-            observer.observe(card);
-        }else{
-            setTimeout(activar, 1800);
-        }
-    }
-'''
+          if marca not in js:
+              bloque = base64.b64decode(js_b64).decode('utf-8')
               objetivo = '    function iniciar(){\n'
               if objetivo not in js:
-                  raise SystemExit('No se encontró function iniciar() en js/lo-nuevo.js')
+                  raise SystemExit('No se encontro function iniciar()')
               js = js.replace(objetivo, bloque + '\n' + objetivo, 1)
-
               llamada = "        actualizarEncabezado();\n        cargar();"
               if llamada not in js:
-                  raise SystemExit('No se encontró el inicio esperado de iniciar()')
-              js = js.replace(
-                  llamada,
-                  "        actualizarEncabezado();\n        prepararAnimacionAtencion();\n        cargar();",
-                  1
-              )
+                  raise SystemExit('No se encontro inicio esperado')
+              js = js.replace(llamada, "        actualizarEncabezado();\n        prepararAnimacionAtencion();\n        cargar();", 1)
               js_path.write_text(js, encoding='utf-8', newline='\n')
 
           sw_path = Path('sw.js')
           sw = sw_path.read_text(encoding='utf-8')
           sw, cantidad = re.subn(r'const VERSION_APP = "v\d+";', 'const VERSION_APP = "v78";', sw, count=1)
           if cantidad != 1:
-              raise SystemExit('No se pudo actualizar VERSION_APP en sw.js')
+              raise SystemExit('No se pudo actualizar VERSION_APP')
           sw_path.write_text(sw, encoding='utf-8', newline='\n')
           PY
 
@@ -142,7 +64,7 @@ jobs:
         run: |
           grep -q 'ANIMACION_LO_NUEVO_VIEWPORT_V2_20260912' css/mejoras-producto.css
           grep -q 'ANIMACION_LO_NUEVO_VIEWPORT_V2_20260912' js/lo-nuevo.js
-          grep -q "prepararAnimacionAtencion();" js/lo-nuevo.js
+          grep -q 'prepararAnimacionAtencion();' js/lo-nuevo.js
           grep -q 'VERSION_APP = "v78"' sw.js
           node --check js/lo-nuevo.js
           git diff --check
