@@ -1,0 +1,96 @@
+name: Temporal fullscreen móvil sin aviso
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - ".github/workflows/tmp-mobile-fullscreen-sin-aviso.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  aplicar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Aplicar fullscreen simulado en pantallas táctiles
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          js_path = Path('js/script.js')
+          sw_path = Path('sw.js')
+
+          js = js_path.read_text(encoding='utf-8')
+
+          viejo = '''    try {
+        if(wrap.requestFullscreen){
+            await wrap.requestFullscreen({ navigationUI: "hide" });
+        } else {
+            wrap.classList.add("video-palabra-pantalla-completa-fallback");
+        }
+    } catch(error){
+        console.warn("No se pudo activar fullscreen nativo; usando respaldo visual.", error);
+        wrap.classList.add("video-palabra-pantalla-completa-fallback");
+    }
+'''
+
+          nuevo = '''    try {
+        const esPantallaTactil = (
+            window.matchMedia("(pointer: coarse)").matches ||
+            Number(navigator.maxTouchPoints || 0) > 0 ||
+            "ontouchstart" in window
+        );
+
+        // En celulares y tablets evitamos el fullscreen nativo de Chrome,
+        // porque muestra un aviso propio del navegador que tapa nuestros
+        // controles. El modo visual ocupa toda la ventana sin ese mensaje.
+        if(esPantallaTactil){
+            wrap.classList.add("video-palabra-pantalla-completa-fallback");
+        } else if(wrap.requestFullscreen){
+            await wrap.requestFullscreen({ navigationUI: "hide" });
+        } else {
+            wrap.classList.add("video-palabra-pantalla-completa-fallback");
+        }
+    } catch(error){
+        console.warn("No se pudo activar fullscreen nativo; usando respaldo visual.", error);
+        wrap.classList.add("video-palabra-pantalla-completa-fallback");
+    }
+'''
+
+          if viejo not in js:
+              raise SystemExit('No se encontró el bloque actual de fullscreen para reemplazar')
+          js = js.replace(viejo, nuevo, 1)
+          js_path.write_text(js, encoding='utf-8')
+
+          sw = sw_path.read_text(encoding='utf-8')
+          sw2, n = re.subn(r'const VERSION_APP = "v\d+";', 'const VERSION_APP = "v88";', sw, count=1)
+          if n != 1:
+              raise SystemExit('No se pudo actualizar VERSION_APP')
+          sw_path.write_text(sw2, encoding='utf-8')
+          PY
+
+      - name: Validar cambio
+        run: |
+          node --check js/script.js
+          grep -q 'const esPantallaTactil' js/script.js
+          grep -q 'window.matchMedia("(pointer: coarse)")' js/script.js
+          grep -q 'video-palabra-pantalla-completa-fallback' js/script.js
+          grep -q 'const VERSION_APP = "v88";' sw.js
+
+      - name: Guardar y retirar flujo temporal
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/tmp-mobile-fullscreen-sin-aviso.yml
+          git add js/script.js sw.js
+          git commit -m "Usar fullscreen visual en pantallas tactiles"
+          git push origin develop
