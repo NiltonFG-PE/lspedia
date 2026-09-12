@@ -1,31 +1,7 @@
 {
-  "generadoEn": "2026-09-12T11:13:13Z",
+  "generadoEn": "2026-09-12T11:14:44Z",
   "metodo": "fechaPublicacion-con-respaldo-imagen-git-e-historial",
   "items": [
-    {
-      "id": "hipotesis",
-      "palabra": "Hipótesis",
-      "categoria": "Educación",
-      "imagen": "img/diccionario/Hip%C3%B3tesis.webp",
-      "fecha": "2026-09-12T11:12:51Z",
-      "origenFecha": "historial-publicacion-video"
-    },
-    {
-      "id": "adios",
-      "palabra": "Adiós",
-      "categoria": "Saludos",
-      "imagen": "img/diccionario/Adi%C3%B3s.webp",
-      "fecha": "2026-09-12T11:12:51Z",
-      "origenFecha": "historial-publicacion-video"
-    },
-    {
-      "id": "buenos-dias",
-      "palabra": "Buenos días",
-      "categoria": "Saludos",
-      "imagen": "img/diccionario/Buenos%20d%C3%ADas.webp",
-      "fecha": "2026-09-12T11:12:51Z",
-      "origenFecha": "historial-publicacion-video"
-    },
     {
       "id": "resiliencia",
       "palabra": "Resiliencia",
@@ -96,6 +72,30 @@
       "categoria": "Cortesía",
       "imagen": "img/diccionario/felicitaciones.webp",
       "fecha": "2026-09-03T18:38:00Z",
+      "origenFecha": "imagen-git"
+    },
+    {
+      "id": "ecosistema",
+      "palabra": "Ecosistema",
+      "categoria": "Ciencia",
+      "imagen": "img/diccionario/ecosistema.webp",
+      "fecha": "2026-09-03T18:37:56Z",
+      "origenFecha": "imagen-git"
+    },
+    {
+      "id": "discrepancia",
+      "palabra": "Discrepancia",
+      "categoria": "Educación",
+      "imagen": "img/diccionario/discrepancia.webp",
+      "fecha": "2026-09-03T18:37:51Z",
+      "origenFecha": "imagen-git"
+    },
+    {
+      "id": "digno",
+      "palabra": "Digno",
+      "categoria": "Sociedad",
+      "imagen": "img/diccionario/digno.webp",
+      "fecha": "2026-09-03T18:37:47Z",
       "origenFecha": "imagen-git"
     }
   ]
