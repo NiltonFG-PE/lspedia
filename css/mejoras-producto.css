@@ -414,24 +414,3 @@
     order: 2;
     grid-column: 1 / -1;
 }
-
-
-/* QUITAR_PALABRA_DIA_V1_20260912
-   La portada usa Lo nuevo como bloque de descubrimiento principal. */
-#senalDelDia {
-    display: none !important;
-}
-
-@media (max-width: 991.98px) {
-    #filaHeroPrincipal {
-        grid-template-columns: 3fr 2fr !important;
-        grid-template-areas: "titulo avatar" !important;
-        row-gap: 0 !important;
-    }
-    #colAvatarHero {
-        align-self: center !important;
-    }
-    #colAvatarHero .avatar-hero-img {
-        height: 130px !important;
-    }
-}
