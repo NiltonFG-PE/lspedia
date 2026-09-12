@@ -84,3 +84,21 @@
         document.head.appendChild(script);
     } catch (_e) {}
 })();
+
+/* ============================================================
+   Corrección de fullscreen visual para móvil/tablet.
+   Mantiene los controles LSPedia visibles y evita el aviso de Chrome.
+   ============================================================ */
+(function cargarFullscreenMovilFix() {
+    'use strict';
+    try {
+        if (window.LSPediaSecurity && window.LSPediaSecurity.esCopiaPublica()) return;
+        if (document.querySelector('script[data-lspedia-fullscreen-mobile-fix]')) return;
+
+        const script = document.createElement('script');
+        script.src = 'js/fullscreen-mobile-fix.js?v=20260912-1';
+        script.async = false;
+        script.dataset.lspediaFullscreenMobileFix = '1';
+        document.head.appendChild(script);
+    } catch (_e) {}
+})();
