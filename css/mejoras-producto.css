@@ -480,3 +480,32 @@
         animation: none !important;
     }
 }
+
+/* ANIMACION_LO_NUEVO_VIEWPORT_V2_20260912
+   La animación ya no se consume apenas carga la página. Se activa cuando
+   la tarjeta "Lo nuevo" entra realmente en la pantalla y dura ~6 s. */
+#lspNuevasCard,
+#lspNuevasCard::before,
+#lspNuevasCard .lsp-mejora-icono {
+    animation: none;
+}
+
+#lspNuevasCard.lsp-lo-nuevo-atencion {
+    animation: lspLoNuevoPulso 1.45s cubic-bezier(.22, 1, .36, 1) 4;
+}
+
+#lspNuevasCard.lsp-lo-nuevo-atencion::before {
+    animation: lspLoNuevoBrillo 1.45s ease-in-out 4;
+}
+
+#lspNuevasCard.lsp-lo-nuevo-atencion .lsp-mejora-icono {
+    animation: lspLoNuevoIcono 1.05s cubic-bezier(.34, 1.56, .64, 1) 5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #lspNuevasCard.lsp-lo-nuevo-atencion,
+    #lspNuevasCard.lsp-lo-nuevo-atencion::before,
+    #lspNuevasCard.lsp-lo-nuevo-atencion .lsp-mejora-icono {
+        animation: none !important;
+    }
+}

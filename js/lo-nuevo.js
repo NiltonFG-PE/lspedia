@@ -208,8 +208,55 @@
         render();
     }
 
+
+    // ANIMACION_LO_NUEVO_VIEWPORT_V2_20260912
+    // Espera a que la tarjeta sea visible antes de llamar la atención.
+    // Así la animación no termina mientras el usuario todavía está arriba,
+    // mirando el buscador. Se ejecuta una sola vez por carga de página.
+    function prepararAnimacionAtencion(intentos){
+        intentos = Number(intentos) || 0;
+        const card = $('lspNuevasCard');
+        if(!card){
+            if(intentos < 12){
+                setTimeout(() => prepararAnimacionAtencion(intentos + 1), 300);
+            }
+            return;
+        }
+
+        if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+            return;
+        }
+
+        let activada = false;
+        function activar(){
+            if(activada) return;
+            activada = true;
+            card.classList.add('lsp-lo-nuevo-atencion');
+            setTimeout(() => card.classList.remove('lsp-lo-nuevo-atencion'), 6500);
+        }
+
+        if('IntersectionObserver' in window){
+            const observer = new IntersectionObserver((entradas) => {
+                const visible = entradas.some(entrada =>
+                    entrada.isIntersecting && entrada.intersectionRatio >= 0.22
+                );
+                if(visible){
+                    activar();
+                    observer.disconnect();
+                }
+            }, {
+                threshold: [0.22, 0.45],
+                rootMargin: '0px 0px -6% 0px'
+            });
+            observer.observe(card);
+        }else{
+            setTimeout(activar, 1800);
+        }
+    }
+
     function iniciar(){
         actualizarEncabezado();
+        prepararAnimacionAtencion();
         cargar();
         document.addEventListener('lspedia:datosListos', () => setTimeout(render, 0));
         setTimeout(render, 350);
