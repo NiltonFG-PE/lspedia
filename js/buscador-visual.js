@@ -25,10 +25,16 @@
         ['por favor', ['plis', 'xfa', 'xfis', 'pls', 'por fabor']],
         ['disculpa', ['diskulpa', 'disculpame']],
         ['resiliencia', ['resilencia', 'resciliencia']],
-        ['matemáticas', ['matematicas', 'matematicas']],
+        ['matemáticas', ['matematicas']],
         ['educación', ['educacion']],
         ['acompañar', ['acompanar']],
         ['hipótesis', ['hipotesis']],
+        ['trascender', ['transcender']],
+        ['hola', ['holi', 'holis', 'holiwi', 'olas', 'oli', 'olis']],
+        ['buenos días', ['buenos dias', 'bnas', 'bnas dias']],
+        ['buenas tardes', ['bnas', 'bnas tardes']],
+        ['buenas noches', ['bnas', 'bnas noches']],
+        ['bienvenido', ['bienvenid@', 'bienvenid@s']],
         ['adiós', ['adios']]
     ]);
 
