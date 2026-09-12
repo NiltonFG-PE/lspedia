@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
-"""Genera data/vocabulario.json desde la Hoja 2 de LSPedia.
+"""Genera data/vocabulario.json directamente desde Hoja 2 de Google Sheets.
 
-La Hoja 2 se publica a través del mismo Google Apps Script que usaba
-js/quiz.js. Este script descarga el banco una sola vez durante la
-sincronización y deja un JSON estático que Vocabulario y Quiz pueden leer
-rápido desde GitHub Pages.
+Vocabulario y Quiz comparten el mismo JSON, pero con reglas distintas:
+- Vocabulario puede consultar una palabra aunque todavía no tenga video.
+- QuizV2 filtra en el navegador y solo usa filas que sí tienen video.
+
+Así una ficha puede empezar como concepto + imagen y recibir su video en LSP
+más adelante sin duplicar la palabra ni romper los juegos.
 """
 from __future__ import annotations
 
+import csv
+import io
 import json
-import re
 import sys
 import urllib.parse
 import urllib.request
@@ -19,101 +22,140 @@ from normalizar_categorias import normalizar_categoria_vocabulario
 
 ROOT = Path(__file__).resolve().parent.parent
 DESTINO = ROOT / "data" / "vocabulario.json"
-APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw9d7br5C8C4gfk4dJAY6FHRKTKTMI23bNQvO58OQ5TlPe9z5awMWjNIlCLILNLH0t51w/exec"
-CALLBACK = "lspediaSyncVocabulario"
+SPREADSHEET_ID = "1fqC1aUpwdz6l0xRyYYfki7vJtjIql6sOEzpfWElknT0"
+HOJA = "Hoja 2"
+CAMPOS = (
+    "palabra",
+    "variantes",
+    "video",
+    "categoria",
+    "nivel",
+    "orden",
+    "imagen",
+    "definicion",
+    "fechaPublicacion",
+    "ingles",
+    "definicionIngles",
+)
 
 
-def normalizar_nivel(valor):
-    original = "" if valor is None else str(valor).strip()
-    texto = original.casefold()
-    if texto in {"difícil", "dificil"}:
+def texto(valor: object) -> str:
+    return "" if valor is None else str(valor).strip()
+
+
+def normalizar_nivel(valor: object) -> str:
+    original = texto(valor)
+    bajo = original.casefold()
+    if bajo in {"difícil", "dificil"}:
         return "Difícil"
-    if texto == "medio":
+    if bajo == "medio":
         return "Medio"
-    if texto in {"fácil", "facil"}:
+    if bajo in {"fácil", "facil"}:
         return "Fácil"
     return original
 
 
-def descargar() -> list[dict]:
-    separador = "&" if "?" in APPS_SCRIPT_URL else "?"
-    url = APPS_SCRIPT_URL + separador + urllib.parse.urlencode({"callback": CALLBACK})
+def clave(valor: object) -> str:
+    return texto(valor).casefold().replace(" ", "").replace("_", "")
+
+
+def descargar_csv() -> list[dict[str, str]]:
+    base = f"https://docs.google.com/spreadsheets/d/{SPREADSHEET_ID}/gviz/tq"
+    parametros = urllib.parse.urlencode({"tqx": "out:csv", "sheet": HOJA, "headers": "1"})
     solicitud = urllib.request.Request(
-        url,
+        base + "?" + parametros,
         headers={
-            "User-Agent": "LSPedia-vocabulario-sync/1.0",
-            "Accept": "application/javascript, application/json, text/plain, */*",
+            "User-Agent": "LSPedia-vocabulario-sync/2.0",
+            "Accept": "text/csv,text/plain,*/*",
         },
     )
-    with urllib.request.urlopen(solicitud, timeout=30) as respuesta:
-        texto = respuesta.read().decode("utf-8-sig").strip()
+    with urllib.request.urlopen(solicitud, timeout=35) as respuesta:
+        if getattr(respuesta, "status", 200) >= 400:
+            raise RuntimeError(f"Google Sheets respondió HTTP {respuesta.status}.")
+        crudo = respuesta.read(5_000_001)
+        if len(crudo) > 5_000_000:
+            raise RuntimeError("Hoja 2 supera el límite de 5 MB.")
 
-    if texto.startswith("{"):
-        payload = json.loads(texto)
-    else:
-        patron = re.compile(r"^\s*" + re.escape(CALLBACK) + r"\s*\((.*)\)\s*;?\s*$", re.S)
-        coincidencia = patron.match(texto)
-        if not coincidencia:
-            raise RuntimeError("La respuesta de Apps Script no tiene un formato JSON/JSONP reconocido.")
-        payload = json.loads(coincidencia.group(1))
+    lector = csv.DictReader(io.StringIO(crudo.decode("utf-8-sig")))
+    if not lector.fieldnames:
+        raise RuntimeError("Hoja 2 no devolvió encabezados.")
 
-    if not isinstance(payload, dict) or not payload.get("ok"):
-        detalle = payload.get("error") if isinstance(payload, dict) else None
-        raise RuntimeError(f"Apps Script devolvió un error: {detalle or 'respuesta inválida'}")
-
-    preguntas = payload.get("preguntas")
-    if not isinstance(preguntas, list):
-        raise RuntimeError("Apps Script no devolvió la lista 'preguntas'.")
-
-    campos_recibidos = sorted(
-        {
-            str(campo)
-            for fila in preguntas
-            if isinstance(fila, dict)
-            for campo in fila.keys()
-        },
-        key=str.casefold,
-    )
-    print(
-        "Campos recibidos desde Hoja 2/API: "
-        + (", ".join(campos_recibidos) if campos_recibidos else "ninguno")
-    )
-
-    salida = []
-    for fila in preguntas:
+    salida: list[dict[str, str]] = []
+    for fila in lector:
         if not isinstance(fila, dict):
             continue
-        palabra = str(fila.get("palabra") or "").strip()
-        video = str(fila.get("video") or "").strip()
-        if not palabra or not video:
+        salida.append({texto(k): texto(v) for k, v in fila.items() if k is not None})
+    if not salida:
+        raise RuntimeError("Hoja 2 no devolvió filas.")
+    return salida
+
+
+def limpiar(filas: list[dict[str, str]]) -> list[dict]:
+    salida: list[dict] = []
+    vistos: set[tuple[str, str]] = set()
+
+    for fila in filas:
+        mapa = {clave(k): v for k, v in fila.items()}
+        palabra = texto(mapa.get("palabra"))
+        categoria = texto(mapa.get("categoria"))
+        if not palabra or not categoria:
             continue
-        nueva = dict(fila)
-        nueva["palabra"] = palabra
-        nueva["video"] = video
-        if "categoria" in nueva:
-            nueva["categoria"] = normalizar_categoria_vocabulario(nueva.get("categoria"))
-        if "nivel" in nueva:
-            nueva["nivel"] = normalizar_nivel(nueva.get("nivel"))
-        salida.append(nueva)
+
+        # En Vocabulario una misma palabra/categoría no debe duplicarse.
+        identidad = (palabra.casefold(), categoria.casefold())
+        if identidad in vistos:
+            continue
+        vistos.add(identidad)
+
+        registro = {
+            "palabra": palabra,
+            "variantes": texto(mapa.get("variantes")),
+            "video": texto(mapa.get("video")),
+            "categoria": normalizar_categoria_vocabulario(categoria),
+            "nivel": normalizar_nivel(mapa.get("nivel")),
+            "orden": texto(mapa.get("orden")),
+            "imagen": texto(mapa.get("imagen")),
+            "definicion": texto(mapa.get("definicion")),
+            "fechaPublicacion": texto(mapa.get("fechapublicacion")),
+            "ingles": texto(mapa.get("ingles")),
+            "definicionIngles": texto(mapa.get("definicioningles")),
+        }
+        salida.append({campo: registro[campo] for campo in CAMPOS})
 
     if not salida:
-        raise RuntimeError("La Hoja 2 no devolvió ninguna palabra válida con video. Se conserva el archivo anterior.")
+        raise RuntimeError("Hoja 2 no devolvió ninguna palabra válida.")
     return salida
 
 
 def main() -> int:
+    temporal = DESTINO.with_suffix(".json.tmp")
     try:
-        datos = descargar()
+        datos = limpiar(descargar_csv())
         DESTINO.parent.mkdir(parents=True, exist_ok=True)
-        temporal = DESTINO.with_suffix(".json.tmp")
-        temporal.write_text(json.dumps(datos, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
+        temporal.write_text(
+            json.dumps(datos, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
         comprobacion = json.loads(temporal.read_text(encoding="utf-8"))
         if not isinstance(comprobacion, list) or not comprobacion:
             raise RuntimeError("El JSON temporal no pasó la validación.")
         temporal.replace(DESTINO)
-        print(f"Vocabulario actualizado: {len(datos)} palabras con video y categorías normalizadas.")
+        con_video = sum(1 for p in datos if texto(p.get("video")))
+        consultables = sum(
+            1 for p in datos
+            if texto(p.get("video")) or texto(p.get("definicion")) or texto(p.get("imagen"))
+        )
+        print(
+            f"Vocabulario actualizado: {len(datos)} filas, {consultables} consultables, "
+            f"{con_video} con video para Quiz."
+        )
         return 0
     except Exception as exc:
+        try:
+            temporal.unlink(missing_ok=True)
+        except Exception:
+            pass
         print(f"ERROR: no se pudo actualizar vocabulario.json: {exc}", file=sys.stderr)
         return 1
 
