@@ -1,0 +1,54 @@
+name: Ajustar reglas Diccionario y Vocabulario
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - '.github/workflows/ajustar-reglas-diccionario-20260912.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  aplicar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Aplicar reglas
+        run: python scripts/ajustar_reglas_diccionario_20260912.py
+
+      - name: Regenerar Vocabulario estricto
+        run: python scripts/generar_vocabulario.py
+
+      - name: Validar cambios
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m json.tool data/vocabulario.json > /dev/null
+          python scripts/validar_lspedia.py --fuente vocabulario
+          node --check js/buscador-visual.js
+          node --check js/i18n.js
+          node --check js/i18n-auto.js
+          git diff --check
+
+      - name: Guardar cambios y retirar archivos temporales
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/ajustar-reglas-diccionario-20260912.yml
+          git rm scripts/ajustar_reglas_diccionario_20260912.py
+          git add scripts/validar_lspedia.py data/vocabulario.json js/i18n.js js/i18n-auto.js sw.js
+          git commit -m "Separar fichas visuales del Vocabulario"
+          git push origin HEAD:develop
