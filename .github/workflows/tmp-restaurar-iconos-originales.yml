@@ -1,0 +1,54 @@
+name: Temporal restaurar iconos PWA originales
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - ".github/workflows/tmp-restaurar-iconos-originales.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  restaurar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Restaurar iconos originales
+        run: |
+          git checkout 8b31c4a5decf393a9077313340dc0b7df77a6098 -- \
+            img/icons/icon-192.png \
+            img/icons/icon-512.png \
+            img/icons/icon-512-maskable.png
+
+      - name: Mantener fondo claro y actualizar PWA
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path('manifest.json')
+          data = json.loads(p.read_text(encoding='utf-8'))
+          data['background_color'] = '#f8fafc'
+          data['theme_color'] = '#0f172a'
+          p.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+
+          sw = Path('sw.js')
+          txt = sw.read_text(encoding='utf-8')
+          import re
+          txt = re.sub(r'const VERSION_APP = "v\d+";', 'const VERSION_APP = "v81";', txt, count=1)
+          sw.write_text(txt, encoding='utf-8')
+          PY
+
+      - name: Guardar cambios
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add img/icons/icon-192.png img/icons/icon-512.png img/icons/icon-512-maskable.png manifest.json sw.js
+          git diff --cached --quiet && exit 0
+          git commit -m "Restaurar iconos PWA originales transparentes"
+          git push origin develop
