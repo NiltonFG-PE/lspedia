@@ -311,6 +311,8 @@ def validar_vocabulario(informe: Informe) -> list[dict]:
     referencias: dict[tuple[str, str], int] = {}
     sin_imagen = 0
     sin_definicion = 0
+    con_video = 0
+    visuales_sin_video = 0
 
     for i, fila in enumerate(filas, 1):
         palabra = _texto(fila.get("palabra"))
@@ -331,12 +333,23 @@ def validar_vocabulario(informe: Informe) -> list[dict]:
             categorias_nuevas,
             informe,
         )
-        if not video:
-            informe.error(f"Vocabulario #{i} ({palabra}): falta video.")
-        elif _youtube_id(video) is None:
-            informe.error(
-                f"Vocabulario #{i} ({palabra}): referencia de YouTube no reconocida: {video!r}."
-            )
+
+        if video:
+            con_video += 1
+            if _youtube_id(video) is None:
+                informe.error(
+                    f"Vocabulario #{i} ({palabra}): referencia de YouTube no reconocida: {video!r}."
+                )
+        else:
+            # Una ficha sin video sí es válida cuando ya ofrece comprensión
+            # visual: concepto + imagen. QuizV2 no la usa porque filtra video.
+            if not definicion or not imagen:
+                informe.error(
+                    f"Vocabulario #{i} ({palabra}): sin video debe tener definición e imagen para ser consultable."
+                )
+            else:
+                visuales_sin_video += 1
+
         if not nivel:
             informe.aviso(f"Vocabulario #{i} ({palabra}): falta nivel.")
         elif nivel not in NIVELES_VOCABULARIO:
@@ -344,17 +357,26 @@ def validar_vocabulario(informe: Informe) -> list[dict]:
                 f"Vocabulario #{i} ({palabra}): nivel no válido {nivel!r}. "
                 "Usar Fácil, Medio o Difícil."
             )
+
         if not definicion:
             sin_definicion += 1
-        if not imagen:
+
+        imagenes = [x.strip() for x in imagen.split(",") if x.strip()]
+        if not imagenes:
             sin_imagen += 1
-        elif imagen.startswith(("img/", "./img/")):
-            ruta_texto = unquote(imagen.removeprefix("./"))
-            ruta = ROOT / ruta_texto
-            if not ruta.exists():
-                informe.aviso(
-                    f"Vocabulario #{i} ({palabra}): imagen local no encontrada: {imagen}."
+        else:
+            if len(imagenes) > 2:
+                informe.error(
+                    f"Vocabulario #{i} ({palabra}): hay {len(imagenes)} imágenes; LSPedia admite máximo 2."
                 )
+            for imagen_item in imagenes[:2]:
+                if imagen_item.startswith(("img/", "./img/")):
+                    ruta_texto = unquote(imagen_item.removeprefix("./"))
+                    ruta_img = ROOT / ruta_texto
+                    if not ruta_img.exists():
+                        informe.aviso(
+                            f"Vocabulario #{i} ({palabra}): imagen local no encontrada: {imagen_item}."
+                        )
 
         referencia = (_clave(palabra), _clave(categoria))
         if all(referencia):
@@ -367,11 +389,11 @@ def validar_vocabulario(informe: Informe) -> list[dict]:
                 referencias[referencia] = i
 
     if sin_imagen:
-        informe.aviso(f"Vocabulario: {sin_imagen} palabra(s) sin imagen.")
+        informe.aviso(f"Vocabulario: {sin_imagen} palabra(s) con video todavía no tienen imagen de apoyo.")
     if sin_definicion:
         informe.aviso(
-            f"Vocabulario: {sin_definicion} palabra(s) todavía no tienen definición. "
-            "El Publicador nuevo ya guarda este campo para las publicaciones futuras."
+            f"Vocabulario: {sin_definicion} palabra(s) con video todavía no tienen definición. "
+            "Las fichas visuales nuevas sin video sí requieren definición e imagen."
         )
     if categorias_nuevas:
         informe.dato(
@@ -381,7 +403,8 @@ def validar_vocabulario(informe: Informe) -> list[dict]:
         )
     _revisar_campos_extranos("Vocabulario", filas, informe)
     informe.dato(
-        f"Vocabulario: {len(filas)} registros con video, "
+        f"Vocabulario: {len(filas)} fichas consultables, {con_video} con video para Quiz, "
+        f"{visuales_sin_video} visuales sin video, "
         f"{len(set(_texto(x.get('categoria')) for x in filas))} categorías."
     )
     return filas
