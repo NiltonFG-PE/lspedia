@@ -2,9 +2,15 @@
    LSPedia - fullscreen visual estable para móviles/tablets
    ------------------------------------------------------------
    En pantallas táctiles no usa requestFullscreen(), porque Chrome/Android
-   muestra un aviso propio que puede tapar los controles. En su lugar,
-   mueve temporalmente el reproductor al <body> para evitar que contenedores
-   con transform/overflow lo recorten u oculten.
+   muestra un aviso propio que puede tapar los controles.
+
+   IMPORTANTE:
+   - El iframe de YouTube NO se mueve de su contenedor original. Mover un
+     iframe entre padres puede reiniciar el video en algunos navegadores.
+   - Se neutralizan temporalmente transform/overflow/contain de los ancestros
+     para que position:fixed pueda ocupar realmente toda la ventana.
+   - El botón de salida intercepta el clic en fase de captura, evitando que el
+     listener normal de fullscreen se ejecute otra vez al tocar la X.
    ============================================================ */
 (function () {
     'use strict';
@@ -21,6 +27,7 @@
     let estado = null;
     let toggleOriginal = null;
     let cerrarOriginal = null;
+    let cerrando = false;
 
     function restaurarAtributoStyle(elemento, valorOriginal) {
         if (!elemento) return;
@@ -28,31 +35,73 @@
         else elemento.setAttribute('style', valorOriginal);
     }
 
+    function prepararAncestros(wrap) {
+        const lista = [];
+        let actual = wrap.parentElement;
+
+        while (actual && actual !== document.documentElement) {
+            lista.push({
+                elemento: actual,
+                styleOriginal: actual.getAttribute('style')
+            });
+
+            // Estas propiedades son las que con más frecuencia convierten al
+            // ancestro en containing block o recortan un elemento fixed.
+            actual.style.setProperty('transform', 'none', 'important');
+            actual.style.setProperty('filter', 'none', 'important');
+            actual.style.setProperty('perspective', 'none', 'important');
+            actual.style.setProperty('backdrop-filter', 'none', 'important');
+            actual.style.setProperty('contain', 'none', 'important');
+            actual.style.setProperty('clip-path', 'none', 'important');
+            actual.style.setProperty('overflow', 'visible', 'important');
+            actual.style.setProperty('overflow-x', 'visible', 'important');
+            actual.style.setProperty('overflow-y', 'visible', 'important');
+
+            actual = actual.parentElement;
+        }
+
+        return lista;
+    }
+
+    function restaurarAncestros(ancestros) {
+        if (!Array.isArray(ancestros)) return;
+        // Restaurar desde el ancestro más externo hacia el más cercano evita
+        // estados intermedios extraños durante el reflujo del layout.
+        [...ancestros].reverse().forEach(item => {
+            if (!item || !item.elemento) return;
+            restaurarAtributoStyle(item.elemento, item.styleOriginal);
+        });
+    }
+
     function cerrarVisual() {
-        if (!estado) return;
+        if (!estado || cerrando) return;
+        cerrando = true;
 
         const {
             wrap,
             iframe,
             controles,
             btn,
-            marcadorWrap,
             marcadorControles,
             styleWrap,
             styleIframe,
-            styleControles
+            styleControles,
+            styleBtn,
+            ancestros,
+            interceptarCierre
         } = estado;
+
+        // Quitamos primero el interceptor para no dejar un botón normal bloqueado.
+        if (btn && interceptarCierre) {
+            btn.removeEventListener('click', interceptarCierre, true);
+        }
 
         wrap.classList.remove('video-palabra-pantalla-completa');
         wrap.classList.remove('video-palabra-pantalla-completa-fallback');
         if (controles) controles.classList.remove('video-palabra-controles-pantalla-completa');
 
-        // Primero devolvemos el reproductor a su sitio y luego la barra de controles.
-        if (marcadorWrap && marcadorWrap.parentNode) {
-            marcadorWrap.parentNode.insertBefore(wrap, marcadorWrap);
-            marcadorWrap.remove();
-        }
-
+        // Solo la barra de controles vuelve a su posición original. El iframe
+        // nunca cambia de padre, por lo que conserva tiempo y estado de reproducción.
         if (controles && marcadorControles && marcadorControles.parentNode) {
             marcadorControles.parentNode.insertBefore(controles, marcadorControles);
             marcadorControles.remove();
@@ -61,24 +110,30 @@
         restaurarAtributoStyle(wrap, styleWrap);
         restaurarAtributoStyle(iframe, styleIframe);
         restaurarAtributoStyle(controles, styleControles);
+        restaurarAncestros(ancestros);
 
         document.body.classList.remove('video-palabra-pantalla-completa-activa');
 
         if (btn) {
+            btn.classList.remove('lsp-fullscreen-cerrar-rojo');
+            restaurarAtributoStyle(btn, styleBtn);
             btn.textContent = '⛶';
             btn.setAttribute('aria-label', 'Ver en pantalla completa');
             btn.setAttribute('title', 'Ver en pantalla completa');
         }
 
         estado = null;
+        // Dejamos terminar el mismo ciclo de evento antes de aceptar otra apertura.
+        window.setTimeout(() => { cerrando = false; }, 60);
     }
 
     function abrirVisual(wrapId, btnId) {
         const wrap = document.getElementById(wrapId);
         const btn = document.getElementById(btnId);
-        if (!wrap) return;
+        if (!wrap || cerrando) return;
 
         if (estado) cerrarVisual();
+        if (cerrando) return;
 
         const iframe = wrap.querySelector('iframe');
         const hermano = wrap.nextElementSibling;
@@ -86,7 +141,6 @@
             ? hermano
             : null;
 
-        const marcadorWrap = document.createComment('lspedia-video-wrap-origen');
         const marcadorControles = controles
             ? document.createComment('lspedia-controles-video-origen')
             : null;
@@ -94,25 +148,20 @@
         const styleWrap = wrap.getAttribute('style');
         const styleIframe = iframe ? iframe.getAttribute('style') : null;
         const styleControles = controles ? controles.getAttribute('style') : null;
+        const styleBtn = btn ? btn.getAttribute('style') : null;
+        const ancestros = prepararAncestros(wrap);
 
-        // Marcamos la posición original antes de mover nada.
-        if (wrap.parentNode) wrap.parentNode.insertBefore(marcadorWrap, wrap);
+        // Los controles sí pueden pasar dentro del wrapper sin reiniciar YouTube.
         if (controles && controles.parentNode && marcadorControles) {
             controles.parentNode.insertBefore(marcadorControles, controles);
             wrap.appendChild(controles);
             controles.classList.add('video-palabra-controles-pantalla-completa');
         }
 
-        // La clave de esta corrección: sacar el wrapper de cualquier tarjeta,
-        // grid o contenedor animado que pueda recortar position:fixed.
-        document.body.appendChild(wrap);
-
         wrap.classList.add('video-palabra-pantalla-completa');
         wrap.classList.add('video-palabra-pantalla-completa-fallback');
         document.body.classList.add('video-palabra-pantalla-completa-activa');
 
-        // Respaldo inline para que el fullscreen visual sea estable incluso si
-        // alguna regla CSS antigua tiene mayor especificidad.
         Object.assign(wrap.style, {
             position: 'fixed',
             inset: '0',
@@ -169,10 +218,35 @@
             });
         }
 
+        let interceptarCierre = null;
+
         if (btn) {
             btn.textContent = '✕';
             btn.setAttribute('aria-label', 'Salir de pantalla completa');
             btn.setAttribute('title', 'Salir de pantalla completa');
+            btn.classList.add('lsp-fullscreen-cerrar-rojo');
+
+            // Rojo inequívoco para el botón de salida. Se usa !important para
+            // vencer los estilos generales de los botones del reproductor.
+            btn.style.setProperty('background', '#dc2626', 'important');
+            btn.style.setProperty('background-image', 'none', 'important');
+            btn.style.setProperty('border-color', '#b91c1c', 'important');
+            btn.style.setProperty('color', '#ffffff', 'important');
+            btn.style.setProperty('box-shadow', '0 6px 16px rgba(220,38,38,.35)', 'important');
+
+            // El botón ya posee un listener normal para abrir/cerrar fullscreen.
+            // Este listener en CAPTURA se ejecuta antes, consume el clic y evita
+            // que el listener antiguo vuelva a dispararse o alcance otro control.
+            interceptarCierre = function (evento) {
+                if (!estado || estado.btn !== btn) return;
+                evento.preventDefault();
+                evento.stopPropagation();
+                if (typeof evento.stopImmediatePropagation === 'function') {
+                    evento.stopImmediatePropagation();
+                }
+                cerrarVisual();
+            };
+            btn.addEventListener('click', interceptarCierre, true);
         }
 
         estado = {
@@ -180,11 +254,13 @@
             iframe,
             controles,
             btn,
-            marcadorWrap,
             marcadorControles,
             styleWrap,
             styleIframe,
-            styleControles
+            styleControles,
+            styleBtn,
+            ancestros,
+            interceptarCierre
         };
     }
 
