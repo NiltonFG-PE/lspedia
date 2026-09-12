@@ -37,33 +37,35 @@ jobs:
           ruta = Path("scripts/generar_alfabetizacion.py")
           texto = ruta.read_text(encoding="utf-8")
 
-          anterior = '''        limpio = {
-              "caracter": caracter,
-              "palabra": palabra,
-              "imagen": ruta_media(fila.get("imagen")),
-              "orden": convertir_orden(fila.get("orden")),
-              "nivel": texto(fila.get("nivel")),
-          }
-          salida.append({campo: limpio[campo] for campo in CAMPOS_EJEMPLOS})
-          '''
+          anterior = (
+              '        limpio = {\n'
+              '            "caracter": caracter,\n'
+              '            "palabra": palabra,\n'
+              '            "imagen": ruta_media(fila.get("imagen")),\n'
+              '            "orden": convertir_orden(fila.get("orden")),\n'
+              '            "nivel": texto(fila.get("nivel")),\n'
+              '        }\n'
+              '        salida.append({campo: limpio[campo] for campo in CAMPOS_EJEMPLOS})\n'
+          )
 
-          nuevo = '''        imagen = ruta_media(fila.get("imagen"))
-          # Una fila puede quedar preparada en Google Sheets mientras Nilton
-          # busca su ilustración. Hasta que exista una imagen válida no se
-          # publica en alfabetizacion.json, por lo que tampoco aparece vacía
-          # en Aprender ni entra a los juegos.
-          if not imagen:
-              continue
-
-          limpio = {
-              "caracter": caracter,
-              "palabra": palabra,
-              "imagen": imagen,
-              "orden": convertir_orden(fila.get("orden")),
-              "nivel": texto(fila.get("nivel")),
-          }
-          salida.append({campo: limpio[campo] for campo in CAMPOS_EJEMPLOS})
-          '''
+          nuevo = (
+              '        imagen = ruta_media(fila.get("imagen"))\n'
+              '        # Una fila puede quedar preparada en Google Sheets mientras Nilton\n'
+              '        # busca su ilustración. Hasta que exista una imagen válida no se\n'
+              '        # publica en alfabetizacion.json, por lo que tampoco aparece vacía\n'
+              '        # en Aprender ni entra a los juegos.\n'
+              '        if not imagen:\n'
+              '            continue\n'
+              '\n'
+              '        limpio = {\n'
+              '            "caracter": caracter,\n'
+              '            "palabra": palabra,\n'
+              '            "imagen": imagen,\n'
+              '            "orden": convertir_orden(fila.get("orden")),\n'
+              '            "nivel": texto(fila.get("nivel")),\n'
+              '        }\n'
+              '        salida.append({campo: limpio[campo] for campo in CAMPOS_EJEMPLOS})\n'
+          )
 
           if anterior not in texto:
               raise SystemExit("No se encontró el bloque esperado en generar_alfabetizacion.py")
