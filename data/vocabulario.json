@@ -1,450 +1,730 @@
 [
   {
     "palabra": "Adulto",
+    "variantes": "",
     "video": "p20mQeIR4kg",
     "categoria": "Adjetivos",
     "nivel": "Medio",
+    "orden": "4dul_Adj371v05",
     "imagen": "img/vocabulario/adulto.webp",
-    "variantes": ""
+    "definicion": "",
+    "fechaPublicacion": "#N/A",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Caro",
+    "variantes": "Costoso, ojo de la cara,",
     "video": "rTQh0O4ydMw",
     "categoria": "Adjetivos",
     "nivel": "Difícil",
+    "orden": "c4r0_Adj371v05",
     "imagen": "img/vocabulario/caro.webp",
-    "variantes": "Costoso, ojo de la cara,"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Débil",
+    "variantes": "Delicado, Frágil,",
     "video": "aUfSgeVzTUg",
     "categoria": "Adjetivos",
     "nivel": "Difícil",
+    "orden": "dé81_Adj371v05",
     "imagen": "img/vocabulario/debil.webp",
-    "variantes": "Delicado, Frágil,"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Difícil",
+    "variantes": "complicado",
     "video": "ledSey8cBJM",
     "categoria": "Adjetivos",
     "nivel": "Difícil",
+    "orden": "d1fí_Adj371v05",
     "imagen": "img/vocabulario/dificil.webp",
-    "variantes": "complicado"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Distraído",
+    "variantes": "desconcentrado",
     "video": "L48N6jLbY7E",
     "categoria": "Adjetivos",
     "nivel": "Difícil",
+    "orden": "d157_Adj371v05",
     "imagen": "img/vocabulario/distraido.webp",
-    "variantes": "desconcentrado"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Cansado",
+    "variantes": "Fatigado, Agotado, molido, rendido, exhausto",
     "video": "8YPO4XsqqTg",
     "categoria": "Emociones",
     "nivel": "Medio",
+    "orden": "c4n5_Em0c10n35",
     "imagen": "img/vocabulario/cansado.webp",
-    "variantes": "Fatigado, Agotado, molido, rendido, exhausto"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Aburrido",
+    "variantes": "Tedioso, Soso, Monótono, Latoso, Soporífero",
     "video": "6W78LABxkn0",
     "categoria": "Emociones",
     "nivel": "Difícil",
+    "orden": "48ur_Em0c10n35",
     "imagen": "img/vocabulario/aburrido.webp",
-    "variantes": "Tedioso, Soso, Monótono, Latoso, Soporífero"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Amor",
+    "variantes": "Amar",
     "video": "EPIFqLhuz-0",
     "categoria": "Emociones",
     "nivel": "Fácil",
+    "orden": "4m0r_Em0c10n35",
     "imagen": "img/vocabulario/amor.webp",
-    "variantes": "Amar"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Asustado",
+    "variantes": "miedo, temor, aterrado, espantado",
     "video": "mJMgeB1TRBw",
     "categoria": "Emociones",
     "nivel": "Fácil",
+    "orden": "45u5_Em0c10n35",
     "imagen": "img/vocabulario/asustado.webp",
-    "variantes": "miedo, temor, aterrado, espantado"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Cariño",
+    "variantes": "Afecto, Estimación",
     "video": "yq775DDg920",
     "categoria": "Emociones",
     "nivel": "Difícil",
+    "orden": "c4r1_Em0c10n35",
     "imagen": "img/vocabulario/cariño.webp",
-    "variantes": "Afecto, Estimación"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Celos",
+    "variantes": "celoso, celosa",
     "video": "UWW3mAI3m8k",
     "categoria": "Emociones",
     "nivel": "Difícil",
+    "orden": "c3l0_Em0c10n35",
     "imagen": "img/vocabulario/celos.webp",
-    "variantes": "celoso, celosa"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Contento",
+    "variantes": "satisfecho",
     "video": "hwuAvaqnyW4",
     "categoria": "Emociones",
     "nivel": "Medio",
+    "orden": "c0n7_Em0c10n35",
     "imagen": "img/vocabulario/contento.webp",
-    "variantes": "satisfecho"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Enojado",
+    "variantes": "molesto, enfadado, colérico",
     "video": "wZPUtS_IcOQ",
     "categoria": "Emociones",
     "nivel": "Difícil",
+    "orden": "3n0j_Em0c10n35",
     "imagen": "img/vocabulario/enojado.webp",
-    "variantes": "molesto, enfadado, colérico"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Envidia",
+    "variantes": "envidiar",
     "video": "tFKh3xaoJ8w",
     "categoria": "Emociones",
     "nivel": "Difícil",
+    "orden": "3nv1_Em0c10n35",
     "imagen": "img/vocabulario/envidia.webp",
-    "variantes": "envidiar"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Esperanza",
+    "variantes": "",
     "video": "Fnn-BSvMFrQ",
     "categoria": "Emociones",
     "nivel": "Medio",
+    "orden": "35p3_Em0c10n35",
     "imagen": "img/vocabulario/esperanza.webp",
-    "variantes": ""
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Feliz",
+    "variantes": "alegría, gozo, gososo, jubilo, jubiloso,",
     "video": "KIvr7-_nGl4",
     "categoria": "Emociones",
     "nivel": "Fácil",
+    "orden": "f3l1_Em0c10n35",
     "imagen": "img/vocabulario/feliz.webp",
-    "variantes": "alegría, gozo, gososo, jubilo, jubiloso,"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Extrañar",
+    "variantes": "Añoranza, Melancolía, Nostalgia",
     "video": "INp7zYkKhAs",
     "categoria": "Emociones",
     "nivel": "Difícil",
+    "orden": "3x7r_Em0c10n35",
     "imagen": "img/vocabulario/extrañar.webp",
-    "variantes": "Añoranza, Melancolía, Nostalgia"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Orgullo (negativo)",
+    "variantes": "Orgulloso, Soberbia, Arrogancia",
     "video": "IDFBNMPMKKU",
     "categoria": "Emociones",
     "nivel": "Difícil",
+    "orden": "0r6u_Em0c10n35",
     "imagen": "img/vocabulario/orgullo.webp",
-    "variantes": "Orgulloso, Soberbia, Arrogancia"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Soledad",
+    "variantes": "",
     "video": "ZjCGoTxSAsw",
     "categoria": "Emociones",
     "nivel": "Fácil",
+    "orden": "50l3_Em0c10n35",
     "imagen": "img/vocabulario/soledad.webp",
-    "variantes": ""
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Sorprendido",
+    "variantes": "Asombrado, Atónito, Pasmado, Estupefacto, Impresionado, Maravillado",
     "video": "bhNMEM6VvuU",
     "categoria": "Emociones",
     "nivel": "Medio",
+    "orden": "50rp_Em0c10n35",
     "imagen": "img/vocabulario/sorprendido.webp",
-    "variantes": "Asombrado, Atónito, Pasmado, Estupefacto, Impresionado, Maravillado"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Triste",
+    "variantes": "Desanimado, Apenado, Mustio, Entristecido",
     "video": "TK0kSpZc_IU",
     "categoria": "Emociones",
     "nivel": "Medio",
+    "orden": "7r15_Em0c10n35",
     "imagen": "img/vocabulario/tristeza.webp",
-    "variantes": "Desanimado, Apenado, Mustio, Entristecido"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Vergüenza",
+    "variantes": "Verguenza, Bochorno, Timidez, Pena, Palta",
     "video": "ZD43qjF_F5Q",
     "categoria": "Emociones",
     "nivel": "Medio",
+    "orden": "v3r6_Em0c10n35",
     "imagen": "img/vocabulario/verguenza.webp",
-    "variantes": "Verguenza, Bochorno, Timidez, Pena, Palta"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Abril",
+    "variantes": "mes, año",
     "video": "-2vcQ_jmUzw",
     "categoria": "Tiempo",
     "nivel": "Medio",
+    "orden": "48r1_T13mp0",
     "imagen": "img/vocabulario/abril.webp",
-    "variantes": "mes, año"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Agosto",
+    "variantes": "mes, año",
     "video": "LLU9rAGCPME",
     "categoria": "Tiempo",
     "nivel": "Medio",
+    "orden": "4605_T13mp0",
     "imagen": "img/vocabulario/agosto.webp",
-    "variantes": "mes, año"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Diciembre",
+    "variantes": "mes, año",
     "video": "21FZr-lKrAA",
     "categoria": "Tiempo",
     "nivel": "Medio",
+    "orden": "d1c1_T13mp0",
     "imagen": "img/vocabulario/diciembre.webp",
-    "variantes": "mes, año"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Domingo",
+    "variantes": "semana, día",
     "video": "LnVYWOHqOnY",
     "categoria": "Tiempo",
     "nivel": "Fácil",
+    "orden": "d0m1_T13mp0",
     "imagen": "img/vocabulario/domingo.webp",
-    "variantes": "semana, día"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Enero",
+    "variantes": "mes, año",
     "video": "sAE-4g5Yzr8",
     "categoria": "Tiempo",
     "nivel": "Medio",
+    "orden": "3n3r_T13mp0",
     "imagen": "img/vocabulario/enero.webp",
-    "variantes": "mes, año"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Febrero",
+    "variantes": "mes, año",
     "video": "o0X5xe2zfXI",
     "categoria": "Tiempo",
     "nivel": "Medio",
+    "orden": "f38r_T13mp0",
     "imagen": "img/vocabulario/febrero.webp",
-    "variantes": "mes, año"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Jueves",
+    "variantes": "semana, día",
     "video": "8ghAOAvYBTQ",
     "categoria": "Tiempo",
     "nivel": "Fácil",
+    "orden": "ju3v_T13mp0",
     "imagen": "img/vocabulario/jueves.webp",
-    "variantes": "semana, día"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Julio",
+    "variantes": "mes, año",
     "video": "9i8kZZgf1NM",
     "categoria": "Tiempo",
     "nivel": "Medio",
+    "orden": "jul1_T13mp0",
     "imagen": "img/vocabulario/julio.webp",
-    "variantes": "mes, año"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Junio",
+    "variantes": "mes, año",
     "video": "74GetK6J0yo",
     "categoria": "Tiempo",
     "nivel": "Medio",
+    "orden": "jun1_T13mp0",
     "imagen": "img/vocabulario/junio.webp",
-    "variantes": "mes, año"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Lunes",
+    "variantes": "semana, día",
     "video": "Ex11PR9uc7w",
     "categoria": "Tiempo",
     "nivel": "Fácil",
+    "orden": "lun3_T13mp0",
     "imagen": "img/vocabulario/lunes.webp",
-    "variantes": "semana, día"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Martes",
+    "variantes": "semana, día",
     "video": "hh44BbiPZaM",
     "categoria": "Tiempo",
     "nivel": "Fácil",
+    "orden": "m4r7_T13mp0",
     "imagen": "img/vocabulario/martes.webp",
-    "variantes": "semana, día"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Marzo",
+    "variantes": "mes, año",
     "video": "6SiNsQP_BEs",
     "categoria": "Tiempo",
     "nivel": "Medio",
+    "orden": "m4r2_T13mp0",
     "imagen": "img/vocabulario/marzo.webp",
-    "variantes": "mes, año"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Mayo",
+    "variantes": "mes, año",
     "video": "aNRzLlotzYc",
     "categoria": "Tiempo",
     "nivel": "Medio",
+    "orden": "m4y0_T13mp0",
     "imagen": "img/vocabulario/mayo.webp",
-    "variantes": "mes, año"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Miércoles",
+    "variantes": "",
     "video": "hMv1A-p7aus",
     "categoria": "Tiempo",
     "nivel": "Fácil",
+    "orden": "m1ér_T13mp0",
     "imagen": "img/vocabulario/miercoles.webp",
-    "variantes": ""
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Noviembre",
+    "variantes": "mes, año",
     "video": "xJ1tPsO8Dd0",
     "categoria": "Tiempo",
     "nivel": "Medio",
+    "orden": "n0v1_T13mp0",
     "imagen": "img/vocabulario/noviembre.webp",
-    "variantes": "mes, año"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Octubre",
+    "variantes": "mes, año",
     "video": "MjNo4c-1mf4",
     "categoria": "Tiempo",
     "nivel": "Medio",
+    "orden": "0c7u_T13mp0",
     "imagen": "img/vocabulario/octubre.webp",
-    "variantes": "mes, año"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Sábado",
+    "variantes": "semana, día",
     "video": "9ANOv7T9CGI",
     "categoria": "Tiempo",
     "nivel": "Fácil",
+    "orden": "5á84_T13mp0",
     "imagen": "img/vocabulario/sabado.webp",
-    "variantes": "semana, día"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Septiembre",
+    "variantes": "mes, año",
     "video": "_0P32vWx-Ho",
     "categoria": "Tiempo",
     "nivel": "Medio",
+    "orden": "53p7_T13mp0",
     "imagen": "img/vocabulario/septiembre.webp",
-    "variantes": "mes, año"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Viernes",
+    "variantes": "semana, día",
     "video": "zEm4vLs2tNM",
     "categoria": "Tiempo",
     "nivel": "Fácil",
+    "orden": "v13r_T13mp0",
     "imagen": "img/vocabulario/viernes.webp",
-    "variantes": "semana, día"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Apoyar",
+    "variantes": "Asistir, Colaborar, Patrocinar, Amparar,",
     "video": "cIJtdN0GDXY",
     "categoria": "Verbos",
     "nivel": "Medio",
+    "orden": "4p0y_V3r805",
     "imagen": "img/vocabulario/apoyar.webp",
-    "variantes": "Asistir, Colaborar, Patrocinar, Amparar,"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Ayudar",
+    "variantes": "Echar una mano, auxiliar, socorrer,",
     "video": "Utus3cLjdFs",
     "categoria": "Verbos",
     "nivel": "Fácil",
+    "orden": "4yud_V3r805",
     "imagen": "img/vocabulario/ayudar.webp",
-    "variantes": "Echar una mano, auxiliar, socorrer,"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Examinar",
+    "variantes": "Analizar, Inspeccionar, Revisar,",
     "video": "7KTpBruPiSc",
     "categoria": "Verbos",
     "nivel": "Difícil",
+    "orden": "3x4m_V3r805",
     "imagen": "img/vocabulario/examinar.webp",
-    "variantes": "Analizar, Inspeccionar, Revisar,"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Advertir",
+    "variantes": "Advierto, adviertes, advierte, advierten",
     "video": "JkOyOQCQlv0",
     "categoria": "Verbos",
     "nivel": "Difícil",
+    "orden": "4dv3_V3r805",
     "imagen": "img/vocabulario/advertir.webp",
-    "variantes": "Advierto, adviertes, advierte, advierten"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Practicar",
+    "variantes": "Práctica, Ensayar",
     "video": "YmAvynbhbaY",
     "categoria": "Verbos",
     "nivel": "Medio",
+    "orden": "pr4c_V3r805",
     "imagen": "img/vocabulario/practicar.webp",
-    "variantes": "Práctica, Ensayar"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Aceptar",
+    "variantes": "Admitir, Recibir, Acoger, Asumir",
     "video": "LD4yaNyjK9Q",
     "categoria": "Verbos",
     "nivel": "Difícil",
+    "orden": "4c3p_V3r805",
     "imagen": "img/vocabulario/aceptar.webp",
-    "variantes": "Admitir, Recibir, Acoger, Asumir"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Añadir",
+    "variantes": "agregar",
     "video": "F3vQHAqtLog",
     "categoria": "Verbos",
     "nivel": "Difícil",
+    "orden": "4ñ4d_V3r805",
     "imagen": "img/vocabulario/añadir.webp",
-    "variantes": "agregar"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Abrir",
+    "variantes": "Abro, Abro, Abierto",
     "video": "vMNN0Ta7L-k",
     "categoria": "Verbos",
     "nivel": "Medio",
+    "orden": "48r1_V3r805",
     "imagen": "img/vocabulario/abrir.webp",
-    "variantes": "Abro, Abro, Abierto"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Bromear",
+    "variantes": "Chacotear, Vacilar, Chistear, chiste, broma",
     "video": "EcXfUAJxdco",
     "categoria": "Verbos",
     "nivel": "Difícil",
+    "orden": "8r0m_V3r805",
     "imagen": "img/vocabulario/bromear.webp",
-    "variantes": "Chacotear, Vacilar, Chistear, chiste, broma"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Abrazar",
+    "variantes": "Apapachar, Abrazo",
     "video": "uYAwJi9w0mc",
     "categoria": "Verbos",
     "nivel": "Fácil",
+    "orden": "48r4_V3r805",
     "imagen": "img/vocabulario/abrazar.webp",
-    "variantes": "Apapachar, Abrazo"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Atender",
+    "variantes": "Atención, Atento",
     "video": "BXpOVcxw7xs",
     "categoria": "Verbos",
     "nivel": "Fácil",
+    "orden": "473n_V3r805",
     "imagen": "img/vocabulario/atender.webp",
-    "variantes": "Atención, Atento"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Aplaudir",
+    "variantes": "Palmotear, Batir palmas,",
     "video": "q6Uh6W-W7qg",
     "categoria": "Verbos",
     "nivel": "Fácil",
+    "orden": "4pl4_V3r805",
     "imagen": "img/vocabulario/aplaudir.webp",
-    "variantes": "Palmotear, Batir palmas,"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Escuchar",
+    "variantes": "Oír",
     "video": "zABXcgbW9Zg",
     "categoria": "Verbos",
     "nivel": "Medio",
+    "orden": "35cu_V3r805",
     "imagen": "img/vocabulario/oir.webp",
-    "variantes": "Oír"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Agradecer",
+    "variantes": "gracias",
     "video": "xhNF9DOQgjY",
     "categoria": "Verbos",
     "nivel": "Fácil",
+    "orden": "46r4_V3r805",
     "imagen": "img/vocabulario/agradecer.webp",
-    "variantes": "gracias"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   },
   {
     "palabra": "Jugar",
+    "variantes": "Juego",
     "video": "0LcFm8IkLyo",
     "categoria": "Verbos",
     "nivel": "Medio",
+    "orden": "ju64_V3r805",
     "imagen": "img/vocabulario/jugar.webp",
-    "variantes": "Juego"
+    "definicion": "",
+    "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
   }
 ]
