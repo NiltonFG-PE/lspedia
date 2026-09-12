@@ -1,9 +1,18 @@
 {
-  "generadoEn": "2026-09-12T11:27:29Z",
+  "generadoEn": "2026-09-12T13:10:07Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
   "items": [
+    {
+      "id": "psicosis",
+      "palabra": "Psicosis",
+      "categoria": "Psicología",
+      "imagen": "img/diccionario/psicosis.webp",
+      "fecha": "2026-09-12T13:09:51Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "diccionario"
+    },
     {
       "id": "resiliencia",
       "palabra": "Resiliencia",
@@ -100,15 +109,6 @@
       "categoria": "Cortesía",
       "imagen": "img/diccionario/gracias.webp",
       "fecha": "2026-09-03T18:38:04Z",
-      "origenFecha": "imagen-git",
-      "fuente": "diccionario"
-    },
-    {
-      "id": "felicitaciones",
-      "palabra": "Felicitaciones",
-      "categoria": "Cortesía",
-      "imagen": "img/diccionario/felicitaciones.webp",
-      "fecha": "2026-09-03T18:38:00Z",
       "origenFecha": "imagen-git",
       "fuente": "diccionario"
     }
