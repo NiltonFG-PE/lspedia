@@ -11,9 +11,14 @@
      para que position:fixed pueda ocupar realmente toda la ventana.
    - El botón de salida intercepta el clic en fase de captura, evitando que el
      listener normal de fullscreen se ejecute otra vez al tocar la X.
+   - Al abrir el fullscreen se crea una entrada temporal en history. Así el
+     botón Atrás del celular cierra primero el fullscreen sin salir de la ficha.
    ============================================================ */
 (function () {
     'use strict';
+
+    const CLAVE_HISTORIAL_FULLSCREEN = '__lspediaVideoFullscreen';
+    const CLAVE_HISTORIAL_WRAP = '__lspediaVideoFullscreenWrap';
 
     function esPantallaTactil() {
         return window.matchMedia('(pointer: coarse)').matches ||
@@ -45,8 +50,6 @@
                 styleOriginal: actual.getAttribute('style')
             });
 
-            // Estas propiedades son las que con más frecuencia convierten al
-            // ancestro en containing block o recortan un elemento fixed.
             actual.style.setProperty('transform', 'none', 'important');
             actual.style.setProperty('filter', 'none', 'important');
             actual.style.setProperty('perspective', 'none', 'important');
@@ -65,18 +68,47 @@
 
     function restaurarAncestros(ancestros) {
         if (!Array.isArray(ancestros)) return;
-        // Restaurar desde el ancestro más externo hacia el más cercano evita
-        // estados intermedios extraños durante el reflujo del layout.
         [...ancestros].reverse().forEach(item => {
             if (!item || !item.elemento) return;
             restaurarAtributoStyle(item.elemento, item.styleOriginal);
         });
     }
 
-    function cerrarVisual() {
+    function crearEntradaHistorialFullscreen(wrapId) {
+        try {
+            const actual = history.state && typeof history.state === 'object'
+                ? history.state
+                : {};
+            const token = Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 9);
+            history.pushState({
+                ...actual,
+                [CLAVE_HISTORIAL_FULLSCREEN]: token,
+                [CLAVE_HISTORIAL_WRAP]: wrapId
+            }, '', window.location.href);
+            return token;
+        } catch (error) {
+            console.warn('[LSPedia] No se pudo crear la entrada temporal de fullscreen:', error);
+            return null;
+        }
+    }
+
+    function limpiarMarcadorHistorialActual(token) {
+        if (!token) return;
+        try {
+            const actual = history.state;
+            if (!actual || typeof actual !== 'object' || actual[CLAVE_HISTORIAL_FULLSCREEN] !== token) return;
+            const limpio = { ...actual };
+            delete limpio[CLAVE_HISTORIAL_FULLSCREEN];
+            delete limpio[CLAVE_HISTORIAL_WRAP];
+            history.replaceState(limpio, '', window.location.href);
+        } catch (_error) {}
+    }
+
+    function cerrarVisual(opciones = {}) {
         if (!estado || cerrando) return;
         cerrando = true;
 
+        const desdeHistorial = opciones.desdeHistorial === true;
         const {
             wrap,
             iframe,
@@ -88,10 +120,10 @@
             styleControles,
             styleBtn,
             ancestros,
-            interceptarCierre
+            interceptarCierre,
+            tokenHistorial
         } = estado;
 
-        // Quitamos primero el interceptor para no dejar un botón normal bloqueado.
         if (btn && interceptarCierre) {
             btn.removeEventListener('click', interceptarCierre, true);
         }
@@ -101,7 +133,7 @@
         if (controles) controles.classList.remove('video-palabra-controles-pantalla-completa');
 
         // Solo la barra de controles vuelve a su posición original. El iframe
-        // nunca cambia de padre, por lo que conserva tiempo y estado de reproducción.
+        // nunca cambia de padre, por lo que conserva tiempo y reproducción.
         if (controles && marcadorControles && marcadorControles.parentNode) {
             marcadorControles.parentNode.insertBefore(controles, marcadorControles);
             marcadorControles.remove();
@@ -122,9 +154,35 @@
             btn.setAttribute('title', 'Ver en pantalla completa');
         }
 
+        // Si el cierre fue programático y seguimos en la entrada temporal,
+        // quitamos su marca para no dejar un estado de fullscreen fantasma.
+        // Cuando el cierre viene del botón Atrás, el navegador ya hizo pop.
+        if (!desdeHistorial) limpiarMarcadorHistorialActual(tokenHistorial);
+
         estado = null;
-        // Dejamos terminar el mismo ciclo de evento antes de aceptar otra apertura.
         window.setTimeout(() => { cerrando = false; }, 60);
+    }
+
+    function solicitarCierreConHistorial() {
+        if (!estado || cerrando) return;
+
+        const token = estado.tokenHistorial;
+        const actual = history.state;
+        const entradaTemporalActiva = !!(
+            token &&
+            actual &&
+            typeof actual === 'object' &&
+            actual[CLAVE_HISTORIAL_FULLSCREEN] === token
+        );
+
+        if (entradaTemporalActiva) {
+            // El popstate en captura cerrará el fullscreen y bloqueará el
+            // router general de LSPedia para que la ficha/video no se reinicie.
+            history.back();
+            return;
+        }
+
+        cerrarVisual();
     }
 
     function abrirVisual(wrapId, btnId) {
@@ -151,7 +209,6 @@
         const styleBtn = btn ? btn.getAttribute('style') : null;
         const ancestros = prepararAncestros(wrap);
 
-        // Los controles sí pueden pasar dentro del wrapper sin reiniciar YouTube.
         if (controles && controles.parentNode && marcadorControles) {
             controles.parentNode.insertBefore(marcadorControles, controles);
             wrap.appendChild(controles);
@@ -226,17 +283,12 @@
             btn.setAttribute('title', 'Salir de pantalla completa');
             btn.classList.add('lsp-fullscreen-cerrar-rojo');
 
-            // Rojo inequívoco para el botón de salida. Se usa !important para
-            // vencer los estilos generales de los botones del reproductor.
             btn.style.setProperty('background', '#dc2626', 'important');
             btn.style.setProperty('background-image', 'none', 'important');
             btn.style.setProperty('border-color', '#b91c1c', 'important');
             btn.style.setProperty('color', '#ffffff', 'important');
             btn.style.setProperty('box-shadow', '0 6px 16px rgba(220,38,38,.35)', 'important');
 
-            // El botón ya posee un listener normal para abrir/cerrar fullscreen.
-            // Este listener en CAPTURA se ejecuta antes, consume el clic y evita
-            // que el listener antiguo vuelva a dispararse o alcance otro control.
             interceptarCierre = function (evento) {
                 if (!estado || estado.btn !== btn) return;
                 evento.preventDefault();
@@ -244,10 +296,12 @@
                 if (typeof evento.stopImmediatePropagation === 'function') {
                     evento.stopImmediatePropagation();
                 }
-                cerrarVisual();
+                solicitarCierreConHistorial();
             };
             btn.addEventListener('click', interceptarCierre, true);
         }
+
+        const tokenHistorial = crearEntradaHistorialFullscreen(wrapId);
 
         estado = {
             wrap,
@@ -260,7 +314,8 @@
             styleControles,
             styleBtn,
             ancestros,
-            interceptarCierre
+            interceptarCierre,
+            tokenHistorial
         };
     }
 
@@ -279,8 +334,12 @@
             }
 
             const mismo = estado && estado.wrap && estado.wrap.id === wrapId;
-            if (forzarCerrar === true || mismo) {
+            if (forzarCerrar === true) {
                 cerrarVisual();
+                return;
+            }
+            if (mismo) {
+                solicitarCierreConHistorial();
                 return;
             }
 
@@ -295,11 +354,38 @@
             if (cerrarOriginal) return cerrarOriginal.apply(this, arguments);
         };
 
+        // Se registra en CAPTURA para ejecutarse antes que el popstate general
+        // de LSPedia. Así Atrás solo cierra el fullscreen y no reconstruye la
+        // ficha, evitando reinicios del video o navegación inesperada.
+        window.addEventListener('popstate', function (evento) {
+            if (!estado) {
+                // Si el usuario vuelve hacia delante a una entrada temporal vieja,
+                // limpiamos la marca para que no quede un estado fantasma.
+                if (evento.state && evento.state[CLAVE_HISTORIAL_FULLSCREEN]) {
+                    const limpio = { ...evento.state };
+                    delete limpio[CLAVE_HISTORIAL_FULLSCREEN];
+                    delete limpio[CLAVE_HISTORIAL_WRAP];
+                    try { history.replaceState(limpio, '', window.location.href); } catch (_error) {}
+                }
+                return;
+            }
+
+            evento.preventDefault();
+            evento.stopPropagation();
+            if (typeof evento.stopImmediatePropagation === 'function') {
+                evento.stopImmediatePropagation();
+            }
+            cerrarVisual({ desdeHistorial: true });
+        }, true);
+
         document.addEventListener('keydown', function (evento) {
-            if (evento.key === 'Escape' && estado) cerrarVisual();
+            if (evento.key === 'Escape' && estado) solicitarCierreConHistorial();
         });
 
-        window.addEventListener('pagehide', cerrarVisual);
+        window.addEventListener('pagehide', function () {
+            if (estado) cerrarVisual();
+        });
+
         instalado = true;
         return true;
     }
