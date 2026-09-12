@@ -6,6 +6,7 @@ on:
       - develop
     paths:
       - "data/palabras.json"
+      - "data/vocabulario.json"
       - "js/script.js"
       - "scripts/migrar_ids_palabras.py"
       - "scripts/separar_diccionario_vocabulario.py"
@@ -44,25 +45,27 @@ jobs:
         run: python scripts/normalizar_categorias.py
       - name: Generar sitemap.xml
         run: python scripts/generar_sitemap.py
-      - name: Detectar nuevas palabras reales
+      - name: Generar Lo nuevo
         run: python scripts/actualizar_nuevas_palabras.py
-      - name: Validar Diccionario antes de guardar
+      - name: Validar datos antes de guardar
         shell: bash
         run: |
           python -m json.tool data/palabras.json > /dev/null
+          python -m json.tool data/vocabulario.json > /dev/null
           python -m json.tool data/nuevas-palabras.json > /dev/null
           python scripts/validar_lspedia.py --fuente diccionario
+          python scripts/validar_lspedia.py --fuente vocabulario
           node --check js/script.js
           git diff --check
       - name: Guardar cambios automáticos
         shell: bash
         run: |
-          if git diff --quiet -- data/palabras.json data/nuevas-palabras.json js/script.js sitemap.xml; then
-            echo "IDs, nuevas palabras y sitemap ya estaban actualizados."
+          if git diff --quiet -- data/palabras.json data/vocabulario.json data/nuevas-palabras.json js/script.js sitemap.xml; then
+            echo "IDs, Lo nuevo y sitemap ya estaban actualizados."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/palabras.json data/nuevas-palabras.json js/script.js sitemap.xml
-          git commit -m "Actualizar Diccionario nuevas palabras y sitemap"
+          git add data/palabras.json data/vocabulario.json data/nuevas-palabras.json js/script.js sitemap.xml
+          git commit -m "Actualizar Diccionario Vocabulario Lo nuevo y sitemap"
           git push origin HEAD:develop
