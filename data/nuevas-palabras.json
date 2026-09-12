@@ -1,7 +1,15 @@
 {
-  "generadoEn": "2026-09-11T04:16:06Z",
+  "generadoEn": "2026-09-12T11:12:51Z",
   "metodo": "fechaPublicacion-con-respaldo-imagen-git-e-historial",
   "items": [
+    {
+      "id": "resiliencia",
+      "palabra": "Resiliencia",
+      "categoria": "Psicología",
+      "imagen": "img/diccionario/resiliencia.webp",
+      "fecha": "2026-09-12T06:04:08Z",
+      "origenFecha": "imagen-git"
+    },
     {
       "id": "hipotesis",
       "palabra": "Hipótesis",
@@ -88,14 +96,6 @@
       "categoria": "Cortesía",
       "imagen": "img/diccionario/felicitaciones.webp",
       "fecha": "2026-09-03T18:38:00Z",
-      "origenFecha": "imagen-git"
-    },
-    {
-      "id": "ecosistema",
-      "palabra": "Ecosistema",
-      "categoria": "Ciencia",
-      "imagen": "img/diccionario/ecosistema.webp",
-      "fecha": "2026-09-03T18:37:56Z",
       "origenFecha": "imagen-git"
     }
   ]

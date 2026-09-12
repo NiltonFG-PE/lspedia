@@ -1,9 +1,10 @@
 [
   {
+    "id": "equilibrio",
     "palabra": "Equilibrio",
     "variantes": "Balance, Armonía, Estabilidad, Proporción",
     "definicion": "Estado de estar en balance. Ni demasiado de un lado ni del otro.",
-    "categoria": "Bienestar",
+    "categoria": "Salud",
     "video": "",
     "imagen": "Una balanza perfectamente equilibrada o una persona en postura armoniosa",
     "senasugerida": "",
@@ -11,6 +12,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "semaforo",
     "palabra": "Semáforo",
     "variantes": "Luz roja, Luz verde",
     "definicion": "Es una señal con luces de colores (rojo, amarillo y verde) que indica cuándo los carros y las personas pueden pasar o deben esperar.\n Ejemplo: Espera a que el semáforo esté en verde para cruzar la calle.",
@@ -22,6 +24,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "policia",
     "palabra": "Policía",
     "variantes": "Efectivo policial, Agente",
     "definicion": "Es la persona encargada de cuidar el orden y la seguridad de las personas en la calle.\n Ejemplo: Un policía nos ayudó a cruzar la avenida.",
@@ -33,6 +36,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "mercado",
     "palabra": "Mercado",
     "variantes": "Mercadito, Mercado de abastos",
     "definicion": "Es un lugar donde se venden alimentos y otros productos en varios puestos.\n Ejemplo: Mi mamá compra las verduras en el mercado los sábados.",
@@ -44,6 +48,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "transporte-publico",
     "palabra": "Transporte público",
     "variantes": "Combi, Bus, Micro, Movilidad",
     "definicion": "Son los buses, combis o taxis que cualquier persona puede usar, pagando, para moverse por la ciudad.\n Ejemplo: Tomo el transporte público todos los días para ir al trabajo.",
@@ -55,6 +60,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "vecino",
     "palabra": "Vecino",
     "variantes": "Vecina, Vecindario",
     "definicion": "Es una persona que vive cerca de tu casa, en el mismo barrio o edificio.\n Ejemplo: Mi vecino me ayudó a cargar las bolsas del mercado.",
@@ -66,6 +72,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "tienda",
     "palabra": "Tienda",
     "variantes": "Bodega, Tiendita, Almacén",
     "definicion": "Es un local pequeño donde se venden productos como comida, útiles u otras cosas.\n Ejemplo: Fui a la tienda de la esquina a comprar pan.",
@@ -77,6 +84,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "farmacia",
     "palabra": "Farmacia",
     "variantes": "Botica",
     "definicion": "Es el lugar donde se venden medicinas y otros productos de salud.\n Ejemplo: Fui a la farmacia a comprar pastillas para el dolor de cabeza.",
@@ -88,6 +96,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "dinero",
     "palabra": "Dinero",
     "variantes": "Plata, Efectivo, Billetes, Monedas",
     "definicion": "Son los billetes y monedas que se usan para comprar cosas o pagar servicios.\n Ejemplo: No traje suficiente dinero para pagar el taxi.",
@@ -99,6 +108,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "hospital",
     "palabra": "Hospital",
     "variantes": "Clínica, Posta médica",
     "definicion": "Es un lugar grande donde los médicos atienden y curan a las personas enfermas o heridas.\n Ejemplo: Llevaron a mi abuelo al hospital porque se sentía mal.",
@@ -110,6 +120,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "emergencia",
     "palabra": "Emergencia",
     "variantes": "Urgencia",
     "definicion": "Es una situación grave y urgente que necesita ayuda inmediata, como un accidente o una enfermedad repentina.\n Ejemplo: Llamamos a una ambulancia porque era una emergencia.",
@@ -121,6 +132,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "ayuda",
     "palabra": "Ayuda",
     "variantes": "Apoyo, Auxilio",
     "definicion": "Es lo que se pide o se da cuando alguien necesita apoyo para resolver un problema o hacer algo.\n Ejemplo: Pedí ayuda a un vecino porque mi carro no encendía.",
@@ -132,6 +144,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "cita",
     "palabra": "Cita",
     "variantes": "Cita médica, Turno",
     "definicion": "Es un momento acordado para encontrarse con alguien, por ejemplo con un médico o en una oficina, a una hora específica.\n Ejemplo: Tengo una cita con el dentista mañana a las tres.",
@@ -143,6 +156,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "mucho",
     "palabra": "Mucho",
     "variantes": "",
     "definicion": "Indica una cantidad grande de algo.\n Ejemplo: Hay mucho tráfico hoy en la avenida.",
@@ -154,6 +168,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "poco",
     "palabra": "Poco",
     "variantes": "",
     "definicion": "Indica una cantidad pequeña de algo.\n Ejemplo: Tengo poco dinero esta semana.",
@@ -165,6 +180,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "todo",
     "palabra": "Todo",
     "variantes": "",
     "definicion": "Indica la totalidad de algo, sin que falte nada.\n Ejemplo: Comí todo lo que había en mi plato.",
@@ -176,6 +192,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "nada",
     "palabra": "Nada",
     "variantes": "",
     "definicion": "Indica la ausencia total de algo.\n Ejemplo: No queda nada de comida en la refrigeradora.",
@@ -187,6 +204,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "igual",
     "palabra": "Igual",
     "variantes": "",
     "definicion": "Indica que dos cosas son lo mismo o parecidas.\n Ejemplo: Mi camisa es igual a la de mi hermano.",
@@ -198,6 +216,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "diferente",
     "palabra": "Diferente",
     "variantes": "",
     "definicion": "Indica que dos cosas no son iguales.\n Ejemplo: Nuestros trabajos son muy diferentes.",
@@ -209,6 +228,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "mitad",
     "palabra": "Mitad",
     "variantes": "",
     "definicion": "Es una de las dos partes iguales en que se divide algo.\n Ejemplo: Me comí la mitad del pan y guardé el resto.",
@@ -220,6 +240,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "doble",
     "palabra": "Doble",
     "variantes": "",
     "definicion": "Indica una cantidad dos veces mayor que otra.\n Ejemplo: Este mes gané el doble de lo normal.",
@@ -231,6 +252,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "primero",
     "palabra": "Primero",
     "variantes": "Primera",
     "definicion": "Indica el lugar inicial en un orden.\n Ejemplo: Llegué primero a la reunión.",
@@ -242,6 +264,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "ultimo",
     "palabra": "Último",
     "variantes": "Última",
     "definicion": "Indica el lugar final en un orden.\n Ejemplo: Fui el último en salir de la oficina.",
@@ -253,6 +276,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "cocina",
     "palabra": "Cocina",
     "variantes": "",
     "definicion": "Es el lugar de la casa donde se prepara la comida.\n Ejemplo: Mi mamá está en la cocina preparando el almuerzo.",
@@ -264,6 +288,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "dormitorio",
     "palabra": "Dormitorio",
     "variantes": "Cuarto, Habitación",
     "definicion": "Es el lugar de la casa donde se duerme.\n Ejemplo: Mi dormitorio tiene una cama y un armario.",
@@ -275,6 +300,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "bano",
     "palabra": "Baño",
     "variantes": "",
     "definicion": "Es el lugar de la casa donde uno se ducha y usa el inodoro.\n Ejemplo: Voy a limpiar el baño esta tarde.",
@@ -286,6 +312,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "sala",
     "palabra": "Sala",
     "variantes": "",
     "definicion": "Es el lugar de la casa donde la familia se reúne a conversar o ver televisión.\n Ejemplo: Vimos una película juntos en la sala.",
@@ -297,6 +324,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "puerta",
     "palabra": "Puerta",
     "variantes": "",
     "definicion": "Es la parte de la casa que se abre y cierra para entrar o salir.\n Ejemplo: Cerré la puerta con llave antes de salir.",
@@ -308,6 +336,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "ventana",
     "palabra": "Ventana",
     "variantes": "",
     "definicion": "Es la parte de la casa por donde entra la luz y el aire.\n Ejemplo: Abrí la ventana para que entre aire fresco.",
@@ -319,6 +348,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "llave",
     "palabra": "Llave",
     "variantes": "",
     "definicion": "Es un objeto de metal que sirve para abrir y cerrar una puerta o candado.\n Ejemplo: Perdí la llave de mi casa.",
@@ -330,6 +360,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "limpieza",
     "palabra": "Limpieza",
     "variantes": "",
     "definicion": "Es la acción de dejar un lugar ordenado y sin suciedad.\n Ejemplo: Hicimos la limpieza de la casa el sábado.",
@@ -341,6 +372,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "lavar",
     "palabra": "Lavar",
     "variantes": "",
     "definicion": "Es limpiar algo con agua, como la ropa o los platos.\n Ejemplo: Voy a lavar la ropa esta tarde.",
@@ -352,6 +384,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "basura",
     "palabra": "Basura",
     "variantes": "",
     "definicion": "Son los residuos o cosas que ya no sirven y se botan.\n Ejemplo: Saqué la basura antes de que pase el camión.",
@@ -363,6 +396,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "electricidad",
     "palabra": "Electricidad",
     "variantes": "Luz",
     "definicion": "Es la energía que hace funcionar las luces y los aparatos de la casa.\n Ejemplo: Se fue la electricidad en mi barrio anoche.",
@@ -374,6 +408,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "alquiler",
     "palabra": "Alquiler",
     "variantes": "",
     "definicion": "Es el pago que se hace cada mes por vivir en una casa que no es propia.\n Ejemplo: Pago el alquiler de mi departamento el primer día del mes.",
@@ -385,6 +420,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "mudanza",
     "palabra": "Mudanza",
     "variantes": "Mudarse",
     "definicion": "Es el proceso de cambiar de casa, llevando todas las cosas a un nuevo lugar.\n Ejemplo: Hicimos la mudanza a nuestra nueva casa el fin de semana.",
@@ -396,6 +432,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "muebles",
     "palabra": "Muebles",
     "variantes": "",
     "definicion": "Son los objetos como la mesa, la silla o la cama que hay dentro de una casa.\n Ejemplo: Compramos muebles nuevos para la sala.",
@@ -407,6 +444,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "techo",
     "palabra": "Techo",
     "variantes": "",
     "definicion": "Es la parte de arriba de la casa que la cubre y la protege de la lluvia.\n Ejemplo: Se filtra agua por el techo cuando llueve fuerte.",
@@ -418,6 +456,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "ciclo",
     "palabra": "Ciclo",
     "variantes": "Circulación, Rotación, Secuencia repetida, Proceso cíclico",
     "definicion": "Serie de eventos o procesos que se repiten en el mismo orden.",
@@ -429,6 +468,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "ecosistema",
     "palabra": "Ecosistema",
     "variantes": "Ambiente, Hábitat, Comunidad biótica, Sistema natural",
     "definicion": "🌿 *Ecosistema (Naturaleza)*\n\n*Definición:*\nConjunto de seres vivos (personas, animales, plantas y otros organismos) y el lugar donde viven, que interactúan entre sí y con el ambiente.\n\n*Ejemplo:*\nUn bosque, un río o el mar son ecosistemas.\n\n💻 *Ecosistema (Tecnología)*\n\n*Definición:*\nConjunto de dispositivos, aplicaciones, servicios y personas que funcionan conectados entre sí para ofrecer una misma experiencia o cumplir un objetivo.\n\n*Ejemplo:*\nUn teléfono móvil, una computadora, el almacenamiento en la nube y las aplicaciones que trabajan juntas forman un ecosistema tecnológico.",
@@ -440,6 +480,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "elemento",
     "palabra": "Elemento",
     "variantes": "Componente, Parte, Sustancia, Ingrediente",
     "definicion": "Parte pequeña e importante de algo más grande.",
@@ -451,6 +492,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "espectro",
     "palabra": "Espectro",
     "variantes": "Rango, Alcance, Escala, Gama",
     "definicion": "Rango completo de algo. En ciencia, es la descomposición de la luz en sus colores.",
@@ -462,6 +504,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "experimento",
     "palabra": "Experimento",
     "variantes": "Prueba, Test, Ensayo científico, Investigación",
     "definicion": "Prueba científica realizada para verificar una teoría o hipótesis.",
@@ -473,6 +516,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "exploracion",
     "palabra": "Exploración",
     "variantes": "Investigación, Descubrimiento, Búsqueda, Aventura",
     "definicion": "Acción de investigar o descubrir cosas nuevas.",
@@ -484,6 +528,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "fenomeno",
     "palabra": "Fenómeno",
     "variantes": "Evento, Hecho, Acontecimiento, Manifestación",
     "definicion": "Hecho o evento observable en la naturaleza.",
@@ -495,6 +540,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "formula",
     "palabra": "Fórmula",
     "variantes": "Ecuación, Expresión matemática, Método probado",
     "definicion": "Secuencia de símbolos que expresa una regla matemática o científica.",
@@ -506,6 +552,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "frecuencia",
     "palabra": "Frecuencia",
     "variantes": "Regularidad, Repetición, Periodicidad, Cantidad de ocurrencias",
     "definicion": "Número de veces que algo ocurre en un período de tiempo.",
@@ -517,6 +564,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "gravedad",
     "palabra": "Gravedad",
     "variantes": "Fuerza de atracción, Seriedad, Importancia, Severidad",
     "definicion": "Fuerza que atrae los objetos hacia el centro de la tierra. Seriedad de algo.",
@@ -528,10 +576,11 @@
     "fechapublicacion": ""
   },
   {
+    "id": "flujo",
     "palabra": "Flujo",
     "variantes": "Circulación, Movimiento, Corriente, Desplazamiento",
     "definicion": "Movimiento continuo de algo (líquido, energía, información).",
-    "categoria": "Ciencia/Tecnología",
+    "categoria": "Ciencia",
     "video": "",
     "imagen": "Líneas de agua o energía fluyendo de un lado a otro",
     "senasugerida": "",
@@ -539,6 +588,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "parque",
     "palabra": "Parque",
     "variantes": "",
     "definicion": "Es un lugar al aire libre con árboles y juegos donde las personas descansan o se divierten.\n Ejemplo: Fuimos al parque a pasear con mi familia.",
@@ -550,6 +600,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "plaza",
     "palabra": "Plaza",
     "variantes": "",
     "definicion": "Es un espacio abierto en el centro de una ciudad o pueblo, donde la gente se reúne.\n Ejemplo: Nos encontramos en la plaza principal.",
@@ -561,6 +612,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "iglesia",
     "palabra": "Iglesia",
     "variantes": "",
     "definicion": "Es un lugar donde las personas van a rezar o celebrar su religión.\n Ejemplo: Mi abuela va a la iglesia todos los domingos.",
@@ -572,6 +624,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "municipalidad",
     "palabra": "Municipalidad",
     "variantes": "Municipio",
     "definicion": "Es la oficina del gobierno de la ciudad donde se hacen trámites del distrito.\n Ejemplo: Fui a la municipalidad a pagar un impuesto.",
@@ -583,6 +636,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "correo",
     "palabra": "Correo",
     "variantes": "",
     "definicion": "Es el lugar donde se envían y reciben cartas o paquetes.\n Ejemplo: Fui al correo a enviar un paquete a mi familia.",
@@ -594,6 +648,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "cine",
     "palabra": "Cine",
     "variantes": "",
     "definicion": "Es un lugar donde se ven películas en una pantalla grande.\n Ejemplo: Fuimos al cine a ver una película el fin de semana.",
@@ -605,6 +660,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "restaurante",
     "palabra": "Restaurante",
     "variantes": "",
     "definicion": "Es un lugar donde se puede comer comida preparada, pagando por ella.\n Ejemplo: Celebramos su cumpleaños en un restaurante.",
@@ -616,6 +672,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "hotel",
     "palabra": "Hotel",
     "variantes": "",
     "definicion": "Es un lugar donde las personas pagan para dormir cuando están de viaje.\n Ejemplo: Nos quedamos en un hotel durante nuestro viaje a Cusco.",
@@ -627,6 +684,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "playa",
     "palabra": "Playa",
     "variantes": "",
     "definicion": "Es un lugar cerca del mar con arena, donde las personas nadan y descansan.\n Ejemplo: Fuimos a la playa en verano.",
@@ -638,6 +696,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "aeropuerto",
     "palabra": "Aeropuerto",
     "variantes": "",
     "definicion": "Es el lugar donde llegan y salen los aviones.\n Ejemplo: Llegamos temprano al aeropuerto para nuestro vuelo.",
@@ -649,6 +708,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "estadio",
     "palabra": "Estadio",
     "variantes": "",
     "definicion": "Es un lugar grande donde se juegan partidos deportivos frente a muchas personas.\n Ejemplo: Fuimos al estadio a ver un partido de fútbol.",
@@ -660,6 +720,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "museo",
     "palabra": "Museo",
     "variantes": "",
     "definicion": "Es un lugar donde se exhiben objetos históricos, arte u otras cosas importantes.\n Ejemplo: Visitamos un museo en el centro de la ciudad.",
@@ -671,6 +732,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "universidad",
     "palabra": "Universidad",
     "variantes": "",
     "definicion": "Es el lugar donde las personas estudian una carrera profesional después del colegio.\n Ejemplo: Estudio en la universidad los fines de semana.",
@@ -682,6 +744,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "colegio",
     "palabra": "Colegio",
     "variantes": "",
     "definicion": "Es el lugar donde los niños y jóvenes van a estudiar antes de la universidad.\n Ejemplo: Mi hijo va al colegio todas las mañanas.",
@@ -693,6 +756,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "barrio",
     "palabra": "Barrio",
     "variantes": "Vecindario",
     "definicion": "Es la parte de la ciudad donde vive una persona, junto con sus vecinos.\n Ejemplo: En mi barrio todos se conocen.",
@@ -704,6 +768,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "profesor",
     "palabra": "Profesor",
     "variantes": "Profesora, Maestro, Maestra, Docente, Miss, Profe",
     "definicion": "Es la persona que enseña en el colegio o la universidad. Explica los temas, corrige tareas y ayuda a los estudiantes a aprender.\n Ejemplo: El profesor de matemática explicó cómo sumar fracciones.",
@@ -715,6 +780,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "examen-colegio",
     "palabra": "Examen",
     "variantes": "Prueba, Evaluación, Test, Parcial",
     "definicion": "Es una prueba con preguntas que el profesor da para saber cuánto ha aprendido el estudiante.\n Ejemplo: Mañana tengo examen de historia, tengo que estudiar hoy.",
@@ -726,6 +792,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "tarea",
     "palabra": "Tarea",
     "variantes": "Deberes, Trabajo escolar, Tarea de casa",
     "definicion": "Es el trabajo que el profesor manda para hacer en casa, después de la clase.\n Ejemplo: Tengo que terminar la tarea de comunicación antes de dormir.",
@@ -737,6 +804,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "recreo",
     "palabra": "Recreo",
     "variantes": "Descanso, Hora de recreo",
     "definicion": "Es el tiempo corto de descanso entre clases, cuando los estudiantes salen a jugar o comer algo.\n Ejemplo: En el recreo jugué fútbol con mis amigos.",
@@ -748,6 +816,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "aula",
     "palabra": "Aula",
     "variantes": "Salón de clase, Clase",
     "definicion": "Es el salón donde los estudiantes reciben las clases con el profesor.\n Ejemplo: Nuestra aula tiene veinte carpetas y una pizarra grande.",
@@ -759,6 +828,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "biblioteca",
     "palabra": "Biblioteca",
     "variantes": "Biblioteca escolar, Sala de lectura",
     "definicion": "Es un lugar donde hay muchos libros para leer o llevar prestados y estudiar.\n Ejemplo: Fui a la biblioteca a buscar un libro para mi tarea.",
@@ -770,6 +840,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "nota",
     "palabra": "Nota",
     "variantes": "Calificación, Puntaje",
     "definicion": "Es el número o letra que el profesor da para decir qué tan bien hizo el estudiante un examen o tarea.\n Ejemplo: Saqué una buena nota en el examen de ciencias.",
@@ -781,6 +852,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "companero-de-clase",
     "palabra": "Compañero de clase",
     "variantes": "Compañero, Compañera, Compañero de colegio",
     "definicion": "Es un estudiante que estudia en la misma aula que tú.\n Ejemplo: Mi compañero de clase me prestó su lapicero.",
@@ -792,6 +864,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "matricula",
     "palabra": "Matrícula",
     "variantes": "Inscripción, Matricularse",
     "definicion": "Es el trámite y el pago que se hace para inscribirse y poder estudiar en un colegio, instituto o universidad.\n Ejemplo: Mis papás pagaron mi matrícula para el próximo año escolar.",
@@ -803,6 +876,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "uniforme",
     "palabra": "Uniforme",
     "variantes": "Uniforme escolar",
     "definicion": "Es la ropa especial e igual que usan todos los estudiantes de un colegio.\n Ejemplo: Mi uniforme del colegio es azul con blanco.",
@@ -814,10 +888,11 @@
     "fechapublicacion": ""
   },
   {
+    "id": "desayuno",
     "palabra": "Desayuno",
     "variantes": "",
     "definicion": "Es la primera comida del día, que se come en la mañana.\n Ejemplo: Mi desayuno favorito es pan con huevo.",
-    "categoria": "Comida",
+    "categoria": "Alimentos",
     "video": "",
     "imagen": "Ilustración plana de un plato con pan, huevo y una taza de café, estilo flat design.",
     "senasugerida": "",
@@ -825,10 +900,11 @@
     "fechapublicacion": ""
   },
   {
+    "id": "almuerzo",
     "palabra": "Almuerzo",
     "variantes": "",
     "definicion": "Es la comida principal que se come al mediodía.\n Ejemplo: El almuerzo de hoy es arroz con pollo.",
-    "categoria": "Comida",
+    "categoria": "Alimentos",
     "video": "",
     "imagen": "Ilustración plana de un plato de arroz con pollo y ensalada, estilo flat design.",
     "senasugerida": "",
@@ -836,10 +912,11 @@
     "fechapublicacion": ""
   },
   {
+    "id": "cena",
     "palabra": "Cena",
     "variantes": "",
     "definicion": "Es la comida que se come en la noche.\n Ejemplo: Cenamos temprano porque mañana trabajo.",
-    "categoria": "Comida",
+    "categoria": "Alimentos",
     "video": "",
     "imagen": "Ilustración plana de una familia sentada a la mesa cenando de noche, estilo flat design.",
     "senasugerida": "",
@@ -847,10 +924,11 @@
     "fechapublicacion": ""
   },
   {
+    "id": "arroz",
     "palabra": "Arroz",
     "variantes": "",
     "definicion": "Es un alimento hecho de granos blancos que se cocina y se come casi todos los días en Perú.\n Ejemplo: Comí arroz con lentejas en el almuerzo.",
-    "categoria": "Comida",
+    "categoria": "Alimentos",
     "video": "",
     "imagen": "Ilustración plana de un plato lleno de arroz blanco, estilo flat design.",
     "senasugerida": "",
@@ -858,10 +936,11 @@
     "fechapublicacion": ""
   },
   {
+    "id": "pollo",
     "palabra": "Pollo",
     "variantes": "",
     "definicion": "Es la carne de esta ave, muy común en las comidas peruanas.\n Ejemplo: Mi comida favorita es el pollo a la brasa.",
-    "categoria": "Comida",
+    "categoria": "Alimentos",
     "video": "",
     "imagen": "Ilustración plana de una pieza de pollo asado en un plato, estilo flat design.",
     "senasugerida": "",
@@ -869,10 +948,11 @@
     "fechapublicacion": ""
   },
   {
+    "id": "pan",
     "palabra": "Pan",
     "variantes": "",
     "definicion": "Es un alimento hecho de harina que se come en el desayuno o la cena.\n Ejemplo: Compré pan fresco para el desayuno.",
-    "categoria": "Comida",
+    "categoria": "Alimentos",
     "video": "",
     "imagen": "Ilustración plana de una canasta con panes redondos, estilo flat design.",
     "senasugerida": "",
@@ -880,10 +960,11 @@
     "fechapublicacion": ""
   },
   {
+    "id": "fruta",
     "palabra": "Fruta",
     "variantes": "",
     "definicion": "Es un alimento dulce que crece de las plantas, como la manzana o el plátano.\n Ejemplo: Como una fruta todos los días después del almuerzo.",
-    "categoria": "Comida",
+    "categoria": "Alimentos",
     "video": "",
     "imagen": "Ilustración plana de un plato con manzana, plátano y naranja, estilo flat design, colores vivos.",
     "senasugerida": "",
@@ -891,10 +972,11 @@
     "fechapublicacion": ""
   },
   {
+    "id": "verdura",
     "palabra": "Verdura",
     "variantes": "Vegetal, Hortaliza",
     "definicion": "Son alimentos como la lechuga o la zanahoria que se comen en las comidas.\n Ejemplo: Mi mamá siempre agrega verduras a la sopa.",
-    "categoria": "Comida",
+    "categoria": "Alimentos",
     "video": "",
     "imagen": "Ilustración plana de zanahorias, lechuga y tomate juntos, estilo flat design, colores verdes.",
     "senasugerida": "",
@@ -902,10 +984,11 @@
     "fechapublicacion": ""
   },
   {
+    "id": "agua",
     "palabra": "Agua",
     "variantes": "",
     "definicion": "Es el líquido que las personas toman para hidratarse; es esencial para vivir.\n Ejemplo: Tomo dos litros de agua al día.",
-    "categoria": "Comida",
+    "categoria": "Alimentos",
     "video": "",
     "imagen": "Ilustración plana de un vaso lleno de agua con una gota al lado, estilo flat design, colores azules.",
     "senasugerida": "",
@@ -913,10 +996,11 @@
     "fechapublicacion": ""
   },
   {
+    "id": "jugo",
     "palabra": "Jugo",
     "variantes": "",
     "definicion": "Es una bebida que se hace exprimiendo o licuando frutas.\n Ejemplo: Preparé jugo de naranja para el desayuno.",
-    "categoria": "Comida",
+    "categoria": "Alimentos",
     "video": "",
     "imagen": "Ilustración plana de un vaso de jugo de naranja junto a naranjas cortadas, estilo flat design.",
     "senasugerida": "",
@@ -924,10 +1008,11 @@
     "fechapublicacion": ""
   },
   {
+    "id": "leche",
     "palabra": "Leche",
     "variantes": "",
     "definicion": "Es una bebida blanca que se toma sola o con otros alimentos, como el café.\n Ejemplo: Tomo un vaso de leche antes de dormir.",
-    "categoria": "Comida",
+    "categoria": "Alimentos",
     "video": "",
     "imagen": "Ilustración plana de un vaso de leche junto a una jarra, estilo flat design.",
     "senasugerida": "",
@@ -935,10 +1020,11 @@
     "fechapublicacion": ""
   },
   {
+    "id": "huevo",
     "palabra": "Huevo",
     "variantes": "",
     "definicion": "Es un alimento que ponen las gallinas, se cocina de varias formas.\n Ejemplo: Comí un huevo frito en el desayuno.",
-    "categoria": "Comida",
+    "categoria": "Alimentos",
     "video": "",
     "imagen": "Ilustración plana de un huevo frito en un sartén, estilo flat design.",
     "senasugerida": "",
@@ -946,10 +1032,11 @@
     "fechapublicacion": ""
   },
   {
+    "id": "carne",
     "palabra": "Carne",
     "variantes": "",
     "definicion": "Es el alimento que viene de animales como la vaca o el chancho.\n Ejemplo: Compramos carne para hacer un guiso.",
-    "categoria": "Comida",
+    "categoria": "Alimentos",
     "video": "",
     "imagen": "Ilustración plana de un trozo de carne roja sobre una tabla de cocina, estilo flat design.",
     "senasugerida": "",
@@ -957,10 +1044,11 @@
     "fechapublicacion": ""
   },
   {
+    "id": "pescado",
     "palabra": "Pescado",
     "variantes": "",
     "definicion": "Es la carne que viene del mar o del río, muy usada en la comida peruana.\n Ejemplo: El ceviche se hace con pescado fresco.",
-    "categoria": "Comida",
+    "categoria": "Alimentos",
     "video": "",
     "imagen": "Ilustración plana de un pescado entero sobre un plato, estilo flat design.",
     "senasugerida": "",
@@ -968,10 +1056,11 @@
     "fechapublicacion": ""
   },
   {
+    "id": "sopa",
     "palabra": "Sopa",
     "variantes": "",
     "definicion": "Es una comida líquida con verduras, carne u otros ingredientes, que se sirve caliente.\n Ejemplo: En invierno me gusta comer sopa caliente.",
-    "categoria": "Comida",
+    "categoria": "Alimentos",
     "video": "",
     "imagen": "Ilustración plana de un plato hondo de sopa humeante, estilo flat design.",
     "senasugerida": "",
@@ -979,10 +1068,11 @@
     "fechapublicacion": ""
   },
   {
+    "id": "postre",
     "palabra": "Postre",
     "variantes": "",
     "definicion": "Es un dulce que se come al final de la comida.\n Ejemplo: De postre comimos gelatina.",
-    "categoria": "Comida",
+    "categoria": "Alimentos",
     "video": "",
     "imagen": "Ilustración plana de un pedazo de pastel o gelatina de colores, estilo flat design.",
     "senasugerida": "",
@@ -990,10 +1080,11 @@
     "fechapublicacion": ""
   },
   {
+    "id": "sal",
     "palabra": "Sal",
     "variantes": "",
     "definicion": "Es un condimento blanco que se usa para dar sabor a la comida.\n Ejemplo: Le puse un poco más de sal a la sopa.",
-    "categoria": "Comida",
+    "categoria": "Alimentos",
     "video": "",
     "imagen": "Ilustración plana de un salero derramando pequeños granos blancos, estilo flat design.",
     "senasugerida": "",
@@ -1001,10 +1092,11 @@
     "fechapublicacion": ""
   },
   {
+    "id": "azucar",
     "palabra": "Azúcar",
     "variantes": "",
     "definicion": "Es un ingrediente dulce que se usa para endulzar bebidas y postres.\n Ejemplo: Le puse dos cucharadas de azúcar al café.",
-    "categoria": "Comida",
+    "categoria": "Alimentos",
     "video": "",
     "imagen": "Ilustración plana de un azucarero con una cuchara junto a una taza de café, estilo flat design.",
     "senasugerida": "",
@@ -1012,10 +1104,11 @@
     "fechapublicacion": ""
   },
   {
+    "id": "cocinar",
     "palabra": "Cocinar",
     "variantes": "",
     "definicion": "Es preparar la comida usando fuego u otros medios para que esté lista para comer.\n Ejemplo: Me gusta cocinar los domingos con mi familia.",
-    "categoria": "Comida",
+    "categoria": "Alimentos",
     "video": "",
     "imagen": "Ilustración plana de una persona cocinando en una olla sobre una cocina, estilo flat design.",
     "senasugerida": "",
@@ -1023,10 +1116,11 @@
     "fechapublicacion": ""
   },
   {
+    "id": "receta-de-cocina",
     "palabra": "Receta de cocina",
     "variantes": "Receta",
     "definicion": "Es la lista de ingredientes y pasos para preparar una comida.\n Ejemplo: Seguí la receta de mi abuela para hacer el arroz con pollo.",
-    "categoria": "Comida",
+    "categoria": "Alimentos",
     "video": "",
     "imagen": "Ilustración plana de una tarjeta con ingredientes dibujados junto a una olla, estilo flat design, sin texto real.",
     "senasugerida": "",
@@ -1034,10 +1128,11 @@
     "fechapublicacion": ""
   },
   {
+    "id": "gregario",
     "palabra": "Gregario",
     "variantes": "Social, Conformista, De grupo, Colectivo",
     "definicion": "Que vive en grupo. Persona que sigue fácilmente a la multitud.",
-    "categoria": "Comportamiento",
+    "categoria": "Psicología",
     "video": "",
     "imagen": "Un grupo de personas o animales moviéndose juntos",
     "senasugerida": "",
@@ -1045,6 +1140,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "conversar",
     "palabra": "Conversar",
     "variantes": "Charlar, Platicar",
     "definicion": "Es hablar o comunicarse con otra persona sobre algo.\n Ejemplo: Me gusta conversar con mis amigos después de clase.",
@@ -1056,6 +1152,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "preguntar",
     "palabra": "Preguntar",
     "variantes": "",
     "definicion": "Es pedir información a otra persona sobre algo que no sabes.\n Ejemplo: Le pregunté al profesor sobre la tarea.",
@@ -1067,6 +1164,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "responder",
     "palabra": "Responder",
     "variantes": "Contestar",
     "definicion": "Es dar una respuesta a una pregunta o mensaje.\n Ejemplo: Respondí el mensaje de mi jefe rápido.",
@@ -1078,6 +1176,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "explicar",
     "palabra": "Explicar",
     "variantes": "",
     "definicion": "Es decir algo de manera clara para que otra persona lo entienda.\n Ejemplo: El profesor explicó el tema con un ejemplo fácil.",
@@ -1089,6 +1188,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "entender",
     "palabra": "Entender",
     "variantes": "",
     "definicion": "Es comprender algo que se dijo, se explicó o se leyó.\n Ejemplo: Al fin entendí cómo resolver el problema.",
@@ -1100,6 +1200,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "escuchar",
     "palabra": "Escuchar",
     "variantes": "",
     "definicion": "Es prestar atención a lo que alguien dice, o a un sonido.\n Ejemplo: Escuché con atención las instrucciones del profesor.",
@@ -1111,6 +1212,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "mirar",
     "palabra": "Mirar",
     "variantes": "Ver, Observar",
     "definicion": "Es dirigir la vista hacia algo o alguien.\n Ejemplo: Mira hacia la pizarra para ver el ejemplo.",
@@ -1122,6 +1224,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "lengua-de-senas",
     "palabra": "Lengua de señas",
     "variantes": "LSP, Señas",
     "definicion": "Es el idioma que usan las personas sordas para comunicarse con las manos, gestos y expresiones.\n Ejemplo: Estoy aprendiendo lengua de señas peruana para comunicarme con mi vecino.",
@@ -1133,6 +1236,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "interprete",
     "palabra": "Intérprete",
     "variantes": "",
     "definicion": "Es la persona que traduce entre la lengua de señas y el español hablado.\n Ejemplo: Un intérprete nos ayudó a entender la charla.",
@@ -1144,6 +1248,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "comunicacion",
     "palabra": "Comunicación",
     "variantes": "",
     "definicion": "Es el proceso de compartir información, ideas o sentimientos con otra persona.\n Ejemplo: La comunicación con señas es muy importante para la comunidad sorda.",
@@ -1155,6 +1260,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "dialogo",
     "palabra": "Diálogo",
     "variantes": "Conversación, Intercambio, Comunicación, Charla",
     "definicion": "Conversación entre dos o más personas donde intercambian ideas y opiniones.",
@@ -1166,6 +1272,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "expresion",
     "palabra": "Expresión",
     "variantes": "Comunicación, Manifestación, Declaración, Formulación",
     "definicion": "Forma de comunicar ideas, sentimientos o hechos.",
@@ -1177,6 +1284,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "diccionario",
     "palabra": "Diccionario",
     "variantes": "",
     "definicion": "Obra de consulta en la que se recogen, definen y explican de forma ordenada —generalmente alfabética— las palabras o términos de una lengua, una materia específica, una ciencia o un ámbito técnico, indicando su significado, ortografía y, en muchos casos, su origen o uso.",
@@ -1188,6 +1296,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "vocabulario",
     "palabra": "Vocabulario",
     "variantes": "",
     "definicion": "Conjunto de palabras que forman parte de una lengua determinada, que pertenecen al uso de una comunidad lingüística, o que son empleadas por un individuo, una disciplina o un ámbito técnico específico.",
@@ -1199,6 +1308,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "gracias",
     "palabra": "Gracias",
     "variantes": "Muchas gracias, Muchísimas gracias, Mil gracias, Gracias totales, Grax, Grx, Muxas grax, Se agradece, Agradecer",
     "definicion": "Expresión general para agradecer un favor, un regalo o una atención.",
@@ -1210,6 +1320,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "por-favor",
     "palabra": "Por favor",
     "variantes": "Porfa, Porfis, Por favorcito,Plis, Xfa,  Xfis, Pls, ",
     "definicion": "Fórmula elemental para solicitar algo con respeto y sin imposición.",
@@ -1221,6 +1332,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "disculpa",
     "palabra": "Disculpa",
     "variantes": "Disculpa, Disculpe, Disculpen, disculpas,  disculpaste, disculparás, Sorry, Perdón, Perdóname, Lo siento, pedir disculpas, disculpame",
     "definicion": "Petición de perdón por una falta leve, o fórmula para interrumpir educadamente.",
@@ -1232,6 +1344,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "de-nada",
     "palabra": "De nada",
     "variantes": "",
     "definicion": "Respuesta estándar y educada cuando alguien nos da las gracias.",
@@ -1243,6 +1356,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "con-gusto",
     "palabra": "Con gusto",
     "variantes": "",
     "definicion": "Indicación formal y amable de que se hace un favor con placer.",
@@ -1254,6 +1368,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "felicitaciones",
     "palabra": "Felicitaciones",
     "variantes": "felicidades, Enhorabuena, Bravo, Bien hecho, felicito, Excelente, Muy bien, felicitaciones,Te felicito,Los felicito,Te felicitamos, Los felicitamos",
     "definicion": "Expresión de alegría y reconocimiento por el éxito o celebración de alguien.",
@@ -1265,6 +1380,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "futbol",
     "palabra": "Fútbol",
     "variantes": "",
     "definicion": "Es un deporte donde dos equipos intentan meter la pelota en el arco contrario, usando los pies.\n Ejemplo: Jugamos fútbol todos los domingos en el parque.",
@@ -1276,6 +1392,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "voley",
     "palabra": "Vóley",
     "variantes": "",
     "definicion": "Es un deporte donde dos equipos golpean una pelota por encima de una red, sin dejarla caer.\n Ejemplo: Mi hermana juega vóley en su colegio.",
@@ -1287,6 +1404,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "natacion",
     "palabra": "Natación",
     "variantes": "",
     "definicion": "Es el deporte de nadar en una piscina o en el mar.\n Ejemplo: Practico natación dos veces por semana.",
@@ -1298,6 +1416,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "gimnasio",
     "palabra": "Gimnasio",
     "variantes": "",
     "definicion": "Es un lugar con máquinas y espacio para hacer ejercicio.\n Ejemplo: Voy al gimnasio después del trabajo.",
@@ -1309,6 +1428,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "partido",
     "palabra": "Partido",
     "variantes": "",
     "definicion": "Es un juego entre dos equipos o personas en un deporte.\n Ejemplo: Vimos el partido de fútbol en la televisión.",
@@ -1320,6 +1440,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "equipo-deportes",
     "palabra": "Equipo",
     "variantes": "",
     "definicion": "Es un grupo de personas que juega o trabaja junto para lograr algo.\n Ejemplo: Mi equipo ganó el campeonato del colegio.",
@@ -1331,6 +1452,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "entrenar",
     "palabra": "Entrenar",
     "variantes": "",
     "definicion": "Es practicar un deporte o actividad para mejorar y estar preparado.\n Ejemplo: Entreno todas las tardes para el campeonato.",
@@ -1342,6 +1464,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "empate",
     "palabra": "Empate",
     "variantes": "",
     "definicion": "Es cuando dos equipos terminan un partido con el mismo puntaje, sin que nadie gane.\n Ejemplo: El partido terminó en empate, uno a uno.",
@@ -1353,6 +1476,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "arbitro",
     "palabra": "Árbitro",
     "variantes": "",
     "definicion": "Es la persona que dirige un partido y decide si algo está permitido o no.\n Ejemplo: El árbitro marcó una falta en el partido.",
@@ -1364,6 +1488,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "juego",
     "palabra": "Juego",
     "variantes": "",
     "definicion": "Es una actividad divertida que se hace para pasar el tiempo o competir.\n Ejemplo: Jugamos un juego de mesa en familia.",
@@ -1375,6 +1500,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "musica",
     "palabra": "Música",
     "variantes": "",
     "definicion": "Es un arte hecho de sonidos y ritmos que se escucha o se siente.\n Ejemplo: Me gusta sentir la música a través de las vibraciones.",
@@ -1386,6 +1512,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "baile",
     "palabra": "Baile",
     "variantes": "Bailar",
     "definicion": "Es moverse al ritmo de la música.\n Ejemplo: Aprendí a bailar salsa con mis amigos.",
@@ -1397,6 +1524,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "pelicula",
     "palabra": "Película",
     "variantes": "",
     "definicion": "Es una historia que se ve en la televisión o el cine, con imágenes en movimiento.\n Ejemplo: Vimos una película de aventuras el sábado.",
@@ -1408,6 +1536,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "fiesta",
     "palabra": "Fiesta",
     "variantes": "",
     "definicion": "Es una reunión de personas para celebrar algo, con música y comida.\n Ejemplo: Hicimos una fiesta por mi cumpleaños.",
@@ -1419,6 +1548,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "campeonato",
     "palabra": "Campeonato",
     "variantes": "",
     "definicion": "Es una competencia donde varios equipos o personas compiten para ver quién gana.\n Ejemplo: Nuestro equipo ganó el campeonato de fútbol del barrio.",
@@ -1430,6 +1560,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "erratico",
     "palabra": "Errático",
     "variantes": "Impredecible, Inconsistente, Irregular, Caótico",
     "definicion": "Comportamiento impredecible y sin patrón claro. Que cambia sin razón.",
@@ -1441,6 +1572,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "especifico",
     "palabra": "Específico",
     "variantes": "Preciso, Exacto, Determinado, Concreto",
     "definicion": "Que es exacto y preciso. No general ni vago.",
@@ -1452,6 +1584,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "fundamental",
     "palabra": "Fundamental",
     "variantes": "Esencial, Básico, Principal, Vital",
     "definicion": "Que es esencial, básico e importante.",
@@ -1463,6 +1596,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "generico",
     "palabra": "Genérico",
     "variantes": "General, Sin especificar, Común, Ordinario",
     "definicion": "Que es general y no específico. Sin marca particular.",
@@ -1474,6 +1608,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "financiero",
     "palabra": "Financiero",
     "variantes": "Económico, Monetario, De dinero, Presupuestario",
     "definicion": "Relacionado con dinero y recursos económicos.",
@@ -1485,6 +1620,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "gravamen",
     "palabra": "Gravamen",
     "variantes": "Impuesto, Arancel, Carga, Deuda",
     "definicion": "Carga o impuesto que se aplica sobre algo.",
@@ -1496,6 +1632,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "hipotesis",
     "palabra": "Hipótesis",
     "variantes": "Suposición, conjetura, teoría, premisa, hipotesis",
     "definicion": "Una suposición razonable que sirve como punto de partida para investigar.",
@@ -1507,6 +1644,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "analisis-educacion",
     "palabra": "Análisis",
     "variantes": "Examen detallado, Revisión, Estudio profundo, Investigación",
     "definicion": "Dividir algo en partes pequeñas para entenderlo mejor. Es examinar algo con cuidado y detalle.",
@@ -1518,6 +1656,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "argumento",
     "palabra": "Argumento",
     "variantes": "Razón, Prueba, Evidencia, Fundamento",
     "definicion": "Razón o prueba que usamos para demostrar que algo es verdadero o para convencer a otros.",
@@ -1529,6 +1668,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "bibliografia",
     "palabra": "Bibliografía",
     "variantes": "Referencias, Fuentes, Lista de libros, Citas",
     "definicion": "Lista de libros y fuentes que usaste para hacer un trabajo o investigación.",
@@ -1540,6 +1680,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "conclusion",
     "palabra": "Conclusión",
     "variantes": "Resultado, Deducción, Cierre, Veredicto",
     "definicion": "Idea final que se obtiene después de analizar algo.",
@@ -1551,6 +1692,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "contexto",
     "palabra": "Contexto",
     "variantes": "Situación, Circunstancias, Marco, Ambiente",
     "definicion": "Las circunstancias o información que rodea algo y ayuda a entenderlo mejor.",
@@ -1562,6 +1704,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "critica",
     "palabra": "Crítica",
     "variantes": "Evaluación, Análisis, Comentario, Valoración",
     "definicion": "Análisis de algo para señalar sus puntos buenos y malos.",
@@ -1573,6 +1716,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "cuestionario",
     "palabra": "Cuestionario",
     "variantes": "Encuesta, Formulario, Serie de preguntas, Sondeo",
     "definicion": "Serie de preguntas para obtener información de una persona.",
@@ -1584,6 +1728,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "discrepancia",
     "palabra": "Discrepancia",
     "variantes": "Diferencia, Desacuerdo, Contradicción, Inconsistencia",
     "definicion": "Cuando dos o más personas tienen ideas, opiniones o respuestas diferentes sobre un mismo tema.\n\n*Ejemplo:*\nAna dice que la reunión es a las 9. Luis dice que es a las 10. Hay una discrepancia.\n",
@@ -1595,6 +1740,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "docencia",
     "palabra": "Docencia",
     "variantes": "Enseñanza, Profesorado, Educación, Magisterio",
     "definicion": "Profesión y arte de enseñar. La actividad de ser profesor.",
@@ -1606,6 +1752,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "enfoque",
     "palabra": "Enfoque",
     "variantes": "Perspectiva, Punto de vista, Manera de abordar, Estrategia",
     "definicion": "Manera de ver o aproximarse a un problema o tema.",
@@ -1617,6 +1764,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "enumeracion",
     "palabra": "Enumeración",
     "variantes": "Lista, Conteo, Relación, Inventario numerado",
     "definicion": "Lista de cosas en orden, mencionando cada una.",
@@ -1628,6 +1776,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "error",
     "palabra": "Error",
     "variantes": "Equivocación, Falta, Fallo, Desacierto",
     "definicion": "Equivocación o falta que se comete sin intención.",
@@ -1639,6 +1788,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "escenario",
     "palabra": "Escenario",
     "variantes": "Situación, Contexto, Ambiente, Circunstancia",
     "definicion": "Situación o contexto donde ocurren los eventos.",
@@ -1650,6 +1800,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "especializacion",
     "palabra": "Especialización",
     "variantes": "Especialidad, Formación específica, Expertise",
     "definicion": "Dedicarse profundamente a aprender sobre un área específica.",
@@ -1661,6 +1812,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "estructura",
     "palabra": "Estructura",
     "variantes": "Organización, Construcción, Esqueleto, Armazón",
     "definicion": "Forma en que están organizados y conectados los elementos de algo.",
@@ -1672,6 +1824,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "estudio",
     "palabra": "Estudio",
     "variantes": "Investigación, Análisis, Aprendizaje, Examen",
     "definicion": "Acción de aprender y entender un tema mediante investigación.",
@@ -1683,6 +1836,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "evaluacion",
     "palabra": "Evaluación",
     "variantes": "Calificación, Valoración, Examen, Juicio",
     "definicion": "Análisis de algo para determinar su valor o calidad.",
@@ -1694,6 +1848,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "evidencia",
     "palabra": "Evidencia",
     "variantes": "Prueba, Indicio, Demostración, Hecho verificado",
     "definicion": "Prueba o demostración clara que algo es verdadero.",
@@ -1705,6 +1860,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "exactitud",
     "palabra": "Exactitud",
     "variantes": "Precisión, Corrección, Exactitud, Certeza",
     "definicion": "Precisión completa. Estar correcto sin errores.",
@@ -1716,6 +1872,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "examen-educacion",
     "palabra": "Examen",
     "variantes": "Prueba, Test, Evaluación, Interrogatorio",
     "definicion": "Prueba para evaluar el conocimiento de alguien sobre un tema.",
@@ -1727,6 +1884,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "explicacion",
     "palabra": "Explicación",
     "variantes": "Aclaración, Descripción, Interpretación, Exposición",
     "definicion": "Acción de aclarar algo para que se entienda mejor.",
@@ -1738,6 +1896,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "exposicion",
     "palabra": "Exposición",
     "variantes": "Presentación, Muestra, Demostración, Exhibición",
     "definicion": "Presentación pública de ideas, trabajos o productos.",
@@ -1749,6 +1908,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "facultad-educacion",
     "palabra": "Facultad",
     "variantes": "Capacidad, Habilidad, Aptitud, Departamento",
     "definicion": "Capacidad o habilidad natural de una persona. También es una división de la universidad.",
@@ -1760,6 +1920,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "filosofia",
     "palabra": "Filosofía",
     "variantes": "Sabiduría, Pensamiento, Reflexión, Ideología",
     "definicion": "Estudio de los principios fundamentales sobre la vida, la verdad y el conocimiento.",
@@ -1771,6 +1932,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "funcion",
     "palabra": "Función",
     "variantes": "Propósito, Rol, Tarea, Utilidad",
     "definicion": "Propósito o uso de algo. Acción que algo realiza.",
@@ -1782,6 +1944,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "funcionamiento",
     "palabra": "Funcionamiento",
     "variantes": "Operación, Mecanismo, Proceso, Trabajo",
     "definicion": "Manera en que algo trabaja o opera.",
@@ -1793,6 +1956,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "fundamentacion",
     "palabra": "Fundamentación",
     "variantes": "Justificación, Argumentación, Sustentación, Apoyo",
     "definicion": "Acción de establecer las bases o razones sólidas de algo.",
@@ -1804,6 +1968,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "grado",
     "palabra": "Grado",
     "variantes": "Nivel, Rango, Título, Diploma",
     "definicion": "Nivel o escalón en una serie. Diploma o título educativo.",
@@ -1815,6 +1980,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "uniformidad",
     "palabra": "Uniformidad",
     "variantes": "Homogeneidad, Regularidad, Igualdad, Consistencia, Estandarizació",
     "definicion": "Cualidad de mantener las mismas características, forma o manera, sin cambios ni diferencias entre sus partes.\r\n*Ejemplo:*\r\n*-En un colegio:* Todos los estudiantes llevan el mismo uniforme, lo que da uniformidad al grupo.\r\n*-Las reglas de un juego:* Si una regla aplica igual para todos los jugadores y en todo momento del juego, hay uniformidad. Nadie tiene ventajas ni excepciones.\r\n*-Ciencia, Industria, Cocina:* Distribución igualitaria de una propiedad o material en una superficie o producto. \r\nMezcla uniforme es aquella en la que todos sus ingredientes quedan distribuidos de manera pareja, de modo que cualquier parte de la mezcla tiene una composición muy similar.\r\n",
@@ -1826,10 +1992,11 @@
     "fechapublicacion": ""
   },
   {
+    "id": "dominio",
     "palabra": "Dominio",
     "variantes": "Maestría, Control, Experto, Competencia",
     "definicion": "Maestría o control total sobre algo. También es conocimiento profundo de un tema.",
-    "categoria": "Educación/Habilidades",
+    "categoria": "Educación",
     "video": "",
     "imagen": "Una persona en la cima de una montaña controlando el territorio",
     "senasugerida": "",
@@ -1837,10 +2004,11 @@
     "fechapublicacion": ""
   },
   {
+    "id": "democracia",
     "palabra": "Democracia",
     "variantes": "Gobierno del pueblo, Participación ciudadana",
     "definicion": "Sistema político donde el poder lo tiene el pueblo a través del voto.",
-    "categoria": "Educación/Política",
+    "categoria": "Política",
     "video": "",
     "imagen": "Personas votando en urnas, colores patrióticos, estilo ilustración cívica",
     "senasugerida": "",
@@ -1848,6 +2016,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "feedback",
     "palabra": "Feedback",
     "variantes": "Retroalimentación, Comentario, Evaluación, Respuesta",
     "definicion": "Información o comentario que recibes para mejorar.",
@@ -1859,6 +2028,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "feliz",
     "palabra": "Feliz",
     "variantes": "Contento, Alegre",
     "definicion": "Es cuando una persona se siente muy contenta y alegre.\n Ejemplo: Estoy feliz porque aprobé mi examen.",
@@ -1870,6 +2040,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "triste",
     "palabra": "Triste",
     "variantes": "",
     "definicion": "Es cuando una persona se siente mal por algo que le dolió o le hizo daño.\n Ejemplo: Me sentí triste porque mi amigo se mudó a otra ciudad.",
@@ -1881,6 +2052,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "enojado",
     "palabra": "Enojado",
     "variantes": "Molesto, Bravo, Furioso",
     "definicion": "Es cuando una persona se molesta mucho por algo que no le gustó.\n Ejemplo: Mi papá se puso enojado porque llegué tarde a casa.",
@@ -1892,6 +2064,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "asustado",
     "palabra": "Asustado",
     "variantes": "Con miedo",
     "definicion": "Es cuando una persona siente miedo por algo peligroso o desconocido.\n Ejemplo: Me asusté cuando escuché un ruido fuerte en la noche.",
@@ -1903,6 +2076,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "sorprendido",
     "palabra": "Sorprendido",
     "variantes": "",
     "definicion": "Es cuando algo pasa de repente y no lo esperabas.\n Ejemplo: Me quedé sorprendido cuando mis amigos me organizaron una fiesta.",
@@ -1914,6 +2088,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "nervioso",
     "palabra": "Nervioso",
     "variantes": "",
     "definicion": "Es cuando una persona se siente intranquila antes de algo importante.\n Ejemplo: Estaba nervioso antes de mi entrevista de trabajo.",
@@ -1925,6 +2100,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "tranquilo",
     "palabra": "Tranquilo",
     "variantes": "Calmado, En paz",
     "definicion": "Es cuando una persona está calmada, sin preocupaciones.\n Ejemplo: Después de terminar la tarea, me sentí tranquilo.",
@@ -1936,6 +2112,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "cansado",
     "palabra": "Cansado",
     "variantes": "Agotado",
     "definicion": "Es cuando el cuerpo o la mente están sin energía y necesitan descansar.\n Ejemplo: Estoy cansado porque trabajé todo el día.",
@@ -1947,6 +2124,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "preocupado",
     "palabra": "Preocupado",
     "variantes": "",
     "definicion": "Es cuando una persona piensa mucho en un problema y siente inquietud.\n Ejemplo: Estoy preocupado porque mi hijo no ha llegado a casa.",
@@ -1958,6 +2136,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "avergonzado",
     "palabra": "Avergonzado",
     "variantes": "",
     "definicion": "Es cuando una persona siente vergüenza por algo que hizo o le pasó frente a otros.\n Ejemplo: Me sentí avergonzado cuando me equivoqué al hablar en público.",
@@ -1969,6 +2148,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "celoso",
     "palabra": "Celoso",
     "variantes": "",
     "definicion": "Es cuando una persona siente envidia o inseguridad porque otra tiene algo o la atención de alguien.\n Ejemplo: Mi hermano se puso celoso porque le regalaron un juguete a mi otro hermano.",
@@ -1980,6 +2160,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "orgulloso",
     "palabra": "Orgulloso",
     "variantes": "",
     "definicion": "Es cuando una persona se siente muy satisfecha por un logro propio o de alguien cercano.\n Ejemplo: Estoy orgulloso de mi hija porque terminó la universidad.",
@@ -1991,6 +2172,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "aburrido",
     "palabra": "Aburrido",
     "variantes": "",
     "definicion": "Es cuando una persona no tiene nada interesante que hacer y el tiempo pasa lento.\n Ejemplo: Me sentí aburrido en casa todo el domingo.",
@@ -2002,6 +2184,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "confundido",
     "palabra": "Confundido",
     "variantes": "",
     "definicion": "Es cuando una persona no entiende bien algo y tiene dudas.\n Ejemplo: Me quedé confundido con las instrucciones del examen.",
@@ -2013,6 +2196,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "emocionado",
     "palabra": "Emocionado",
     "variantes": "Ilusionado",
     "definicion": "Es cuando una persona siente mucha ilusión y energía por algo que va a pasar.\n Ejemplo: Estoy emocionado porque mañana es mi cumpleaños.",
@@ -2024,6 +2208,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "frustrado",
     "palabra": "Frustrado",
     "variantes": "",
     "definicion": "Es cuando una persona no logra algo que intentó varias veces y se siente mal por eso.\n Ejemplo: Me sentí frustrado porque no pude resolver el problema de matemática.",
@@ -2035,6 +2220,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "agradecido",
     "palabra": "Agradecido",
     "variantes": "",
     "definicion": "Es cuando una persona siente gratitud por algo bueno que recibió.\n Ejemplo: Estoy agradecido con mis papás por su apoyo.",
@@ -2046,6 +2232,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "solo",
     "palabra": "Solo",
     "variantes": "Solitario",
     "definicion": "Es cuando una persona está sin compañía, o siente que nadie la acompaña.\n Ejemplo: Me sentí solo cuando mis amigos no me invitaron.",
@@ -2057,6 +2244,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "enamorado",
     "palabra": "Enamorado",
     "variantes": "",
     "definicion": "Es cuando una persona siente amor romántico por otra persona.\n Ejemplo: Mi hermano está enamorado de su compañera de universidad.",
@@ -2068,6 +2256,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "estresado",
     "palabra": "Estresado",
     "variantes": "",
     "definicion": "Es cuando una persona tiene mucha presión o trabajo y se siente agotada mentalmente.\n Ejemplo: Estoy estresado porque tengo tres exámenes esta semana.",
@@ -2079,6 +2268,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "frustracion",
     "palabra": "Frustración",
     "variantes": "Decepción, Insatisfacción, Desazón, Descontento",
     "definicion": "Sentimiento de estar decepcionado o insatisfecho cuando algo no sale como esperabas.",
@@ -2090,6 +2280,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "gratificacion",
     "palabra": "Gratificación",
     "variantes": "Satisfacción, Recompensa, Placer, Alegría",
     "definicion": "Recompensa o satisfacción que sientes cuando logras algo.",
@@ -2101,10 +2292,11 @@
     "fechapublicacion": ""
   },
   {
+    "id": "fraude",
     "palabra": "Fraude",
     "variantes": "Estafa, Engaño, Trampa, Delito",
     "definicion": "Engaño intencional para obtener algo ilícitamente.",
-    "categoria": "Ética/Legal",
+    "categoria": "Sociedad",
     "video": "",
     "imagen": "",
     "senasugerida": "",
@@ -2112,10 +2304,11 @@
     "fechapublicacion": ""
   },
   {
+    "id": "diligencia",
     "palabra": "Diligencia",
     "variantes": "Esfuerzo, Dedicación, Atención, Responsabilidad",
     "definicion": "Esfuerzo y cuidado que pones en hacer bien las cosas.",
-    "categoria": "Ética/Trabajo",
+    "categoria": "Trabajo",
     "video": "",
     "imagen": "",
     "senasugerida": "",
@@ -2123,6 +2316,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "papa",
     "palabra": "Papá",
     "variantes": "Padre, Pa",
     "definicion": "Es la palabra para llamar al padre, el hombre que es tu papá dentro de la familia.\n Ejemplo: Mi papá me lleva al colegio en las mañanas.",
@@ -2134,6 +2328,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "mama",
     "palabra": "Mamá",
     "variantes": "Madre, Ma",
     "definicion": "Es la palabra para llamar a la madre, la mujer que es tu mamá dentro de la familia.\n Ejemplo: Mi mamá cocina muy rico los domingos.",
@@ -2145,6 +2340,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "hermano",
     "palabra": "Hermano",
     "variantes": "Hno",
     "definicion": "Es el hombre que tiene los mismos papás que tú, o uno de los dos.\n Ejemplo: Mi hermano y yo jugamos fútbol todas las tardes.",
@@ -2156,6 +2352,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "hermana",
     "palabra": "Hermana",
     "variantes": "Hna",
     "definicion": "Es la mujer que tiene los mismos papás que tú, o uno de los dos.\n Ejemplo: Mi hermana me ayuda con la tarea de matemática.",
@@ -2167,6 +2364,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "abuelo",
     "palabra": "Abuelo",
     "variantes": "Abuelito",
     "definicion": "Es el papá de tu papá o de tu mamá.\n Ejemplo: Mi abuelo me cuenta historias de cuando era joven.",
@@ -2178,6 +2376,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "abuela",
     "palabra": "Abuela",
     "variantes": "Abuelita",
     "definicion": "Es la mamá de tu papá o de tu mamá.\n Ejemplo: Mi abuela prepara el mejor arroz con pollo.",
@@ -2189,6 +2388,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "tio",
     "palabra": "Tío",
     "variantes": "",
     "definicion": "Es el hermano de tu papá o de tu mamá.\n Ejemplo: Mi tío vino a visitarnos el fin de semana.",
@@ -2200,6 +2400,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "tia",
     "palabra": "Tía",
     "variantes": "",
     "definicion": "Es la hermana de tu papá o de tu mamá.\n Ejemplo: Mi tía me regaló un libro por mi cumpleaños.",
@@ -2211,6 +2412,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "primo",
     "palabra": "Primo",
     "variantes": "Prima",
     "definicion": "Es el hijo de tu tío o tu tía.\n Ejemplo: Fui a la playa con mi primo el sábado.",
@@ -2222,6 +2424,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "hijo",
     "palabra": "Hijo",
     "variantes": "Hija",
     "definicion": "Es el niño o el hombre que es tuyo, como papá o mamá.\n Ejemplo: Tengo un hijo de cinco años.",
@@ -2233,6 +2436,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "esposo",
     "palabra": "Esposo",
     "variantes": "Marido",
     "definicion": "Es el hombre con quien una persona se casó.\n Ejemplo: Mi esposo trabaja en una fábrica.",
@@ -2244,6 +2448,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "esposa",
     "palabra": "Esposa",
     "variantes": "",
     "definicion": "Es la mujer con quien una persona se casó.\n Ejemplo: Mi esposa y yo nos conocimos en la universidad.",
@@ -2255,6 +2460,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "sobrino",
     "palabra": "Sobrino",
     "variantes": "Sobrina",
     "definicion": "Es el hijo de tu hermano o tu hermana.\n Ejemplo: Mi sobrino cumple ocho años este mes.",
@@ -2266,6 +2472,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "nieto",
     "palabra": "Nieto",
     "variantes": "Nieta",
     "definicion": "Es el hijo de tu hijo o tu hija.\n Ejemplo: Mi abuela juega con su nieto todas las tardes.",
@@ -2277,6 +2484,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "cunado",
     "palabra": "Cuñado",
     "variantes": "Cuñada",
     "definicion": "Es el hermano de tu esposo o tu esposa, o el esposo de tu hermana.\n Ejemplo: Mi cuñado nos invitó a su casa.",
@@ -2288,6 +2496,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "deduccion",
     "palabra": "Deducción",
     "variantes": "Conclusión lógica, Inferencia, Razonamiento",
     "definicion": "Proceso de pensar que va de lo general a lo particular. Llegar a una conclusión basada en hechos conocidos.",
@@ -2299,6 +2508,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "epistemologia",
     "palabra": "Epistemología",
     "variantes": "Teoría del conocimiento, Estudio del saber",
     "definicion": "Rama de la filosofía que estudia cómo conocemos las cosas.",
@@ -2310,6 +2520,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "escepticismo",
     "palabra": "Escepticismo",
     "variantes": "Duda, Incredulidad, Desconfianza, Cuestionamiento",
     "definicion": "Actitud de dudar y no creer fácilmente en cosas sin buena evidencia.",
@@ -2321,6 +2532,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "esencia",
     "palabra": "Esencia",
     "variantes": "Núcleo, Elemento vital, Lo fundamental, Naturaleza",
     "definicion": "Lo más importante o fundamental de algo.",
@@ -2332,6 +2544,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "etica",
     "palabra": "Ética",
     "variantes": "Moral, Principios, Valores, Conducta correcta",
     "definicion": "Conjunto de principios sobre lo que es correcto e incorrecto.",
@@ -2343,6 +2556,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "falacia",
     "palabra": "Falacia",
     "variantes": "Engaño, Error lógico, Argumento falso, Sofisma",
     "definicion": "Argumento falso que parece verdadero pero contiene un error.",
@@ -2354,10 +2568,11 @@
     "fechapublicacion": ""
   },
   {
+    "id": "flexibilidad",
     "palabra": "Flexibilidad",
     "variantes": "Adaptabilidad, Elasticidad, Versatilidad, Capacidad de cambio",
     "definicion": "Capacidad de adaptarse a cambios y ser flexible.",
-    "categoria": "Habilidades",
+    "categoria": "Educación",
     "video": "",
     "imagen": "Una rama o cuerpo que se dobla sin romperse",
     "senasugerida": "",
@@ -2365,6 +2580,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "sol",
     "palabra": "Sol",
     "variantes": "",
     "definicion": "Es la estrella que da luz y calor durante el día.\n Ejemplo: Hoy hace mucho sol, lleva tus lentes de sol.",
@@ -2376,6 +2592,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "lluvia",
     "palabra": "Lluvia",
     "variantes": "",
     "definicion": "Es cuando el agua cae del cielo.\n Ejemplo: No salí porque estaba lloviendo mucho.",
@@ -2387,6 +2604,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "viento",
     "palabra": "Viento",
     "variantes": "",
     "definicion": "Es el aire que se mueve fuerte, a veces mueve las cosas.\n Ejemplo: El viento hizo volar mi sombrero.",
@@ -2398,6 +2616,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "calor",
     "palabra": "Calor",
     "variantes": "",
     "definicion": "Es cuando la temperatura está muy alta y se siente incómodo.\n Ejemplo: Hace mucho calor en la costa en verano.",
@@ -2409,6 +2628,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "frio",
     "palabra": "Frío",
     "variantes": "",
     "definicion": "Es cuando la temperatura está muy baja.\n Ejemplo: Tengo frío, voy a ponerme una chompa.",
@@ -2420,6 +2640,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "nube",
     "palabra": "Nube",
     "variantes": "",
     "definicion": "Es una masa blanca o gris que se ve en el cielo, hecha de agua.\n Ejemplo: El cielo estaba lleno de nubes grises antes de llover.",
@@ -2431,6 +2652,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "mar",
     "palabra": "Mar",
     "variantes": "",
     "definicion": "Es una gran extensión de agua salada.\n Ejemplo: Fuimos a nadar en el mar durante las vacaciones.",
@@ -2442,6 +2664,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "rio",
     "palabra": "Río",
     "variantes": "",
     "definicion": "Es una corriente de agua que va de las montañas hacia el mar.\n Ejemplo: Acampamos cerca de un río en la sierra.",
@@ -2453,6 +2676,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "montana",
     "palabra": "Montaña",
     "variantes": "",
     "definicion": "Es una elevación grande de tierra, más alta que una colina.\n Ejemplo: Subimos una montaña durante nuestro viaje a la sierra.",
@@ -2464,6 +2688,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "arbol",
     "palabra": "Árbol",
     "variantes": "",
     "definicion": "Es una planta grande con tronco, ramas y hojas.\n Ejemplo: Sembramos un árbol en el patio de mi casa.",
@@ -2475,6 +2700,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "animal",
     "palabra": "Animal",
     "variantes": "",
     "definicion": "Es un ser vivo que se mueve, como el perro, el gato o el pájaro.\n Ejemplo: Mi hijo quiere tener un animal en casa.",
@@ -2486,6 +2712,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "perro",
     "palabra": "Perro",
     "variantes": "",
     "definicion": "Es un animal muy común que se tiene como mascota en la casa.\n Ejemplo: Mi perro me espera en la puerta cuando llego.",
@@ -2497,6 +2724,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "gato",
     "palabra": "Gato",
     "variantes": "",
     "definicion": "Es un animal pequeño que también se tiene como mascota.\n Ejemplo: Mi gato duerme todo el día en el sillón.",
@@ -2508,6 +2736,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "terremoto",
     "palabra": "Terremoto",
     "variantes": "",
     "definicion": "Es cuando la tierra se mueve fuerte de repente, y puede ser peligroso.\n Ejemplo: Sentimos un terremoto anoche mientras dormíamos.",
@@ -2519,6 +2748,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "estacion-del-ano",
     "palabra": "Estación del año",
     "variantes": "Estación",
     "definicion": "Son los cuatro periodos del año: verano, otoño, invierno y primavera, cada uno con un clima distinto.\n Ejemplo: Mi estación del año favorita es el verano.",
@@ -2530,6 +2760,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "gobierno",
     "palabra": "Gobierno",
     "variantes": "Administración, Autoridad, Gestión pública, Estado",
     "definicion": "Sistema o grupo de personas que administra un país o región.",
@@ -2541,6 +2772,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "autonomia",
     "palabra": "Autonomía",
     "variantes": "Independencia, Libertad de decisión, Autodeterminación",
     "definicion": "Capacidad de una persona para tomar sus propias decisiones sin depender de otros.",
@@ -2552,6 +2784,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "autenticidad",
     "palabra": "Autenticidad",
     "variantes": "Genuinidad, Sinceridad, Honestidad, Realidad",
     "definicion": "Ser genuino, real y honesto. No ser falso ni pretender ser algo que no eres.",
@@ -2563,6 +2796,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "cognicion",
     "palabra": "Cognición",
     "variantes": "Pensamiento, Comprensión, Capacidad mental, Procesamiento",
     "definicion": "Procesos mentales que usamos para pensar, aprender y entender cosas.",
@@ -2574,6 +2808,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "creatividad",
     "palabra": "Creatividad",
     "variantes": "Inventiva, Imaginación, Originalidad, Innovación",
     "definicion": "Capacidad de pensar en cosas nuevas e inventar soluciones originales.",
@@ -2585,6 +2820,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "dependencia",
     "palabra": "Dependencia",
     "variantes": "Subordinación, Necesidad, Vínculo, Relación de poder",
     "definicion": "Necesidad de algo o alguien para poder funcionar o vivir.",
@@ -2596,6 +2832,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "dilema",
     "palabra": "Dilema",
     "variantes": "Encrucijada, Problema, Conflicto, Difícil decisión",
     "definicion": "Situación difícil donde debes elegir entre dos opciones y ambas tienen problemas.",
@@ -2607,6 +2844,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "empatia",
     "palabra": "Empatía",
     "variantes": "Comprensión, Solidaridad, Simpatía, Compasión",
     "definicion": "Capacidad de entender y sentir las emociones de otra persona.",
@@ -2618,6 +2856,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "fobia",
     "palabra": "Fobia",
     "variantes": "Miedo patológico, Terror irracional, Pánico",
     "definicion": "Miedo intenso y irracional a algo específico.",
@@ -2629,6 +2868,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "abismo",
     "palabra": "Abismo",
     "variantes": "abismo económico, al borde del abismo, caer en un abismo, un abismo de diferencia, Precipicio, Barranco",
     "definicion": "Abismo es una profundidad muy grande y difícil de medir. Puede referirse a un lugar físico, como un precipicio muy profundo, o usarse de forma figurada para describir una gran diferencia, un peligro o una situación muy difícil.\n\nEn pocas palabras, un abismo es algo tan profundo o tan grande que parece no tener fin o que es muy difícil de superar.",
@@ -2640,6 +2880,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "trascender",
     "palabra": "Trascender",
     "variantes": "transcender, perdurar, dejar huella, Tener impacto, impacto, Permanecer",
     "definicion": "Transcender significa ir más allá de lo común o de los límites, dejando un impacto, una enseñanza o un cambio que continúa existiendo incluso después de que una persona, un hecho o un momento haya terminado.\n\nEn otras palabras, trascender es hacer algo que tenga un valor o una influencia duradera.",
@@ -2651,6 +2892,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "dolor",
     "palabra": "Dolor",
     "variantes": "",
     "definicion": "Es una sensación desagradable en el cuerpo que indica que algo no está bien.\n Ejemplo: Tengo dolor de cabeza desde la mañana.",
@@ -2662,6 +2904,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "fiebre",
     "palabra": "Fiebre",
     "variantes": "",
     "definicion": "Es cuando el cuerpo tiene una temperatura más alta de lo normal, por una enfermedad.\n Ejemplo: Mi hijo tiene fiebre, así que lo llevé al doctor.",
@@ -2673,6 +2916,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "enfermedad",
     "palabra": "Enfermedad",
     "variantes": "Enfermo, Malestar",
     "definicion": "Es cuando el cuerpo no está funcionando bien y la persona se siente mal.\n Ejemplo: La gripe es una enfermedad muy común en invierno.",
@@ -2684,6 +2928,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "medicina",
     "palabra": "Medicina",
     "variantes": "Medicamento, Remedio, Pastilla",
     "definicion": "Es un producto que ayuda a curar una enfermedad o aliviar un dolor.\n Ejemplo: El doctor me recetó una medicina para la tos.",
@@ -2695,6 +2940,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "doctor",
     "palabra": "Doctor",
     "variantes": "Médico, Doctora",
     "definicion": "Es la persona que estudió para curar enfermedades y cuidar la salud de las personas.\n Ejemplo: Fui al doctor porque me dolía el estómago.",
@@ -2706,6 +2952,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "enfermera",
     "palabra": "Enfermera",
     "variantes": "Enfermero",
     "definicion": "Es la persona que ayuda al doctor y cuida a los pacientes en el hospital o posta.\n Ejemplo: La enfermera me puso una inyección.",
@@ -2717,6 +2964,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "vacuna",
     "palabra": "Vacuna",
     "variantes": "",
     "definicion": "Es una inyección que se pone para prevenir enfermedades.\n Ejemplo: Llevé a mi hija a ponerse su vacuna.",
@@ -2728,6 +2976,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "receta-medica",
     "palabra": "Receta médica",
     "variantes": "Receta",
     "definicion": "Es el papel donde el doctor escribe qué medicina debe tomar el paciente.\n Ejemplo: El doctor me dio una receta médica para comprar mis pastillas.",
@@ -2739,6 +2988,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "analisis-salud",
     "palabra": "Análisis",
     "variantes": "",
     "definicion": "Es una prueba médica, como de sangre, para saber cómo está la salud de una persona.\n Ejemplo: Me hice un análisis de sangre la semana pasada.",
@@ -2750,6 +3000,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "operacion",
     "palabra": "Operación",
     "variantes": "Cirugía",
     "definicion": "Es cuando un médico interviene el cuerpo de una persona para curarla de algo grave.\n Ejemplo: Mi papá tuvo una operación en la rodilla.",
@@ -2761,6 +3012,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "alergia",
     "palabra": "Alergia",
     "variantes": "",
     "definicion": "Es cuando el cuerpo reacciona mal a algo, como un alimento o polvo, causando molestias.\n Ejemplo: Tengo alergia al polvo, por eso estornudo mucho.",
@@ -2772,6 +3024,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "herida",
     "palabra": "Herida",
     "variantes": "",
     "definicion": "Es un daño en la piel o el cuerpo, como un corte o raspón.\n Ejemplo: Me hice una herida en la mano al cortar verduras.",
@@ -2783,6 +3036,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "tos",
     "palabra": "Tos",
     "variantes": "",
     "definicion": "Es cuando el cuerpo expulsa aire fuerte por la garganta, generalmente por una enfermedad.\n Ejemplo: Tengo tos desde hace tres días.",
@@ -2794,6 +3048,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "gripe",
     "palabra": "Gripe",
     "variantes": "Resfrío",
     "definicion": "Es una enfermedad común que causa tos, fiebre y dolor de cuerpo.\n Ejemplo: Falté al trabajo porque tenía gripe.",
@@ -2805,6 +3060,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "dieta",
     "palabra": "Dieta",
     "variantes": "",
     "definicion": "Es la forma de comer que sigue una persona, a veces para cuidar su salud.\n Ejemplo: El doctor me recomendó una dieta con menos azúcar.",
@@ -2816,6 +3072,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "ejercicio",
     "palabra": "Ejercicio",
     "variantes": "",
     "definicion": "Es una actividad física que se hace para mantener el cuerpo sano.\n Ejemplo: Hago ejercicio todas las mañanas antes de ir al trabajo.",
@@ -2827,6 +3084,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "descanso",
     "palabra": "Descanso",
     "variantes": "",
     "definicion": "Es el tiempo en que el cuerpo se relaja y recupera energía.\n Ejemplo: Necesito descanso porque trabajé mucho esta semana.",
@@ -2838,6 +3096,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "presion-arterial",
     "palabra": "Presión arterial",
     "variantes": "",
     "definicion": "Es la fuerza con la que la sangre se mueve dentro del cuerpo; se controla para cuidar el corazón.\n Ejemplo: Mi abuela se controla la presión arterial cada mes.",
@@ -2849,6 +3108,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "diabetes",
     "palabra": "Diabetes",
     "variantes": "",
     "definicion": "Es una enfermedad relacionada con el nivel de azúcar en la sangre.\n Ejemplo: Mi tío tiene diabetes y cuida mucho lo que come.",
@@ -2860,6 +3120,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "embarazo",
     "palabra": "Embarazo",
     "variantes": "",
     "definicion": "Es el proceso donde una mujer espera un bebé dentro de su cuerpo.\n Ejemplo: Mi hermana está de seis meses de embarazo.",
@@ -2871,6 +3132,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "hola",
     "palabra": "Hola",
     "variantes": "Holi, Holis, Holiwi, Olas, Hi, Oli, Olis",
     "definicion": "Es la palabra que usamos para saludar a alguien cuando lo vemos o empezamos a hablar con él. No importa la hora que sea.",
@@ -2882,6 +3144,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "adios",
     "palabra": "Adiós",
     "variantes": "Adios, Chau, Hasta la vista, Chao",
     "definicion": "Expresión utilizada para despedirse de una persona.",
@@ -2893,6 +3156,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "buenos-dias",
     "palabra": "Buenos días",
     "variantes": "Buen día, Buenas, Bnas",
     "definicion": "Es la fórmula de cortesía más común para saludar a alguien en la mañana, pero solo desde que amanece hasta el mediodía (la hora de comer).",
@@ -2904,6 +3168,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "buenas-tardes",
     "palabra": "Buenas tardes",
     "variantes": "Buena tarde, Bnas, Bnas tardes ",
     "definicion": "Es el saludo que usamos desde el mediodía hasta que se oculta el sol (cuando empieza a oscurecer).",
@@ -2915,6 +3180,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "buenas-noches",
     "palabra": "Buenas noches",
     "variantes": "Buenas noches, Bnas, Bnas noches",
     "definicion": "Es el saludo que usamos cuando ya está oscuro (de noche). También sirve para despedirte de alguien antes de irte a dormir.",
@@ -2926,6 +3192,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "bienvenido",
     "palabra": "Bienvenido",
     "variantes": "Bienvenida, Bienvenidos,Bienvenidas,  Bienvenid@s",
     "definicion": "Expresión de cortesía que se le da a una persona cuando llega a un lugar, a un grupo o a tu casa.",
@@ -2937,6 +3204,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "diversidad",
     "palabra": "Diversidad",
     "variantes": "Variedad, Pluralidad, Multiplicidad, Heterogeneidad",
     "definicion": "Variedad de personas, ideas o cosas diferentes en un lugar.",
@@ -2948,6 +3216,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "generacion",
     "palabra": "Generación",
     "variantes": "Cohorte, Grupo de edad, Período, Procreación",
     "definicion": "Grupo de personas nacidas en el mismo período histórico.",
@@ -2959,6 +3228,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "globalizacion",
     "palabra": "Globalización",
     "variantes": "Internacionalización, Conexión mundial, Expansión global",
     "definicion": "Proceso de conectar al mundo a través del comercio, tecnología e ideas.",
@@ -2970,6 +3240,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "digno",
     "palabra": "Digno",
     "variantes": "",
     "definicion": "Persona o cosa que merece respeto, buen trato o reconocimiento por su valor o por actuar de forma correcta.\n\n*Ejemplos*\n\n👤 *Persona*\nTodas las personas son dignas y merecen respeto.\n\n🏠 *Cosas*\nUna familia merece una vivienda digna: limpia, segura y en buen estado.\n\n💼 *Trabajo*\nToda persona merece un salario digno para cubrir sus necesidades básicas.",
@@ -2981,10 +3252,11 @@
     "fechapublicacion": ""
   },
   {
+    "id": "fundacion",
     "palabra": "Fundación",
     "variantes": "Base, Cimiento, Organización benéfica, Institución",
     "definicion": "Base o cimiento sobre el que se construye algo. También es una organización sin fines de lucro.",
-    "categoria": "Sociedad/Educación",
+    "categoria": "Sociedad",
     "video": "",
     "imagen": "Bloques de construcción formando una base sólida",
     "senasugerida": "",
@@ -2992,6 +3264,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "celular",
     "palabra": "Celular",
     "variantes": "Teléfono, Móvil",
     "definicion": "Es un aparato pequeño que sirve para llamar, enviar mensajes y usar internet.\n Ejemplo: Se me quedó el celular en casa.",
@@ -3003,6 +3276,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "internet",
     "palabra": "Internet",
     "variantes": "",
     "definicion": "Es la red que conecta computadoras y celulares en todo el mundo para buscar información y comunicarse.\n Ejemplo: No tengo internet en mi casa hoy.",
@@ -3014,6 +3288,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "wifi",
     "palabra": "Wifi",
     "variantes": "",
     "definicion": "Es una señal de internet sin cables que se usa en casas y lugares públicos.\n Ejemplo: La contraseña del wifi está pegada en la pared.",
@@ -3025,6 +3300,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "aplicacion",
     "palabra": "Aplicación",
     "variantes": "App",
     "definicion": "Es un programa que se instala en el celular o computadora para hacer algo específico.\n Ejemplo: Descargué una aplicación para aprender lengua de señas.",
@@ -3036,6 +3312,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "contrasena-tecnologia",
     "palabra": "Contraseña",
     "variantes": "",
     "definicion": "Es un conjunto de letras o números secreto que se usa para entrar a una cuenta o aparato.\n Ejemplo: Olvidé mi contraseña del correo.",
@@ -3047,6 +3324,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "mensaje-de-texto",
     "palabra": "Mensaje de texto",
     "variantes": "SMS, Mensaje",
     "definicion": "Es un texto corto que se envía de un celular a otro.\n Ejemplo: Le envié un mensaje de texto a mi hermano.",
@@ -3058,6 +3336,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "videollamada",
     "palabra": "Videollamada",
     "variantes": "",
     "definicion": "Es una llamada donde las personas se ven y se escuchan por la pantalla.\n Ejemplo: Hicimos una videollamada con mi familia que vive en otra ciudad.",
@@ -3069,6 +3348,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "correo-electronico",
     "palabra": "Correo electrónico",
     "variantes": "Email, Mail",
     "definicion": "Es un mensaje que se envía por internet a otra persona, usando una cuenta especial.\n Ejemplo: Envié mi currículum por correo electrónico.",
@@ -3080,6 +3360,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "cargador",
     "palabra": "Cargador",
     "variantes": "",
     "definicion": "Es el aparato que se conecta al celular o laptop para darle energía.\n Ejemplo: Necesito mi cargador porque mi celular está descargado.",
@@ -3091,6 +3372,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "bateria",
     "palabra": "Batería",
     "variantes": "",
     "definicion": "Es la parte del celular o de un aparato que guarda la energía.\n Ejemplo: La batería de mi celular se acabó rápido.",
@@ -3102,6 +3384,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "inteligencia-artificial",
     "palabra": "Inteligencia artificial",
     "variantes": "IA, AI",
     "definicion": "La inteligencia artificial es una tecnología que intenta imitar algunas capacidades de la inteligencia humana. Puede aprender de mucha información, reconocer patrones y mejorar sus respuestas o resultados con el tiempo.\n\n*Por ejemplo,* una IA puede reconocer una cara en una foto, traducir un texto, responder preguntas, recomendar videos o crear imágenes.",
@@ -3113,6 +3396,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "computadora",
     "palabra": "Computadora",
     "variantes": "PC, Laptop, Ordenador",
     "definicion": "Es una máquina que se usa para trabajar, estudiar o buscar información.\n Ejemplo: Hice mi tarea en la computadora del colegio.",
@@ -3124,6 +3408,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "redes-sociales",
     "palabra": "Redes sociales",
     "variantes": "Facebook, Instagram",
     "definicion": "Son aplicaciones donde las personas comparten fotos, videos y mensajes con otras personas.\n Ejemplo: Subí una foto de mi cumpleaños a mis redes sociales.",
@@ -3135,6 +3420,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "descargar",
     "palabra": "Descargar",
     "variantes": "",
     "definicion": "Es guardar en el celular o computadora un archivo o aplicación desde internet.\n Ejemplo: Descargué una película para ver en el bus.",
@@ -3146,6 +3432,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "actualizar",
     "palabra": "Actualizar",
     "variantes": "",
     "definicion": "Es poner la versión más nueva de una aplicación o programa.\n Ejemplo: Tengo que actualizar mi aplicación del banco.",
@@ -3157,6 +3444,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "usuario",
     "palabra": "Usuario",
     "variantes": "",
     "definicion": "Es el nombre o cuenta con la que una persona entra a una aplicación o página.\n Ejemplo: Mi usuario del correo es mi nombre completo.",
@@ -3168,6 +3456,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "algoritmo",
     "palabra": "Algoritmo",
     "variantes": "Procedimiento, Método, Pasos ordenados, Fórmula",
     "definicion": "Serie de pasos ordenados para resolver un problema o hacer una tarea. Como una receta que debe seguirse paso a paso.",
@@ -3179,6 +3468,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "buffer",
     "palabra": "Buffer",
     "variantes": "Almacenamiento temporal, Espacio de espera, Cache",
     "definicion": "Espacio temporal donde se guardan datos o información para que fluya sin interrupciones.",
@@ -3190,6 +3480,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "contrasena-tecnologia-2",
     "palabra": "Contraseña",
     "variantes": "Clave, PIN, Código secreto, Password",
     "definicion": "Código secreto que usas para acceder a tus cuentas y proteger tu información.",
@@ -3201,6 +3492,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "dashboard",
     "palabra": "Dashboard",
     "variantes": "Panel de control, Tablero, Interfaz",
     "definicion": "Panel de control visual que muestra información importante de un sistema.",
@@ -3212,6 +3504,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "digital",
     "palabra": "Digital",
     "variantes": "Electrónico, Numérico, En línea, Virtual",
     "definicion": "Relacionado con computadoras, internet y números. Lo opuesto a analógico.",
@@ -3223,6 +3516,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "encriptacion",
     "palabra": "Encriptación",
     "variantes": "Codificación, Cifrado, Protección de datos, Codificación de seguridad",
     "definicion": "Proceso de convertir información en código secreto para protegerla.",
@@ -3234,6 +3528,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "escalabilidad",
     "palabra": "Escalabilidad",
     "variantes": "Crecimiento, Expansibilidad, Flexibilidad, Adaptabilidad",
     "definicion": "Capacidad de un sistema para crecer y manejar más volumen sin perder calidad.",
@@ -3245,6 +3540,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "formato",
     "palabra": "Formato",
     "variantes": "Estructura, Disposición, Tipo, Presentación",
     "definicion": "Forma o estructura en que se presenta algo.",
@@ -3256,6 +3552,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "grafo",
     "palabra": "Grafo",
     "variantes": "Diagrama, Red, Mapa de relaciones, Estructura visual",
     "definicion": "Diagrama con puntos y líneas que muestra relaciones entre cosas.",
@@ -3267,6 +3564,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "branding",
     "palabra": "Branding",
     "variantes": "Marca, Identidad visual, Posicionamiento",
     "definicion": "Crear la identidad y la imagen de una marca o empresa para que la gente la reconozca.",
@@ -3278,6 +3576,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "catalogo",
     "palabra": "Catálogo",
     "variantes": "Listado, Inventario, Colección, Registro",
     "definicion": "Lista organizada de productos o artículos con sus características y precios.",
@@ -3289,6 +3588,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "jefe",
     "palabra": "Jefe",
     "variantes": "Jefa, Encargado, Supervisor, Gerente",
     "definicion": "Es la persona que dirige el trabajo y da las órdenes en una empresa o negocio.\n Ejemplo: Mi jefe me pidió terminar el informe antes del viernes.",
@@ -3300,6 +3600,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "sueldo",
     "palabra": "Sueldo",
     "variantes": "Salario, Pago, Remuneración",
     "definicion": "Es el dinero que una persona recibe por su trabajo, normalmente cada mes.\n Ejemplo: Recibo mi sueldo el último día de cada mes.",
@@ -3311,6 +3612,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "contrato",
     "palabra": "Contrato",
     "variantes": "Contrato de trabajo",
     "definicion": "Es un papel que firman el trabajador y la empresa donde se acuerdan las condiciones del trabajo, como el sueldo y el horario.\n Ejemplo: Firmé mi contrato de trabajo por un año.",
@@ -3322,6 +3624,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "reunion",
     "palabra": "Reunión",
     "variantes": "Junta, Meeting",
     "definicion": "Es cuando varias personas se juntan para hablar de un tema o tomar decisiones sobre el trabajo.\n Ejemplo: Tenemos una reunión con el equipo a las diez de la mañana.",
@@ -3333,6 +3636,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "entrevista-de-trabajo",
     "palabra": "Entrevista de trabajo",
     "variantes": "Entrevista laboral",
     "definicion": "Es la conversación entre una persona que busca empleo y la empresa, para ver si puede contratarla.\n Ejemplo: Mañana tengo una entrevista de trabajo en una empresa de ropa.",
@@ -3344,6 +3648,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "renunciar",
     "palabra": "Renunciar",
     "variantes": "Renuncia, Dejar el trabajo",
     "definicion": "Es dejar un trabajo por decisión propia, avisando a la empresa que ya no vas a trabajar más ahí.\n Ejemplo: Decidí renunciar a mi trabajo para estudiar una carrera.",
@@ -3355,6 +3660,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "horario",
     "palabra": "Horario",
     "variantes": "Horario de trabajo, Turno",
     "definicion": "Son las horas en las que una persona debe estar en el trabajo o en el colegio.\n Ejemplo: Mi horario de trabajo es de ocho de la mañana a cinco de la tarde.",
@@ -3366,6 +3672,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "companero-de-trabajo",
     "palabra": "Compañero de trabajo",
     "variantes": "Colega, Compañero laboral",
     "definicion": "Es una persona que trabaja en el mismo lugar que tú.\n Ejemplo: Almorcé con mi compañero de trabajo hoy.",
@@ -3377,6 +3684,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "curriculum",
     "palabra": "Currículum",
     "variantes": "CV, Hoja de vida",
     "definicion": "Es un documento donde una persona escribe sus estudios, experiencia y datos, para buscar trabajo.\n Ejemplo: Envié mi currículum a varias empresas esta semana.",
@@ -3388,6 +3696,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "vacaciones",
     "palabra": "Vacaciones",
     "variantes": "Descanso, Días libres",
     "definicion": "Son los días de descanso que un trabajador o estudiante tiene, sin ir al trabajo ni al colegio.\n Ejemplo: En enero tengo vacaciones y voy a viajar con mi familia.",
@@ -3399,6 +3708,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "consenso",
     "palabra": "Consenso",
     "variantes": "Acuerdo, Conformidad, Unanimidad",
     "definicion": "Acuerdo general entre las personas. Cuando todos piensan lo mismo.",
@@ -3410,6 +3720,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "desempeno",
     "palabra": "Desempeño",
     "variantes": "Rendimiento, Actuación, Ejecución, Resultado",
     "definicion": "Forma en que alguien realiza un trabajo o tarea.",
@@ -3421,6 +3732,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "eficiencia",
     "palabra": "Eficiencia",
     "variantes": "Efectividad, Rendimiento, Productividad, Optimización",
     "definicion": "Capacidad de realizar un trabajo de la mejor manera posible con menos recursos.",
@@ -3432,6 +3744,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "ejecucion",
     "palabra": "Ejecución",
     "variantes": "Realización, Implementación, Cumplimiento, Desarrollo",
     "definicion": "Acción de realizar o llevar a cabo un plan o proyecto.",
@@ -3443,6 +3756,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "equipo-trabajo",
     "palabra": "Equipo",
     "variantes": "Grupo, Conjunto, Cuadrilla, Banda",
     "definicion": "Grupo de personas trabajando juntas para un objetivo común.",
@@ -3454,6 +3768,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "estandar",
     "palabra": "Estándar",
     "variantes": "Criterio, Norma, Patrón, Requisito",
     "definicion": "Nivel de calidad o características que algo debe cumplir.",
@@ -3465,6 +3780,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "estrategia",
     "palabra": "Estrategia",
     "variantes": "Plan, Táctica, Método, Aproximación",
     "definicion": "Plan general para alcanzar un objetivo.",
@@ -3476,6 +3792,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "experiencia",
     "palabra": "Experiencia",
     "variantes": "Vivencia, Práctica, Conocimiento práctico, Trayectoria",
     "definicion": "Conocimiento adquirido a través de vivir situaciones.",
@@ -3487,6 +3804,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "fabricacion",
     "palabra": "Fabricación",
     "variantes": "Producción, Manufactura, Elaboración, Construcción",
     "definicion": "Proceso de hacer o producir algo en cantidad.",
@@ -3498,6 +3816,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "firma-trabajo",
     "palabra": "Firma",
     "variantes": "Rúbrica, Autógrafo, Empresa, Compañía",
     "definicion": "Nombre escrito con tu propia letra única. También es una empresa.",
@@ -3509,6 +3828,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "gestion",
     "palabra": "Gestión",
     "variantes": "Administración, Dirección, Control, Manejo",
     "definicion": "Administración y organización de recursos para lograr objetivos.",
@@ -3520,6 +3840,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "gremio",
     "palabra": "Gremio",
     "variantes": "Asociación, Corporación, Sindicato, Unión",
     "definicion": "Asociación de personas que ejercen el mismo oficio o profesión.",
@@ -3531,6 +3852,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "envio",
     "palabra": "Envío",
     "variantes": "Remesa, Transporte, Distribución, Paquete",
     "definicion": "Acción de mandar o transportar algo a otra persona o lugar.",
@@ -3542,6 +3864,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "distribucion",
     "palabra": "Distribución",
     "variantes": "Reparto, Dispersión, Circulación, Envío",
     "definicion": "Manera en que algo se reparte o se extiende en diferentes lugares.",
@@ -3553,6 +3876,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "banco",
     "palabra": "Banco",
     "variantes": "",
     "definicion": "Es una institución donde las personas guardan su dinero, sacan préstamos o hacen pagos.\n Ejemplo: Fui al banco a retirar dinero.",
@@ -3564,6 +3888,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "tarjeta",
     "palabra": "Tarjeta",
     "variantes": "Tarjeta de débito, Tarjeta de crédito",
     "definicion": "Es un objeto de plástico que se usa para pagar o sacar dinero del banco.\n Ejemplo: Pagué la compra con mi tarjeta.",
@@ -3575,6 +3900,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "cuenta-bancaria",
     "palabra": "Cuenta bancaria",
     "variantes": "",
     "definicion": "Es donde una persona guarda su dinero dentro de un banco.\n Ejemplo: Mi sueldo llega directamente a mi cuenta bancaria.",
@@ -3586,6 +3912,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "prestamo",
     "palabra": "Préstamo",
     "variantes": "",
     "definicion": "Es dinero que un banco u otra persona te da, y que debes devolver después.\n Ejemplo: Pedí un préstamo para arreglar mi casa.",
@@ -3597,6 +3924,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "deuda",
     "palabra": "Deuda",
     "variantes": "",
     "definicion": "Es el dinero que una persona debe pagar porque lo pidió prestado.\n Ejemplo: Todavía tengo una deuda con el banco.",
@@ -3608,6 +3936,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "ahorro",
     "palabra": "Ahorro",
     "variantes": "Ahorrar",
     "definicion": "Es el dinero que una persona guarda sin gastar, para usarlo después.\n Ejemplo: Tengo un ahorro para comprar una laptop.",
@@ -3619,6 +3948,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "recibo",
     "palabra": "Recibo",
     "variantes": "",
     "definicion": "Es un papel que confirma que se hizo un pago.\n Ejemplo: Guardé el recibo de la compra por si acaso.",
@@ -3630,6 +3960,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "factura",
     "palabra": "Factura",
     "variantes": "",
     "definicion": "Es un documento que detalla lo que se compró y cuánto se pagó.\n Ejemplo: La tienda me dio la factura de mi compra.",
@@ -3641,6 +3972,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "dni",
     "palabra": "DNI",
     "variantes": "Documento de identidad, Carné",
     "definicion": "Es el documento que identifica a una persona en Perú, con su nombre, foto y número.\n Ejemplo: Necesito mi DNI para hacer cualquier trámite.",
@@ -3652,6 +3984,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "pasaporte",
     "palabra": "Pasaporte",
     "variantes": "",
     "definicion": "Es el documento que se necesita para viajar a otro país.\n Ejemplo: Saqué mi pasaporte para viajar a Chile.",
@@ -3663,6 +3996,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "tramite",
     "palabra": "Trámite",
     "variantes": "",
     "definicion": "Es un proceso con papeles o pasos que se hace en una oficina para conseguir algo.\n Ejemplo: Hice un trámite en la municipalidad para mi negocio.",
@@ -3674,6 +4008,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "firma-tramites",
     "palabra": "Firma",
     "variantes": "",
     "definicion": "Es el nombre escrito de forma especial que una persona pone para confirmar algo.\n Ejemplo: Puse mi firma en el contrato de trabajo.",
@@ -3685,6 +4020,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "cola",
     "palabra": "Cola",
     "variantes": "Fila",
     "definicion": "Es la fila de personas que esperan su turno para algo.\n Ejemplo: Hice una cola larga en el banco.",
@@ -3696,6 +4032,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "impuesto",
     "palabra": "Impuesto",
     "variantes": "",
     "definicion": "Es el dinero que las personas o empresas pagan al Estado.\n Ejemplo: Mi papá paga impuestos por su negocio.",
@@ -3707,6 +4044,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "presupuesto",
     "palabra": "Presupuesto",
     "variantes": "",
     "definicion": "Es el plan de cuánto dinero se va a gastar en algo.\n Ejemplo: Hice un presupuesto para mi fiesta de cumpleaños.",
@@ -3718,6 +4056,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "taxi",
     "palabra": "Taxi",
     "variantes": "",
     "definicion": "Es un carro que se puede contratar para llevarte a un lugar, pagando por el viaje.\n Ejemplo: Tomé un taxi porque se me hizo tarde.",
@@ -3729,6 +4068,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "carro",
     "palabra": "Carro",
     "variantes": "Auto, Automóvil",
     "definicion": "Es un vehículo con cuatro ruedas que se usa para trasladarse.\n Ejemplo: Mi papá compró un carro nuevo.",
@@ -3740,6 +4080,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "bicicleta",
     "palabra": "Bicicleta",
     "variantes": "Bici",
     "definicion": "Es un vehículo de dos ruedas que se mueve pedaleando.\n Ejemplo: Voy al trabajo en bicicleta todos los días.",
@@ -3751,6 +4092,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "moto",
     "palabra": "Moto",
     "variantes": "Motocicleta",
     "definicion": "Es un vehículo de dos ruedas con motor, más rápido que la bicicleta.\n Ejemplo: Mi vecino se mueve en moto por la ciudad.",
@@ -3762,6 +4104,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "tren",
     "palabra": "Tren",
     "variantes": "",
     "definicion": "Es un vehículo largo que se mueve sobre rieles y transporta muchas personas.\n Ejemplo: Tomamos el tren para ir a Huancayo.",
@@ -3773,6 +4116,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "avion",
     "palabra": "Avión",
     "variantes": "",
     "definicion": "Es un vehículo que vuela por el aire y transporta personas a lugares lejanos.\n Ejemplo: Viajamos en avión para llegar a Cusco.",
@@ -3784,6 +4128,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "pasaje",
     "palabra": "Pasaje",
     "variantes": "Boleto, Ticket",
     "definicion": "Es el pago o el ticket que se necesita para viajar en un transporte.\n Ejemplo: Compré mi pasaje de bus para el viaje.",
@@ -3795,6 +4140,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "estacion",
     "palabra": "Estación",
     "variantes": "",
     "definicion": "Es el lugar donde se espera o se sube a un tren o bus.\n Ejemplo: Nos encontramos en la estación del metro.",
@@ -3806,6 +4152,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "gasolina",
     "palabra": "Gasolina",
     "variantes": "Combustible",
     "definicion": "Es el combustible que usan los carros y motos para funcionar.\n Ejemplo: Mi papá llenó el tanque de gasolina antes del viaje.",
@@ -3817,6 +4164,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "licencia-de-conducir",
     "palabra": "Licencia de conducir",
     "variantes": "Brevete",
     "definicion": "Es el documento que permite manejar un vehículo legalmente.\n Ejemplo: Saqué mi licencia de conducir el año pasado.",
@@ -3828,6 +4176,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "carrera",
     "palabra": "Carrera",
     "variantes": "Carrera profesional, Especialidad",
     "definicion": "Es lo que una persona estudia en la universidad o instituto para trabajar en eso después, como enfermería, ingeniería o diseño.\n Ejemplo: Mi carrera es contabilidad, estudio en la universidad hace dos años.",
@@ -3839,6 +4188,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "semestre",
     "palabra": "Semestre",
     "variantes": "Ciclo académico, Ciclo",
     "definicion": "Es cada una de las dos partes en que se divide el año de estudios en la universidad.\n Ejemplo: Este semestre estoy llevando cinco cursos.",
@@ -3850,6 +4200,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "beca",
     "palabra": "Beca",
     "variantes": "Beca de estudio, Media beca",
     "definicion": "Es una ayuda de dinero que da una institución para que una persona pueda estudiar sin pagar todo o parte de su carrera.\n Ejemplo: Gané una beca y ahora no pago la universidad.",
@@ -3861,6 +4212,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "tesis",
     "palabra": "Tesis",
     "variantes": "Tesis de grado, Investigación final",
     "definicion": "Es como un gran proyecto de investigación escolar, pero llevado al nivel universitario, que debes hacer y aprobar para poder graduarte y trabajar legalmente en tu profesión.Imagínalo como el \"examen final\" de toda tu carrera, pero en lugar de responder preguntas en una hoja, tú mismo eliges un problema de tu especialidad, investigas cómo resolverlo y escribes un libro con tus hallazgos.\r\n*¿Cómo se hace?*\r\n•\tEliges un problema: Piensas en algo que quieres investigar. Por ejemplo: los problemas de comunicación entre padres y sus hijos sordos.\r\n•\tBuscas información: Lees libros, haces entrevistas o encuestas para conocer mejor el problema.\r\n•\tExplicas lo que descubriste: Revisas toda la información y escribes las conclusiones de tu investigación.\r\n*El último paso: presentar tu tesis*\r\nCuando terminas tu tesis, debes presentarla y explicarla frente a unos profesores.\r\nEllos te harán algunas preguntas sobre tu investigación.\r\nSi apruebas, la universidad te entrega tu Título Profesional.\r\nLuego si decides continuar estudiando para obtener un grado académico como maestría o doctorado tendrá que realizar nuevamente la tesis respectiva.\r\nSi decide continuar con sus estudios de posgrado para obtener el grado académico de maestría o doctorado, deberá elaborar y sustentar una nueva tesis orientada a dicho nivel.\r\n",
@@ -3872,6 +4224,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "practica-pre-profesional",
     "palabra": "Práctica pre-profesional",
     "variantes": "Prácticas, Practicante, Pasantía",
     "definicion": "Es el tiempo en que un estudiante trabaja en una empresa para aprender su carrera antes de terminar de estudiar.\n Ejemplo: Empiezo mis prácticas pre-profesionales en un hospital el próximo mes.",
@@ -3883,6 +4236,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "facultad-universidad",
     "palabra": "Facultad",
     "variantes": "Escuela profesional",
     "definicion": "Es la parte de la universidad donde se estudia un grupo de carreras parecidas, como la Facultad de Ingeniería o de Medicina.\n Ejemplo: La Facultad de Educación está en el segundo piso.",
@@ -3894,6 +4248,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "titulacion",
     "palabra": "Titulación",
     "variantes": "Titularse, Graduación",
     "definicion": "Es el trámite final que se hace para recibir el título profesional después de terminar la carrera.\n Ejemplo: Después de mi tesis, sigue el proceso de titulación.",
@@ -3905,6 +4260,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "aula-virtual",
     "palabra": "Aula virtual",
     "variantes": "Clase virtual, Clase online",
     "definicion": "Es una clase que se da por internet, usando una computadora o celular, en vez de ir físicamente a un salón.\n Ejemplo: Hoy tengo clase en el aula virtual desde mi casa.",
@@ -3916,6 +4272,7 @@
     "fechapublicacion": ""
   },
   {
+    "id": "resiliencia",
     "palabra": "Resiliencia",
     "variantes": "resiliencia, resiliente, adaptación, perseverancia",
     "definicion": "La resiliencia es la capacidad de una persona para enfrentar momentos difíciles, adaptarse a lo que pasó y seguir adelante.\n\nLa persona puede sentirse triste, preocupada o afectada. Tener resiliencia no significa no sufrir. Significa que, poco a poco, busca cómo enfrentar el problema, se adapta a los cambios y continúa con su vida.",
