@@ -1,0 +1,154 @@
+name: Temporal Descubre y animación Lo nuevo
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - ".github/workflows/tmp-descubre-animacion-lo-nuevo.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  ajustar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Aplicar cambios
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          # 1) Nombre visible: "La palabra del día" -> "Descubre".
+          index_path = Path('index.html')
+          html = index_path.read_text(encoding='utf-8')
+          reemplazos = {
+              'aria-label="Contraer la palabra del día"': 'aria-label="Contraer Descubre"',
+              '<span class="dia-rect-label" id="labelSenalDelDia">✨ La palabra del día</span>': '<span class="dia-rect-label" id="labelSenalDelDia">✨ Descubre</span>',
+          }
+          for anterior, nuevo in reemplazos.items():
+              if anterior not in html:
+                  raise SystemExit(f'No se encontró en index.html: {anterior}')
+              html = html.replace(anterior, nuevo, 1)
+          index_path.write_text(html, encoding='utf-8', newline='\n')
+
+          # 2) Al navegar a días anteriores, la sección conserva el nombre Descubre.
+          script_path = Path('js/script.js')
+          js = script_path.read_text(encoding='utf-8')
+          patron = re.compile(
+              r'\s*if\(offset === 0\) labelSenalDelDia\.textContent = "✨ La palabra del día";\n'
+              r'\s*else if\(offset === 1\) labelSenalDelDia\.textContent = "✨ La palabra de ayer";\n'
+              r'\s*else labelSenalDelDia\.textContent = `✨ La palabra de hace \$\{offset\} días`;'
+          )
+          js_nuevo, cantidad = patron.subn('\n        labelSenalDelDia.textContent = "✨ Descubre";', js, count=1)
+          if cantidad != 1:
+              raise SystemExit(f'No se pudo actualizar labelSenalDelDia; coincidencias={cantidad}')
+          script_path.write_text(js_nuevo, encoding='utf-8', newline='\n')
+
+          # 3) Animación corta y elegante para atraer la atención hacia "Lo nuevo".
+          css_path = Path('css/mejoras-producto.css')
+          css = css_path.read_text(encoding='utf-8')
+          marca = 'ANIMACION_LO_NUEVO_V1_20260912'
+          if marca not in css:
+              css += r'''
+
+/* ANIMACION_LO_NUEVO_V1_20260912
+   Llama la atención al cargar sin dejar una animación permanente o molesta. */
+#lspNuevasCard {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    animation: lspLoNuevoPulso 1.35s cubic-bezier(.22, 1, .36, 1) .55s 2;
+}
+
+#lspNuevasCard::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(110deg,
+        transparent 18%,
+        rgba(255, 193, 7, .08) 38%,
+        rgba(56, 189, 248, .16) 50%,
+        rgba(255, 193, 7, .08) 62%,
+        transparent 82%);
+    transform: translateX(-125%);
+    animation: lspLoNuevoBrillo 1.35s ease-in-out .55s 2;
+}
+
+#lspNuevasCard > * {
+    position: relative;
+    z-index: 1;
+}
+
+#lspNuevasCard .lsp-mejora-icono {
+    transform-origin: center;
+    animation: lspLoNuevoIcono .9s cubic-bezier(.34, 1.56, .64, 1) .7s 2;
+}
+
+@keyframes lspLoNuevoPulso {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+        box-shadow: 0 7px 20px rgba(15, 23, 42, .065);
+    }
+    45% {
+        transform: translateY(-2px) scale(1.006);
+        box-shadow: 0 13px 30px rgba(37, 99, 235, .16), 0 0 0 2px rgba(255, 193, 7, .14);
+    }
+}
+
+@keyframes lspLoNuevoBrillo {
+    0% { transform: translateX(-125%); }
+    70%, 100% { transform: translateX(125%); }
+}
+
+@keyframes lspLoNuevoIcono {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    45% { transform: scale(1.13) rotate(-6deg); }
+    68% { transform: scale(1.08) rotate(5deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #lspNuevasCard,
+    #lspNuevasCard::before,
+    #lspNuevasCard .lsp-mejora-icono {
+        animation: none !important;
+    }
+}
+'''
+              css_path.write_text(css, encoding='utf-8', newline='\n')
+
+          # 4) Nueva versión del shell para que llegue a la PWA instalada.
+          sw_path = Path('sw.js')
+          sw = sw_path.read_text(encoding='utf-8')
+          sw, cantidad_sw = re.subn(r'const VERSION_APP = "v\d+";', 'const VERSION_APP = "v77";', sw, count=1)
+          if cantidad_sw != 1:
+              raise SystemExit('No se pudo actualizar VERSION_APP')
+          sw_path.write_text(sw, encoding='utf-8', newline='\n')
+          PY
+
+      - name: Validar cambios
+        run: |
+          grep -q 'id="labelSenalDelDia">✨ Descubre<' index.html
+          grep -q 'labelSenalDelDia.textContent = "✨ Descubre"' js/script.js
+          grep -q 'ANIMACION_LO_NUEVO_V1_20260912' css/mejoras-producto.css
+          grep -q 'VERSION_APP = "v77"' sw.js
+          ! grep -q 'id="labelSenalDelDia">✨ La palabra del día<' index.html
+          git diff --check
+
+      - name: Guardar cambios
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html js/script.js css/mejoras-producto.css sw.js
+          git commit -m "Renombrar Descubre y animar Lo nuevo"
+          git push origin HEAD:develop
