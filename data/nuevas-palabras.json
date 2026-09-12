@@ -1,9 +1,18 @@
 {
-  "generadoEn": "2026-09-12T13:10:07Z",
+  "generadoEn": "2026-09-12T19:15:00Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
   "items": [
+    {
+      "id": "retar",
+      "palabra": "Retar",
+      "categoria": "Metas y desafíos",
+      "imagen": "img/diccionario/retar.png",
+      "fecha": "2026-09-12T19:14:40Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "diccionario"
+    },
     {
       "id": "psicosis",
       "palabra": "Psicosis",
@@ -100,15 +109,6 @@
       "categoria": "Saludos",
       "imagen": "img/diccionario/hola.webp",
       "fecha": "2026-09-03T18:38:08Z",
-      "origenFecha": "imagen-git",
-      "fuente": "diccionario"
-    },
-    {
-      "id": "gracias",
-      "palabra": "Gracias",
-      "categoria": "Cortesía",
-      "imagen": "img/diccionario/gracias.webp",
-      "fecha": "2026-09-03T18:38:04Z",
       "origenFecha": "imagen-git",
       "fuente": "diccionario"
     }
