@@ -3298,15 +3298,33 @@ function onYouTubeIframeAPIReady() {
         crearReproductorNosotrosCuandoVisible(videoPendiente);
     }
 }
-// index.html ya define un window.onYouTubeIframeAPIReady "temprano" (en el
-// <head>, antes de que este archivo cargue) para no perder el aviso de la
-// API si esta queda lista antes de que script.js termine de descargarse.
-// Acá se reemplaza esa función por la real, y si el aviso temprano ya
-// había llegado (window.__ytApiListoTemprano), se ejecuta de una vez.
+// La API de YouTube ya no se descarga en el <head>. Conservamos el callback
+// global que exige iframe_api y la solicitamos únicamente cuando una pantalla
+// realmente necesita crear un reproductor.
 window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
-window.__onYouTubeIframeAPIReadyReal = onYouTubeIframeAPIReady;
-if (window.__ytApiListoTemprano) {
-    onYouTubeIframeAPIReady();
+let ytApiCargaIniciada = false;
+
+function asegurarApiYouTube() {
+    if (ytApiListo) return;
+    if (window.YT && typeof window.YT.Player === "function") {
+        onYouTubeIframeAPIReady();
+        return;
+    }
+    if (ytApiCargaIniciada) return;
+    ytApiCargaIniciada = true;
+
+    const existente = document.querySelector('script[src*="youtube.com/iframe_api"]');
+    if (existente) return;
+
+    const api = document.createElement("script");
+    api.id = "lspediaYoutubeIframeApi";
+    api.src = "https://www.youtube.com/iframe_api";
+    api.async = true;
+    api.onerror = () => {
+        ytApiCargaIniciada = false;
+        console.warn("No se pudo cargar la API de YouTube. Se reintentará al abrir otro video.");
+    };
+    document.head.appendChild(api);
 }
 
 // El video de "Sobre Nosotros" es fijo (no depende de datos del Sheet), así
@@ -3319,6 +3337,7 @@ function iniciarReproductorNosotros() {
         crearReproductorNosotrosCuandoVisible(ID_VIDEO_NOSOTROS);
     } else {
         ytVideoNosotrosPendiente = ID_VIDEO_NOSOTROS;
+        asegurarApiYouTube();
     }
 }
 
@@ -3886,6 +3905,7 @@ function inicializarReproductorPalabra(videoId, opciones = {}) {
         // se crea en cuanto esté lista.
         ytVideoIdPendiente = videoId;
         ytOpcionesReproductorPalabraPendiente = opciones;
+        asegurarApiYouTube();
     }
 }
 
@@ -4032,6 +4052,7 @@ function inicializarReproductorSugerida(videoId) {
         // ya crea el reproductor principal si estaba pendiente; aquí guardamos
         // también el video de la seña sugerida para crearlo en ese mismo momento).
         ytVideoIdSugeridaPendiente = videoId;
+        asegurarApiYouTube();
     }
 }
 

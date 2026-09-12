@@ -15,12 +15,31 @@
             window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
             if (!esOficial) return;
 
-            const ga = document.createElement("script");
-            ga.async = true;
-            ga.src = "https://www.googletagmanager.com/gtag/js?id=G-RJX3RP2CBR";
-            document.head.appendChild(ga);
+            // La configuración queda en cola de inmediato; la librería externa
+            // espera a que la apertura principal de LSPedia ya haya terminado.
             window.gtag("js", new Date());
             window.gtag("config", "G-RJX3RP2CBR");
+
+            let gaSolicitado = false;
+            function cargarGA4() {
+                if (gaSolicitado) return;
+                gaSolicitado = true;
+                const ga = document.createElement("script");
+                ga.async = true;
+                ga.src = "https://www.googletagmanager.com/gtag/js?id=G-RJX3RP2CBR";
+                document.head.appendChild(ga);
+            }
+
+            function programarGA4() {
+                if ("requestIdleCallback" in window) {
+                    window.requestIdleCallback(cargarGA4, { timeout: 2500 });
+                } else {
+                    setTimeout(cargarGA4, 900);
+                }
+            }
+
+            if (document.readyState === "complete") programarGA4();
+            else window.addEventListener("load", programarGA4, { once: true });
         })();
     </script>
 
@@ -115,31 +134,11 @@
     <link rel="preconnect" href="https://script.google.com">
     <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
 
-    <!-- Preconnect a YouTube: adelanta la conexión al dominio antes de que
-         se necesite el video de "Sobre Nosotros" (o el de una palabra),
-         para que tarde menos en aparecer. -->
-    <link rel="preconnect" href="https://www.youtube.com">
+    <!-- Las miniaturas sí aparecen en Inicio (por ejemplo, Descubre), por eso
+         mantenemos caliente i.ytimg.com. La API pesada de YouTube ya NO se
+         descarga al abrir LSPedia: js/script.js la solicita solo cuando se
+         abre una ficha con video o la sección Sobre Nosotros. -->
     <link rel="preconnect" href="https://i.ytimg.com" crossorigin>
-
-    <!-- La API de YouTube (iframe_api) se carga en paralelo desde acá, en
-         vez de al final del body: así, cuando el navegador ya terminó de
-         parsear toda la página (momento en el que antes recién arrancaba
-         su descarga), la API ya está lista o a punto de estarlo. Esto es
-         lo que hacía que el video de "Sobre Nosotros" demorara en
-         aparecer, sobre todo justo después de un refresco de la página.
-         "onYouTubeIframeAPIReady" recién se define más abajo, en
-         js/script.js, así que acá se guarda un aviso temprano por si la
-         API queda lista antes de que ese archivo termine de cargar. -->
-    <script>
-        window.__ytApiListoTemprano = false;
-        window.onYouTubeIframeAPIReady = function () {
-            window.__ytApiListoTemprano = true;
-            if (typeof window.__onYouTubeIframeAPIReadyReal === "function") {
-                window.__onYouTubeIframeAPIReadyReal();
-            }
-        };
-    </script>
-    <script src="https://www.youtube.com/iframe_api" async></script>
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="img/favicon.png">
