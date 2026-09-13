@@ -65,6 +65,39 @@
         }
     }
 
+    /* ============================================================
+       DICCIONARIO — AUTOSCROLL AL FILTRAR POR LETRA
+       ------------------------------------------------------------
+       filtrarPorLetra() pinta los resultados en #resultado, pero no llama
+       al helper de scroll que sí usan las categorías y Vocabulario. Por eso,
+       al tocar A, B, C... el listado aparece sin que la pantalla se mueva.
+
+       Se escucha únicamente el clic real sobre las letras del índice para
+       no alterar restauraciones de URL/F5. Cuando el filtro ya terminó de
+       pintar, se reutiliza scrollAlPrimerResultado(), que ya contempla navbar
+       fijo, reflows y cambios de viewport en móvil.
+       ============================================================ */
+    function activarAutoScrollIndiceDiccionario(){
+        const indice = document.getElementById('indiceAlfabetico');
+        if(!indice || indice.dataset.autoScrollResultados === '1') return;
+
+        indice.dataset.autoScrollResultados = '1';
+        indice.querySelectorAll('.btn-abc').forEach(function(boton){
+            boton.addEventListener('click', function(){
+                requestAnimationFrame(function(){
+                    const destino = document.getElementById('resultado');
+                    if(!destino || !destino.innerHTML.trim()) return;
+
+                    if(typeof window.scrollAlPrimerResultado === 'function'){
+                        window.scrollAlPrimerResultado(destino);
+                    } else {
+                        destino.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        });
+    }
+
     function cargar(src, alTerminar){
         const s = document.createElement('script');
         s.src = src;
@@ -78,6 +111,7 @@
     }
 
     activarDescubreSoloConVideo();
+    activarAutoScrollIndiceDiccionario();
 
     cargar('js/mejoras-producto-base.js', function(){
         cargar('js/lo-nuevo.js');
