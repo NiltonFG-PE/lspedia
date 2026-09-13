@@ -184,12 +184,28 @@
    busquedas.html termine su inicialización para no competir con su primer render. */
 (function cargarHistorialAdmin(){
   'use strict';
+  function refrescarHistorial(){
+    document.dispatchEvent(new Event('visibilitychange'));
+  }
   function cargar(){
     if(document.querySelector('script[data-lspedia-historial-busquedas]'))return;
     const s=document.createElement('script');
     s.src='busquedas-historial.js?v=20260913-1';
     s.async=false;
     s.dataset.lspediaHistorialBusquedas='1';
+    s.onload=function(){
+      // Refuerzo tras el render inicial del panel base.
+      setTimeout(refrescarHistorial,2200);
+      const periodo=document.getElementById('periodSelect');
+      if(periodo&&periodo.dataset.lspediaHistorialPeriodo!=='1'){
+        periodo.dataset.lspediaHistorialPeriodo='1';
+        periodo.addEventListener('change',function(){
+          // Estadísticas cambian de periodo; la cola de búsquedas vuelve a
+          // consultar "todo" y no se encoge con ese selector.
+          setTimeout(refrescarHistorial,1800);
+        });
+      }
+    };
     document.head.appendChild(s);
   }
   if(document.readyState==='complete')setTimeout(cargar,0);
