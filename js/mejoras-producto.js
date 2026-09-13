@@ -32,8 +32,6 @@
                 const video = String((palabra && palabra.video) || '').trim();
                 if(!video) return false;
 
-                // Si está disponible el validador central de YouTube,
-                // exigimos además que el enlace/ID sea realmente utilizable.
                 if(typeof window.extraerIdYouTube === 'function'){
                     return !!window.extraerIdYouTube(video);
                 }
@@ -58,8 +56,6 @@
         mostrarDescubreSoloConVideo.__lspediaSoloVideos = true;
         window.mostrarSenalDelDia = mostrarDescubreSoloConVideo;
 
-        // Si los datos ya terminaron de cargar antes de instalar el wrapper,
-        // repintamos la tarjeta una vez para aplicar el filtro inmediatamente.
         if(window.App && Array.isArray(window.App.datos) && window.App.datos.length){
             mostrarDescubreSoloConVideo();
         }
@@ -67,15 +63,6 @@
 
     /* ============================================================
        DICCIONARIO — AUTOSCROLL AL FILTRAR POR LETRA
-       ------------------------------------------------------------
-       filtrarPorLetra() pinta los resultados en #resultado, pero no llama
-       al helper de scroll que sí usan las categorías y Vocabulario. Por eso,
-       al tocar A, B, C... el listado aparece sin que la pantalla se mueva.
-
-       Se escucha únicamente el clic real sobre las letras del índice para
-       no alterar restauraciones de URL/F5. Cuando el filtro ya terminó de
-       pintar, se reutiliza scrollAlPrimerResultado(), que ya contempla navbar
-       fijo, reflows y cambios de viewport en móvil.
        ============================================================ */
     function activarAutoScrollIndiceDiccionario(){
         const indice = document.getElementById('indiceAlfabetico');
@@ -119,7 +106,10 @@
             cargar('js/i18n-restaurar.js', function(){
                 cargar('js/i18n-auto.js', function(){
                     cargar('js/i18n-nosotros.js', function(){
-                        cargar('js/buscador-visual.js');
+                        cargar('js/buscador-visual.js', function(){
+                            // Predicción avanzada solo para el Diccionario.
+                            cargar('js/buscador-predictivo.js');
+                        });
                     });
                 });
             });
