@@ -104,25 +104,180 @@
 })();
 
 /* ============================================================
-   Regla oficial de publicación del Diccionario.
-   Se carga después de que la página y script.js ya están disponibles para
-   que pueda reemplazar la regla histórica y volver a calcular buscador,
-   categorías y estadísticas usando SOLO entradas con imagen real.
+   REGLA OFICIAL DE PUBLICACIÓN DEL DICCIONARIO — 2026-09-13
+   ------------------------------------------------------------
+   Fuente de verdad pública:
+   - una entrada SOLO aparece si tiene una imagen real;
+   - el video es opcional para aparecer en Diccionario;
+   - definición, categoría, variantes o traducción NO publican por sí solas;
+   - un texto descriptivo en la columna imagen NO cuenta como imagen.
+
+   Esta capa se registra ANTES de script.js y se aplica justo cuando
+   script.js anuncia que los datos están listos. Así buscador, A-Z,
+   categorías y Estadísticas comparten exactamente el mismo banco público.
    ============================================================ */
-(function cargarReglaPublicacionDiccionario() {
+(function activarReglaPublicacionDiccionarioPorImagen() {
     'use strict';
 
-    function cargar() {
-        try {
-            if (document.querySelector('script[data-lspedia-publicacion-diccionario]')) return;
-            const script = document.createElement('script');
-            script.src = 'js/publicacion-diccionario.js?v=20260913-1';
-            script.async = false;
-            script.dataset.lspediaPublicacionDiccionario = '1';
-            document.head.appendChild(script);
-        } catch (_e) {}
+    let aplicando = false;
+    let ultimaFirma = '';
+
+    function texto(valor) {
+        return String(valor == null ? '' : valor).trim();
     }
 
-    if (document.readyState === 'complete') cargar();
-    else window.addEventListener('load', cargar, { once: true });
+    function esImagenReal(valor) {
+        const principal = texto(valor).split(',')[0].trim();
+        if (!principal) return false;
+
+        return /^(?:https?:\/\/|\/|\.\.?\/|img\/)/i.test(principal) &&
+            /\.(?:avif|gif|jpe?g|png|svg|webp)(?:[?#].*)?$/i.test(principal);
+    }
+
+    function filtrarPublicables(data) {
+        if (!Array.isArray(data)) return [];
+        return data.filter(function (p) {
+            return !!(
+                p &&
+                texto(p.palabra) &&
+                texto(p.categoria) &&
+                esImagenReal(p.imagen)
+            );
+        });
+    }
+
+    function instalarFiltroEnScriptBase() {
+        // script.js declara esta función global después de security.js.
+        // En cuanto existe, la sustituimos por la regla definitiva.
+        if (typeof window.obtenerDatosDiccionarioPublicables === 'function' &&
+            window.obtenerDatosDiccionarioPublicables !== filtrarPublicables) {
+            window.obtenerDatosDiccionarioPublicables = filtrarPublicables;
+        }
+
+        window.LSPediaPublicacionDiccionario = Object.freeze({
+            esImagenReal: esImagenReal,
+            filtrar: filtrarPublicables
+        });
+    }
+
+    function refrescarInterfaz() {
+        try {
+            if (typeof window.renderCategoriasDiccionario === 'function') {
+                window.renderCategoriasDiccionario();
+            }
+        } catch (error) {
+            console.warn('[LSPedia] No se pudieron refrescar categorías:', error);
+        }
+
+        try {
+            if (typeof window.actualizarEstadisticas === 'function') {
+                window.actualizarEstadisticas();
+            }
+        } catch (error) {
+            console.warn('[LSPedia] No se pudieron refrescar estadísticas:', error);
+        }
+
+        try {
+            if (typeof window.mostrarFavoritos === 'function') {
+                window.mostrarFavoritos();
+            }
+        } catch (_error) {}
+
+        try {
+            if (typeof window.recalcularChipsSugeridos === 'function') {
+                window.recalcularChipsSugeridos();
+            }
+        } catch (_error) {}
+
+        try {
+            const input = document.getElementById('buscar');
+            if (input && texto(input.value) && typeof window.buscarPalabras === 'function') {
+                window.buscarPalabras();
+            }
+        } catch (_error) {}
+    }
+
+    function cerrarFichaNoPublicable() {
+        let params;
+        try { params = new URLSearchParams(window.location.search); }
+        catch (_error) { return; }
+
+        const referencia = texto(params.get('p'));
+        const fuente = texto(params.get('fuente')).toLowerCase();
+        if (!referencia || fuente === 'vocabulario') return;
+        if (!window.App || !Array.isArray(window.App.datos)) return;
+
+        const ref = referencia.toLocaleLowerCase('es-PE');
+        const existe = window.App.datos.some(function (p) {
+            if (!p) return false;
+            const id = texto(p.id).toLocaleLowerCase('es-PE');
+            const nombre = texto(p.palabra).toLocaleLowerCase('es-PE');
+            return id === ref || nombre === ref;
+        });
+        if (existe) return;
+
+        try {
+            window.history.replaceState({ tipo: 'vista', vista: 'diccionario' }, '', window.location.pathname);
+        } catch (_error) {}
+
+        if (typeof window.irAlBuscador === 'function') {
+            window.irAlBuscador({ sinEnfoque: true, irArriba: true });
+        }
+    }
+
+    function aplicarDataCruda(data) {
+        if (!window.App || !Array.isArray(data)) return;
+        const publicables = filtrarPublicables(data);
+        const firma = publicables.map(function (p) { return texto(p.id) || texto(p.palabra); }).join('|');
+
+        // Siempre reasignamos si App.datos no coincide en cantidad, aunque la
+        // firma sea igual, porque una regla histórica pudo volver a llenarlo.
+        if (ultimaFirma !== firma || !Array.isArray(window.App.datos) || window.App.datos.length !== publicables.length) {
+            window.App.datos = publicables;
+            ultimaFirma = firma;
+            refrescarInterfaz();
+            cerrarFichaNoPublicable();
+        }
+    }
+
+    function aplicarDesdeFuenteReal() {
+        if (aplicando) return;
+        if (!window.App) return;
+        aplicando = true;
+        instalarFiltroEnScriptBase();
+
+        fetch('data/palabras.json?_publicacion_imagen=20260913-4', { cache: 'no-store' })
+            .then(function (respuesta) {
+                if (!respuesta.ok) throw new Error('HTTP ' + respuesta.status);
+                return respuesta.json();
+            })
+            .then(function (data) {
+                aplicarDataCruda(data);
+            })
+            .catch(function (error) {
+                console.warn('[LSPedia] No se pudo refrescar palabras.json; se filtra la copia en memoria.', error);
+                if (window.App && Array.isArray(window.App.datos)) {
+                    aplicarDataCruda(window.App.datos);
+                }
+            })
+            .finally(function () {
+                aplicando = false;
+            });
+    }
+
+    // security.js se ejecuta antes de script.js, por lo que estos listeners
+    // ya están listos cuando la carga inicial del Diccionario termina.
+    document.addEventListener('lspedia:datosListos', function () {
+        setTimeout(aplicarDesdeFuenteReal, 0);
+    });
+    document.addEventListener('lspedia:palabrasActualizadas', function () {
+        setTimeout(aplicarDesdeFuenteReal, 0);
+    });
+
+    // Respaldo para cachés/sesiones en las que el evento hubiera ocurrido
+    // antes de que se instalara esta revisión.
+    window.addEventListener('load', function () {
+        setTimeout(aplicarDesdeFuenteReal, 0);
+        setTimeout(aplicarDesdeFuenteReal, 1200);
+    }, { once: true });
 })();
