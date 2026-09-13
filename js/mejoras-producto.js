@@ -118,7 +118,9 @@
         cargar('js/i18n.js', function(){
             cargar('js/i18n-restaurar.js', function(){
                 cargar('js/i18n-auto.js', function(){
-                    cargar('js/buscador-visual.js');
+                    cargar('js/i18n-nosotros.js', function(){
+                        cargar('js/buscador-visual.js');
+                    });
                 });
             });
         });
