@@ -1,0 +1,49 @@
+name: Corregir distribución de Estadísticas
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - '.github/workflows/fix-estadisticas-numero-bloque-20260913.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  aplicar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Aplicar corrección
+        run: python scripts/fix_estadisticas_numero_bloque_20260913.py
+
+      - name: Validar
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -A3 -m1 '^\.stat2-numero {' css/estilos.css | grep -q 'display: block;'
+          grep -A4 -m1 '^\.stat2-numero {' css/estilos.css | grep -q 'width: max-content;'
+          grep -q 'const VERSION_APP = "v109";' sw.js
+          git diff --check
+
+      - name: Guardar y limpiar temporales
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/fix-estadisticas-numero-bloque-20260913.yml
+          git rm scripts/fix_estadisticas_numero_bloque_20260913.py
+          git add css/estilos.css sw.js
+          git commit -m "Corregir alineación de tarjetas de Estadísticas"
+          git push origin HEAD:develop
