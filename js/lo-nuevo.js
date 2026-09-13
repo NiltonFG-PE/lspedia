@@ -1,12 +1,17 @@
 /* LSPedia — sección "Lo nuevo".
-   Muestra los 12 contenidos más recientes de Diccionario + Vocabulario.
-   La etiqueta NUEVO dura 14 días, pero la tarjeta puede seguir visible
-   mientras continúe entre las 12 publicaciones más recientes. */
+   Regla editorial:
+   - Lo nuevo depende del VIDEO publicado, no de la imagen.
+   - Una ficha de Diccionario con imagen pero sin video puede estar en el
+     Diccionario, pero no aparece aquí.
+   - Una ficha con video aunque todavía no tenga imagen sí puede aparecer aquí;
+     en ese caso se usa la miniatura del video.
+   Muestra los 12 contenidos más recientes de Diccionario + Vocabulario. */
 (function(){
     'use strict';
 
     let itemsLoNuevo = [];
     let diasEtiquetaNuevo = 14;
+    let diccionarioCrudo = [];
 
     function $(id){ return document.getElementById(id); }
     function texto(v){ return String(v == null ? '' : v).trim(); }
@@ -27,6 +32,9 @@
     }
 
     function datosDiccionario(){
+        if(Array.isArray(diccionarioCrudo) && diccionarioCrudo.length){
+            return diccionarioCrudo.filter(p => p && p.palabra);
+        }
         return window.App && Array.isArray(window.App.datos)
             ? window.App.datos.filter(p => p && p.palabra)
             : [];
@@ -93,15 +101,77 @@
         return '';
     }
 
+    function tieneVideoValido(p){
+        return !!extraerIdVideo(p && p.video);
+    }
+
+    function esImagenReal(valor){
+        const imagen = texto(valor).split(',')[0].trim();
+        return /^(?:https?:\/\/|\/|\.\.?\/|img\/)/i.test(imagen) &&
+            /\.(?:avif|gif|jpe?g|png|svg|webp)(?:[?#].*)?$/i.test(imagen);
+    }
+
     function miniatura(x){
         const dePalabra = texto(x && x.palabra && x.palabra.imagen).split(',')[0].trim();
         const deRegistro = texto(x && x.registro && x.registro.imagen).split(',')[0].trim();
-        const imagen = dePalabra || deRegistro;
-        if(/^(?:https?:\/\/|\/|\.\.?\/|img\/)/i.test(imagen)) return imagen;
+        const imagen = esImagenReal(dePalabra) ? dePalabra : (esImagenReal(deRegistro) ? deRegistro : '');
+        if(imagen) return imagen;
 
         const videoId = extraerIdVideo(x && x.palabra && x.palabra.video);
         if(videoId) return 'https://i.ytimg.com/vi/' + encodeURIComponent(videoId) + '/mqdefault.jpg';
         return 'img/imagen-no-disponible.svg';
+    }
+
+    function fechaAISO(valor){
+        const v = texto(valor);
+        if(!v) return '';
+        const m = v.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+        if(m){
+            return m[3] + '-' + m[2].padStart(2,'0') + '-' + m[1].padStart(2,'0') + 'T12:00:00Z';
+        }
+        const t = Date.parse(v);
+        return Number.isFinite(t) ? new Date(t).toISOString() : '';
+    }
+
+    function fechaPalabra(p){
+        return fechaAISO(
+            p && (p.fechaPublicacion || p.fechapublicacion || p.fecha_publicacion)
+        );
+    }
+
+    function claveRegistro(x){
+        return fuenteRegistro(x) + '|' + normal(x && x.palabra) + '|' + normal(x && x.categoria);
+    }
+
+    function integrarDiccionarioPorVideo(registros){
+        const salida = Array.isArray(registros) ? registros.slice() : [];
+        const existentes = new Set(salida.map(claveRegistro));
+
+        datosDiccionario().forEach(p => {
+            if(!p || !p.palabra || !p.categoria || !tieneVideoValido(p)) return;
+            const fecha = fechaPalabra(p);
+            if(!fecha) return;
+            const registro = {
+                id: refPalabra(p),
+                palabra: p.palabra,
+                categoria: p.categoria,
+                imagen: esImagenReal(p.imagen) ? texto(p.imagen).split(',')[0].trim() : '',
+                fecha,
+                origenFecha: 'fechaPublicacion-video',
+                fuente: 'diccionario'
+            };
+            const clave = claveRegistro(registro);
+            if(!existentes.has(clave)){
+                salida.push(registro);
+                existentes.add(clave);
+            }
+        });
+
+        return salida.sort((a,b) => {
+            const ta = Date.parse(texto(a && a.fecha)) || 0;
+            const tb = Date.parse(texto(b && b.fecha)) || 0;
+            return tb - ta;
+        });
     }
 
     function esNuevo(fecha){
@@ -123,7 +193,7 @@
 
         const subtitulo = card.querySelector('.lsp-mejora-sub');
         if(subtitulo){
-            subtitulo.textContent = 'Últimos contenidos publicados en Diccionario y Vocabulario.';
+            subtitulo.textContent = 'Últimos videos publicados en Diccionario y Vocabulario.';
         }
     }
 
@@ -158,11 +228,11 @@
 
         const publicadas = itemsLoNuevo
             .map(buscarContenido)
-            .filter(x => x && x.palabra && texto(x.palabra.video))
+            .filter(x => x && x.palabra && tieneVideoValido(x.palabra))
             .slice(0, 12);
 
         if(!publicadas.length){
-            caja.innerHTML = '<span class="lsp-mejora-sub">Las próximas publicaciones aparecerán aquí.</span>';
+            caja.innerHTML = '<span class="lsp-mejora-sub">Los próximos videos publicados aparecerán aquí.</span>';
             return;
         }
 
@@ -195,24 +265,33 @@
     }
 
     async function cargar(){
+        let registros = [];
         try{
-            const r = await fetch('data/nuevas-palabras.json?_=' + Date.now(), {cache:'no-store'});
-            if(!r.ok) throw new Error('HTTP ' + r.status);
-            const d = await r.json();
-            itemsLoNuevo = Array.isArray(d.items) ? d.items : [];
-            const dias = Number(d.diasEtiquetaNuevo);
-            if(Number.isFinite(dias) && dias > 0) diasEtiquetaNuevo = dias;
+            const resultados = await Promise.allSettled([
+                fetch('data/nuevas-palabras.json?_=' + Date.now(), {cache:'no-store'}),
+                fetch('data/palabras.json?_=' + Date.now(), {cache:'no-store'})
+            ]);
+
+            if(resultados[0].status === 'fulfilled' && resultados[0].value.ok){
+                const d = await resultados[0].value.json();
+                registros = Array.isArray(d.items) ? d.items : [];
+                const dias = Number(d.diasEtiquetaNuevo);
+                if(Number.isFinite(dias) && dias > 0) diasEtiquetaNuevo = dias;
+            }
+
+            if(resultados[1].status === 'fulfilled' && resultados[1].value.ok){
+                const d = await resultados[1].value.json();
+                diccionarioCrudo = Array.isArray(d) ? d : [];
+            }
         }catch(_e){
-            itemsLoNuevo = [];
+            registros = [];
         }
+
+        itemsLoNuevo = integrarDiccionarioPorVideo(registros);
         render();
     }
 
-
     // ANIMACION_LO_NUEVO_VIEWPORT_V2_20260912
-    // Espera a que la tarjeta sea visible antes de llamar la atención.
-    // Así la animación no termina mientras el usuario todavía está arriba,
-    // mirando el buscador. Se ejecuta una sola vez por carga de página.
     function prepararAnimacionAtencion(intentos){
         intentos = Number(intentos) || 0;
         const card = $('lspNuevasCard');
