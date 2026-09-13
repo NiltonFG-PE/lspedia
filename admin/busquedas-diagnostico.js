@@ -179,3 +179,19 @@
 
   window.LSPediaDiagnosticoBusquedas={construirIndice,analizar,normalizar:norm};
 })();
+
+/* Carga la mejora de historial sobre el panel existente. Se espera a que
+   busquedas.html termine su inicialización para no competir con su primer render. */
+(function cargarHistorialAdmin(){
+  'use strict';
+  function cargar(){
+    if(document.querySelector('script[data-lspedia-historial-busquedas]'))return;
+    const s=document.createElement('script');
+    s.src='busquedas-historial.js?v=20260913-1';
+    s.async=false;
+    s.dataset.lspediaHistorialBusquedas='1';
+    document.head.appendChild(s);
+  }
+  if(document.readyState==='complete')setTimeout(cargar,0);
+  else window.addEventListener('load',()=>setTimeout(cargar,0),{once:true});
+})();
