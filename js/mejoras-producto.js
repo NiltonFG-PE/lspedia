@@ -3,14 +3,16 @@
 (function(){
     'use strict';
 
-    // Regla existente de publicación del Diccionario, ajustada sin crear
-    // una segunda vista ni un segundo banco de datos:
+    // Regla oficial de publicación del Diccionario:
     // - la imagen principal REAL es obligatoria;
-    // - el video es opcional;
-    // - textos antiguos usados como idea/prompt de ilustración NO cuentan
-    //   como imagen publicada.
-    // Esta función se ejecuta antes de DOMContentLoaded, por lo que App.iniciar
-    // usa la regla correcta al cargar palabras.json.
+    // - el video es opcional para aparecer en el Diccionario;
+    // - una definición, variantes, traducción o categoría por sí solas NO publican;
+    // - textos antiguos usados como idea/prompt de ilustración NO cuentan como imagen.
+    //
+    // Este archivo se carga después de script.js. Por eso, además de sustituir
+    // la función de filtro para las siguientes actualizaciones, volvemos a leer
+    // palabras.json una sola vez para corregir inmediatamente App.datos y evitar
+    // que una caché previa mantenga visibles palabras sin imagen.
     function activarReglaPublicacionDiccionarioConImagen(){
         const original = window.obtenerDatosDiccionarioPublicables;
         if(typeof original !== 'function' || original.__lspediaImagenObligatoria) return;
@@ -31,8 +33,8 @@
             return data.filter(function(palabra){
                 return !!(
                     palabra &&
-                    palabra.palabra &&
-                    palabra.categoria &&
+                    String(palabra.palabra || '').trim() &&
+                    String(palabra.categoria || '').trim() &&
                     esImagenReal(palabra.imagen)
                 );
             });
@@ -40,7 +42,57 @@
 
         filtrarPublicablesPorImagen.__lspediaImagenObligatoria = true;
         filtrarPublicablesPorImagen.__lspediaReglaAnterior = original;
+        filtrarPublicablesPorImagen.esImagenReal = esImagenReal;
         window.obtenerDatosDiccionarioPublicables = filtrarPublicablesPorImagen;
+
+        // Corrige de inmediato la sesión actual. Esto es importante porque
+        // script.js ya pudo haber cargado una versión filtrada con la regla
+        // antigua (video obligatorio) antes de que este módulo se ejecute.
+        fetch('data/palabras.json?reglaImagen=20260913-2', { cache: 'no-store' })
+            .then(function(respuesta){
+                if(!respuesta.ok) throw new Error('No se pudo actualizar palabras.json');
+                return respuesta.json();
+            })
+            .then(function(data){
+                if(!Array.isArray(data)) return;
+
+                // Si existe la función central de script.js, la usamos para
+                // refrescar categorías, estadísticas, sugerencias y demás zonas.
+                // Ya verá la nueva obtenerDatosDiccionarioPublicables.
+                if(typeof window.aplicarPalabrasActualizadasEnSesion === 'function'){
+                    window.aplicarPalabrasActualizadasEnSesion(data);
+                    return;
+                }
+
+                // Respaldo por compatibilidad: actualiza directamente App.datos.
+                if(window.App){
+                    window.App.datos = filtrarPublicablesPorImagen(data);
+                }
+                if(typeof window.renderCategoriasDiccionario === 'function'){
+                    window.renderCategoriasDiccionario();
+                }
+                if(typeof window.actualizarEstadisticas === 'function'){
+                    window.actualizarEstadisticas();
+                }
+                if(typeof window.mostrarFavoritos === 'function'){
+                    window.mostrarFavoritos();
+                }
+            })
+            .catch(function(error){
+                console.warn('No se pudo refrescar el Diccionario con la regla de imagen:', error);
+
+                // Incluso si falla la red, elimina en memoria las entradas sin
+                // imagen que pudieran haber quedado visibles por una caché vieja.
+                if(window.App && Array.isArray(window.App.datos)){
+                    window.App.datos = filtrarPublicablesPorImagen(window.App.datos);
+                    if(typeof window.renderCategoriasDiccionario === 'function'){
+                        window.renderCategoriasDiccionario();
+                    }
+                    if(typeof window.actualizarEstadisticas === 'function'){
+                        window.actualizarEstadisticas();
+                    }
+                }
+            });
     }
 
     function activarDescubreSoloConVideo(){
