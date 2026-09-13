@@ -8,9 +8,11 @@
    - No precargar módulos pesados que ahora se cargan bajo demanda.
    - Mantener los JSON de contenido fuera del SW: palabras.json conserva
      su propia caché rápida + revalidación desde script.js.
+   - El panel /admin/ queda fuera del cascarón público para que nunca se
+     sustituya por index.html.
    ============================================================ */
 
-const VERSION_APP = "v104";
+const VERSION_APP = "v105";
 const PREFIJO_CACHE = "lspedia-shell-";
 const PREFIJO_RUNTIME = "lspedia-runtime-";
 const CACHE_NOMBRE = PREFIJO_CACHE + VERSION_APP;
@@ -72,12 +74,19 @@ self.addEventListener("fetch", (event) => {
     const url = new URL(request.url);
     if (url.origin !== self.location.origin) return;
 
+    // El panel privado Admin NO forma parte de la PWA pública. Dejar estas
+    // peticiones totalmente en manos del navegador evita que una navegación a
+    // /admin/busquedas.html reciba por error el index.html del Diccionario.
+    if (url.pathname === "/admin" || url.pathname.startsWith("/admin/")) {
+        return;
+    }
+
     // Los JSON de contenido son deliberadamente network-first/no-store desde
     // el frontend para evitar que una palabra recién publicada quede vieja.
     if (url.pathname.includes("/data/palabras.json")) return;
 
-    // Navegación: devuelve rápido el cascarón cacheado y actualiza en segundo
-    // plano cuando la red está disponible.
+    // Navegación pública: devuelve rápido el cascarón cacheado y actualiza en
+    // segundo plano cuando la red está disponible.
     if (request.mode === "navigate") {
         event.respondWith((async () => {
             const cached = await caches.match("./index.html");
