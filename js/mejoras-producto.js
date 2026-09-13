@@ -141,14 +141,18 @@
         cargar('js/a-z-movil.js?v=20260913');
     });
 
-    cargar('js/mejoras-producto-base.js', function(){
-        cargar('js/lo-nuevo.js');
-        cargar('js/i18n.js', function(){
-            cargar('js/i18n-restaurar.js', function(){
-                cargar('js/i18n-auto.js', function(){
-                    cargar('js/i18n-nosotros.js', function(){
-                        cargar('js/buscador-visual.js', function(){
-                            cargar('js/buscador-predictivo.js');
+    // Mejora la carga de recursos y deduplica fallos técnicos ANTES de que
+    // la telemetría base comience a escuchar errores.
+    cargar('js/optimizacion-errores.js?v=20260913-1', function(){
+        cargar('js/mejoras-producto-base.js', function(){
+            cargar('js/lo-nuevo.js');
+            cargar('js/i18n.js', function(){
+                cargar('js/i18n-restaurar.js', function(){
+                    cargar('js/i18n-auto.js', function(){
+                        cargar('js/i18n-nosotros.js', function(){
+                            cargar('js/buscador-visual.js', function(){
+                                cargar('js/buscador-predictivo.js');
+                            });
                         });
                     });
                 });
