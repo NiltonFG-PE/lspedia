@@ -9,7 +9,7 @@
   const HOSTS_DESARROLLO = new Set(['localhost', '127.0.0.1', '::1']);
   const host = String(location.hostname || '').toLowerCase();
   const esOficial = HOSTS_OFICIALES.has(host);
-  const esDesarrollo = HOSTS_DESARROLLO.has(host) || host.endsWith('.github.io');
+  const esDesarrollo = HOSTS_DESARROLLO.has(host);
 
   function escaparHtml(valor) {
     return String(valor == null ? '' : valor).replace(/[&<>"']/g, function (c) {
