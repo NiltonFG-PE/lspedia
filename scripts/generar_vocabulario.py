@@ -10,6 +10,11 @@ Vocabulario y Quiz comparten el mismo banco publicado y ambos requieren video:
 Las columnas de definición, imagen y traducción pueden acompañar una ficha que
 sí tiene video, pero nunca convierten por sí solas un borrador en una ficha de
 Vocabulario. Las fichas consultables sin video son exclusivas del Diccionario.
+
+La sincronización conserva explícitamente ``definicion`` y
+``fechaPublicacion``. Los errores de fórmula de Google Sheets (por ejemplo
+``#N/A``) nunca se publican como si fueran una fecha real: se convierten a
+cadena vacía hasta que exista una fecha válida en la hoja.
 """
 from __future__ import annotations
 
@@ -46,6 +51,14 @@ def texto(valor: object) -> str:
     return "" if valor is None else str(valor).strip()
 
 
+def normalizar_fecha_publicacion(valor: object) -> str:
+    """Conserva la fecha visible del Sheet y descarta errores de fórmula."""
+    fecha = texto(valor)
+    if not fecha or fecha.startswith("#"):
+        return ""
+    return fecha
+
+
 def normalizar_nivel(valor: object) -> str:
     original = texto(valor)
     bajo = original.casefold()
@@ -68,7 +81,7 @@ def descargar_csv() -> list[dict[str, str]]:
     solicitud = urllib.request.Request(
         base + "?" + parametros,
         headers={
-            "User-Agent": "LSPedia-vocabulario-sync/2.2",
+            "User-Agent": "LSPedia-vocabulario-sync/2.3",
             "Accept": "text/csv,text/plain,*/*",
         },
     )
@@ -97,6 +110,8 @@ def limpiar(filas: list[dict[str, str]]) -> list[dict]:
     salida: list[dict] = []
     vistos: set[tuple[str, str]] = set()
     borradores_omitidos = 0
+    con_definicion = 0
+    con_fecha_publicacion = 0
 
     for fila in filas:
         mapa = {clave(k): v for k, v in fila.items()}
@@ -112,12 +127,18 @@ def limpiar(filas: list[dict[str, str]]) -> list[dict]:
 
         imagen = texto(mapa.get("imagen"))
         definicion = texto(mapa.get("definicion"))
+        fecha_publicacion = normalizar_fecha_publicacion(mapa.get("fechapublicacion"))
 
         # En Vocabulario una misma palabra/categoría no debe duplicarse.
         identidad = (palabra.casefold(), categoria.casefold())
         if identidad in vistos:
             continue
         vistos.add(identidad)
+
+        if definicion:
+            con_definicion += 1
+        if fecha_publicacion:
+            con_fecha_publicacion += 1
 
         registro = {
             "palabra": palabra,
@@ -128,7 +149,7 @@ def limpiar(filas: list[dict[str, str]]) -> list[dict]:
             "orden": texto(mapa.get("orden")),
             "imagen": imagen,
             "definicion": definicion,
-            "fechaPublicacion": texto(mapa.get("fechapublicacion")),
+            "fechaPublicacion": fecha_publicacion,
             "ingles": texto(mapa.get("ingles")),
             "definicionIngles": texto(mapa.get("definicioningles")),
         }
@@ -136,7 +157,13 @@ def limpiar(filas: list[dict[str, str]]) -> list[dict]:
 
     if not salida:
         raise RuntimeError("Hoja 2 no devolvió ninguna palabra con video para publicar.")
+
     print(f"Borradores de Vocabulario omitidos por no tener video: {borradores_omitidos}.")
+    print(
+        "Metadatos de Vocabulario: "
+        f"{con_definicion}/{len(salida)} con definición; "
+        f"{con_fecha_publicacion}/{len(salida)} con fechaPublicacion."
+    )
     return salida
 
 
