@@ -3,16 +3,10 @@
 (function(){
     'use strict';
 
-    // Regla oficial de publicación del Diccionario:
-    // - la imagen principal REAL es obligatoria;
-    // - el video es opcional para aparecer en el Diccionario;
-    // - una definición, variantes, traducción o categoría por sí solas NO publican;
-    // - textos antiguos usados como idea/prompt de ilustración NO cuentan como imagen.
-    //
-    // script.js todavía conserva compatibilidad con reglas históricas. Esta capa
-    // es la fuente de verdad visual: sanea App.datos directamente y vuelve a
-    // leer palabras.json sin caché, de modo que buscador, categorías, A-Z,
-    // favoritos, "Descubre" y estadísticas trabajen con el mismo conjunto.
+    // Regla oficial del Diccionario:
+    // - una imagen principal REAL es obligatoria para aparecer públicamente;
+    // - el video es opcional;
+    // - definiciones, variantes, traducciones o prompts de ilustración no publican.
     function activarReglaPublicacionDiccionarioConImagen(){
         const original = window.obtenerDatosDiccionarioPublicables;
         if(typeof original !== 'function' || original.__lspediaImagenObligatoria) return;
@@ -20,10 +14,6 @@
         function esImagenReal(valor){
             const principal = String(valor || '').split(',')[0].trim();
             if(!principal) return false;
-
-            // Las imágenes publicadas por el Publicador usan rutas/URLs de
-            // archivos reales. Las antiguas descripciones como
-            // “Ilustración plana de...” quedan fuera de esta regla.
             return /^(?:https?:\/\/|\/|\.\.?\/|img\/)/i.test(principal) &&
                 /\.(?:avif|gif|jpe?g|png|svg|webp)(?:[?#].*)?$/i.test(principal);
         }
@@ -38,6 +28,81 @@
                     esImagenReal(palabra.imagen)
                 );
             });
+        }
+
+        function bancoVocabulario(){
+            try {
+                if(window.QuizV2 && typeof window.QuizV2.obtenerBanco === 'function'){
+                    const banco = window.QuizV2.obtenerBanco();
+                    return Array.isArray(banco) ? banco : [];
+                }
+            } catch(_error){}
+            return [];
+        }
+
+        function videoValido(valor){
+            const video = String(valor || '').trim();
+            if(!video) return false;
+            try {
+                if(typeof window.extraerIdYouTube === 'function'){
+                    return !!window.extraerIdYouTube(video);
+                }
+            } catch(_error){}
+            return true;
+        }
+
+        // Las estadísticas deben contar exactamente lo que está publicado.
+        // No dependemos del contador antiguo porque podía conservar el total
+        // crudo de palabras aunque el buscador ya hubiese ocultado las que no
+        // tenían imagen.
+        function actualizarEstadisticasPublicadas(publicables){
+            const diccionario = Array.isArray(publicables) ? publicables : [];
+            const vocabulario = bancoVocabulario();
+            const normalizar = function(valor){
+                return String(valor || '').trim().toLocaleLowerCase('es-PE');
+            };
+
+            const vocabPalabras = vocabulario.filter(function(p){
+                return p && String(p.palabra || '').trim() && videoValido(p.video);
+            });
+
+            const categoriasDic = new Set(
+                diccionario
+                    .map(function(p){ return normalizar(p && p.categoria); })
+                    .filter(Boolean)
+            );
+            const categoriasVoc = new Set(
+                vocabulario
+                    .map(function(p){ return normalizar(p && p.categoria); })
+                    .filter(Boolean)
+            );
+
+            const videosDicPrincipales = diccionario.filter(function(p){ return videoValido(p && p.video); }).length;
+            const videosDicSugeridos = diccionario.filter(function(p){ return videoValido(p && p.senasugerida); }).length;
+            const videosVoc = vocabulario.filter(function(p){ return videoValido(p && p.video); }).length;
+
+            const totalPalabras = document.getElementById('totalPalabras');
+            const detallePalabrasDic = document.getElementById('detallePalabrasDic');
+            const detallePalabrasVoc = document.getElementById('detallePalabrasVoc');
+            const totalCategorias = document.getElementById('totalCategorias');
+            const detalleCategoriasDic = document.getElementById('detalleCategoriasDic');
+            const detalleCategoriasVoc = document.getElementById('detalleCategoriasVoc');
+            const totalVideos = document.getElementById('totalVideos');
+            const detalleVideosDic = document.getElementById('detalleVideosDic');
+            const detalleVideosVoc = document.getElementById('detalleVideosVoc');
+
+            if(totalPalabras) totalPalabras.textContent = String(diccionario.length + vocabPalabras.length);
+            if(detallePalabrasDic) detallePalabrasDic.textContent = String(diccionario.length);
+            if(detallePalabrasVoc) detallePalabrasVoc.textContent = String(vocabPalabras.length);
+
+            if(totalCategorias) totalCategorias.textContent = String(categoriasDic.size + categoriasVoc.size);
+            if(detalleCategoriasDic) detalleCategoriasDic.textContent = String(categoriasDic.size);
+            if(detalleCategoriasVoc) detalleCategoriasVoc.textContent = String(categoriasVoc.size);
+
+            const videosDic = videosDicPrincipales + videosDicSugeridos;
+            if(totalVideos) totalVideos.textContent = String(videosDic + videosVoc);
+            if(detalleVideosDic) detalleVideosDic.textContent = String(videosDic);
+            if(detalleVideosVoc) detalleVideosVoc.textContent = String(videosVoc);
         }
 
         function existeReferenciaPublicable(referencia){
@@ -60,8 +125,6 @@
             const fuente = String(params.get('fuente') || '').toLowerCase();
             if(!referencia || fuente === 'vocabulario' || existeReferenciaPublicable(referencia)) return;
 
-            // Si alguien tenía abierta por caché una ficha del Diccionario que
-            // ya no cumple la regla, regresamos a Inicio en vez de dejarla visible.
             try {
                 window.history.replaceState({ tipo: 'vista', vista: 'diccionario' }, '', window.location.pathname);
             } catch(_error){}
@@ -77,19 +140,18 @@
             });
         }
 
-        function refrescarZonasDependientes(){
+        function refrescarZonasDependientes(publicables){
             if(typeof window.renderCategoriasDiccionario === 'function'){
                 window.renderCategoriasDiccionario();
-            }
-            if(typeof window.actualizarEstadisticas === 'function'){
-                window.actualizarEstadisticas();
             }
             if(typeof window.mostrarFavoritos === 'function'){
                 window.mostrarFavoritos();
             }
 
-            // Si el usuario ya estaba escribiendo, repinta las sugerencias con
-            // el banco saneado para retirar inmediatamente palabras sin imagen.
+            // El contador nuevo se escribe al final para que ningún cálculo
+            // histórico vuelva a mostrar filas sin imagen.
+            actualizarEstadisticasPublicadas(publicables);
+
             const input = document.getElementById('buscar');
             if(input && String(input.value || '').trim() && typeof window.buscarPalabras === 'function'){
                 window.buscarPalabras();
@@ -97,7 +159,6 @@
 
             cerrarFichaQueYaNoEsPublicable();
 
-            // En Inicio vuelve a calcular "Descubre" con el conjunto correcto.
             let params;
             try { params = new URLSearchParams(window.location.search); }
             catch(_error){ params = null; }
@@ -108,8 +169,9 @@
 
         function aplicarDatosPublicables(data){
             if(!window.App || !Array.isArray(data)) return false;
-            window.App.datos = filtrarPublicablesPorImagen(data);
-            refrescarZonasDependientes();
+            const publicables = filtrarPublicablesPorImagen(data);
+            window.App.datos = publicables;
+            refrescarZonasDependientes(publicables);
             return true;
         }
 
@@ -119,12 +181,10 @@
         window.obtenerDatosDiccionarioPublicables = filtrarPublicablesPorImagen;
         window.LSPediaPublicacionDiccionario = Object.freeze({
             esImagenReal: esImagenReal,
-            filtrar: filtrarPublicablesPorImagen
+            filtrar: filtrarPublicablesPorImagen,
+            actualizarEstadisticas: actualizarEstadisticasPublicadas
         });
 
-        // Cada vez que la capa base termina de cargar o actualizar datos,
-        // saneamos de nuevo App.datos. Esto cubre caché local, revalidación en
-        // segundo plano y futuras actualizaciones durante la misma sesión.
         document.addEventListener('lspedia:datosListos', function(){
             if(window.App && Array.isArray(window.App.datos)){
                 aplicarDatosPublicables(window.App.datos);
@@ -136,11 +196,22 @@
             }
         });
 
-        // La lectura cruda es necesaria porque una caché/regla histórica de
-        // script.js puede haber descartado palabras que SÍ tienen imagen pero
-        // todavía no tienen video. Aquí se reconstruye el conjunto correcto:
-        // IMAGEN sí; video opcional.
-        fetch('data/palabras.json?reglaImagen=20260913-3', { cache: 'no-store' })
+        // Quiz/Vocabulario puede terminar de cargar después. Cuando eso pase,
+        // recalculamos el desglose sin tocar la regla del Diccionario.
+        try {
+            if(window.QuizV2 && typeof window.QuizV2.onBancoListo === 'function'){
+                window.QuizV2.onBancoListo(function(){
+                    if(window.App && Array.isArray(window.App.datos)){
+                        actualizarEstadisticasPublicadas(window.App.datos);
+                    }
+                });
+            }
+        } catch(_error){}
+
+        // Lee el JSON crudo sin caché para rescatar palabras con imagen aunque
+        // todavía no tengan video y, al mismo tiempo, retirar cualquier fila sin
+        // imagen que haya sobrevivido en una caché antigua.
+        fetch('data/palabras.json?reglaImagen=20260913-4', { cache: 'no-store' })
             .then(function(respuesta){
                 if(!respuesta.ok) throw new Error('No se pudo actualizar palabras.json');
                 return respuesta.json();
@@ -151,14 +222,13 @@
             })
             .catch(function(error){
                 console.warn('No se pudo refrescar el Diccionario con la regla de imagen:', error);
-                // Sin red, al menos eliminamos de la copia en memoria cualquier
-                // entrada sin imagen que hubiera llegado desde una caché vieja.
                 if(window.App && Array.isArray(window.App.datos)){
                     aplicarDatosPublicables(window.App.datos);
                 }
             });
     }
 
+    // "Descubre" solo elige entre palabras publicadas que además tienen video.
     function activarDescubreSoloConVideo(){
         const original = window.mostrarSenalDelDia;
         if(typeof original !== 'function' || original.__lspediaSoloVideos) return;
@@ -173,11 +243,9 @@
             const palabrasConVideo = datosCompletos.filter(function(palabra){
                 const video = String((palabra && palabra.video) || '').trim();
                 if(!video) return false;
-
                 if(typeof window.extraerIdYouTube === 'function'){
                     return !!window.extraerIdYouTube(video);
                 }
-
                 return true;
             });
 
@@ -213,7 +281,6 @@
                 requestAnimationFrame(function(){
                     const destino = document.getElementById('resultado');
                     if(!destino || !destino.innerHTML.trim()) return;
-
                     if(typeof window.scrollAlPrimerResultado === 'function'){
                         window.scrollAlPrimerResultado(destino);
                     } else {
@@ -252,13 +319,9 @@
     cargarCss('css/mejoras-maestras.css?v=20260913');
     cargar('js/lspedia-core.js?v=20260913', function(){
         cargar('js/juegos-banco-compartido.js?v=20260913');
-        // El instalador PWA ya existe en js/pwa-install.js y security.js
-        // se encarga de cargarlo. No crear ni cargar un segundo instalador.
         cargar('js/a-z-movil.js?v=20260913');
     });
 
-    // Mejora la carga de recursos y deduplica fallos técnicos ANTES de que
-    // la telemetría base comience a escuchar errores.
     cargar('js/optimizacion-errores.js?v=20260913-1', function(){
         cargar('js/mejoras-producto-base.js', function(){
             cargar('js/lo-nuevo.js');
