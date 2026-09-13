@@ -15,42 +15,6 @@
 }
 .lspedia-aviso-no-oficial a { color: #0a58ca; font-weight: 800; }
 
-.lspedia-instalar-btn {
-  position: fixed;
-  right: 16px;
-  bottom: 92px;
-  z-index: 1045;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 48px;
-  padding: 11px 16px;
-  border: 0;
-  border-radius: 999px;
-  background: #0f172a;
-  color: #fff;
-  box-shadow: 0 10px 30px rgba(15,23,42,.25);
-  font-weight: 800;
-}
-.lspedia-instalar-btn[hidden] { display: none !important; }
-.lspedia-instalar-btn:focus-visible { outline: 3px solid #ffc107; outline-offset: 3px; }
-.lspedia-instalar-ayuda {
-  position: fixed;
-  right: 16px;
-  bottom: 152px;
-  z-index: 1046;
-  max-width: min(360px, calc(100vw - 32px));
-  padding: 14px;
-  border: 1px solid #dbe5ef;
-  border-radius: 14px;
-  background: white;
-  box-shadow: 0 14px 35px rgba(15,23,42,.2);
-  color: #17233c;
-}
-.lspedia-instalar-ayuda[hidden] { display: none !important; }
-.lspedia-instalar-ayuda p { margin: 0 0 10px; }
-.lspedia-instalar-ayuda button { min-height: 42px; padding: 8px 14px; border-radius: 10px; border: 1px solid #cbd5e1; background: #f8fafc; }
-
 .aventura-filtro-nivel {
   display: flex;
   gap: 7px;
@@ -94,10 +58,4 @@
     outline: 3px solid rgba(255,193,7,.45);
     outline-offset: 1px;
   }
-  .lspedia-instalar-btn { right: 12px; bottom: calc(82px + env(safe-area-inset-bottom)); min-height: 52px; }
-  .lspedia-instalar-ayuda { right: 12px; bottom: calc(144px + env(safe-area-inset-bottom)); }
-}
-
-@media (display-mode: standalone) {
-  .lspedia-instalar-btn, .lspedia-instalar-ayuda { display: none !important; }
 }
