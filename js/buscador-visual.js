@@ -7,6 +7,8 @@
      convierte filas sin video en fichas públicas.
    - Las faltas de ortografía del usuario se toleran para buscar, pero nunca
      se muestran como variantes correctas dentro de la ficha.
+   - Las formas gramaticales pueden llevar a su palabra base sin cambiar el
+     contenido visible. Ej.: "fui" puede sugerir Ser e Ir.
    - Máximo 2 imágenes de apoyo por ficha del Diccionario.
    - GA4 recibe un evento adicional por sección para que Admin distinga
      búsquedas de Diccionario y Vocabulario en las búsquedas nuevas.
@@ -15,11 +17,12 @@
     'use strict';
 
     const RUTA_DICCIONARIO = 'data/palabras.json';
+    const RUTA_AYUDAS = 'data/busqueda-ayudas.json';
     let diccionarioConsultable = [];
+    let ayudasBusqueda = {aliasOcultos:[], gramatica:[]};
+    const aliasesDinamicosPorObjetivo = new Map();
 
-    // Alias de búsqueda que NO son contenido educativo. Se usan para encontrar
-    // la palabra cuando alguien escribe abreviaturas o errores muy frecuentes,
-    // pero jamás se renderizan como "variantes" de español correcto.
+    // Fallback local: se conserva por robustez si el JSON auxiliar no carga.
     const ALIASES_BUSQUEDA_DICCIONARIO = new Map([
         ['gracias', ['grax', 'grx', 'muxas grax', 'grasias', 'muchas grasias']],
         ['por favor', ['plis', 'xfa', 'xfis', 'pls', 'por fabor']],
@@ -60,13 +63,41 @@
         return tieneVideo(p) || !!texto(p.definicion) || !!primeraImagen(p);
     }
 
+    function agregarAliasObjetivo(objetivo, entrada){
+        const clave = normal(objetivo);
+        const alias = texto(entrada);
+        if(!clave || !alias) return;
+        const actual = aliasesDinamicosPorObjetivo.get(clave) || [];
+        if(!actual.some(x=>normal(x)===normal(alias))) actual.push(alias);
+        aliasesDinamicosPorObjetivo.set(clave, actual);
+    }
+
+    function prepararAyudas(data){
+        ayudasBusqueda = data && typeof data === 'object' ? data : {aliasOcultos:[],gramatica:[]};
+        aliasesDinamicosPorObjetivo.clear();
+
+        (Array.isArray(ayudasBusqueda.aliasOcultos) ? ayudasBusqueda.aliasOcultos : []).forEach(item=>{
+            const entrada = texto(item && item.entrada);
+            (Array.isArray(item && item.objetivos) ? item.objetivos : []).forEach(obj=>agregarAliasObjetivo(obj, entrada));
+        });
+
+        (Array.isArray(ayudasBusqueda.gramatica) ? ayudasBusqueda.gramatica : []).forEach(item=>{
+            const forma = texto(item && item.forma);
+            (Array.isArray(item && item.objetivos) ? item.objetivos : []).forEach(obj=>agregarAliasObjetivo(obj, forma));
+        });
+
+        window.LSPediaBusquedaAyudas = ayudasBusqueda;
+    }
+
     function aliasesParaPalabra(p){
         if(!p || !p.palabra) return [];
         const propios = Array.isArray(p._aliasBusqueda)
             ? p._aliasBusqueda.map(texto).filter(Boolean)
             : [];
-        const curados = ALIASES_BUSQUEDA_DICCIONARIO.get(normal(p.palabra)) || [];
-        return Array.from(new Set(propios.concat(curados).map(texto).filter(Boolean)));
+        const clave = normal(p.palabra);
+        const curados = ALIASES_BUSQUEDA_DICCIONARIO.get(clave) || [];
+        const dinamicos = aliasesDinamicosPorObjetivo.get(clave) || [];
+        return Array.from(new Set(propios.concat(curados,dinamicos).map(texto).filter(Boolean)));
     }
 
     function prepararAliases(lista){
@@ -105,11 +136,21 @@
 
     async function cargarDiccionario(){
         try{
-            const r = await fetch(RUTA_DICCIONARIO + '?_visual=' + Date.now(), {cache:'no-store'});
-            if(!r.ok) throw new Error('HTTP '+r.status);
-            const data = await r.json();
+            const marca = Date.now();
+            const [rDic,rAyudas] = await Promise.all([
+                fetch(RUTA_DICCIONARIO + '?_visual=' + marca, {cache:'no-store'}),
+                fetch(RUTA_AYUDAS + '?_ayudas=' + marca, {cache:'no-store'}).catch(()=>null)
+            ]);
+            if(!rDic.ok) throw new Error('HTTP '+rDic.status);
+            const data = await rDic.json();
+            if(rAyudas && rAyudas.ok){
+                try{ prepararAyudas(await rAyudas.json()); }catch(_e){ prepararAyudas(null); }
+            }else{
+                prepararAyudas(null);
+            }
             aplicarDiccionario(Array.isArray(data) ? data : []);
         }catch(error){
+            prepararAyudas(null);
             console.warn('LSPedia búsqueda visual: no se pudo cargar '+RUTA_DICCIONARIO, error);
         }
     }
