@@ -3,6 +3,46 @@
 (function(){
     'use strict';
 
+    // Regla existente de publicación del Diccionario, ajustada sin crear
+    // una segunda vista ni un segundo banco de datos:
+    // - la imagen principal REAL es obligatoria;
+    // - el video es opcional;
+    // - textos antiguos usados como idea/prompt de ilustración NO cuentan
+    //   como imagen publicada.
+    // Esta función se ejecuta antes de DOMContentLoaded, por lo que App.iniciar
+    // usa la regla correcta al cargar palabras.json.
+    function activarReglaPublicacionDiccionarioConImagen(){
+        const original = window.obtenerDatosDiccionarioPublicables;
+        if(typeof original !== 'function' || original.__lspediaImagenObligatoria) return;
+
+        function esImagenReal(valor){
+            const principal = String(valor || '').split(',')[0].trim();
+            if(!principal) return false;
+
+            // Las imágenes publicadas por el Publicador usan rutas/URLs de
+            // archivos reales. Las antiguas descripciones como
+            // “Ilustración plana de...” quedan fuera de esta regla.
+            return /^(?:https?:\/\/|\/|\.\.?\/|img\/)/i.test(principal) &&
+                /\.(?:avif|gif|jpe?g|png|svg|webp)(?:[?#].*)?$/i.test(principal);
+        }
+
+        function filtrarPublicablesPorImagen(data){
+            if(!Array.isArray(data)) return [];
+            return data.filter(function(palabra){
+                return !!(
+                    palabra &&
+                    palabra.palabra &&
+                    palabra.categoria &&
+                    esImagenReal(palabra.imagen)
+                );
+            });
+        }
+
+        filtrarPublicablesPorImagen.__lspediaImagenObligatoria = true;
+        filtrarPublicablesPorImagen.__lspediaReglaAnterior = original;
+        window.obtenerDatosDiccionarioPublicables = filtrarPublicablesPorImagen;
+    }
+
     function activarDescubreSoloConVideo(){
         const original = window.mostrarSenalDelDia;
         if(typeof original !== 'function' || original.__lspediaSoloVideos) return;
@@ -89,6 +129,7 @@
         document.head.appendChild(s);
     }
 
+    activarReglaPublicacionDiccionarioConImagen();
     activarDescubreSoloConVideo();
     activarAutoScrollIndiceDiccionario();
 
