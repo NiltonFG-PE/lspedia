@@ -102,3 +102,27 @@
         document.head.appendChild(script);
     } catch (_e) {}
 })();
+
+/* ============================================================
+   Regla oficial de publicación del Diccionario.
+   Se carga después de que la página y script.js ya están disponibles para
+   que pueda reemplazar la regla histórica y volver a calcular buscador,
+   categorías y estadísticas usando SOLO entradas con imagen real.
+   ============================================================ */
+(function cargarReglaPublicacionDiccionario() {
+    'use strict';
+
+    function cargar() {
+        try {
+            if (document.querySelector('script[data-lspedia-publicacion-diccionario]')) return;
+            const script = document.createElement('script');
+            script.src = 'js/publicacion-diccionario.js?v=20260913-1';
+            script.async = false;
+            script.dataset.lspediaPublicacionDiccionario = '1';
+            document.head.appendChild(script);
+        } catch (_e) {}
+    }
+
+    if (document.readyState === 'complete') cargar();
+    else window.addEventListener('load', cargar, { once: true });
+})();
