@@ -12,6 +12,7 @@ on:
       - "scripts/separar_diccionario_vocabulario.py"
       - "scripts/generar_sitemap.py"
       - "scripts/actualizar_nuevas_palabras.py"
+      - "scripts/generar_traducciones_en.py"
       - "scripts/normalizar_categorias.py"
       - "scripts/validar_lspedia.py"
       - ".github/workflows/actualizar-sitemap.yml"
@@ -47,12 +48,15 @@ jobs:
         run: python scripts/generar_sitemap.py
       - name: Generar Lo nuevo
         run: python scripts/actualizar_nuevas_palabras.py
+      - name: Generar traducciones EN del Diccionario
+        run: python scripts/generar_traducciones_en.py
       - name: Validar datos antes de guardar
         shell: bash
         run: |
           python -m json.tool data/palabras.json > /dev/null
           python -m json.tool data/vocabulario.json > /dev/null
           python -m json.tool data/nuevas-palabras.json > /dev/null
+          python -m json.tool data/traducciones-en.json > /dev/null
           python scripts/validar_lspedia.py --fuente diccionario
           python scripts/validar_lspedia.py --fuente vocabulario
           node --check js/script.js
@@ -60,12 +64,12 @@ jobs:
       - name: Guardar cambios automáticos
         shell: bash
         run: |
-          if git diff --quiet -- data/palabras.json data/vocabulario.json data/nuevas-palabras.json js/script.js sitemap.xml; then
-            echo "IDs, Lo nuevo y sitemap ya estaban actualizados."
+          if git diff --quiet -- data/palabras.json data/vocabulario.json data/nuevas-palabras.json data/traducciones-en.json js/script.js sitemap.xml; then
+            echo "IDs, traducciones, Lo nuevo y sitemap ya estaban actualizados."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/palabras.json data/vocabulario.json data/nuevas-palabras.json js/script.js sitemap.xml
-          git commit -m "Actualizar Diccionario Vocabulario Lo nuevo y sitemap"
+          git add data/palabras.json data/vocabulario.json data/nuevas-palabras.json data/traducciones-en.json js/script.js sitemap.xml
+          git commit -m "Actualizar Diccionario ingles Lo nuevo y sitemap"
           git push origin HEAD:develop
