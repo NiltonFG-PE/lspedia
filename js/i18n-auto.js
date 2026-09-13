@@ -1,7 +1,16 @@
 /* LSPedia — traducciones EN generadas al publicar.
    Complementa i18n.js sin modificar el español canónico.
    Lee data/traducciones-en.json, agrega el término inglés al buscador y
-   muestra la definición inglesa cuando la interfaz está en EN. */
+   muestra la definición inglesa cuando la interfaz está en EN.
+
+   Reglas:
+   - SOLO Diccionario participa de esta capa bilingüe.
+   - El español sigue siendo la palabra canónica y la URL permanece en español.
+   - La búsqueda en inglés funciona incluso si la interfaz está en español,
+     mediante aliases ocultos que no se muestran como variantes correctas.
+   - Las traducciones curadas de i18n.js tienen prioridad sobre la traducción
+     automática para no degradar conceptos ya revisados manualmente.
+*/
 (function(){
     'use strict';
 
@@ -29,6 +38,15 @@
         return window.LSPediaIdioma && typeof window.LSPediaIdioma.obtener === 'function'
             ? window.LSPediaIdioma.obtener()
             : 'es';
+    }
+
+    function traduccionCurada(palabra){
+        if(!window.LSPediaIdioma || typeof window.LSPediaIdioma.traduccionIngles !== 'function') return null;
+        try {
+            return window.LSPediaIdioma.traduccionIngles(palabra) || null;
+        } catch(_e) {
+            return null;
+        }
     }
 
     function integrarDocumento(documento){
@@ -61,8 +79,13 @@
     function traduccionPara(p, fuente){
         if(!p || !p.palabra) return null;
 
-        // Si en el futuro los JSON principales ya traen estas columnas,
-        // se aprovechan directamente sin cambiar esta capa.
+        // Lo revisado manualmente en i18n.js siempre gana frente a la
+        // traducción generada automáticamente.
+        const curada = traduccionCurada(p.palabra);
+        if(curada) return curada;
+
+        // Si el JSON principal ya trae las columnas ingles/definicionIngles,
+        // se aprovechan directamente sin duplicar la fuente de datos.
         const inglesDirecto = String(p.ingles || '').trim();
         if(inglesDirecto){
             return {
@@ -105,6 +128,17 @@
         return partes.join(', ');
     }
 
+    function agregarAliasBusquedaOculto(p, traduccion){
+        if(!p || !traduccion) return;
+        const actuales = Array.isArray(p._aliasBusqueda) ? p._aliasBusqueda.slice() : [];
+        [traduccion.term].concat(traduccion.aliases || []).forEach(valor => {
+            const limpio = String(valor || '').trim();
+            if(!limpio) return;
+            if(!actuales.some(a => norm(a) === norm(limpio))) actuales.push(limpio);
+        });
+        if(actuales.length) p._aliasBusqueda = actuales;
+    }
+
     function aplicarColeccion(coleccion, fuente){
         if(!Array.isArray(coleccion)) return;
         const en = idiomaActual() === 'en';
@@ -114,6 +148,11 @@
             if(!traduccion) return;
             guardarOriginales(p);
             p._traduccionEnAuto = traduccion.term;
+
+            // Se usa para encontrar "traffic light" -> "Semáforo" aunque la
+            // persona todavía tenga seleccionada la interfaz ES. Este alias no
+            // se muestra en la ficha como si fuera una variante española.
+            agregarAliasBusquedaOculto(p, traduccion);
 
             if(en){
                 p.variantes = variantesConIngles(p._i18nAutoVariantesEs, traduccion);
@@ -125,14 +164,10 @@
         });
     }
 
-    function bancoVocabulario(){
-        if(!window.QuizV2 || typeof window.QuizV2.obtenerBanco !== 'function') return [];
-        try { return window.QuizV2.obtenerBanco() || []; } catch(_e) { return []; }
-    }
-
     function resolverTraduccionVisible(palabra){
-        const clavePalabra = norm(palabra);
-        return mapas.diccionario.palabra.get(clavePalabra) || null;
+        const curada = traduccionCurada(palabra);
+        if(curada) return curada;
+        return mapas.diccionario.palabra.get(norm(palabra)) || null;
     }
 
     function etiquetarResultado(root){
