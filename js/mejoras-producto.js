@@ -9,10 +9,10 @@
     // - una definición, variantes, traducción o categoría por sí solas NO publican;
     // - textos antiguos usados como idea/prompt de ilustración NO cuentan como imagen.
     //
-    // Este archivo se carga después de script.js. Por eso, además de sustituir
-    // la función de filtro para las siguientes actualizaciones, volvemos a leer
-    // palabras.json una sola vez para corregir inmediatamente App.datos y evitar
-    // que una caché previa mantenga visibles palabras sin imagen.
+    // script.js todavía conserva compatibilidad con reglas históricas. Esta capa
+    // es la fuente de verdad visual: sanea App.datos directamente y vuelve a
+    // leer palabras.json sin caché, de modo que buscador, categorías, A-Z,
+    // favoritos, "Descubre" y estadísticas trabajen con el mismo conjunto.
     function activarReglaPublicacionDiccionarioConImagen(){
         const original = window.obtenerDatosDiccionarioPublicables;
         if(typeof original !== 'function' || original.__lspediaImagenObligatoria) return;
@@ -40,57 +40,121 @@
             });
         }
 
+        function existeReferenciaPublicable(referencia){
+            const ref = String(referencia || '').trim().toLocaleLowerCase('es-PE');
+            if(!ref || !window.App || !Array.isArray(window.App.datos)) return false;
+            return window.App.datos.some(function(palabra){
+                if(!palabra) return false;
+                const id = String(palabra.id || '').trim().toLocaleLowerCase('es-PE');
+                const nombre = String(palabra.palabra || '').trim().toLocaleLowerCase('es-PE');
+                return id === ref || nombre === ref;
+            });
+        }
+
+        function cerrarFichaQueYaNoEsPublicable(){
+            let params;
+            try { params = new URLSearchParams(window.location.search); }
+            catch(_error){ return; }
+
+            const referencia = params.get('p');
+            const fuente = String(params.get('fuente') || '').toLowerCase();
+            if(!referencia || fuente === 'vocabulario' || existeReferenciaPublicable(referencia)) return;
+
+            // Si alguien tenía abierta por caché una ficha del Diccionario que
+            // ya no cumple la regla, regresamos a Inicio en vez de dejarla visible.
+            try {
+                window.history.replaceState({ tipo: 'vista', vista: 'diccionario' }, '', window.location.pathname);
+            } catch(_error){}
+
+            if(typeof window.irAlBuscador === 'function'){
+                window.irAlBuscador({ sinEnfoque: true, irArriba: true });
+                return;
+            }
+
+            ['resultado', 'resultadoCategorias', 'resultadoCategoriasDiccionario'].forEach(function(id){
+                const nodo = document.getElementById(id);
+                if(nodo) nodo.innerHTML = '';
+            });
+        }
+
+        function refrescarZonasDependientes(){
+            if(typeof window.renderCategoriasDiccionario === 'function'){
+                window.renderCategoriasDiccionario();
+            }
+            if(typeof window.actualizarEstadisticas === 'function'){
+                window.actualizarEstadisticas();
+            }
+            if(typeof window.mostrarFavoritos === 'function'){
+                window.mostrarFavoritos();
+            }
+
+            // Si el usuario ya estaba escribiendo, repinta las sugerencias con
+            // el banco saneado para retirar inmediatamente palabras sin imagen.
+            const input = document.getElementById('buscar');
+            if(input && String(input.value || '').trim() && typeof window.buscarPalabras === 'function'){
+                window.buscarPalabras();
+            }
+
+            cerrarFichaQueYaNoEsPublicable();
+
+            // En Inicio vuelve a calcular "Descubre" con el conjunto correcto.
+            let params;
+            try { params = new URLSearchParams(window.location.search); }
+            catch(_error){ params = null; }
+            if(params && !params.get('p') && !params.get('vista') && typeof window.mostrarSenalDelDia === 'function'){
+                window.mostrarSenalDelDia();
+            }
+        }
+
+        function aplicarDatosPublicables(data){
+            if(!window.App || !Array.isArray(data)) return false;
+            window.App.datos = filtrarPublicablesPorImagen(data);
+            refrescarZonasDependientes();
+            return true;
+        }
+
         filtrarPublicablesPorImagen.__lspediaImagenObligatoria = true;
         filtrarPublicablesPorImagen.__lspediaReglaAnterior = original;
         filtrarPublicablesPorImagen.esImagenReal = esImagenReal;
         window.obtenerDatosDiccionarioPublicables = filtrarPublicablesPorImagen;
+        window.LSPediaPublicacionDiccionario = Object.freeze({
+            esImagenReal: esImagenReal,
+            filtrar: filtrarPublicablesPorImagen
+        });
 
-        // Corrige de inmediato la sesión actual. Esto es importante porque
-        // script.js ya pudo haber cargado una versión filtrada con la regla
-        // antigua (video obligatorio) antes de que este módulo se ejecute.
-        fetch('data/palabras.json?reglaImagen=20260913-2', { cache: 'no-store' })
+        // Cada vez que la capa base termina de cargar o actualizar datos,
+        // saneamos de nuevo App.datos. Esto cubre caché local, revalidación en
+        // segundo plano y futuras actualizaciones durante la misma sesión.
+        document.addEventListener('lspedia:datosListos', function(){
+            if(window.App && Array.isArray(window.App.datos)){
+                aplicarDatosPublicables(window.App.datos);
+            }
+        });
+        document.addEventListener('lspedia:palabrasActualizadas', function(){
+            if(window.App && Array.isArray(window.App.datos)){
+                aplicarDatosPublicables(window.App.datos);
+            }
+        });
+
+        // La lectura cruda es necesaria porque una caché/regla histórica de
+        // script.js puede haber descartado palabras que SÍ tienen imagen pero
+        // todavía no tienen video. Aquí se reconstruye el conjunto correcto:
+        // IMAGEN sí; video opcional.
+        fetch('data/palabras.json?reglaImagen=20260913-3', { cache: 'no-store' })
             .then(function(respuesta){
                 if(!respuesta.ok) throw new Error('No se pudo actualizar palabras.json');
                 return respuesta.json();
             })
             .then(function(data){
                 if(!Array.isArray(data)) return;
-
-                // Si existe la función central de script.js, la usamos para
-                // refrescar categorías, estadísticas, sugerencias y demás zonas.
-                // Ya verá la nueva obtenerDatosDiccionarioPublicables.
-                if(typeof window.aplicarPalabrasActualizadasEnSesion === 'function'){
-                    window.aplicarPalabrasActualizadasEnSesion(data);
-                    return;
-                }
-
-                // Respaldo por compatibilidad: actualiza directamente App.datos.
-                if(window.App){
-                    window.App.datos = filtrarPublicablesPorImagen(data);
-                }
-                if(typeof window.renderCategoriasDiccionario === 'function'){
-                    window.renderCategoriasDiccionario();
-                }
-                if(typeof window.actualizarEstadisticas === 'function'){
-                    window.actualizarEstadisticas();
-                }
-                if(typeof window.mostrarFavoritos === 'function'){
-                    window.mostrarFavoritos();
-                }
+                aplicarDatosPublicables(data);
             })
             .catch(function(error){
                 console.warn('No se pudo refrescar el Diccionario con la regla de imagen:', error);
-
-                // Incluso si falla la red, elimina en memoria las entradas sin
-                // imagen que pudieran haber quedado visibles por una caché vieja.
+                // Sin red, al menos eliminamos de la copia en memoria cualquier
+                // entrada sin imagen que hubiera llegado desde una caché vieja.
                 if(window.App && Array.isArray(window.App.datos)){
-                    window.App.datos = filtrarPublicablesPorImagen(window.App.datos);
-                    if(typeof window.renderCategoriasDiccionario === 'function'){
-                        window.renderCategoriasDiccionario();
-                    }
-                    if(typeof window.actualizarEstadisticas === 'function'){
-                        window.actualizarEstadisticas();
-                    }
+                    aplicarDatosPublicables(window.App.datos);
                 }
             });
     }
