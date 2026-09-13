@@ -1711,7 +1711,8 @@ body.nosotros-pantalla-completa-activa {
 
 /* El número "late" al pasar el mouse */
 .stat2-numero {
-    display: inline-block;
+    display: block;
+    width: max-content;
     transition: transform 0.2s ease;
 }
 .stat2-card:hover .stat2-numero {
