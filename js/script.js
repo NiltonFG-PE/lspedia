@@ -2637,7 +2637,13 @@ function buscarPalabras(){
     if(texto === "") {
         sugerencias.style.display = "none";
         return;
-    }document.getElementById("senalDelDia").style.display = "none";
+    }
+
+    // "Descubre" forma parte de la pantalla principal y debe permanecer
+    // visible mientras la persona escribe y revisa sugerencias. Solo se
+    // oculta cuando realmente se abre una ficha o se cambia de sección.
+    const descubreDuranteBusqueda = document.getElementById("senalDelDia");
+    if(descubreDuranteBusqueda) descubreDuranteBusqueda.style.display = "";
 
     // Ordena de lo más exacto a lo más aproximado (ver clasificarCoincidencia
     // y ordenarYLimitarCoincidencias más arriba). Las coincidencias exactas
