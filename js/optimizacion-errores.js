@@ -75,6 +75,12 @@
                     const p=args[2]||{};
                     const recurso=texto(p.resource_path||p.image_path||p.media_type||p.error_kind||'');
                     const seccion=texto(p.app_section||'');
+
+                    // script.js sustituye una imagen fallida por este recurso y
+                    // mejoras-producto-base puede recibir después el mismo evento
+                    // ya con la ruta del fallback. No es un segundo fallo real.
+                    if(args[1]==='image_load_error'&&/imagen-no-disponible\.svg/i.test(recurso))return;
+
                     const k=args[1]+'|'+recurso+'|'+seccion;
                     const ahora=Date.now();
                     const anterior=tecnicosRecientes.get(k)||0;
