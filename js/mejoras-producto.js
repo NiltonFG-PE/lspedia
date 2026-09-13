@@ -95,7 +95,8 @@
     cargarCss('css/mejoras-maestras.css?v=20260913');
     cargar('js/lspedia-core.js?v=20260913', function(){
         cargar('js/juegos-banco-compartido.js?v=20260913');
-        cargar('js/pwa-instalar.js?v=20260913');
+        // El instalador PWA ya existe en js/pwa-install.js y security.js
+        // se encarga de cargarlo. No crear ni cargar un segundo instalador.
         cargar('js/a-z-movil.js?v=20260913');
     });
 
