@@ -1,7 +1,11 @@
 /* LSPedia Admin — diagnóstico educativo de búsquedas sin resultado.
    No corrige ni reescribe lo que el usuario buscó. Clasifica la consulta para
    ayudar al administrador a decidir si ya existe, es una forma gramatical,
-   parece un error ortográfico o realmente falta agregarla. */
+   parece un error ortográfico o realmente falta agregarla.
+
+   Regla editorial LSPedia:
+   una búsqueda solo se considera RESUELTA cuando la palabra o su destino
+   equivalente ya existe CON VIDEO. Que exista la ficha sin video no basta. */
 (function(){
   'use strict';
 
@@ -10,6 +14,7 @@
     return texto(v).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').toLocaleLowerCase('es-PE').trim();
   }
   function variantes(v){return texto(v).split(',').map(x=>x.trim()).filter(Boolean)}
+  function tieneVideo(item){return !!texto(item&&item.video)}
 
   function distancia(a,b){
     a=norm(a);b=norm(b);
@@ -36,7 +41,9 @@
           palabra:texto(item.palabra),
           palabraNorm:norm(item.palabra),
           variantes:variantes(item.variantes),
-          seccion
+          seccion,
+          video:texto(item.video),
+          conVideo:tieneVideo(item)
         };
         registro.variantesNorm=registro.variantes.map(norm);
         registros.push(registro);
@@ -46,6 +53,7 @@
     agregar(vocabulario,'Vocabulario');
 
     const canonicos=new Set(registros.map(x=>x.palabraNorm));
+    const canonicosConVideo=new Set(registros.filter(x=>x.conVideo).map(x=>x.palabraNorm));
     const alias=new Map();
     const gramatica=new Map();
     const datos=ayudas&&typeof ayudas==='object'?ayudas:{};
@@ -68,11 +76,11 @@
       });
     });
 
-    return {registros,canonicos,alias,gramatica};
+    return {registros,canonicos,canonicosConVideo,alias,gramatica};
   }
 
   function destinosDisponibles(indice,objetivos){
-    return (Array.isArray(objetivos)?objetivos:[]).filter(obj=>indice.canonicos.has(norm(obj)));
+    return (Array.isArray(objetivos)?objetivos:[]).filter(obj=>indice.canonicosConVideo.has(norm(obj)));
   }
 
   function exacto(indice,q){
@@ -101,7 +109,7 @@
     indice.registros.forEach(r=>{
       const d=distancia(q,r.palabraNorm);
       if(!mejor||d<mejor.distancia||(d===mejor.distancia&&r.palabra.length<mejor.palabra.length)){
-        mejor={palabra:r.palabra,seccion:r.seccion,distancia:d};
+        mejor={palabra:r.palabra,seccion:r.seccion,distancia:d,conVideo:r.conVideo};
       }
     });
     if(!mejor)return null;
@@ -119,7 +127,9 @@
       const destino=(disponibles.length?disponibles:g.objetivos).join(' / ');
       return {
         tipo:'gramatica',etiqueta:'Forma gramatical',sugerencia:destino,
-        detalle:g.explicacion||('Relacionar con '+destino+'.'),
+        detalle:disponibles.length
+          ? (g.explicacion||('Relacionar con '+destino+'.'))
+          : ((g.explicacion?g.explicacion+' ':'')+'Sigue pendiente hasta que la palabra relacionada tenga video.'),
         resuelto:disponibles.length>0
       };
     }
@@ -130,7 +140,9 @@
       const destino=(disponibles.length?disponibles:a.objetivos).join(' / ');
       return {
         tipo:'correccion',etiqueta:a.tipo==='abreviacion'?'Abreviación':'Posible escritura',sugerencia:destino,
-        detalle:disponibles.length?'La búsqueda puede resolverse sin enseñar esta forma como español correcto.':'La forma sugerida todavía no está disponible como palabra canónica.',
+        detalle:disponibles.length
+          ? 'La búsqueda puede resolverse con una palabra canónica que ya tiene video.'
+          : 'La forma sugerida existe o está relacionada, pero seguirá pendiente hasta que tenga video.',
         resuelto:disponibles.length>0
       };
     }
@@ -138,11 +150,17 @@
     const ex=exacto(indice,q);
     if(ex){
       const mismo=norm(ex.registro.seccion)===norm(seccion);
+      const conVideo=!!ex.registro.conVideo;
       return {
-        tipo:'existente',etiqueta:ex.tipo==='variante'?'Ya existe como variante':'Ya existe',
+        tipo:'existente',
+        etiqueta:conVideo
+          ? (ex.tipo==='variante'?'Ya existe como variante + video':'Ya existe + video')
+          : (ex.tipo==='variante'?'Existe como variante, falta video':'Existe, falta video'),
         sugerencia:ex.registro.palabra,
-        detalle:(mismo?'Disponible en ':'Está en otra sección: ')+ex.registro.seccion+'.',
-        resuelto:true
+        detalle:conVideo
+          ? ((mismo?'Disponible en ':'Está en otra sección: ')+ex.registro.seccion+'. Ya cuenta como resuelta porque tiene video.')
+          : ((mismo?'La ficha ya existe en ':'La ficha está en otra sección: ')+ex.registro.seccion+', pero permanece pendiente hasta agregarle video.'),
+        resuelto:conVideo
       };
     }
 
@@ -156,7 +174,7 @@
       return {tipo:'correccion',etiqueta:'Posible error',sugerencia:cer.palabra,detalle:'Se parece a una palabra existente en '+cer.seccion+'. Revisar antes de crear una nueva.',resuelto:false};
     }
 
-    return {tipo:'falta',etiqueta:'Falta agregar',sugerencia:'',detalle:'No se encontró una coincidencia confiable. Revisar el término y, si es correcto, agregarlo.',resuelto:false};
+    return {tipo:'falta',etiqueta:'Falta agregar',sugerencia:'',detalle:'No se encontró una coincidencia confiable. Revisar el término y, si es correcto, agregarlo con video.',resuelto:false};
   }
 
   window.LSPediaDiagnosticoBusquedas={construirIndice,analizar,normalizar:norm};
