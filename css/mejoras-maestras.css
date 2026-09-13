@@ -1,0 +1,103 @@
+/* LSPedia — mejoras maestras 2026-09-13 */
+.lspedia-aviso-no-oficial {
+  position: sticky;
+  top: 0;
+  z-index: 99999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: .75rem;
+  padding: .65rem 1rem;
+  background: #fff3cd;
+  color: #664d03;
+  border-bottom: 1px solid #ffecb5;
+  font: 600 14px/1.35 system-ui, sans-serif;
+}
+.lspedia-aviso-no-oficial a { color: #0a58ca; font-weight: 800; }
+
+.lspedia-instalar-btn {
+  position: fixed;
+  right: 16px;
+  bottom: 92px;
+  z-index: 1045;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 11px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: #0f172a;
+  color: #fff;
+  box-shadow: 0 10px 30px rgba(15,23,42,.25);
+  font-weight: 800;
+}
+.lspedia-instalar-btn[hidden] { display: none !important; }
+.lspedia-instalar-btn:focus-visible { outline: 3px solid #ffc107; outline-offset: 3px; }
+.lspedia-instalar-ayuda {
+  position: fixed;
+  right: 16px;
+  bottom: 152px;
+  z-index: 1046;
+  max-width: min(360px, calc(100vw - 32px));
+  padding: 14px;
+  border: 1px solid #dbe5ef;
+  border-radius: 14px;
+  background: white;
+  box-shadow: 0 14px 35px rgba(15,23,42,.2);
+  color: #17233c;
+}
+.lspedia-instalar-ayuda[hidden] { display: none !important; }
+.lspedia-instalar-ayuda p { margin: 0 0 10px; }
+.lspedia-instalar-ayuda button { min-height: 42px; padding: 8px 14px; border-radius: 10px; border: 1px solid #cbd5e1; background: #f8fafc; }
+
+.aventura-filtro-nivel {
+  display: flex;
+  gap: 7px;
+  overflow-x: auto;
+  padding: 4px 2px 12px;
+  scrollbar-width: thin;
+}
+.aventura-filtro-nivel-btn {
+  flex: 0 0 auto;
+  min-height: 40px;
+  padding: 7px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  background: #fff;
+  color: #334155;
+  font-weight: 800;
+}
+.aventura-filtro-nivel-btn.activo { background: #0f172a; color: #fff; border-color: #0f172a; }
+
+@media (max-width: 767.98px) {
+  .indice-compacto-wrap { flex: 0 0 auto; }
+  .indice-compacto-btn {
+    min-height: 46px !important;
+    padding: 8px 12px !important;
+    border-radius: 12px !important;
+    white-space: nowrap;
+  }
+  #indiceAlfabetico,
+  #indiceAlfabeticoVocabulario {
+    max-height: 44vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  #indiceAlfabetico .btn-abc,
+  #indiceAlfabeticoVocabulario .btn-abc {
+    min-width: 42px;
+    min-height: 42px;
+  }
+  #indiceAlfabetico .btn-abc[aria-pressed="true"],
+  #indiceAlfabeticoVocabulario .btn-abc[aria-pressed="true"] {
+    outline: 3px solid rgba(255,193,7,.45);
+    outline-offset: 1px;
+  }
+  .lspedia-instalar-btn { right: 12px; bottom: calc(82px + env(safe-area-inset-bottom)); min-height: 52px; }
+  .lspedia-instalar-ayuda { right: 12px; bottom: calc(144px + env(safe-area-inset-bottom)); }
+}
+
+@media (display-mode: standalone) {
+  .lspedia-instalar-btn, .lspedia-instalar-ayuda { display: none !important; }
+}
