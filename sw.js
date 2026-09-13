@@ -12,7 +12,7 @@
      sustituya por index.html.
    ============================================================ */
 
-const VERSION_APP = "v105";
+const VERSION_APP = "v106";
 const PREFIJO_CACHE = "lspedia-shell-";
 const PREFIJO_RUNTIME = "lspedia-runtime-";
 const CACHE_NOMBRE = PREFIJO_CACHE + VERSION_APP;
@@ -83,7 +83,7 @@ self.addEventListener("fetch", (event) => {
 
     // Los JSON de contenido son deliberadamente network-first/no-store desde
     // el frontend para evitar que una palabra recién publicada quede vieja.
-    if (url.pathname.includes("/data/palabras.json")) return;
+    if (url.pathname.includes("/data/palabras.json") || url.pathname.includes("/data/busqueda-ayudas.json")) return;
 
     // Navegación pública: devuelve rápido el cascarón cacheado y actualiza en
     // segundo plano cuando la red está disponible.

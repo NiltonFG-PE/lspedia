@@ -98,6 +98,7 @@
     .priority-item{border:1px solid #eadfb7;background:linear-gradient(145deg,#fffdf5,#fff8df);border-radius:12px;padding:10px;min-width:0}
     .priority-num{font-size:10px;font-weight:900;color:#a27900}.priority-term{font-size:13px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}.priority-count{font-size:10px;color:#75631f;margin-top:3px}
     .state{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:5px 8px;font-size:10px;font-weight:800;white-space:nowrap}.state-pending{background:#fff6dd;color:#805b00}.state-added{background:var(--greenbg);color:var(--green)}
+    .review-cell{min-width:210px}.review-main{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.review-detail{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.35;max-width:310px}.review-grammar{background:#eef2ff;color:#5145b5}.review-correction{background:#fff7ed;color:#9a4d08}.review-existing{background:var(--greenbg);color:var(--green)}.review-prediction{background:#eef8ff;color:#17658c}.review-missing{background:#fff1ef;color:#9f2d24}
     .copy-btn{border:1px solid #d9e1ea;background:#fff;color:#425166;border-radius:8px;padding:6px 8px;font-size:10px;font-weight:800}
     .empty{padding:28px 14px;text-align:center;color:var(--muted);font-size:12px}.empty strong{display:block;color:#334155;margin-bottom:4px}
     .loading{padding:45px;text-align:center;color:var(--muted)}.spinner{width:27px;height:27px;border:3px solid #dbe4ec;border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 10px}@keyframes spin{to{transform:rotate(360deg)}}
@@ -256,7 +257,7 @@
         <button class="btn btn-soft" id="btnCsv" type="button">CSV</button>
       </div>
       <div class="table-wrap" id="searchTableWrap">
-        <table class="table"><thead><tr><th>#</th><th>Palabra</th><th>Sección</th><th>Búsquedas</th><th>Última búsqueda</th><th>Estado</th><th></th></tr></thead><tbody id="searchTableBody"></tbody></table>
+        <table class="table"><thead><tr><th>#</th><th>Palabra</th><th>Sección</th><th>Revisión automática</th><th>Búsquedas</th><th>Última búsqueda</th><th>Estado</th><th></th></tr></thead><tbody id="searchTableBody"></tbody></table>
       </div>
       <div id="searchEmpty" class="empty d-none"><strong>No hay datos para este filtro.</strong><span>Prueba otro filtro o periodo.</span></div>
     </section>
@@ -266,6 +267,7 @@
   </section>
 </main>
 
+<script src="busquedas-diagnostico.js"></script>
 <script>
 (function(){
   'use strict';
@@ -289,7 +291,7 @@
   const STORE_URL='lspedia_admin_busquedas_api_v1';
   const SESSION_KEY='lspedia_admin_busquedas_key_v1';
   const STORE_ACCESS='lspedia_admin_access_v2';
-  const state={data:null,searchItems:[],popularItems:[],existing:new Set(),filter:'pending',query:'',tab:'busquedas'};
+  const state={data:null,searchItems:[],popularItems:[],existing:new Set(),diagnostico:null,filter:'pending',query:'',tab:'busquedas'};
   const normalize=v=>String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toLocaleLowerCase('es-PE');
   const escapeHtml=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const n=v=>Number(v)||0;
@@ -331,15 +333,30 @@
 
   async function loadExistingWords(){
     try{
-      const [a,b]=await Promise.all([
-        fetch('../data/palabras.json?_='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():[]).catch(()=>[]),
-        fetch('../data/vocabulario.json?_='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():[]).catch(()=>[])
+      const marca=Date.now();
+      const [a,b,c]=await Promise.all([
+        fetch('../data/palabras.json?_='+marca,{cache:'no-store'}).then(r=>r.ok?r.json():[]).catch(()=>[]),
+        fetch('../data/vocabulario.json?_='+marca,{cache:'no-store'}).then(r=>r.ok?r.json():[]).catch(()=>[]),
+        fetch('../data/busqueda-ayudas.json?_='+marca,{cache:'no-store'}).then(r=>r.ok?r.json():{}).catch(()=>({}))
       ]);
       const all=[];
       (Array.isArray(a)?a:[]).forEach(x=>{if(x&&x.palabra)all.push(normalize(x.palabra))});
       (Array.isArray(b)?b:[]).forEach(x=>{if(x&&x.palabra)all.push(normalize(x.palabra))});
       state.existing=new Set(all.filter(Boolean));
-    }catch(_e){state.existing=new Set()}
+      state.diagnostico=window.LSPediaDiagnosticoBusquedas?window.LSPediaDiagnosticoBusquedas.construirIndice(a,b,c):null;
+    }catch(_e){state.existing=new Set();state.diagnostico=null}
+  }
+
+  function revisarTermino(termino,seccion){
+    if(state.diagnostico&&window.LSPediaDiagnosticoBusquedas)return window.LSPediaDiagnosticoBusquedas.analizar(state.diagnostico,termino,seccion);
+    const existe=state.existing.has(normalize(termino));
+    return {tipo:existe?'existente':'falta',etiqueta:existe?'Ya existe':'Falta agregar',sugerencia:existe?termino:'',detalle:'',resuelto:existe};
+  }
+  function revisionHtml(item){
+    const r=item.revision||revisarTermino(item.termino,item.seccion);
+    const cls=({gramatica:'review-grammar',correccion:'review-correction',existente:'review-existing',prediccion:'review-prediction',falta:'review-missing'})[r.tipo]||'review-missing';
+    const sugerencia=r.sugerencia?' → '+r.sugerencia:'';
+    return '<div class="review-cell"><div class="review-main"><span class="state '+cls+'">'+escapeHtml(r.etiqueta||'Revisar')+'</span><strong>'+escapeHtml(sugerencia)+'</strong></div>'+(r.detalle?'<div class="review-detail">'+escapeHtml(r.detalle)+'</div>':'')+'</div>';
   }
 
   function readRememberedAccess(){
@@ -528,7 +545,7 @@
     return state.searchItems.filter(item=>{
       if(state.filter==='pending'&&item.added)return false;
       if(state.filter==='added'&&!item.added)return false;
-      return !q||normalize(item.termino).includes(q);
+      return !q||normalize(item.termino).includes(q)||normalize(item.revision&&item.revision.sugerencia).includes(q)||normalize(item.revision&&item.revision.etiqueta).includes(q);
     });
   }
   function renderSearchTable(){
@@ -536,7 +553,7 @@
     el.body.innerHTML='';
     rows.forEach((item,i)=>{
       const tr=document.createElement('tr');
-      tr.innerHTML='<td class="muted">'+(i+1)+'</td><td><strong>'+escapeHtml(item.termino)+'</strong></td><td><span class="state">'+escapeHtml(item.seccion||'—')+'</span></td><td><strong>'+fmt(item.busquedas)+'</strong></td><td>'+escapeHtml(gaDate(item.ultimaFecha))+'</td><td><span class="state '+(item.added?'state-added':'state-pending')+'">'+(item.added?'✓ Ya está':'● Pendiente')+'</span></td><td><button class="copy-btn" type="button" data-copy="'+encodeURIComponent(item.termino)+'">Copiar</button></td>';
+      tr.innerHTML='<td class="muted">'+(i+1)+'</td><td><strong>'+escapeHtml(item.termino)+'</strong></td><td><span class="state">'+escapeHtml(item.seccion||'—')+'</span></td><td>'+revisionHtml(item)+'</td><td><strong>'+fmt(item.busquedas)+'</strong></td><td>'+escapeHtml(gaDate(item.ultimaFecha))+'</td><td><span class="state '+(item.added?'state-added':'state-pending')+'">'+(item.added?'✓ Resuelta':'● Pendiente')+'</span></td><td><button class="copy-btn" type="button" data-copy="'+encodeURIComponent(item.termino)+'">Copiar</button></td>';
       el.body.appendChild(tr);
     });
     el.wrap.classList.toggle('d-none',rows.length===0);
@@ -551,13 +568,11 @@
     const porSeccion=data.busquedasPorSeccion||{};
     const general=data.busquedasPopulares||{};
     const fuente=(Array.isArray(porSeccion.items)&&porSeccion.items.length)?porSeccion:general;
-    const rows=(Array.isArray(fuente.items)?fuente.items:[]).map(x=>({
-      termino:String(x.termino||'').trim(),
-      seccion:String(x.seccion||'').trim(),
-      busquedas:n(x.busquedas),
-      ultimaFecha:String(x.ultimaFecha||''),
-      added:state.existing.has(normalize(x.termino))
-    }));
+    const rows=(Array.isArray(fuente.items)?fuente.items:[]).map(x=>{
+      const termino=String(x.termino||'').trim(),seccion=String(x.seccion||'').trim();
+      const revision=revisarTermino(termino,seccion);
+      return {termino,seccion,busquedas:n(x.busquedas),ultimaFecha:String(x.ultimaFecha||''),added:!!revision.resuelto,revision};
+    });
     state.popularItems=rows;
     if(!rows.length){
       el.popular.innerHTML='<div class="empty"><strong>Aún no hay búsquedas generales registradas.</strong><span>El ranking se llenará a medida que las personas usen Enter o la lupa.</span></div>';
@@ -565,7 +580,7 @@
     }
     renderMetricList(el.popular,rows,{
       nameKey:'termino',valueKey:'busquedas',limit:15,
-      meta:x=>(x.seccion?x.seccion+' · ':'')+(x.added?'Disponible en LSPedia':'Sin resultado / por revisar')+(x.ultimaFecha?' · '+gaDate(x.ultimaFecha):'')
+      meta:x=>(x.seccion?x.seccion+' · ':'')+((x.revision&&x.revision.etiqueta)||(x.added?'Disponible en LSPedia':'Sin resultado / por revisar'))+(x.revision&&x.revision.sugerencia?' → '+x.revision.sugerencia:'')+(x.ultimaFecha?' · '+gaDate(x.ultimaFecha):'')
     });
   }
 
@@ -573,13 +588,11 @@
     const porSeccion=data.busquedasSinResultadoPorSeccion||{};
     const general=data.busquedas||{};
     const fuente=(Array.isArray(porSeccion.items)&&porSeccion.items.length)?porSeccion:general;
-    state.searchItems=(Array.isArray(fuente.items)?fuente.items:[]).map(x=>({
-      termino:String(x.termino||'').trim(),
-      seccion:String(x.seccion||'').trim(),
-      busquedas:n(x.busquedas),
-      ultimaFecha:String(x.ultimaFecha||''),
-      added:state.existing.has(normalize(x.termino))
-    }));
+    state.searchItems=(Array.isArray(fuente.items)?fuente.items:[]).map(x=>{
+      const termino=String(x.termino||'').trim(),seccion=String(x.seccion||'').trim();
+      const revision=revisarTermino(termino,seccion);
+      return {termino,seccion,busquedas:n(x.busquedas),ultimaFecha:String(x.ultimaFecha||''),added:!!revision.resuelto,revision};
+    });
     renderPriority();
     renderSearchTable();
   }
@@ -588,8 +601,8 @@
     const rows=filteredSearch();
     if(!rows.length){showAlert('No hay búsquedas para exportar.','info');return}
     const quote=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
-    const lines=[['N','Palabra buscada','Seccion','Busquedas','Ultima busqueda','Estado'].map(quote).join(',')];
-    rows.forEach((x,i)=>lines.push([i+1,x.termino,x.seccion||'',x.busquedas,gaDate(x.ultimaFecha),x.added?'Ya esta en LSPedia':'Pendiente'].map(quote).join(',')));
+    const lines=[['N','Palabra buscada','Seccion','Revision automatica','Sugerencia','Busquedas','Ultima busqueda','Estado'].map(quote).join(',')];
+    rows.forEach((x,i)=>lines.push([i+1,x.termino,x.seccion||'',x.revision&&x.revision.etiqueta||'',x.revision&&x.revision.sugerencia||'',x.busquedas,gaDate(x.ultimaFecha),x.added?'Resuelta':'Pendiente'].map(quote).join(',')));
     const blob=new Blob(['\ufeff'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'});
     const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='lspedia-busquedas-sin-resultados.csv';document.body.appendChild(a);a.click();
     setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},0);
