@@ -12,7 +12,7 @@
      sustituya por index.html.
    ============================================================ */
 
-const VERSION_APP = "v106";
+const VERSION_APP = "v107";
 const PREFIJO_CACHE = "lspedia-shell-";
 const PREFIJO_RUNTIME = "lspedia-runtime-";
 const CACHE_NOMBRE = PREFIJO_CACHE + VERSION_APP;
@@ -40,6 +40,7 @@ const ARCHIVOS_CASCARON = [
     "js/i18n-restaurar.js",
     "js/i18n-auto.js",
     "js/buscador-visual.js",
+    "js/buscador-predictivo.js",
     "data/vocabulario.json",
     "data/nuevas-palabras.json"
 ];
