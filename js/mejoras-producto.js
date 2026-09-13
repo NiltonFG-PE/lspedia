@@ -1,22 +1,8 @@
 /* LSPedia — cargador de mejoras de producto.
-   Mantiene intacta la base existente y añade la sección general "Lo nuevo",
-   la capa bilingüe Español/Inglés y la búsqueda visual consultable. */
+   Mantiene intacta la base existente y carga mejoras como módulos independientes. */
 (function(){
     'use strict';
 
-    /* ============================================================
-       DESCUBRE — SOLO PALABRAS CON VIDEO
-       ------------------------------------------------------------
-       La tarjeta "Descubre" usa mostrarSenalDelDia() de script.js.
-       Aquí la envolvemos sin tocar la lógica principal: durante el cálculo
-       de la tarjeta, App.datos se limita temporalmente a palabras que tengan
-       un video de YouTube válido. Después se restaura el banco completo.
-
-       Así:
-       - Diccionario y búsquedas siguen viendo todas las palabras.
-       - Descubre nunca muestra una ficha sin video.
-       - Anterior/Siguiente también recorren únicamente palabras con video.
-       ============================================================ */
     function activarDescubreSoloConVideo(){
         const original = window.mostrarSenalDelDia;
         if(typeof original !== 'function' || original.__lspediaSoloVideos) return;
@@ -61,9 +47,6 @@
         }
     }
 
-    /* ============================================================
-       DICCIONARIO — AUTOSCROLL AL FILTRAR POR LETRA
-       ============================================================ */
     function activarAutoScrollIndiceDiccionario(){
         const indice = document.getElementById('indiceAlfabetico');
         if(!indice || indice.dataset.autoScrollResultados === '1') return;
@@ -85,6 +68,15 @@
         });
     }
 
+    function cargarCss(href){
+        if(document.querySelector('link[data-lspedia-modulo="' + href + '"]')) return;
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = href;
+        link.dataset.lspediaModulo = href;
+        document.head.appendChild(link);
+    }
+
     function cargar(src, alTerminar){
         const s = document.createElement('script');
         s.src = src;
@@ -100,6 +92,13 @@
     activarDescubreSoloConVideo();
     activarAutoScrollIndiceDiccionario();
 
+    cargarCss('css/mejoras-maestras.css?v=20260913');
+    cargar('js/lspedia-core.js?v=20260913', function(){
+        cargar('js/juegos-banco-compartido.js?v=20260913');
+        cargar('js/pwa-instalar.js?v=20260913');
+        cargar('js/a-z-movil.js?v=20260913');
+    });
+
     cargar('js/mejoras-producto-base.js', function(){
         cargar('js/lo-nuevo.js');
         cargar('js/i18n.js', function(){
@@ -107,7 +106,6 @@
                 cargar('js/i18n-auto.js', function(){
                     cargar('js/i18n-nosotros.js', function(){
                         cargar('js/buscador-visual.js', function(){
-                            // Predicción avanzada solo para el Diccionario.
                             cargar('js/buscador-predictivo.js');
                         });
                     });
