@@ -10,7 +10,7 @@
      su propia caché rápida + revalidación desde script.js.
    ============================================================ */
 
-const VERSION_APP = "v103";
+const VERSION_APP = "v104";
 const PREFIJO_CACHE = "lspedia-shell-";
 const PREFIJO_RUNTIME = "lspedia-runtime-";
 const CACHE_NOMBRE = PREFIJO_CACHE + VERSION_APP;
@@ -38,149 +38,90 @@ const ARCHIVOS_CASCARON = [
     "js/i18n-restaurar.js",
     "js/i18n-auto.js",
     "js/buscador-visual.js",
-    "manifest.json",
-    "img/icons/icon-192-v82.png",
-    "img/icons/icon-512-v82.png",
-    "img/icons/icon-512-maskable-v82.png",
-    "img/imagen-no-disponible.svg"
+    "data/vocabulario.json",
+    "data/nuevas-palabras.json"
 ];
 
-const RUTAS_CASCARON = new Set(
-    ARCHIVOS_CASCARON.map((archivo) => new URL(archivo, self.location.href).pathname)
-);
-
-const RUTAS_PEREZOSAS = new Set([
-    "js/alfabetizacion.js",
-    "js/matematicas.js",
-    "js/oraciones.js",
-    "js/subtitulos.js",
-    "css/alfabetizacion.css",
-    "css/matematicas.css",
-    "css/subtitulos.css"
-].map((archivo) => new URL(archivo, self.location.href).pathname));
-
-const RUTA_SCOPE = new URL(self.registration.scope).pathname;
-const URL_INDEX = new URL("index.html", self.registration.scope);
-const RUTA_INDEX = URL_INDEX.pathname;
-
-self.addEventListener("install", (evento) => {
-    evento.waitUntil((async () => {
-        const cache = await caches.open(CACHE_NOMBRE);
-        await Promise.all(ARCHIVOS_CASCARON.map(async (archivo) => {
-            const urlArchivo = new URL(archivo, self.registration.scope);
-            const requestFresco = new Request(urlArchivo.href, { cache: "reload" });
-            const respuesta = await fetch(requestFresco);
-            if (!respuesta || !respuesta.ok) {
-                throw new Error(`No se pudo precargar ${urlArchivo.pathname}`);
-            }
-            await cache.put(new Request(urlArchivo.href), respuesta.clone());
-        }));
-        await self.skipWaiting();
-    })());
+self.addEventListener("install", (event) => {
+    event.waitUntil(
+        caches.open(CACHE_NOMBRE).then((cache) => cache.addAll(ARCHIVOS_CASCARON))
+    );
+    self.skipWaiting();
 });
 
-self.addEventListener("activate", (evento) => {
-    evento.waitUntil((async () => {
-        const nombres = await caches.keys();
-        await Promise.all(
-            nombres
-                .filter((nombre) =>
-                    (nombre.startsWith(PREFIJO_CACHE) && nombre !== CACHE_NOMBRE) ||
-                    (nombre.startsWith(PREFIJO_RUNTIME) && nombre !== CACHE_RUNTIME)
-                )
-                .map((nombre) => caches.delete(nombre))
-        );
-        await self.clients.claim();
-    })());
+self.addEventListener("activate", (event) => {
+    event.waitUntil(
+        caches.keys().then((keys) => Promise.all(
+            keys.map((key) => {
+                if (
+                    (key.startsWith(PREFIJO_CACHE) && key !== CACHE_NOMBRE) ||
+                    (key.startsWith(PREFIJO_RUNTIME) && key !== CACHE_RUNTIME)
+                ) {
+                    return caches.delete(key);
+                }
+                return Promise.resolve(false);
+            })
+        )).then(() => self.clients.claim())
+    );
 });
 
-self.addEventListener("message", (evento) => {
-    if (evento.data && evento.data.tipo === "ACTIVAR_ACTUALIZACION") {
-        self.skipWaiting();
-    }
-});
-
-async function actualizarCacheEnSegundoPlano(request, cache, clave) {
-    try {
-        const respuesta = await fetch(request, { cache: "no-store" });
-        if (respuesta && respuesta.ok) {
-            await cache.put(clave, respuesta.clone());
-        }
-        return respuesta;
-    } catch (_error) {
-        return null;
-    }
-}
-
-self.addEventListener("fetch", (evento) => {
-    const request = evento.request;
+self.addEventListener("fetch", (event) => {
+    const request = event.request;
     if (request.method !== "GET") return;
 
     const url = new URL(request.url);
     if (url.origin !== self.location.origin) return;
 
-    const esManifest = url.pathname.endsWith("/manifest.json");
-    if (url.pathname.endsWith(".json") && !esManifest) return;
+    // Los JSON de contenido son deliberadamente network-first/no-store desde
+    // el frontend para evitar que una palabra recién publicada quede vieja.
+    if (url.pathname.includes("/data/palabras.json")) return;
 
-    const esNavegacionApp = request.mode === "navigate" &&
-        (url.pathname === RUTA_SCOPE || url.pathname === RUTA_INDEX);
-
-    if (esNavegacionApp) {
-        evento.respondWith((async () => {
-            try {
-                const respuestaRed = await fetch(request, { cache: "no-store" });
-                if (respuestaRed && respuestaRed.ok) {
-                    const cache = await caches.open(CACHE_NOMBRE);
-                    await cache.put(URL_INDEX.href, respuestaRed.clone());
+    // Navegación: devuelve rápido el cascarón cacheado y actualiza en segundo
+    // plano cuando la red está disponible.
+    if (request.mode === "navigate") {
+        event.respondWith((async () => {
+            const cached = await caches.match("./index.html");
+            const networkPromise = fetch(request).then(async (response) => {
+                if (response && response.ok) {
+                    const runtime = await caches.open(CACHE_RUNTIME);
+                    runtime.put(request, response.clone());
                 }
-                return respuestaRed;
-            } catch (error) {
-                const offline =
-                    await caches.match(URL_INDEX.href) ||
-                    await caches.match(self.registration.scope);
-                if (offline) return offline;
-                throw error;
+                return response;
+            }).catch(() => null);
+
+            if (cached) {
+                event.waitUntil(networkPromise);
+                return cached;
             }
+
+            const network = await networkPromise;
+            if (network) return network;
+
+            const runtime = await caches.match(request);
+            return runtime || Response.error();
         })());
         return;
     }
 
-    // Shell: caché primero y actualización silenciosa. En una conexión lenta
-    // no se vuelve a esperar por CSS/JS que el dispositivo ya descargó antes.
-    if (RUTAS_CASCARON.has(url.pathname)) {
-        evento.respondWith((async () => {
-            const cache = await caches.open(CACHE_NOMBRE);
-            const clave = new Request(url.origin + url.pathname);
-            const guardada = await cache.match(clave);
-
-            if (guardada) {
-                evento.waitUntil(actualizarCacheEnSegundoPlano(request, cache, clave));
-                return guardada;
+    // Recursos del mismo sitio: stale-while-revalidate. Así CSS/JS aparecen
+    // de inmediato desde caché y se actualizan silenciosamente.
+    event.respondWith((async () => {
+        const cached = await caches.match(request);
+        const networkPromise = fetch(request).then(async (response) => {
+            if (response && response.ok) {
+                const runtime = await caches.open(CACHE_RUNTIME);
+                runtime.put(request, response.clone());
             }
+            return response;
+        }).catch(() => null);
 
-            const respuesta = await actualizarCacheEnSegundoPlano(request, cache, clave);
-            if (respuesta) return respuesta;
-            throw new Error("Recurso del shell no disponible: " + url.pathname);
-        })());
-        return;
-    }
+        if (cached) {
+            event.waitUntil(networkPromise);
+            return cached;
+        }
 
-    // Módulos bajo demanda: se descargan la primera vez que se usan y luego
-    // abren desde caché de inmediato. La query ?v=... invalida versiones viejas.
-    if (RUTAS_PEREZOSAS.has(url.pathname)) {
-        evento.respondWith((async () => {
-            const cache = await caches.open(CACHE_RUNTIME);
-            const clave = request;
-            const guardada = await cache.match(clave);
-
-            if (guardada) {
-                evento.waitUntil(actualizarCacheEnSegundoPlano(request, cache, clave));
-                return guardada;
-            }
-
-            const respuesta = await actualizarCacheEnSegundoPlano(request, cache, clave);
-            if (respuesta) return respuesta;
-            throw new Error("Módulo bajo demanda no disponible: " + url.pathname);
-        })());
-    }
+        const network = await networkPromise;
+        if (network) return network;
+        return Response.error();
+    })());
 });
