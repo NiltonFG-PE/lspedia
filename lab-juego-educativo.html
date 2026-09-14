@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="googlebot" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#081426">
+  <title>Misión LSPedia · Laboratorio educativo</title>
+  <style>
+    :root{color-scheme:dark;--bg:#07111f;--card:#0e1d32;--line:#213854;--text:#f8fbff;--muted:#9bb0c9;--cyan:#38bdf8;--gold:#f8c94b;--green:#34d399;--red:#fb7185;--purple:#a78bfa}
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:radial-gradient(circle at 50% -10%,#173c64 0,#0a1a2d 34%,var(--bg) 70%);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}button,select{font:inherit}.top{height:58px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 16px;border-bottom:1px solid rgba(255,255,255,.1);background:rgba(5,14,27,.82);backdrop-filter:blur(12px);position:sticky;top:0;z-index:20}.brand{font-weight:950;letter-spacing:-.02em}.lab{font-size:10px;color:#10233a;background:var(--gold);border-radius:999px;padding:5px 8px;font-weight:950}.top a{color:#d9e8f8;text-decoration:none;font-size:12px;border:1px solid #38526f;border-radius:9px;padding:7px 10px}main{width:min(1080px,100%);margin:auto;padding:18px 12px 54px}.hud{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:11px}.hud>div{background:rgba(14,29,50,.86);border:1px solid var(--line);border-radius:12px;padding:10px 12px}.hud small{display:block;color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.08em;font-weight:850}.hud strong{display:block;font-size:20px;margin-top:2px}.screen{background:linear-gradient(180deg,rgba(14,29,50,.94),rgba(8,19,34,.96));border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:0 22px 55px rgba(0,0,0,.3)}.world{height:315px;position:relative;overflow:hidden;background:linear-gradient(#102d4b 0 43%,#163d52 43% 44%,#071322 44%);isolation:isolate}.world:before{content:"";position:absolute;inset:0;background-image:radial-gradient(circle,#fff 0 1px,transparent 1.5px);background-size:37px 37px;opacity:.22;animation:stars 14s linear infinite}.moon{position:absolute;width:76px;height:76px;border-radius:50%;right:7%;top:30px;background:radial-gradient(circle at 34% 30%,#fffbe2,#f6d967 45%,#e3a927 72%);box-shadow:0 0 45px rgba(248,201,75,.28)}.city{position:absolute;left:0;right:0;bottom:0;height:155px;display:flex;align-items:flex-end;gap:6px;padding:0 9px}.building{flex:1;min-width:25px;background:linear-gradient(90deg,#0b1e2e,#17334a);border:1px solid #23445e;border-bottom:0;border-radius:5px 5px 0 0;position:relative}.building:after{content:"";position:absolute;inset:9px 7px;background:repeating-linear-gradient(0deg,transparent 0 13px,rgba(75,202,255,.25) 13px 17px),repeating-linear-gradient(90deg,transparent 0 12px,rgba(250,211,83,.35) 12px 17px)}.route{position:absolute;left:5%;right:5%;bottom:58px;height:72px;display:flex;align-items:center;justify-content:space-between;z-index:5}.node{width:26px;height:26px;border-radius:50%;background:#17324d;border:3px solid #45647f;box-shadow:0 0 0 5px rgba(9,23,39,.7);position:relative}.node.done{background:var(--green);border-color:#b7f7da}.node.current{background:var(--gold);border-color:#fff0b0;transform:scale(1.16);box-shadow:0 0 0 7px rgba(248,201,75,.17)}.route-line{position:absolute;left:1%;right:1%;height:4px;background:linear-gradient(90deg,var(--green) var(--progress,0%),#2b4660 var(--progress,0%));z-index:-1;border-radius:99px}.player{position:absolute;z-index:8;bottom:86px;left:calc(5% - 13px);width:42px;height:42px;transition:left .65s cubic-bezier(.2,.8,.2,1),transform .35s}.player:before{content:"";position:absolute;width:32px;height:32px;border-radius:11px 11px 14px 14px;background:linear-gradient(145deg,#70dbff,#158ac4);border:2px solid #c5f1ff;left:5px;top:5px;box-shadow:0 8px 18px rgba(20,155,215,.35)}.player:after{content:"•  •";position:absolute;color:#071826;font-weight:950;letter-spacing:5px;font-size:10px;left:10px;top:11px}.player.jump{transform:translateY(-24px) rotate(-5deg)}.challenge{padding:18px}.challenge-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:13px}.challenge h1{font-size:clamp(19px,4vw,28px);margin:0 0 5px;letter-spacing:-.03em}.challenge p{margin:0;color:var(--muted);font-size:12px;line-height:1.45}.mode-badge{flex:none;border:1px solid #31516d;background:#122943;color:#cce9fb;border-radius:999px;padding:7px 9px;font-size:10px;font-weight:900}.question{min-height:78px;display:grid;place-items:center;text-align:center;border:1px solid #284560;background:#0a1b2d;border-radius:14px;padding:14px;font-size:clamp(19px,5vw,31px);font-weight:950;letter-spacing:-.02em}.options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:11px}.option{border:1px solid #2d4b66;background:#112942;color:#f7fbff;border-radius:13px;min-height:58px;padding:10px;font-weight:850;cursor:pointer;transition:.15s transform,.15s background,.15s border-color}.option:hover,.option:focus-visible{background:#173b5c;border-color:#59bce8;outline:none;transform:translateY(-1px)}.option.correct{background:#0d4b3b;border-color:#62e5b3}.option.wrong{background:#572435;border-color:#fb8da0}.feedback{min-height:28px;padding-top:9px;text-align:center;font-size:12px;font-weight:850}.feedback.ok{color:#83efc2}.feedback.bad{color:#fda4af}.setup{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin:12px 0}.setup select,.setup button{min-height:44px;border-radius:11px;border:1px solid #31506b;background:#0f263d;color:white;padding:8px 11px}.setup button{background:linear-gradient(135deg,#0ea5e9,#6366f1);font-weight:900;border:0;padding-inline:18px}.intro{padding:22px;text-align:center}.intro h1{font-size:clamp(28px,8vw,52px);margin:4px 0 9px;letter-spacing:-.055em}.intro p{max-width:650px;margin:0 auto;color:var(--muted);line-height:1.55}.intro .pill{display:inline-flex;background:#172d46;border:1px solid #33506e;color:#bfe9ff;border-radius:999px;padding:7px 10px;font-size:10px;font-weight:900}.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:17px}.rule{border:1px solid #263f59;background:#0c1d30;border-radius:13px;padding:13px}.rule b{font-size:13px}.rule span{display:block;color:var(--muted);font-size:10px;line-height:1.45;margin-top:4px}.hidden{display:none!important}.summary{text-align:center;padding:25px}.summary .big{font-size:48px;font-weight:950;color:var(--gold)}.summary button{border:0;background:var(--cyan);color:#062033;border-radius:11px;padding:11px 16px;font-weight:950}@keyframes stars{to{background-position:37px 37px}}@media(max-width:640px){.hud{grid-template-columns:repeat(2,1fr)}.world{height:250px}.city{height:115px}.route{bottom:46px}.player{bottom:74px}.challenge{padding:13px}.options{grid-template-columns:1fr}.setup{grid-template-columns:1fr 1fr}.setup button{grid-column:1/-1}.rules{grid-template-columns:1fr}.moon{width:58px;height:58px}.option{min-height:52px}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+  </style>
+</head>
+<body>
+<header class="top"><div class="brand">Misión LSPedia <span class="lab">LAB</span></div><a href="./">Salir</a></header>
+<main>
+  <section id="introJuego" class="screen intro">
+    <span class="pill">PROTOTIPO EDUCATIVO · NO PÚBLICO</span>
+    <h1>Recupera la ciudad</h1>
+    <p>Supera retos de español y matemáticas para encender las estaciones de una ciudad visual. No es el antiguo “LSPedia Aventura” y todavía no forma parte del menú público.</p>
+    <div class="rules">
+      <div class="rule"><b>🧠 Aprende jugando</b><span>Retos breves, una decisión por pantalla y retroalimentación inmediata.</span></div>
+      <div class="rule"><b>⚡ Avanza de verdad</b><span>Cada respuesta correcta mueve al personaje y activa una estación.</span></div>
+      <div class="rule"><b>📱 Ligero</b><span>Sin motor 3D ni descargas pesadas; pensado para celulares.</span></div>
+    </div>
+    <div class="setup">
+      <select id="modoJuego" aria-label="Tipo de retos"><option value="mixto">Español + Matemáticas</option><option value="espanol">Solo Español</option><option value="matematicas">Solo Matemáticas</option></select>
+      <select id="nivelJuego" aria-label="Dificultad"><option value="facil">Fácil</option><option value="medio">Medio</option><option value="dificil">Difícil</option></select>
+      <button id="btnIniciarJuego" type="button">Comenzar misión</button>
+    </div>
+  </section>
+
+  <section id="partidaJuego" class="hidden">
+    <div class="hud">
+      <div><small>Estación</small><strong id="hudPaso">1/10</strong></div>
+      <div><small>Energía</small><strong id="hudPuntos">0</strong></div>
+      <div><small>Racha</small><strong id="hudRacha">0 🔥</strong></div>
+      <div><small>Escudo</small><strong id="hudVidas">❤️❤️❤️</strong></div>
+    </div>
+    <div class="screen">
+      <div class="world" aria-hidden="true">
+        <div class="moon"></div>
+        <div class="city" id="ciudadJuego"></div>
+        <div class="route" id="rutaJuego"><div class="route-line" id="lineaRutaJuego"></div></div>
+        <div class="player" id="jugadorJuego"></div>
+      </div>
+      <div class="challenge">
+        <div class="challenge-head"><div><h1 id="tituloReto">Reto</h1><p id="instruccionReto"></p></div><span id="tipoReto" class="mode-badge">ESPAÑOL</span></div>
+        <div id="preguntaJuego" class="question" aria-live="polite"></div>
+        <div id="opcionesJuego" class="options"></div>
+        <div id="feedbackJuego" class="feedback" role="status" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="resumenJuego" class="screen summary hidden">
+    <div class="big" id="resumenPuntos">0</div>
+    <h2>Misión terminada</h2>
+    <p id="resumenTexto"></p>
+    <button id="btnRepetirJuego" type="button">Jugar otra vez</button>
+  </section>
+</main>
+<script src="js/lab-juego-educativo.js"></script>
+</body>
+</html>
