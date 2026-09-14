@@ -26,6 +26,7 @@ on:
       - "scripts/validar_lab_juego.py"
       - "scripts/verificar_archivos_huerfanos.py"
       - "scripts/validar_publicacion_publica.py"
+      - "scripts/validar_admin_analytics.py"
       - "scripts/auditar_duplicados.py"
       - "scripts/validar_presupuesto_frontend.py"
       - ".github/workflows/validar-lspedia.yml"
@@ -54,6 +55,7 @@ on:
       - "scripts/validar_lab_juego.py"
       - "scripts/verificar_archivos_huerfanos.py"
       - "scripts/validar_publicacion_publica.py"
+      - "scripts/validar_admin_analytics.py"
       - "scripts/auditar_duplicados.py"
       - "scripts/validar_presupuesto_frontend.py"
       - ".github/workflows/validar-lspedia.yml"
@@ -120,6 +122,8 @@ jobs:
         run: python scripts/validar_lab_juego.py
       - name: Validar publicación y estadísticas públicas
         run: python scripts/validar_publicacion_publica.py
+      - name: Validar panel Analytics
+        run: python scripts/validar_admin_analytics.py
       - name: Validar presupuesto del frontend
         run: python scripts/validar_presupuesto_frontend.py
       - name: Comprobar archivos históricos huérfanos
