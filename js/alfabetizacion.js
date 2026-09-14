@@ -1198,7 +1198,12 @@ const AlfabetizacionV2 = (function () {
 
         // Vocabulario (Hoja 2) se filtra por su propio nivel y por imagen
         // real. A propósito NO se usa el Diccionario (Hoja 1).
-        const bancoHoja2 = (window.QuizV2 && typeof QuizV2.obtenerBanco === "function") ? QuizV2.obtenerBanco() : [];
+        const bancoCompartido = (window.LSPediaJuegosBanco && typeof window.LSPediaJuegosBanco.obtenerCargado === "function")
+            ? window.LSPediaJuegosBanco.obtenerCargado({ fuentes: ["vocabulario"], conImagen: true })
+            : [];
+        const bancoHoja2 = bancoCompartido.length
+            ? bancoCompartido
+            : ((typeof window.obtenerBancoHoja2 === "function") ? window.obtenerBancoHoja2() : []);
         const deVocabulario = obtenerPalabrasConImagenDe(bancoHoja2, nivelSeleccionado);
 
         const combinado = deLetras.concat(deNumeros, deVocabulario);
@@ -1800,7 +1805,12 @@ const AlfabetizacionV2 = (function () {
                 nivel: nivelNumeroJuego(n)
             }));
 
-        const bancoHoja2 = (window.QuizV2 && typeof QuizV2.obtenerBanco === "function") ? QuizV2.obtenerBanco() : [];
+        const bancoCompartido = (window.LSPediaJuegosBanco && typeof window.LSPediaJuegosBanco.obtenerCargado === "function")
+            ? window.LSPediaJuegosBanco.obtenerCargado({ fuentes: ["vocabulario"], conImagen: true })
+            : [];
+        const bancoHoja2 = bancoCompartido.length
+            ? bancoCompartido
+            : ((typeof window.obtenerBancoHoja2 === "function") ? window.obtenerBancoHoja2() : []);
         const deVocabulario = obtenerPalabrasConImagenDe(bancoHoja2, nivelSeleccionado);
 
         const combinado = deLetras.concat(deNumeros, deVocabulario);

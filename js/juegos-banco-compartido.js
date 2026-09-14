@@ -114,6 +114,21 @@
     } catch (_e) {}
   }
 
+  // Lectura síncrona de la caché ya precargada. Los juegos perezosos
+  // pueden usarla sin convertir su flujo de render en async. No registra
+  // recientes ni mezcla fuentes fuera de Vocabulario/Alfabetización.
+  function obtenerCargado(opciones) {
+    const opts = opciones || {};
+    const bancoActual = Array.isArray(cache) ? cache : [];
+    const fuentes = Array.isArray(opts.fuentes) && opts.fuentes.length ? new Set(opts.fuentes) : null;
+    return deduplicar(bancoActual.filter(function (item) {
+      if (fuentes && !fuentes.has(item.fuente)) return false;
+      if (opts.conImagen && !item.imagen) return false;
+      if (opts.conVideo && !item.video) return false;
+      return true;
+    })).slice();
+  }
+
   async function obtener(opciones) {
     const opts = opciones || {};
     const banco = await cargar(false);
@@ -197,7 +212,7 @@
     mejorarNivelesAventura();
   }
 
-  window.LSPediaJuegosBanco = Object.freeze({ cargar: cargar, obtener: obtener, estadisticas: estadisticas });
+  window.LSPediaJuegosBanco = Object.freeze({ cargar: cargar, obtener: obtener, obtenerCargado: obtenerCargado, estadisticas: estadisticas });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar, { once: true });
   else iniciar();
 })();
