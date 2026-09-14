@@ -76,7 +76,7 @@ let solicitudCaptura = null;
 let calidadAptaDesde = 0;
 let temporizadorOrientacion = 0;
 let ultimaOrientacionVista = '';
-const ESTABILIDAD_ANTES_CUENTA_MS = 1100;
+const ESTABILIDAD_ANTES_CUENTA_MS = 800;
 const canvasLuz = document.createElement('canvas');
 canvasLuz.width = 32;
 canvasLuz.height = 18;
@@ -562,8 +562,7 @@ function evaluarCalidadCaptura(resultado, resultadoPose, resultadoRostro, tiempo
   const manos = Array.isArray(resultado && resultado.landmarks) ? resultado.landmarks.length : 0;
   const pose = Array.isArray(resultadoPose && resultadoPose.landmarks) ? resultadoPose.landmarks[0] : null;
   const cuerpo = Array.isArray(pose) &&
-    visibilidad(pose[0]) && visibilidad(pose[11]) && visibilidad(pose[12]) &&
-    visibilidad(pose[13]) && visibilidad(pose[14]);
+    visibilidad(pose[0], 0.25) && visibilidad(pose[11], 0.25) && visibilidad(pose[12], 0.25);
   const cara = Array.isArray(resultadoRostro && resultadoRostro.faceLandmarks) ? resultadoRostro.faceLandmarks[0] : null;
   const rostro = Array.isArray(cara) && cara.length >= 400;
   const cajaCara = rostro ? cajaRostro(cara) : null;
@@ -577,10 +576,10 @@ function evaluarCalidadCaptura(resultado, resultadoPose, resultadoRostro, tiempo
   if (cuerpo) {
     const anchoHombros = Math.abs(pose[11].x - pose[12].x);
     const centroHombrosX = (pose[11].x + pose[12].x) / 2;
-    const hombroMin = vertical ? 0.22 : 0.14;
-    const hombroMax = vertical ? 0.58 : 0.48;
-    const caraMin = vertical ? 0.08 : 0.055;
-    const caraMax = vertical ? 0.30 : 0.24;
+    const hombroMin = vertical ? 0.15 : 0.10;
+    const hombroMax = vertical ? 0.72 : 0.62;
+    const caraMin = vertical ? 0.065 : 0.05;
+    const caraMax = vertical ? 0.36 : 0.30;
     const caraMuyGrande = cajaCara ? cajaCara.ancho > caraMax : false;
     const caraMuyPequena = cajaCara ? cajaCara.ancho < caraMin : false;
     const demasiadoCerca = anchoHombros > hombroMax || caraMuyGrande;
@@ -590,33 +589,39 @@ function evaluarCalidadCaptura(resultado, resultadoPose, resultadoRostro, tiempo
     else if (demasiadoLejos) distancia = 'lejos';
     else distancia = 'bien';
 
-    const brazosDentro = [13, 14, 15, 16].every(i => puntoDentro(pose[i], 0.045, 0.035));
-    const hombrosDentro = puntoDentro(pose[11], 0.05, 0.04) && puntoDentro(pose[12], 0.05, 0.04);
-    const cabezaDentro = puntoDentro(pose[0], 0.10, 0.055) && pose[0].y < 0.44;
-    const centrado = centroHombrosX >= 0.32 && centroHombrosX <= 0.68 &&
-      (!cajaCara || (cajaCara.cx >= 0.32 && cajaCara.cx <= 0.68 && cajaCara.minY >= 0.025));
+    const hombrosDentro = puntoDentro(pose[11], 0.018, 0.02) && puntoDentro(pose[12], 0.018, 0.02);
+    const cabezaDentro = puntoDentro(pose[0], 0.035, 0.02);
+    const caraDentro = !cajaCara || (
+      cajaCara.minX >= 0.015 && cajaCara.maxX <= 0.985 &&
+      cajaCara.minY >= 0.01 && cajaCara.maxY <= 0.82
+    );
+    const centrado = centroHombrosX >= 0.18 && centroHombrosX <= 0.82 &&
+      (!cajaCara || (cajaCara.cx >= 0.18 && cajaCara.cx <= 0.82));
 
-    encuadre = distancia === 'bien' && brazosDentro && hombrosDentro && cabezaDentro && centrado;
+    encuadre = distancia === 'bien' && hombrosDentro && cabezaDentro && caraDentro && centrado;
 
-    if (distancia === 'cerca') consejo = 'Estás demasiado cerca. Aléjate hasta que se vean completos cabeza, hombros, codos y manos.';
-    else if (distancia === 'lejos') consejo = 'Estás demasiado lejos. Acércate un poco sin cortar los brazos.';
-    else if (!brazosDentro) consejo = 'Deja ambos antebrazos y manos dentro del marco.';
-    else if (!hombrosDentro || !cabezaDentro) consejo = 'No cortes la cabeza ni los hombros. Ajusta tu posición.';
-    else if (!centrado) consejo = 'Muévete un poco hacia el centro del cuadro.';
+    if (distancia === 'cerca') consejo = 'Aléjate un poco de la cámara para dejar espacio a las manos.';
+    else if (distancia === 'lejos') consejo = 'Acércate un poco a la cámara.';
+    else if (!cabezaDentro || !caraDentro) consejo = 'Deja tu rostro completo dentro del cuadro.';
+    else if (!hombrosDentro) consejo = 'Deja ambos hombros visibles dentro del cuadro.';
+    else if (centroHombrosX < 0.18 || (cajaCara && cajaCara.cx < 0.18)) consejo = 'Muévete un poco hacia la izquierda de la pantalla.';
+    else if (centroHombrosX > 0.82 || (cajaCara && cajaCara.cx > 0.82)) consejo = 'Muévete un poco hacia la derecha de la pantalla.';
   } else if (detectorPose) {
-    consejo = 'Aléjate hasta que la cámara pueda ver cabeza, hombros, codos y manos.';
+    consejo = 'Coloca rostro y hombros dentro del cuadro.';
   }
 
   const cuerpoNecesario = detectorPose ? cuerpo : true;
   const rostroNecesario = detectorRostro ? rostro : true;
   const encuadreNecesario = detectorPose ? encuadre : true;
-  const apta = manos > 0 && cuerpoNecesario && rostroNecesario && luz.ok && encuadreNecesario;
+  const apta = manos >= 1 && cuerpoNecesario && rostroNecesario && luz.ok && encuadreNecesario;
 
-  if (!manos) consejo = 'Muestra al menos una mano dentro del cuadro.';
-  else if (detectorRostro && !rostro) consejo = 'Mira hacia la cámara y mantén el rostro visible.';
-  else if (!luz.ok) consejo = luz.brillo < 55 ? 'Hay poca luz. Coloca una luz delante de ti.' : 'Hay demasiada luz. Evita una ventana o foco fuerte detrás o frente a ti.';
-  else if (!consejo && luz.contraste < 18) consejo = 'Usa ropa y un fondo que contrasten mejor.';
-  else if (!consejo && apta) consejo = 'Encuadre correcto. Mantén cabeza, hombros, antebrazos y manos dentro del marco.';
+  if (!manos) consejo = 'Muestra al menos una mano completa dentro del cuadro.';
+  else if (detectorRostro && !rostro) consejo = 'Mantén el rostro visible mirando aproximadamente hacia la cámara.';
+  else if (!luz.ok) consejo = luz.brillo < 55 ? 'Hay poca luz. Coloca una luz delante de ti.' : 'Hay demasiada luz. Evita una luz fuerte de frente o detrás.';
+  else if (!consejo && luz.contraste < 18) consejo = 'Si puedes, usa un fondo o ropa con más contraste.';
+  else if (!consejo && apta) consejo = manos >= 2
+    ? 'Listo. Mantén esta posición: puedes mover las manos libremente al hacer la seña.'
+    : 'Listo. Una mano visible es suficiente para iniciar; la segunda aparecerá si la seña la necesita.';
 
   return { manos, cuerpo, rostro, luz: luz.ok, encuadre: encuadreNecesario, apta, distancia, brillo: luz.brillo, contraste: luz.contraste, consejo };
 }
@@ -796,7 +801,7 @@ function cancelarCapturaPorTiempo(tipo) {
     ui.btnReconocer.disabled = false;
     ui.btnMuestra.disabled = false;
   }
-  estado('No se logró mantener manos, cuerpo y rostro visibles. Ajusta el encuadre e inténtalo otra vez.', 'error');
+  estado('No se logró mantener rostro, hombros y al menos una mano visibles. Ajusta tu posición e inténtalo otra vez.', 'error');
 }
 
 function finalizarReconocimientoGuiado() {
@@ -818,7 +823,7 @@ async function iniciarCuentaDesdeSolicitud() {
   if (!activo || solicitudCaptura !== solicitud) return;
   if (!listo) {
     calidadAptaDesde = 0;
-    estado('Vuelve a colocarte dentro de la silueta. La cuenta regresiva empezará sola cuando todo esté listo.');
+    estado('Vuelve a colocarte dentro de la zona segura. La cuenta regresiva empezará sola cuando estés listo.');
     return;
   }
 
@@ -839,7 +844,7 @@ async function iniciarCuentaDesdeSolicitud() {
       inicio: performance.now(),
       dimensionObjetivo: solicitud.dimensionObjetivo
     };
-    estado('Haz la seña ahora. Mantén cabeza, hombros y manos dentro del cuadro.');
+    estado('Haz la seña ahora. Puedes mover las manos libremente; intenta mantener rostro y hombros visibles.');
   }
 }
 
@@ -940,8 +945,8 @@ function iniciarCaptura() {
   calidadAptaDesde = 0;
   ui.btnMuestra.disabled = true;
   ui.btnReconocer.disabled = true;
-  ui.progreso.textContent = 'Colócate dentro de la silueta.';
-  estado('Colócate dentro de la silueta. Cuando manos, cuerpo, rostro, luz y encuadre estén listos, comenzará 3–2–1 automáticamente.');
+  ui.progreso.textContent = 'Colócate cómodamente dentro del cuadro.';
+  estado('Colócate cómodamente. Cuando detectemos rostro, hombros, al menos una mano y buena luz, comenzará 3–2–1 automáticamente.');
 }
 
 function finalizarCaptura() {
@@ -988,7 +993,7 @@ function reconocer() {
   ui.btnReconocer.disabled = true;
   ui.btnMuestra.disabled = true;
   ui.resultados.textContent = '';
-  estado('Colócate dentro de la silueta. Cuando estés bien ubicado, comenzará 3–2–1 automáticamente.');
+  estado('Colócate cómodamente. Cuando detectemos rostro, hombros, al menos una mano y buena luz, comenzará 3–2–1 automáticamente.');
 }
 
 function renderResultados(top) {

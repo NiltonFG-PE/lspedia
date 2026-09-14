@@ -106,9 +106,15 @@ def main() -> None:
             error(f"falta integración corporal en laboratorio: {requerido}")
     if "respuestaBrillo" not in html_lab or "rgba(16,185,129" not in html_lab:
         error("falta destaque verde de respuestas candidatas")
-    for requerido in ("calidadCapturaSenas", "cuentaRegresivaSenas", "btnCambiarCamaraSenas", "Fondo liso"):
+    for requerido in ("calidadCapturaSenas", "cuentaRegresivaSenas", "btnCambiarCamaraSenas", "Fondo liso", "ZONA SEGURA"):
         if requerido not in html_lab:
             error(f"falta mejora de captura multimodal en HTML: {requerido}")
+
+
+    if "siluetaGuiaSenas" in html_lab:
+        error("no debe volver la silueta rígida: usar zona segura flexible")
+    if "manos >= 1" not in js_lab or "ESTABILIDAD_ANTES_CUENTA_MS = 800" not in js_lab:
+        error("falta encuadre flexible o preparación automática del buscador por señas")
 
     print(
         "Dataset señas IA válido: "
