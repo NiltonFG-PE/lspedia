@@ -8,7 +8,7 @@ import math
 from pathlib import Path
 
 RUTA = Path("data/senas-ia-dataset.json")
-DIMENSIONES = {127, 161}
+DIMENSIONES = {127, 161, 186}
 MIN_FRAMES = 8
 MAX_FRAMES = 80
 
@@ -28,10 +28,10 @@ def main() -> None:
 
     if not isinstance(data, dict):
         error("la raíz debe ser un objeto")
-    if data.get("formato") not in {"lspedia-senas-ia-v2", "lspedia-senas-ia-v3"}:
+    if data.get("formato") not in {"lspedia-senas-ia-v2", "lspedia-senas-ia-v3", "lspedia-senas-ia-v4"}:
         error("formato no reconocido")
-    if data.get("version") not in {2, 3}:
-        error("version debe ser 2 o 3")
+    if data.get("version") not in {2, 3, 4}:
+        error("version debe ser 2, 3 o 4")
     if data.get("vectorDimension") not in DIMENSIONES:
         error(f"vectorDimension debe ser uno de {sorted(DIMENSIONES)}")
     if data.get("framesPorMuestra") != 24:
@@ -101,11 +101,14 @@ def main() -> None:
 
     js_lab = Path("js/lab-senas-ia.js").read_text(encoding="utf-8")
     html_lab = Path("lab-senas-ia.html").read_text(encoding="utf-8")
-    for requerido in ("PoseLandmarker", "DIMENSION_VECTOR_POSE = 161", "POSE_INDICES"):
+    for requerido in ("PoseLandmarker", "FaceLandmarker", "DIMENSION_VECTOR_POSE = 161", "DIMENSION_VECTOR_MULTIMODAL = 186", "POSE_INDICES", "BLENDSHAPES_CARA", "outputFaceBlendshapes: true", "cuentaRegresiva", "evaluarCalidadCaptura"):
         if requerido not in js_lab:
             error(f"falta integración corporal en laboratorio: {requerido}")
     if "respuestaBrillo" not in html_lab or "rgba(16,185,129" not in html_lab:
         error("falta destaque verde de respuestas candidatas")
+    for requerido in ("calidadCapturaSenas", "cuentaRegresivaSenas", "btnCambiarCamaraSenas", "Fondo liso"):
+        if requerido not in html_lab:
+            error(f"falta mejora de captura multimodal en HTML: {requerido}")
 
     print(
         "Dataset señas IA válido: "

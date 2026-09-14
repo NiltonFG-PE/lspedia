@@ -1,13 +1,18 @@
 {
-  "formato": "lspedia-senas-ia-v2",
-  "version": 2,
+  "formato": "lspedia-senas-ia-v4",
+  "version": 4,
   "estado": "experimental",
   "idioma": "LSP",
   "framesPorMuestra": 24,
-  "vectorDimension": 127,
-  "modeloEntrada": "MediaPipe Hand Landmarker",
-  "descripcion": "Dataset experimental para el buscador mediante señas de LSPedia. Las muestras almacenan landmarks normalizados, no video.",
+  "vectorDimension": 186,
+  "modeloEntrada": "MediaPipe Hand Landmarker + Pose Landmarker + Face Landmarker (blendshapes)",
+  "descripcion": "Dataset experimental multimodal para el buscador mediante señas de LSPedia. Las muestras almacenan landmarks normalizados y rasgos numéricos de expresión facial, no video ni fotografías.",
   "privacidad": "Solo deben incorporarse muestras obtenidas con consentimiento y revisadas antes de publicarse en este archivo.",
   "conceptos": [],
-  "muestras": []
+  "muestras": [],
+  "vectorDimensionsCompatibles": [
+    127,
+    161,
+    186
+  ]
 }
