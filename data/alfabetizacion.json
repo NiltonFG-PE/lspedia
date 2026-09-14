@@ -683,6 +683,13 @@
       "nivel": ""
     },
     {
+      "caracter": "A",
+      "palabra": "Abeja",
+      "imagen": "img/alfabetizacion/ejemplos/abeja.webp",
+      "orden": 4,
+      "nivel": "Fácil"
+    },
+    {
       "caracter": "B",
       "palabra": "Barco",
       "imagen": "img/alfabetizacion/ejemplos/barco.webp",
