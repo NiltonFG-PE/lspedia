@@ -282,10 +282,24 @@ async function listarCamaras() {
   if (ui.btnCambiarCamara) ui.btnCambiarCamara.disabled = camarasDisponibles.length < 2;
 }
 
+function pantallaVertical() {
+  try {
+    if (window.matchMedia) return window.matchMedia('(orientation: portrait)').matches;
+  } catch (_e) {}
+  return window.innerHeight > window.innerWidth;
+}
+
 async function obtenerStreamCamara() {
-  const video = {
+  const vertical = pantallaVertical();
+  const video = vertical ? {
+    width: { ideal: 720 },
+    height: { ideal: 1280 },
+    aspectRatio: { ideal: 9 / 16 },
+    frameRate: { ideal: 30, max: 30 }
+  } : {
     width: { ideal: 1280 },
     height: { ideal: 720 },
+    aspectRatio: { ideal: 16 / 9 },
     frameRate: { ideal: 30, max: 30 }
   };
   if (dispositivoCamaraActual) video.deviceId = { exact: dispositivoCamaraActual };
@@ -364,10 +378,12 @@ function detenerCamara() {
 }
 
 function ajustarCanvas() {
-  const w = ui.video.videoWidth || 1280;
-  const h = ui.video.videoHeight || 720;
+  const w = ui.video.videoWidth || (pantallaVertical() ? 720 : 1280);
+  const h = ui.video.videoHeight || (pantallaVertical() ? 1280 : 720);
   if (ui.canvas.width !== w) ui.canvas.width = w;
   if (ui.canvas.height !== h) ui.canvas.height = h;
+  const marco = ui.video.closest ? ui.video.closest('.camara') : null;
+  if (marco) marco.dataset.orientacion = pantallaVertical() ? 'vertical' : 'horizontal';
 }
 
 function limpiarCanvas() {
@@ -856,7 +872,7 @@ function renderCalidadBasica() {
   const todas = todasLasMuestras();
   const grupos = resumenConceptos(todas);
   if (!todas.length) {
-    ui.calidad.textContent = 'Aún no hay muestras. Para una primera prueba útil, intenta reunir al menos 5 muestras por concepto.';
+    ui.calidad.textContent = 'Aún no hay muestras en este navegador. Si ya grabaste muestras en otra computadora, celular o navegador, no se sincronizan automáticamente: usa Exportar JSON en ese dispositivo e Importar JSON aquí. Para una primera prueba nueva, intenta reunir al menos 5 muestras por concepto.';
     return;
   }
   const debiles = [...grupos.entries()].filter(([,v]) => v.total < 3).map(([k]) => k);
@@ -870,7 +886,7 @@ function renderMuestras() {
   ui.lista.textContent = '';
   const todas = todasLasMuestras();
   const grupos = resumenConceptos(todas);
-  ui.contador.textContent = `${todas.length} muestra${todas.length === 1 ? '' : 's'} totales · ${muestrasLocales.length} locales · ${muestrasCentrales.length} centrales · ${grupos.size} concepto${grupos.size === 1 ? '' : 's'}`;
+  ui.contador.textContent = `${todas.length} muestra${todas.length === 1 ? '' : 's'} totales · ${muestrasLocales.length} locales en este dispositivo · ${muestrasCentrales.length} centrales · ${grupos.size} concepto${grupos.size === 1 ? '' : 's'}`;
 
   [...grupos.entries()].sort((a,b) => a[0].localeCompare(b[0], 'es')).forEach(([etiqueta, info]) => {
     const fila = document.createElement('div');
