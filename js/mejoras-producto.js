@@ -99,6 +99,7 @@
     cargarCss('css/mejoras-maestras.css?v=20260914');
     cargarCss('css/accesibilidad-segura.css?v=20260914-1');
     cargar('js/lspedia-core.js?v=20260914-2', function(){
+        cargar('js/vocabulario-publico.js?v=20260914-1');
         cargar('js/accesibilidad-segura.js?v=20260914-1');
         cargar('js/seo-institucional.js?v=20260914-1');
         cargar('js/juegos-banco-compartido.js?v=20260914');
