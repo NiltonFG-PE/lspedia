@@ -1,0 +1,48 @@
+name: Integrar regla pública del Diccionario
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - "scripts/integrar_regla_publicacion_diccionario.py"
+      - ".github/workflows/integrar-regla-publicacion.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: integrar-regla-publicacion-develop
+  cancel-in-progress: false
+
+jobs:
+  migrar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Integrar regla por imagen
+        run: python scripts/integrar_regla_publicacion_diccionario.py
+      - name: Validar sintaxis
+        run: node --check js/script.js
+      - name: Validar publicación pública
+        run: python scripts/validar_publicacion_publica.py
+      - name: Guardar cambio si existe
+        shell: bash
+        run: |
+          if git diff --quiet -- js/script.js; then
+            echo "No hay cambios pendientes en script.js."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/script.js
+          git commit -m "fix: integrar regla pública por imagen en script base"
+          git push origin develop
