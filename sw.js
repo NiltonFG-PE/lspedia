@@ -12,7 +12,7 @@
      sustituya por index.html.
    ============================================================ */
 
-const VERSION_APP = "v118";
+const VERSION_APP = "v119";
 const PREFIJO_CACHE = "lspedia-shell-";
 const PREFIJO_RUNTIME = "lspedia-runtime-";
 const CACHE_NOMBRE = PREFIJO_CACHE + VERSION_APP;
@@ -82,6 +82,13 @@ self.addEventListener("fetch", (event) => {
     // peticiones totalmente en manos del navegador evita que una navegación a
     // /admin/busquedas.html reciba por error el index.html del Diccionario.
     if (url.pathname === "/admin" || url.pathname.startsWith("/admin/")) {
+        return;
+    }
+
+    // El laboratorio experimental de señas es una página independiente.
+    // Nunca debe sustituirse por el index.html almacenado de la PWA.
+    if (url.pathname === "/lab-senas-ia.html") {
+        event.respondWith(fetch(request).catch(() => Response.error()));
         return;
     }
 
