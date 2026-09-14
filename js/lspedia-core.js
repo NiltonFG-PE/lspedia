@@ -4,12 +4,12 @@
 
   if (window.LSPediaCore && window.LSPediaCore.version) return;
 
-  const VERSION = '2026.09.13';
+  const VERSION = '2026.09.14';
   const HOSTS_OFICIALES = new Set(['lspedia.site', 'www.lspedia.site']);
-  const HOSTS_DESARROLLO = new Set(['localhost', '127.0.0.1', '::1']);
+  const HOSTS_DESARROLLO = new Set(['localhost', '127.0.0.1', '::1', '[::1]']);
   const host = String(location.hostname || '').toLowerCase();
   const esOficial = HOSTS_OFICIALES.has(host);
-  const esDesarrollo = HOSTS_DESARROLLO.has(host);
+  const esDesarrollo = location.protocol === 'file:' || HOSTS_DESARROLLO.has(host);
 
   function escaparHtml(valor) {
     return String(valor == null ? '' : valor).replace(/[&<>"']/g, function (c) {
@@ -113,6 +113,25 @@
     document.body.prepend(aviso);
   }
 
+  function atributoUrlPeligroso(valor) {
+    const v = String(valor || '').trim();
+    return /^(?:javascript|vbscript)\s*:/i.test(v) ||
+      /^data\s*:\s*text\/html/i.test(v) ||
+      /^data\s*:\s*image\/svg\+xml/i.test(v);
+  }
+
+  function reforzarEnlaceExterno(el) {
+    if (!el || el.tagName !== 'A' || el.getAttribute('target') !== '_blank') return;
+    try {
+      const url = new URL(el.getAttribute('href') || '', location.href);
+      if (url.origin === location.origin) return;
+      const rel = new Set(String(el.getAttribute('rel') || '').split(/\s+/).filter(Boolean));
+      rel.add('noopener');
+      rel.add('noreferrer');
+      el.setAttribute('rel', Array.from(rel).join(' '));
+    } catch (_e) {}
+  }
+
   function vigilarUrlsPeligrosas() {
     function limpiarNodo(nodo) {
       if (!(nodo instanceof Element)) return;
@@ -120,12 +139,13 @@
       revisar.forEach(function (el) {
         ['href', 'src', 'action', 'formaction'].forEach(function (attr) {
           if (!el.hasAttribute(attr)) return;
-          const valor = String(el.getAttribute(attr) || '').trim();
-          if (/^javascript\s*:/i.test(valor) || /^data\s*:\s*text\/html/i.test(valor)) {
+          const valor = el.getAttribute(attr) || '';
+          if (atributoUrlPeligroso(valor)) {
             el.removeAttribute(attr);
             console.warn('[LSPedia] URL potencialmente insegura eliminada:', attr);
           }
         });
+        reforzarEnlaceExterno(el);
       });
     }
 
@@ -141,7 +161,7 @@
       childList: true,
       subtree: true,
       attributes: true,
-      attributeFilter: ['href', 'src', 'action', 'formaction']
+      attributeFilter: ['href', 'src', 'action', 'formaction', 'target', 'rel']
     });
   }
 
@@ -165,7 +185,8 @@
     normalizarNivel: normalizarNivel,
     urlHttpSegura: urlHttpSegura,
     urlInternaSegura: urlInternaSegura,
-    deduplicarPorPalabra: deduplicarPorPalabra
+    deduplicarPorPalabra: deduplicarPorPalabra,
+    atributoUrlPeligroso: atributoUrlPeligroso
   });
 
   Object.defineProperty(window, 'LSPediaCore', {
