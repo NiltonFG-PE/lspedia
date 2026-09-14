@@ -1,0 +1,13 @@
+{
+  "formato": "lspedia-senas-ia-v2",
+  "version": 2,
+  "estado": "experimental",
+  "idioma": "LSP",
+  "framesPorMuestra": 24,
+  "vectorDimension": 127,
+  "modeloEntrada": "MediaPipe Hand Landmarker",
+  "descripcion": "Dataset experimental para el buscador mediante señas de LSPedia. Las muestras almacenan landmarks normalizados, no video.",
+  "privacidad": "Solo deben incorporarse muestras obtenidas con consentimiento y revisadas antes de publicarse en este archivo.",
+  "conceptos": [],
+  "muestras": []
+}
