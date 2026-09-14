@@ -34,7 +34,17 @@
 
   async function leerJson(url) {
     const separador = url.includes('?') ? '&' : '?';
-    const res = await fetch(url + separador + '_lspedia=' + Date.now(), { cache: 'no-store' });
+    const finalUrl = url + separador + '_lspedia=' + Date.now();
+    const c = core();
+    if (typeof c.leerJsonSeguro === 'function') {
+      return c.leerJsonSeguro(finalUrl, {
+        timeoutMs: 6500,
+        reintentos: 1,
+        esperaReintentoMs: 400,
+        fetch: { cache: 'no-store' }
+      });
+    }
+    const res = await fetch(finalUrl, { cache: 'no-store' });
     if (!res.ok) throw new Error('HTTP ' + res.status + ' al leer ' + url);
     return res.json();
   }
@@ -87,11 +97,33 @@
   async function cargar(forzar) {
     if (cache && !forzar) return cache;
     if (carga && !forzar) return carga;
-    carga = Promise.all([leerJson(URL_ALFABETIZACION), leerJson(URL_VOCABULARIO)])
-      .then(function (partes) {
-        // Alfabetización primero: si una palabra está en las dos fuentes,
-        // conservamos su imagen pedagógica de AlfabetizacionEjemplos.
-        cache = deduplicar(prepararAlfabetizacion(partes[0]).concat(prepararVocabulario(partes[1])));
+
+    carga = Promise.allSettled([leerJson(URL_ALFABETIZACION), leerJson(URL_VOCABULARIO)])
+      .then(function (resultados) {
+        const partes = [];
+        const errores = [];
+
+        if (resultados[0].status === 'fulfilled') {
+          partes.push.apply(partes, prepararAlfabetizacion(resultados[0].value));
+        } else {
+          errores.push('Alfabetización');
+          console.warn('[LSPedia Juegos] No se pudo actualizar Alfabetización:', resultados[0].reason);
+        }
+
+        if (resultados[1].status === 'fulfilled') {
+          partes.push.apply(partes, prepararVocabulario(resultados[1].value));
+        } else {
+          errores.push('Vocabulario');
+          console.warn('[LSPedia Juegos] No se pudo actualizar Vocabulario:', resultados[1].reason);
+        }
+
+        if (!partes.length) {
+          throw new Error('No fue posible cargar ninguna fuente del banco de Juegos: ' + errores.join(' y '));
+        }
+
+        // Alfabetización se agregó primero: si una palabra está en las dos
+        // fuentes, conservamos su imagen pedagógica de AlfabetizacionEjemplos.
+        cache = deduplicar(partes);
         return cache;
       })
       .finally(function () { carga = null; });
