@@ -23,6 +23,7 @@ on:
       - "scripts/normalizar_categorias.py"
       - "scripts/validar_senas_ia.py"
       - "scripts/verificar_legado_accesibilidad.py"
+      - "scripts/validar_publicacion_publica.py"
       - ".github/workflows/validar-lspedia.yml"
   pull_request:
     branches: [develop]
@@ -46,6 +47,7 @@ on:
       - "scripts/normalizar_categorias.py"
       - "scripts/validar_senas_ia.py"
       - "scripts/verificar_legado_accesibilidad.py"
+      - "scripts/validar_publicacion_publica.py"
       - ".github/workflows/validar-lspedia.yml"
   workflow_dispatch:
 
@@ -104,6 +106,8 @@ jobs:
           echo "JSON válidos."
       - name: Validar dataset de señas IA
         run: python scripts/validar_senas_ia.py
+      - name: Validar publicación y estadísticas públicas
+        run: python scripts/validar_publicacion_publica.py
       - name: Comprobar legado de accesibilidad
         run: python scripts/verificar_legado_accesibilidad.py
       - name: Validar imágenes locales
