@@ -39,3 +39,4 @@ jobs:
           git add lab-senas-ia.html js/lab-senas-ia.js
           git commit -m "feat: adaptar señas IA a orientación y posición automáticamente"
           git push origin develop
+# reintento tras corregir migración
