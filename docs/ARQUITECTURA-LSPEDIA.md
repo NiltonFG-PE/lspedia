@@ -12,31 +12,42 @@ Este documento describe la arquitectura operativa de la rama `develop`. Su objet
 - `js/security.js` y `js/lspedia-core.js` refuerzan la identidad oficial y limitan funciones sensibles en copias públicas.
 - Una copia externa no debe instalarse como PWA, reutilizar integraciones sensibles ni competir en buscadores con el sitio oficial.
 
-## 2. Regla pública única
-
-La regla pública vigente es:
-
-**Una entrada visible necesita palabra + categoría + imagen real. El video es opcional.**
-
-Esto se aplica a Diccionario y Vocabulario. El hecho de que un módulo educativo específico necesite video no convierte el video en requisito general de publicación.
+## 2. Reglas públicas
 
 ### Diccionario
 
+Una ficha del Diccionario es pública/buscable cuando tiene:
+
+**palabra + definición + categoría + imagen real.**
+
+El video es opcional para la búsqueda y la ficha pública.
+
 - Fuente: `data/palabras.json`.
-- La regla pública se refuerza actualmente desde `js/security.js` mediante `LSPediaPublicacionDiccionario`.
-- `js/script.js` todavía contiene una implementación histórica que exigía video; debe considerarse deuda técnica hasta que esa función canónica se migre de forma segura.
+- La fuente de verdad del filtro público vive en `js/script.js`, función `obtenerDatosDiccionarioPublicables()`.
+- Una ficha sin video puede seguir apareciendo en búsqueda si tiene definición e imagen real.
+- Una ficha sin video NO aparece en `Lo nuevo`.
 
 ### Vocabulario público
 
+Una ficha de Vocabulario público necesita:
+
+**palabra + categoría + imagen real.**
+
 - Fuente: `data/vocabulario.json`.
 - `js/vocabulario-publico.js` crea la colección pública por imagen y sustituye únicamente el getter público usado por búsqueda, Vocabulario y estadísticas.
-- El video sigue siendo opcional.
+- El video sigue siendo opcional para Vocabulario público.
+
+### Lo nuevo
+
+- `js/lo-nuevo.js` exige video válido.
+- Una ficha del Diccionario puede ser buscable sin video y, al mismo tiempo, quedar fuera de `Lo nuevo`.
+- Esta diferencia es deliberada y está protegida por `scripts/validar_publicacion_publica.py`.
 
 ### Quiz
 
 - `js/quiz.js` conserva su banco interno.
 - El Quiz puede exigir video porque su mecánica lo necesita.
-- El banco del Quiz no debe volver a utilizarse como filtro de publicación de Vocabulario.
+- El banco del Quiz no debe utilizarse como filtro de publicación ni como fuente de estadísticas públicas de Vocabulario.
 
 ## 3. Juegos
 
@@ -63,7 +74,7 @@ El banco compartido se encuentra en `js/juegos-banco-compartido.js`. Los niveles
 - La caché del shell usa versionado explícito.
 - `skipWaiting()` y `clients.claim()` permiten activar versiones nuevas sin esperar a cerrar todas las pestañas.
 - Los JSON de contenido crítico se mantienen fuera de una caché agresiva para evitar mostrar publicaciones antiguas.
-- `/admin/` y `lab-senas-ia.html` no deben recibir el fallback de `index.html`.
+- `/admin/` y los laboratorios no deben recibir el fallback público de `index.html`.
 
 La validación definitiva de actualización/offline continúa requiriendo un dispositivo Android real.
 
@@ -71,9 +82,11 @@ La validación definitiva de actualización/offline continúa requiriendo un dis
 
 ### Frontend público
 
-- `js/security.js`: guardia de entorno, anti-clon y regla pública actual.
+- `js/security.js`: guardia de entorno, anti-clon y bloqueo de servicios sensibles en copias públicas.
+- `js/security.js` NO define publicación ni estadísticas.
 - `js/lspedia-core.js`: utilidades de texto/URL seguras, canonical e identidad oficial.
 - El CI ejecuta `scripts/validar_seguridad.py` y `scripts/auditar-seguridad.mjs`.
+- `scripts/validar_publicacion_publica.py` impide que lógica de Quiz/publicación vuelva a mezclarse dentro de `security.js`.
 
 ### Admin Analytics
 
@@ -139,12 +152,16 @@ Search Console y la comprobación de indexación real requieren acceso a la cuen
 `.github/workflows/validar-lspedia.yml` verifica, entre otros:
 
 - Diccionario y Vocabulario;
+- duplicados sin modificar datos;
 - Alfabetización;
 - seguridad/anti-clon;
 - sintaxis JavaScript;
 - JSON principales;
 - dataset de señas IA;
+- laboratorio de videojuego;
 - regla pública y estadísticas;
+- separación entre publicación, Quiz y security;
+- presupuesto del frontend;
 - archivos históricos retirados/respaldo activo;
 - imágenes locales;
 - archivo multimedia protegido.
@@ -159,7 +176,8 @@ Search Console y la comprobación de indexación real requieren acceso a la cuen
 
 ## 12. Deuda técnica conocida
 
-- Integrar definitivamente la regla de imagen real dentro de la función canónica de `js/script.js`, retirando después el override equivalente de `security.js`.
 - Seguir modularizando `js/script.js` sin alterar navegación, autoplay, formularios o URLs existentes.
+- Mejorar manejo uniforme de errores de red/JSON/offline.
 - Mantener separados los requisitos de publicación general de los requisitos específicos de Quiz/Juegos.
 - No eliminar duplicados de datos automáticamente cuando haya que decidir cuál registro conservar; primero auditar y luego aplicar una política editorial explícita.
+- Continuar revisando archivos históricos antes de eliminarlos; no borrar por nombre o antigüedad solamente.
