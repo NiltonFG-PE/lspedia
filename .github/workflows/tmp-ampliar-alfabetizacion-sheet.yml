@@ -1,0 +1,42 @@
+name: Temporal ampliar Alfabetizacion editable
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - "scripts/tmp_ampliar_alfabetizacion_sheet.py"
+      - ".github/workflows/tmp-ampliar-alfabetizacion-sheet.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  ampliar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+      - name: Aplicar cambios
+        run: python scripts/tmp_ampliar_alfabetizacion_sheet.py
+      - name: Generar JSON desde Sheet real
+        run: python scripts/generar_alfabetizacion.py
+      - name: Validar Alfabetizacion
+        shell: bash
+        run: |
+          python -m json.tool data/alfabetizacion.json > /dev/null
+          python scripts/validar_alfabetizacion.py
+          python scripts/auditar_alfabetizacion.py
+          node --check js/alfabetizacion.js
+          node --check sw.js
+          git diff --check
+      - name: Commit y push
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/generar_alfabetizacion.py scripts/validar_alfabetizacion.py js/alfabetizacion.js data/alfabetizacion.json sw.js
+          git commit -m "feat: editar Alfabetizacion desde Google Sheets"
+          git push origin develop
