@@ -25,6 +25,7 @@ on:
       - "scripts/validar_senas_ia.py"
       - "scripts/validar_lab_juego.py"
       - "scripts/validar_fuentes_juegos.py"
+      - "scripts/validar_red_segura.py"
       - "scripts/verificar_archivos_huerfanos.py"
       - "scripts/validar_publicacion_publica.py"
       - "scripts/validar_admin_analytics.py"
@@ -55,6 +56,7 @@ on:
       - "scripts/validar_senas_ia.py"
       - "scripts/validar_lab_juego.py"
       - "scripts/validar_fuentes_juegos.py"
+      - "scripts/validar_red_segura.py"
       - "scripts/verificar_archivos_huerfanos.py"
       - "scripts/validar_publicacion_publica.py"
       - "scripts/validar_admin_analytics.py"
@@ -94,6 +96,8 @@ jobs:
           python scripts/auditar_alfabetizacion.py
       - name: Validar fuentes de Juegos
         run: python scripts/validar_fuentes_juegos.py
+      - name: Validar resiliencia de red
+        run: python scripts/validar_red_segura.py
       - name: Validar seguridad anti-clon
         run: python scripts/validar_seguridad.py
       - name: Validar sintaxis de JavaScript
