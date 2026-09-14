@@ -4,7 +4,7 @@
 
   if (window.LSPediaCore && window.LSPediaCore.version) return;
 
-  const VERSION = '2026.09.14-2';
+  const VERSION = '2026.09.14-3';
   const URL_OFICIAL = 'https://lspedia.site/';
   const HOSTS_OFICIALES = new Set(['lspedia.site', 'www.lspedia.site']);
   const HOSTS_DESARROLLO = new Set(['localhost', '127.0.0.1', '::1', '[::1]']);
@@ -76,6 +76,86 @@
       vistos.add(clave);
       return true;
     });
+  }
+
+  function esperar(ms) {
+    return new Promise(function (resolve) { setTimeout(resolve, Math.max(0, Number(ms) || 0)); });
+  }
+
+  function errorHttp(respuesta, url) {
+    const error = new Error('HTTP ' + respuesta.status + ' al leer ' + url);
+    error.name = 'LSPediaHttpError';
+    error.status = respuesta.status;
+    error.url = String(url || '');
+    return error;
+  }
+
+  function esErrorReintentable(error) {
+    if (!error) return true;
+    if (error.name === 'LSPediaHttpError') {
+      return error.status === 408 || error.status === 425 || error.status === 429 || error.status >= 500;
+    }
+    return true;
+  }
+
+  async function fetchConTimeout(url, opciones) {
+    const cfg = opciones || {};
+    const timeoutMs = Math.max(1000, Number(cfg.timeoutMs) || 7000);
+    const reintentos = Math.max(0, Math.min(2, Number(cfg.reintentos) || 0));
+    const esperaReintentoMs = Math.max(0, Number(cfg.esperaReintentoMs) || 350);
+    const fetchOpciones = Object.assign({}, cfg.fetch || {});
+    let ultimoError = null;
+
+    for (let intento = 0; intento <= reintentos; intento += 1) {
+      let temporizador = null;
+      let controlador = null;
+      try {
+        controlador = typeof AbortController !== 'undefined' ? new AbortController() : null;
+        if (controlador && !fetchOpciones.signal) fetchOpciones.signal = controlador.signal;
+
+        const promesaFetch = fetch(url, fetchOpciones);
+        const promesaTimeout = new Promise(function (_resolve, reject) {
+          temporizador = setTimeout(function () {
+            if (controlador) {
+              try { controlador.abort(); } catch (_e) {}
+            }
+            const error = new Error('Tiempo de espera agotado al leer ' + url);
+            error.name = 'LSPediaTimeoutError';
+            error.url = String(url || '');
+            reject(error);
+          }, timeoutMs);
+        });
+
+        const respuesta = await Promise.race([promesaFetch, promesaTimeout]);
+        if (!respuesta || !respuesta.ok) throw errorHttp(respuesta || { status: 0 }, url);
+        if (temporizador) clearTimeout(temporizador);
+        return respuesta;
+      } catch (error) {
+        if (temporizador) clearTimeout(temporizador);
+        ultimoError = error;
+        if (intento >= reintentos || !esErrorReintentable(error)) throw error;
+        await esperar(esperaReintentoMs * (intento + 1));
+      } finally {
+        if (fetchOpciones.signal && controlador && fetchOpciones.signal === controlador.signal) {
+          delete fetchOpciones.signal;
+        }
+      }
+    }
+
+    throw ultimoError || new Error('No se pudo completar la solicitud de red.');
+  }
+
+  async function leerJsonSeguro(url, opciones) {
+    const respuesta = await fetchConTimeout(url, opciones);
+    try {
+      return await respuesta.json();
+    } catch (error) {
+      const invalido = new Error('JSON inválido al leer ' + url);
+      invalido.name = 'LSPediaJsonError';
+      invalido.url = String(url || '');
+      invalido.cause = error;
+      throw invalido;
+    }
   }
 
   function asegurarCanonicalOficial() {
@@ -211,6 +291,8 @@
     urlHttpSegura: urlHttpSegura,
     urlInternaSegura: urlInternaSegura,
     deduplicarPorPalabra: deduplicarPorPalabra,
+    fetchConTimeout: fetchConTimeout,
+    leerJsonSeguro: leerJsonSeguro,
     atributoUrlPeligroso: atributoUrlPeligroso
   });
 
