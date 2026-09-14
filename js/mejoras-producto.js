@@ -1,6 +1,6 @@
 /* LSPedia — cargador de mejoras de producto.
    Mantiene intacta la base existente y carga mejoras como módulos independientes.
-   La regla pública del Diccionario vive en security.js para evitar duplicarla. */
+   La publicación vive en script.js/Vocabulario público; security.js queda solo para seguridad. */
 (function(){
     'use strict';
 
@@ -98,13 +98,15 @@
 
     cargarCss('css/mejoras-maestras.css?v=20260914');
     cargarCss('css/accesibilidad-segura.css?v=20260914-1');
-    cargar('js/lspedia-core.js?v=20260914-2', function(){
-        cargar('js/vocabulario-publico.js?v=20260914-1');
+    function cargarMejorasConCore(){
+        cargar('js/vocabulario-publico.js?v=20260914-2');
         cargar('js/accesibilidad-segura.js?v=20260914-1');
         cargar('js/seo-institucional.js?v=20260914-1');
-        cargar('js/juegos-banco-compartido.js?v=20260914');
+        cargar('js/juegos-banco-compartido.js?v=20260914-2');
         cargar('js/a-z-movil.js?v=20260914');
-    });
+    }
+    if(window.LSPediaCore) cargarMejorasConCore();
+    else cargar('js/lspedia-core.js?v=20260914-3', cargarMejorasConCore);
 
     cargar('js/optimizacion-errores.js?v=20260914-1', function(){
         cargar('js/rendimiento-movil.js?v=20260914-1', function(){

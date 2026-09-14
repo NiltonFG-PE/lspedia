@@ -2,7 +2,7 @@ import { HandLandmarker, FilesetResolver } from 'https://cdn.jsdelivr.net/npm/@m
 
 const MODEL_URL = 'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/latest/hand_landmarker.task';
 const WASM_URL = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.0.1/wasm';
-const DATASET_CENTRAL_URL = 'data/senas-ia-dataset.json?v=20260914-2';
+const DATASET_CENTRAL_URL = 'data/senas-ia-dataset.json?v=20260914-3';
 const STORAGE_KEY = 'lspedia_senas_ia_muestras_v2';
 const STORAGE_KEY_ANTERIOR = 'lspedia_senas_ia_muestras_v1';
 const FRAMES_MUESTRA = 24;
@@ -42,6 +42,43 @@ let ventanaActual = [];
 let muestrasLocales = cargarMuestrasLocales();
 let muestrasCentrales = [];
 let evaluando = false;
+
+async function conTimeout(promesa, timeoutMs, mensaje) {
+  let temporizador = null;
+  try {
+    return await Promise.race([
+      promesa,
+      new Promise((_, reject) => {
+        temporizador = setTimeout(() => reject(new Error(mensaje || 'Tiempo de espera agotado.')), timeoutMs);
+      })
+    ]);
+  } finally {
+    if (temporizador) clearTimeout(temporizador);
+  }
+}
+
+async function leerJsonConTimeout(url, timeoutMs = 6500) {
+  const controlador = typeof AbortController !== 'undefined' ? new AbortController() : null;
+  let temporizador = null;
+  try {
+    const promesaFetch = fetch(url, controlador ? { cache: 'no-store', signal: controlador.signal } : { cache: 'no-store' });
+    const respuesta = await Promise.race([
+      promesaFetch,
+      new Promise((_, reject) => {
+        temporizador = setTimeout(() => {
+          if (controlador) {
+            try { controlador.abort(); } catch (_e) {}
+          }
+          reject(new Error('Tiempo de espera agotado al cargar el dataset central.'));
+        }, timeoutMs);
+      })
+    ]);
+    if (!respuesta.ok) throw new Error('HTTP ' + respuesta.status);
+    return await respuesta.json();
+  } finally {
+    if (temporizador) clearTimeout(temporizador);
+  }
+}
 
 function estado(texto, tipo = 'info') {
   if (!ui.estado) return;
@@ -125,9 +162,7 @@ function todasLasMuestras() {
 async function cargarDatasetCentral() {
   if (ui.central) ui.central.textContent = 'Dataset central: comprobando…';
   try {
-    const respuesta = await fetch(DATASET_CENTRAL_URL, { cache: 'no-store' });
-    if (!respuesta.ok) throw new Error('HTTP ' + respuesta.status);
-    const data = await respuesta.json();
+    const data = await leerJsonConTimeout(DATASET_CENTRAL_URL, 6500);
     const lista = Array.isArray(data && data.muestras) ? data.muestras : [];
     muestrasCentrales = lista.map(x => normalizarMuestra(x, 'central')).filter(Boolean);
     if (ui.central) {
@@ -146,15 +181,23 @@ async function cargarDatasetCentral() {
 async function prepararDetector() {
   if (detector) return detector;
   estado('Cargando detector de manos…');
-  const vision = await FilesetResolver.forVisionTasks(WASM_URL);
-  detector = await HandLandmarker.createFromOptions(vision, {
-    baseOptions: { modelAssetPath: MODEL_URL },
-    runningMode: 'VIDEO',
-    numHands: 2,
-    minHandDetectionConfidence: 0.55,
-    minHandPresenceConfidence: 0.5,
-    minTrackingConfidence: 0.5
-  });
+  const vision = await conTimeout(
+    FilesetResolver.forVisionTasks(WASM_URL),
+    15000,
+    'El motor de visión tardó demasiado en cargar.'
+  );
+  detector = await conTimeout(
+    HandLandmarker.createFromOptions(vision, {
+      baseOptions: { modelAssetPath: MODEL_URL },
+      runningMode: 'VIDEO',
+      numHands: 2,
+      minHandDetectionConfidence: 0.55,
+      minHandPresenceConfidence: 0.5,
+      minTrackingConfidence: 0.5
+    }),
+    20000,
+    'El modelo de manos tardó demasiado en cargar.'
+  );
   return detector;
 }
 

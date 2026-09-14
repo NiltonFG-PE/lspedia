@@ -12,7 +12,7 @@
 (function () {
     'use strict';
 
-    const VERSION = '20260914-1';
+    const VERSION = '20260914-4';
     const modulos = {
         alfabetizacion: {
             js: 'js/alfabetizacion.js?v=' + VERSION,
