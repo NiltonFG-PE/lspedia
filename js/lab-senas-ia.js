@@ -48,7 +48,7 @@ const ui = {
   central: $('estadoDatasetCentralSenas'), calidad: $('calidadDatasetSenas'),
   calidadCaptura: $('calidadCapturaSenas'), btnCambiarCamara: $('btnCambiarCamaraSenas'),
   cuenta: $('cuentaRegresivaSenas'), cuentaTexto: $('textoCuentaSenas'), cuentaNumero: $('numeroCuentaSenas'),
-  silueta: $('siluetaGuiaSenas')
+  guia: document.querySelector('.guia-captura')
 };
 
 let detector = null;
@@ -312,7 +312,7 @@ async function adaptarCamaraAOrientacion() {
   const vertical = pantallaVertical();
   try {
     await pista.applyConstraints(vertical ? {
-      width: { ideal: 720 }, height: { ideal: 1280 }, aspectRatio: { ideal: 9 / 16 }, frameRate: { ideal: 30, max: 30 }
+      width: { ideal: 720 }, height: { ideal: 900 }, aspectRatio: { ideal: 4 / 5 }, frameRate: { ideal: 30, max: 30 }
     } : {
       width: { ideal: 1280 }, height: { ideal: 720 }, aspectRatio: { ideal: 16 / 9 }, frameRate: { ideal: 30, max: 30 }
     });
@@ -334,8 +334,8 @@ async function obtenerStreamCamara() {
   const vertical = pantallaVertical();
   const video = vertical ? {
     width: { ideal: 720 },
-    height: { ideal: 1280 },
-    aspectRatio: { ideal: 9 / 16 },
+    height: { ideal: 900 },
+    aspectRatio: { ideal: 4 / 5 },
     frameRate: { ideal: 30, max: 30 }
   } : {
     width: { ideal: 1280 },
@@ -541,40 +541,90 @@ function visibilidad(punto, minimo = 0.35) {
   return !!punto && (punto.visibility == null || Number(punto.visibility) >= minimo);
 }
 
+function puntoDentro(punto, margenX = 0.055, margenY = 0.045) {
+  return visibilidad(punto, 0.25) &&
+    punto.x >= margenX && punto.x <= 1 - margenX &&
+    punto.y >= margenY && punto.y <= 1 - margenY;
+}
+
+function cajaRostro(cara) {
+  if (!Array.isArray(cara) || cara.length < 100) return null;
+  let minX = 1, minY = 1, maxX = 0, maxY = 0;
+  cara.forEach(p => {
+    if (!p) return;
+    minX = Math.min(minX, p.x); minY = Math.min(minY, p.y);
+    maxX = Math.max(maxX, p.x); maxY = Math.max(maxY, p.y);
+  });
+  return { minX, minY, maxX, maxY, ancho: maxX - minX, alto: maxY - minY, cx: (minX + maxX) / 2 };
+}
+
 function evaluarCalidadCaptura(resultado, resultadoPose, resultadoRostro, tiempo) {
   const manos = Array.isArray(resultado && resultado.landmarks) ? resultado.landmarks.length : 0;
   const pose = Array.isArray(resultadoPose && resultadoPose.landmarks) ? resultadoPose.landmarks[0] : null;
-  const cuerpo = Array.isArray(pose) && visibilidad(pose[0]) && visibilidad(pose[11]) && visibilidad(pose[12]) && visibilidad(pose[13]) && visibilidad(pose[14]);
+  const cuerpo = Array.isArray(pose) &&
+    visibilidad(pose[0]) && visibilidad(pose[11]) && visibilidad(pose[12]) &&
+    visibilidad(pose[13]) && visibilidad(pose[14]);
   const cara = Array.isArray(resultadoRostro && resultadoRostro.faceLandmarks) ? resultadoRostro.faceLandmarks[0] : null;
   const rostro = Array.isArray(cara) && cara.length >= 400;
+  const cajaCara = rostro ? cajaRostro(cara) : null;
   const luz = medirIluminacion(tiempo);
+  const vertical = pantallaVertical();
+
   let encuadre = false;
+  let distancia = 'ajustar';
   let consejo = '';
+
   if (cuerpo) {
     const anchoHombros = Math.abs(pose[11].x - pose[12].x);
-    encuadre = anchoHombros >= 0.12 && anchoHombros <= 0.62 && pose[0].y > 0.02 && pose[0].y < 0.48 && pose[11].y < 0.72 && pose[12].y < 0.72;
-    if (anchoHombros > 0.62) consejo = 'Aléjate un poco de la cámara.';
-    else if (anchoHombros < 0.12) consejo = 'Acércate un poco a la cámara.';
-    else if (!encuadre) consejo = 'Centra cabeza, hombros y brazos dentro del marco.';
-  } else if (detectorPose) consejo = 'Aléjate hasta que se vean cabeza, hombros y brazos.';
+    const centroHombrosX = (pose[11].x + pose[12].x) / 2;
+    const hombroMin = vertical ? 0.22 : 0.14;
+    const hombroMax = vertical ? 0.58 : 0.48;
+    const caraMin = vertical ? 0.08 : 0.055;
+    const caraMax = vertical ? 0.30 : 0.24;
+    const caraMuyGrande = cajaCara ? cajaCara.ancho > caraMax : false;
+    const caraMuyPequena = cajaCara ? cajaCara.ancho < caraMin : false;
+    const demasiadoCerca = anchoHombros > hombroMax || caraMuyGrande;
+    const demasiadoLejos = anchoHombros < hombroMin || caraMuyPequena;
+
+    if (demasiadoCerca) distancia = 'cerca';
+    else if (demasiadoLejos) distancia = 'lejos';
+    else distancia = 'bien';
+
+    const brazosDentro = [13, 14, 15, 16].every(i => puntoDentro(pose[i], 0.045, 0.035));
+    const hombrosDentro = puntoDentro(pose[11], 0.05, 0.04) && puntoDentro(pose[12], 0.05, 0.04);
+    const cabezaDentro = puntoDentro(pose[0], 0.10, 0.055) && pose[0].y < 0.44;
+    const centrado = centroHombrosX >= 0.32 && centroHombrosX <= 0.68 &&
+      (!cajaCara || (cajaCara.cx >= 0.32 && cajaCara.cx <= 0.68 && cajaCara.minY >= 0.025));
+
+    encuadre = distancia === 'bien' && brazosDentro && hombrosDentro && cabezaDentro && centrado;
+
+    if (distancia === 'cerca') consejo = 'Estás demasiado cerca. Aléjate hasta que se vean completos cabeza, hombros, codos y manos.';
+    else if (distancia === 'lejos') consejo = 'Estás demasiado lejos. Acércate un poco sin cortar los brazos.';
+    else if (!brazosDentro) consejo = 'Deja ambos antebrazos y manos dentro del marco.';
+    else if (!hombrosDentro || !cabezaDentro) consejo = 'No cortes la cabeza ni los hombros. Ajusta tu posición.';
+    else if (!centrado) consejo = 'Muévete un poco hacia el centro del cuadro.';
+  } else if (detectorPose) {
+    consejo = 'Aléjate hasta que la cámara pueda ver cabeza, hombros, codos y manos.';
+  }
 
   const cuerpoNecesario = detectorPose ? cuerpo : true;
   const rostroNecesario = detectorRostro ? rostro : true;
   const encuadreNecesario = detectorPose ? encuadre : true;
   const apta = manos > 0 && cuerpoNecesario && rostroNecesario && luz.ok && encuadreNecesario;
+
   if (!manos) consejo = 'Muestra al menos una mano dentro del cuadro.';
   else if (detectorRostro && !rostro) consejo = 'Mira hacia la cámara y mantén el rostro visible.';
   else if (!luz.ok) consejo = luz.brillo < 55 ? 'Hay poca luz. Coloca una luz delante de ti.' : 'Hay demasiada luz. Evita una ventana o foco fuerte detrás o frente a ti.';
   else if (!consejo && luz.contraste < 18) consejo = 'Usa ropa y un fondo que contrasten mejor.';
-  else if (!consejo && apta) consejo = 'Listo para grabar: manos, cuerpo y rostro visibles.';
+  else if (!consejo && apta) consejo = 'Encuadre correcto. Mantén cabeza, hombros, antebrazos y manos dentro del marco.';
 
-  return { manos, cuerpo, rostro, luz: luz.ok, encuadre: encuadreNecesario, apta, brillo: luz.brillo, contraste: luz.contraste, consejo };
+  return { manos, cuerpo, rostro, luz: luz.ok, encuadre: encuadreNecesario, apta, distancia, brillo: luz.brillo, contraste: luz.contraste, consejo };
 }
 
 function renderCalidadCaptura(calidad, mensajeExtra = '') {
-  if (ui.silueta) {
-    ui.silueta.classList.toggle('lista', !!calidad.apta);
-    ui.silueta.classList.toggle('ajustar', !calidad.apta);
+  if (ui.guia) {
+    ui.guia.classList.toggle('lista', !!calidad.apta);
+    ui.guia.classList.toggle('ajustar', !calidad.apta);
   }
   if (!ui.calidadCaptura) return;
   ui.calidadCaptura.textContent = '';
@@ -583,7 +633,8 @@ function renderCalidadCaptura(calidad, mensajeExtra = '') {
     ['Cuerpo', detectorPose ? calidad.cuerpo : null, detectorPose ? (calidad.cuerpo ? 'Sí' : 'No') : 'Opcional'],
     ['Rostro', detectorRostro ? calidad.rostro : null, detectorRostro ? (calidad.rostro ? 'Sí' : 'No') : 'Opcional'],
     ['Luz', calidad.luz, calidad.luz ? 'Bien' : 'Mejorar'],
-    ['Encuadre', detectorPose ? calidad.encuadre : null, detectorPose ? (calidad.encuadre ? 'Bien' : 'Mejorar') : 'Opcional']
+    ['Encuadre', detectorPose ? calidad.encuadre : null, detectorPose ? (calidad.encuadre ? 'Bien' : 'Mejorar') : 'Opcional'],
+    ['Distancia', detectorPose ? calidad.distancia === 'bien' : null, detectorPose ? (calidad.distancia === 'cerca' ? 'Aléjate' : calidad.distancia === 'lejos' ? 'Acércate' : calidad.distancia === 'bien' ? 'Bien' : 'Ajustar') : 'Opcional']
   ];
   const fila = document.createElement('div');
   fila.className = 'calidad-chips';
