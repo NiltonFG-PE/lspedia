@@ -8,11 +8,10 @@
    - No precargar módulos pesados que ahora se cargan bajo demanda.
    - Mantener los JSON de contenido fuera del SW: palabras.json conserva
      su propia caché rápida + revalidación desde script.js.
-   - El panel /admin/ queda fuera del cascarón público para que nunca se
-     sustituya por index.html.
+   - El panel /admin/ y los laboratorios quedan fuera del fallback público.
    ============================================================ */
 
-const VERSION_APP = "v122";
+const VERSION_APP = "v123";
 const PREFIJO_CACHE = "lspedia-shell-";
 const PREFIJO_RUNTIME = "lspedia-runtime-";
 const CACHE_NOMBRE = PREFIJO_CACHE + VERSION_APP;
@@ -76,7 +75,7 @@ self.addEventListener("fetch", (event) => {
 
     if (url.pathname === "/admin" || url.pathname.startsWith("/admin/")) return;
 
-    if (url.pathname === "/lab-senas-ia.html") {
+    if (url.pathname === "/lab-senas-ia.html" || url.pathname === "/lab-juego-educativo.html") {
         event.respondWith(fetch(request).catch(() => Response.error()));
         return;
     }
