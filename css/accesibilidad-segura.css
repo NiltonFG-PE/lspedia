@@ -1,0 +1,58 @@
+/* LSPedia — mejoras de accesibilidad de bajo riesgo. */
+
+/* El enlace para saltar al contenido solo aparece al recibir foco. */
+.lspedia-skip-link {
+  position: fixed;
+  left: 12px;
+  top: 10px;
+  z-index: 100000;
+  transform: translateY(-160%);
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #0f172a;
+  border: 2px solid #0f172a;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, .2);
+  font-weight: 800;
+  text-decoration: none;
+}
+.lspedia-skip-link:focus {
+  transform: translateY(0);
+}
+
+/* Foco visible consistente para teclado sin cambiar el aspecto al tocar/clicar. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid #f5b818 !important;
+  outline-offset: 3px !important;
+}
+
+/* Controles razonablemente grandes en dispositivos táctiles. */
+@media (pointer: coarse) {
+  button,
+  .btn,
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"] {
+    min-height: 44px;
+  }
+}
+
+/* Respeta la preferencia del sistema para personas sensibles al movimiento. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
