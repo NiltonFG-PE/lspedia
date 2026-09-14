@@ -29,7 +29,10 @@ jobs:
           assert 'position:sticky' in s
           for x in ['btnCamaraSenas','btnDetenerSenas','btnCambiarCamaraSenas','btnReconocerSenas']:
               assert s.count(f'id="{x}"') == 1, (x, s.count(f'id="{x}"'))
-          assert s.index('acciones acciones-camara') < s.index('prediccion-panel') < s.index('class="camara"')
+          barra = s.index('<div class="acciones acciones-camara"')
+          pred = s.index('<div class="prediccion-panel"')
+          cam = s.index('<div class="camara">')
+          assert barra < pred < cam, (barra, pred, cam)
           print('OK: barra arriba, sticky y IDs únicos')
           PY
           git diff --check
