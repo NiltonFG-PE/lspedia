@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Guardia conservadora para archivos históricos y respaldos necesarios.
 
-Impide que reaparezcan módulos/parches retirados y comprueba que los respaldos
-históricos que siguen formando parte de la aplicación mantengan una referencia
-activa antes de conservarlos. Las menciones narrativas en documentación no se
-consideran dependencias ejecutables.
+Impide que reaparezcan módulos/parches/workflows retirados y comprueba que los
+respaldos históricos que siguen formando parte de la aplicación mantengan una
+referencia activa antes de conservarlos. Las menciones narrativas en documentación
+no se consideran dependencias ejecutables.
 """
 from pathlib import Path
 import sys
@@ -15,6 +15,8 @@ RETIRADOS = {
     "js/accesibilidad.js": ("js/accesibilidad.js", "accesibilidad.js"),
     "css/accesibilidad.css": ("css/accesibilidad.css", "accesibilidad.css"),
     "scripts/tmp_aplicar_puntos_3_12.py": ("tmp_aplicar_puntos_3_12.py",),
+    "scripts/integrar_regla_publicacion_diccionario.py": ("integrar_regla_publicacion_diccionario.py",),
+    ".github/workflows/integrar-regla-publicacion.yml": ("integrar-regla-publicacion.yml",),
 }
 RESPALDOS_REQUERIDOS = {
     "data/alfabetizacion-mock.json": ("data/alfabetizacion-mock.json", "alfabetizacion-mock.json"),
