@@ -1,0 +1,135 @@
+#!/usr/bin/env python3
+"""Valida la regla pública de LSPedia y resume estadísticas reales.
+
+Regla vigente:
+- Diccionario y Vocabulario requieren palabra + categoría + imagen real.
+- El video es opcional para publicación.
+- El banco interno del Quiz puede seguir exigiendo video; no se valida aquí.
+"""
+from pathlib import Path
+import json
+import re
+import sys
+
+ROOT = Path(__file__).resolve().parents[1]
+IMAGEN_RE = re.compile(r"\.(?:avif|gif|jpe?g|png|svg|webp)(?:[?#].*)?$", re.I)
+PREFIJO_RE = re.compile(r"^(?:https?://|/|\.\.?/|img/)", re.I)
+
+
+def texto(valor):
+    return str(valor or "").strip()
+
+
+def imagen_real(valor):
+    principal = texto(valor).split(",", 1)[0].strip()
+    return bool(principal and PREFIJO_RE.search(principal) and IMAGEN_RE.search(principal))
+
+
+def video_valido(valor):
+    return bool(texto(valor))
+
+
+def cargar(nombre):
+    path = ROOT / "data" / nombre
+    with path.open("r", encoding="utf-8") as fh:
+        data = json.load(fh)
+    if not isinstance(data, list):
+        raise ValueError(f"{nombre} debe contener una lista JSON")
+    return data
+
+
+def publicables(lista):
+    return [
+        item for item in lista
+        if isinstance(item, dict)
+        and texto(item.get("palabra"))
+        and texto(item.get("categoria"))
+        and imagen_real(item.get("imagen"))
+    ]
+
+
+def claves_duplicadas(lista):
+    vistos = set()
+    duplicados = set()
+    for item in lista:
+        if not isinstance(item, dict):
+            continue
+        clave = texto(item.get("palabra")).casefold()
+        if not clave:
+            continue
+        if clave in vistos:
+            duplicados.add(clave)
+        vistos.add(clave)
+    return duplicados
+
+
+def resumen(nombre, lista):
+    pub = publicables(lista)
+    categorias = {texto(x.get("categoria")).casefold() for x in pub if texto(x.get("categoria"))}
+    videos = sum(1 for x in pub if video_valido(x.get("video")))
+    sin_video = len(pub) - videos
+    print(
+        f"{nombre}: total={len(lista)} | públicos={len(pub)} | "
+        f"categorías públicas={len(categorias)} | con video={videos} | sin video={sin_video}"
+    )
+    return pub, categorias, videos
+
+
+def validar_integracion_frontend():
+    modulo = ROOT / "js" / "vocabulario-publico.js"
+    cargador = ROOT / "js" / "mejoras-producto.js"
+    sw = ROOT / "sw.js"
+    for path in (modulo, cargador, sw):
+        if not path.exists():
+            raise AssertionError(f"Falta archivo requerido: {path.relative_to(ROOT)}")
+
+    texto_modulo = modulo.read_text(encoding="utf-8")
+    texto_cargador = cargador.read_text(encoding="utf-8")
+    texto_sw = sw.read_text(encoding="utf-8")
+
+    requeridos_modulo = [
+        "window.obtenerBancoHoja2 = obtener",
+        "esImagenReal",
+        "data/vocabulario.json",
+        "_fuenteLspedia: 'vocabulario'",
+    ]
+    faltantes = [x for x in requeridos_modulo if x not in texto_modulo]
+    if faltantes:
+        raise AssertionError("vocabulario-publico.js incompleto: " + ", ".join(faltantes))
+    if "js/vocabulario-publico.js" not in texto_cargador:
+        raise AssertionError("mejoras-producto.js no carga vocabulario-publico.js")
+    if '"js/vocabulario-publico.js"' not in texto_sw:
+        raise AssertionError("sw.js no cachea vocabulario-publico.js")
+
+
+def main():
+    try:
+        diccionario = cargar("palabras.json")
+        vocabulario = cargar("vocabulario.json")
+        pub_dic, cat_dic, videos_dic = resumen("Diccionario", diccionario)
+        pub_voc, cat_voc, videos_voc = resumen("Vocabulario", vocabulario)
+        validar_integracion_frontend()
+
+        print(
+            "PUBLICACIÓN REAL: "
+            f"palabras={len(pub_dic) + len(pub_voc)} | "
+            f"videos={videos_dic + videos_voc} | "
+            f"categorías_por_sección={len(cat_dic) + len(cat_voc)}"
+        )
+
+        dup_dic = claves_duplicadas(diccionario)
+        dup_voc = claves_duplicadas(vocabulario)
+        if dup_dic or dup_voc:
+            print(
+                "AVISO: existen duplicados históricos pendientes de limpieza "
+                f"(Diccionario={len(dup_dic)}, Vocabulario={len(dup_voc)})."
+            )
+        print("Regla pública validada: imagen real obligatoria, video opcional.")
+        return 0
+    except Exception as exc:
+        print(f"ERROR publicación pública: {exc}", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())
