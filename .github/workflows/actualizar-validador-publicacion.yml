@@ -1,0 +1,109 @@
+name: Actualizar validador de publicación
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - ".github/workflows/actualizar-validador-publicacion.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Aplicar regla pública vigente al validador
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('scripts/validar_lspedia.py')
+          s = p.read_text(encoding='utf-8')
+
+          s = s.replace(
+          '''En el Diccionario puede haber borradores todavía sin video. Esos registros se
+          revisan, pero no cuentan como contenido publicable y sus duplicados de borrador
+          no bloquean el sitio. Una palabra con video sí se valida con reglas más estrictas.
+          ''',
+          '''En el Diccionario una ficha pública necesita palabra, definición, categoría e
+          imagen real. El video es opcional. En Vocabulario la publicación pública depende
+          de palabra, categoría e imagen real; el Quiz conserva por separado su requisito
+          de video para las actividades que lo necesitan.
+          ''')
+
+          ancla = '''    return candidato if PATRON_YOUTUBE_ID.fullmatch(candidato) else None\n\n\ndef _revisar_campos_extranos'''
+          helper = '''    return candidato if PATRON_YOUTUBE_ID.fullmatch(candidato) else None\n\n\ndef _imagen_real(valor: object) -> bool:\n    imagen = _texto(valor).split(",", 1)[0].strip()\n    if not imagen:\n        return False\n    if not imagen.startswith(("http://", "https://", "/", "./", "../", "img/")):\n        return False\n    return bool(re.search(r"\\.(?:avif|gif|jpe?g|png|svg|webp)(?:[?#].*)?$", imagen, re.I))\n\n\ndef _revisar_campos_extranos'''
+          if ancla not in s:
+              raise SystemExit('No se encontró ancla para _imagen_real')
+          s = s.replace(ancla, helper, 1)
+
+          s = s.replace(
+          '''    sin_video = 0\n    publicables = 0\n    sin_definicion_publicable = 0\n    ids_no_slug = 0\n    duplicados_borrador = 0\n''',
+          '''    sin_video = 0\n    publicables = 0\n    publicables_sin_video = 0\n    sin_imagen_real = 0\n    sin_definicion = 0\n    ids_no_slug = 0\n    duplicados_no_publicos = 0\n''', 1)
+
+          s = s.replace(
+          '''        video = _texto(fila.get("video"))\n        es_publicable = bool(video)\n''',
+          '''        video = _texto(fila.get("video"))\n        definicion = _texto(fila.get("definicion"))\n        tiene_imagen = _imagen_real(fila.get("imagen"))\n        es_publicable = bool(palabra and definicion and categoria and tiene_imagen)\n''', 1)
+
+          s = s.replace('''                    duplicados_borrador += 1\n''', '''                    duplicados_no_publicos += 1\n''', 1)
+
+          viejo = '''        if video:\n            publicables += 1\n            if _youtube_id(video) is None:\n                informe.error(\n                    f"Diccionario #{i} ({palabra}): referencia de YouTube no reconocida: {video!r}."\n                )\n            if not _texto(fila.get("definicion")):\n                sin_definicion_publicable += 1\n        else:\n            sin_video += 1\n'''
+          nuevo = '''        if es_publicable:\n            publicables += 1\n            if not video:\n                publicables_sin_video += 1\n        if video:\n            if _youtube_id(video) is None:\n                informe.error(\n                    f"Diccionario #{i} ({palabra}): referencia de YouTube no reconocida: {video!r}."\n                )\n        else:\n            sin_video += 1\n        if not definicion:\n            sin_definicion += 1\n        if not tiene_imagen:\n            sin_imagen_real += 1\n'''
+          if viejo not in s:
+              raise SystemExit('No se encontró bloque histórico de Diccionario')
+          s = s.replace(viejo, nuevo, 1)
+
+          s = s.replace(
+          '''    if duplicados_borrador:\n        informe.aviso(\n            f"Diccionario: {duplicados_borrador} duplicado(s) están solo entre borradores sin video. "\n            "No cuentan como contenido publicable y no bloquean la actualización."\n        )\n''',
+          '''    if duplicados_no_publicos:\n        informe.aviso(\n            f"Diccionario: {duplicados_no_publicos} duplicado(s) están solo entre fichas no públicas. "\n            "No bloquean la actualización; revisar si son conceptos distintos."\n        )\n''', 1)
+
+          s = s.replace(
+          '''    if sin_definicion_publicable:\n        informe.aviso(\n            f"Diccionario: {sin_definicion_publicable} palabra(s) con video no tienen definición."\n        )\n''',
+          '''    if sin_definicion:\n        informe.aviso(f"Diccionario: {sin_definicion} registro(s) todavía no tienen definición.")\n    if sin_imagen_real:\n        informe.aviso(f"Diccionario: {sin_imagen_real} registro(s) todavía no tienen imagen real publicable.")\n''', 1)
+
+          s = s.replace(
+          '''        f"Diccionario: {len(filas)} registros, {publicables} con video publicable, "\n        f"{sin_video} sin video (no se publican), "\n        f"{len(set(_texto(x.get('categoria')) for x in filas))} categorías."\n''',
+          '''        f"Diccionario: {len(filas)} registros, {publicables} públicos por definición + imagen, "\n        f"{publicables_sin_video} públicos sin video, {sin_video} registros totales sin video, "\n        f"{len(set(_texto(x.get('categoria')) for x in filas))} categorías."\n''', 1)
+
+          viejo_v = '''        if not video:\n            informe.error(\n                f"Vocabulario #{i} ({palabra}): falta video. "\n                "Vocabulario solo publica fichas con video de señas."\n            )\n        else:\n            con_video += 1\n            if _youtube_id(video) is None:\n                informe.error(\n                    f"Vocabulario #{i} ({palabra}): referencia de YouTube no reconocida: {video!r}."\n                )\n'''
+          nuevo_v = '''        if video:\n            con_video += 1\n            if _youtube_id(video) is None:\n                informe.error(\n                    f"Vocabulario #{i} ({palabra}): referencia de YouTube no reconocida: {video!r}."\n                )\n'''
+          if viejo_v not in s:
+              raise SystemExit('No se encontró bloque histórico de Vocabulario')
+          s = s.replace(viejo_v, nuevo_v, 1)
+
+          s = s.replace(
+          '''        informe.aviso(f"Vocabulario: {sin_imagen} palabra(s) con video todavía no tienen imagen de apoyo.")\n''',
+          '''        informe.aviso(f"Vocabulario: {sin_imagen} registro(s) todavía no tienen imagen real y no son públicos.")\n''', 1)
+          s = s.replace(
+          '''            f"Vocabulario: {sin_definicion} palabra(s) con video todavía no tienen definición. "\n            "La definición es apoyo textual; el video sigue siendo obligatorio."\n''',
+          '''            f"Vocabulario: {sin_definicion} registro(s) todavía no tienen definición. "\n            "La definición es apoyo textual y el video es opcional para la publicación pública."\n''', 1)
+          s = s.replace(
+          '''        f"Vocabulario: {len(filas)} fichas con video de señas, {con_video} validadas, "\n''',
+          '''        f"Vocabulario: {len(filas)} registros, {len(filas) - sin_imagen} con imagen pública, {con_video} con video, "\n''', 1)
+
+          p.write_text(s, encoding='utf-8')
+          PY
+
+      - name: Validar
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile scripts/validar_lspedia.py
+          python scripts/validar_lspedia.py
+          python scripts/validar_publicacion_publica.py
+          python scripts/auditar_duplicados.py
+
+      - name: Guardar
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/validar_lspedia.py
+          git commit -m "fix: alinear validador con publicación por imagen"
+          git push origin develop
