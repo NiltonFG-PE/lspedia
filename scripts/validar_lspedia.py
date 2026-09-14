@@ -5,9 +5,10 @@ Revisa Diccionario y Vocabulario como fuentes independientes. Los errores
 estructurales hacen fallar la validación; las advertencias se muestran para
 revisión pero no bloquean una actualización válida.
 
-En el Diccionario puede haber borradores todavía sin video. Esos registros se
-revisan, pero no cuentan como contenido publicable y sus duplicados de borrador
-no bloquean el sitio. Una palabra con video sí se valida con reglas más estrictas.
+En el Diccionario una ficha pública necesita palabra, definición, categoría e
+imagen real. El video es opcional. En Vocabulario la publicación pública depende
+de palabra, categoría e imagen real; el Quiz conserva por separado su requisito
+de video para las actividades que lo necesitan.
 
 Las categorías históricas siguen usando sus listas canónicas. Una categoría
 nueva también es válida si tiene el icono WEBP que crea el Publicador en
@@ -134,6 +135,15 @@ def _youtube_id(valor: object) -> str | None:
     return candidato if PATRON_YOUTUBE_ID.fullmatch(candidato) else None
 
 
+def _imagen_real(valor: object) -> bool:
+    imagen = _texto(valor).split(",", 1)[0].strip()
+    if not imagen:
+        return False
+    if not imagen.startswith(("http://", "https://", "/", "./", "../", "img/")):
+        return False
+    return bool(re.search(r"\.(?:avif|gif|jpe?g|png|svg|webp)(?:[?#].*)?$", imagen, re.I))
+
+
 def _revisar_campos_extranos(nombre: str, filas: list[dict], informe: Informe) -> None:
     """Avisa solo si una columna sin nombre contiene un valor real.
 
@@ -202,16 +212,20 @@ def validar_diccionario(informe: Informe) -> list[dict]:
     palabras = Counter()
     sin_video = 0
     publicables = 0
-    sin_definicion_publicable = 0
+    publicables_sin_video = 0
+    sin_imagen_real = 0
+    sin_definicion = 0
     ids_no_slug = 0
-    duplicados_borrador = 0
+    duplicados_no_publicos = 0
 
     for i, fila in enumerate(filas, 1):
         palabra = _texto(fila.get("palabra"))
         categoria = _texto(fila.get("categoria"))
         identificador = _texto(fila.get("id"))
         video = _texto(fila.get("video"))
-        es_publicable = bool(video)
+        definicion = _texto(fila.get("definicion"))
+        tiene_imagen = _imagen_real(fila.get("imagen"))
+        es_publicable = bool(palabra and definicion and categoria and tiene_imagen)
 
         if not palabra:
             informe.error(f"Diccionario #{i}: falta 'palabra'.")
@@ -251,20 +265,25 @@ def validar_diccionario(informe: Informe) -> list[dict]:
                         f"{palabra!r} (registros #{anterior_i} y #{i})."
                     )
                 else:
-                    duplicados_borrador += 1
+                    duplicados_no_publicos += 1
             else:
                 palabras_categoria[par] = (i, es_publicable)
 
-        if video:
+        if es_publicable:
             publicables += 1
+            if not video:
+                publicables_sin_video += 1
+        if video:
             if _youtube_id(video) is None:
                 informe.error(
                     f"Diccionario #{i} ({palabra}): referencia de YouTube no reconocida: {video!r}."
                 )
-            if not _texto(fila.get("definicion")):
-                sin_definicion_publicable += 1
         else:
             sin_video += 1
+        if not definicion:
+            sin_definicion += 1
+        if not tiene_imagen:
+            sin_imagen_real += 1
 
     duplicados_nombre = sum(1 for n in palabras.values() if n > 1)
     if duplicados_nombre:
@@ -272,20 +291,20 @@ def validar_diccionario(informe: Informe) -> list[dict]:
             f"Diccionario: {duplicados_nombre} nombre(s) aparecen más de una vez en los datos. "
             "No se mezclaron automáticamente; revisar si son conceptos distintos."
         )
-    if duplicados_borrador:
+    if duplicados_no_publicos:
         informe.aviso(
-            f"Diccionario: {duplicados_borrador} duplicado(s) están solo entre borradores sin video. "
-            "No cuentan como contenido publicable y no bloquean la actualización."
+            f"Diccionario: {duplicados_no_publicos} duplicado(s) están solo entre fichas no públicas. "
+            "No bloquean la actualización; revisar si son conceptos distintos."
         )
     if ids_no_slug:
         informe.aviso(
             f"Diccionario: {ids_no_slug} ID(s) no usan el formato slug recomendado "
             "(minúsculas, números y guiones)."
         )
-    if sin_definicion_publicable:
-        informe.aviso(
-            f"Diccionario: {sin_definicion_publicable} palabra(s) con video no tienen definición."
-        )
+    if sin_definicion:
+        informe.aviso(f"Diccionario: {sin_definicion} registro(s) todavía no tienen definición.")
+    if sin_imagen_real:
+        informe.aviso(f"Diccionario: {sin_imagen_real} registro(s) todavía no tienen imagen real publicable.")
     if categorias_nuevas:
         informe.dato(
             "Diccionario: categorías adicionales reconocidas por su icono: "
@@ -294,8 +313,8 @@ def validar_diccionario(informe: Informe) -> list[dict]:
         )
     _revisar_campos_extranos("Diccionario", filas, informe)
     informe.dato(
-        f"Diccionario: {len(filas)} registros, {publicables} con video publicable, "
-        f"{sin_video} sin video (no se publican), "
+        f"Diccionario: {len(filas)} registros, {publicables} públicos por definición + imagen, "
+        f"{publicables_sin_video} públicos sin video, {sin_video} registros totales sin video, "
         f"{len(set(_texto(x.get('categoria')) for x in filas))} categorías."
     )
     return filas
@@ -333,12 +352,7 @@ def validar_vocabulario(informe: Informe) -> list[dict]:
             informe,
         )
 
-        if not video:
-            informe.error(
-                f"Vocabulario #{i} ({palabra}): falta video. "
-                "Vocabulario solo publica fichas con video de señas."
-            )
-        else:
+        if video:
             con_video += 1
             if _youtube_id(video) is None:
                 informe.error(
@@ -384,11 +398,11 @@ def validar_vocabulario(informe: Informe) -> list[dict]:
                 referencias[referencia] = i
 
     if sin_imagen:
-        informe.aviso(f"Vocabulario: {sin_imagen} palabra(s) con video todavía no tienen imagen de apoyo.")
+        informe.aviso(f"Vocabulario: {sin_imagen} registro(s) todavía no tienen imagen real y no son públicos.")
     if sin_definicion:
         informe.aviso(
-            f"Vocabulario: {sin_definicion} palabra(s) con video todavía no tienen definición. "
-            "La definición es apoyo textual; el video sigue siendo obligatorio."
+            f"Vocabulario: {sin_definicion} registro(s) todavía no tienen definición. "
+            "La definición es apoyo textual y el video es opcional para la publicación pública."
         )
     if categorias_nuevas:
         informe.dato(
@@ -398,7 +412,7 @@ def validar_vocabulario(informe: Informe) -> list[dict]:
         )
     _revisar_campos_extranos("Vocabulario", filas, informe)
     informe.dato(
-        f"Vocabulario: {len(filas)} fichas con video de señas, {con_video} validadas, "
+        f"Vocabulario: {len(filas)} registros, {len(filas) - sin_imagen} con imagen pública, {con_video} con video, "
         f"{len(set(_texto(x.get('categoria')) for x in filas))} categorías."
     )
     return filas
