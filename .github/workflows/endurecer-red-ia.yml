@@ -31,40 +31,36 @@ jobs:
                   return
               if viejo not in s:
                   raise SystemExit(f'No se encontró bloque esperado en {path}')
-              s = s.replace(viejo, nuevo, veces)
-              p.write_text(s, encoding='utf-8', newline='\n')
+              p.write_text(s.replace(viejo, nuevo, veces), encoding='utf-8', newline='\n')
 
-          reemplazar(
-              'js/lazy-modules.js',
-              "const VERSION = '20260914-1';",
-              "const VERSION = '20260914-4';"
-          )
-
+          reemplazar('js/lazy-modules.js', "const VERSION = '20260914-1';", "const VERSION = '20260914-4';")
           reemplazar(
               'js/mejoras-producto.js',
               '   La regla pública del Diccionario vive en security.js para evitar duplicarla. */',
               '   La publicación vive en script.js/Vocabulario público; security.js queda solo para seguridad. */'
           )
 
-          reemplazar(
-              'js/mejoras-producto.js',
-              """    cargar('js/lspedia-core.js?v=20260914-2', function(){
-        cargar('js/vocabulario-publico.js?v=20260914-1');
-        cargar('js/accesibilidad-segura.js?v=20260914-1');
-        cargar('js/seo-institucional.js?v=20260914-1');
-        cargar('js/juegos-banco-compartido.js?v=20260914');
-        cargar('js/a-z-movil.js?v=20260914');
-    });""",
-              """    function cargarMejorasConCore(){
-        cargar('js/vocabulario-publico.js?v=20260914-2');
-        cargar('js/accesibilidad-segura.js?v=20260914-1');
-        cargar('js/seo-institucional.js?v=20260914-1');
-        cargar('js/juegos-banco-compartido.js?v=20260914-2');
-        cargar('js/a-z-movil.js?v=20260914');
-    }
-    if(window.LSPediaCore) cargarMejorasConCore();
-    else cargar('js/lspedia-core.js?v=20260914-3', cargarMejorasConCore);"""
+          viejo_core = (
+              "    cargar('js/lspedia-core.js?v=20260914-2', function(){\n"
+              "        cargar('js/vocabulario-publico.js?v=20260914-1');\n"
+              "        cargar('js/accesibilidad-segura.js?v=20260914-1');\n"
+              "        cargar('js/seo-institucional.js?v=20260914-1');\n"
+              "        cargar('js/juegos-banco-compartido.js?v=20260914');\n"
+              "        cargar('js/a-z-movil.js?v=20260914');\n"
+              "    });"
           )
+          nuevo_core = (
+              "    function cargarMejorasConCore(){\n"
+              "        cargar('js/vocabulario-publico.js?v=20260914-2');\n"
+              "        cargar('js/accesibilidad-segura.js?v=20260914-1');\n"
+              "        cargar('js/seo-institucional.js?v=20260914-1');\n"
+              "        cargar('js/juegos-banco-compartido.js?v=20260914-2');\n"
+              "        cargar('js/a-z-movil.js?v=20260914');\n"
+              "    }\n"
+              "    if(window.LSPediaCore) cargarMejorasConCore();\n"
+              "    else cargar('js/lspedia-core.js?v=20260914-3', cargarMejorasConCore);"
+          )
+          reemplazar('js/mejoras-producto.js', viejo_core, nuevo_core)
 
           p = Path('js/lab-senas-ia.js')
           s = p.read_text(encoding='utf-8')
@@ -74,96 +70,97 @@ jobs:
               1
           )
           ancla = "let evaluando = false;\n"
-          helper = """let evaluando = false;
-
-async function conTimeout(promesa, timeoutMs, mensaje) {
-  let temporizador = null;
-  try {
-    return await Promise.race([
-      promesa,
-      new Promise((_, reject) => {
-        temporizador = setTimeout(() => reject(new Error(mensaje || 'Tiempo de espera agotado.')), timeoutMs);
-      })
-    ]);
-  } finally {
-    if (temporizador) clearTimeout(temporizador);
-  }
-}
-
-async function leerJsonConTimeout(url, timeoutMs = 6500) {
-  const controlador = typeof AbortController !== 'undefined' ? new AbortController() : null;
-  let temporizador = null;
-  try {
-    const promesaFetch = fetch(url, controlador ? { cache: 'no-store', signal: controlador.signal } : { cache: 'no-store' });
-    const respuesta = await Promise.race([
-      promesaFetch,
-      new Promise((_, reject) => {
-        temporizador = setTimeout(() => {
-          if (controlador) {
-            try { controlador.abort(); } catch (_e) {}
-          }
-          reject(new Error('Tiempo de espera agotado al cargar el dataset central.'));
-        }, timeoutMs);
-      })
-    ]);
-    if (!respuesta.ok) throw new Error('HTTP ' + respuesta.status);
-    return await respuesta.json();
-  } finally {
-    if (temporizador) clearTimeout(temporizador);
-  }
-}
-"""
+          helper = (
+              "let evaluando = false;\n\n"
+              "async function conTimeout(promesa, timeoutMs, mensaje) {\n"
+              "  let temporizador = null;\n"
+              "  try {\n"
+              "    return await Promise.race([\n"
+              "      promesa,\n"
+              "      new Promise((_, reject) => {\n"
+              "        temporizador = setTimeout(() => reject(new Error(mensaje || 'Tiempo de espera agotado.')), timeoutMs);\n"
+              "      })\n"
+              "    ]);\n"
+              "  } finally {\n"
+              "    if (temporizador) clearTimeout(temporizador);\n"
+              "  }\n"
+              "}\n\n"
+              "async function leerJsonConTimeout(url, timeoutMs = 6500) {\n"
+              "  const controlador = typeof AbortController !== 'undefined' ? new AbortController() : null;\n"
+              "  let temporizador = null;\n"
+              "  try {\n"
+              "    const promesaFetch = fetch(url, controlador ? { cache: 'no-store', signal: controlador.signal } : { cache: 'no-store' });\n"
+              "    const respuesta = await Promise.race([\n"
+              "      promesaFetch,\n"
+              "      new Promise((_, reject) => {\n"
+              "        temporizador = setTimeout(() => {\n"
+              "          if (controlador) {\n"
+              "            try { controlador.abort(); } catch (_e) {}\n"
+              "          }\n"
+              "          reject(new Error('Tiempo de espera agotado al cargar el dataset central.'));\n"
+              "        }, timeoutMs);\n"
+              "      })\n"
+              "    ]);\n"
+              "    if (!respuesta.ok) throw new Error('HTTP ' + respuesta.status);\n"
+              "    return await respuesta.json();\n"
+              "  } finally {\n"
+              "    if (temporizador) clearTimeout(temporizador);\n"
+              "  }\n"
+              "}\n"
+          )
           if 'async function leerJsonConTimeout' not in s:
               if ancla not in s:
                   raise SystemExit('No se encontró ancla de helpers IA')
               s = s.replace(ancla, helper, 1)
 
-          viejo_dataset = """    const respuesta = await fetch(DATASET_CENTRAL_URL, { cache: 'no-store' });
-    if (!respuesta.ok) throw new Error('HTTP ' + respuesta.status);
-    const data = await respuesta.json();"""
-          nuevo_dataset = """    const data = await leerJsonConTimeout(DATASET_CENTRAL_URL, 6500);"""
+          viejo_dataset = (
+              "    const respuesta = await fetch(DATASET_CENTRAL_URL, { cache: 'no-store' });\n"
+              "    if (!respuesta.ok) throw new Error('HTTP ' + respuesta.status);\n"
+              "    const data = await respuesta.json();"
+          )
+          nuevo_dataset = "    const data = await leerJsonConTimeout(DATASET_CENTRAL_URL, 6500);"
           if viejo_dataset in s:
               s = s.replace(viejo_dataset, nuevo_dataset, 1)
           elif nuevo_dataset not in s:
               raise SystemExit('No se encontró bloque de dataset IA')
 
-          viejo_detector = """  const vision = await FilesetResolver.forVisionTasks(WASM_URL);
-  detector = await HandLandmarker.createFromOptions(vision, {
-    baseOptions: { modelAssetPath: MODEL_URL },
-    runningMode: 'VIDEO',
-    numHands: 2,
-    minHandDetectionConfidence: 0.55,
-    minHandPresenceConfidence: 0.5,
-    minTrackingConfidence: 0.5
-  });"""
-          nuevo_detector = """  const vision = await conTimeout(
-    FilesetResolver.forVisionTasks(WASM_URL),
-    15000,
-    'El motor de visión tardó demasiado en cargar.'
-  );
-  detector = await conTimeout(
-    HandLandmarker.createFromOptions(vision, {
-      baseOptions: { modelAssetPath: MODEL_URL },
-      runningMode: 'VIDEO',
-      numHands: 2,
-      minHandDetectionConfidence: 0.55,
-      minHandPresenceConfidence: 0.5,
-      minTrackingConfidence: 0.5
-    }),
-    20000,
-    'El modelo de manos tardó demasiado en cargar.'
-  );"""
+          viejo_detector = (
+              "  const vision = await FilesetResolver.forVisionTasks(WASM_URL);\n"
+              "  detector = await HandLandmarker.createFromOptions(vision, {\n"
+              "    baseOptions: { modelAssetPath: MODEL_URL },\n"
+              "    runningMode: 'VIDEO',\n"
+              "    numHands: 2,\n"
+              "    minHandDetectionConfidence: 0.55,\n"
+              "    minHandPresenceConfidence: 0.5,\n"
+              "    minTrackingConfidence: 0.5\n"
+              "  });"
+          )
+          nuevo_detector = (
+              "  const vision = await conTimeout(\n"
+              "    FilesetResolver.forVisionTasks(WASM_URL),\n"
+              "    15000,\n"
+              "    'El motor de visión tardó demasiado en cargar.'\n"
+              "  );\n"
+              "  detector = await conTimeout(\n"
+              "    HandLandmarker.createFromOptions(vision, {\n"
+              "      baseOptions: { modelAssetPath: MODEL_URL },\n"
+              "      runningMode: 'VIDEO',\n"
+              "      numHands: 2,\n"
+              "      minHandDetectionConfidence: 0.55,\n"
+              "      minHandPresenceConfidence: 0.5,\n"
+              "      minTrackingConfidence: 0.5\n"
+              "    }),\n"
+              "    20000,\n"
+              "    'El modelo de manos tardó demasiado en cargar.'\n"
+              "  );"
+          )
           if viejo_detector in s:
               s = s.replace(viejo_detector, nuevo_detector, 1)
           elif nuevo_detector not in s:
               raise SystemExit('No se encontró bloque del detector IA')
           p.write_text(s, encoding='utf-8', newline='\n')
 
-          reemplazar(
-              'lab-senas-ia.html',
-              'js/lab-senas-ia.js?v=20260914-2',
-              'js/lab-senas-ia.js?v=20260914-3'
-          )
+          reemplazar('lab-senas-ia.html', 'js/lab-senas-ia.js?v=20260914-2', 'js/lab-senas-ia.js?v=20260914-3')
           reemplazar('sw.js', 'const VERSION_APP = "v126";', 'const VERSION_APP = "v127";')
           PY
 
