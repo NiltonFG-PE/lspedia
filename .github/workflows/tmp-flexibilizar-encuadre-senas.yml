@@ -21,7 +21,9 @@ jobs:
           ref: develop
           fetch-depth: 0
       - name: Aplicar mejora
-        run: python scripts/tmp_flexibilizar_encuadre_senas.py
+        run: |
+          python scripts/tmp_flexibilizar_encuadre_senas.py
+          sed -i 's/): $/):/' scripts/validar_senas_ia.py
       - name: Validar JavaScript
         run: node --check js/lab-senas-ia.js
       - name: Validar laboratorio de señas
