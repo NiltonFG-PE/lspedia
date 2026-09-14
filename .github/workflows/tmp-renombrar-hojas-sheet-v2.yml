@@ -46,8 +46,8 @@ jobs:
       - name: Verificar sintaxis
         shell: bash
         run: |
-          if grep -RIn --exclude-dir='.git' --exclude-dir='.github/workflows' -E 'Hoja 1|Hoja 2' .; then
-            echo 'Quedaron referencias antiguas fuera de workflows.'
+          if grep -RIn --exclude-dir='.git' --exclude-dir='.github' -E 'Hoja 1|Hoja 2' .; then
+            echo 'Quedaron referencias antiguas fuera de .github.'
             exit 1
           fi
           node --check js/script.js
