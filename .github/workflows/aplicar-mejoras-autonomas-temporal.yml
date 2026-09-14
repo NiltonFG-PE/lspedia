@@ -1,0 +1,42 @@
+name: Aplicar mejoras autonomas temporales
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - scripts/aplicar-mejoras-autonomas-temporal.mjs
+
+permissions:
+  contents: write
+
+jobs:
+  aplicar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Aplicar cambios si el script existe
+        shell: bash
+        run: |
+          if [ ! -f scripts/aplicar-mejoras-autonomas-temporal.mjs ]; then
+            echo "Script temporal ya retirado; no hay nada que aplicar."
+            exit 0
+          fi
+          node scripts/aplicar-mejoras-autonomas-temporal.mjs
+
+      - name: Guardar cambios en develop
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo "No hay cambios nuevos."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/alfabetizacion.js index.html
+          git commit -m "Conecta niveles reales y endurece HTML dinámico"
+          git push origin HEAD:develop
