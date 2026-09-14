@@ -1,12 +1,15 @@
-import { HandLandmarker, FilesetResolver } from 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.0.1/+esm';
+import { HandLandmarker, PoseLandmarker, FilesetResolver } from 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.0.1/+esm';
 
 const MODEL_URL = 'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/latest/hand_landmarker.task';
+const POSE_MODEL_URL = 'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task';
 const WASM_URL = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.0.1/wasm';
-const DATASET_CENTRAL_URL = 'data/senas-ia-dataset.json?v=20260914-3';
+const DATASET_CENTRAL_URL = 'data/senas-ia-dataset.json?v=20260914-4';
 const STORAGE_KEY = 'lspedia_senas_ia_muestras_v2';
 const STORAGE_KEY_ANTERIOR = 'lspedia_senas_ia_muestras_v1';
 const FRAMES_MUESTRA = 24;
-const DIMENSION_VECTOR = 127;
+const DIMENSION_VECTOR_LEGACY = 127;
+const DIMENSION_VECTOR_POSE = 161;
+const POSE_INDICES = [0, 9, 10, 11, 12, 13, 14, 15, 16, 23, 24];
 const INTERVALO_MS = 70;
 const MAX_MUESTRAS_LOCALES = 300;
 const MAX_EVALUACION = 120;
@@ -16,6 +19,10 @@ const CONEXIONES = [
   [5,9],[9,10],[10,11],[11,12],
   [9,13],[13,14],[14,15],[15,16],
   [13,17],[17,18],[18,19],[19,20],[0,17]
+];
+const CONEXIONES_POSE = [
+  [11,12],[11,13],[13,15],[12,14],[14,16],
+  [11,23],[12,24],[23,24],[0,11],[0,12]
 ];
 
 const $ = (id) => document.getElementById(id);
@@ -32,9 +39,12 @@ const ui = {
 };
 
 let detector = null;
+let detectorPose = null;
 let stream = null;
 let activo = false;
 let ultimoProceso = 0;
+let ultimoProcesoPose = 0;
+let ultimoResultadoPose = null;
 let ultimoTiempoVideo = -1;
 let rafId = 0;
 let captura = null;
@@ -101,7 +111,7 @@ function idSeguro(valor) {
 
 function vectorValido(vector) {
   return Array.isArray(vector) &&
-    vector.length === DIMENSION_VECTOR &&
+    (vector.length === DIMENSION_VECTOR_LEGACY || vector.length === DIMENSION_VECTOR_POSE) &&
     vector.every(n => Number.isFinite(Number(n)) && Math.abs(Number(n)) < 1000);
 }
 
@@ -118,7 +128,7 @@ function normalizarMuestra(muestra, origen = 'local') {
     etiqueta: etiquetaValida(muestra.etiqueta),
     creada: String(muestra.creada || new Date().toISOString()).slice(0, 40),
     origen,
-    version: 2,
+    version: muestra.frames.some(frame => Array.isArray(frame) && frame.length >= DIMENSION_VECTOR_POSE) ? 3 : 2,
     frames: muestra.frames.map(frame => frame.map(Number))
   };
 }
@@ -180,7 +190,7 @@ async function cargarDatasetCentral() {
 
 async function prepararDetector() {
   if (detector) return detector;
-  estado('Cargando detector de manos…');
+  estado('Cargando detector de manos y posición corporal…');
   const vision = await conTimeout(
     FilesetResolver.forVisionTasks(WASM_URL),
     15000,
@@ -198,6 +208,25 @@ async function prepararDetector() {
     20000,
     'El modelo de manos tardó demasiado en cargar.'
   );
+
+  try {
+    detectorPose = await conTimeout(
+      PoseLandmarker.createFromOptions(vision, {
+        baseOptions: { modelAssetPath: POSE_MODEL_URL },
+        runningMode: 'VIDEO',
+        numPoses: 1,
+        minPoseDetectionConfidence: 0.45,
+        minPosePresenceConfidence: 0.45,
+        minTrackingConfidence: 0.45,
+        outputSegmentationMasks: false
+      }),
+      20000,
+      'El modelo corporal tardó demasiado en cargar.'
+    );
+  } catch (error) {
+    detectorPose = null;
+    console.warn('[LSPedia señas IA] Pose no disponible; se continuará con manos:', error);
+  }
   return detector;
 }
 
@@ -286,7 +315,34 @@ function dibujar(resultado) {
   });
 }
 
-function vectorNormalizado(resultado) {
+
+function dibujarPose(resultadoPose) {
+  const pose = Array.isArray(resultadoPose && resultadoPose.landmarks)
+    ? resultadoPose.landmarks[0]
+    : null;
+  if (!Array.isArray(pose) || pose.length < 25) return;
+  const ctx = ui.canvas.getContext('2d');
+  ctx.lineWidth = Math.max(2, ui.canvas.width / 500);
+  ctx.strokeStyle = 'rgba(16,185,129,.75)';
+  ctx.fillStyle = 'rgba(16,185,129,.92)';
+  CONEXIONES_POSE.forEach(([a,b]) => {
+    const p = pose[a], q = pose[b];
+    if (!p || !q) return;
+    ctx.beginPath();
+    ctx.moveTo(p.x * ui.canvas.width, p.y * ui.canvas.height);
+    ctx.lineTo(q.x * ui.canvas.width, q.y * ui.canvas.height);
+    ctx.stroke();
+  });
+  POSE_INDICES.forEach(indice => {
+    const p = pose[indice];
+    if (!p) return;
+    ctx.beginPath();
+    ctx.arc(p.x * ui.canvas.width, p.y * ui.canvas.height, Math.max(2, ui.canvas.width / 300), 0, Math.PI * 2);
+    ctx.fill();
+  });
+}
+
+function vectorNormalizado(resultado, resultadoPose) {
   const manos = Array.isArray(resultado && resultado.landmarks)
     ? resultado.landmarks.filter(x => Array.isArray(x) && x.length >= 21)
     : [];
@@ -311,17 +367,60 @@ function vectorNormalizado(resultado) {
   }));
   while (salida.length < 126) salida.push(0);
   salida.push(usadas.length === 2 ? 1 : 0);
+
+  const pose = Array.isArray(resultadoPose && resultadoPose.landmarks)
+    ? resultadoPose.landmarks[0]
+    : null;
+  if (!Array.isArray(pose) || pose.length < 25 || !pose[11] || !pose[12]) return salida;
+
+  const hombroIzq = pose[11];
+  const hombroDer = pose[12];
+  const pcx = (hombroIzq.x + hombroDer.x) / 2;
+  const pcy = (hombroIzq.y + hombroDer.y) / 2;
+  const pcz = ((hombroIzq.z || 0) + (hombroDer.z || 0)) / 2;
+  const escalaPose = Math.max(
+    Math.hypot(
+      hombroIzq.x - hombroDer.x,
+      hombroIzq.y - hombroDer.y,
+      (hombroIzq.z || 0) - (hombroDer.z || 0)
+    ),
+    0.05
+  );
+
+  POSE_INDICES.forEach(indice => {
+    const p = pose[indice] || { x: pcx, y: pcy, z: pcz };
+    const limitar = valor => Math.max(-6, Math.min(6, valor));
+    salida.push(
+      limitar((p.x - pcx) / escalaPose),
+      limitar((p.y - pcy) / escalaPose),
+      limitar(((p.z || 0) - pcz) / escalaPose)
+    );
+  });
+  salida.push(1);
   return salida;
 }
 
 function distanciaVector(a, b) {
-  if (!a || !b || a.length !== b.length) return 99;
-  let suma = 0;
-  for (let i = 0; i < a.length; i++) {
-    const d = a[i] - b[i];
-    suma += d * d;
+  if (!Array.isArray(a) || !Array.isArray(b) ||
+      a.length < DIMENSION_VECTOR_LEGACY || b.length < DIMENSION_VECTOR_LEGACY) return 99;
+
+  const rms = (inicio, fin) => {
+    let suma = 0;
+    let n = 0;
+    for (let i = inicio; i < fin; i++) {
+      const d = Number(a[i]) - Number(b[i]);
+      suma += d * d;
+      n += 1;
+    }
+    return n ? Math.sqrt(suma / n) : 99;
+  };
+
+  const manos = rms(0, DIMENSION_VECTOR_LEGACY);
+  if (a.length >= DIMENSION_VECTOR_POSE && b.length >= DIMENSION_VECTOR_POSE) {
+    const pose = rms(DIMENSION_VECTOR_LEGACY, DIMENSION_VECTOR_POSE);
+    return manos * 0.78 + pose * 0.22;
   }
-  return Math.sqrt(suma / a.length);
+  return manos;
 }
 
 function distanciaSecuencia(a, b) {
@@ -340,9 +439,10 @@ function distanciaSecuencia(a, b) {
   return anterior[m] / (n + m);
 }
 
-function procesarResultado(resultado) {
+function procesarResultado(resultado, resultadoPose) {
   dibujar(resultado);
-  const vector = vectorNormalizado(resultado);
+  dibujarPose(resultadoPose);
+  const vector = vectorNormalizado(resultado, resultadoPose);
   if (!vector) {
     if (captura) ui.progreso.textContent = 'Mantén al menos una mano visible.';
     return;
@@ -368,7 +468,15 @@ function bucle(tiempo = performance.now()) {
   ultimoTiempoVideo = ui.video.currentTime;
   try {
     const resultado = detector.detectForVideo(ui.video, tiempo);
-    procesarResultado(resultado);
+    if (detectorPose && tiempo - ultimoProcesoPose >= 140) {
+      try {
+        ultimoResultadoPose = detectorPose.detectForVideo(ui.video, tiempo);
+        ultimoProcesoPose = tiempo;
+      } catch (errorPose) {
+        console.warn('[LSPedia señas IA] Fotograma corporal omitido:', errorPose);
+      }
+    }
+    procesarResultado(resultado, ultimoResultadoPose);
   } catch (error) {
     console.warn('[LSPedia señas IA] Fotograma omitido:', error);
   }
@@ -511,11 +619,13 @@ function exportarMuestras() {
   if (!muestrasLocales.length) return estado('No hay muestras locales para exportar.', 'error');
   const conceptos = [...new Set(muestrasLocales.map(m => m.etiqueta))].sort((a,b) => a.localeCompare(b,'es'));
   const data = {
-    formato: 'lspedia-senas-ia-v2',
-    version: 2,
+    formato: 'lspedia-senas-ia-v3',
+    version: 3,
     exportado: new Date().toISOString(),
     framesPorMuestra: FRAMES_MUESTRA,
-    vectorDimension: DIMENSION_VECTOR,
+    vectorDimension: DIMENSION_VECTOR_POSE,
+    vectorDimensionsCompatibles: [DIMENSION_VECTOR_LEGACY, DIMENSION_VECTOR_POSE],
+    modeloEntrada: 'MediaPipe Hand Landmarker + Pose Landmarker',
     conceptos,
     muestras: muestrasLocales
   };
@@ -622,9 +732,13 @@ async function evaluarDataset() {
       const prediccion = candidatos.length ? candidatos[0][0] : '';
       const ok = prediccion === muestra.etiqueta;
       if (ok) aciertos += 1;
-      const dato = porConcepto.get(muestra.etiqueta) || { total: 0, aciertos: 0 };
+      const dato = porConcepto.get(muestra.etiqueta) || { total: 0, aciertos: 0, confusiones: new Map() };
       dato.total += 1;
-      if (ok) dato.aciertos += 1;
+      if (ok) {
+        dato.aciertos += 1;
+      } else if (prediccion) {
+        dato.confusiones.set(prediccion, (dato.confusiones.get(prediccion) || 0) + 1);
+      }
       porConcepto.set(muestra.etiqueta, dato);
 
       if (ui.calidad) ui.calidad.textContent = `Evaluando ${i + 1}/${banco.length}…`;
@@ -633,11 +747,14 @@ async function evaluarDataset() {
 
     const precision = banco.length ? aciertos / banco.length : 0;
     const peores = [...porConcepto.entries()]
-      .map(([etiqueta,d]) => ({ etiqueta, precision: d.total ? d.aciertos / d.total : 0, total: d.total }))
+      .map(([etiqueta,d]) => {
+        const confusion = [...d.confusiones.entries()].sort((a,b) => b[1] - a[1])[0]?.[0] || '';
+        return { etiqueta, precision: d.total ? d.aciertos / d.total : 0, total: d.total, confusion };
+      })
       .sort((a,b) => a.precision - b.precision)
       .slice(0,4);
     const nivel = precision >= 0.9 ? 'muy prometedor' : precision >= 0.75 ? 'prometedor' : precision >= 0.55 ? 'todavía inestable' : 'insuficiente por ahora';
-    const detalle = peores.map(x => `${x.etiqueta} ${Math.round(x.precision * 100)}%`).join(' · ');
+    const detalle = peores.map(x => `${x.etiqueta} ${Math.round(x.precision * 100)}%${x.confusion ? ` → suele confundirse con ${x.confusion}` : ''}`).join(' · ');
     const muestraNota = bancoCompleto.length > banco.length
       ? ` Se evaluó una muestra equilibrada de ${banco.length}/${bancoCompleto.length} para no bloquear el celular.`
       : '';

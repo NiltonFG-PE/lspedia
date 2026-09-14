@@ -8,7 +8,7 @@ import math
 from pathlib import Path
 
 RUTA = Path("data/senas-ia-dataset.json")
-DIMENSION = 127
+DIMENSIONES = {127, 161}
 MIN_FRAMES = 8
 MAX_FRAMES = 80
 
@@ -28,12 +28,12 @@ def main() -> None:
 
     if not isinstance(data, dict):
         error("la raíz debe ser un objeto")
-    if data.get("formato") != "lspedia-senas-ia-v2":
+    if data.get("formato") not in {"lspedia-senas-ia-v2", "lspedia-senas-ia-v3"}:
         error("formato no reconocido")
-    if data.get("version") != 2:
-        error("version debe ser 2")
-    if data.get("vectorDimension") != DIMENSION:
-        error(f"vectorDimension debe ser {DIMENSION}")
+    if data.get("version") not in {2, 3}:
+        error("version debe ser 2 o 3")
+    if data.get("vectorDimension") not in DIMENSIONES:
+        error(f"vectorDimension debe ser uno de {sorted(DIMENSIONES)}")
     if data.get("framesPorMuestra") != 24:
         error("framesPorMuestra debe ser 24")
 
@@ -83,10 +83,10 @@ def main() -> None:
             )
 
         for num_frame, vector in enumerate(frames, start=1):
-            if not isinstance(vector, list) or len(vector) != DIMENSION:
+            if not isinstance(vector, list) or len(vector) not in DIMENSIONES:
                 error(
                     f"muestra {identificador}, frame {num_frame}: "
-                    f"vector debe tener {DIMENSION} valores"
+                    f"vector debe tener una dimensión compatible {sorted(DIMENSIONES)}"
                 )
             for valor in vector:
                 if isinstance(valor, bool) or not isinstance(valor, (int, float)):
@@ -98,6 +98,14 @@ def main() -> None:
         faltantes = sorted(etiquetas_muestras - {x.casefold() for x in conceptos_limpios})
         if faltantes:
             error("hay etiquetas de muestras ausentes en conceptos: " + ", ".join(faltantes))
+
+    js_lab = Path("js/lab-senas-ia.js").read_text(encoding="utf-8")
+    html_lab = Path("lab-senas-ia.html").read_text(encoding="utf-8")
+    for requerido in ("PoseLandmarker", "DIMENSION_VECTOR_POSE = 161", "POSE_INDICES"):
+        if requerido not in js_lab:
+            error(f"falta integración corporal en laboratorio: {requerido}")
+    if "respuestaBrillo" not in html_lab or "rgba(16,185,129" not in html_lab:
+        error("falta destaque verde de respuestas candidatas")
 
     print(
         "Dataset señas IA válido: "
