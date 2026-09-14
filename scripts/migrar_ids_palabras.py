@@ -156,7 +156,7 @@ function obtenerIdPalabra(p){
     if(!p) return "";
     const id = String(p.id || "").trim();
     if(id) return id;
-    // Respaldo para datos externos (por ejemplo Hoja 2) que aún no traen ID.
+    // Respaldo para datos externos (por ejemplo Vocabulario) que aún no traen ID.
     return crearSlugIdPalabra(p.palabra);
 }
 
@@ -373,9 +373,9 @@ function mostrarPalabraPorNombre(nombre){
 }
 
 // --- RESTAURAR RESULTADO AL CARGAR/REFRESCAR LA PÁGINA (?p=...) ---
-// Si la palabra está en el diccionario (Hoja 1) se muestra de inmediato.
+// Si la palabra está en el diccionario (Diccionario) se muestra de inmediato.
 // Si no está ahí, puede ser una palabra que solo vive en el banco del
-// Quiz (Hoja 2): en ese caso esperamos (o forzamos) su carga y recién
+// Quiz (Vocabulario): en ese caso esperamos (o forzamos) su carga y recién
 // entonces la mostramos, en vez de simplemente volver al inicio.
 function restaurarPalabraDesdeUrl(nombre, opciones = {}){
     const enHoja1 = App.datos.find(p => p.palabra.toLowerCase() === nombre.toLowerCase());

@@ -1228,8 +1228,8 @@ const AlfabetizacionV2 = (function () {
 
         const deNumeros = bancoNumerosDesdeDatos(nivelSeleccionado);
 
-        // Vocabulario (Hoja 2) se filtra por su propio nivel y por imagen
-        // real. A propósito NO se usa el Diccionario (Hoja 1).
+        // Vocabulario (Vocabulario) se filtra por su propio nivel y por imagen
+        // real. A propósito NO se usa el Diccionario (Diccionario).
         const bancoCompartido = (window.LSPediaJuegosBanco && typeof window.LSPediaJuegosBanco.obtenerCargado === "function")
             ? window.LSPediaJuegosBanco.obtenerCargado({ fuentes: ["vocabulario"], conImagen: true })
             : [];
@@ -1812,9 +1812,9 @@ const AlfabetizacionV2 = (function () {
 
     // Mismo banco de imágenes que "Completar" (ejemplos con imagen del
     // abecedario), más los números (sin imagen, número grande) y las
-    // palabras de Vocabulario (Hoja 2, mismo banco que usa el Quiz) que
+    // palabras de Vocabulario (Vocabulario, mismo banco que usa el Quiz) que
     // ya tengan imagen de apoyo real. A propósito NO se usa el
-    // Diccionario (Hoja 1, window.App.datos): Unir solo debe salir de
+    // Diccionario (Diccionario, window.App.datos): Unir solo debe salir de
     // Alfabetización y Vocabulario, igual que Completar.
     function bancoParesUnir(nivelId) {
         const nivelSeleccionado = nivelId || estado.unir.nivelId || "facil";

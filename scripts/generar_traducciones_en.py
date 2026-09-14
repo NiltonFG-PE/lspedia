@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Genera data/traducciones-en.json desde Hoja 1 de Google Sheets.
+"""Genera data/traducciones-en.json desde Diccionario de Google Sheets.
 
 La traducción escrita en la hoja es la fuente de verdad para el contenido
 nuevo. Publicador.gs rellena `ingles` y `definicionIngles` automáticamente.
@@ -24,7 +24,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 DESTINO = ROOT / "data" / "traducciones-en.json"
 SPREADSHEET_ID = "1fqC1aUpwdz6l0xRyYYfki7vJtjIql6sOEzpfWElknT0"
-HOJA = "Hoja 1"
+HOJA = "Diccionario"
 
 
 def texto(valor: object) -> str:
@@ -53,11 +53,11 @@ def descargar_csv() -> list[dict[str, str]]:
     with urllib.request.urlopen(solicitud, timeout=35) as respuesta:
         crudo = respuesta.read(8_000_001)
         if len(crudo) > 8_000_000:
-            raise RuntimeError("Hoja 1 supera el límite de 8 MB para traducciones.")
+            raise RuntimeError("Diccionario supera el límite de 8 MB para traducciones.")
 
     lector = csv.DictReader(io.StringIO(crudo.decode("utf-8-sig")))
     if not lector.fieldnames:
-        raise RuntimeError("Hoja 1 no devolvió encabezados.")
+        raise RuntimeError("Diccionario no devolvió encabezados.")
 
     filas: list[dict[str, str]] = []
     for fila in lector:

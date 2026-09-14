@@ -437,9 +437,9 @@ function obtenerIdPalabra(p){
     if(id) return id;
 
     const base = crearSlugIdPalabra(p.palabra) || "palabra";
-    // Hoja 2 todavía no tiene una columna `id`. Para que una palabra del
+    // Vocabulario todavía no tiene una columna `id`. Para que una palabra del
     // Vocabulario nunca choque con otra del Diccionario, su referencia de
-    // respaldo incorpora la categoría. Si en el futuro Hoja 2 trae `id`,
+    // respaldo incorpora la categoría. Si en el futuro Vocabulario trae `id`,
     // ese valor tendrá prioridad automáticamente por el bloque de arriba.
     if(obtenerFuentePalabra(p) === "vocabulario"){
         const categoria = crearSlugIdPalabra(p.categoria);
@@ -1847,13 +1847,13 @@ if(btnAlfabSalir){
 const App = {
     datos: [],
     iniciar: function() {
-        // Precarga en segundo plano el banco del Quiz (Hoja 2) desde el
+        // Precarga en segundo plano el banco del Quiz (Vocabulario) desde el
         // primer instante, sin esperar a que el usuario busque algo o
         // entre a la sección Quiz. js/quiz.js ya dispara su propia carga
         // automática al cargar la página; esta llamada es una segunda
         // garantía explícita (no hace nada si ya está cargando o cargado)
         // para que quede claro, en un solo lugar, que las palabras de la
-        // Hoja 2 deben estar disponibles lo antes posible.
+        // Vocabulario deben estar disponibles lo antes posible.
         if (window.QuizV2 && typeof QuizV2.asegurarBancoCargado === "function") {
             QuizV2.asegurarBancoCargado();
         }
@@ -2163,7 +2163,7 @@ function procesarDatosApp(data) {
             // El video es opcional; una descripción de imagen o placeholder NO cuenta como imagen.
             App.datos = obtenerDatosDiccionarioPublicables(data);
             migrarFavoritosEHistorialAIds();
-            // Las categorías reales del diccionario (Hoja 1, columna C)
+            // Las categorías reales del diccionario (Diccionario, columna C)
             // recién están disponibles acá, así que se pintan las tarjetas
             // en cuanto llegan las palabras.
             renderCategoriasDiccionario();
@@ -2191,7 +2191,7 @@ function procesarDatosApp(data) {
                 if(fuentePalabraEnUrl === "vocabulario"){
                     // Restauramos primero la pantalla Vocabulario sin crear
                     // una nueva entrada de historial; después se abre la
-                    // ficha exacta de Hoja 2 cuando su banco esté listo.
+                    // ficha exacta de Vocabulario cuando su banco esté listo.
                     restaurandoHistorialNavegador = true;
                     saltarScrollAlAbrirVocabulario = true;
                     omitirAvisoVocabularioUnaVez = true;
@@ -2377,7 +2377,7 @@ if(indiceAlfabetico){
 }
 
 // --- BANCO DE LA HOJA 2 (VOCABULARIO / QUIZ) ---
-// QuizV2 (js/quiz.js) ya precarga la Hoja 2 en segundo plano apenas
+// QuizV2 (js/quiz.js) ya precarga la Vocabulario en segundo plano apenas
 // carga la página. Vocabulario reutiliza esa data en vivo, pero desde
 // ahora NUNCA se fusiona con App.datos (Diccionario): que ambas fuentes
 // tengan una palabra con el mismo nombre es válido y cada ficha conserva
@@ -2394,13 +2394,13 @@ function obtenerBancoHoja2() {
 //    nada si ya está cargada o si ya hay una petición en curso).
 // 2) Nos suscribimos a onBancoListo para volver a ejecutar la búsqueda
 //    en cuanto lleguen los datos, así el usuario ve aparecer los
-//    resultados de la Hoja 2 sin tener que volver a escribir.
+//    resultados de la Vocabulario sin tener que volver a escribir.
 document.addEventListener("DOMContentLoaded", () => {
     if (window.QuizV2 && typeof QuizV2.onBancoListo === "function") {
         QuizV2.onBancoListo(() => {
             actualizarEstadisticas();
             // Si el panel de categorías (o una categoría abierta) ya estaba
-            // visible antes de que llegaran los datos de la Hoja 2, se
+            // visible antes de que llegaran los datos de la Vocabulario, se
             // refresca solo para que las palabras del Quiz aparezcan sin
             // que el usuario tenga que volver a hacer clic.
             if (categoriaActualMostrada && !new URLSearchParams(window.location.search).get("p")) {
@@ -2411,7 +2411,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Antes se usaba "panelCategorias.children.length > 0" para
                 // decidir si tocaba refrescar. Pero justo al refrescar la
                 // página estando en Vocabulario, mostrarCategorias() corre
-                // ANTES de que la Hoja 2 (banco de QuizV2) termine de
+                // ANTES de que la Vocabulario (banco de QuizV2) termine de
                 // cargar, así que panelCategorias queda con 0 tarjetas — y
                 // esa condición nunca volvía a ser true cuando los datos
                 // sí llegaban, dejando "Vocabulario" sin categorías para
@@ -2424,11 +2424,11 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     } else {
-        console.warn("QuizV2 no está disponible: las categorías no podrán mostrar palabras de la Hoja 2.");
+        console.warn("QuizV2 no está disponible: las categorías no podrán mostrar palabras de la Vocabulario.");
     }
 });
 
-// --- BUSCADOR INTELIGENTE (solo Hoja 1) ---
+// --- BUSCADOR INTELIGENTE (solo Diccionario) ---
 buscar.addEventListener("input", buscarPalabras);
 
 // Normaliza texto para comparar sin importar tildes (adios === Adiós) ni
@@ -2976,7 +2976,7 @@ function mostrarPalabra(p, opciones = {}){
     // #resultado (que queda por encima del buscador de categorías y
     // provocaba que el botón "Atrás" y la lista de resultados aparecieran
     // debajo del video en vez de arriba).
-    // Esta ficha pertenece exclusivamente al Diccionario (Hoja 1).
+    // Esta ficha pertenece exclusivamente al Diccionario (Diccionario).
     // Una entrada homónima de Vocabulario se mantiene independiente.
     cerrarPantallaCompletaVideoPalabra();
     const enCategorias = !!opciones.enCategorias;
@@ -3059,7 +3059,7 @@ function mostrarPalabra(p, opciones = {}){
         : "";
     let bloqueVariantes = p.variantes && p.variantes.trim() !== "" ? `<div class="mb-3 p-2 bg-light rounded border"><span class="d-block fw-bold text-secondary mb-1" style="font-size: 10px; letter-spacing: 0.5px;">🔄 CONJUGACIONES O VARIANTES:</span><span class="text-muted small fst-italic">${escaparHtml(p.variantes)}</span></div>` : "";
 
-    // Columna "senaSugerida" de la Hoja 1: es un ID/URL de YouTube, así que
+    // Columna "senaSugerida" de la Diccionario: es un ID/URL de YouTube, así que
     // en vez de mostrarla como texto se arma una tercera caja con su propio
     // reproductor controlable (mismos botones que el video principal, pero
     // con IDs "...Sugerida" para no chocar con los del reproductor principal).
@@ -4069,7 +4069,7 @@ function actualizarBotonPlayPause(evento) {
 }
 
 // --- REPRODUCTOR DE VIDEO CONTROLABLE PARA "SEÑA SUGERIDA" (columna G,
-// senaSugerida, de la Hoja 1). Es una copia independiente del reproductor
+// senaSugerida, de la Diccionario). Es una copia independiente del reproductor
 // principal (misma API de YouTube, mismos controles: pausar, reiniciar,
 // retroceder/avanzar y velocidad) pero con su propia instancia y sus
 // propios IDs, para poder mostrarse al mismo tiempo que el video principal
@@ -4560,11 +4560,11 @@ const COLORES_CATEGORIAS = [
 ];
 
 // --- IMAGEN DE RESPALDO POR CATEGORÍA (Vocabulario) ---
-// Si una palabra de Vocabulario (Hoja 2) todavía no tiene su propia
+// Si una palabra de Vocabulario (Vocabulario) todavía no tiene su propia
 // imagen, se usa la de su categoría aquí abajo (si existe) en vez de
 // dejar el hueco "Imagen próximamente". Para activarla, agrega la URL de
 // una imagen entre las comillas, con el nombre EXACTO de la categoría tal
-// como aparece en la Hoja 2 (columna "categoria"). Ejemplo:
+// como aparece en la Vocabulario (columna "categoria"). Ejemplo:
 // "Saludos": "https://misitio.com/imagenes/saludos.jpg",
 const IMAGENES_CATEGORIA = {
     // "Saludos": "",
@@ -4573,8 +4573,8 @@ const IMAGENES_CATEGORIA = {
 
 // Arma el bloque de "imagen de apoyo" (una sola imagen con clic para
 // ampliar, o carrusel si hay varias) a partir de una lista de URLs ya
-// separadas. La usan tanto mostrarPalabra() (Diccionario, Hoja 1) como
-// mostrarPalabraSimplificada() (Vocabulario, Hoja 2), para que ambas
+// separadas. La usan tanto mostrarPalabra() (Diccionario, Diccionario) como
+// mostrarPalabraSimplificada() (Vocabulario, Vocabulario), para que ambas
 // vistas se vean y se comporten igual.
 function generarBloqueImagenApoyo(imagenesPalabra, nombrePalabra){
     const nombreSeguro = escaparAtributoHtml(nombrePalabra);
@@ -4633,10 +4633,10 @@ function obtenerImagenesDeApoyo(p){
     return deCategoria ? [deCategoria] : [];
 }
 
-// --- TARJETAS DE CATEGORÍAS DEL DICCIONARIO (Hoja 1, columna "categoria") ---
+// --- TARJETAS DE CATEGORÍAS DEL DICCIONARIO (Diccionario, columna "categoria") ---
 // Estas tarjetas se arman con las categorías REALES que existen en
-// palabras.json (columna C de la Hoja 1), igual que hace mostrarCategorias()
-// con la Hoja 2, fijas debajo del Índice Alfabético, dentro de la vista
+// palabras.json (columna C de la Diccionario), igual que hace mostrarCategorias()
+// con la Vocabulario, fijas debajo del Índice Alfabético, dentro de la vista
 // "Diccionario". Cada una lleva su propio ícono, descripción corta y
 // paleta de colores (fondo/borde/texto), tomados de
 // CATEGORIAS_DICCIONARIO_INFO cuando la categoría ya está mapeada ahí;
@@ -4804,7 +4804,7 @@ function renderCategoriasDiccionario(){
     if(!panelCategoriasDiccionario) return;
     panelCategoriasDiccionario.innerHTML = "";
     // Categorías reales, tomadas de la columna "categoria" de cada palabra
-    // (Hoja 1 de Sheets), sin duplicados y ordenadas alfabéticamente.
+    // (Diccionario de Sheets), sin duplicados y ordenadas alfabéticamente.
     // String(p.categoria) en vez de p.categoria.trim() directo: así, si
     // algún dato llega desde el Sheet como número, booleano u otro tipo
     // que no sea texto, no se rompe con ".trim() is not a function" y
@@ -5053,7 +5053,7 @@ function scrollArribaEstable(){
     requestAnimationFrame(medirYEsperar);
 }
 
-// Filtra las palabras del diccionario (Hoja 1, App.datos) por el nombre
+// Filtra las palabras del diccionario (Diccionario, App.datos) por el nombre
 // de la categoría tocada y las pinta en #resultadoCategoriasDiccionario,
 // que está DEBAJO de las tarjetas de categoría (a diferencia de
 // filtrarPorLetra(), que sigue usando #resultado, arriba del índice A-Z).
@@ -5139,7 +5139,7 @@ window.filtrarPorCategoriaDiccionario = filtrarPorCategoriaDiccionario;
 
 // --- ICONOS DE CATEGORÍAS DE VOCABULARIO ---
 // Igual que CATEGORIAS_DICCIONARIO_INFO, pero solo para el ícono: las
-// categorías de Vocabulario (Hoja 2) ya usan la paleta de colores
+// categorías de Vocabulario (Vocabulario) ya usan la paleta de colores
 // genérica (COLORES_CATEGORIAS) según su posición, así que aquí solo se
 // mapea el nombre -> ruta de imagen. Cualquier categoría nueva que
 // todavía no tenga ícono cae en un emoji de libro por defecto.
@@ -5369,10 +5369,10 @@ document.addEventListener("click", (e) => {
     }
 });
 
-// --- DATOS DE VOCABULARIO (solo Hoja 2) ---
+// --- DATOS DE VOCABULARIO (solo Vocabulario) ---
 // La sección "Vocabulario" (antes "Temas orden") ahora toma sus categorías
-// y palabras EXCLUSIVAMENTE del banco de la Hoja 2 (el mismo que usa el
-// Quiz), sin mezclarlas con el diccionario de la Hoja 1. Solo se incluyen
+// y palabras EXCLUSIVAMENTE del banco de la Vocabulario (el mismo que usa el
+// Quiz), sin mezclarlas con el diccionario de la Diccionario. Solo se incluyen
 // las que ya tienen categoría, para que el agrupamiento tenga sentido.
 function obtenerDatosVocabulario(){
     return obtenerBancoHoja2()
@@ -5538,7 +5538,7 @@ function restaurarPalabraDesdeUrl(referencia, opciones = {}){
         if(diccionarioExplicito) return;
     }
 
-    // Vocabulario se carga desde Hoja 2 y puede llegar unos instantes
+    // Vocabulario se carga desde Vocabulario y puede llegar unos instantes
     // después que palabras.json. onBancoListo funciona tanto si ya está
     // cargado como si todavía está en camino.
     if(window.QuizV2 && typeof QuizV2.onBancoListo === "function"){
@@ -5712,9 +5712,9 @@ function mostrarSugerenciasRelacionadas(palabraActual, contenedor, opciones = {}
 }
 
 // Igual que mostrarSugerenciasRelacionadas(), pero para palabras de
-// Vocabulario (Hoja 2, banco del Quiz): usa obtenerBancoHoja2() en vez
+// Vocabulario (Vocabulario, banco del Quiz): usa obtenerBancoHoja2() en vez
 // de App.datos, y al hacer clic en una sugerencia abre con
-// mostrarPalabraSimplificada() en vez de mostrarPalabra(). La Hoja 2 no
+// mostrarPalabraSimplificada() en vez de mostrarPalabra(). La Vocabulario no
 // trae columna "imagen", así que las tarjetas siempre caen en el
 // placeholder (igual que el resto de tarjetas de Vocabulario).
 function mostrarSugerenciasRelacionadasVocabulario(palabraActual, contenedor, opciones = {}){
@@ -5907,7 +5907,7 @@ function mostrarSenalDelDia(offset = offsetSenalDelDia){
 
 // El motor del Quiz (niveles, modos, temporizador, sonidos, etc.)
 // vive ahora en js/quiz.js como el módulo independiente QuizV2,
-// que lee sus preguntas desde la Hoja 2 de Google Sheets.
+// que lee sus preguntas desde la Vocabulario de Google Sheets.
 
 
 // ============================================================

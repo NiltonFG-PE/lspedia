@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Aplica una sola vez la separación de fuentes Diccionario/Vocabulario.
 
-Conserva Hoja 1 (Diccionario) y Hoja 2 (Vocabulario/Quiz) como colecciones
+Conserva Diccionario (Diccionario) y Vocabulario (Vocabulario/Quiz) como colecciones
 independientes aunque una palabra tenga el mismo nombre en ambas.
 Es idempotente: si script.js ya contiene obtenerFuentePalabra(), no hace nada.
 """

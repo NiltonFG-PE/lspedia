@@ -4,7 +4,7 @@
    Este archivo es 100% independiente de script.js y de
    data/palabras.json. Vocabulario y Quiz leen primero el archivo
    local data/vocabulario.json, que se sincroniza automáticamente
-   desde la Hoja 2 de Google Sheets. El navegador no contiene
+   desde la Vocabulario de Google Sheets. El navegador no contiene
    endpoints privados de sincronización: esos quedan fuera del frontend.
    ============================================================ */
 
@@ -94,7 +94,7 @@ const QuizV2 = (function () {
     }
 
     // Se llama desde script.js cada vez que el usuario usa el buscador
-    // principal: si el banco de la Hoja 2 todavía está vacío y no hay una
+    // principal: si el banco de la Vocabulario todavía está vacío y no hay una
     // petición en curso, la dispara de inmediato (en vez de esperar a que
     // termine la precarga en segundo plano, que puede tardar unos segundos).
     function asegurarBancoCargado() {
@@ -111,7 +111,7 @@ const QuizV2 = (function () {
         listenersBancoListo.push(cb);
     }
 
-    // La columna "nivel" de la Hoja 2 la llena la persona a mano, así que
+    // La columna "nivel" de la Vocabulario la llena la persona a mano, así que
     // puede venir en cualquier combinación de mayúsculas/minúsculas (o sin
     // tilde: "dificil" en vez de "difícil"). El resto del código compara
     // este valor con las cadenas exactas "Fácil"/"Medio"/"Difícil" (para
@@ -1336,7 +1336,7 @@ const QuizV2 = (function () {
     });
 
     // obtenerBanco() se usa desde script.js para que el buscador principal
-    // del diccionario también pueda mostrar palabras de la Hoja 2 (las que
+    // del diccionario también pueda mostrar palabras de la Vocabulario (las que
     // usa este Quiz). Devolvemos la referencia viva a estado.banco, así que
     // siempre refleja el dato más reciente (incluso si todavía se está
     // precargando en segundo plano cuando se llama por primera vez).

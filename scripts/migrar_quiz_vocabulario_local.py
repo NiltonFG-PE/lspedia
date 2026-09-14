@@ -28,8 +28,8 @@ def main() -> int:
 
     texto = reemplazar(
         texto,
-        """   Este archivo es 100% independiente de script.js y de\n   data/palabras.json. Todas las preguntas se cargan en vivo\n   desde la Hoja 2 de tu Google Sheets, a través de un Web App\n   de Google Apps Script.\n\n   ⚠️ CONFIGURACIÓN OBLIGATORIA:\n   Reemplaza la URL de abajo por la URL de TU despliegue de\n   Apps Script (ver INSTRUCCIONES.md, paso 4).\n""",
-        """   Este archivo es 100% independiente de script.js y de\n   data/palabras.json. Vocabulario y Quiz leen primero el archivo\n   local data/vocabulario.json, que se sincroniza automáticamente\n   desde la Hoja 2 de Google Sheets. Apps Script queda únicamente\n   como respaldo de emergencia si el JSON local no está disponible.\n""",
+        """   Este archivo es 100% independiente de script.js y de\n   data/palabras.json. Todas las preguntas se cargan en vivo\n   desde la Vocabulario de tu Google Sheets, a través de un Web App\n   de Google Apps Script.\n\n   ⚠️ CONFIGURACIÓN OBLIGATORIA:\n   Reemplaza la URL de abajo por la URL de TU despliegue de\n   Apps Script (ver INSTRUCCIONES.md, paso 4).\n""",
+        """   Este archivo es 100% independiente de script.js y de\n   data/palabras.json. Vocabulario y Quiz leen primero el archivo\n   local data/vocabulario.json, que se sincroniza automáticamente\n   desde la Vocabulario de Google Sheets. Apps Script queda únicamente\n   como respaldo de emergencia si el JSON local no está disponible.\n""",
         "cabecera",
     )
 

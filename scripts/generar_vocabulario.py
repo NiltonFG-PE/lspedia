@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Genera data/vocabulario.json directamente desde Hoja 2 de Google Sheets.
+"""Genera data/vocabulario.json directamente desde Vocabulario de Google Sheets.
 
 Vocabulario y Quiz comparten el mismo banco publicado y ambos requieren video:
 - Una fila entra a Vocabulario únicamente cuando ya tiene video de señas.
@@ -31,7 +31,7 @@ from normalizar_categorias import normalizar_categoria_vocabulario
 ROOT = Path(__file__).resolve().parent.parent
 DESTINO = ROOT / "data" / "vocabulario.json"
 SPREADSHEET_ID = "1fqC1aUpwdz6l0xRyYYfki7vJtjIql6sOEzpfWElknT0"
-HOJA = "Hoja 2"
+HOJA = "Vocabulario"
 CAMPOS = (
     "palabra",
     "variantes",
@@ -90,11 +90,11 @@ def descargar_csv() -> list[dict[str, str]]:
             raise RuntimeError(f"Google Sheets respondió HTTP {respuesta.status}.")
         crudo = respuesta.read(5_000_001)
         if len(crudo) > 5_000_000:
-            raise RuntimeError("Hoja 2 supera el límite de 5 MB.")
+            raise RuntimeError("Vocabulario supera el límite de 5 MB.")
 
     lector = csv.DictReader(io.StringIO(crudo.decode("utf-8-sig")))
     if not lector.fieldnames:
-        raise RuntimeError("Hoja 2 no devolvió encabezados.")
+        raise RuntimeError("Vocabulario no devolvió encabezados.")
 
     salida: list[dict[str, str]] = []
     for fila in lector:
@@ -102,7 +102,7 @@ def descargar_csv() -> list[dict[str, str]]:
             continue
         salida.append({texto(k): texto(v) for k, v in fila.items() if k is not None})
     if not salida:
-        raise RuntimeError("Hoja 2 no devolvió filas.")
+        raise RuntimeError("Vocabulario no devolvió filas.")
     return salida
 
 
@@ -156,7 +156,7 @@ def limpiar(filas: list[dict[str, str]]) -> list[dict]:
         salida.append({campo: registro[campo] for campo in CAMPOS})
 
     if not salida:
-        raise RuntimeError("Hoja 2 no devolvió ninguna palabra con video para publicar.")
+        raise RuntimeError("Vocabulario no devolvió ninguna palabra con video para publicar.")
 
     print(f"Borradores de Vocabulario omitidos por no tener video: {borradores_omitidos}.")
     print(

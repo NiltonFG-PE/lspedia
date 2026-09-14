@@ -3,7 +3,7 @@ setlocal
 cd /d "%~dp0"
 
 echo ==============================================
-echo   LSPedia - Actualizar vocabulario desde Hoja 2
+echo   LSPedia - Actualizar vocabulario desde Vocabulario
 echo ==============================================
 echo.
 

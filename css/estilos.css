@@ -525,7 +525,7 @@ h1, h2, h3, h4, h5, h6 {
     text-transform: uppercase;
 }
 
-/* Tarjetas de Categorías del Diccionario (Hoja 1, columna "categoria"),
+/* Tarjetas de Categorías del Diccionario (Diccionario, columna "categoria"),
    debajo del Índice Alfabético en la vista "Diccionario": ícono propio,
    nombre, descripción corta y una flecha circular como indicador de
    "entrar". El color de fondo/borde/texto y el ícono de cada categoría
