@@ -484,7 +484,7 @@ const AlfabetizacionV2 = (function () {
         const lista = listaFiltradaPorTipo();
         cont.innerHTML = lista.map((c, i) => {
             const activo = i === estado.aprender.indiceCaracter ? " fw-bold text-primary" : "";
-            return `<button type="button" class="btn btn-link btn-abc text-decoration-none${activo}" data-indice="${i}">${c.caracter}</button>`;
+            return `<button type="button" class="btn btn-link btn-abc text-decoration-none${activo}" data-indice="${i}">${escaparHtml(c.caracter)}</button>`;
         }).join("");
 
         cont.querySelectorAll("[data-indice]").forEach((btn) => {
@@ -1132,35 +1132,75 @@ const AlfabetizacionV2 = (function () {
         }
     }
 
-    function bancoPalabrasCompletar() {
+    // El nivel editorial de AlfabetizacionEjemplos ahora sí controla qué
+    // contenido entra en Fácil/Medio/Difícil. Si una fila antigua no tiene
+    // nivel, se usa el mismo fallback por longitud de LSPediaCore.
+    function normalizarNivelPedagogico(valor, palabra) {
+        try {
+            if (window.LSPediaCore && typeof window.LSPediaCore.normalizarNivel === "function") {
+                return window.LSPediaCore.normalizarNivel(valor, palabra);
+            }
+        } catch (e) { /* fallback local */ }
+
+        const n = String(valor || "")
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase()
+            .trim();
+        if (n === "facil") return "Fácil";
+        if (n === "medio") return "Medio";
+        if (n === "dificil") return "Difícil";
+
+        const largo = String(palabra || "").trim().replace(/\s+/g, "").length;
+        if (!largo) return "";
+        if (largo <= 5) return "Fácil";
+        if (largo <= 8) return "Medio";
+        return "Difícil";
+    }
+
+    function nivelObjetivoJuego(nivelId) {
+        if (nivelId === "medio") return "Medio";
+        if (nivelId === "dificil" || nivelId === "reto") return "Difícil";
+        return "Fácil";
+    }
+
+    function nivelNumeroJuego(numero) {
+        const n = Number(numero);
+        if (n <= 9) return "Fácil";
+        if (n <= 15) return "Medio";
+        return "Difícil";
+    }
+
+    function coincideNivelJuego(valorNivel, palabra, nivelId) {
+        return normalizarNivelPedagogico(valorNivel, palabra) === nivelObjetivoJuego(nivelId);
+    }
+
+    function bancoPalabrasCompletar(nivelId) {
+        const nivelSeleccionado = nivelId || estado.completar.nivelId || "facil";
+
         const deLetras = (estado.datos.ejemplos || [])
-            .filter((e) => e.palabra && e.palabra.length >= 3)
-            .map((e) => ({ palabra: e.palabra.toUpperCase(), imagen: e.imagen, numero: null }));
+            .filter((e) => e && e.palabra && e.palabra.length >= 3 && primeraImagenUsable(e.imagen) && coincideNivelJuego(e.nivel, e.palabra, nivelSeleccionado))
+            .map((e) => ({
+                palabra: e.palabra.toUpperCase(),
+                imagen: primeraImagenUsable(e.imagen),
+                numero: null,
+                nivel: normalizarNivelPedagogico(e.nivel, e.palabra)
+            }));
 
-        const deNumeros = Object.keys(CONFIG.PALABRA_NUMERO).map((n) => ({
-            palabra: CONFIG.PALABRA_NUMERO[n],
-            imagen: null,
-            numero: n
-        }));
+        const deNumeros = Object.keys(CONFIG.PALABRA_NUMERO)
+            .filter((n) => nivelNumeroJuego(n) === nivelObjetivoJuego(nivelSeleccionado))
+            .map((n) => ({
+                palabra: CONFIG.PALABRA_NUMERO[n],
+                imagen: null,
+                numero: n,
+                nivel: nivelNumeroJuego(n)
+            }));
 
-        // Vocabulario (Hoja 2, mismo banco que usa el Quiz) suma al pool
-        // toda palabra que ya tenga una imagen de apoyo REAL cargada (no
-        // la descripción en texto que se usa como prompt para generarla
-        // más adelante). Hoy la Hoja 2 normalmente no trae columna
-        // "imagen" (solo video), así que por ahora esto casi no suma
-        // palabras; en cuanto la Hoja 2 tenga imagen cargada empiezan a
-        // aparecer también sin tocar este archivo.
-        // A propósito NO se usa el Diccionario (Hoja 1, window.App.datos):
-        // Completar solo debe salir de Alfabetización (abecedario/números)
-        // y Vocabulario (Hoja 2).
+        // Vocabulario (Hoja 2) se filtra por su propio nivel y por imagen
+        // real. A propósito NO se usa el Diccionario (Hoja 1).
         const bancoHoja2 = (window.QuizV2 && typeof QuizV2.obtenerBanco === "function") ? QuizV2.obtenerBanco() : [];
-        const deVocabulario = obtenerPalabrasConImagenDe(bancoHoja2);
+        const deVocabulario = obtenerPalabrasConImagenDe(bancoHoja2, nivelSeleccionado);
 
-        // Una misma palabra puede repetirse entre fuentes (p.ej. estar en
-        // los ejemplos del abecedario Y en Vocabulario); se prioriza el
-        // primer origen en el que aparece (abecedario > números >
-        // Vocabulario) y se descarta el resto para no repetirla dos veces
-        // en una misma ronda.
         const combinado = deLetras.concat(deNumeros, deVocabulario);
         const vistas = new Set();
         return combinado.filter((p) => {
@@ -1177,12 +1217,17 @@ const AlfabetizacionV2 = (function () {
     // mismo criterio que obtenerImagenesDeApoyo() en js/script.js). Se
     // filtran también por longitud para que la palabra sea jugable: ni
     // muy corta, ni una frase tan larga que no entre bien en pantalla.
-    function obtenerPalabrasConImagenDe(lista) {
+    function obtenerPalabrasConImagenDe(lista, nivelId) {
         if (!Array.isArray(lista)) return [];
+        const nivelSeleccionado = nivelId || "facil";
         return lista
-            .map((p) => ({ palabra: p.palabra, imagenUrl: primeraImagenUsable(p.imagen) }))
-            .filter((p) => p.palabra && p.imagenUrl && p.palabra.trim().length >= 3 && p.palabra.trim().length <= 22)
-            .map((p) => ({ palabra: p.palabra.toUpperCase(), imagen: p.imagenUrl, numero: null }));
+            .map((p) => ({
+                palabra: p && p.palabra,
+                imagenUrl: primeraImagenUsable(p && p.imagen),
+                nivel: normalizarNivelPedagogico(p && p.nivel, p && p.palabra)
+            }))
+            .filter((p) => p.palabra && p.imagenUrl && p.palabra.trim().length >= 3 && p.palabra.trim().length <= 22 && p.nivel === nivelObjetivoJuego(nivelSeleccionado))
+            .map((p) => ({ palabra: p.palabra.toUpperCase(), imagen: p.imagenUrl, numero: null, nivel: p.nivel }));
     }
 
     // Distingue una URL/ruta de imagen real de una descripción en texto
@@ -1202,6 +1247,11 @@ const AlfabetizacionV2 = (function () {
         return CONFIG.NIVELES_COMPLETAR.find((n) => n.id === estado.completar.nivelId) || CONFIG.NIVELES_COMPLETAR[0];
     }
 
+    function actualizarTotalCompletarDisponible() {
+        const totalEl = el("alfabCompletarTotalDisponibles");
+        if (totalEl) totalEl.textContent = bancoPalabrasCompletar(estado.completar.nivelId).length + " palabras disponibles en este nivel";
+    }
+
     function renderCompletarIntro() {
         detenerTimerCompletar();
         if (!estado.completar.nivelId) estado.completar.nivelId = CONFIG.NIVELES_COMPLETAR[0].id;
@@ -1219,6 +1269,7 @@ const AlfabetizacionV2 = (function () {
                 btn.innerHTML = '<span class="icono">' + nivel.icono + "</span>" + nivel.nombre;
                 btn.addEventListener("click", () => {
                     estado.completar.nivelId = nivel.id;
+                    actualizarTotalCompletarDisponible();
                     cont.querySelectorAll(".quiz-selector-btn").forEach((b) => b.classList.remove("activo"));
                     btn.classList.add("activo");
                 });
@@ -1228,8 +1279,7 @@ const AlfabetizacionV2 = (function () {
             });
         }
 
-        const totalEl = el("alfabCompletarTotalDisponibles");
-        if (totalEl) totalEl.textContent = bancoPalabrasCompletar().length + " palabras disponibles (abecedario + números + vocabulario)";
+        actualizarTotalCompletarDisponible();
 
         const intro = el("alfabCompletarIntro");
         const activo = el("alfabCompletarActivo");
@@ -1241,7 +1291,7 @@ const AlfabetizacionV2 = (function () {
         if(window.HistorialJuegosLSPedia && typeof HistorialJuegosLSPedia.registrarJuego === "function"){
             HistorialJuegosLSPedia.registrarJuego("completar","partida",{nivel:estado.completar.nivelId || ""});
         }
-        const banco = barajar(bancoPalabrasCompletar());
+        const banco = barajar(bancoPalabrasCompletar(estado.completar.nivelId));
         const cantidad = Math.min(CONFIG.PREGUNTAS_POR_RONDA_COMPLETAR, banco.length);
 
         estado.completar.preguntas = banco.slice(0, cantidad);
@@ -1697,7 +1747,9 @@ const AlfabetizacionV2 = (function () {
             estado.completar.revision.forEach((r) => {
                 const item = document.createElement("div");
                 item.className = "quiz-revision-item " + (r.ok ? "ok" : "fail");
-                item.innerHTML = "<span>" + (r.ok ? "✔" : "✘") + " " + r.texto + "</span>";
+                const span = document.createElement("span");
+                span.textContent = (r.ok ? "✔ " : "✘ ") + String(r.texto || "");
+                item.appendChild(span);
                 lista.appendChild(item);
             });
         }
@@ -1727,19 +1779,29 @@ const AlfabetizacionV2 = (function () {
     // ya tengan imagen de apoyo real. A propósito NO se usa el
     // Diccionario (Hoja 1, window.App.datos): Unir solo debe salir de
     // Alfabetización y Vocabulario, igual que Completar.
-    function bancoParesUnir() {
-        const deLetras = (estado.datos.ejemplos || [])
-            .filter((e) => e.palabra && e.imagen)
-            .map((e) => ({ palabra: e.palabra.toUpperCase(), imagen: e.imagen, numero: null }));
+    function bancoParesUnir(nivelId) {
+        const nivelSeleccionado = nivelId || estado.unir.nivelId || "facil";
 
-        const deNumeros = Object.keys(CONFIG.PALABRA_NUMERO).map((n) => ({
-            palabra: CONFIG.PALABRA_NUMERO[n],
-            imagen: null,
-            numero: n
-        }));
+        const deLetras = (estado.datos.ejemplos || [])
+            .filter((e) => e && e.palabra && primeraImagenUsable(e.imagen) && coincideNivelJuego(e.nivel, e.palabra, nivelSeleccionado))
+            .map((e) => ({
+                palabra: e.palabra.toUpperCase(),
+                imagen: primeraImagenUsable(e.imagen),
+                numero: null,
+                nivel: normalizarNivelPedagogico(e.nivel, e.palabra)
+            }));
+
+        const deNumeros = Object.keys(CONFIG.PALABRA_NUMERO)
+            .filter((n) => nivelNumeroJuego(n) === nivelObjetivoJuego(nivelSeleccionado))
+            .map((n) => ({
+                palabra: CONFIG.PALABRA_NUMERO[n],
+                imagen: null,
+                numero: n,
+                nivel: nivelNumeroJuego(n)
+            }));
 
         const bancoHoja2 = (window.QuizV2 && typeof QuizV2.obtenerBanco === "function") ? QuizV2.obtenerBanco() : [];
-        const deVocabulario = obtenerPalabrasConImagenDe(bancoHoja2);
+        const deVocabulario = obtenerPalabrasConImagenDe(bancoHoja2, nivelSeleccionado);
 
         const combinado = deLetras.concat(deNumeros, deVocabulario);
         const vistas = new Set();
@@ -1751,8 +1813,13 @@ const AlfabetizacionV2 = (function () {
         });
     }
 
-    function nivelUnirActual() {
+    function nivelUnirActual() {    function nivelUnirActual() {
         return CONFIG.NIVELES_UNIR.find((n) => n.id === estado.unir.nivelId) || CONFIG.NIVELES_UNIR[0];
+    }
+
+    function actualizarTotalUnirDisponible() {
+        const totalEl = el("alfabUnirTotalDisponibles");
+        if (totalEl) totalEl.textContent = bancoParesUnir(estado.unir.nivelId).length + " parejas disponibles en este nivel";
     }
 
     function renderUnirIntro() {
@@ -1771,6 +1838,7 @@ const AlfabetizacionV2 = (function () {
                 btn.innerHTML = '<span class="icono">' + nivel.icono + "</span>" + nivel.nombre;
                 btn.addEventListener("click", () => {
                     estado.unir.nivelId = nivel.id;
+                    actualizarTotalUnirDisponible();
                     cont.querySelectorAll(".quiz-selector-btn").forEach((b) => b.classList.remove("activo"));
                     btn.classList.add("activo");
                 });
@@ -1780,8 +1848,7 @@ const AlfabetizacionV2 = (function () {
             });
         }
 
-        const totalEl = el("alfabUnirTotalDisponibles");
-        if (totalEl) totalEl.textContent = bancoParesUnir().length + " parejas disponibles (abecedario + números + vocabulario)";
+        actualizarTotalUnirDisponible();
 
         const intro = el("alfabUnirIntro");
         const activo = el("alfabUnirActivo");
@@ -1810,7 +1877,7 @@ const AlfabetizacionV2 = (function () {
     // (para que la imagen N no quede siempre frente a la palabra N).
     function prepararRondaUnir() {
         const nivel = nivelUnirActual();
-        const banco = barajar(bancoParesUnir());
+        const banco = barajar(bancoParesUnir(estado.unir.nivelId));
         const cantidad = Math.min(nivel.pares, banco.length);
 
         estado.unir.pares = banco.slice(0, cantidad);
@@ -2194,7 +2261,9 @@ const AlfabetizacionV2 = (function () {
             estado.unir.revision.forEach((r) => {
                 const item = document.createElement("div");
                 item.className = "quiz-revision-item " + (r.ok ? "ok" : "fail");
-                item.innerHTML = "<span>" + (r.ok ? "✔" : "✘") + " " + r.texto + "</span>";
+                const span = document.createElement("span");
+                span.textContent = (r.ok ? "✔ " : "✘ ") + String(r.texto || "");
+                item.appendChild(span);
                 lista.appendChild(item);
             });
         }
