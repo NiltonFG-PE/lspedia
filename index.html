@@ -72,10 +72,15 @@
          valores por una descripción más específica basada en la definición. -->
     <script>
         (function () {
-            const palabra = (new URLSearchParams(window.location.search).get("p") || "").trim();
+            const params = new URLSearchParams(window.location.search);
+            const palabra = (params.get("p") || "").trim();
             if (!palabra) return;
+            const fuente = (params.get("fuente") || "").trim().toLowerCase();
+            const esVocabulario = fuente === "vocabulario";
 
-            const url = "https://lspedia.site/?p=" + encodeURIComponent(palabra);
+            const url = esVocabulario
+                ? "https://lspedia.site/?vista=vocabulario&p=" + encodeURIComponent(palabra) + "&fuente=vocabulario"
+                : "https://lspedia.site/?p=" + encodeURIComponent(palabra);
             const titulo = palabra + ": significado con apoyo en LSP | LSPedia";
             const descripcion = "Consulta el significado de " + palabra + " con apoyo visual y videos en Lengua de Señas Peruana (LSP) en LSPedia.";
 
@@ -4611,7 +4616,7 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
 
             <div class="col-lg-6">
                 <div class="text-center text-lg-start header-minimal mb-3" id="bloqueTituloPrincipal">
-                    <h1 class="tracking-tight" id="tituloPrincipal"><span class="titulo-acento">Diccionario</span> de Lengua de Señas Peruana (LSP) y Español</h1>
+                    <h1 class="tracking-tight" id="tituloPrincipal"><span class="titulo-acento">Diccionario visual</span> de español con apoyo en Lengua de Señas Peruana (LSP)</h1>
                     <span class="titulo-raya" aria-hidden="true"></span>
                     <!-- Aviso de misión del Diccionario: explica de forma breve que LSPedia es un diccionario visual de español con apoyo en LSP y aclara que no es un curso ni enseña LSP. -->
                     <div class="aviso-mision" id="subtituloPrincipal">
