@@ -5,7 +5,9 @@ Regla vigente:
 - Diccionario requiere palabra + definición + categoría + imagen real.
 - Vocabulario requiere palabra + categoría + imagen real.
 - El video es opcional para publicación pública; Lo nuevo sí exige video.
-- El banco interno del Quiz puede seguir exigiendo video; no se valida aquí.
+- El banco interno del Quiz puede seguir exigiendo video, pero nunca define
+  qué contenido es público ni sus estadísticas.
+- security.js protege entorno/anti-clon; no decide publicación ni estadísticas.
 """
 from pathlib import Path
 import json
@@ -80,13 +82,20 @@ def resumen(nombre, lista, requiere_definicion=False):
 def validar_integracion_frontend():
     modulo = ROOT / "js" / "vocabulario-publico.js"
     cargador = ROOT / "js" / "mejoras-producto.js"
+    security = ROOT / "js" / "security.js"
+    script = ROOT / "js" / "script.js"
+    lo_nuevo = ROOT / "js" / "lo-nuevo.js"
     sw = ROOT / "sw.js"
-    for path in (modulo, cargador, sw):
+
+    for path in (modulo, cargador, security, script, lo_nuevo, sw):
         if not path.exists():
             raise AssertionError(f"Falta archivo requerido: {path.relative_to(ROOT)}")
 
     texto_modulo = modulo.read_text(encoding="utf-8")
     texto_cargador = cargador.read_text(encoding="utf-8")
+    texto_security = security.read_text(encoding="utf-8")
+    texto_script = script.read_text(encoding="utf-8")
+    texto_lo_nuevo = lo_nuevo.read_text(encoding="utf-8")
     texto_sw = sw.read_text(encoding="utf-8")
 
     requeridos_modulo = [
@@ -98,10 +107,35 @@ def validar_integracion_frontend():
     faltantes = [x for x in requeridos_modulo if x not in texto_modulo]
     if faltantes:
         raise AssertionError("vocabulario-publico.js incompleto: " + ", ".join(faltantes))
+
     if "js/vocabulario-publico.js" not in texto_cargador:
         raise AssertionError("mejoras-producto.js no carga vocabulario-publico.js")
     if '"js/vocabulario-publico.js"' not in texto_sw:
         raise AssertionError("sw.js no cachea vocabulario-publico.js")
+
+    # La fuente de verdad del Diccionario debe vivir en script.js.
+    if "function obtenerDatosDiccionarioPublicables(data)" not in texto_script:
+        raise AssertionError("script.js perdió el filtro canónico del Diccionario")
+    if "String(p.definicion || '').trim()" not in texto_script:
+        raise AssertionError("el Diccionario dejó de exigir definición")
+
+    # security.js no debe volver a mezclar seguridad con reglas editoriales.
+    prohibidos_security = [
+        "QuizV2",
+        "LSPediaPublicacionDiccionario",
+        "activarReglaPublicacionDiccionarioPorImagen",
+        "actualizarEstadisticasPublicadas",
+        "obtenerDatosDiccionarioPublicables =",
+    ]
+    encontrados = [x for x in prohibidos_security if x in texto_security]
+    if encontrados:
+        raise AssertionError(
+            "security.js volvió a mezclar publicación/estadísticas: " + ", ".join(encontrados)
+        )
+
+    # Lo nuevo es deliberadamente más estricto: solo contenido con video.
+    if "tieneVideoValido" not in texto_lo_nuevo or ".filter(x => x && x.palabra && tieneVideoValido(x.palabra))" not in texto_lo_nuevo:
+        raise AssertionError("Lo nuevo dejó de exigir video válido")
 
 
 def main():
@@ -127,6 +161,7 @@ def main():
                 f"(Diccionario={len(dup_dic)}, Vocabulario={len(dup_voc)})."
             )
         print("Regla pública validada: Diccionario = definición + imagen; video opcional. Lo nuevo mantiene video obligatorio.")
+        print("Separación validada: security ≠ publicación ≠ Quiz.")
         return 0
     except Exception as exc:
         print(f"ERROR publicación pública: {exc}", file=sys.stderr)
