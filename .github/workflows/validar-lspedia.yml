@@ -12,6 +12,7 @@ on:
       - "apps-script/**"
       - "index.html"
       - "lab-senas-ia.html"
+      - "lab-juego-educativo.html"
       - "CNAME"
       - "sw.js"
       - "scripts/validar_lspedia.py"
@@ -22,6 +23,7 @@ on:
       - "scripts/normalizar_media_alfabetizacion.py"
       - "scripts/normalizar_categorias.py"
       - "scripts/validar_senas_ia.py"
+      - "scripts/validar_lab_juego.py"
       - "scripts/verificar_archivos_huerfanos.py"
       - "scripts/validar_publicacion_publica.py"
       - "scripts/auditar_duplicados.py"
@@ -38,6 +40,7 @@ on:
       - "apps-script/**"
       - "index.html"
       - "lab-senas-ia.html"
+      - "lab-juego-educativo.html"
       - "CNAME"
       - "sw.js"
       - "scripts/validar_lspedia.py"
@@ -48,6 +51,7 @@ on:
       - "scripts/normalizar_media_alfabetizacion.py"
       - "scripts/normalizar_categorias.py"
       - "scripts/validar_senas_ia.py"
+      - "scripts/validar_lab_juego.py"
       - "scripts/verificar_archivos_huerfanos.py"
       - "scripts/validar_publicacion_publica.py"
       - "scripts/auditar_duplicados.py"
@@ -112,6 +116,8 @@ jobs:
           echo "JSON válidos."
       - name: Validar dataset de señas IA
         run: python scripts/validar_senas_ia.py
+      - name: Validar laboratorio de videojuego
+        run: python scripts/validar_lab_juego.py
       - name: Validar publicación y estadísticas públicas
         run: python scripts/validar_publicacion_publica.py
       - name: Validar presupuesto del frontend
