@@ -11,6 +11,7 @@ on:
       - "admin/**"
       - "apps-script/**"
       - "index.html"
+      - "lab-senas-ia.html"
       - "CNAME"
       - "sw.js"
       - "scripts/validar_lspedia.py"
@@ -31,6 +32,7 @@ on:
       - "admin/**"
       - "apps-script/**"
       - "index.html"
+      - "lab-senas-ia.html"
       - "CNAME"
       - "sw.js"
       - "scripts/validar_lspedia.py"
@@ -77,9 +79,15 @@ jobs:
         run: |
           set -e
           while IFS= read -r -d '' archivo; do
+            if [ "$archivo" = "js/lab-senas-ia.js" ]; then
+              continue
+            fi
             echo "Revisando $archivo"
             node --check "$archivo"
           done < <(find js -maxdepth 1 -type f -name '*.js' -print0 | sort -z)
+          echo "Revisando js/lab-senas-ia.js como módulo ES"
+          cp js/lab-senas-ia.js /tmp/lab-senas-ia.mjs
+          node --check /tmp/lab-senas-ia.mjs
           node --check sw.js
       - name: Validar JSON principales
         shell: bash
