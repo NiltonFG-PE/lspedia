@@ -1,3 +1,50 @@
+/* LSPedia Admin — seguridad del transporte JSONP.
+   El panel usa JSONP porque Apps Script no expone CORS tradicional para este
+   flujo. Antes de que el panel base pueda insertar el <script> remoto,
+   bloqueamos de forma síncrona cualquier endpoint administrativo que no sea
+   un despliegue /exec oficial de Google Apps Script. */
+(function protegerJsonpAdmin(){
+  'use strict';
+  if(window.__lspediaAdminJsonpProtegido)return;
+
+  const MODOS_ADMIN=new Set(['admin_busquedas','admin_analytics']);
+  const HOST_PERMITIDO='script.google.com';
+  const RUTA_EXEC=/^\/macros\/s\/[^/]+\/exec\/?$/;
+
+  function esJsonpAdminSeguro(nodo){
+    if(!nodo||nodo.nodeType!==1||String(nodo.tagName).toUpperCase()!=='SCRIPT')return true;
+    const src=String(nodo.getAttribute('src')||nodo.src||'').trim();
+    if(!src)return true;
+    let url;
+    try{url=new URL(src,location.href)}catch(_e){return false;}
+    const modo=url.searchParams.get('modo')||'';
+    if(!MODOS_ADMIN.has(modo))return true;
+    return url.protocol==='https:'&&url.hostname===HOST_PERMITIDO&&RUTA_EXEC.test(url.pathname);
+  }
+
+  function validarNodo(nodo){
+    if(esJsonpAdminSeguro(nodo))return;
+    console.error('[LSPedia Admin] Se bloqueó un endpoint JSONP no autorizado.');
+    throw new TypeError('Por seguridad, el panel solo acepta una URL /exec oficial de Google Apps Script.');
+  }
+
+  const appendOriginal=Node.prototype.appendChild;
+  Node.prototype.appendChild=function(nodo){
+    validarNodo(nodo);
+    return appendOriginal.call(this,nodo);
+  };
+
+  const insertOriginal=Node.prototype.insertBefore;
+  Node.prototype.insertBefore=function(nodo,referencia){
+    validarNodo(nodo);
+    return insertOriginal.call(this,nodo,referencia);
+  };
+
+  Object.defineProperty(window,'__lspediaAdminJsonpProtegido',{
+    value:true,writable:false,configurable:false,enumerable:false
+  });
+})();
+
 /* LSPedia Admin — diagnóstico educativo de búsquedas sin resultado.
    No corrige ni reescribe lo que el usuario buscó. Clasifica la consulta para
    ayudar al administrador a decidir si ya existe, es una forma gramatical,
@@ -190,7 +237,7 @@
   function cargar(){
     if(document.querySelector('script[data-lspedia-historial-busquedas]'))return;
     const s=document.createElement('script');
-    s.src='busquedas-historial.js?v=20260913-1';
+    s.src='busquedas-historial.js?v=20260914-1';
     s.async=false;
     s.dataset.lspediaHistorialBusquedas='1';
     s.onload=function(){
