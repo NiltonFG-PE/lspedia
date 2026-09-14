@@ -4,7 +4,8 @@
 
   if (window.LSPediaCore && window.LSPediaCore.version) return;
 
-  const VERSION = '2026.09.14';
+  const VERSION = '2026.09.14-2';
+  const URL_OFICIAL = 'https://lspedia.site/';
   const HOSTS_OFICIALES = new Set(['lspedia.site', 'www.lspedia.site']);
   const HOSTS_DESARROLLO = new Set(['localhost', '127.0.0.1', '::1', '[::1]']);
   const host = String(location.hostname || '').toLowerCase();
@@ -84,7 +85,26 @@
       canonical.rel = 'canonical';
       document.head.appendChild(canonical);
     }
-    canonical.href = 'https://lspedia.site/' + (location.search || '');
+    canonical.href = URL_OFICIAL + (location.search || '');
+  }
+
+  function asegurarMetaRobotsNoIndex() {
+    ['robots', 'googlebot'].forEach(function (nombre) {
+      let meta = document.querySelector('meta[name="' + nombre + '"]');
+      if (!meta) {
+        meta = document.createElement('meta');
+        meta.name = nombre;
+        document.head.appendChild(meta);
+      }
+      meta.content = 'noindex,nofollow,noarchive';
+    });
+  }
+
+  function reforzarMetadatosOficiales() {
+    const ogUrl = document.querySelector('meta[property="og:url"]');
+    if (ogUrl) ogUrl.setAttribute('content', URL_OFICIAL + (location.search || ''));
+    const sitio = document.querySelector('meta[property="og:site_name"]');
+    if (sitio) sitio.setAttribute('content', 'LSPedia');
   }
 
   function bloquearInstalacionClon() {
@@ -102,11 +122,12 @@
     aviso.id = 'lspediaAvisoNoOficial';
     aviso.className = 'lspedia-aviso-no-oficial';
     aviso.setAttribute('role', 'status');
+    aviso.setAttribute('aria-live', 'polite');
 
     const texto = document.createElement('span');
     texto.textContent = 'Esta es una copia no oficial de LSPedia.';
     const enlace = document.createElement('a');
-    enlace.href = 'https://lspedia.site/';
+    enlace.href = URL_OFICIAL;
     enlace.rel = 'noopener noreferrer';
     enlace.textContent = 'Abrir sitio oficial';
     aviso.append(texto, enlace);
@@ -167,9 +188,12 @@
 
   function activarIdentidad() {
     document.documentElement.dataset.lspediaOficial = esOficial ? '1' : '0';
+    document.documentElement.dataset.lspediaOrigen = esOficial ? 'oficial' : (esDesarrollo ? 'desarrollo' : 'copia');
     asegurarCanonicalOficial();
+    reforzarMetadatosOficiales();
     vigilarUrlsPeligrosas();
     if (!esOficial && !esDesarrollo) {
+      asegurarMetaRobotsNoIndex();
       bloquearInstalacionClon();
       mostrarAvisoNoOficial();
     }
@@ -177,6 +201,7 @@
 
   const api = Object.freeze({
     version: VERSION,
+    urlOficial: URL_OFICIAL,
     esOficial: esOficial,
     esDesarrollo: esDesarrollo,
     escaparHtml: escaparHtml,
