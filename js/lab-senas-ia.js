@@ -52,6 +52,7 @@ function estado(texto, tipo = 'info') {
 function etiquetaValida(valor) {
   return String(valor || '')
     .replace(/[\u0000-\u001f\u007f]/g, ' ')
+    .replace(/[<>]/g, '')
     .replace(/\s+/g, ' ')
     .trim()
     .slice(0, 60);
@@ -543,6 +544,19 @@ function seleccionarMuestrasEvaluacion(todas) {
   return salida;
 }
 
+function mostrarResultadoEvaluacion(precision, nivel, muestraNota, detalle) {
+  if (!ui.calidad) return;
+  ui.calidad.textContent = '';
+  const fuerte = document.createElement('strong');
+  fuerte.textContent = `Precisión experimental: ${Math.round(precision * 100)}%`;
+  ui.calidad.appendChild(fuerte);
+  ui.calidad.appendChild(document.createTextNode(` · Resultado ${nivel}.${muestraNota}`));
+  if (detalle) {
+    ui.calidad.appendChild(document.createElement('br'));
+    ui.calidad.appendChild(document.createTextNode('Conceptos a reforzar: ' + detalle));
+  }
+}
+
 async function evaluarDataset() {
   if (evaluando) return;
   const bancoCompleto = todasLasMuestras();
@@ -581,8 +595,10 @@ async function evaluarDataset() {
       .slice(0,4);
     const nivel = precision >= 0.9 ? 'muy prometedor' : precision >= 0.75 ? 'prometedor' : precision >= 0.55 ? 'todavía inestable' : 'insuficiente por ahora';
     const detalle = peores.map(x => `${x.etiqueta} ${Math.round(x.precision * 100)}%`).join(' · ');
-    const muestraNota = bancoCompleto.length > banco.length ? ` Se evaluó una muestra equilibrada de ${banco.length}/${bancoCompleto.length} para no bloquear el celular.` : '';
-    if (ui.calidad) ui.calidad.innerHTML = `<strong>Precisión experimental: ${Math.round(precision * 100)}%</strong> · Resultado ${nivel}.${muestraNota}${detalle ? '<br>Conceptos a reforzar: ' + detalle : ''}`;
+    const muestraNota = bancoCompleto.length > banco.length
+      ? ` Se evaluó una muestra equilibrada de ${banco.length}/${bancoCompleto.length} para no bloquear el celular.`
+      : '';
+    mostrarResultadoEvaluacion(precision, nivel, muestraNota, detalle);
   } finally {
     evaluando = false;
     if (ui.btnEvaluar) ui.btnEvaluar.disabled = false;
