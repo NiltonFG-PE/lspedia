@@ -1,0 +1,46 @@
+name: Temporal reubicar controles señas IA
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - 'scripts/tmp_reubicar_controles_senas.py'
+      - '.github/workflows/tmp-reubicar-controles-senas.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  aplicar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+      - name: Aplicar cambio
+        run: python scripts/tmp_reubicar_controles_senas.py
+      - name: Validar HTML y controles únicos
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('lab-senas-ia.html').read_text(encoding='utf-8')
+          assert 'acciones acciones-camara' in s
+          assert 'position:sticky' in s
+          for x in ['btnCamaraSenas','btnDetenerSenas','btnCambiarCamaraSenas','btnReconocerSenas']:
+              assert s.count(f'id="{x}"') == 1, (x, s.count(f'id="{x}"'))
+          assert s.index('acciones acciones-camara') < s.index('prediccion-panel') < s.index('class="camara"')
+          print('OK: barra arriba, sticky y IDs únicos')
+          PY
+          git diff --check
+      - name: Guardar cambio
+        run: |
+          if git diff --quiet; then
+            echo 'Sin cambios'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add lab-senas-ia.html
+          git commit -m 'ui: mantener controles de señas IA siempre visibles'
+          git push origin develop
