@@ -2,10 +2,14 @@ import { HandLandmarker, FilesetResolver } from 'https://cdn.jsdelivr.net/npm/@m
 
 const MODEL_URL = 'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/latest/hand_landmarker.task';
 const WASM_URL = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.0.1/wasm';
-const STORAGE_KEY = 'lspedia_senas_ia_muestras_v1';
+const DATASET_CENTRAL_URL = 'data/senas-ia-dataset.json?v=20260914-2';
+const STORAGE_KEY = 'lspedia_senas_ia_muestras_v2';
+const STORAGE_KEY_ANTERIOR = 'lspedia_senas_ia_muestras_v1';
 const FRAMES_MUESTRA = 24;
+const DIMENSION_VECTOR = 127;
 const INTERVALO_MS = 70;
-const MAX_MUESTRAS = 300;
+const MAX_MUESTRAS_LOCALES = 300;
+const MAX_EVALUACION = 120;
 const CONEXIONES = [
   [0,1],[1,2],[2,3],[3,4],
   [0,5],[5,6],[6,7],[7,8],
@@ -19,10 +23,12 @@ const ui = {
   video: $('videoSenas'), canvas: $('canvasSenas'), estado: $('estadoSenas'),
   btnCamara: $('btnCamaraSenas'), btnDetener: $('btnDetenerSenas'),
   btnMuestra: $('btnGuardarMuestraSenas'), btnReconocer: $('btnReconocerSenas'),
-  btnExportar: $('btnExportarSenas'), btnBorrarTodo: $('btnBorrarMuestrasSenas'),
-  etiqueta: $('etiquetaSena'), progreso: $('progresoMuestraSenas'),
-  resultados: $('resultadosSenas'), lista: $('listaMuestrasSenas'),
-  contador: $('contadorMuestrasSenas')
+  btnExportar: $('btnExportarSenas'), btnImportar: $('btnImportarSenas'),
+  btnEvaluar: $('btnEvaluarSenas'), btnBorrarTodo: $('btnBorrarMuestrasSenas'),
+  archivoImportar: $('archivoImportarSenas'), etiqueta: $('etiquetaSena'),
+  progreso: $('progresoMuestraSenas'), resultados: $('resultadosSenas'),
+  lista: $('listaMuestrasSenas'), contador: $('contadorMuestrasSenas'),
+  central: $('estadoDatasetCentralSenas'), calidad: $('calidadDatasetSenas')
 };
 
 let detector = null;
@@ -33,7 +39,9 @@ let ultimoTiempoVideo = -1;
 let rafId = 0;
 let captura = null;
 let ventanaActual = [];
-let muestras = cargarMuestras();
+let muestrasLocales = cargarMuestrasLocales();
+let muestrasCentrales = [];
+let evaluando = false;
 
 function estado(texto, tipo = 'info') {
   if (!ui.estado) return;
@@ -42,27 +50,96 @@ function estado(texto, tipo = 'info') {
 }
 
 function etiquetaValida(valor) {
-  return String(valor || '').replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 60);
+  return String(valor || '')
+    .replace(/[\u0000-\u001f\u007f]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 60);
 }
 
-function cargarMuestras() {
-  try {
-    const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-    if (!Array.isArray(data)) return [];
-    return data.filter(x => x && typeof x.etiqueta === 'string' && Array.isArray(x.frames));
-  } catch (_e) {
-    return [];
+function idSeguro(valor) {
+  return String(valor || '').replace(/[^A-Za-z0-9._:-]/g, '').slice(0, 120);
+}
+
+function vectorValido(vector) {
+  return Array.isArray(vector) &&
+    vector.length === DIMENSION_VECTOR &&
+    vector.every(n => Number.isFinite(Number(n)) && Math.abs(Number(n)) < 1000);
+}
+
+function muestraValida(muestra) {
+  if (!muestra || !etiquetaValida(muestra.etiqueta) || !Array.isArray(muestra.frames)) return false;
+  if (muestra.frames.length < 8 || muestra.frames.length > 80) return false;
+  return muestra.frames.every(vectorValido);
+}
+
+function normalizarMuestra(muestra, origen = 'local') {
+  if (!muestraValida(muestra)) return null;
+  return {
+    id: idSeguro(muestra.id) || (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(36).slice(2)),
+    etiqueta: etiquetaValida(muestra.etiqueta),
+    creada: String(muestra.creada || new Date().toISOString()).slice(0, 40),
+    origen,
+    version: 2,
+    frames: muestra.frames.map(frame => frame.map(Number))
+  };
+}
+
+function cargarMuestrasLocales() {
+  for (const key of [STORAGE_KEY, STORAGE_KEY_ANTERIOR]) {
+    try {
+      const data = JSON.parse(localStorage.getItem(key) || '[]');
+      if (!Array.isArray(data)) continue;
+      const limpias = data.map(x => normalizarMuestra(x, 'local')).filter(Boolean);
+      if (limpias.length) {
+        if (key !== STORAGE_KEY) {
+          try { localStorage.setItem(STORAGE_KEY, JSON.stringify(limpias)); } catch (_e) {}
+        }
+        return limpias.slice(-MAX_MUESTRAS_LOCALES);
+      }
+    } catch (_e) {}
   }
+  return [];
 }
 
 function persistirMuestras() {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(muestras.slice(-MAX_MUESTRAS)));
+    muestrasLocales = muestrasLocales.slice(-MAX_MUESTRAS_LOCALES);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(muestrasLocales));
     return true;
   } catch (_e) {
     estado('No se pudieron guardar más muestras en este dispositivo.', 'error');
     return false;
   }
+}
+
+function todasLasMuestras() {
+  const mapa = new Map();
+  [...muestrasCentrales, ...muestrasLocales].forEach(m => {
+    if (m && m.id) mapa.set(m.id, m);
+  });
+  return [...mapa.values()];
+}
+
+async function cargarDatasetCentral() {
+  if (ui.central) ui.central.textContent = 'Dataset central: comprobando…';
+  try {
+    const respuesta = await fetch(DATASET_CENTRAL_URL, { cache: 'no-store' });
+    if (!respuesta.ok) throw new Error('HTTP ' + respuesta.status);
+    const data = await respuesta.json();
+    const lista = Array.isArray(data && data.muestras) ? data.muestras : [];
+    muestrasCentrales = lista.map(x => normalizarMuestra(x, 'central')).filter(Boolean);
+    if (ui.central) {
+      ui.central.textContent = muestrasCentrales.length
+        ? `Dataset central: ${muestrasCentrales.length} muestras revisadas.`
+        : 'Dataset central preparado; todavía no contiene muestras revisadas.';
+    }
+  } catch (error) {
+    console.warn('[LSPedia señas IA] Dataset central no disponible:', error);
+    muestrasCentrales = [];
+    if (ui.central) ui.central.textContent = 'Dataset central no disponible; se usarán las muestras locales.';
+  }
+  renderMuestras();
 }
 
 async function prepararDetector() {
@@ -166,10 +243,11 @@ function dibujar(resultado) {
 }
 
 function vectorNormalizado(resultado) {
-  const manos = Array.isArray(resultado && resultado.landmarks) ? resultado.landmarks.filter(x => Array.isArray(x) && x.length >= 21) : [];
+  const manos = Array.isArray(resultado && resultado.landmarks)
+    ? resultado.landmarks.filter(x => Array.isArray(x) && x.length >= 21)
+    : [];
   if (!manos.length) return null;
 
-  // Orden espacial estable para no depender del orden que devuelve el detector.
   manos.sort((a,b) => (a[0]?.x || 0) - (b[0]?.x || 0));
   const usadas = manos.slice(0, 2);
   const munecas = usadas.map(m => m[0]);
@@ -202,8 +280,6 @@ function distanciaVector(a, b) {
   return Math.sqrt(suma / a.length);
 }
 
-// Dynamic Time Warping simple: permite que una misma seña se haga un poco
-// más rápido o más lento sin exigir que cada fotograma coincida exactamente.
 function distanciaSecuencia(a, b) {
   if (!Array.isArray(a) || !Array.isArray(b) || !a.length || !b.length) return 99;
   const n = a.length, m = b.length;
@@ -267,20 +343,35 @@ function iniciarCaptura() {
 
 function finalizarCaptura() {
   if (!captura) return;
-  const nueva = {
-    id: (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(36).slice(2)),
+  const nueva = normalizarMuestra({
+    id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(36).slice(2),
     etiqueta: captura.etiqueta,
     creada: new Date().toISOString(),
     frames: captura.frames.slice(0, FRAMES_MUESTRA)
-  };
-  muestras.push(nueva);
-  if (muestras.length > MAX_MUESTRAS) muestras = muestras.slice(-MAX_MUESTRAS);
+  }, 'local');
   captura = null;
   ui.btnMuestra.disabled = false;
+  if (!nueva) {
+    ui.progreso.textContent = 'La muestra no pasó la validación.';
+    return estado('La muestra quedó incompleta y no se guardó. Inténtalo nuevamente.', 'error');
+  }
+  muestrasLocales.push(nueva);
+  if (muestrasLocales.length > MAX_MUESTRAS_LOCALES) muestrasLocales = muestrasLocales.slice(-MAX_MUESTRAS_LOCALES);
   ui.progreso.textContent = 'Muestra guardada en este dispositivo.';
   persistirMuestras();
   renderMuestras();
   estado(`Muestra de “${nueva.etiqueta}” guardada. Para mejorar el reconocimiento conviene grabar varias muestras del mismo concepto.`, 'ok');
+}
+
+function candidatosPara(secuencia, banco = todasLasMuestras(), excluirId = '') {
+  const porEtiqueta = new Map();
+  banco.forEach(m => {
+    if (!m || m.id === excluirId) return;
+    const d = distanciaSecuencia(secuencia, m.frames);
+    const previa = porEtiqueta.get(m.etiqueta);
+    if (previa == null || d < previa) porEtiqueta.set(m.etiqueta, d);
+  });
+  return [...porEtiqueta.entries()].sort((a,b) => a[1] - b[1]);
 }
 
 function reconocer() {
@@ -288,15 +379,10 @@ function reconocer() {
   if (ventanaActual.length < Math.floor(FRAMES_MUESTRA * 0.7)) {
     return estado('Mantén la seña visible un momento antes de reconocer.', 'error');
   }
-  if (!muestras.length) return estado('Todavía no hay muestras de referencia.', 'error');
+  const banco = todasLasMuestras();
+  if (!banco.length) return estado('Todavía no hay muestras de referencia.', 'error');
 
-  const porEtiqueta = new Map();
-  muestras.forEach(m => {
-    const d = distanciaSecuencia(ventanaActual, m.frames);
-    const previa = porEtiqueta.get(m.etiqueta);
-    if (previa == null || d < previa) porEtiqueta.set(m.etiqueta, d);
-  });
-  const top = [...porEtiqueta.entries()].sort((a,b) => a[1] - b[1]).slice(0,3);
+  const top = candidatosPara(ventanaActual, banco).slice(0,3);
   renderResultados(top);
   estado('Comparación terminada. Los resultados son candidatos, no una traducción definitiva.', 'ok');
 }
@@ -320,38 +406,74 @@ function renderResultados(top) {
   });
 }
 
+function resumenConceptos(lista) {
+  const grupos = new Map();
+  lista.forEach(m => {
+    if (!m) return;
+    const actual = grupos.get(m.etiqueta) || { total: 0, locales: 0, centrales: 0 };
+    actual.total += 1;
+    if (m.origen === 'central') actual.centrales += 1;
+    else actual.locales += 1;
+    grupos.set(m.etiqueta, actual);
+  });
+  return grupos;
+}
+
+function renderCalidadBasica() {
+  if (!ui.calidad) return;
+  const todas = todasLasMuestras();
+  const grupos = resumenConceptos(todas);
+  if (!todas.length) {
+    ui.calidad.textContent = 'Aún no hay muestras. Para una primera prueba útil, intenta reunir al menos 5 muestras por concepto.';
+    return;
+  }
+  const debiles = [...grupos.entries()].filter(([,v]) => v.total < 3).map(([k]) => k);
+  const recomendacion = debiles.length
+    ? ` Conceptos con menos de 3 muestras: ${debiles.slice(0,6).join(', ')}${debiles.length > 6 ? '…' : ''}.`
+    : ' Todos los conceptos tienen al menos 3 muestras.';
+  ui.calidad.textContent = `${todas.length} muestras válidas en ${grupos.size} conceptos.${recomendacion}`;
+}
+
 function renderMuestras() {
   ui.lista.textContent = '';
-  const grupos = new Map();
-  muestras.forEach(m => grupos.set(m.etiqueta, (grupos.get(m.etiqueta) || 0) + 1));
-  ui.contador.textContent = `${muestras.length} muestra${muestras.length === 1 ? '' : 's'} · ${grupos.size} concepto${grupos.size === 1 ? '' : 's'}`;
+  const todas = todasLasMuestras();
+  const grupos = resumenConceptos(todas);
+  ui.contador.textContent = `${todas.length} muestra${todas.length === 1 ? '' : 's'} totales · ${muestrasLocales.length} locales · ${muestrasCentrales.length} centrales · ${grupos.size} concepto${grupos.size === 1 ? '' : 's'}`;
 
-  [...grupos.entries()].sort((a,b) => a[0].localeCompare(b[0], 'es')).forEach(([etiqueta, total]) => {
+  [...grupos.entries()].sort((a,b) => a[0].localeCompare(b[0], 'es')).forEach(([etiqueta, info]) => {
     const fila = document.createElement('div');
     fila.className = 'muestra-sena';
     const texto = document.createElement('span');
-    texto.textContent = `${etiqueta} (${total})`;
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.textContent = 'Eliminar';
-    btn.addEventListener('click', () => {
-      muestras = muestras.filter(m => m.etiqueta !== etiqueta);
-      persistirMuestras();
-      renderMuestras();
-      estado(`Muestras de “${etiqueta}” eliminadas.`);
-    });
-    fila.append(texto, btn);
+    texto.textContent = `${etiqueta} (${info.total})`;
+    fila.appendChild(texto);
+    if (info.locales) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = 'Eliminar local';
+      btn.addEventListener('click', () => {
+        muestrasLocales = muestrasLocales.filter(m => m.etiqueta !== etiqueta);
+        persistirMuestras();
+        renderMuestras();
+        estado(`Muestras locales de “${etiqueta}” eliminadas.`);
+      });
+      fila.appendChild(btn);
+    }
     ui.lista.appendChild(fila);
   });
+  renderCalidadBasica();
 }
 
 function exportarMuestras() {
-  if (!muestras.length) return estado('No hay muestras para exportar.', 'error');
+  if (!muestrasLocales.length) return estado('No hay muestras locales para exportar.', 'error');
+  const conceptos = [...new Set(muestrasLocales.map(m => m.etiqueta))].sort((a,b) => a.localeCompare(b,'es'));
   const data = {
-    formato: 'lspedia-senas-ia-v1',
+    formato: 'lspedia-senas-ia-v2',
+    version: 2,
     exportado: new Date().toISOString(),
     framesPorMuestra: FRAMES_MUESTRA,
-    muestras
+    vectorDimension: DIMENSION_VECTOR,
+    conceptos,
+    muestras: muestrasLocales
   };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -362,14 +484,117 @@ function exportarMuestras() {
   a.click();
   a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 0);
-  estado('Dataset exportado.');
+  estado('Dataset local exportado.', 'ok');
 }
 
-function borrarTodo() {
-  if (!muestras.length) return;
-  if (!confirm('¿Eliminar todas las muestras guardadas en este dispositivo?')) return;
-  muestras = [];
+function abrirImportacion() {
+  if (!ui.archivoImportar) return;
+  ui.archivoImportar.value = '';
+  ui.archivoImportar.click();
+}
+
+async function importarMuestras(evento) {
+  const archivo = evento && evento.target && evento.target.files ? evento.target.files[0] : null;
+  if (!archivo) return;
+  if (archivo.size > 15 * 1024 * 1024) return estado('El archivo JSON es demasiado grande para este laboratorio.', 'error');
+  try {
+    const textoArchivo = await archivo.text();
+    const data = JSON.parse(textoArchivo);
+    const lista = Array.isArray(data) ? data : (Array.isArray(data && data.muestras) ? data.muestras : []);
+    if (!lista.length) return estado('El JSON no contiene muestras reconocibles.', 'error');
+
+    const existentes = new Set(muestrasLocales.map(m => m.id));
+    let agregadas = 0;
+    let rechazadas = 0;
+    lista.forEach(item => {
+      const limpia = normalizarMuestra(item, 'local');
+      if (!limpia) { rechazadas += 1; return; }
+      if (existentes.has(limpia.id)) return;
+      existentes.add(limpia.id);
+      muestrasLocales.push(limpia);
+      agregadas += 1;
+    });
+    if (muestrasLocales.length > MAX_MUESTRAS_LOCALES) muestrasLocales = muestrasLocales.slice(-MAX_MUESTRAS_LOCALES);
+    persistirMuestras();
+    renderMuestras();
+    estado(`Importación terminada: ${agregadas} muestras añadidas${rechazadas ? ` · ${rechazadas} rechazadas por formato` : ''}.`, agregadas ? 'ok' : 'error');
+  } catch (error) {
+    console.error('[LSPedia señas IA] Importación:', error);
+    estado('No se pudo importar el JSON. Revisa que sea un dataset válido de LSPedia.', 'error');
+  }
+}
+
+function seleccionarMuestrasEvaluacion(todas) {
+  if (todas.length <= MAX_EVALUACION) return todas.slice();
+  const porConcepto = new Map();
+  todas.forEach(m => {
+    if (!porConcepto.has(m.etiqueta)) porConcepto.set(m.etiqueta, []);
+    porConcepto.get(m.etiqueta).push(m);
+  });
+  const salida = [];
+  const grupos = [...porConcepto.values()];
+  let indice = 0;
+  while (salida.length < MAX_EVALUACION && grupos.some(g => indice < g.length)) {
+    grupos.forEach(g => {
+      if (salida.length < MAX_EVALUACION && indice < g.length) salida.push(g[indice]);
+    });
+    indice += 1;
+  }
+  return salida;
+}
+
+async function evaluarDataset() {
+  if (evaluando) return;
+  const bancoCompleto = todasLasMuestras();
+  const conceptos = new Set(bancoCompleto.map(m => m.etiqueta));
+  if (bancoCompleto.length < 4 || conceptos.size < 2) {
+    if (ui.calidad) ui.calidad.textContent = 'Para medir precisión necesitas al menos 2 conceptos y varias muestras de cada uno.';
+    return;
+  }
+
+  evaluando = true;
+  if (ui.btnEvaluar) ui.btnEvaluar.disabled = true;
+  const banco = seleccionarMuestrasEvaluacion(bancoCompleto);
+  let aciertos = 0;
+  const porConcepto = new Map();
+
+  try {
+    for (let i = 0; i < banco.length; i++) {
+      const muestra = banco[i];
+      const candidatos = candidatosPara(muestra.frames, banco, muestra.id);
+      const prediccion = candidatos.length ? candidatos[0][0] : '';
+      const ok = prediccion === muestra.etiqueta;
+      if (ok) aciertos += 1;
+      const dato = porConcepto.get(muestra.etiqueta) || { total: 0, aciertos: 0 };
+      dato.total += 1;
+      if (ok) dato.aciertos += 1;
+      porConcepto.set(muestra.etiqueta, dato);
+
+      if (ui.calidad) ui.calidad.textContent = `Evaluando ${i + 1}/${banco.length}…`;
+      if (i % 4 === 3) await new Promise(resolve => requestAnimationFrame(resolve));
+    }
+
+    const precision = banco.length ? aciertos / banco.length : 0;
+    const peores = [...porConcepto.entries()]
+      .map(([etiqueta,d]) => ({ etiqueta, precision: d.total ? d.aciertos / d.total : 0, total: d.total }))
+      .sort((a,b) => a.precision - b.precision)
+      .slice(0,4);
+    const nivel = precision >= 0.9 ? 'muy prometedor' : precision >= 0.75 ? 'prometedor' : precision >= 0.55 ? 'todavía inestable' : 'insuficiente por ahora';
+    const detalle = peores.map(x => `${x.etiqueta} ${Math.round(x.precision * 100)}%`).join(' · ');
+    const muestraNota = bancoCompleto.length > banco.length ? ` Se evaluó una muestra equilibrada de ${banco.length}/${bancoCompleto.length} para no bloquear el celular.` : '';
+    if (ui.calidad) ui.calidad.innerHTML = `<strong>Precisión experimental: ${Math.round(precision * 100)}%</strong> · Resultado ${nivel}.${muestraNota}${detalle ? '<br>Conceptos a reforzar: ' + detalle : ''}`;
+  } finally {
+    evaluando = false;
+    if (ui.btnEvaluar) ui.btnEvaluar.disabled = false;
+  }
+}
+
+function borrarTodoLocal() {
+  if (!muestrasLocales.length) return;
+  if (!confirm('¿Eliminar todas las muestras locales guardadas en este dispositivo? El dataset central no se borra.')) return;
+  muestrasLocales = [];
   localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(STORAGE_KEY_ANTERIOR);
   renderMuestras();
   ui.resultados.textContent = '';
   estado('Todas las muestras locales fueron eliminadas.');
@@ -380,8 +605,12 @@ ui.btnDetener?.addEventListener('click', detenerCamara);
 ui.btnMuestra?.addEventListener('click', iniciarCaptura);
 ui.btnReconocer?.addEventListener('click', reconocer);
 ui.btnExportar?.addEventListener('click', exportarMuestras);
-ui.btnBorrarTodo?.addEventListener('click', borrarTodo);
+ui.btnImportar?.addEventListener('click', abrirImportacion);
+ui.archivoImportar?.addEventListener('change', importarMuestras);
+ui.btnEvaluar?.addEventListener('click', evaluarDataset);
+ui.btnBorrarTodo?.addEventListener('click', borrarTodoLocal);
 window.addEventListener('pagehide', detenerCamara, { once: true });
 
 renderMuestras();
+cargarDatasetCentral();
 estado('Laboratorio listo. La cámara permanece apagada hasta que la actives.');
