@@ -1813,7 +1813,7 @@ const AlfabetizacionV2 = (function () {
         });
     }
 
-    function nivelUnirActual() {    function nivelUnirActual() {
+    function nivelUnirActual() {
         return CONFIG.NIVELES_UNIR.find((n) => n.id === estado.unir.nivelId) || CONFIG.NIVELES_UNIR[0];
     }
 
