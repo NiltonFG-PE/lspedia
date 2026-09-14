@@ -12,7 +12,7 @@
      sustituya por index.html.
    ============================================================ */
 
-const VERSION_APP = "v115";
+const VERSION_APP = "v116";
 const PREFIJO_CACHE = "lspedia-shell-";
 const PREFIJO_RUNTIME = "lspedia-runtime-";
 const CACHE_NOMBRE = PREFIJO_CACHE + VERSION_APP;
