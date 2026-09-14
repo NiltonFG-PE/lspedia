@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Guardia conservadora para archivos históricos y respaldos necesarios.
 
-No borra nada. Impide que reaparezcan módulos retirados y comprueba que los
-respaldos históricos que siguen formando parte de la aplicación mantengan una
-referencia activa antes de conservarlos.
+No borra nada. Impide que reaparezcan módulos retirados, comprueba que los
+respaldos históricos necesarios sigan conectados y permite identificar
+artefactos temporales sin dependencias antes de eliminarlos.
 """
 from pathlib import Path
 import sys
@@ -17,17 +17,20 @@ RETIRADOS = {
 RESPALDOS_REQUERIDOS = {
     "data/alfabetizacion-mock.json": ("data/alfabetizacion-mock.json", "alfabetizacion-mock.json"),
 }
+CANDIDATOS_A_RETIRAR = {
+    "scripts/tmp_aplicar_puntos_3_12.py": ("tmp_aplicar_puntos_3_12.py",),
+}
 
 EXTENSIONES = {
     ".html", ".htm", ".js", ".mjs", ".css", ".json", ".py", ".yml", ".yaml",
     ".md", ".txt", ".xml", ".webmanifest", ".jsonld", ".bat", ".ps1"
 }
-IGNORAR_DIRS = {".git", "node_modules", ".venv", "venv", "dist", "build"}
+IGNORAR_DIRS = {".git", "node_modules", ".venv", "venv", "dist", "build", "__pycache__"}
 IGNORAR = {
     Path("scripts/verificar_archivos_huerfanos.py"),
-    Path("scripts/verificar_legado_accesibilidad.py"),
     *(Path(p) for p in RETIRADOS),
     *(Path(p) for p in RESPALDOS_REQUERIDOS),
+    *(Path(p) for p in CANDIDATOS_A_RETIRAR),
 }
 
 
@@ -76,6 +79,16 @@ def main():
             errores.append(f"{ruta} quedó huérfano; revisar antes de conservarlo")
         else:
             print(f"CONSERVAR respaldo activo: {ruta} <- {', '.join(refs)}")
+
+    for ruta, patrones in CANDIDATOS_A_RETIRAR.items():
+        existe = (ROOT / ruta).exists()
+        refs = buscar_referencias(patrones, fuentes)
+        if refs:
+            errores.append(f"No retirar {ruta}; tiene referencias: {', '.join(refs)}")
+        elif existe:
+            print(f"HUÉRFANO CONFIRMADO: {ruta}")
+        else:
+            print(f"OK ya retirado: {ruta}")
 
     if errores:
         for error in errores:
