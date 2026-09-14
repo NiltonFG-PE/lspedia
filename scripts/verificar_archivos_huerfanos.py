@@ -16,6 +16,7 @@ RETIRADOS = {
     "css/accesibilidad.css": ("css/accesibilidad.css", "accesibilidad.css"),
     "scripts/tmp_aplicar_puntos_3_12.py": ("tmp_aplicar_puntos_3_12.py",),
     "scripts/integrar_regla_publicacion_diccionario.py": ("integrar_regla_publicacion_diccionario.py",),
+    "scripts/ajustar_security_publicacion.py": ("ajustar_security_publicacion.py",),
     ".github/workflows/integrar-regla-publicacion.yml": ("integrar-regla-publicacion.yml",),
 }
 RESPALDOS_REQUERIDOS = {
