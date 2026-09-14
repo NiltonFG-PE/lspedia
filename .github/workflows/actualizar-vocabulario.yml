@@ -1,4 +1,4 @@
-name: Actualizar vocabulario desde Hoja 2
+name: Actualizar vocabulario desde Vocabulario
 
 on:
   push:
@@ -40,7 +40,7 @@ jobs:
       - name: Migrar Quiz a vocabulario local
         run: python scripts/migrar_quiz_vocabulario_local.py
 
-      - name: Descargar Hoja 2 y generar vocabulario.json
+      - name: Descargar Vocabulario y generar vocabulario.json
         run: python scripts/generar_vocabulario.py
 
       - name: Validar Vocabulario antes de guardar
