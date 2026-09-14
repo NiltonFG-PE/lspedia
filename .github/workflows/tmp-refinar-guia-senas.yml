@@ -1,0 +1,41 @@
+name: Temporal refinar guía de señas
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - "scripts/tmp_refinar_guia_senas.py"
+      - ".github/workflows/tmp-refinar-guia-senas.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  aplicar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+      - name: Aplicar mejora
+        run: python scripts/tmp_refinar_guia_senas.py
+      - name: Validar JavaScript
+        run: node --check js/lab-senas-ia.js
+      - name: Validar laboratorio de señas
+        run: python scripts/validar_senas_ia.py
+      - name: Revisar diff
+        run: git diff --check
+      - name: Commit y push
+        run: |
+          if git diff --quiet; then
+            echo "Sin cambios"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add lab-senas-ia.html js/lab-senas-ia.js
+          git commit -m "fix: usar encuadre real en cámara de señas"
+          git push origin develop
