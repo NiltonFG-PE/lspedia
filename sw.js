@@ -12,7 +12,7 @@
      sustituya por index.html.
    ============================================================ */
 
-const VERSION_APP = "v121";
+const VERSION_APP = "v122";
 const PREFIJO_CACHE = "lspedia-shell-";
 const PREFIJO_RUNTIME = "lspedia-runtime-";
 const CACHE_NOMBRE = PREFIJO_CACHE + VERSION_APP;
@@ -29,6 +29,7 @@ const ARCHIVOS_CASCARON = [
     "js/lspedia-core.js",
     "js/accesibilidad-segura.js",
     "js/seo-institucional.js",
+    "js/vocabulario-publico.js",
     "js/lazy-modules.js",
     "js/fullscreen-mobile-fix.js",
     "js/pwa-install.js",
