@@ -1,1 +1,1 @@
-/* placeholder recovery pending */
+/* restoring from known-good commit via follow-up */
