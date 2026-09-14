@@ -97,7 +97,9 @@
     activarAutoScrollIndiceDiccionario();
 
     cargarCss('css/mejoras-maestras.css?v=20260914');
-    cargar('js/lspedia-core.js?v=20260914', function(){
+    cargarCss('css/accesibilidad-segura.css?v=20260914-1');
+    cargar('js/lspedia-core.js?v=20260914-2', function(){
+        cargar('js/accesibilidad-segura.js?v=20260914-1');
         cargar('js/juegos-banco-compartido.js?v=20260914');
         cargar('js/a-z-movil.js?v=20260914');
     });
