@@ -85,9 +85,10 @@ def validar_integracion_frontend():
     security = ROOT / "js" / "security.js"
     script = ROOT / "js" / "script.js"
     lo_nuevo = ROOT / "js" / "lo-nuevo.js"
+    buscador_visual = ROOT / "js" / "buscador-visual.js"
     sw = ROOT / "sw.js"
 
-    for path in (modulo, cargador, security, script, lo_nuevo, sw):
+    for path in (modulo, cargador, security, script, lo_nuevo, buscador_visual, sw):
         if not path.exists():
             raise AssertionError(f"Falta archivo requerido: {path.relative_to(ROOT)}")
 
@@ -96,6 +97,7 @@ def validar_integracion_frontend():
     texto_security = security.read_text(encoding="utf-8")
     texto_script = script.read_text(encoding="utf-8")
     texto_lo_nuevo = lo_nuevo.read_text(encoding="utf-8")
+    texto_buscador_visual = buscador_visual.read_text(encoding="utf-8")
     texto_sw = sw.read_text(encoding="utf-8")
 
     requeridos_modulo = [
@@ -132,6 +134,12 @@ def validar_integracion_frontend():
         raise AssertionError(
             "security.js volvió a mezclar publicación/estadísticas: " + ", ".join(encontrados)
         )
+
+    # Ningún módulo auxiliar puede reemplazar la fuente de verdad del Diccionario.
+    if "obtenerDatosDiccionarioPublicables = filtrarConsultablesDiccionario" in texto_buscador_visual:
+        raise AssertionError("buscador-visual.js volvió a sobreescribir el filtro público del Diccionario")
+    if "texto(p.definicion)" not in texto_buscador_visual or "esImagenReal" not in texto_buscador_visual:
+        raise AssertionError("buscador-visual.js perdió la regla estricta de definición + imagen real")
 
     # Lo nuevo es deliberadamente más estricto: solo contenido con video.
     if "tieneVideoValido" not in texto_lo_nuevo or ".filter(x => x && x.palabra && tieneVideoValido(x.palabra))" not in texto_lo_nuevo:

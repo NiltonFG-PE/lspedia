@@ -1,10 +1,9 @@
 /* LSPedia — búsqueda tolerante y fichas visuales del Diccionario.
    -----------------------------------------------------------------
    Reglas de producto:
-   - SOLO Diccionario puede consultar una ficha sin video cuando ya tiene
-     concepto o imagen de apoyo.
-   - Vocabulario permanece video-first: este módulo no amplía su banco ni
-     convierte filas sin video en fichas públicas.
+   - Diccionario solo consulta fichas públicas: palabra + definición + categoría + imagen real.
+   - El video es opcional para el Diccionario y no sustituye una imagen faltante.
+   - Este módulo mejora la búsqueda, pero nunca redefine la regla pública canónica.
    - Las faltas de ortografía del usuario se toleran para buscar, pero nunca
      se muestran como variantes correctas dentro de la ficha.
    - Las formas gramaticales pueden llevar a su palabra base sin cambiar el
@@ -52,15 +51,19 @@
     function imagenesDeRegistro(p){
         return texto(p && p.imagen).split(',').map(x=>x.trim()).filter(Boolean).slice(0,2);
     }
+    function esImagenReal(valor){
+        const imagen = texto(valor);
+        return /^(?:https?:\/\/|\/|\.\.?\/|img\/)/i.test(imagen) &&
+            /\.(?:avif|gif|jpe?g|png|svg|webp)(?:[?#].*)?$/i.test(imagen);
+    }
     function primeraImagen(p){
         for(const valor of imagenesDeRegistro(p)){
-            if(/^(?:https?:\/\/|\/|\.\.?\/|img\/)/i.test(valor)) return valor;
+            if(esImagenReal(valor)) return valor;
         }
         return '';
     }
     function esConsultableDiccionario(p){
-        if(!p || !texto(p.palabra) || !texto(p.categoria)) return false;
-        return tieneVideo(p) || !!texto(p.definicion) || !!primeraImagen(p);
+        return !!(p && texto(p.palabra) && texto(p.definicion) && texto(p.categoria) && primeraImagen(p));
     }
 
     function agregarAliasObjetivo(objetivo, entrada){
@@ -110,8 +113,17 @@
     }
 
     function filtrarConsultablesDiccionario(lista){
-        const filtrada = Array.isArray(lista) ? lista.filter(esConsultableDiccionario) : [];
-        return prepararAliases(filtrada);
+        let filtrada = [];
+        try{
+            if(typeof obtenerDatosDiccionarioPublicables === 'function'){
+                filtrada = obtenerDatosDiccionarioPublicables(Array.isArray(lista) ? lista : []);
+            }else{
+                filtrada = Array.isArray(lista) ? lista.filter(esConsultableDiccionario) : [];
+            }
+        }catch(_e){
+            filtrada = Array.isArray(lista) ? lista.filter(esConsultableDiccionario) : [];
+        }
+        return prepararAliases(Array.isArray(filtrada) ? filtrada : []);
     }
 
     function aplicarDiccionario(lista){
@@ -121,12 +133,6 @@
         }catch(_e){}
         try{
             if(window.App && Array.isArray(window.App.datos)) window.App.datos = diccionarioConsultable;
-        }catch(_e){}
-        try{
-            if(typeof obtenerDatosDiccionarioPublicables === 'function'){
-                obtenerDatosDiccionarioPublicables = filtrarConsultablesDiccionario;
-                window.obtenerDatosDiccionarioPublicables = filtrarConsultablesDiccionario;
-            }
         }catch(_e){}
         try{ if(typeof actualizarEstadisticas === 'function') actualizarEstadisticas(); }catch(_e){}
         document.dispatchEvent(new CustomEvent('lspedia:datosConsultablesListos',{

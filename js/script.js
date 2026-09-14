@@ -2159,10 +2159,8 @@ function procesarDatosApp(data) {
           // catch, cualquier error futuro termina mostrando el aviso de
           // error + botón "Reintentar" en vez de un spinner mudo.
           try {
-            // Solo se muestran en la web las palabras que YA tienen video
-            // cargado. Si agregas una palabra nueva en la Hoja 1 y aún no
-            // le pusiste el video, se queda oculta hasta que el campo
-            // "video" tenga algo escrito.
+            // Regla pública del Diccionario: palabra + definición + categoría + imagen real.
+            // El video es opcional; una descripción de imagen o placeholder NO cuenta como imagen.
             App.datos = obtenerDatosDiccionarioPublicables(data);
             migrarFavoritosEHistorialAIds();
             // Las categorías reales del diccionario (Hoja 1, columna C)
