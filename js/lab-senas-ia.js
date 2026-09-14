@@ -47,7 +47,8 @@ const ui = {
   lista: $('listaMuestrasSenas'), contador: $('contadorMuestrasSenas'),
   central: $('estadoDatasetCentralSenas'), calidad: $('calidadDatasetSenas'),
   calidadCaptura: $('calidadCapturaSenas'), btnCambiarCamara: $('btnCambiarCamaraSenas'),
-  cuenta: $('cuentaRegresivaSenas'), cuentaTexto: $('textoCuentaSenas'), cuentaNumero: $('numeroCuentaSenas')
+  cuenta: $('cuentaRegresivaSenas'), cuentaTexto: $('textoCuentaSenas'), cuentaNumero: $('numeroCuentaSenas'),
+  silueta: $('siluetaGuiaSenas')
 };
 
 let detector = null;
@@ -71,6 +72,11 @@ let dispositivoCamaraActual = '';
 let ultimaMedicionLuz = 0;
 let medicionLuz = { brillo: 128, contraste: 40, ok: true };
 let calidadActual = { manos: 0, cuerpo: false, rostro: false, luz: true, encuadre: false, apta: false };
+let solicitudCaptura = null;
+let calidadAptaDesde = 0;
+let temporizadorOrientacion = 0;
+let ultimaOrientacionVista = '';
+const ESTABILIDAD_ANTES_CUENTA_MS = 1100;
 const canvasLuz = document.createElement('canvas');
 canvasLuz.width = 32;
 canvasLuz.height = 18;
@@ -289,6 +295,41 @@ function pantallaVertical() {
   return window.innerHeight > window.innerWidth;
 }
 
+function aplicarOrientacionVista() {
+  const vertical = pantallaVertical();
+  const orientacion = vertical ? 'vertical' : 'horizontal';
+  const marco = ui.video && ui.video.closest ? ui.video.closest('.camara') : null;
+  if (marco) marco.dataset.orientacion = orientacion;
+  ultimaOrientacionVista = orientacion;
+  ajustarCanvas();
+}
+
+async function adaptarCamaraAOrientacion() {
+  aplicarOrientacionVista();
+  if (!activo || !stream) return;
+  const pista = stream.getVideoTracks ? stream.getVideoTracks()[0] : null;
+  if (!pista || typeof pista.applyConstraints !== 'function') return;
+  const vertical = pantallaVertical();
+  try {
+    await pista.applyConstraints(vertical ? {
+      width: { ideal: 720 }, height: { ideal: 1280 }, aspectRatio: { ideal: 9 / 16 }, frameRate: { ideal: 30, max: 30 }
+    } : {
+      width: { ideal: 1280 }, height: { ideal: 720 }, aspectRatio: { ideal: 16 / 9 }, frameRate: { ideal: 30, max: 30 }
+    });
+  } catch (_e) {
+    // Algunos navegadores mantienen la relación nativa del sensor. La vista usa cover y sigue adaptándose.
+  }
+  setTimeout(ajustarCanvas, 120);
+}
+
+function programarAdaptacionOrientacion() {
+  if (temporizadorOrientacion) clearTimeout(temporizadorOrientacion);
+  temporizadorOrientacion = setTimeout(() => {
+    temporizadorOrientacion = 0;
+    adaptarCamaraAOrientacion();
+  }, 180);
+}
+
 async function obtenerStreamCamara() {
   const vertical = pantallaVertical();
   const video = vertical ? {
@@ -325,7 +366,8 @@ async function iniciarCamara() {
     ui.btnDetener.disabled = false;
     ui.btnMuestra.disabled = false;
     ui.btnReconocer.disabled = false;
-    ajustarCanvas();
+    aplicarOrientacionVista();
+    await adaptarCamaraAOrientacion();
     await listarCamaras();
     const capacidades = [detector ? 'manos' : '', detectorPose ? 'cuerpo' : '', detectorRostro ? 'rostro' : ''].filter(Boolean).join(' + ');
     estado(`Cámara activa · detectando ${capacidades || 'manos'}. Colócate de frente y deja espacio alrededor de las manos.`);
@@ -358,6 +400,8 @@ function detenerCamara() {
   activo = false;
   captura = null;
   capturaReconocimiento = null;
+  solicitudCaptura = null;
+  calidadAptaDesde = 0;
   preparandoCaptura = false;
   ventanaActual = [];
   if (rafId) cancelAnimationFrame(rafId);
@@ -528,6 +572,10 @@ function evaluarCalidadCaptura(resultado, resultadoPose, resultadoRostro, tiempo
 }
 
 function renderCalidadCaptura(calidad, mensajeExtra = '') {
+  if (ui.silueta) {
+    ui.silueta.classList.toggle('lista', !!calidad.apta);
+    ui.silueta.classList.toggle('ajustar', !calidad.apta);
+  }
   if (!ui.calidadCaptura) return;
   ui.calidadCaptura.textContent = '';
   const datos = [
@@ -561,19 +609,23 @@ function esperar(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function cuentaRegresiva(texto) {
+async function cuentaRegresiva(texto, exigirCalidad = true) {
   if (preparandoCaptura) return false;
   preparandoCaptura = true;
+  let valida = true;
   if (ui.cuenta) ui.cuenta.hidden = false;
   if (ui.cuentaTexto) ui.cuentaTexto.textContent = texto || 'Prepárate';
   for (const numero of [3, 2, 1]) {
-    if (!activo) break;
+    if (!activo || (exigirCalidad && !calidadActual.apta)) {
+      valida = false;
+      break;
+    }
     if (ui.cuentaNumero) ui.cuentaNumero.textContent = String(numero);
     await esperar(700);
   }
   if (ui.cuenta) ui.cuenta.hidden = true;
   preparandoCaptura = false;
-  return activo;
+  return activo && valida;
 }
 
 function vectorNormalizado(resultado, resultadoPose, resultadoRostro) {
@@ -686,10 +738,12 @@ function cancelarCapturaPorTiempo(tipo) {
   if (tipo === 'muestra') {
     captura = null;
     ui.btnMuestra.disabled = false;
+    ui.btnReconocer.disabled = false;
     ui.progreso.textContent = 'No se guardó la muestra.';
   } else {
     capturaReconocimiento = null;
     ui.btnReconocer.disabled = false;
+    ui.btnMuestra.disabled = false;
   }
   estado('No se logró mantener manos, cuerpo y rostro visibles. Ajusta el encuadre e inténtalo otra vez.', 'error');
 }
@@ -699,9 +753,61 @@ function finalizarReconocimientoGuiado() {
   const secuencia = capturaReconocimiento.frames.slice(0, FRAMES_MUESTRA);
   capturaReconocimiento = null;
   ui.btnReconocer.disabled = false;
+  ui.btnMuestra.disabled = false;
   const top = candidatosPara(secuencia, todasLasMuestras()).slice(0, 3);
   renderResultados(top);
   estado('Comparación terminada. Toca una de las opciones si corresponde a tu seña.', 'ok');
+}
+
+async function iniciarCuentaDesdeSolicitud() {
+  const solicitud = solicitudCaptura;
+  if (!solicitud || preparandoCaptura || captura || capturaReconocimiento) return;
+  const texto = solicitud.tipo === 'muestra' ? 'Prepárate para grabar' : 'Prepárate para buscar';
+  const listo = await cuentaRegresiva(texto, true);
+  if (!activo || solicitudCaptura !== solicitud) return;
+  if (!listo) {
+    calidadAptaDesde = 0;
+    estado('Vuelve a colocarte dentro de la silueta. La cuenta regresiva empezará sola cuando todo esté listo.');
+    return;
+  }
+
+  solicitudCaptura = null;
+  calidadAptaDesde = 0;
+  if (solicitud.tipo === 'muestra') {
+    captura = {
+      etiqueta: solicitud.etiqueta,
+      frames: [],
+      inicio: performance.now(),
+      dimensionObjetivo: solicitud.dimensionObjetivo
+    };
+    ui.progreso.textContent = `Grabando 0/${FRAMES_MUESTRA}…`;
+    estado(`Grabando “${solicitud.etiqueta}”. Haz la seña completa de forma natural.`);
+  } else {
+    capturaReconocimiento = {
+      frames: [],
+      inicio: performance.now(),
+      dimensionObjetivo: solicitud.dimensionObjetivo
+    };
+    estado('Haz la seña ahora. Mantén cabeza, hombros y manos dentro del cuadro.');
+  }
+}
+
+function gestionarPreparacionAutomatica(tiempo) {
+  if (!solicitudCaptura || captura || capturaReconocimiento || preparandoCaptura) return;
+  if (!calidadActual.apta) {
+    calidadAptaDesde = 0;
+    return;
+  }
+  if (!calidadAptaDesde) {
+    calidadAptaDesde = tiempo;
+    estado('Muy bien. Mantén esa posición un momento…');
+    return;
+  }
+  const transcurrido = tiempo - calidadAptaDesde;
+  if (transcurrido >= ESTABILIDAD_ANTES_CUENTA_MS) {
+    calidadAptaDesde = 0;
+    iniciarCuentaDesdeSolicitud();
+  }
 }
 
 function procesarResultado(resultado, resultadoPose, resultadoRostro, tiempo = performance.now()) {
@@ -710,6 +816,7 @@ function procesarResultado(resultado, resultadoPose, resultadoRostro, tiempo = p
   dibujarRostro(resultadoRostro);
   calidadActual = evaluarCalidadCaptura(resultado, resultadoPose, resultadoRostro, tiempo);
   renderCalidadCaptura(calidadActual);
+  gestionarPreparacionAutomatica(tiempo);
 
   const vector = vectorNormalizado(resultado, resultadoPose, resultadoRostro);
   if (!vector) {
@@ -773,20 +880,17 @@ function bucle(tiempo = performance.now()) {
   }
 }
 
-async function iniciarCaptura() {
+function iniciarCaptura() {
   const etiqueta = etiquetaValida(ui.etiqueta.value);
   if (!activo) return estado('Activa la cámara primero.', 'error');
   if (!etiqueta) return estado('Escribe el concepto de la seña antes de grabar.', 'error');
-  if (captura || capturaReconocimiento || preparandoCaptura) return;
-  if (!calidadActual.apta) {
-    return estado(calidadActual.consejo || 'Ajusta manos, cuerpo, rostro e iluminación antes de grabar.', 'error');
-  }
+  if (captura || capturaReconocimiento || preparandoCaptura || solicitudCaptura) return;
+  solicitudCaptura = { tipo: 'muestra', etiqueta, dimensionObjetivo: dimensionObjetivoCaptura() };
+  calidadAptaDesde = 0;
   ui.btnMuestra.disabled = true;
-  const listo = await cuentaRegresiva('Prepárate para grabar');
-  if (!listo) { ui.btnMuestra.disabled = false; return; }
-  captura = { etiqueta, frames: [], inicio: performance.now(), dimensionObjetivo: dimensionObjetivoCaptura() };
-  ui.progreso.textContent = `Grabando 0/${FRAMES_MUESTRA}…`;
-  estado(`Grabando “${etiqueta}”. Haz la seña completa de forma natural.`);
+  ui.btnReconocer.disabled = true;
+  ui.progreso.textContent = 'Colócate dentro de la silueta.';
+  estado('Colócate dentro de la silueta. Cuando manos, cuerpo, rostro, luz y encuadre estén listos, comenzará 3–2–1 automáticamente.');
 }
 
 function finalizarCaptura() {
@@ -799,6 +903,7 @@ function finalizarCaptura() {
   }, 'local');
   captura = null;
   ui.btnMuestra.disabled = false;
+  ui.btnReconocer.disabled = false;
   if (!nueva) {
     ui.progreso.textContent = 'La muestra no pasó la validación.';
     return estado('La muestra quedó incompleta y no se guardó. Inténtalo nuevamente.', 'error');
@@ -822,17 +927,17 @@ function candidatosPara(secuencia, banco = todasLasMuestras(), excluirId = '') {
   return [...porEtiqueta.entries()].sort((a,b) => a[1] - b[1]);
 }
 
-async function reconocer() {
+function reconocer() {
   if (!activo) return estado('Activa la cámara primero.', 'error');
-  if (captura || capturaReconocimiento || preparandoCaptura) return;
+  if (captura || capturaReconocimiento || preparandoCaptura || solicitudCaptura) return;
   const banco = todasLasMuestras();
   if (!banco.length) return estado('Todavía no hay muestras de referencia.', 'error');
+  solicitudCaptura = { tipo: 'reconocimiento', dimensionObjetivo: dimensionObjetivoCaptura() };
+  calidadAptaDesde = 0;
   ui.btnReconocer.disabled = true;
+  ui.btnMuestra.disabled = true;
   ui.resultados.textContent = '';
-  const listo = await cuentaRegresiva('Prepárate para buscar');
-  if (!listo) { ui.btnReconocer.disabled = false; return; }
-  capturaReconocimiento = { frames: [], inicio: performance.now(), dimensionObjetivo: dimensionObjetivoCaptura() };
-  estado('Haz la seña ahora. Mantén cabeza, hombros y manos dentro del cuadro.');
+  estado('Colócate dentro de la silueta. Cuando estés bien ubicado, comenzará 3–2–1 automáticamente.');
 }
 
 function renderResultados(top) {
@@ -1082,7 +1187,11 @@ ui.btnImportar?.addEventListener('click', abrirImportacion);
 ui.archivoImportar?.addEventListener('change', importarMuestras);
 ui.btnEvaluar?.addEventListener('click', evaluarDataset);
 ui.btnBorrarTodo?.addEventListener('click', borrarTodoLocal);
+window.addEventListener('resize', programarAdaptacionOrientacion, { passive: true });
+window.addEventListener('orientationchange', programarAdaptacionOrientacion, { passive: true });
+try { screen.orientation?.addEventListener?.('change', programarAdaptacionOrientacion); } catch (_e) {}
 window.addEventListener('pagehide', detenerCamara, { once: true });
+aplicarOrientacionVista();
 
 renderMuestras();
 cargarDatasetCentral();
