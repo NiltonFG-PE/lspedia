@@ -1,0 +1,102 @@
+name: Corregir SEO estático
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - ".github/workflows/corregir-seo-estatico.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  aplicar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Corregir H1 y canonical temprano
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+
+          h1_viejo = '<h1 class="tracking-tight" id="tituloPrincipal"><span class="titulo-acento">Diccionario</span> de Lengua de Señas Peruana (LSP) y Español</h1>'
+          h1_nuevo = '<h1 class="tracking-tight" id="tituloPrincipal"><span class="titulo-acento">Diccionario visual</span> de español con apoyo en Lengua de Señas Peruana (LSP)</h1>'
+          if h1_nuevo not in s:
+              if h1_viejo not in s:
+                  raise SystemExit('No se encontró el H1 histórico esperado')
+              s = s.replace(h1_viejo, h1_nuevo, 1)
+
+          viejo = (
+              '        (function () {\n'
+              '            const palabra = (new URLSearchParams(window.location.search).get("p") || "").trim();\n'
+              '            if (!palabra) return;\n\n'
+              '            const url = "https://lspedia.site/?p=" + encodeURIComponent(palabra);'
+          )
+          nuevo = (
+              '        (function () {\n'
+              '            const params = new URLSearchParams(window.location.search);\n'
+              '            const palabra = (params.get("p") || "").trim();\n'
+              '            if (!palabra) return;\n'
+              '            const fuente = (params.get("fuente") || "").trim().toLowerCase();\n'
+              '            const esVocabulario = fuente === "vocabulario";\n\n'
+              '            const url = esVocabulario\n'
+              '                ? "https://lspedia.site/?vista=vocabulario&p=" + encodeURIComponent(palabra) + "&fuente=vocabulario"\n'
+              '                : "https://lspedia.site/?p=" + encodeURIComponent(palabra);'
+          )
+          if nuevo not in s:
+              if viejo not in s:
+                  raise SystemExit('No se encontró el bloque SEO temprano esperado')
+              s = s.replace(viejo, nuevo, 1)
+
+          p.write_text(s, encoding='utf-8', newline='\n')
+
+          sw = Path('sw.js')
+          sw_text = sw.read_text(encoding='utf-8')
+          if 'const VERSION_APP = "v128";' not in sw_text:
+              if 'const VERSION_APP = "v127";' not in sw_text:
+                  raise SystemExit('No se encontró VERSION_APP v127')
+              sw.write_text(sw_text.replace('const VERSION_APP = "v127";', 'const VERSION_APP = "v128";', 1), encoding='utf-8', newline='\n')
+          PY
+
+      - name: Validar SEO estático
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          s = Path('index.html').read_text(encoding='utf-8')
+          requeridos = [
+              '<span class="titulo-acento">Diccionario visual</span> de español con apoyo en Lengua de Señas Peruana (LSP)',
+              'const esVocabulario = fuente === "vocabulario";',
+              'https://lspedia.site/?vista=vocabulario&p=',
+              '&fuente=vocabulario',
+          ]
+          for patron in requeridos:
+              if patron not in s:
+                  raise SystemExit('Falta SEO estático: ' + patron)
+          if 'Diccionario</span> de Lengua de Señas Peruana (LSP) y Español' in s:
+              raise SystemExit('El H1 histórico sigue presente')
+          sw = Path('sw.js').read_text(encoding='utf-8')
+          if 'const VERSION_APP = "v128";' not in sw:
+              raise SystemExit('La PWA no fue actualizada a v128')
+          print('SEO estático y PWA v128 validados.')
+          PY
+          node --check sw.js
+          git diff --check
+
+      - name: Guardar cambios
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html sw.js
+          git commit -m "seo: alinear H1 y canonical temprano de Vocabulario"
+          git push origin develop
