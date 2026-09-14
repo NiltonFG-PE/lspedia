@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-09-13T16:38:22Z",
+  "actualizado": "2026-09-14T11:48:06Z",
   "traducciones": [
     {
       "fuente": "diccionario",
@@ -1248,7 +1248,7 @@
       "categoria": "Trámites",
       "ingles": "Cadastre",
       "aliases": [],
-      "definicionIngles": "Organized register of properties, land and their characteristics."
+      "definicionIngles": "Organized record of properties, land and their characteristics."
     },
     {
       "fuente": "diccionario",
@@ -1584,7 +1584,7 @@
       "categoria": "Comunicación",
       "ingles": "Institutional communication",
       "aliases": [],
-      "definicionIngles": "Official communication that an institution uses to relate to its internal and external public."
+      "definicionIngles": "Official communication that an institution uses to relate to its internal and external audience."
     },
     {
       "fuente": "diccionario",
@@ -1672,7 +1672,7 @@
       "categoria": "Comunicación",
       "ingles": "Press conference",
       "aliases": [],
-      "definicionIngles": "Meeting in which a person or organization provides information and answers questions from journalists."
+      "definicionIngles": "A meeting in which a person or organization provides information and answers questions from journalists."
     },
     {
       "fuente": "diccionario",
@@ -2016,7 +2016,7 @@
       "categoria": "Comunicación",
       "ingles": "Journalistic chronicle",
       "aliases": [],
-      "definicionIngles": "A journalistic account that tells real events following an order and providing details of the context."
+      "definicionIngles": "A journalistic account that tells real events in a specific order and provides details of the context."
     },
     {
       "fuente": "diccionario",
@@ -2136,7 +2136,7 @@
       "categoria": "Política",
       "ingles": "Civil code",
       "aliases": [],
-      "definicionIngles": "Set of rules concerning persons, family, contracts, property and other civil matters."
+      "definicionIngles": "A set of rules concerning people, family, contracts, property, and other civil matters."
     },
     {
       "fuente": "diccionario",
@@ -2320,7 +2320,7 @@
       "categoria": "Sociedad",
       "ingles": "Social referral",
       "aliases": [],
-      "definicionIngles": "Process of directing a person to another institution or professional that can address a specific need."
+      "definicionIngles": "Process of directing a person to another institution or professional that can meet a specific need."
     },
     {
       "fuente": "diccionario",
@@ -3848,7 +3848,7 @@
       "categoria": "Salud",
       "ingles": "Fever",
       "aliases": [],
-      "definicionIngles": "It's when the body has a higher than normal temperature, due to an illness.\n\nExample: My son has a fever, so I took him to the doctor."
+      "definicionIngles": "This is when the body has a higher than normal temperature, due to an illness.\n\nExample: My son has a fever, so I took him to the doctor."
     },
     {
       "fuente": "diccionario",
@@ -5288,7 +5288,7 @@
       "categoria": "Familia",
       "ingles": "Mother",
       "aliases": [],
-      "definicionIngles": "It's the word for your mother, the woman who is your mom within the family.\n\nExample: My mom cooks delicious meals on Sundays."
+      "definicionIngles": "It's the word for your mother, the woman who is your mom within the family.\n\nExample: My mom cooks delicious food on Sundays."
     },
     {
       "fuente": "diccionario",
@@ -5840,7 +5840,7 @@
       "categoria": "Familia",
       "ingles": "Grandson",
       "aliases": [],
-      "definicionIngles": "It's your grandson or granddaughter. For example: My grandmother plays with her grandson every afternoon."
+      "definicionIngles": "It's your grandson or granddaughter. Example: My grandmother plays with her grandson every afternoon."
     },
     {
       "fuente": "diccionario",
@@ -6134,7 +6134,7 @@
       "fuente": "diccionario",
       "palabra": "Patrimonio contable",
       "categoria": "Economía",
-      "ingles": "accounting equity",
+      "ingles": "Accounting equity",
       "aliases": [],
       "definicionIngles": "Economic value resulting from assets less liabilities."
     },
@@ -6384,7 +6384,7 @@
       "categoria": "Ciencia",
       "ingles": "Technical drawing",
       "aliases": [],
-      "definicionIngles": "Drawing with measurements and details used to manufacture, build or install something."
+      "definicionIngles": "A drawing with measurements and details used to manufacture, build, or install something."
     },
     {
       "fuente": "diccionario",
@@ -6512,7 +6512,7 @@
       "categoria": "Comida",
       "ingles": "Dessert",
       "aliases": [],
-      "definicionIngles": "It's a sweet treat eaten at the end of a meal.\n\nExample: We had gelatin for dessert."
+      "definicionIngles": "It's a dessert that's eaten at the end of a meal.\n\nExample: We had gelatin for dessert."
     },
     {
       "fuente": "diccionario",
@@ -6544,7 +6544,7 @@
       "categoria": "Comunicación",
       "ingles": "Ask",
       "aliases": [],
-      "definicionIngles": "It's asking someone else for information about something you don't know.\n\nExample: I asked the teacher about the homework."
+      "definicionIngles": "It's asking someone for information about something you don't know.\n\nExample: I asked the teacher about the homework."
     },
     {
       "fuente": "diccionario",
@@ -7288,7 +7288,7 @@
       "categoria": "Ciudad",
       "ingles": "Municipal retreat",
       "aliases": [],
-      "definicionIngles": "Required distance between a building and certain limits of the land or public road."
+      "definicionIngles": "Required distance between a building and certain boundaries of the land or public road."
     },
     {
       "fuente": "diccionario",
@@ -8064,7 +8064,7 @@
       "categoria": "Sociedad",
       "ingles": "Social worker",
       "aliases": [],
-      "definicionIngles": "Professional who assesses social situations, guides and connects people or families with support and services."
+      "definicionIngles": "Professional who assesses social situations, guides and connects individuals or families with support and services."
     },
     {
       "fuente": "diccionario",
@@ -8120,7 +8120,7 @@
       "categoria": "Comunicación",
       "ingles": "Live broadcast",
       "aliases": [],
-      "definicionIngles": "Streaming video or audio over the internet while the event is happening."
+      "definicionIngles": "Broadcasting video or audio over the internet while the event is happening."
     },
     {
       "fuente": "diccionario",
@@ -8256,7 +8256,7 @@
       "categoria": "Familia",
       "ingles": "Aunt",
       "aliases": [],
-      "definicionIngles": "She's your dad's or your mom's sister.\n\nExample: My aunt gave me a book for my birthday."
+      "definicionIngles": "She's your dad's or mom's sister.\n\nExample: My aunt gave me a book for my birthday."
     },
     {
       "fuente": "diccionario",
@@ -8424,7 +8424,7 @@
       "categoria": "Ciudad",
       "ingles": "Natural ventilation",
       "aliases": [],
-      "definicionIngles": "Air movement that enters and exits a space without using mechanical equipment."
+      "definicionIngles": "Air movement that enters and exits a space without the use of mechanical equipment."
     },
     {
       "fuente": "diccionario",
@@ -8608,7 +8608,7 @@
       "categoria": "Deportes",
       "ingles": "Referee",
       "aliases": [],
-      "definicionIngles": "It's the person who officiates a match and decides whether something is allowed or not.\n\nExample: The referee called a foul in the match."
+      "definicionIngles": "This is the person who officiates a match and decides whether something is allowed or not.\n\nExample: The referee called a foul in the match."
     },
     {
       "fuente": "diccionario",
