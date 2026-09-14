@@ -12,7 +12,7 @@
      sustituya por index.html.
    ============================================================ */
 
-const VERSION_APP = "v114";
+const VERSION_APP = "v115";
 const PREFIJO_CACHE = "lspedia-shell-";
 const PREFIJO_RUNTIME = "lspedia-runtime-";
 const CACHE_NOMBRE = PREFIJO_CACHE + VERSION_APP;
@@ -28,7 +28,6 @@ const ARCHIVOS_CASCARON = [
     "css/quiz.css",
     "css/mejoras-producto.css",
     "js/security.js",
-    "js/publicacion-diccionario.js",
     "js/lazy-modules.js",
     "js/fullscreen-mobile-fix.js",
     "js/pwa-install.js",
@@ -36,6 +35,8 @@ const ARCHIVOS_CASCARON = [
     "js/quiz.js",
     "js/mejoras-producto.js",
     "js/mejoras-producto-base.js",
+    "js/optimizacion-errores.js",
+    "js/rendimiento-movil.js",
     "js/lo-nuevo.js",
     "js/i18n.js",
     "js/i18n-restaurar.js",
