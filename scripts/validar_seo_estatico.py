@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Valida las señales SEO que deben existir antes de ejecutar JavaScript dinámico."""
 from pathlib import Path
+import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -37,15 +38,21 @@ def main() -> int:
     if "Sitemap: https://lspedia.site/sitemap.xml" not in robots:
         errores.append("robots.txt: no declara el sitemap oficial")
 
-    if 'const VERSION_APP = "v128";' not in sw:
-        errores.append("sw.js: se esperaba al menos la versión PWA v128 tras corregir index.html")
+    version = re.search(r'const\s+VERSION_APP\s*=\s*"v(\d+)"', sw)
+    if not version:
+        errores.append("sw.js: no se pudo leer VERSION_APP")
+    elif int(version.group(1)) < 128:
+        errores.append("sw.js: la PWA debe ser v128 o superior tras corregir index.html")
 
     if errores:
         for error in errores:
             print("ERROR SEO estático:", error, file=sys.stderr)
         return 1
 
-    print("SEO estático validado: H1, canonical por fuente, metadatos, robots y PWA coherentes.")
+    print(
+        "SEO estático validado: H1, canonical por fuente, metadatos, robots "
+        f"y PWA v{version.group(1) if version else '?'} coherentes."
+    )
     return 0
 
 
