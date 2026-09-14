@@ -55,3 +55,5 @@ jobs:
           git add js/security.js sw.js
           git commit -m "refactor: separar seguridad de publicacion y estadisticas"
           git push origin develop
+
+# ejecución única 2026-09-14
