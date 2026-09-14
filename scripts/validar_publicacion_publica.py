@@ -2,8 +2,9 @@
 """Valida la regla pública de LSPedia y resume estadísticas reales.
 
 Regla vigente:
-- Diccionario y Vocabulario requieren palabra + categoría + imagen real.
-- El video es opcional para publicación.
+- Diccionario requiere palabra + definición + categoría + imagen real.
+- Vocabulario requiere palabra + categoría + imagen real.
+- El video es opcional para publicación pública; Lo nuevo sí exige video.
 - El banco interno del Quiz puede seguir exigiendo video; no se valida aquí.
 """
 from pathlib import Path
@@ -38,11 +39,12 @@ def cargar(nombre):
     return data
 
 
-def publicables(lista):
+def publicables(lista, requiere_definicion=False):
     return [
         item for item in lista
         if isinstance(item, dict)
         and texto(item.get("palabra"))
+        and (not requiere_definicion or texto(item.get("definicion")))
         and texto(item.get("categoria"))
         and imagen_real(item.get("imagen"))
     ]
@@ -63,8 +65,8 @@ def claves_duplicadas(lista):
     return duplicados
 
 
-def resumen(nombre, lista):
-    pub = publicables(lista)
+def resumen(nombre, lista, requiere_definicion=False):
+    pub = publicables(lista, requiere_definicion)
     categorias = {texto(x.get("categoria")).casefold() for x in pub if texto(x.get("categoria"))}
     videos = sum(1 for x in pub if video_valido(x.get("video")))
     sin_video = len(pub) - videos
@@ -106,7 +108,7 @@ def main():
     try:
         diccionario = cargar("palabras.json")
         vocabulario = cargar("vocabulario.json")
-        pub_dic, cat_dic, videos_dic = resumen("Diccionario", diccionario)
+        pub_dic, cat_dic, videos_dic = resumen("Diccionario", diccionario, requiere_definicion=True)
         pub_voc, cat_voc, videos_voc = resumen("Vocabulario", vocabulario)
         validar_integracion_frontend()
 
@@ -124,7 +126,7 @@ def main():
                 "AVISO: existen duplicados históricos pendientes de limpieza "
                 f"(Diccionario={len(dup_dic)}, Vocabulario={len(dup_voc)})."
             )
-        print("Regla pública validada: imagen real obligatoria, video opcional.")
+        print("Regla pública validada: Diccionario = definición + imagen; video opcional. Lo nuevo mantiene video obligatorio.")
         return 0
     except Exception as exc:
         print(f"ERROR publicación pública: {exc}", file=sys.stderr)

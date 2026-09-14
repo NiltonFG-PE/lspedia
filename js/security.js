@@ -160,7 +160,7 @@
 
 /* ============================================================
    REGLA ÚNICA DE PUBLICACIÓN DEL DICCIONARIO
-   Una entrada pública necesita imagen REAL; el video es opcional.
+   Una entrada pública del Diccionario necesita definición + imagen REAL; el video es opcional.
    ============================================================ */
 (function activarReglaPublicacionDiccionarioPorImagen() {
     'use strict';
@@ -183,7 +183,7 @@
     function filtrarPublicables(data) {
         if (!Array.isArray(data)) return [];
         return data.filter(function (p) {
-            return !!(p && texto(p.palabra) && texto(p.categoria) && esImagenReal(p.imagen));
+            return !!(p && texto(p.palabra) && texto(p.definicion) && texto(p.categoria) && esImagenReal(p.imagen));
         });
     }
 

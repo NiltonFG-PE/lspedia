@@ -1945,8 +1945,8 @@ function mismaVersionPalabras(cache, dataNueva) {
 function obtenerDatosDiccionarioPublicables(data) {
     if (!Array.isArray(data)) return [];
 
-    // Regla pública vigente: palabra + categoría + imagen real.
-    // El video es opcional. Si security.js ya instaló el filtro compartido,
+    // Regla pública vigente del Diccionario: palabra + definición + categoría + imagen real.
+    // El video es opcional: una ficha completa sin video sigue siendo buscable. Si security.js ya instaló el filtro compartido,
     // se reutiliza para mantener una única definición en tiempo de ejecución.
     try {
         if (window.LSPediaPublicacionDiccionario &&
@@ -1956,7 +1956,7 @@ function obtenerDatosDiccionarioPublicables(data) {
     } catch (_error) {}
 
     return data.filter(function (p) {
-        if (!(p && p.palabra && p.categoria)) return false;
+        if (!(p && p.palabra && p.categoria && String(p.definicion || '').trim())) return false;
         const imagen = String(p.imagen || '').split(',')[0].trim();
         if (!imagen) return false;
         return /^(?:https?:\/\/|\/|\.\.?\/|img\/)/i.test(imagen) &&
