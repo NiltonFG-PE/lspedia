@@ -12,7 +12,7 @@
 (function () {
     'use strict';
 
-    const VERSION = '20260912-1';
+    const VERSION = '20260914-1';
     const modulos = {
         alfabetizacion: {
             js: 'js/alfabetizacion.js?v=' + VERSION,
@@ -38,6 +38,7 @@
 
     const promesas = new Map();
     let repeticionProgramatica = false;
+    let promesaCore = null;
 
     function yaCargado(nombre) {
         const cfg = modulos[nombre];
@@ -85,13 +86,35 @@
         });
     }
 
+    // El núcleo de seguridad/utilidades ya existía, pero no estaba incluido
+    // explícitamente en index.html. Lo activamos desde este cargador, que se
+    // ejecuta antes de script.js, para que la protección de URLs dinámicas,
+    // identidad oficial y utilidades comunes estén disponibles en toda la app.
+    function asegurarCore() {
+        if (window.LSPediaCore) return Promise.resolve();
+        if (promesaCore) return promesaCore;
+        promesaCore = cargarScript('js/lspedia-core.js?v=' + VERSION, 'LSPediaCore')
+            .catch((error) => {
+                promesaCore = null;
+                console.error('[LSPedia seguridad] No se pudo activar el núcleo seguro.', error);
+                throw error;
+            });
+        return promesaCore;
+    }
+
+    // Iniciar cuanto antes. Si falla la red, no bloqueamos el resto de la web;
+    // el Service Worker también conserva este archivo para uso offline.
+    asegurarCore().catch(() => {});
+
     function cargar(nombre) {
         if (!modulos[nombre]) return Promise.resolve();
         if (yaCargado(nombre)) return Promise.resolve();
         if (promesas.has(nombre)) return promesas.get(nombre);
 
         const cfg = modulos[nombre];
-        const promesa = cargarCss(cfg.css)
+        const promesa = asegurarCore()
+            .catch(() => {})
+            .then(() => cargarCss(cfg.css))
             .then(() => cargarScript(cfg.js, cfg.global))
             .catch((error) => {
                 promesas.delete(nombre);
