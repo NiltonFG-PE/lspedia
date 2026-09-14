@@ -1944,7 +1944,24 @@ function mismaVersionPalabras(cache, dataNueva) {
 // aplicando reglas distintas.
 function obtenerDatosDiccionarioPublicables(data) {
     if (!Array.isArray(data)) return [];
-    return data.filter(p => p && p.palabra && p.categoria && p.video && String(p.video).trim());
+
+    // Regla pública vigente: palabra + categoría + imagen real.
+    // El video es opcional. Si security.js ya instaló el filtro compartido,
+    // se reutiliza para mantener una única definición en tiempo de ejecución.
+    try {
+        if (window.LSPediaPublicacionDiccionario &&
+            typeof window.LSPediaPublicacionDiccionario.filtrar === 'function') {
+            return window.LSPediaPublicacionDiccionario.filtrar(data);
+        }
+    } catch (_error) {}
+
+    return data.filter(function (p) {
+        if (!(p && p.palabra && p.categoria)) return false;
+        const imagen = String(p.imagen || '').split(',')[0].trim();
+        if (!imagen) return false;
+        return /^(?:https?:\/\/|\/|\.\.?\/|img\/)/i.test(imagen) &&
+            /\.(?:avif|gif|jpe?g|png|svg|webp)(?:[?#].*)?$/i.test(imagen);
+    });
 }
 
 // Aplica una versión nueva de palabras.json sin reiniciar toda la interfaz.
