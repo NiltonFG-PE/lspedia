@@ -1,0 +1,72 @@
+name: Integrar banco compartido de Juegos
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - ".github/workflows/integrar-banco-juegos.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  integrar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Integrar banco compartido
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          banco = Path('js/juegos-banco-compartido.js')
+          s = banco.read_text(encoding='utf-8')
+          ancla = '''  async function obtener(opciones) {\n'''
+          funcion = '''  // Lectura síncrona de la caché ya precargada. Los juegos perezosos\n  // pueden usarla sin convertir su flujo de render en async. No registra\n  // recientes ni mezcla fuentes fuera de Vocabulario/Alfabetización.\n  function obtenerCargado(opciones) {\n    const opts = opciones || {};\n    const bancoActual = Array.isArray(cache) ? cache : [];\n    const fuentes = Array.isArray(opts.fuentes) && opts.fuentes.length ? new Set(opts.fuentes) : null;\n    return deduplicar(bancoActual.filter(function (item) {\n      if (fuentes && !fuentes.has(item.fuente)) return false;\n      if (opts.conImagen && !item.imagen) return false;\n      if (opts.conVideo && !item.video) return false;\n      return true;\n    })).slice();\n  }\n\n  async function obtener(opciones) {\n'''
+          if ancla not in s:
+              raise SystemExit('No se encontró obtener() en banco compartido')
+          s = s.replace(ancla, funcion, 1)
+          viejo_api = '''  window.LSPediaJuegosBanco = Object.freeze({ cargar: cargar, obtener: obtener, estadisticas: estadisticas });'''
+          nuevo_api = '''  window.LSPediaJuegosBanco = Object.freeze({ cargar: cargar, obtener: obtener, obtenerCargado: obtenerCargado, estadisticas: estadisticas });'''
+          if viejo_api not in s:
+              raise SystemExit('No se encontró API del banco compartido')
+          s = s.replace(viejo_api, nuevo_api, 1)
+          banco.write_text(s, encoding='utf-8')
+
+          alf = Path('js/alfabetizacion.js')
+          a = alf.read_text(encoding='utf-8')
+          viejo = '''        const bancoHoja2 = (window.QuizV2 && typeof QuizV2.obtenerBanco === "function") ? QuizV2.obtenerBanco() : [];\n        const deVocabulario = obtenerPalabrasConImagenDe(bancoHoja2, nivelSeleccionado);'''
+          nuevo = '''        const bancoCompartido = (window.LSPediaJuegosBanco && typeof window.LSPediaJuegosBanco.obtenerCargado === "function")\n            ? window.LSPediaJuegosBanco.obtenerCargado({ fuentes: ["vocabulario"], conImagen: true })\n            : [];\n        const bancoHoja2 = bancoCompartido.length\n            ? bancoCompartido\n            : ((typeof window.obtenerBancoHoja2 === "function") ? window.obtenerBancoHoja2() : []);\n        const deVocabulario = obtenerPalabrasConImagenDe(bancoHoja2, nivelSeleccionado);'''
+          cantidad = a.count(viejo)
+          if cantidad != 2:
+              raise SystemExit(f'Se esperaban 2 usos directos de QuizV2; encontrados: {cantidad}')
+          a = a.replace(viejo, nuevo)
+          alf.write_text(a, encoding='utf-8')
+          PY
+
+      - name: Validar integración
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check js/juegos-banco-compartido.js
+          node --check js/alfabetizacion.js
+          grep -q "obtenerCargado" js/juegos-banco-compartido.js
+          grep -q "LSPediaJuegosBanco.obtenerCargado" js/alfabetizacion.js
+          ! grep -q "QuizV2.obtenerBanco" js/alfabetizacion.js
+          ! grep -q "data/palabras.json" js/juegos-banco-compartido.js
+          python scripts/validar_alfabetizacion.py
+          python scripts/auditar_alfabetizacion.py
+
+      - name: Guardar
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/juegos-banco-compartido.js js/alfabetizacion.js
+          git commit -m "refactor: conectar Alfabetizacion al banco compartido de Juegos"
+          git push origin develop
