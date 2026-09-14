@@ -16,6 +16,11 @@ desktop.ini
 !.env.example
 *.local
 
+# Python generado
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
 # Logs y temporales
 *.log
 *.tmp
