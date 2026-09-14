@@ -102,7 +102,12 @@ def main() -> int:
         if not isinstance(fila, dict):
             errores.append(f"Alfabeto #{i}: no es un objeto.")
             continue
-        permitidos = {"tipo", "caracter", "imagenBoca"}
+        permitidos = {
+            "tipo", "caracter", "imagenBoca", "trazoVideo", "nombre",
+            "grafiaMayuscula", "grafiaMinuscula",
+            "grafiaCursivaMayuscula", "grafiaCursivaMinuscula",
+            "imagenCirculo", "orden", "grafiaImagen",
+        }
         extras = set(fila) - permitidos
         if extras:
             errores.append(f"Alfabeto #{i}: campos no permitidos: {sorted(extras)}")
@@ -121,6 +126,13 @@ def main() -> int:
             letras += 1
         elif tipo == "numero":
             numeros += 1
+        orden = fila.get("orden")
+        if not isinstance(orden, int):
+            errores.append(f"Alfabeto #{i} ({caracter}): orden debe ser entero.")
+
+        if tipo == "numero" and not texto(fila.get("nombre")):
+            advertencias.append(f"Número {caracter}: sin nombre escrito; los juegos usarán el número como respaldo.")
+
         imagen_boca = texto(fila.get("imagenBoca"))
         if not imagen_boca:
             advertencias.append(f"Alfabeto #{i} ({caracter}): sin imagenBoca.")

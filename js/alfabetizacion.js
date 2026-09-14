@@ -15,9 +15,8 @@
      img/alfabetizacion/grafias/{CARACTER}-minuscula.mp4                 (video de grafía, variante minúscula)
      img/alfabetizacion/grafias/{CARACTER}-cursiva-mayuscula.mp4         (video de grafía, variante cursiva mayúscula)
      img/alfabetizacion/grafias/{CARACTER}-cursiva-minuscula.mp4         (video de grafía, variante cursiva minúscula)
-   Estos 4 videos NO vienen del Sheet: se arman por convención de
-   nombre a partir del carácter + variante activa (ver rutaVideoGrafia
-   más abajo), para no tener que agregar columnas a la hoja de cálculo.
+   Los recursos de grafía pueden venir ahora del Sheet. Si una celda está
+   vacía, se conserva la convención histórica de nombres como respaldo.
    El usuario elige la variante con 4 chips flotantes (mayúscula/
    minúscula/cursiva mayúscula/cursiva minúscula); el video de la caja
    "✏️ Grafía" cambia según el chip activo, con los mismos controles
@@ -461,7 +460,16 @@ const AlfabetizacionV2 = (function () {
     // ===========================================================
 
     function listaFiltradaPorTipo() {
-        return estado.datos.alfabeto.filter((c) => c.tipo === estado.aprender.tipo);
+        return estado.datos.alfabeto
+            .filter((c) => c.tipo === estado.aprender.tipo)
+            .slice()
+            .sort((a, b) => {
+                const oa = Number(a && a.orden);
+                const ob = Number(b && b.orden);
+                const va = Number.isFinite(oa) && oa > 0 ? oa : 999999;
+                const vb = Number.isFinite(ob) && ob > 0 ? ob : 999999;
+                return va - vb;
+            });
     }
 
     function caracterActual() {
@@ -554,6 +562,18 @@ const AlfabetizacionV2 = (function () {
     // archivo por dígito (sin sufijo de variante). No vienen del Sheet: se
     // arman a partir del carácter (+ variante, si aplica).
     function rutaVideoGrafia(c, variante) {
+        const mapaCampos = {
+            "mayuscula": "grafiaMayuscula",
+            "minuscula": "grafiaMinuscula",
+            "cursiva-mayuscula": "grafiaCursivaMayuscula",
+            "cursiva-minuscula": "grafiaCursivaMinuscula"
+        };
+        const campo = mapaCampos[variante] || "";
+        const explicita = c && c.tipo === "numero"
+            ? String(c.trazoVideo || "").trim()
+            : String((campo && c && c[campo]) || (variante === "mayuscula" && c ? c.trazoVideo : "") || "").trim();
+        if (explicita) return explicita;
+
         const base = "img/alfabetizacion/grafias/" + encodeURIComponent(c.caracter);
         if (c.tipo === "numero") return base + ".mp4";
         return base + "-" + variante + ".mp4";
@@ -562,6 +582,11 @@ const AlfabetizacionV2 = (function () {
     // Misma convención que rutaVideoGrafia, pero para la imagen estática
     // que se muestra DENTRO de cada chip. Tampoco viene del Sheet.
     function rutaImagenGrafia(c, variante) {
+        const explicita = c && c.tipo === "numero"
+            ? String(c.grafiaImagen || "").trim()
+            : "";
+        if (explicita) return explicita;
+
         const base = "img/alfabetizacion/grafias/" + encodeURIComponent(c.caracter);
         if (c.tipo === "numero") return base + ".png";
         return base + "-" + variante + ".png";
@@ -780,7 +805,8 @@ const AlfabetizacionV2 = (function () {
         if (!img) return;
 
         const altTexto = (c.tipo === "numero" ? "Seña del número " : "Seña de la letra ") + c.caracter;
-        cargarImagenSenaConReintento(img, texto, rutaCirculoCaracter(c.caracter), altTexto);
+        const rutaCirculo = String(c.imagenCirculo || "").trim() || rutaCirculoCaracter(c.caracter);
+        cargarImagenSenaConReintento(img, texto, rutaCirculo, altTexto);
     }
 
     // Boca (fonética): a partir de LSPedia soporta tanto imagen (.png/.jpg)
@@ -1059,6 +1085,19 @@ const AlfabetizacionV2 = (function () {
         renderEjemploActual();
     }
 
+    function bancoNumerosDesdeDatos(nivelSeleccionado) {
+        const nivelObjetivo = nivelObjetivoJuego(nivelSeleccionado);
+        return (estado.datos.alfabeto || [])
+            .filter((c) => c && c.tipo === "numero" && String(c.caracter || "").trim())
+            .filter((c) => nivelNumeroJuego(c.caracter) === nivelObjetivo)
+            .map((c) => ({
+                palabra: String(c.nombre || CONFIG.PALABRA_NUMERO[c.caracter] || c.caracter).trim(),
+                imagen: null,
+                numero: String(c.caracter),
+                nivel: nivelNumeroJuego(c.caracter)
+            }));
+    }
+
     // ===========================================================
     // MÓDULO 2: JUEGO "COMPLETAR LA PALABRA"
     // Fusiona palabras del abecedario (con imagen, vienen de
@@ -1187,14 +1226,7 @@ const AlfabetizacionV2 = (function () {
                 nivel: normalizarNivelPedagogico(e.nivel, e.palabra)
             }));
 
-        const deNumeros = Object.keys(CONFIG.PALABRA_NUMERO)
-            .filter((n) => nivelNumeroJuego(n) === nivelObjetivoJuego(nivelSeleccionado))
-            .map((n) => ({
-                palabra: CONFIG.PALABRA_NUMERO[n],
-                imagen: null,
-                numero: n,
-                nivel: nivelNumeroJuego(n)
-            }));
+        const deNumeros = bancoNumerosDesdeDatos(nivelSeleccionado);
 
         // Vocabulario (Hoja 2) se filtra por su propio nivel y por imagen
         // real. A propósito NO se usa el Diccionario (Hoja 1).
@@ -1796,14 +1828,7 @@ const AlfabetizacionV2 = (function () {
                 nivel: normalizarNivelPedagogico(e.nivel, e.palabra)
             }));
 
-        const deNumeros = Object.keys(CONFIG.PALABRA_NUMERO)
-            .filter((n) => nivelNumeroJuego(n) === nivelObjetivoJuego(nivelSeleccionado))
-            .map((n) => ({
-                palabra: CONFIG.PALABRA_NUMERO[n],
-                imagen: null,
-                numero: n,
-                nivel: nivelNumeroJuego(n)
-            }));
+        const deNumeros = bancoNumerosDesdeDatos(nivelSeleccionado);
 
         const bancoCompartido = (window.LSPediaJuegosBanco && typeof window.LSPediaJuegosBanco.obtenerCargado === "function")
             ? window.LSPediaJuegosBanco.obtenerCargado({ fuentes: ["vocabulario"], conImagen: true })

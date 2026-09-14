@@ -28,7 +28,12 @@ SPREADSHEET_ID = "1fqC1aUpwdz6l0xRyYYfki7vJtjIql6sOEzpfWElknT0"
 HOJA_ALFABETO = "Alfabetización"
 HOJA_EJEMPLOS = "AlfabetizacionEjemplos"
 
-CAMPOS_ALFABETO = ("tipo", "caracter", "imagenBoca")
+CAMPOS_ALFABETO = (
+    "tipo", "caracter", "imagenBoca", "trazoVideo", "nombre",
+    "grafiaMayuscula", "grafiaMinuscula",
+    "grafiaCursivaMayuscula", "grafiaCursivaMinuscula",
+    "imagenCirculo", "orden", "grafiaImagen",
+)
 CAMPOS_EJEMPLOS = ("caracter", "palabra", "imagen", "orden", "nivel")
 
 
@@ -134,6 +139,15 @@ def limpiar_alfabeto(filas: object) -> list[dict]:
             "tipo": tipo,
             "caracter": caracter,
             "imagenBoca": ruta_media(fila.get("imagenBoca")),
+            "trazoVideo": ruta_media(fila.get("trazoVideo")),
+            "nombre": texto(fila.get("nombre")),
+            "grafiaMayuscula": ruta_media(fila.get("grafiaMayuscula")),
+            "grafiaMinuscula": ruta_media(fila.get("grafiaMinuscula")),
+            "grafiaCursivaMayuscula": ruta_media(fila.get("grafiaCursivaMayuscula")),
+            "grafiaCursivaMinuscula": ruta_media(fila.get("grafiaCursivaMinuscula")),
+            "imagenCirculo": ruta_media(fila.get("imagenCirculo")),
+            "orden": convertir_orden(fila.get("orden")),
+            "grafiaImagen": ruta_media(fila.get("grafiaImagen")),
         }
         salida.append({campo: limpio[campo] for campo in CAMPOS_ALFABETO})
 
