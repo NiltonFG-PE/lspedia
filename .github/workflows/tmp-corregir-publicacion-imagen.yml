@@ -1,0 +1,40 @@
+name: Temporal corregir publicación por imagen
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - "scripts/tmp_corregir_publicacion_imagen.py"
+      - ".github/workflows/tmp-corregir-publicacion-imagen.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  corregir:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+      - name: Aplicar corrección
+        run: python scripts/tmp_corregir_publicacion_imagen.py
+      - name: Validar JavaScript
+        run: |
+          node --check js/script.js
+          node --check js/buscador-visual.js
+      - name: Validar publicación
+        run: python scripts/validar_publicacion_publica.py
+      - name: Validar seguridad
+        run: python scripts/validar_seguridad.py
+      - name: Revisar diff
+        run: git diff --check
+      - name: Commit y push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/script.js js/buscador-visual.js scripts/validar_publicacion_publica.py
+          git commit -m "fix: ocultar diccionario sin imagen real"
+          git push origin develop
