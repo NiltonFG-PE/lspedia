@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Guardia conservadora para archivos históricos candidatos a eliminación.
+"""Guardia conservadora para archivos históricos y respaldos necesarios.
 
-No borra nada. Falla si una fuente activa vuelve a referenciar nombres que ya
-no deben formar parte de la aplicación, y señala cuándo un candidato existente
-está huérfano y puede retirarse con seguridad.
+No borra nada. Impide que reaparezcan módulos retirados y comprueba que los
+respaldos históricos que siguen formando parte de la aplicación mantengan una
+referencia activa antes de conservarlos.
 """
 from pathlib import Path
 import sys
@@ -14,7 +14,7 @@ RETIRADOS = {
     "js/accesibilidad.js": ("js/accesibilidad.js", "accesibilidad.js"),
     "css/accesibilidad.css": ("css/accesibilidad.css", "accesibilidad.css"),
 }
-CANDIDATOS = {
+RESPALDOS_REQUERIDOS = {
     "data/alfabetizacion-mock.json": ("data/alfabetizacion-mock.json", "alfabetizacion-mock.json"),
 }
 
@@ -27,7 +27,7 @@ IGNORAR = {
     Path("scripts/verificar_archivos_huerfanos.py"),
     Path("scripts/verificar_legado_accesibilidad.py"),
     *(Path(p) for p in RETIRADOS),
-    *(Path(p) for p in CANDIDATOS),
+    *(Path(p) for p in RESPALDOS_REQUERIDOS),
 }
 
 
@@ -67,15 +67,15 @@ def main():
         else:
             print(f"OK retirado y sin referencias: {ruta}")
 
-    for ruta, patrones in CANDIDATOS.items():
+    for ruta, patrones in RESPALDOS_REQUERIDOS.items():
         existe = (ROOT / ruta).exists()
         refs = buscar_referencias(patrones, fuentes)
-        if refs:
-            errores.append(f"{ruta} todavía tiene referencias: {', '.join(refs)}")
-        elif existe:
-            print(f"HUÉRFANO CONFIRMADO: {ruta}")
+        if not existe:
+            errores.append(f"Falta respaldo requerido: {ruta}")
+        elif not refs:
+            errores.append(f"{ruta} quedó huérfano; revisar antes de conservarlo")
         else:
-            print(f"OK ya retirado y sin referencias: {ruta}")
+            print(f"CONSERVAR respaldo activo: {ruta} <- {', '.join(refs)}")
 
     if errores:
         for error in errores:
