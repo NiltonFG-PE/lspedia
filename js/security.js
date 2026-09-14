@@ -77,8 +77,6 @@
 
     marcarCopiaComoNoIndexable();
 
-    // Enlaces y formularios: una copia pública no puede reutilizar los
-    // formularios, Apps Script ni otros servicios operativos de LSPedia.
     document.addEventListener('click', function (evento) {
         const enlace = evento.target && evento.target.closest ? evento.target.closest('a[href]') : null;
         if (!enlace || permitirServicio(enlace.href)) return;
@@ -106,8 +104,6 @@
         return abrirOriginal.apply(window, arguments);
     };
 
-    // También se bloquean llamadas programáticas. Ocultar botones no basta:
-    // un clon podría intentar invocar los endpoints directamente desde JS.
     if (typeof window.fetch === 'function') {
         const fetchOriginal = window.fetch.bind(window);
         window.fetch = function (entrada) {
@@ -134,16 +130,12 @@
     }
 })();
 
-/* ============================================================
-   Control visible de instalación PWA.
-   Se carga solo en el dominio oficial o en desarrollo local.
-   ============================================================ */
+/* Instalación PWA solo en oficial/desarrollo. */
 (function cargarControlInstalacionPWA() {
     'use strict';
     try {
         if (window.LSPediaSecurity && !window.LSPediaSecurity.permitirPWA()) return;
         if (document.querySelector('script[data-lspedia-pwa-install]')) return;
-
         const script = document.createElement('script');
         script.src = 'js/pwa-install.js?v=20260914-1';
         script.async = false;
@@ -152,16 +144,12 @@
     } catch (_e) {}
 })();
 
-/* ============================================================
-   Corrección de fullscreen visual para móvil/tablet.
-   Mantiene los controles LSPedia visibles y evita el aviso de Chrome.
-   ============================================================ */
+/* Fullscreen visual móvil/tablet. */
 (function cargarFullscreenMovilFix() {
     'use strict';
     try {
         if (window.LSPediaSecurity && window.LSPediaSecurity.esCopiaPublica()) return;
         if (document.querySelector('script[data-lspedia-fullscreen-mobile-fix]')) return;
-
         const script = document.createElement('script');
         script.src = 'js/fullscreen-mobile-fix.js?v=20260912-3';
         script.async = false;
@@ -172,11 +160,7 @@
 
 /* ============================================================
    REGLA ÚNICA DE PUBLICACIÓN DEL DICCIONARIO
-   ------------------------------------------------------------
-   Se registra antes de script.js. Es la fuente de verdad pública:
-   - una entrada SOLO aparece si tiene una imagen real;
-   - el video es opcional;
-   - definición/categoría/variantes/traducción no publican por sí solas.
+   Una entrada pública necesita imagen REAL; el video es opcional.
    ============================================================ */
 (function activarReglaPublicacionDiccionarioPorImagen() {
     'use strict';
@@ -225,9 +209,7 @@
     function actualizarEstadisticasPublicadas(publicables) {
         const diccionario = Array.isArray(publicables) ? publicables : [];
         const vocabulario = bancoVocabulario();
-        const normalizar = function (valor) {
-            return texto(valor).toLocaleLowerCase('es-PE');
-        };
+        const normalizar = function (valor) { return texto(valor).toLocaleLowerCase('es-PE'); };
 
         const vocabPalabras = vocabulario.filter(function (p) {
             return p && texto(p.palabra) && videoValido(p.video);
@@ -266,7 +248,6 @@
             window.obtenerDatosDiccionarioPublicables !== filtrarPublicables) {
             window.obtenerDatosDiccionarioPublicables = filtrarPublicables;
         }
-
         window.LSPediaPublicacionDiccionario = Object.freeze({
             esImagenReal: esImagenReal,
             filtrar: filtrarPublicables,
@@ -277,10 +258,8 @@
     function refrescarInterfaz(publicables) {
         try { if (typeof window.renderCategoriasDiccionario === 'function') window.renderCategoriasDiccionario(); }
         catch (error) { console.warn('[LSPedia] No se pudieron refrescar categorías:', error); }
-
         try { if (typeof window.mostrarFavoritos === 'function') window.mostrarFavoritos(); }
         catch (_error) {}
-
         try { if (typeof window.recalcularChipsSugeridos === 'function') window.recalcularChipsSugeridos(); }
         catch (_error) {}
 
@@ -312,7 +291,6 @@
 
         try { window.history.replaceState({ tipo: 'vista', vista: 'diccionario' }, '', window.location.pathname); }
         catch (_error) {}
-
         if (typeof window.irAlBuscador === 'function') window.irAlBuscador({ sinEnfoque: true, irArriba: true });
     }
 
@@ -337,7 +315,7 @@
         aplicando = true;
         instalarFiltroEnScriptBase();
 
-        fetch('data/palabras.json?_publicacion_imagen=20260914-1', { cache: 'no-store' })
+        fetch('data/palabras.json?_publicacion_imagen=20260914-2', { cache: 'no-store' })
             .then(function (respuesta) {
                 if (!respuesta.ok) throw new Error('HTTP ' + respuesta.status);
                 return respuesta.json();
@@ -365,6 +343,15 @@
             setTimeout(function () { registrarActualizacionVocabulario(intentosRestantes - 1); }, 350);
         }
     }
+
+    // security.js se registra antes que script.js. En DOMContentLoaded este
+    // listener corre primero y reemplaza la regla histórica ANTES de que
+    // App.iniciar haga su primer filtrado: así nunca aparece una palabra sin
+    // imagen ni siquiera durante la carga inicial.
+    document.addEventListener('DOMContentLoaded', function () {
+        instalarFiltroEnScriptBase();
+        setTimeout(aplicarDesdeFuenteReal, 0);
+    }, { once: true });
 
     document.addEventListener('lspedia:datosListos', function () { setTimeout(aplicarDesdeFuenteReal, 0); });
     document.addEventListener('lspedia:palabrasActualizadas', function () { setTimeout(aplicarDesdeFuenteReal, 0); });
