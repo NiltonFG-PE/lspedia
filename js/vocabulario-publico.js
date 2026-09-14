@@ -14,7 +14,7 @@
 
     if (window.LSPediaVocabularioPublico && window.LSPediaVocabularioPublico.version) return;
 
-    const VERSION = '2026.09.14.1';
+    const VERSION = '2026.09.14.2';
     const DATA_URL = 'data/vocabulario.json';
     const getterAnterior = typeof window.obtenerBancoHoja2 === 'function'
         ? window.obtenerBancoHoja2
@@ -111,17 +111,30 @@
         }));
     }
 
+    function leerDatos(url) {
+        const core = window.LSPediaCore;
+        if (core && typeof core.leerJsonSeguro === 'function') {
+            return core.leerJsonSeguro(url, {
+                timeoutMs: 6500,
+                reintentos: 1,
+                esperaReintentoMs: 400,
+                fetch: { cache: 'no-store' }
+            });
+        }
+        return fetch(url, { cache: 'no-store' }).then(function (respuesta) {
+            if (!respuesta.ok) throw new Error('HTTP ' + respuesta.status);
+            return respuesta.json();
+        });
+    }
+
     function cargar() {
         if (estado.cargando || estado.listo) return;
         estado.cargando = true;
         estado.error = null;
 
         const separador = DATA_URL.includes('?') ? '&' : '?';
-        fetch(DATA_URL + separador + '_publico=' + Date.now(), { cache: 'no-store' })
-            .then(function (respuesta) {
-                if (!respuesta.ok) throw new Error('HTTP ' + respuesta.status);
-                return respuesta.json();
-            })
+        const url = DATA_URL + separador + '_publico=' + Date.now();
+        leerDatos(url)
             .then(function (data) {
                 estado.datos = normalizarLista(data);
                 estado.listo = true;
@@ -129,7 +142,7 @@
             })
             .catch(function (error) {
                 estado.error = error;
-                console.warn('[LSPedia] No se pudo cargar Vocabulario público; se conserva el respaldo del Quiz.', error);
+                console.warn('[LSPedia] No se pudo cargar Vocabulario público; se conserva el respaldo disponible.', error);
             })
             .finally(function () {
                 estado.cargando = false;
