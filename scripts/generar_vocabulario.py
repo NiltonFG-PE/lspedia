@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 """Genera data/vocabulario.json directamente desde Vocabulario de Google Sheets.
 
-Vocabulario y Quiz comparten el mismo banco publicado y ambos requieren video:
-- Una fila entra a Vocabulario únicamente cuando ya tiene video de señas.
-- QuizV2 usa ese mismo banco y mantiene sus filtros por nivel/modo.
-- Las filas sin video permanecen como borradores en Google Sheets y no se
-  publican todavía en data/vocabulario.json.
+Regla pública vigente de LSPedia:
+- Vocabulario público requiere palabra + categoría + imagen real.
+- El video es opcional para aparecer en Vocabulario.
+- QuizV2 lee el mismo JSON, pero filtra internamente solo las filas con video
+  porque algunas actividades del Quiz sí lo necesitan.
 
-Las columnas de definición, imagen y traducción pueden acompañar una ficha que
-sí tiene video, pero nunca convierten por sí solas un borrador en una ficha de
-Vocabulario. Las fichas consultables sin video son exclusivas del Diccionario.
+Esto separa deliberadamente dos conceptos que antes estaban mezclados:
+publicación pública de Vocabulario y disponibilidad para Quiz.
+
+Las columnas de definición, video, nivel, orden y traducción acompañan la ficha
+cuando existen, pero no cambian la regla pública por imagen.
 
 La sincronización conserva explícitamente ``definicion`` y
 ``fechaPublicacion``. Los errores de fórmula de Google Sheets (por ejemplo
@@ -21,6 +23,7 @@ from __future__ import annotations
 import csv
 import io
 import json
+import re
 import sys
 import urllib.parse
 import urllib.request
@@ -46,9 +49,25 @@ CAMPOS = (
     "definicionIngles",
 )
 
+PREFIJO_IMAGEN_RE = re.compile(r"^(?:https?://|/|\.\.?/|img/)", re.I)
+EXTENSION_IMAGEN_RE = re.compile(
+    r"\.(?:avif|gif|jpe?g|png|svg|webp)(?:[?#].*)?$",
+    re.I,
+)
+
 
 def texto(valor: object) -> str:
     return "" if valor is None else str(valor).strip()
+
+
+def imagen_real(valor: object) -> bool:
+    """Replica la regla pública del frontend para la imagen principal."""
+    principal = texto(valor).split(",", 1)[0].strip()
+    return bool(
+        principal
+        and PREFIJO_IMAGEN_RE.search(principal)
+        and EXTENSION_IMAGEN_RE.search(principal)
+    )
 
 
 def normalizar_fecha_publicacion(valor: object) -> str:
@@ -81,7 +100,7 @@ def descargar_csv() -> list[dict[str, str]]:
     solicitud = urllib.request.Request(
         base + "?" + parametros,
         headers={
-            "User-Agent": "LSPedia-vocabulario-sync/2.3",
+            "User-Agent": "LSPedia-vocabulario-sync/3.0",
             "Accept": "text/csv,text/plain,*/*",
         },
     )
@@ -109,7 +128,11 @@ def descargar_csv() -> list[dict[str, str]]:
 def limpiar(filas: list[dict[str, str]]) -> list[dict]:
     salida: list[dict] = []
     vistos: set[tuple[str, str]] = set()
-    borradores_omitidos = 0
+    omitidos_campos_base = 0
+    omitidos_sin_imagen = 0
+    duplicados_omitidos = 0
+    con_video = 0
+    sin_video = 0
     con_definicion = 0
     con_fecha_publicacion = 0
 
@@ -117,24 +140,32 @@ def limpiar(filas: list[dict[str, str]]) -> list[dict]:
         mapa = {clave(k): v for k, v in fila.items()}
         palabra = texto(mapa.get("palabra"))
         categoria = texto(mapa.get("categoria"))
-        if not palabra or not categoria:
-            continue
-
-        video = texto(mapa.get("video"))
-        if not video:
-            borradores_omitidos += 1
-            continue
-
         imagen = texto(mapa.get("imagen"))
-        definicion = texto(mapa.get("definicion"))
-        fecha_publicacion = normalizar_fecha_publicacion(mapa.get("fechapublicacion"))
+
+        if not palabra or not categoria:
+            omitidos_campos_base += 1
+            continue
+
+        # Regla pública de Vocabulario: la imagen real es obligatoria.
+        if not imagen_real(imagen):
+            omitidos_sin_imagen += 1
+            continue
 
         # En Vocabulario una misma palabra/categoría no debe duplicarse.
         identidad = (palabra.casefold(), categoria.casefold())
         if identidad in vistos:
+            duplicados_omitidos += 1
             continue
         vistos.add(identidad)
 
+        video = texto(mapa.get("video"))
+        definicion = texto(mapa.get("definicion"))
+        fecha_publicacion = normalizar_fecha_publicacion(mapa.get("fechapublicacion"))
+
+        if video:
+            con_video += 1
+        else:
+            sin_video += 1
         if definicion:
             con_definicion += 1
         if fecha_publicacion:
@@ -156,13 +187,21 @@ def limpiar(filas: list[dict[str, str]]) -> list[dict]:
         salida.append({campo: registro[campo] for campo in CAMPOS})
 
     if not salida:
-        raise RuntimeError("Vocabulario no devolvió ninguna palabra con video para publicar.")
+        raise RuntimeError(
+            "Vocabulario no devolvió ninguna ficha pública con palabra + categoría + imagen real."
+        )
 
-    print(f"Borradores de Vocabulario omitidos por no tener video: {borradores_omitidos}.")
     print(
-        "Metadatos de Vocabulario: "
-        f"{con_definicion}/{len(salida)} con definición; "
-        f"{con_fecha_publicacion}/{len(salida)} con fechaPublicacion."
+        "Vocabulario omitido: "
+        f"campos base={omitidos_campos_base}; "
+        f"sin imagen real={omitidos_sin_imagen}; "
+        f"duplicados palabra/categoría={duplicados_omitidos}."
+    )
+    print(
+        "Vocabulario público: "
+        f"{len(salida)} fichas; {con_video} con video; {sin_video} sin video; "
+        f"{con_definicion} con definición; "
+        f"{con_fecha_publicacion} con fechaPublicacion."
     )
     return salida
 
@@ -181,7 +220,10 @@ def main() -> int:
         if not isinstance(comprobacion, list) or not comprobacion:
             raise RuntimeError("El JSON temporal no pasó la validación.")
         temporal.replace(DESTINO)
-        print(f"Vocabulario actualizado: {len(datos)} fichas con video de señas.")
+        print(
+            f"Vocabulario actualizado: {len(datos)} fichas públicas por imagen. "
+            "Quiz filtrará internamente las que tengan video."
+        )
         return 0
     except Exception as exc:
         try:
