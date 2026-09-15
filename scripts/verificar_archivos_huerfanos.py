@@ -5,6 +5,9 @@ Impide que reaparezcan módulos/parches/workflows retirados y comprueba que los
 respaldos históricos que siguen formando parte de la aplicación mantengan una
 referencia activa antes de conservarlos. Las menciones narrativas en documentación
 no se consideran dependencias ejecutables.
+
+Los temporales de la migración del 15-09-2026 quedan registrados aquí después de
+su eliminación para que una copia o cherry-pick futuro no los reactive por error.
 """
 from pathlib import Path
 import sys
