@@ -86,9 +86,21 @@ def validar_integracion_frontend():
     script = ROOT / "js" / "script.js"
     lo_nuevo = ROOT / "js" / "lo-nuevo.js"
     buscador_visual = ROOT / "js" / "buscador-visual.js"
+    generador_vocab = ROOT / "scripts" / "generar_vocabulario.py"
+    quiz = ROOT / "js" / "quiz.js"
     sw = ROOT / "sw.js"
 
-    for path in (modulo, cargador, security, script, lo_nuevo, buscador_visual, sw):
+    for path in (
+        modulo,
+        cargador,
+        security,
+        script,
+        lo_nuevo,
+        buscador_visual,
+        generador_vocab,
+        quiz,
+        sw,
+    ):
         if not path.exists():
             raise AssertionError(f"Falta archivo requerido: {path.relative_to(ROOT)}")
 
@@ -98,6 +110,8 @@ def validar_integracion_frontend():
     texto_script = script.read_text(encoding="utf-8")
     texto_lo_nuevo = lo_nuevo.read_text(encoding="utf-8")
     texto_buscador_visual = buscador_visual.read_text(encoding="utf-8")
+    texto_generador = generador_vocab.read_text(encoding="utf-8")
+    texto_quiz = quiz.read_text(encoding="utf-8")
     texto_sw = sw.read_text(encoding="utf-8")
 
     requeridos_modulo = [
@@ -115,11 +129,48 @@ def validar_integracion_frontend():
     if '"js/vocabulario-publico.js"' not in texto_sw:
         raise AssertionError("sw.js no cachea vocabulario-publico.js")
 
+    # El generador estático debe obedecer la regla pública por imagen, no la del Quiz.
+    requeridos_generador = [
+        "def imagen_real",
+        "if not imagen_real(imagen):",
+        "Quiz filtrará internamente las que tengan video",
+    ]
+    faltantes_generador = [x for x in requeridos_generador if x not in texto_generador]
+    if faltantes_generador:
+        raise AssertionError(
+            "generar_vocabulario.py perdió la regla pública por imagen: "
+            + ", ".join(faltantes_generador)
+        )
+    prohibidos_generador = [
+        "Una fila entra a Vocabulario únicamente cuando ya tiene video",
+        "Borradores de Vocabulario omitidos por no tener video",
+        "ninguna palabra con video para publicar",
+    ]
+    encontrados_generador = [x for x in prohibidos_generador if x in texto_generador]
+    if encontrados_generador:
+        raise AssertionError(
+            "generar_vocabulario.py volvió a exigir video para publicar: "
+            + ", ".join(encontrados_generador)
+        )
+
+    # Quiz puede seguir filtrando video dentro de su propio banco.
+    if ".filter((p) => p && p.palabra && p.video)" not in texto_quiz:
+        raise AssertionError("Quiz dejó de conservar su filtro interno por video")
+
     # La fuente de verdad del Diccionario debe vivir en script.js.
     if "function obtenerDatosDiccionarioPublicables(data)" not in texto_script:
         raise AssertionError("script.js perdió el filtro canónico del Diccionario")
     if "String(p.definicion || '').trim()" not in texto_script:
         raise AssertionError("el Diccionario dejó de exigir definición")
+
+    # Las estadísticas públicas de Vocabulario no pueden volver a filtrar palabras por video.
+    filtro_antiguo_stats = '.filter(p => p.palabra && p.video && p.video.trim() !== "")'
+    if filtro_antiguo_stats in texto_script:
+        raise AssertionError(
+            "actualizarEstadisticas() volvió a contar Vocabulario solo cuando tiene video"
+        )
+    if "const palabrasVocabulario = bancoHoja2" not in texto_script:
+        raise AssertionError("script.js perdió el conteo separado de Vocabulario")
 
     # security.js no debe volver a mezclar seguridad con reglas editoriales.
     prohibidos_security = [
@@ -168,8 +219,8 @@ def main():
                 "AVISO: existen duplicados históricos pendientes de limpieza "
                 f"(Diccionario={len(dup_dic)}, Vocabulario={len(dup_voc)})."
             )
-        print("Regla pública validada: Diccionario = definición + imagen; video opcional. Lo nuevo mantiene video obligatorio.")
-        print("Separación validada: security ≠ publicación ≠ Quiz.")
+        print("Regla pública validada: Diccionario = definición + imagen; Vocabulario = imagen; video opcional.")
+        print("Separación validada: publicación pública ≠ Quiz ≠ security.")
         return 0
     except Exception as exc:
         print(f"ERROR publicación pública: {exc}", file=sys.stderr)
