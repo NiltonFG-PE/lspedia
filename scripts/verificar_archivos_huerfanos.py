@@ -18,6 +18,8 @@ RETIRADOS = {
     "scripts/integrar_regla_publicacion_diccionario.py": ("integrar_regla_publicacion_diccionario.py",),
     "scripts/ajustar_security_publicacion.py": ("ajustar_security_publicacion.py",),
     ".github/workflows/integrar-regla-publicacion.yml": ("integrar-regla-publicacion.yml",),
+    "scripts/tmp_mejoras_20260915.py": ("tmp_mejoras_20260915.py",),
+    ".github/workflows/tmp-mejoras-20260915.yml": ("tmp-mejoras-20260915.yml",),
 }
 RESPALDOS_REQUERIDOS = {
     "data/alfabetizacion-mock.json": ("data/alfabetizacion-mock.json", "alfabetizacion-mock.json"),
