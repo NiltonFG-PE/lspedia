@@ -2970,6 +2970,18 @@ function inicializarDefinicionColapsable(contenedor){
 }
 
 function mostrarPalabra(p, opciones = {}){
+    // Barrera de separación: una entrada marcada como Vocabulario nunca debe
+    // renderizarse con la ficha ni la navegación del Diccionario. Esto también
+    // protege flujos antiguos que todavía pudieran llamar mostrarPalabra().
+    if(obtenerFuentePalabra(p) === "vocabulario"){
+        mostrarPalabraSimplificada(marcarFuenteVocabulario(p), {
+            ...opciones,
+            fuente: "vocabulario",
+            enCategorias: opciones.enCategorias !== false
+        });
+        return;
+    }
+
     // opciones.enCategorias === true  ->  este resultado viene de la vista
     // "Temas orden" (categorías): se pinta dentro de #resultadoCategorias,
     // con el botón "Atrás" arriba (incluso arriba del video), en vez de en
@@ -5689,6 +5701,14 @@ function generarMiniaturaSugerencia(p){
 }
 
 function mostrarSugerenciasRelacionadas(palabraActual, contenedor, opciones = {}){
+    if(obtenerFuentePalabra(palabraActual) === "vocabulario"){
+        mostrarSugerenciasRelacionadasVocabulario(
+            marcarFuenteVocabulario(palabraActual),
+            contenedor,
+            opciones
+        );
+        return;
+    }
     if(!contenedor) return;
     contenedor.innerHTML = "";
     const relacionadas = App.datos.filter(p => p.categoria.trim() === palabraActual.categoria.trim() && p.palabra !== palabraActual.palabra);
@@ -5727,7 +5747,17 @@ function mostrarSugerenciasRelacionadasVocabulario(palabraActual, contenedor, op
     relacionadas.slice(-4).reverse().forEach(p => {
         const col = document.createElement("div"); col.className = "col-12 col-md-6 mb-2";
         col.innerHTML = `<div class="card h-100 border-0 shadow-sm" style="border-radius: 12px; background-color: #ffffff;"><div class="row g-0 align-items-center"><div class="col-3 p-2">${generarMiniaturaSugerencia(p)}</div><div class="col-9"><div class="card-body py-2 px-2"><h6 class="mb-0 fw-bold text-primary">${escaparHtml(p.palabra)}</h6></div></div></div></div>`;
-        col.onclick = () => { window.scrollTo({ top: 0, behavior: 'smooth' }); mostrarPalabraSimplificada(p, { enCategorias: !!opciones.clickAbreEnCategorias }); };
+        col.onclick = () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            const referencia = obtenerIdPalabra(p);
+            const enVocabulario = buscarPalabraPorReferencia(referencia, obtenerDatosVocabulario());
+            if(enVocabulario){
+                mostrarPalabraSimplificada(marcarFuenteVocabulario(enVocabulario), {
+                    fuente: "vocabulario",
+                    enCategorias: !!opciones.clickAbreEnCategorias
+                });
+            }
+        };
         filas.appendChild(col);
     });
 }
