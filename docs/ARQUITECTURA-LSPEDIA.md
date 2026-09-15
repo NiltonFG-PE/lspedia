@@ -1,6 +1,6 @@
 # Arquitectura actual de LSPedia
 
-Actualizado: 14 de septiembre de 2026.
+Actualizado: 15 de septiembre de 2026.
 
 Este documento describe la arquitectura operativa de la rama `develop`. Su objetivo es evitar que futuras mejoras vuelvan a introducir reglas antiguas o mezclen fuentes que hoy están separadas.
 
@@ -33,21 +33,24 @@ Una ficha de Vocabulario público necesita:
 
 **palabra + categoría + imagen real.**
 
-- Fuente: `data/vocabulario.json`.
-- `js/vocabulario-publico.js` crea la colección pública por imagen y sustituye únicamente el getter público usado por búsqueda, Vocabulario y estadísticas.
-- El video sigue siendo opcional para Vocabulario público.
+El video es opcional.
+
+- Fuente estática: `data/vocabulario.json`.
+- `scripts/generar_vocabulario.py` descarga la hoja `Vocabulario` y genera el JSON aplicando la regla pública por imagen real; ya no exige video.
+- `js/vocabulario-publico.js` crea la colección pública usada por búsqueda, Vocabulario y estadísticas.
+- `js/script.js` cuenta las fichas públicas de Vocabulario sin volver a exigir video.
 - La carga usa la capa de red resiliente de `LSPediaCore`: timeout, reintento limitado y `cache: no-store`.
 
 ### Lo nuevo
 
 - `js/lo-nuevo.js` exige video válido.
-- Una ficha del Diccionario puede ser buscable sin video y, al mismo tiempo, quedar fuera de `Lo nuevo`.
+- Una ficha del Diccionario o Vocabulario puede ser pública sin video y, al mismo tiempo, quedar fuera de `Lo nuevo`.
 - Esta diferencia es deliberada y está protegida por `scripts/validar_publicacion_publica.py`.
 
 ### Quiz
 
-- `js/quiz.js` conserva su banco interno.
-- El Quiz puede exigir video porque su mecánica lo necesita.
+- `js/quiz.js` consume el banco de Vocabulario, pero filtra internamente las filas con video para las actividades que lo necesitan.
+- El requisito de video del Quiz nunca define qué contenido es público.
 - El banco del Quiz no debe utilizarse como filtro de publicación ni como fuente de estadísticas públicas de Vocabulario.
 
 ## 3. Juegos
@@ -67,12 +70,32 @@ Los niveles de Alfabetización deben respetar el campo `nivel` cuando esté disp
 
 ## 4. Alfabetización
 
-- Fuente principal: `data/alfabetizacion.json`.
+- Hoja: `Alfabetización`.
+- Fuente principal web: `data/alfabetizacion.json`.
+- Ejemplos: hoja `AlfabetizacionEjemplos`.
 - Módulo: `js/alfabetizacion.js`.
 - `data/alfabetizacion-mock.json` NO es basura: es un respaldo local deliberado y modo de prueba controlado.
 - El JSON principal se sincroniza mediante los workflows y scripts de Alfabetización.
+- La estructura admite fonética, grafía normal y cursiva, imagen/seña, orden y números ampliables desde Sheets.
 
-## 5. Red y manejo de errores
+## 5. Auditoría editorial de contenido
+
+`scripts/auditar_contenido_pendiente.py` separa pendientes sin modificar datos:
+
+- Diccionario: falta definición, falta imagen real y falta video.
+- Vocabulario: falta imagen real y falta video.
+- El video se informa como pendiente editorial, pero no bloquea la publicación pública.
+
+`scripts/auditar_duplicados.py` clasifica sin borrar automáticamente:
+
+- copias completamente idénticas;
+- misma palabra + misma categoría con diferencias, que requieren decisión editorial;
+- misma palabra en categorías distintas;
+- coincidencias entre Diccionario y Vocabulario, que no son errores por sí mismas.
+
+`--fix-exact` solo puede retirar copias completamente idénticas y nunca decide entre registros diferentes.
+
+## 6. Red y manejo de errores
 
 `js/lspedia-core.js` ofrece la capa común para cargas críticas:
 
@@ -86,12 +109,15 @@ Esta capa no reemplaza globalmente `window.fetch`; los módulos la usan de forma
 
 Actualmente la usan Vocabulario público y el banco compartido de Juegos. El laboratorio de señas tiene límites de espera propios porque carga MediaPipe, WASM y un modelo externo.
 
-`scripts/validar_red_segura.py` protege esta arquitectura para evitar que futuras ediciones vuelvan a dejar cargas críticas sin límite de espera o conecten Juegos al Diccionario/Quiz.
+El panel privado de Analytics también tiene tolerancia específica a la latencia de Google Apps Script: cada intento espera hasta 45 segundos, realiza hasta tres intentos y conserva el último dashboard visible mientras intenta actualizar.
 
-## 6. PWA
+`scripts/validar_red_segura.py` protege la arquitectura de red general. `scripts/validar_admin_analytics.py` protege además los reintentos y el timeout del Admin.
+
+## 7. PWA
 
 - Manifest: `manifest.json`.
 - Service Worker: `sw.js`.
+- Versión actual del shell al actualizar este documento: `v131`.
 - La caché del shell usa versionado explícito.
 - `skipWaiting()` y `clients.claim()` permiten activar versiones nuevas sin esperar a cerrar todas las pestañas.
 - Los JSON de contenido crítico se mantienen fuera de una caché agresiva para evitar mostrar publicaciones antiguas.
@@ -100,7 +126,7 @@ Actualmente la usan Vocabulario público y el banco compartido de Juegos. El lab
 
 La validación definitiva de actualización/offline continúa requiriendo un dispositivo Android real.
 
-## 7. Seguridad
+## 8. Seguridad
 
 ### Frontend público
 
@@ -108,19 +134,22 @@ La validación definitiva de actualización/offline continúa requiriendo un dis
 - `js/security.js` NO define publicación ni estadísticas.
 - `js/lspedia-core.js`: utilidades de texto/URL seguras, canonical, identidad oficial y utilidades de red resiliente.
 - El CI ejecuta `scripts/validar_seguridad.py` y `scripts/auditar-seguridad.mjs`.
-- `scripts/validar_publicacion_publica.py` impide que lógica de Quiz/publicación vuelva a mezclarse dentro de `security.js`.
+- `scripts/validar_publicacion_publica.py` impide que lógica de Quiz/publicación vuelva a mezclarse dentro de `security.js` y protege la separación Diccionario/Vocabulario/Quiz.
 
 ### Admin Analytics
 
 - `admin/busquedas.html` usa JSONP para Apps Script.
 - `admin/busquedas-diagnostico.js` bloquea endpoints JSONP administrativos que no sean un `/exec` HTTPS de `script.google.com`.
+- El frontend reintenta automáticamente una conexión que falla de forma temporal antes de mostrar un error definitivo.
 - Las claves administrativas deben vivir en Script Properties, no en GitHub.
 
 ### Publicador
 
-El Apps Script específico del Publicador no está versionado completamente en este repositorio. Por eso su auditoría interna completa no puede considerarse cerrada desde GitHub.
+- Hojas actuales: `Diccionario`, `Vocabulario`, `Alfabetización` y `AlfabetizacionEjemplos`.
+- El Apps Script específico del Publicador no está versionado completamente en este repositorio.
+- Las versiones manuales más recientes del Publicador incorporan edición de Alfabetización y apertura automática, pero su instalación/despliegue real sigue requiriendo comprobación en Apps Script y no debe darse por validado únicamente desde GitHub.
 
-## 8. Buscador mediante señas con IA
+## 9. Buscador mediante señas con IA
 
 Archivos principales:
 
@@ -133,18 +162,20 @@ Estado actual:
 
 1. cámara en navegador;
 2. landmarks de hasta dos manos;
-3. secuencias normalizadas;
-4. comparación temporal;
-5. Top 3 de conceptos candidatos;
-6. muestras locales;
-7. importación/exportación JSON;
-8. evaluación experimental de precisión;
-9. dataset central versionado y validado;
-10. timeout para dataset central, motor de visión y carga del modelo de manos.
+3. pose y rasgos faciales experimentales;
+4. secuencias normalizadas;
+5. comparación temporal;
+6. Top 3 de conceptos candidatos;
+7. muestras locales;
+8. importación/exportación JSON;
+9. evaluación experimental de precisión;
+10. dataset central versionado y validado;
+11. timeout para dataset central, motor de visión y carga del modelo;
+12. predicción principal destacada arriba de la cámara y controles de cámara/búsqueda siempre accesibles.
 
 El dataset central almacena landmarks, no videos. Para avanzar en precisión hacen falta muestras reales de LSP obtenidas con consentimiento y revisión humana.
 
-## 9. Accesibilidad
+## 10. Accesibilidad
 
 La capa vigente es:
 
@@ -153,7 +184,7 @@ La capa vigente es:
 
 Los antiguos `js/accesibilidad.js` y `css/accesibilidad.css` fueron retirados después de comprobar automáticamente que estaban huérfanos.
 
-## 10. SEO
+## 11. SEO
 
 Ya existen:
 
@@ -181,11 +212,12 @@ H1 institucional, tanto en el HTML inicial como en el refuerzo dinámico:
 
 Search Console y la comprobación de indexación real requieren acceso a la cuenta correspondiente.
 
-## 11. Validaciones automáticas
+## 12. Validaciones automáticas
 
 `.github/workflows/validar-lspedia.yml` verifica, entre otros:
 
 - Diccionario y Vocabulario;
+- contenido pendiente sin modificar datos;
 - duplicados sin modificar datos;
 - Alfabetización;
 - fuentes permitidas de Juegos;
@@ -198,27 +230,31 @@ Search Console y la comprobación de indexación real requieren acceso a la cuen
 - regla pública y estadísticas;
 - sitemap público;
 - SEO estático;
-- panel Analytics;
+- panel Analytics y su conexión resiliente;
 - separación entre publicación, Quiz y security;
 - presupuesto del frontend;
 - archivos históricos retirados/respaldo activo;
 - imágenes locales;
 - archivo multimedia protegido.
 
+Además de ejecutarse con cambios relevantes y pull requests, tiene una comprobación programada semanal para detectar regresiones aunque no se esté trabajando activamente en una sección.
+
 `.github/workflows/seguridad-lspedia.yml` ejecuta la auditoría específica de XSS, secretos y patrones inseguros.
 
-## 12. Archivos que no deben eliminarse por parecer antiguos
+## 13. Archivos que no deben eliminarse por parecer antiguos
 
 - `data/alfabetizacion-mock.json`: respaldo activo.
 - `scripts/separar_fuentes_chunk1.txt` a `chunk4.txt`: usados por `scripts/separar_diccionario_vocabulario.py` como parche idempotente de migración.
 - `video/lspedia_transparente anterior.webm`: archivo protegido por hash en CI.
 
-Los parches históricos cuya arquitectura objetivo ya fue retirada deben eliminarse solo después de comprobar que no tienen referencias ejecutables. `scripts/verificar_archivos_huerfanos.py` mantiene esa lista de retiro.
+Los parches y workflows temporales deben eliminarse después de completar y validar su migración. `scripts/verificar_archivos_huerfanos.py` impide que varios temporales ya retirados reaparezcan por accidente.
 
-## 13. Deuda técnica conocida
+## 14. Deuda técnica conocida
 
 - Seguir modularizando `js/script.js` sin alterar navegación, autoplay, formularios o URLs existentes.
 - Extender gradualmente la capa de red resiliente a módulos antiguos cuando se modifiquen, sin parchear `window.fetch` globalmente.
 - Mantener separados los requisitos de publicación general de los requisitos específicos de Quiz/Juegos.
 - No eliminar duplicados de datos automáticamente cuando haya que decidir cuál registro conservar; primero auditar y luego aplicar una política editorial explícita.
 - Continuar revisando archivos históricos antes de eliminarlos; no borrar por nombre o antigüedad solamente.
+- Completar el dataset real del buscador por señas y medir precisión antes de integrarlo públicamente.
+- Completar recursos editoriales faltantes de Alfabetización y contenido (definiciones, imágenes, fonética y videos) desde las herramientas de edición correspondientes.
