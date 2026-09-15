@@ -22,6 +22,7 @@ on:
       - "scripts/validar_seguridad.py"
       - "scripts/validar_alfabetizacion.py"
       - "scripts/auditar_alfabetizacion.py"
+      - "scripts/auditar_contenido_pendiente.py"
       - "scripts/normalizar_media_alfabetizacion.py"
       - "scripts/normalizar_categorias.py"
       - "scripts/generar_sitemap.py"
@@ -58,6 +59,7 @@ on:
       - "scripts/validar_seguridad.py"
       - "scripts/validar_alfabetizacion.py"
       - "scripts/auditar_alfabetizacion.py"
+      - "scripts/auditar_contenido_pendiente.py"
       - "scripts/normalizar_media_alfabetizacion.py"
       - "scripts/normalizar_categorias.py"
       - "scripts/generar_sitemap.py"
@@ -73,6 +75,8 @@ on:
       - "scripts/auditar_duplicados.py"
       - "scripts/validar_presupuesto_frontend.py"
       - ".github/workflows/validar-lspedia.yml"
+  schedule:
+    - cron: "17 08 * * 2"
   workflow_dispatch:
 
 permissions:
@@ -96,6 +100,8 @@ jobs:
           python-version: "3.x"
       - name: Validar Diccionario y Vocabulario
         run: python scripts/validar_lspedia.py
+      - name: Auditar contenido pendiente sin modificar datos
+        run: python scripts/auditar_contenido_pendiente.py
       - name: Auditar duplicados sin modificar datos
         run: python scripts/auditar_duplicados.py
       - name: Auditar Alfabetizacion completa
