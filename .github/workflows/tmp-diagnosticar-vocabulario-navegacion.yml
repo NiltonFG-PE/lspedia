@@ -1,0 +1,40 @@
+name: Temporal diagnosticar navegación Vocabulario
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - '.github/workflows/tmp-diagnosticar-vocabulario-navegacion.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  diagnosticar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 1
+      - name: Mostrar funciones relevantes
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('js/script.js').read_text(encoding='utf-8')
+          for nombre in ['function mostrarPalabraSimplificada', 'function mostrarSugerenciasRelacionadasVocabulario', 'function normalizarUrlLegadaPalabra', 'function restaurarPalabraDesdeUrl']:
+              i=s.find(nombre)
+              print('\n===== '+nombre+' =====')
+              if i < 0:
+                  print('NO ENCONTRADO')
+                  continue
+              ini=max(0, s.rfind('\n',0,max(0,i-1200)))
+              fin=min(len(s), i+7000)
+              print(s[ini:fin])
+          print('\n===== ENLACES ?p= CERCA DE VOCABULARIO =====')
+          lineas=s.splitlines()
+          for n,l in enumerate(lineas,1):
+              low=l.lower()
+              if ('vocabulario' in low or 'relacion' in low) and ('?p=' in l or 'mostrarPalabra(' in l or 'window.location' in l or 'href' in l):
+                  print(f'{n}: {l}')
+          PY
