@@ -3,6 +3,8 @@
 
 No consulta GA4 ni usa credenciales. Solo verifica contratos de código entre
 backend Apps Script y frontend Admin para detectar regresiones antes de publicar.
+También protege la tolerancia a arranques lentos de Apps Script: timeout amplio,
+reintentos automáticos y conservación del último dashboard durante una recarga.
 """
 from pathlib import Path
 import sys
@@ -66,6 +68,12 @@ def main():
                 'id="eventList"',
                 'id="errTotal"',
                 'google.visualization.GeoChart',
+                # Resiliencia frente al arranque lento/intermitente de Apps Script.
+                'function requestJsonpUnaVez(apiUrl,key,period)',
+                'async function requestJsonp(apiUrl,key,period)',
+                'Reintentando conexión…',
+                '45000',
+                "el.dashboard.classList.toggle('d-none',!state.data);",
             ],
             "frontend Analytics",
         )
@@ -80,7 +88,10 @@ def main():
             "barrera JSONP del Admin",
         )
 
-        print("Admin Analytics validado: realtime, resumen, tráfico, páginas, geografía, búsquedas y errores.")
+        print(
+            "Admin Analytics validado: realtime, resumen, tráfico, páginas, geografía, "
+            "búsquedas, errores y conexión resiliente con reintentos."
+        )
         return 0
     except Exception as exc:
         print(f"ERROR Admin Analytics: {exc}", file=sys.stderr)
