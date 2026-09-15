@@ -996,12 +996,43 @@ function reconocer() {
   estado('Colócate cómodamente. Cuando detectemos rostro, hombros, al menos una mano y buena luz, comenzará 3–2–1 automáticamente.');
 }
 
+function pronunciarPrimerResultadoPrediccion(etiqueta) {
+  const texto = etiquetaValida(etiqueta);
+  if (!texto || !('speechSynthesis' in window) || typeof SpeechSynthesisUtterance === 'undefined') return;
+
+  try {
+    // Si el usuario hace otra búsqueda mientras todavía se reproduce la
+    // anterior, priorizamos siempre el resultado más reciente.
+    window.speechSynthesis.cancel();
+
+    const voz = new SpeechSynthesisUtterance(texto);
+    voz.lang = 'es-PE';
+    voz.rate = 0.95;
+    voz.pitch = 1;
+    voz.volume = 1;
+
+    const voces = window.speechSynthesis.getVoices();
+    const preferida = voces.find(v => /^es-PE$/i.test(v.lang)) ||
+      voces.find(v => /^es-(419|MX|CO|AR|CL)$/i.test(v.lang)) ||
+      voces.find(v => /^es(?:-|$)/i.test(v.lang));
+    if (preferida) voz.voice = preferida;
+
+    window.speechSynthesis.speak(voz);
+  } catch (error) {
+    console.warn('[LSPedia señas IA] No se pudo reproducir la predicción por voz:', error);
+  }
+}
+
 function renderResultados(top) {
   ui.resultados.textContent = '';
   if (!top.length) {
     ui.resultados.textContent = 'Sin candidatos.';
     return;
   }
+
+  // La búsqueda es una acción explícita del usuario: una vez terminada la
+  // comparación, pronunciamos únicamente el candidato Top 1.
+  pronunciarPrimerResultadoPrediccion(top[0][0]);
   top.forEach(([etiqueta, distancia], i) => {
     const a = document.createElement('a');
     a.className = 'resultado-sena';
