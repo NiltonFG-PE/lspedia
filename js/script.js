@@ -4450,7 +4450,7 @@ function actualizarEstadisticas(){
     // --- Palabras ---
     const palabrasDiccionario = App.datos.map(p => normalizar(p.palabra));
     const palabrasVocabulario = bancoHoja2
-        .filter(p => p.palabra && p.video && p.video.trim() !== "")
+        .filter(p => p && p.palabra && p.categoria)
         .map(p => normalizar(p.palabra));
     const totalEntradasPalabras = palabrasDiccionario.length + palabrasVocabulario.length;
 
