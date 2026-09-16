@@ -13,7 +13,7 @@ on:
       - "scripts/validar_lspedia.py"
       - ".github/workflows/actualizar-vocabulario.yml"
   schedule:
-    - cron: "*/15 * * * *"
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 permissions:
