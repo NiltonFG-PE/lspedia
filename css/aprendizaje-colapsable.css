@@ -1,0 +1,148 @@
+/* LSPedia — controles colapsables para Tu aprendizaje */
+#panelAprendizajeVocabulario.lsp-learning-collapse-ready,
+#lspModoCard.lsp-learning-collapse-ready{
+    padding:0!important;
+}
+
+#lspMejorasInicio .lsp-mejoras-grid{
+    align-items:start;
+}
+
+.lsp-learning-collapse-toggle{
+    position:relative;
+    z-index:3;
+    width:100%;
+    min-height:52px;
+    display:grid;
+    grid-template-columns:auto minmax(0,1fr) auto auto;
+    align-items:center;
+    gap:10px;
+    padding:8px 11px;
+    border:0;
+    background:transparent;
+    color:#172554;
+    text-align:left;
+    cursor:pointer;
+    font:inherit;
+    -webkit-tap-highlight-color:transparent;
+}
+
+.lsp-learning-collapse-toggle:hover,
+.lsp-learning-collapse-toggle:focus-visible{
+    background:rgba(255,255,255,.42);
+    outline:none;
+}
+
+.lsp-learning-collapse-icon{
+    width:34px;
+    height:34px;
+    display:grid;
+    place-items:center;
+    border-radius:10px;
+    background:linear-gradient(145deg,#2563eb,#3b82f6);
+    color:#fff;
+    box-shadow:0 5px 12px rgba(37,99,235,.20);
+    font-size:16px;
+}
+
+.lsp-learning-collapse-copy{
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    gap:1px;
+}
+
+.lsp-learning-collapse-copy strong{
+    color:#172554;
+    font-family:'Poppins',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:.91rem;
+    font-weight:800;
+    line-height:1.15;
+}
+
+.lsp-learning-collapse-copy small{
+    color:#64748b;
+    font-size:.68rem;
+    font-weight:600;
+    line-height:1.2;
+}
+
+.lsp-learning-collapse-action{
+    color:#2563eb;
+    font-size:.70rem;
+    font-weight:800;
+    white-space:nowrap;
+}
+
+.lsp-learning-collapse-chevron{
+    width:27px;
+    height:27px;
+    display:grid;
+    place-items:center;
+    border-radius:50%;
+    background:rgba(255,255,255,.75);
+    border:1px solid rgba(37,99,235,.12);
+    color:#2855a8;
+    font-size:17px;
+    line-height:1;
+    transition:transform .22s ease,background-color .18s ease;
+}
+
+.lsp-learning-collapse-toggle[aria-expanded="true"] .lsp-learning-collapse-chevron{
+    transform:rotate(180deg);
+    background:#fff;
+}
+
+.lsp-learning-collapse-body{
+    position:relative;
+    z-index:2;
+    padding:0 14px 14px;
+}
+
+.lsp-learning-collapse-body[hidden]{
+    display:none!important;
+}
+
+/* El nuevo botón ya hace de encabezado; evitamos repetir “Tu aprendizaje”. */
+#panelAprendizajeVocabulario.lsp-learning-collapse-ready .lsp-learning-collapse-body > .vocab-learning-top,
+#lspModoCard.lsp-learning-collapse-ready .lsp-learning-collapse-body > .lsp-mejora-head{
+    display:none!important;
+}
+
+/* Cerrado: queda como una franja muy compacta. */
+#panelAprendizajeVocabulario.lsp-learning-collapsed,
+#lspModoCard.lsp-learning-collapsed{
+    min-height:0!important;
+}
+
+#panelAprendizajeVocabulario.lsp-learning-collapsed::after,
+#lspModoCard.lsp-learning-collapsed::after{
+    opacity:.55;
+}
+
+@media(max-width:767.98px){
+    .lsp-learning-collapse-toggle{
+        min-height:50px;
+        gap:8px;
+        padding:7px 9px;
+    }
+    .lsp-learning-collapse-icon{
+        width:32px;
+        height:32px;
+        border-radius:9px;
+        font-size:15px;
+    }
+    .lsp-learning-collapse-copy strong{font-size:.86rem}
+    .lsp-learning-collapse-copy small{font-size:.63rem}
+    .lsp-learning-collapse-action{font-size:.66rem}
+    .lsp-learning-collapse-chevron{width:25px;height:25px;font-size:16px}
+    .lsp-learning-collapse-body{padding:0 12px 12px}
+}
+
+@media(max-width:380px){
+    .lsp-learning-collapse-action{display:none}
+}
+
+@media(prefers-reduced-motion:reduce){
+    .lsp-learning-collapse-chevron{transition:none!important}
+}
