@@ -5,7 +5,7 @@ Reglas vigentes:
 - Diccionario: palabra + definición + categoría + imagen real.
 - Vocabulario: palabra + categoría + imagen real; video opcional.
 - Conserva portada y licencia.
-- Diccionario usa páginas SEO /palabra/<id>/.
+- Diccionario usa páginas SEO /diccionario/<id>/.
 - Vocabulario usa páginas SEO /vocabulario/<id>/.
 - Solo reescribe sitemap.xml cuando su contenido cambia.
 """
@@ -126,7 +126,7 @@ def construir_sitemap(diccionario: list[str], vocabulario: list[str]) -> str:
 
     for referencia in diccionario:
         encoded = quote(referencia, safe="")
-        lineas += bloque_url(f"{BASE_URL}/palabra/{encoded}/", "monthly", "0.8")
+        lineas += bloque_url(f"{BASE_URL}/diccionario/{encoded}/", "monthly", "0.8")
 
     for referencia in vocabulario:
         encoded = quote(referencia, safe="")
