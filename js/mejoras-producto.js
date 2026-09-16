@@ -98,6 +98,7 @@
 
     cargarCss('css/mejoras-maestras.css?v=20260914');
     cargarCss('css/accesibilidad-segura.css?v=20260914-1');
+    cargarCss('css/vocabulario-layout.css?v=20260915-1');
     function cargarMejorasConCore(){
         cargar('js/vocabulario-publico.js?v=20260914-2');
         cargar('js/accesibilidad-segura.js?v=20260914-1');
