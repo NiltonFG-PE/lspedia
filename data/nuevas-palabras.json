@@ -1,9 +1,18 @@
 {
-  "generadoEn": "2026-09-16T07:04:07Z",
+  "generadoEn": "2026-09-16T07:07:40Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
   "items": [
+    {
+      "id": "",
+      "palabra": "Guinda",
+      "categoria": "Colores",
+      "imagen": "img/vocabulario/guinda.webp",
+      "fecha": "2026-09-16T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
     {
       "id": "",
       "palabra": "Amarillo",
@@ -102,15 +111,6 @@
       "fecha": "2026-09-14T20:36:28Z",
       "origenFecha": "historial-publicacion-video",
       "fuente": "vocabulario"
-    },
-    {
-      "id": "flexible",
-      "palabra": "Flexible",
-      "categoria": "Habilidades",
-      "imagen": "img/diccionario/flexible.webp",
-      "fecha": "2026-09-12T05:00:00Z",
-      "origenFecha": "fechaPublicacion",
-      "fuente": "diccionario"
     }
   ]
 }
