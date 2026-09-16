@@ -1325,6 +1325,13 @@
       "imagen": "img/alfabetizacion/ejemplos/azucar.webp",
       "orden": 18,
       "nivel": "Fácil"
+    },
+    {
+      "caracter": "A",
+      "palabra": "Aceite",
+      "imagen": "img/alfabetizacion/ejemplos/aceite.webp",
+      "orden": 19,
+      "nivel": "Fácil"
     }
   ]
 }
