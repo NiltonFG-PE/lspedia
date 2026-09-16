@@ -102,6 +102,11 @@
         return promesaCore;
     }
 
+    // Hoja ligera de ajustes visuales del Vocabulario y componentes compartidos.
+    // Se carga aquí para que sus reglas queden después de estilos.css y puedan
+    // mejorar, entre otros elementos, el botón Compartir de las categorías.
+    cargarCss('css/vocabulario-layout.css?v=20260916-share');
+
     // Iniciar cuanto antes. Si falla la red, no bloqueamos el resto de la web;
     // el Service Worker también conserva este archivo para uso offline.
     asegurarCore().catch(() => {});
