@@ -1304,6 +1304,13 @@
       "imagen": "img/alfabetizacion/ejemplos/amigo.webp",
       "orden": 15,
       "nivel": "Fácil"
+    },
+    {
+      "caracter": "A",
+      "palabra": "Amiga",
+      "imagen": "img/alfabetizacion/ejemplos/amiga.webp",
+      "orden": 16,
+      "nivel": "Fácil"
     }
   ]
 }
