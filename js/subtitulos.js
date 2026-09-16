@@ -20,6 +20,6 @@
 
     if(!window.__LSPEDIA_CATEGORIAS_COMPARTIR_CARGADO__){
         window.__LSPEDIA_CATEGORIAS_COMPARTIR_CARGADO__ = true;
-        document.write('<script src="js/categorias-compartir.js?v=20260915b"><\/script>');
+        document.write('<script src="js/categorias-compartir.js?v=20260915c"><\/script>');
     }
 })();
