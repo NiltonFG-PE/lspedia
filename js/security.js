@@ -4,6 +4,14 @@
 (function () {
     'use strict';
 
+    // Guarda la URL EXACTA con la que entró el usuario antes de que script.js
+    // pueda modificarla con history.pushState/replaceState. Esto permite que
+    // enlaces compartidos como ?vista=vocabulario&categoria=Emociones
+    // conserven la categoría durante toda la carga inicial.
+    if (!window.__LSPEDIA_URL_INICIAL__) {
+        window.__LSPEDIA_URL_INICIAL__ = window.location.href;
+    }
+
     const HOSTS_OFICIALES = new Set(['lspedia.site', 'www.lspedia.site']);
     const HOSTS_DESARROLLO = new Set(['localhost', '127.0.0.1', '[::1]', '::1']);
     const host = String(window.location.hostname || '').toLowerCase();
