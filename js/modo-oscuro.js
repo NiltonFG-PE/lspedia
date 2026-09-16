@@ -4,7 +4,7 @@
    - Botón integrado junto al selector ES/EN.
    - Preferencia persistente en localStorage.
    - Cambia luna/sol y etiquetas accesibles.
-   - No altera el contenido ni la lógica de Diccionario/Vocabulario.
+   - Integración segura: sin MutationObserver recursivo.
    ============================================================ */
 (function(){
     'use strict';
@@ -57,14 +57,18 @@
 
     function aplicarTema(tema, persistir){
         const normalizado = tema === TEMA_OSCURO ? TEMA_OSCURO : TEMA_CLARO;
-        document.documentElement.setAttribute(ATRIBUTO, normalizado);
+        if(document.documentElement.getAttribute(ATRIBUTO) !== normalizado){
+            document.documentElement.setAttribute(ATRIBUTO, normalizado);
+        }
         if(document.body) document.body.classList.toggle('lspedia-modo-oscuro', normalizado === TEMA_OSCURO);
         if(persistir) guardarTema(normalizado);
         actualizarBoton();
         actualizarThemeColor();
-        try {
-            document.dispatchEvent(new CustomEvent('lspedia:temaCambiado', { detail: { tema: normalizado } }));
-        } catch(_e) {}
+        if(persistir){
+            try {
+                document.dispatchEvent(new CustomEvent('lspedia:temaCambiado', { detail: { tema: normalizado } }));
+            } catch(_e) {}
+        }
     }
 
     function crearBoton(){
@@ -85,9 +89,13 @@
         const selectorIdioma = document.getElementById('lspediaIdiomaSelector');
 
         if(selectorIdioma){
+            /* IMPORTANTE: no volver a appendChild si ya está en el selector.
+               Hacerlo dentro de un MutationObserver generaba un bucle infinito. */
+            if(boton.parentElement !== selectorIdioma){
+                selectorIdioma.appendChild(boton);
+            }
             const respaldo = document.getElementById('lspediaTemaStandalone');
-            selectorIdioma.appendChild(boton);
-            if(respaldo) respaldo.remove();
+            if(respaldo && respaldo.parentElement) respaldo.remove();
             actualizarBoton();
             return true;
         }
@@ -99,39 +107,27 @@
             wrap = document.createElement('div');
             wrap.id = 'lspediaTemaStandalone';
             wrap.className = 'lspedia-tema-standalone';
-            wrap.appendChild(boton);
             navContainer.appendChild(wrap);
         }
+        if(boton.parentElement !== wrap) wrap.appendChild(boton);
         actualizarBoton();
         return true;
     }
 
-    function observarSelectorIdioma(){
-        if(typeof MutationObserver === 'undefined') return;
-        const observer = new MutationObserver(function(){
-            if(document.getElementById('lspediaIdiomaSelector')){
-                integrarBoton();
-                actualizarBoton();
-            }
-        });
-        observer.observe(document.documentElement, { childList: true, subtree: true });
-        window.addEventListener('pagehide', function(){ observer.disconnect(); }, { once: true });
-    }
-
-    // Aplica la preferencia antes de crear el control visible. En la carga
-    // normal esto ocurre mientras el splash todavía está en pantalla, evitando
-    // un salto visual perceptible entre claro y oscuro.
-    aplicarTema(leerTema(), false);
-
     function iniciar(){
+        aplicarTema(leerTema(), false);
         integrarBoton();
-        observarSelectorIdioma();
-        // i18n puede cambiar documentElement.lang después; refrescamos la
-        // etiqueta accesible sin tocar el estado del tema.
-        document.addEventListener('lspedia:idiomaCambiado', actualizarBoton);
-        setTimeout(integrarBoton, 120);
-        setTimeout(integrarBoton, 600);
-        setTimeout(integrarBoton, 1500);
+
+        /* i18n se carga después. En vez de observar todo el DOM, hacemos
+           unos pocos intentos controlados y reaccionamos al evento propio
+           de idioma. Esto evita cualquier ciclo de mutaciones. */
+        [120, 450, 1000, 2200].forEach(function(ms){
+            setTimeout(integrarBoton, ms);
+        });
+        document.addEventListener('lspedia:idiomaCambiado', function(){
+            integrarBoton();
+            actualizarBoton();
+        });
     }
 
     if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar, { once:true });
