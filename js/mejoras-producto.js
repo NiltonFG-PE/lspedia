@@ -148,6 +148,9 @@
         setTimeout(agregarFacebookRedesSociales, ms);
     });
 
+    // Se carga temprano para interceptar la IFrame API antes de crear
+    // reproductores y poder diagnosticar cualquier video que YouTube rechace.
+    cargar('js/youtube-diagnostico.js?v=20260916-1');
     cargar('js/categorias-compartir.js?v=20260915d');
     cargar('js/experiencia-vocabulario.js?v=20260916-2', function(){
         cargarCss('css/aprendizaje-unificado.css?v=20260916-2');
