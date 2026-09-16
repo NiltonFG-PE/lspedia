@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-09-16T14:55:49Z",
+  "generadoEn": "2026-09-16T15:00:10Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
@@ -27,6 +27,15 @@
       "palabra": "Morado",
       "categoria": "Colores",
       "imagen": "img/vocabulario/morado.webp",
+      "fecha": "2026-09-16T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Negro",
+      "categoria": "Colores",
+      "imagen": "img/vocabulario/negro.webp",
       "fecha": "2026-09-16T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
@@ -101,15 +110,6 @@
       "imagen": "img/vocabulario/verde.webp",
       "fecha": "2026-09-15T05:00:00Z",
       "origenFecha": "fechaPublicacion",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Cariño",
-      "categoria": "Emociones",
-      "imagen": "img/vocabulario/cariño.webp",
-      "fecha": "2026-09-14T20:36:28Z",
-      "origenFecha": "historial-publicacion-video",
       "fuente": "vocabulario"
     }
   ]
