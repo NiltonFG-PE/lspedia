@@ -1,14 +1,32 @@
 {
-  "generadoEn": "2026-09-16T01:47:42Z",
+  "generadoEn": "2026-09-16T02:07:39Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
   "items": [
     {
       "id": "",
+      "palabra": "Amarillo",
+      "categoria": "Colores",
+      "imagen": "img/vocabulario/amarillo.png",
+      "fecha": "2026-09-15T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
       "palabra": "Azul",
       "categoria": "Colores",
       "imagen": "img/vocabulario/azul.png",
+      "fecha": "2026-09-15T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Rojo",
+      "categoria": "Colores",
+      "imagen": "img/vocabulario/rojo.png",
       "fecha": "2026-09-15T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
@@ -91,24 +109,6 @@
       "categoria": "Tecnología",
       "imagen": "img/diccionario/ia.webp",
       "fecha": "2026-09-05T02:05:26Z",
-      "origenFecha": "imagen-git",
-      "fuente": "diccionario"
-    },
-    {
-      "id": "vocabulario",
-      "palabra": "Vocabulario",
-      "categoria": "Comunicación",
-      "imagen": "img/diccionario/vocabulario.webp",
-      "fecha": "2026-09-03T18:38:22Z",
-      "origenFecha": "imagen-git",
-      "fuente": "diccionario"
-    },
-    {
-      "id": "uniformidad",
-      "palabra": "Uniformidad",
-      "categoria": "Educación",
-      "imagen": "img/diccionario/uniformidad.webp",
-      "fecha": "2026-09-03T18:38:18Z",
       "origenFecha": "imagen-git",
       "fuente": "diccionario"
     }
