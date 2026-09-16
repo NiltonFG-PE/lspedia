@@ -125,6 +125,12 @@
     activarAutoScrollIndiceDiccionario();
     desactivarAvisoModalVocabulario();
 
+    // Restauración de enlaces compartidos de categorías. Se carga aquí,
+    // al final de la aplicación, para poder recuperar la URL original aunque
+    // script.js ya haya reducido ?vista=vocabulario&categoria=X a solo
+    // ?vista=vocabulario mediante history.pushState().
+    cargar('js/categorias-compartir.js?v=20260915d');
+
     cargarCss('css/mejoras-maestras.css?v=20260914');
     cargarCss('css/accesibilidad-segura.css?v=20260914-1');
     cargarCss('css/vocabulario-layout.css?v=20260915-2');
