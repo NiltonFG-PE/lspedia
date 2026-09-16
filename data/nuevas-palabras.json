@@ -1,9 +1,45 @@
 {
-  "generadoEn": "2026-09-14T11:47:55Z",
+  "generadoEn": "2026-09-16T01:39:29Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
   "items": [
+    {
+      "id": "",
+      "palabra": "Azul",
+      "categoria": "Colores",
+      "imagen": "img/vocabulario/azul.png",
+      "fecha": "2026-09-15T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Cariño",
+      "categoria": "Emociones",
+      "imagen": "img/vocabulario/cariño.webp",
+      "fecha": "2026-09-14T20:36:28Z",
+      "origenFecha": "historial-publicacion-video",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Extrañar",
+      "categoria": "Emociones",
+      "imagen": "img/vocabulario/extrañar.webp",
+      "fecha": "2026-09-14T20:36:28Z",
+      "origenFecha": "historial-publicacion-video",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Añadir",
+      "categoria": "Verbos",
+      "imagen": "img/vocabulario/añadir.webp",
+      "fecha": "2026-09-14T20:36:28Z",
+      "origenFecha": "historial-publicacion-video",
+      "fuente": "vocabulario"
+    },
     {
       "id": "flexible",
       "palabra": "Flexible",
@@ -41,33 +77,6 @@
       "fuente": "diccionario"
     },
     {
-      "id": "",
-      "palabra": "Cariño",
-      "categoria": "Emociones",
-      "imagen": "img/vocabulario/cariño.webp",
-      "fecha": "2026-09-08T10:18:48Z",
-      "origenFecha": "historial-publicacion-video",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Extrañar",
-      "categoria": "Emociones",
-      "imagen": "img/vocabulario/extrañar.webp",
-      "fecha": "2026-09-08T10:18:48Z",
-      "origenFecha": "historial-publicacion-video",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Añadir",
-      "categoria": "Verbos",
-      "imagen": "img/vocabulario/añadir.webp",
-      "fecha": "2026-09-08T10:18:48Z",
-      "origenFecha": "historial-publicacion-video",
-      "fuente": "vocabulario"
-    },
-    {
       "id": "tesis",
       "palabra": "Tesis",
       "categoria": "Universidad",
@@ -100,15 +109,6 @@
       "categoria": "Educación",
       "imagen": "img/diccionario/uniformidad.webp",
       "fecha": "2026-09-03T18:38:18Z",
-      "origenFecha": "imagen-git",
-      "fuente": "diccionario"
-    },
-    {
-      "id": "por-favor",
-      "palabra": "Por favor",
-      "categoria": "Cortesía",
-      "imagen": "img/diccionario/porfavor.webp",
-      "fecha": "2026-09-03T18:38:13Z",
       "origenFecha": "imagen-git",
       "fuente": "diccionario"
     }
