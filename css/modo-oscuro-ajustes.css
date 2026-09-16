@@ -1,0 +1,231 @@
+/* ============================================================
+   LSPedia — ajustes finos de modo oscuro
+   2026-09-16
+   ------------------------------------------------------------
+   Corrige superficies que conservaban estilos claros:
+   - avatar animado
+   - Lo nuevo
+   - Tu aprendizaje (Diccionario y Vocabulario)
+   - Favoritos e Historial
+   - barra legal del footer
+   - botones de compartir de categorías
+   ============================================================ */
+
+/* AVATAR ANIMADO
+   El WebM transparente tiene un antialias claro visible sobre fondos oscuros.
+   Un borde óptico muy fino del mismo navy del sitio reduce ese halo sin
+   deformar ni oscurecer el personaje. */
+html[data-lsp-tema="dark"] #colAvatarHero,
+html[data-lsp-tema="dark"] #colAvatarHero > div,
+html[data-lsp-tema="dark"] #colAvatarHero .avatar-hero-img,
+html[data-lsp-tema="dark"] #colAvatarHero video,
+html[data-lsp-tema="dark"] #colAvatarHero img {
+    background: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+html[data-lsp-tema="dark"] #colAvatarHero .avatar-hero-img,
+html[data-lsp-tema="dark"] #colAvatarHero video {
+    filter:
+        drop-shadow(0 0 1px #09111f)
+        drop-shadow(0 0 1.5px #09111f)
+        drop-shadow(0 10px 18px rgba(0,0,0,.16)) !important;
+}
+
+/* LO NUEVO */
+html[data-lsp-tema="dark"] #lspNuevasCard {
+    background: linear-gradient(145deg, #101b2d 0%, #14233a 100%) !important;
+    border-color: #2b3e58 !important;
+    box-shadow: 0 10px 28px rgba(0,0,0,.22) !important;
+    color: #e7eef8 !important;
+}
+html[data-lsp-tema="dark"] #lspNuevasCard .lsp-mejora-titulo {
+    color: #edf5ff !important;
+}
+html[data-lsp-tema="dark"] #lspNuevasCard .lsp-mejora-icono {
+    background: #183253 !important;
+    color: #ffd44d !important;
+}
+html[data-lsp-tema="dark"] #lspNuevasCard .lsp-mejora-sub {
+    color: #9fb0c5 !important;
+}
+html[data-lsp-tema="dark"] #lspNuevasCard .lsp-nueva-palabra {
+    background: linear-gradient(145deg, #17243a 0%, #132036 100%) !important;
+    border-color: #30445f !important;
+    color: #e7eef8 !important;
+    box-shadow: 0 6px 16px rgba(0,0,0,.14) !important;
+}
+html[data-lsp-tema="dark"] #lspNuevasCard .lsp-nueva-palabra:hover,
+html[data-lsp-tema="dark"] #lspNuevasCard .lsp-nueva-palabra:focus-visible {
+    background: #1a2b45 !important;
+    border-color: #4d7099 !important;
+    box-shadow: 0 8px 20px rgba(0,0,0,.23), 0 0 0 2px rgba(79,179,255,.08) !important;
+}
+html[data-lsp-tema="dark"] #lspNuevasCard .lsp-nueva-thumb-wrap {
+    background: #0c1728 !important;
+}
+html[data-lsp-tema="dark"] #lspNuevasCard .lsp-nueva-nombre {
+    color: #eef5ff !important;
+}
+html[data-lsp-tema="dark"] #lspNuevasCard .lsp-nueva-cat {
+    color: #91a5bd !important;
+}
+html[data-lsp-tema="dark"] #lspNuevasCard .lsp-nueva-badge {
+    background: #153954 !important;
+    color: #8ed4ff !important;
+}
+
+/* TU APRENDIZAJE — Diccionario + Vocabulario */
+html[data-lsp-tema="dark"] #panelAprendizajeVocabulario,
+html[data-lsp-tema="dark"] #lspModoCard {
+    background:
+        radial-gradient(circle at 92% 10%, rgba(70,145,235,.13), transparent 30%),
+        linear-gradient(145deg, #101b2d 0%, #14233a 58%, #162840 100%) !important;
+    border-color: #2d4666 !important;
+    box-shadow: 0 9px 24px rgba(0,0,0,.23) !important;
+    color: #e7eef8 !important;
+}
+html[data-lsp-tema="dark"] #panelAprendizajeVocabulario::after,
+html[data-lsp-tema="dark"] #lspModoCard::after {
+    border-color: rgba(96,165,250,.07) !important;
+}
+html[data-lsp-tema="dark"] #panelAprendizajeVocabulario .lsp-learning-collapse-toggle,
+html[data-lsp-tema="dark"] #lspModoCard .lsp-learning-collapse-toggle {
+    color: #e7eef8 !important;
+}
+html[data-lsp-tema="dark"] #panelAprendizajeVocabulario .lsp-learning-collapse-toggle:hover,
+html[data-lsp-tema="dark"] #panelAprendizajeVocabulario .lsp-learning-collapse-toggle:focus-visible,
+html[data-lsp-tema="dark"] #lspModoCard .lsp-learning-collapse-toggle:hover,
+html[data-lsp-tema="dark"] #lspModoCard .lsp-learning-collapse-toggle:focus-visible {
+    background: rgba(79,179,255,.07) !important;
+}
+html[data-lsp-tema="dark"] .lsp-learning-collapse-copy strong,
+html[data-lsp-tema="dark"] #panelAprendizajeVocabulario .vocab-learning-title,
+html[data-lsp-tema="dark"] #lspModoCard .lsp-mejora-titulo,
+html[data-lsp-tema="dark"] #lspModoCard .lsp-aprender-estado strong {
+    color: #eef5ff !important;
+}
+html[data-lsp-tema="dark"] .lsp-learning-collapse-copy small,
+html[data-lsp-tema="dark"] #panelAprendizajeVocabulario .vocab-learning-subtitle,
+html[data-lsp-tema="dark"] #lspModoCard .lsp-mejora-sub,
+html[data-lsp-tema="dark"] #lspModoCard .lsp-aprender-meta {
+    color: #9aabc0 !important;
+}
+html[data-lsp-tema="dark"] .lsp-learning-collapse-action {
+    color: #69bfff !important;
+}
+html[data-lsp-tema="dark"] .lsp-learning-collapse-chevron {
+    background: #1a2a43 !important;
+    border-color: #355170 !important;
+    color: #8fcfff !important;
+}
+html[data-lsp-tema="dark"] .lsp-learning-collapse-toggle[aria-expanded="true"] .lsp-learning-collapse-chevron {
+    background: #203552 !important;
+}
+html[data-lsp-tema="dark"] #lspModoCard .lsp-aprender-estado,
+html[data-lsp-tema="dark"] #panelAprendizajeVocabulario .vocab-learning-stat {
+    background: rgba(10,22,38,.58) !important;
+    border-color: #2a415e !important;
+    color: #9aabc0 !important;
+    box-shadow: 0 3px 10px rgba(0,0,0,.12) !important;
+}
+
+/* FAVORITOS E HISTORIAL — ambos existen tanto en Diccionario como en la
+   navegación de Vocabulario. Se oscurece la superficie exterior y cualquier
+   tarjeta/lista que se genere dentro. */
+html[data-lsp-tema="dark"] #seccionFavoritos,
+html[data-lsp-tema="dark"] #seccionHistorial {
+    background: linear-gradient(145deg, #101b2d 0%, #142238 100%) !important;
+    border-color: #2b3e58 !important;
+    box-shadow: 0 9px 24px rgba(0,0,0,.20) !important;
+    color: #e7eef8 !important;
+}
+html[data-lsp-tema="dark"] #seccionFavoritos :is(.card,.list-group-item),
+html[data-lsp-tema="dark"] #seccionHistorial :is(.card,.list-group-item) {
+    background: #17243a !important;
+    border-color: #30445f !important;
+    color: #e7eef8 !important;
+}
+html[data-lsp-tema="dark"] #seccionFavoritos :is(h1,h2,h3,h4,h5,h6,strong),
+html[data-lsp-tema="dark"] #seccionHistorial :is(h1,h2,h3,h4,h5,h6,strong) {
+    color: #eef5ff !important;
+}
+html[data-lsp-tema="dark"] #seccionFavoritos :is(p,small,.text-muted,.text-secondary),
+html[data-lsp-tema="dark"] #seccionHistorial :is(p,small,.text-muted,.text-secondary) {
+    color: #9aabc0 !important;
+}
+html[data-lsp-tema="dark"] #seccionHistorial .btn,
+html[data-lsp-tema="dark"] #seccionFavoritos .btn {
+    background: #162943 !important;
+    color: #8fcfff !important;
+    border-color: #355170 !important;
+    box-shadow: none !important;
+}
+html[data-lsp-tema="dark"] #seccionHistorial .btn:hover,
+html[data-lsp-tema="dark"] #seccionFavoritos .btn:hover {
+    background: #1c3554 !important;
+    color: #d8efff !important;
+    border-color: #52749c !important;
+}
+
+/* FOOTER — bloque de derechos/licencia */
+html[data-lsp-tema="dark"] .footer-lspedia .footer-bottom {
+    background: linear-gradient(145deg, #101b2d 0%, #142238 100%) !important;
+    border: 1px solid #2b3e58 !important;
+    box-shadow: 0 8px 22px rgba(0,0,0,.22) !important;
+}
+html[data-lsp-tema="dark"] .footer-lspedia .footer-derechos-principal,
+html[data-lsp-tema="dark"] .footer-lspedia .footer-bottom strong,
+html[data-lsp-tema="dark"] .footer-lspedia .footer-bottom span {
+    color: #dce7f4 !important;
+}
+html[data-lsp-tema="dark"] .footer-lspedia .footer-escudo {
+    background: #15304d !important;
+    color: #67bfff !important;
+    box-shadow: 0 0 0 4px rgba(79,179,255,.05) !important;
+}
+html[data-lsp-tema="dark"] .footer-lspedia .footer-link-licencia.footer-link-boton {
+    background: #162943 !important;
+    color: #8fcfff !important;
+    border-color: #355170 !important;
+    box-shadow: none !important;
+}
+html[data-lsp-tema="dark"] .footer-lspedia .footer-link-licencia.footer-link-boton:hover {
+    background: #1c3554 !important;
+    color: #d8efff !important;
+    border-color: #52749c !important;
+}
+
+/* Botón compartir de categorías: evita círculos blancos aislados en Vocabulario. */
+html[data-lsp-tema="dark"] .btn-compartir-categoria,
+html[data-lsp-tema="dark"] .btn-compartir-categoria-lspedia {
+    background: #18283f !important;
+    border-color: #355170 !important;
+    color: #7bc8ff !important;
+    box-shadow: 0 5px 14px rgba(0,0,0,.20) !important;
+}
+html[data-lsp-tema="dark"] .btn-compartir-categoria:hover,
+html[data-lsp-tema="dark"] .btn-compartir-categoria-lspedia:hover {
+    background: #203552 !important;
+    border-color: #52749c !important;
+    color: #b7e1ff !important;
+}
+
+/* Scroll horizontal de Lo nuevo. */
+html[data-lsp-tema="dark"] #lspNuevasLista {
+    scrollbar-color: #3a506d #0e1829;
+}
+html[data-lsp-tema="dark"] #lspNuevasLista::-webkit-scrollbar-track {
+    background: #0e1829;
+}
+html[data-lsp-tema="dark"] #lspNuevasLista::-webkit-scrollbar-thumb {
+    background: #3a506d;
+    border-radius: 999px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html[data-lsp-tema="dark"] #colAvatarHero .avatar-hero-img,
+    html[data-lsp-tema="dark"] #colAvatarHero video {
+        transition: none !important;
+    }
+}
