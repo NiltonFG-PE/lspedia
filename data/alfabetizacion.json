@@ -1332,6 +1332,13 @@
       "imagen": "img/alfabetizacion/ejemplos/aceite.webp",
       "orden": 19,
       "nivel": "Fácil"
+    },
+    {
+      "caracter": "A",
+      "palabra": "Ambulancia",
+      "imagen": "img/alfabetizacion/ejemplos/ambulancia.webp",
+      "orden": 20,
+      "nivel": "Fácil"
     }
   ]
 }
