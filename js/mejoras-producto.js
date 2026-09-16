@@ -67,6 +67,34 @@
         });
     }
 
+    // El aviso modal "Vocabulario en fase de prueba" ya no debe aparecer.
+    // Se conserva el texto introductorio normal de Vocabulario dentro de la página.
+    function desactivarAvisoModalVocabulario(){
+        window.mostrarAvisoVocabulario = function(){ return false; };
+
+        const modal = document.getElementById('modalAvisoVocabulario');
+        if(modal){
+            try {
+                if(typeof bootstrap !== 'undefined' && bootstrap.Modal){
+                    const instancia = bootstrap.Modal.getInstance(modal);
+                    if(instancia) instancia.hide();
+                }
+            } catch(_error) {}
+            modal.remove();
+        }
+
+        document.querySelectorAll('.modal-backdrop').forEach(function(backdrop){
+            backdrop.remove();
+        });
+
+        const contenidoPrincipal = document.getElementById('contenidoPrincipalApp');
+        if(contenidoPrincipal) contenidoPrincipal.classList.remove('contenido-desenfocado');
+
+        document.body.classList.remove('vocab-aviso-activo', 'modal-open');
+        document.body.style.removeProperty('padding-right');
+        document.body.style.removeProperty('overflow');
+    }
+
     function cargarCss(href){
         if(document.querySelector('link[data-lspedia-modulo="' + href + '"]')) return;
         const link = document.createElement('link');
@@ -95,10 +123,11 @@
 
     activarDescubreSoloConVideo();
     activarAutoScrollIndiceDiccionario();
+    desactivarAvisoModalVocabulario();
 
     cargarCss('css/mejoras-maestras.css?v=20260914');
     cargarCss('css/accesibilidad-segura.css?v=20260914-1');
-    cargarCss('css/vocabulario-layout.css?v=20260915-1');
+    cargarCss('css/vocabulario-layout.css?v=20260915-2');
     function cargarMejorasConCore(){
         cargar('js/vocabulario-publico.js?v=20260914-2');
         cargar('js/accesibilidad-segura.js?v=20260914-1');
