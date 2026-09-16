@@ -11,15 +11,12 @@
    - El panel /admin/ y los laboratorios quedan fuera del fallback público.
    ============================================================ */
 
-const VERSION_APP = "v145";
+const VERSION_APP = "v146";
 const PREFIJO_CACHE = "lspedia-shell-";
 const PREFIJO_RUNTIME = "lspedia-runtime-";
 const CACHE_NOMBRE = PREFIJO_CACHE + VERSION_APP;
 const CACHE_RUNTIME = PREFIJO_RUNTIME + VERSION_APP;
 
-// Cuando un archivo estático se abre directamente en una pestaña, el navegador
-// usa una navegación de nivel superior (request.mode === "navigate"). Esas
-// solicitudes no deben recibir index.html como fallback de la PWA.
 const EXTENSION_ARCHIVO_ESTATICO = /\.(?:avif|bmp|gif|ico|jpe?g|png|svg|webp|css|js|mjs|json|map|webmanifest|woff2?|ttf|otf|mp3|wav|ogg|mp4|webm|pdf|txt|xml)$/i;
 
 const ARCHIVOS_CASCARON = [
@@ -30,6 +27,7 @@ const ARCHIVOS_CASCARON = [
     "css/quiz.css",
     "css/mejoras-producto.css",
     "css/aprendizaje-unificado.css",
+    "css/aprendizaje-colapsable.css",
     "css/accesibilidad-segura.css",
     "css/vocabulario-layout.css",
     "css/fab-dock-delgado.css",
@@ -46,6 +44,7 @@ const ARCHIVOS_CASCARON = [
     "js/quiz.js",
     "js/mejoras-producto.js",
     "js/experiencia-vocabulario.js",
+    "js/aprendizaje-colapsable.js",
     "js/categorias-compartir.js",
     "js/mejoras-producto-base.js",
     "js/optimizacion-errores.js",
