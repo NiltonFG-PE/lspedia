@@ -1346,6 +1346,13 @@
       "imagen": "img/alfabetizacion/ejemplos/armario.webp",
       "orden": 21,
       "nivel": "Fácil"
+    },
+    {
+      "caracter": "A",
+      "palabra": "Arena",
+      "imagen": "img/alfabetizacion/ejemplos/arena.webp",
+      "orden": 22,
+      "nivel": "Fácil"
     }
   ]
 }
