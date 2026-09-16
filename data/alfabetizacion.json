@@ -1395,6 +1395,13 @@
       "imagen": "img/alfabetizacion/ejemplos/antena.webp",
       "orden": 28,
       "nivel": "Medio"
+    },
+    {
+      "caracter": "A",
+      "palabra": "Aspiradora",
+      "imagen": "img/alfabetizacion/ejemplos/aspiradora.webp",
+      "orden": 29,
+      "nivel": "Medio"
     }
   ]
 }
