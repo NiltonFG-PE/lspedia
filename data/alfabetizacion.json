@@ -802,6 +802,13 @@
       "nivel": "Fácil"
     },
     {
+      "caracter": "B",
+      "palabra": "Botella",
+      "imagen": "img/alfabetizacion/ejemplos/botella.webp",
+      "orden": 7,
+      "nivel": "Fácil"
+    },
+    {
       "caracter": "C",
       "palabra": "Caballo",
       "imagen": "img/alfabetizacion/ejemplos/caballo.webp",
