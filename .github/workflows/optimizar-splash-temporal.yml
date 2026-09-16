@@ -1,0 +1,87 @@
+name: Temporal optimizar splash
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - ".github/workflows/optimizar-splash-temporal.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  optimizar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Hacer visible el logo inmediatamente
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          index = Path('index.html')
+          html = index.read_text(encoding='utf-8')
+
+          preload = '    <link rel="preload" href="img/favicon.png" as="image" fetchpriority="high">\n'
+          favicon = '    <link rel="icon" type="image/png" href="img/favicon.png">\n'
+          if preload not in html:
+              if favicon not in html:
+                  raise SystemExit('No se encontró el favicon esperado en index.html')
+              html = html.replace(favicon, preload + favicon, 1)
+
+          vieja = '<img src="img/favicon.png" alt="" width="82" height="82" fetchpriority="high" decoding="async">'
+          nueva = '<img src="img/favicon.png" alt="" width="82" height="82" fetchpriority="high" loading="eager" decoding="sync">'
+          if vieja in html:
+              html = html.replace(vieja, nueva, 1)
+          elif nueva not in html:
+              raise SystemExit('No se encontró la imagen principal del splash esperada')
+
+          marca = '    <meta name="theme-color" content="#0f172a">\n'
+          override = '''\n    <!-- El splash debe mostrar la marca desde el primer fotograma, incluso con Internet lento. -->\n    <style id="splash-visible-inmediato">\n        #splashLogo {\n            opacity: 1 !important;\n            transform: none !important;\n            animation: none !important;\n            will-change: auto !important;\n        }\n    </style>\n'''
+          if 'id="splash-visible-inmediato"' not in html:
+              if marca not in html:
+                  raise SystemExit('No se encontró theme-color para insertar el ajuste del splash')
+              html = html.replace(marca, marca + override, 1)
+
+          index.write_text(html, encoding='utf-8')
+
+          sw = Path('sw.js')
+          texto = sw.read_text(encoding='utf-8')
+          texto = texto.replace('const VERSION_APP = "v134";', 'const VERSION_APP = "v135";', 1)
+          if '"img/favicon.png"' not in texto:
+              ancla = '    "./index.html",\n'
+              if ancla not in texto:
+                  raise SystemExit('No se encontró el cascarón esperado en sw.js')
+              texto = texto.replace(ancla, ancla + '    "img/favicon.png",\n', 1)
+          sw.write_text(texto, encoding='utf-8')
+          PY
+
+      - name: Validar cambios
+        shell: bash
+        run: |
+          node --check sw.js
+          git diff --check
+          grep -q 'splash-visible-inmediato' index.html
+          grep -q 'rel="preload" href="img/favicon.png"' index.html
+          grep -q 'VERSION_APP = "v135"' sw.js
+          grep -q '"img/favicon.png"' sw.js
+
+      - name: Publicar optimización
+        shell: bash
+        run: |
+          if git diff --quiet -- index.html sw.js; then
+            echo "El splash ya estaba optimizado."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html sw.js
+          git commit -m "Optimizar splash para conexiones lentas"
+          git push origin HEAD:develop
