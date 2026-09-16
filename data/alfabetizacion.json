@@ -725,6 +725,13 @@
       "nivel": "Fácil"
     },
     {
+      "caracter": "A",
+      "palabra": "Almohada",
+      "imagen": "img/alfabetizacion/ejemplos/almohada.webp",
+      "orden": 10,
+      "nivel": "Fácil"
+    },
+    {
       "caracter": "B",
       "palabra": "Barco",
       "imagen": "img/alfabetizacion/ejemplos/barco.webp",
