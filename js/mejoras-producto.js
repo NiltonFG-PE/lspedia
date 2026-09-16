@@ -4,24 +4,19 @@
 (function(){
     'use strict';
 
-    // "Descubre" solo elige entre palabras publicadas que además tienen video.
     function activarDescubreSoloConVideo(){
         const original = window.mostrarSenalDelDia;
         if(typeof original !== 'function' || original.__lspediaSoloVideos) return;
 
         function mostrarDescubreSoloConVideo(){
             const app = window.App;
-            if(!app || !Array.isArray(app.datos)){
-                return original.apply(this, arguments);
-            }
+            if(!app || !Array.isArray(app.datos)) return original.apply(this, arguments);
 
             const datosCompletos = app.datos;
             const palabrasConVideo = datosCompletos.filter(function(palabra){
                 const video = String((palabra && palabra.video) || '').trim();
                 if(!video) return false;
-                if(typeof window.extraerIdYouTube === 'function'){
-                    return !!window.extraerIdYouTube(video);
-                }
+                if(typeof window.extraerIdYouTube === 'function') return !!window.extraerIdYouTube(video);
                 return true;
             });
 
@@ -32,19 +27,13 @@
             }
 
             app.datos = palabrasConVideo;
-            try {
-                return original.apply(this, arguments);
-            } finally {
-                app.datos = datosCompletos;
-            }
+            try { return original.apply(this, arguments); }
+            finally { app.datos = datosCompletos; }
         }
 
         mostrarDescubreSoloConVideo.__lspediaSoloVideos = true;
         window.mostrarSenalDelDia = mostrarDescubreSoloConVideo;
-
-        if(window.App && Array.isArray(window.App.datos) && window.App.datos.length){
-            mostrarDescubreSoloConVideo();
-        }
+        if(window.App && Array.isArray(window.App.datos) && window.App.datos.length) mostrarDescubreSoloConVideo();
     }
 
     function activarAutoScrollIndiceDiccionario(){
@@ -57,18 +46,13 @@
                 requestAnimationFrame(function(){
                     const destino = document.getElementById('resultado');
                     if(!destino || !destino.innerHTML.trim()) return;
-                    if(typeof window.scrollAlPrimerResultado === 'function'){
-                        window.scrollAlPrimerResultado(destino);
-                    } else {
-                        destino.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
+                    if(typeof window.scrollAlPrimerResultado === 'function') window.scrollAlPrimerResultado(destino);
+                    else destino.scrollIntoView({behavior:'smooth',block:'start'});
                 });
             });
         });
     }
 
-    // El aviso modal "Vocabulario en fase de prueba" ya no debe aparecer.
-    // Se conserva el texto introductorio normal de Vocabulario dentro de la página.
     function desactivarAvisoModalVocabulario(){
         window.mostrarAvisoVocabulario = function(){ return false; };
 
@@ -83,14 +67,10 @@
             modal.remove();
         }
 
-        document.querySelectorAll('.modal-backdrop').forEach(function(backdrop){
-            backdrop.remove();
-        });
-
+        document.querySelectorAll('.modal-backdrop').forEach(function(backdrop){ backdrop.remove(); });
         const contenidoPrincipal = document.getElementById('contenidoPrincipalApp');
         if(contenidoPrincipal) contenidoPrincipal.classList.remove('contenido-desenfocado');
-
-        document.body.classList.remove('vocab-aviso-activo', 'modal-open');
+        document.body.classList.remove('vocab-aviso-activo','modal-open');
         document.body.style.removeProperty('padding-right');
         document.body.style.removeProperty('overflow');
     }
@@ -125,21 +105,18 @@
     activarAutoScrollIndiceDiccionario();
     desactivarAvisoModalVocabulario();
 
-    // Restauración de enlaces compartidos de categorías. Se carga aquí,
-    // al final de la aplicación, para poder recuperar la URL original aunque
-    // script.js ya haya reducido ?vista=vocabulario&categoria=X a solo
-    // ?vista=vocabulario mediante history.pushState().
     cargar('js/categorias-compartir.js?v=20260915d');
-    cargar('js/experiencia-vocabulario.js?v=20260916-1', function(){
-        // Después de que Vocabulario inyecte sus estilos base, aplicamos el
-        // mismo lenguaje visual compacto a Diccionario y Vocabulario.
-        cargarCss('css/aprendizaje-unificado.css?v=20260916-1');
+    cargar('js/experiencia-vocabulario.js?v=20260916-2', function(){
+        cargarCss('css/aprendizaje-unificado.css?v=20260916-2');
+        cargarCss('css/aprendizaje-colapsable.css?v=20260916-1');
+        cargar('js/aprendizaje-colapsable.js?v=20260916-1');
     });
 
     cargarCss('css/mejoras-maestras.css?v=20260914');
     cargarCss('css/accesibilidad-segura.css?v=20260914-1');
     cargarCss('css/vocabulario-layout.css?v=20260915-2');
     cargarCss('css/fab-dock-delgado.css?v=20260916-1');
+
     function cargarMejorasConCore(){
         cargar('js/vocabulario-publico.js?v=20260914-2');
         cargar('js/accesibilidad-segura.js?v=20260914-1');
@@ -147,6 +124,7 @@
         cargar('js/juegos-banco-compartido.js?v=20260914-2');
         cargar('js/a-z-movil.js?v=20260914');
     }
+
     if(window.LSPediaCore) cargarMejorasConCore();
     else cargar('js/lspedia-core.js?v=20260914-3', cargarMejorasConCore);
 
