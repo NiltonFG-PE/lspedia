@@ -1339,6 +1339,13 @@
       "imagen": "img/alfabetizacion/ejemplos/ambulancia.webp",
       "orden": 20,
       "nivel": "Fácil"
+    },
+    {
+      "caracter": "A",
+      "palabra": "Armario",
+      "imagen": "img/alfabetizacion/ejemplos/armario.webp",
+      "orden": 21,
+      "nivel": "Fácil"
     }
   ]
 }
