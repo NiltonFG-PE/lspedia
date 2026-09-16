@@ -746,6 +746,13 @@
       "nivel": "Fácil"
     },
     {
+      "caracter": "A",
+      "palabra": "Arete",
+      "imagen": "img/alfabetizacion/ejemplos/arete.webp",
+      "orden": 13,
+      "nivel": "Fácil"
+    },
+    {
       "caracter": "B",
       "palabra": "Barco",
       "imagen": "img/alfabetizacion/ejemplos/barco.webp",
