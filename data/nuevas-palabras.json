@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-09-16T04:16:56Z",
+  "generadoEn": "2026-09-16T07:04:07Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
@@ -36,6 +36,15 @@
       "palabra": "Celeste",
       "categoria": "Colores",
       "imagen": "img/vocabulario/celeste.webp",
+      "fecha": "2026-09-15T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Dorado",
+      "categoria": "Colores",
+      "imagen": "img/vocabulario/dorado.webp",
       "fecha": "2026-09-15T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
@@ -99,15 +108,6 @@
       "palabra": "Flexible",
       "categoria": "Habilidades",
       "imagen": "img/diccionario/flexible.webp",
-      "fecha": "2026-09-12T05:00:00Z",
-      "origenFecha": "fechaPublicacion",
-      "fuente": "diccionario"
-    },
-    {
-      "id": "resiliencia",
-      "palabra": "Resiliencia",
-      "categoria": "Psicología",
-      "imagen": "img/diccionario/resiliencia.webp",
       "fecha": "2026-09-12T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
