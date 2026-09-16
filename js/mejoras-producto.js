@@ -159,8 +159,8 @@
     cargarCss('css/accesibilidad-segura.css?v=20260914-1');
     cargarCss('css/vocabulario-layout.css?v=20260915-2');
     cargarCss('css/fab-dock-delgado.css?v=20260916-1');
-    cargarCss('css/modo-oscuro.css?v=20260916-1');
-    cargar('js/modo-oscuro.js?v=20260916-1');
+    cargarCss('css/modo-oscuro.css?v=20260916-2');
+    cargar('js/modo-oscuro.js?v=20260916-2');
 
     function cargarMejorasConCore(){
         cargar('js/vocabulario-publico.js?v=20260914-2');
@@ -182,9 +182,6 @@
                         cargar('js/i18n-auto.js?v=20260914', function(){
                             cargar('js/i18n-nosotros.js?v=20260914', function(){
                                 agregarFacebookRedesSociales();
-                                if(window.LSPediaTema && typeof window.LSPediaTema.tema !== 'undefined'){
-                                    document.dispatchEvent(new CustomEvent('lspedia:temaListo'));
-                                }
                                 cargar('js/buscador-visual.js?v=20260914', function(){
                                     cargar('js/buscador-predictivo.js?v=20260914');
                                 });
