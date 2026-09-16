@@ -739,6 +739,13 @@
       "nivel": "Fácil"
     },
     {
+      "caracter": "A",
+      "palabra": "Águila",
+      "imagen": "img/alfabetizacion/ejemplos/aguila.webp",
+      "orden": 12,
+      "nivel": "Fácil"
+    },
+    {
       "caracter": "B",
       "palabra": "Barco",
       "imagen": "img/alfabetizacion/ejemplos/barco.webp",
