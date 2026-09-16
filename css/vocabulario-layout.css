@@ -2,15 +2,8 @@
    2026-09-15
    - En escritorio muestra hasta 6 tarjetas de categoría por fila.
    - Mantiene 4 por fila en tablet y 3 por fila en móvil, respetando el diseño existente.
-   - Oculta el bloque informativo/advertencia de Vocabulario solicitado por administración.
+   - El texto introductorio de Vocabulario se conserva visible.
 */
-
-/* El aviso introductorio de Vocabulario (conceptos / referencia / variantes)
-   deja de ocupar espacio visual. El contenido y la lógica se conservan en el
-   HTML por si en el futuro se decide volver a mostrarlo. */
-#vocabularioIntroLista {
-    display: none !important;
-}
 
 /* Escritorio: Bootstrap genera estas tarjetas como col-4 col-md-3 (4 por fila).
    Se sobrescribe únicamente dentro de #panelCategorias para mostrar 6 por fila
