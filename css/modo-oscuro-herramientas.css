@@ -1,0 +1,374 @@
+/* ============================================================
+   LSPedia — modo oscuro para Herramientas y Juegos
+   2026-09-16
+   ------------------------------------------------------------
+   Cubre módulos con estilos propios que no heredaban el tema general:
+   - Alfabeto y Números
+   - Jugar / Quiz
+   - Matemáticas
+   - Subtítulos en vivo
+   Construye la oración usa Shadow DOM y se adapta desde
+   js/modo-oscuro-herramientas.js.
+   ============================================================ */
+
+/* ============================================================
+   ALFABETO Y NÚMEROS
+   ============================================================ */
+html[data-lsp-tema="dark"] #seccionAlfabetizacion {
+    color: #e7eef8 !important;
+}
+
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-hero {
+    background: linear-gradient(145deg, #111c2f 0%, #14243a 100%) !important;
+    border: 1px solid #2c3f59 !important;
+    box-shadow: 0 10px 28px rgba(0,0,0,.22) !important;
+}
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-hero-orbe-1 {
+    background: rgba(79,179,255,.08) !important;
+}
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-hero-orbe-2 {
+    background: rgba(255,201,40,.09) !important;
+}
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-hero-icono {
+    background: #182941 !important;
+    box-shadow: 0 5px 14px rgba(0,0,0,.22) !important;
+}
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-hero-titulo {
+    color: #edf5ff !important;
+}
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-hero-subtitulo {
+    color: #9aabc0 !important;
+}
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-hero-btn:not(#btnAlfabSalir) {
+    background: #17283f !important;
+    border-color: #38516f !important;
+    color: #83ccff !important;
+}
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-hero-btn:not(#btnAlfabSalir):hover {
+    background: #203754 !important;
+    border-color: #52749c !important;
+}
+
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-toggle-pildora {
+    background: #111d30 !important;
+    border: 1px solid #31445f !important;
+    box-shadow: 0 5px 16px rgba(0,0,0,.18) !important;
+}
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-toggle-btn {
+    color: #9fb0c5 !important;
+    background: transparent !important;
+}
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-toggle-btn.active {
+    background: linear-gradient(135deg, #126a9b, #0e7aac) !important;
+    color: #ffffff !important;
+    box-shadow: 0 5px 14px rgba(0,0,0,.20) !important;
+}
+
+/* Navegación rápida A-Z / 0-19 */
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .indice-alfabetico,
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-indice,
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-caracteres-grid {
+    background: #111c2f !important;
+    border-color: #2a3d57 !important;
+    box-shadow: 0 8px 22px rgba(0,0,0,.18) !important;
+}
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .btn-abc {
+    background: #18263b !important;
+    color: #b8c7d8 !important;
+    border-color: #2f435e !important;
+}
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .btn-abc:hover,
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .btn-abc.active {
+    background: #1d3654 !important;
+    color: #7fceff !important;
+    border-color: #4e739c !important;
+}
+
+/* Cuadrícula principal del módulo */
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-grid-2x2 {
+    background: #101b2d !important;
+    border-color: #243750 !important;
+}
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-grid-celda {
+    background: #111c2f !important;
+    border-color: #2b3e58 !important;
+    color: #e7eef8 !important;
+    box-shadow: 0 8px 22px rgba(0,0,0,.16) !important;
+}
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-etiqueta-panel,
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-grid-celda h1,
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-grid-celda h2,
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-grid-celda h3,
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-grid-celda h4,
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-grid-celda h5,
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-grid-celda strong {
+    color: #edf5ff !important;
+}
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-grid-celda :is(p,small,.text-muted) {
+    color: #9aabc0 !important;
+}
+
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-caracter-circulo,
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-visual-caja,
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .apoyo-visual-caja,
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-ejemplos-card {
+    background: #0c1727 !important;
+    border-color: #30445f !important;
+    color: #e7eef8 !important;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.015), 0 6px 18px rgba(0,0,0,.16) !important;
+}
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-caracter-circulo h2,
+html[data-lsp-tema="dark"] #seccionAlfabetizacion #alfabCaracterActual {
+    color: #f4f8fd !important;
+}
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-nav-flecha {
+    background: #18283f !important;
+    border-color: #355170 !important;
+    color: #8fcfff !important;
+}
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-nav-flecha:hover {
+    background: #203754 !important;
+    color: #d8efff !important;
+}
+
+/* Chips tipográficos: preserva el color conceptual, pero evita el blanco. */
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-chip-tipo {
+    background: #17243a !important;
+    color: #e7eef8 !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,.18) !important;
+}
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-chip-mayuscula.active { background:#12314a !important; }
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-chip-minuscula.active { background:#123629 !important; }
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-chip-cursiva-mayuscula.active { background:#3a2718 !important; }
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-chip-cursiva-minuscula.active { background:#2d1e44 !important; }
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .alfab-chip-numero.active { background:#12314a !important; }
+
+html[data-lsp-tema="dark"] #seccionAlfabetizacion .controles-video {
+    background: #17283f !important;
+    border-color: #3a506b !important;
+    color: #dce7f4 !important;
+}
+
+/* ============================================================
+   JUGAR / QUIZ — contenedores compartidos
+   ============================================================ */
+html[data-lsp-tema="dark"] #seccionQuiz {
+    color: #e7eef8 !important;
+}
+html[data-lsp-tema="dark"] #seccionQuiz .quiz-card,
+html[data-lsp-tema="dark"] #seccionQuiz .quiz-configuracion,
+html[data-lsp-tema="dark"] #seccionQuiz .quiz-stat-box {
+    background: #111c2f !important;
+    border-color: #2b3e58 !important;
+    color: #e7eef8 !important;
+    box-shadow: 0 10px 28px rgba(0,0,0,.20) !important;
+}
+html[data-lsp-tema="dark"] #seccionQuiz .quiz-card :is(h1,h2,h3,h4,h5,h6,strong,.fw-bold) {
+    color: #edf5ff !important;
+}
+html[data-lsp-tema="dark"] #seccionQuiz .quiz-card :is(p,small,.text-muted,.text-secondary) {
+    color: #9aabc0 !important;
+}
+html[data-lsp-tema="dark"] #seccionQuiz .quiz-selector-btn {
+    background: #17243a !important;
+    border-color: #30445f !important;
+    color: #dce7f4 !important;
+}
+html[data-lsp-tema="dark"] #seccionQuiz .quiz-selector-btn:hover {
+    background: #1b2d47 !important;
+    border-color: #4a76a4 !important;
+}
+html[data-lsp-tema="dark"] #seccionQuiz .quiz-selector-btn.activo {
+    background: #143352 !important;
+    border-color: #3d8ee8 !important;
+    color: #a8dbff !important;
+    box-shadow: 0 0 0 3px rgba(61,142,232,.12) !important;
+}
+html[data-lsp-tema="dark"] #seccionQuiz .btn-volver-menu-juegos {
+    background: linear-gradient(#17243a,#17243a) padding-box,
+                linear-gradient(120deg,#38bdf8,#6366f1) border-box !important;
+    color: #9edbff !important;
+}
+html[data-lsp-tema="dark"] #seccionQuiz .quiz-progreso-wrap,
+html[data-lsp-tema="dark"] #seccionQuiz .quiz-timer-wrap {
+    background: #29394f !important;
+}
+html[data-lsp-tema="dark"] #seccionQuiz .quiz-memoria-carta.volteada {
+    background: #17243a !important;
+    color: #e7eef8 !important;
+}
+
+/* ============================================================
+   MATEMÁTICAS
+   ============================================================ */
+html[data-lsp-tema="dark"] #matApp.mat-app {
+    --matv9-texto: #e7eef8;
+    --matv9-muted: #9aabc0;
+    --matv9-card: #111c2f;
+    --matv9-sombra: 0 10px 30px rgba(0,0,0,.24);
+    background: linear-gradient(180deg,#0d1727,#101b2d) !important;
+    color: #e7eef8 !important;
+    border: 1px solid #263a53 !important;
+}
+html[data-lsp-tema="dark"] #matApp .matv9-card {
+    background: #111c2f !important;
+    border: 1px solid #2a3e58 !important;
+    color: #e7eef8 !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,.20) !important;
+}
+html[data-lsp-tema="dark"] #matApp :is(.matv9-titulo,.matv9-seccion-titulo,.matv9-juego-titulo) {
+    color: #edf5ff !important;
+}
+html[data-lsp-tema="dark"] #matApp :is(.matv9-subtitulo,.matv9-nota,.matv9-info) {
+    color: #9aabc0 !important;
+}
+html[data-lsp-tema="dark"] #matApp .matv9-modo,
+html[data-lsp-tema="dark"] #matApp .matv9-nivel {
+    background: #17243a !important;
+    border-color: #344a66 !important;
+    color: #e4edf8 !important;
+}
+html[data-lsp-tema="dark"] #matApp .matv9-modo.matv9-activo,
+html[data-lsp-tema="dark"] #matApp .matv9-nivel.matv9-activo {
+    background: #153654 !important;
+    border-color: #3788e5 !important;
+    color: #9ed7ff !important;
+}
+html[data-lsp-tema="dark"] #matApp .matv9-nivel small { color:#9aabc0 !important; }
+html[data-lsp-tema="dark"] #matApp .matv9-volver,
+html[data-lsp-tema="dark"] #matApp .matv9-modo-pill {
+    background: #153654 !important;
+    color: #9ed7ff !important;
+}
+html[data-lsp-tema="dark"] #matApp .matv9-progreso,
+html[data-lsp-tema="dark"] #matApp .matv9-timer-wrap { background:#29394f !important; }
+html[data-lsp-tema="dark"] #matApp .matv9-eq-a { color:#edf5ff !important; }
+html[data-lsp-tema="dark"] #matApp .matv9-eq-igual,
+html[data-lsp-tema="dark"] #matApp .matv9-eq-r { color:#9aabc0 !important; }
+
+html[data-lsp-tema="dark"] #matApp .matv9-escena,
+html[data-lsp-tema="dark"] #matApp .matv9-escena.matv9-suma,
+html[data-lsp-tema="dark"] #matApp .matv9-escena.matv9-resta,
+html[data-lsp-tema="dark"] #matApp .matv9-escena.matv9-multiplicacion,
+html[data-lsp-tema="dark"] #matApp .matv9-escena.matv9-division {
+    background: #0d192a !important;
+}
+html[data-lsp-tema="dark"] #matApp .matv9-escena.matv9-suma { border-color:#315f91 !important; }
+html[data-lsp-tema="dark"] #matApp .matv9-escena.matv9-resta { border-color:#80502d !important; }
+html[data-lsp-tema="dark"] #matApp .matv9-escena.matv9-multiplicacion { border-color:#624c91 !important; }
+html[data-lsp-tema="dark"] #matApp .matv9-escena.matv9-division { border-color:#27657b !important; }
+html[data-lsp-tema="dark"] #matApp .matv9-fuente-a { background:#182438 !important; border-color:#60718a !important; }
+html[data-lsp-tema="dark"] #matApp .matv9-fuente-b { background:#132b45 !important; border-color:#397fbd !important; }
+html[data-lsp-tema="dark"] #matApp .matv9-destino {
+    background:#142238 !important;
+    border-color:#3b82f6 !important;
+    box-shadow:inset 0 0 0 5px rgba(59,130,246,.12) !important;
+}
+html[data-lsp-tema="dark"] #matApp .matv9-contador,
+html[data-lsp-tema="dark"] #matApp .matv9-objeto-bloque,
+html[data-lsp-tema="dark"] #matApp .matv9-flujo > span,
+html[data-lsp-tema="dark"] #matApp .matv9-flujo > b,
+html[data-lsp-tema="dark"] #matApp .matv9-flujo > strong,
+html[data-lsp-tema="dark"] #matApp .matv9-info-rapida > span,
+html[data-lsp-tema="dark"] #matApp .matv9-info-rapida > b,
+html[data-lsp-tema="dark"] #matApp .matv9-info-rapida > strong {
+    background:#17243a !important;
+    border-color:#344a66 !important;
+    color:#e7eef8 !important;
+}
+
+/* ============================================================
+   SUBTÍTULOS EN VIVO
+   ============================================================ */
+html[data-lsp-tema="dark"] #seccionSubtitulos {
+    color:#e7eef8 !important;
+}
+html[data-lsp-tema="dark"] #seccionSubtitulos #subtitulosBarraControles {
+    background:#111c2f !important;
+    border-color:#2b3e58 !important;
+    color:#e7eef8 !important;
+}
+html[data-lsp-tema="dark"] #subtitulosIntro .quiz-card {
+    background:
+        radial-gradient(circle at 10% 0%,rgba(14,165,233,.08),transparent 30%),
+        radial-gradient(circle at 95% 10%,rgba(37,99,235,.07),transparent 28%),
+        #111c2f !important;
+    border-color:#2b3e58 !important;
+    color:#e7eef8 !important;
+    box-shadow:0 16px 42px rgba(0,0,0,.23) !important;
+}
+html[data-lsp-tema="dark"] #subtitulosIntro :is(h1,h2,h3,h4,h5,h6,strong) {
+    color:#edf5ff !important;
+}
+html[data-lsp-tema="dark"] #subtitulosIntro :is(p,small,label,.text-muted,.text-secondary) {
+    color:#9aabc0 !important;
+}
+html[data-lsp-tema="dark"] #subtitulosIntro .quiz-card > .text-start,
+html[data-lsp-tema="dark"] #subtitulosMedidorCaja,
+html[data-lsp-tema="dark"] #subtitulosIntro .subtitulos-accion-principal-v5,
+html[data-lsp-tema="dark"] #subtitulosIntro .subtitulos-opciones-avanzadas,
+html[data-lsp-tema="dark"] #subtitulosIntro .subtitulos-opciones-v5 {
+    background:#152238 !important;
+    border-color:#30445f !important;
+    color:#dce7f4 !important;
+    box-shadow:0 6px 18px rgba(0,0,0,.16) !important;
+}
+html[data-lsp-tema="dark"] #subtitulosIntro .quiz-card > .text-start p {
+    color:#7cc7ff !important;
+}
+html[data-lsp-tema="dark"] #subtitulosIntro .quiz-card > .text-start ul {
+    color:#a8b8cb !important;
+}
+html[data-lsp-tema="dark"] #subtitulosIntro .form-select {
+    background-color:#0d192a !important;
+    border-color:#354b67 !important;
+    color:#e7eef8 !important;
+}
+html[data-lsp-tema="dark"] #btnSubtitulosProbarNivel,
+html[data-lsp-tema="dark"] #btnSubtitulosGuardar,
+html[data-lsp-tema="dark"] #btnSubtitulosFullscreen {
+    background:#17283f !important;
+    border-color:#3a536f !important;
+    color:#a7d9ff !important;
+}
+html[data-lsp-tema="dark"] #btnSubtitulosProbarNivel:hover,
+html[data-lsp-tema="dark"] #btnSubtitulosGuardar:hover,
+html[data-lsp-tema="dark"] #btnSubtitulosFullscreen:hover {
+    background:#203754 !important;
+    color:#e4f4ff !important;
+}
+html[data-lsp-tema="dark"] #subtitulosIntro .subtitulos-estado-motor {
+    background:#18263b !important;
+    border-color:#344a66 !important;
+}
+html[data-lsp-tema="dark"] #subtitulosIntro .subtitulos-estado-motor.estado-listo { color:#b6c5d7 !important; }
+html[data-lsp-tema="dark"] #subtitulosIntro .subtitulos-estado-motor.estado-escuchando { color:#71d696 !important; border-color:#2d6545 !important; }
+html[data-lsp-tema="dark"] #subtitulosIntro .subtitulos-estado-motor.estado-reconectando { color:#f3bd62 !important; border-color:#6f5324 !important; }
+html[data-lsp-tema="dark"] #subtitulosIntro .subtitulos-estado-motor.estado-pausado { color:#8dc4ff !important; border-color:#345a8b !important; }
+html[data-lsp-tema="dark"] #subtitulosIntro .subtitulos-estado-motor.estado-error { color:#ff9696 !important; border-color:#793d45 !important; }
+
+/* ============================================================
+   AVATAR: el halo blanco forma parte del antialias del WebM. CSS no puede
+   reconstruir el canal alfa, pero se reduce el contraste del borde para que
+   sea menos visible sobre navy sin apagar la imagen completa.
+   ============================================================ */
+html[data-lsp-tema="dark"] #colAvatarHero .avatar-hero-img {
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+    filter:
+        contrast(1.045)
+        brightness(.96)
+        saturate(1.03)
+        drop-shadow(0 0 1px rgba(4,10,20,.95))
+        drop-shadow(0 0 2px rgba(4,10,20,.80))
+        drop-shadow(0 10px 18px rgba(0,0,0,.18)) !important;
+}
+
+@media (prefers-reduced-motion:reduce) {
+    html[data-lsp-tema="dark"] #seccionAlfabetizacion *,
+    html[data-lsp-tema="dark"] #seccionQuiz *,
+    html[data-lsp-tema="dark"] #seccionSubtitulos * {
+        transition:none !important;
+    }
+}
