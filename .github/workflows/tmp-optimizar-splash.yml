@@ -29,66 +29,67 @@ jobs:
           s = p.read_text(encoding='utf-8')
 
           viejo_logo = '<img src="img/lspedia.png" alt="LSPedia" id="splashLogo">'
-          nuevo_logo = '''<div id="splashLogo" class="splash-marca-ligera" aria-label="LSPedia">
-                <img src="img/favicon.png" alt="" width="82" height="82" fetchpriority="high" decoding="async">
-                <span class="splash-marca-texto"><strong>LSP</strong><em>edia</em></span>
-            </div>'''
+          nuevo_logo = '\n'.join([
+              '<div id="splashLogo" class="splash-marca-ligera" aria-label="LSPedia">',
+              '    <img src="img/favicon.png" alt="" width="82" height="82" fetchpriority="high" decoding="async">',
+              '    <span class="splash-marca-texto"><strong>LSP</strong><em>edia</em></span>',
+              '</div>'
+          ])
           if viejo_logo not in s:
               raise SystemExit('No se encontró el logo actual del splash')
           s = s.replace(viejo_logo, nuevo_logo, 1)
 
           marcador_css = '    .splash-estela {'
-          css_extra = '''    .splash-marca-ligera {
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
-        gap: 12px;
-        width: auto !important;
-        max-width: min(86vw, 430px);
-    }
-    .splash-marca-ligera img {
-        width: 82px;
-        height: 82px;
-        object-fit: contain;
-        flex: 0 0 auto;
-    }
-    .splash-marca-texto {
-        display: inline-flex;
-        align-items: baseline;
-        font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        font-size: clamp(2.05rem, 6vw, 3.35rem);
-        font-weight: 800;
-        letter-spacing: -0.06em;
-        line-height: 1;
-        color: #163b73;
-        text-shadow: 0 3px 10px rgba(15, 58, 112, 0.08);
-    }
-    .splash-marca-texto strong { font-style: normal; font-weight: 800; }
-    .splash-marca-texto em { font-style: normal; font-weight: 800; color: #e2b117; }
-    @media (max-width: 480px) {
-        .splash-marca-ligera { gap: 9px; }
-        .splash-marca-ligera img { width: 66px; height: 66px; }
-    }
-
-'''
+          css_extra = '\n'.join([
+              '    .splash-marca-ligera {',
+              '        display: flex !important;',
+              '        align-items: center;',
+              '        justify-content: center;',
+              '        gap: 12px;',
+              '        width: auto !important;',
+              '        max-width: min(86vw, 430px);',
+              '    }',
+              '    .splash-marca-ligera img {',
+              '        width: 82px;',
+              '        height: 82px;',
+              '        object-fit: contain;',
+              '        flex: 0 0 auto;',
+              '    }',
+              '    .splash-marca-texto {',
+              '        display: inline-flex;',
+              '        align-items: baseline;',
+              '        font-family: Poppins, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;',
+              '        font-size: clamp(2.05rem, 6vw, 3.35rem);',
+              '        font-weight: 800;',
+              '        letter-spacing: -0.06em;',
+              '        line-height: 1;',
+              '        color: #163b73;',
+              '        text-shadow: 0 3px 10px rgba(15, 58, 112, 0.08);',
+              '    }',
+              '    .splash-marca-texto strong { font-style: normal; font-weight: 800; }',
+              '    .splash-marca-texto em { font-style: normal; font-weight: 800; color: #e2b117; }',
+              '    @media (max-width: 480px) {',
+              '        .splash-marca-ligera { gap: 9px; }',
+              '        .splash-marca-ligera img { width: 66px; height: 66px; }',
+              '    }',
+              '',
+              ''
+          ])
           if marcador_css not in s:
               raise SystemExit('No se encontró el punto de inserción CSS del splash')
           s = s.replace(marcador_css, css_extra + marcador_css, 1)
 
-          s = s.replace(
-              '// Se oculta cuando se cumplen DOS condiciones: (1) la página terminó de\n    // cargar sus recursos (window.load) y (2) script.js ya sabe si hay',
-              '// Se oculta cuando se cumplen DOS condiciones: (1) el HTML ya está listo\n    // (DOMContentLoaded, sin esperar imágenes/videos pesados) y (2) script.js ya sabe si hay',
-              1
-          )
           s = s.replace('let paginaCargada = false;', 'let domListo = document.readyState !== "loading";', 1)
           s = s.replace('if (!paginaCargada || !datosListos) return;', 'if (!domListo || !datosListos) return;', 1)
           viejo_evento = 'window.addEventListener("load", () => { paginaCargada = true; intentarOcultar(); });'
-          nuevo_evento = '''if (!domListo) {
-            document.addEventListener("DOMContentLoaded", () => {
-                domListo = true;
-                intentarOcultar();
-            }, { once: true });
-        }'''
+          nuevo_evento = '\n'.join([
+              'if (!domListo) {',
+              '            document.addEventListener("DOMContentLoaded", () => {',
+              '                domListo = true;',
+              '                intentarOcultar();',
+              '            }, { once: true });',
+              '        }'
+          ])
           if viejo_evento not in s:
               raise SystemExit('No se encontró el listener window.load del splash')
           s = s.replace(viejo_evento, nuevo_evento, 1)
