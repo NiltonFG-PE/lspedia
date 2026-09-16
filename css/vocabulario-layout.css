@@ -68,7 +68,8 @@
     position: relative;
 }
 
-.btn-compartir-categoria {
+.btn-compartir-categoria,
+.btn-compartir-categoria-lspedia {
     position: absolute !important;
     top: 10px !important;
     right: 10px !important;
@@ -100,15 +101,17 @@
     -webkit-tap-highlight-color: transparent;
 }
 
-/* Oculta la flecha antigua creada por script.js. La función de compartir
-   sigue siendo exactamente la misma: esto es únicamente una mejora visual. */
-.btn-compartir-categoria > span {
+/* Oculta la flecha/cadena antigua creada por los scripts. La función de
+   compartir sigue siendo exactamente la misma: esto es únicamente visual. */
+.btn-compartir-categoria > span,
+.btn-compartir-categoria-lspedia > span {
     display: none !important;
 }
 
 /* Icono universal "share" mediante máscara SVG: no agrega imágenes ni
    dependencias externas y hereda el color del botón. */
-.btn-compartir-categoria::before {
+.btn-compartir-categoria::before,
+.btn-compartir-categoria-lspedia::before {
     content: "";
     display: block;
     width: 18px;
@@ -124,27 +127,31 @@
     mask-size: contain;
 }
 
-.btn-compartir-categoria:hover {
+.btn-compartir-categoria:hover,
+.btn-compartir-categoria-lspedia:hover {
     transform: translateY(-2px) scale(1.06) !important;
     background: #ffffff !important;
     border-color: rgba(37, 99, 235, 0.28) !important;
     box-shadow: 0 8px 18px rgba(37, 99, 235, 0.19) !important;
 }
 
-.btn-compartir-categoria:active {
+.btn-compartir-categoria:active,
+.btn-compartir-categoria-lspedia:active {
     transform: scale(0.94) !important;
     background: #eff6ff !important;
     box-shadow: 0 3px 9px rgba(37, 99, 235, 0.16) !important;
 }
 
-.btn-compartir-categoria:focus-visible {
+.btn-compartir-categoria:focus-visible,
+.btn-compartir-categoria-lspedia:focus-visible {
     outline: 3px solid rgba(37, 99, 235, 0.32) !important;
     outline-offset: 2px !important;
 }
 
 /* En móvil conserva un área táctil cómoda sin robar protagonismo a la tarjeta. */
 @media (max-width: 575.98px) {
-    .btn-compartir-categoria {
+    .btn-compartir-categoria,
+    .btn-compartir-categoria-lspedia {
         top: 9px !important;
         right: 9px !important;
         width: 36px !important;
@@ -153,7 +160,8 @@
         min-height: 36px !important;
     }
 
-    .btn-compartir-categoria::before {
+    .btn-compartir-categoria::before,
+    .btn-compartir-categoria-lspedia::before {
         width: 17px;
         height: 17px;
     }
@@ -161,7 +169,8 @@
 
 /* Respeta a usuarios que han reducido las animaciones del sistema. */
 @media (prefers-reduced-motion: reduce) {
-    .btn-compartir-categoria {
+    .btn-compartir-categoria,
+    .btn-compartir-categoria-lspedia {
         transition: none !important;
     }
 }
