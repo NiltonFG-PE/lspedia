@@ -11,11 +11,16 @@
    - El panel /admin/ y los laboratorios quedan fuera del fallback público.
    ============================================================ */
 
-const VERSION_APP = "v138";
+const VERSION_APP = "v139";
 const PREFIJO_CACHE = "lspedia-shell-";
 const PREFIJO_RUNTIME = "lspedia-runtime-";
 const CACHE_NOMBRE = PREFIJO_CACHE + VERSION_APP;
 const CACHE_RUNTIME = PREFIJO_RUNTIME + VERSION_APP;
+
+// Cuando un archivo estático se abre directamente en una pestaña, el navegador
+// usa una navegación de nivel superior (request.mode === "navigate"). Esas
+// solicitudes no deben recibir index.html como fallback de la PWA.
+const EXTENSION_ARCHIVO_ESTATICO = /\.(?:avif|bmp|gif|ico|jpe?g|png|svg|webp|css|js|mjs|json|map|webmanifest|woff2?|ttf|otf|mp3|wav|ogg|mp4|webm|pdf|txt|xml)$/i;
 
 const ARCHIVOS_CASCARON = [
     "./",
@@ -84,6 +89,12 @@ self.addEventListener("fetch", (event) => {
     }
 
     if (url.pathname.includes("/data/palabras.json") || url.pathname.includes("/data/busqueda-ayudas.json")) return;
+
+    // Abrir una imagen u otro archivo en una pestaña también cuenta como
+    // "navigate". Si dejamos que caiga en el bloque SPA de abajo, el SW
+    // devuelve index.html y aparece la pantalla de carga de LSPedia en vez
+    // del archivo. Para archivos estáticos, dejamos actuar a la red normal.
+    if (request.mode === "navigate" && EXTENSION_ARCHIVO_ESTATICO.test(url.pathname)) return;
 
     if (request.mode === "navigate") {
         event.respondWith((async () => {
