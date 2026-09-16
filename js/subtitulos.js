@@ -134,23 +134,51 @@
     function agregarFacebookRedesSociales(){
         const href = 'https://www.facebook.com/lspedia.sign';
         const usuario = '@lspedia.sign';
+        const azulFacebook = '#1877F2';
         const svgFacebook = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.414c0-3.025 1.792-4.697 4.533-4.697 1.313 0 2.686.236 2.686.236v2.971h-1.513c-1.49 0-1.956.931-1.956 1.887v2.262h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>';
 
-        if(!document.getElementById('lspediaFacebookEstilos')){
-            const estilo = document.createElement('style');
+        // Reescribe SIEMPRE el bloque de estilos. Antes solo se creaba si no
+        // existía, de modo que una versión anterior podía dejar reglas viejas
+        // durante una sesión larga de la PWA.
+        let estilo = document.getElementById('lspediaFacebookEstilos');
+        if(!estilo){
+            estilo = document.createElement('style');
             estilo.id = 'lspediaFacebookEstilos';
-            estilo.textContent = [
-                '.stat2-red-facebook,.footer-redes .footer-red-facebook,a.footer-red-icono.footer-red-facebook{color:#1877F2!important;background:#ffffff!important;border-color:rgba(24,119,242,.22)!important;-webkit-tap-highlight-color:transparent!important;}',
-                '.footer-redes .footer-red-facebook::after,a.footer-red-icono.footer-red-facebook::after{border-color:rgba(24,119,242,.22)!important;}',
-                '.stat2-red-facebook:hover,.stat2-red-facebook:focus,.stat2-red-facebook:focus-visible,.stat2-red-facebook:active,.footer-redes .footer-red-facebook:hover,.footer-redes .footer-red-facebook:focus,.footer-redes .footer-red-facebook:focus-visible,.footer-redes .footer-red-facebook:active,a.footer-red-icono.footer-red-facebook:hover,a.footer-red-icono.footer-red-facebook:focus,a.footer-red-icono.footer-red-facebook:focus-visible,a.footer-red-icono.footer-red-facebook:active{background:#ffffff!important;color:#1877F2!important;border-color:rgba(24,119,242,.32)!important;}',
-                '.footer-redes .footer-red-facebook svg,a.footer-red-icono.footer-red-facebook svg,.stat2-red-facebook svg{color:#1877F2!important;fill:currentColor!important;}',
-                '.footer-redes .footer-red-facebook:hover svg,.footer-redes .footer-red-facebook:focus svg,.footer-redes .footer-red-facebook:active svg,a.footer-red-icono.footer-red-facebook:hover svg,a.footer-red-icono.footer-red-facebook:focus svg,a.footer-red-icono.footer-red-facebook:active svg{color:#1877F2!important;fill:currentColor!important;}'
-            ].join('');
             document.head.appendChild(estilo);
+        }
+        estilo.textContent = [
+            '.stat2-red-facebook,.footer-redes .footer-red-facebook,a.footer-red-icono.footer-red-facebook{color:#1877F2!important;background:#ffffff!important;border-color:rgba(24,119,242,.22)!important;-webkit-tap-highlight-color:transparent!important;}',
+            '.footer-redes .footer-red-facebook::after,a.footer-red-icono.footer-red-facebook::after{border-color:rgba(24,119,242,.22)!important;}',
+            '.stat2-red-facebook:hover,.stat2-red-facebook:focus,.stat2-red-facebook:focus-visible,.stat2-red-facebook:active,.footer-redes .footer-red-facebook:hover,.footer-redes .footer-red-facebook:focus,.footer-redes .footer-red-facebook:focus-visible,.footer-redes .footer-red-facebook:active,a.footer-red-icono.footer-red-facebook:hover,a.footer-red-icono.footer-red-facebook:focus,a.footer-red-icono.footer-red-facebook:focus-visible,a.footer-red-icono.footer-red-facebook:active{background:#ffffff!important;color:#1877F2!important;border-color:rgba(24,119,242,.32)!important;}',
+            '.footer-redes .footer-red-facebook svg,a.footer-red-icono.footer-red-facebook svg,.stat2-red-facebook svg{color:#1877F2!important;fill:currentColor!important;}',
+            '.footer-redes .footer-red-facebook:hover svg,.footer-redes .footer-red-facebook:focus svg,.footer-redes .footer-red-facebook:active svg,a.footer-red-icono.footer-red-facebook:hover svg,a.footer-red-icono.footer-red-facebook:focus svg,a.footer-red-icono.footer-red-facebook:active svg{color:#1877F2!important;fill:currentColor!important;}'
+        ].join('');
+
+        // Además de las reglas CSS, fijamos el color como estilo inline con
+        // !important. Esto gana incluso frente a las reglas :active/:focus
+        // generales del footer en Chrome/Android y evita que al tocar Facebook
+        // el icono pase a gris o blanco.
+        function fijarMarcaFacebook(enlace){
+            if(!enlace) return;
+            enlace.style.setProperty('color', azulFacebook, 'important');
+            enlace.style.setProperty('background-color', '#ffffff', 'important');
+            enlace.style.setProperty('border-color', 'rgba(24,119,242,.22)', 'important');
+            enlace.style.setProperty('-webkit-tap-highlight-color', 'transparent', 'important');
+
+            const svg = enlace.querySelector('svg');
+            if(svg){
+                svg.style.setProperty('color', azulFacebook, 'important');
+                svg.style.setProperty('fill', 'currentColor', 'important');
+            }
         }
 
         document.querySelectorAll('.stat2-redes-iconos').forEach(contenedor => {
-            if(contenedor.querySelector('.stat2-red-facebook')) return;
+            const existente = contenedor.querySelector('.stat2-red-facebook');
+            if(existente){
+                fijarMarcaFacebook(existente);
+                return;
+            }
+
             const enlace = document.createElement('a');
             enlace.href = href;
             enlace.target = '_blank';
@@ -159,11 +187,17 @@
             enlace.title = 'LSPedia en Facebook ' + usuario;
             enlace.setAttribute('aria-label', 'Síguenos en Facebook ' + usuario);
             enlace.innerHTML = svgFacebook;
+            fijarMarcaFacebook(enlace);
             contenedor.appendChild(enlace);
         });
 
         document.querySelectorAll('.footer-redes').forEach(contenedor => {
-            if(contenedor.querySelector('.footer-red-facebook')) return;
+            const existente = contenedor.querySelector('.footer-red-facebook');
+            if(existente){
+                fijarMarcaFacebook(existente);
+                return;
+            }
+
             const enlace = document.createElement('a');
             enlace.href = href;
             enlace.target = '_blank';
@@ -172,6 +206,7 @@
             enlace.title = 'LSPedia en Facebook ' + usuario;
             enlace.setAttribute('aria-label', 'Síguenos en Facebook ' + usuario);
             enlace.innerHTML = svgFacebook;
+            fijarMarcaFacebook(enlace);
             contenedor.appendChild(enlace);
         });
     }
