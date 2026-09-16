@@ -140,10 +140,11 @@
             const estilo = document.createElement('style');
             estilo.id = 'lspediaFacebookEstilos';
             estilo.textContent = [
-                '.stat2-red-facebook,.footer-lspedia .footer-red-facebook{color:#1877F2!important;}',
-                '.footer-lspedia .footer-red-facebook::after{border-color:#1877F2!important;}',
-                '.stat2-red-facebook:hover,.stat2-red-facebook:focus,.stat2-red-facebook:focus-visible,.stat2-red-facebook:active{background-color:#eaf2ff!important;color:#1877F2!important;}',
-                '.footer-lspedia .footer-red-facebook:hover,.footer-lspedia .footer-red-facebook:focus,.footer-lspedia .footer-red-facebook:focus-visible,.footer-lspedia .footer-red-facebook:active{background:#ffffff!important;color:#1877F2!important;}'
+                '.stat2-red-facebook,.footer-redes .footer-red-facebook,a.footer-red-icono.footer-red-facebook{color:#1877F2!important;background:#ffffff!important;border-color:rgba(24,119,242,.22)!important;-webkit-tap-highlight-color:transparent!important;}',
+                '.footer-redes .footer-red-facebook::after,a.footer-red-icono.footer-red-facebook::after{border-color:rgba(24,119,242,.22)!important;}',
+                '.stat2-red-facebook:hover,.stat2-red-facebook:focus,.stat2-red-facebook:focus-visible,.stat2-red-facebook:active,.footer-redes .footer-red-facebook:hover,.footer-redes .footer-red-facebook:focus,.footer-redes .footer-red-facebook:focus-visible,.footer-redes .footer-red-facebook:active,a.footer-red-icono.footer-red-facebook:hover,a.footer-red-icono.footer-red-facebook:focus,a.footer-red-icono.footer-red-facebook:focus-visible,a.footer-red-icono.footer-red-facebook:active{background:#ffffff!important;color:#1877F2!important;border-color:rgba(24,119,242,.32)!important;}',
+                '.footer-redes .footer-red-facebook svg,a.footer-red-icono.footer-red-facebook svg,.stat2-red-facebook svg{color:#1877F2!important;fill:currentColor!important;}',
+                '.footer-redes .footer-red-facebook:hover svg,.footer-redes .footer-red-facebook:focus svg,.footer-redes .footer-red-facebook:active svg,a.footer-red-icono.footer-red-facebook:hover svg,a.footer-red-icono.footer-red-facebook:focus svg,a.footer-red-icono.footer-red-facebook:active svg{color:#1877F2!important;fill:currentColor!important;}'
             ].join('');
             document.head.appendChild(estilo);
         }
