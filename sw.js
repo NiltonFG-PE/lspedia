@@ -10,12 +10,10 @@
    ============================================================ */
 
 // Cambia esta versión cuando modifiques el cascarón de la aplicación.
-const VERSION_APP = "v27";
+const VERSION_APP = "v28";
 const PREFIJO_CACHE = "lspedia-shell-";
 const CACHE_NOMBRE = PREFIJO_CACHE + VERSION_APP;
 
-// Archivos necesarios para que la interfaz principal pueda abrir offline.
-// Se incluyen Matemáticas, el manifest y los iconos de instalación.
 const ARCHIVOS_CASCARON = [
     "./",
     "./index.html",
@@ -38,8 +36,6 @@ const ARCHIVOS_CASCARON = [
     "img/icons/icon-512-maskable.png"
 ];
 
-// Convertimos los archivos anteriores a rutas absolutas de pathname para
-// reconocerlos aunque la petición lleve parámetros como ?v=20260826.
 const RUTAS_CASCARON = new Set(
     ARCHIVOS_CASCARON.map((archivo) => new URL(archivo, self.location.href).pathname)
 );
@@ -61,8 +57,6 @@ self.addEventListener("activate", (evento) => {
         const nombres = await caches.keys();
         await Promise.all(
             nombres
-                // Solo eliminamos cachés antiguos creados por ESTE Service Worker.
-                // Así no borramos por accidente otros cachés que pueda usar LSPedia.
                 .filter((nombre) => nombre.startsWith(PREFIJO_CACHE) && nombre !== CACHE_NOMBRE)
                 .map((nombre) => caches.delete(nombre))
         );
@@ -70,8 +64,6 @@ self.addEventListener("activate", (evento) => {
     })());
 });
 
-// Permite activar manualmente una actualización futura sin tener que cambiar
-// esta lógica. No recarga la página por la fuerza ni interrumpe videos.
 self.addEventListener("message", (evento) => {
     if (evento.data && evento.data.tipo === "ACTIVAR_ACTUALIZACION") {
         self.skipWaiting();
@@ -80,24 +72,14 @@ self.addEventListener("message", (evento) => {
 
 self.addEventListener("fetch", (evento) => {
     const request = evento.request;
-
-    // Solo intervenimos en lecturas GET.
     if (request.method !== "GET") return;
 
     const url = new URL(request.url);
-
-    // Recursos externos (YouTube, Bootstrap, Google Fonts, Forms, etc.) siguen
-    // funcionando directamente desde la red y no quedan atrapados por la PWA.
     if (url.origin !== self.location.origin) return;
 
-    // Los JSON de datos se dejan fuera del Service Worker para que su contenido
-    // se compruebe contra la red. palabras.json ya tiene respaldo en localStorage.
     const esManifest = url.pathname.endsWith("/manifest.json");
     if (url.pathname.endsWith(".json") && !esManifest) return;
 
-    // Para navegaciones (/, ?p=Tesis, ?vista=vocabulario, etc.) usamos RED PRIMERO.
-    // Si no hay conexión, devolvemos el index guardado, que reconstruye la vista
-    // a partir de la URL gracias al router de script.js.
     const esNavegacionApp = request.mode === "navigate" &&
         (url.pathname === RUTA_SCOPE || url.pathname === RUTA_INDEX);
 
@@ -105,20 +87,15 @@ self.addEventListener("fetch", (evento) => {
         evento.respondWith((async () => {
             try {
                 const respuestaRed = await fetch(request);
-
                 if (respuestaRed && respuestaRed.ok) {
                     const cache = await caches.open(CACHE_NOMBRE);
-                    // Guardamos la versión más reciente como fallback general,
-                    // evitando llenar la caché con una copia por cada ?p=...
                     await cache.put(URL_INDEX.href, respuestaRed.clone());
                 }
-
                 return respuestaRed;
             } catch (error) {
                 const offline =
                     await caches.match(URL_INDEX.href) ||
                     await caches.match(self.registration.scope);
-
                 if (offline) return offline;
                 throw error;
             }
@@ -126,22 +103,15 @@ self.addEventListener("fetch", (evento) => {
         return;
     }
 
-    // CSS, JS, manifest e iconos básicos: RED PRIMERO y CACHÉ como respaldo.
-    // La clave normalizada evita problemas con parámetros como ?v=20260826.
     if (RUTAS_CASCARON.has(url.pathname)) {
         evento.respondWith((async () => {
             try {
                 const respuestaRed = await fetch(request);
-
                 if (respuestaRed && respuestaRed.ok) {
                     const cache = await caches.open(CACHE_NOMBRE);
-                    // Guardamos una clave normalizada SIN query string. Así una
-                    // petición como estilos.css?v=20260908 reemplaza la copia
-                    // anterior en vez de dejar varias versiones ambiguas.
                     const claveCache = new Request(url.origin + url.pathname);
                     await cache.put(claveCache, respuestaRed.clone());
                 }
-
                 return respuestaRed;
             } catch (error) {
                 const claveCache = new Request(url.origin + url.pathname);
