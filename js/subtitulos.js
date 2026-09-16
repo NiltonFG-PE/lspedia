@@ -128,9 +128,56 @@
         });
     }
 
-    if(document.readyState === 'loading'){
-        document.addEventListener('DOMContentLoaded', restaurarCategoriaVocabularioDesdeUrl, { once: true });
-    } else {
+    // Facebook oficial de LSPedia. Se agrega a los dos grupos de redes
+    // que ya existen en la página sin duplicarlo si el script se ejecuta
+    // más de una vez (por ejemplo, al usar la PWA o restaurar una vista).
+    function agregarFacebookRedesSociales(){
+        const href = 'https://facebook.com/lspedia.sign';
+        const usuario = '@lspedia.sign';
+        const svgFacebook = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.414c0-3.025 1.792-4.697 4.533-4.697 1.313 0 2.686.236 2.686.236v2.971h-1.513c-1.49 0-1.956.931-1.956 1.887v2.262h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>';
+
+        if(!document.getElementById('lspediaFacebookEstilos')){
+            const estilo = document.createElement('style');
+            estilo.id = 'lspediaFacebookEstilos';
+            estilo.textContent = '.stat2-red-facebook:hover,.footer-red-facebook:hover{background-color:#1877F2!important;color:#fff!important;}';
+            document.head.appendChild(estilo);
+        }
+
+        document.querySelectorAll('.stat2-redes-iconos').forEach(contenedor => {
+            if(contenedor.querySelector('.stat2-red-facebook')) return;
+            const enlace = document.createElement('a');
+            enlace.href = href;
+            enlace.target = '_blank';
+            enlace.rel = 'noopener';
+            enlace.className = 'stat2-red-icono stat2-red-facebook';
+            enlace.title = 'LSPedia en Facebook ' + usuario;
+            enlace.setAttribute('aria-label', 'Síguenos en Facebook ' + usuario);
+            enlace.innerHTML = svgFacebook;
+            contenedor.appendChild(enlace);
+        });
+
+        document.querySelectorAll('.footer-redes').forEach(contenedor => {
+            if(contenedor.querySelector('.footer-red-facebook')) return;
+            const enlace = document.createElement('a');
+            enlace.href = href;
+            enlace.target = '_blank';
+            enlace.rel = 'noopener';
+            enlace.className = 'footer-red-icono footer-red-facebook';
+            enlace.title = 'LSPedia en Facebook ' + usuario;
+            enlace.setAttribute('aria-label', 'Síguenos en Facebook ' + usuario);
+            enlace.innerHTML = svgFacebook;
+            contenedor.appendChild(enlace);
+        });
+    }
+
+    function iniciarLSPediaComplementos(){
         restaurarCategoriaVocabularioDesdeUrl();
+        agregarFacebookRedesSociales();
+    }
+
+    if(document.readyState === 'loading'){
+        document.addEventListener('DOMContentLoaded', iniciarLSPediaComplementos, { once: true });
+    } else {
+        iniciarLSPediaComplementos();
     }
 })();
