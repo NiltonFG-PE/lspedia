@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-09-16T03:16:30Z",
+  "generadoEn": "2026-09-16T04:16:56Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
@@ -8,7 +8,7 @@
       "id": "",
       "palabra": "Amarillo",
       "categoria": "Colores",
-      "imagen": "img/vocabulario/amarillo.png",
+      "imagen": "img/vocabulario/amarillo.webp",
       "fecha": "2026-09-15T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
@@ -17,7 +17,7 @@
       "id": "",
       "palabra": "Azul",
       "categoria": "Colores",
-      "imagen": "img/vocabulario/azul.png",
+      "imagen": "img/vocabulario/azul.webp",
       "fecha": "2026-09-15T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
@@ -26,7 +26,16 @@
       "id": "",
       "palabra": "Blanco",
       "categoria": "Colores",
-      "imagen": "img/vocabulario/blanco.png",
+      "imagen": "img/vocabulario/blanco.webp",
+      "fecha": "2026-09-15T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Celeste",
+      "categoria": "Colores",
+      "imagen": "img/vocabulario/celeste.webp",
       "fecha": "2026-09-15T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
@@ -35,7 +44,7 @@
       "id": "",
       "palabra": "Anaranjado",
       "categoria": "Colores",
-      "imagen": "img/vocabulario/anaranjado.png",
+      "imagen": "img/vocabulario/anaranjado.webp",
       "fecha": "2026-09-15T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
@@ -44,7 +53,7 @@
       "id": "",
       "palabra": "Rojo",
       "categoria": "Colores",
-      "imagen": "img/vocabulario/rojo.png",
+      "imagen": "img/vocabulario/rojo.webp",
       "fecha": "2026-09-15T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
@@ -53,7 +62,7 @@
       "id": "",
       "palabra": "Verde",
       "categoria": "Colores",
-      "imagen": "img/vocabulario/verde.png",
+      "imagen": "img/vocabulario/verde.webp",
       "fecha": "2026-09-15T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
@@ -99,15 +108,6 @@
       "palabra": "Resiliencia",
       "categoria": "Psicología",
       "imagen": "img/diccionario/resiliencia.webp",
-      "fecha": "2026-09-12T05:00:00Z",
-      "origenFecha": "fechaPublicacion",
-      "fuente": "diccionario"
-    },
-    {
-      "id": "psicosis",
-      "palabra": "Psicosis",
-      "categoria": "Psicología",
-      "imagen": "img/diccionario/psicosis.webp",
       "fecha": "2026-09-12T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
