@@ -1,5 +1,7 @@
 name: Actualizar IDs y sitemap
 
+# Este workflow también puede reejecutarse al modificar su propio archivo para
+# recuperar automáticamente un sitemap desfasado detectado por la validación.
 on:
   push:
     branches:
