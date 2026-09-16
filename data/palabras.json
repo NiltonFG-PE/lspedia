@@ -1537,7 +1537,7 @@
     "": "",
     "fechapublicacion": "",
     "ingles": "Technical drawing",
-    "definicioningles": "Drawing with measurements and details used to manufacture, build or install something."
+    "definicioningles": "A drawing with measurements and details used to manufacture, build, or install something."
   },
   {
     "id": "cimentacion",
@@ -2321,7 +2321,7 @@
     "": "",
     "fechapublicacion": "",
     "ingles": "Natural ventilation",
-    "definicioningles": "Air movement that enters and exits a space without using mechanical equipment."
+    "definicioningles": "Air movement that enters and exits a space without the use of mechanical equipment."
   },
   {
     "id": "maqueta-arquitectonica",
@@ -2503,7 +2503,7 @@
     "": "",
     "fechapublicacion": "",
     "ingles": "Municipal retreat",
-    "definicioningles": "Required distance between a building and certain limits of the land or public road."
+    "definicioningles": "Required distance between a building and certain boundaries of the land or public road."
   },
   {
     "id": "colegio",
@@ -2937,7 +2937,7 @@
     "": "",
     "fechapublicacion": "",
     "ingles": "Fish",
-    "definicioningles": "It's fish that comes from the sea or river, and is widely used in Peruvian cuisine.\n\nFor example: Ceviche is made with fresh fish."
+    "definicioningles": "It's fish that comes from the sea or rivers, and is widely used in Peruvian cuisine.\n\nFor example: Ceviche is made with fresh fish."
   },
   {
     "id": "sopa",
@@ -3581,7 +3581,7 @@
     "": "",
     "fechapublicacion": "",
     "ingles": "Ask",
-    "definicioningles": "It's asking someone else for information about something you don't know.\n\nExample: I asked the teacher about the homework."
+    "definicioningles": "It's asking someone for information about something you don't know.\n\nExample: I asked the teacher about the homework."
   },
   {
     "id": "responder",
@@ -4183,7 +4183,7 @@
     "": "",
     "fechapublicacion": "",
     "ingles": "Journalistic chronicle",
-    "definicioningles": "A journalistic account that tells real events following an order and providing details of the context."
+    "definicioningles": "A journalistic account that tells real events in a specific order and provides details of the context."
   },
   {
     "id": "editorial-periodistico",
@@ -4225,7 +4225,7 @@
     "": "",
     "fechapublicacion": "",
     "ingles": "Press conference",
-    "definicioningles": "Meeting in which a person or organization provides information and answers questions from journalists."
+    "definicioningles": "A meeting in which a person or organization provides information and answers questions from journalists."
   },
   {
     "id": "medio-de-comunicacion",
@@ -4295,7 +4295,7 @@
     "": "",
     "fechapublicacion": "",
     "ingles": "Institutional communication",
-    "definicioningles": "Official communication that an institution uses to relate to its internal and external public."
+    "definicioningles": "Official communication that an institution uses to relate to its internal and external audience."
   },
   {
     "id": "relaciones-publicas",
@@ -4435,7 +4435,7 @@
     "": "",
     "fechapublicacion": "",
     "ingles": "Live broadcast",
-    "definicioningles": "Streaming video or audio over the internet while the event is happening."
+    "definicioningles": "Broadcasting video or audio over the internet while the event is happening."
   },
   {
     "id": "verificacion-de-hechos",
@@ -4505,7 +4505,7 @@
     "": "",
     "fechapublicacion": "03/09/2026",
     "ingles": "Please",
-    "definicioningles": "Basic formula for requesting something respectfully and without imposing."
+    "definicioningles": "Basic formula for requesting something respectfully and without imposing your will."
   },
   {
     "id": "disculpa",
@@ -4645,7 +4645,7 @@
     "": "",
     "fechapublicacion": "",
     "ingles": "Game",
-    "definicioningles": "It's a game between two teams or two people in a sport.\n\nExample: We watched the soccer game on television."
+    "definicioningles": "It's a game between two teams or people in a sport.\n\nExample: We watched the soccer game on television."
   },
   {
     "id": "equipo",
@@ -4701,7 +4701,7 @@
     "": "",
     "fechapublicacion": "",
     "ingles": "Referee",
-    "definicioningles": "It's the person who officiates a match and decides whether something is allowed or not.\n\nExample: The referee called a foul in the match."
+    "definicioningles": "This is the person who officiates a match and decides whether something is allowed or not.\n\nExample: The referee called a foul in the match."
   },
   {
     "id": "campeonato",
@@ -8733,7 +8733,7 @@
     "": "",
     "fechapublicacion": "",
     "ingles": "Aunt",
-    "definicioningles": "She's your dad's or your mom's sister.\n\nExample: My aunt gave me a book for my birthday."
+    "definicioningles": "She's your dad's or mom's sister.\n\nExample: My aunt gave me a book for my birthday."
   },
   {
     "id": "primo",
@@ -8817,7 +8817,7 @@
     "": "",
     "fechapublicacion": "",
     "ingles": "Grandson",
-    "definicioningles": "It's your grandson or granddaughter. For example: My grandmother plays with her grandson every afternoon."
+    "definicioningles": "It's your grandson or granddaughter. Example: My grandmother plays with her grandson every afternoon."
   },
   {
     "id": "cunado",
@@ -9181,7 +9181,7 @@
     "": "",
     "fechapublicacion": "",
     "ingles": "Philosophy",
-    "definicioningles": "Study of the fundamental principles about life, truth, and knowledge."
+    "definicioningles": "Study of the fundamental principles of life, truth, and knowledge."
   },
   {
     "id": "deduccion",
@@ -11015,7 +11015,7 @@
     "": "",
     "fechapublicacion": "",
     "ingles": "Civil code",
-    "definicioningles": "A set of rules concerning people, family, contracts, property, and other civil matters."
+    "definicioningles": "Set of rules concerning persons, family, contracts, property and other civil matters."
   },
   {
     "id": "codigo-penal",
@@ -11589,7 +11589,7 @@
     "": "",
     "fechapublicacion": "",
     "ingles": "Therapist",
-    "definicioningles": "Professional who accompanies a person in a treatment or therapeutic support process."
+    "definicioningles": "Professional who accompanies a person in a process of treatment or therapeutic support."
   },
   {
     "id": "evaluacion-psicologica",
@@ -12415,7 +12415,7 @@
     "": "",
     "fechapublicacion": "",
     "ingles": "Hospital",
-    "definicioningles": "It's a large place where doctors treat and care for sick or injured people.\n\nExample: They took my grandfather to the hospital because he wasn't feeling well."
+    "definicioningles": "It's a large place where doctors treat and heal sick or injured people.\n\nExample: They took my grandfather to the hospital because he wasn't feeling well."
   },
   {
     "id": "emergencia",
@@ -12457,7 +12457,7 @@
     "": "",
     "fechapublicacion": "",
     "ingles": "Fever",
-    "definicioningles": "It's when the body has a higher than normal temperature, due to an illness.\n\nExample: My son has a fever, so I took him to the doctor."
+    "definicioningles": "This is when the body has a higher than normal temperature, due to an illness.\n\nExample: My son has a fever, so I took him to the doctor."
   },
   {
     "id": "enfermedad",
@@ -15509,7 +15509,7 @@
     "": "",
     "fechapublicacion": "",
     "ingles": "Social worker",
-    "definicioningles": "Professional who assesses social situations, guides and connects people or families with support and services."
+    "definicioningles": "Professional who assesses social situations, guides and connects individuals or families with support and services."
   },
   {
     "id": "intervencion-social",
@@ -18365,7 +18365,7 @@
     "": "",
     "fechapublicacion": "",
     "ingles": "Appointment",
-    "definicioningles": "It's an agreed-upon time to meet someone, for example, a doctor or someone in an office, at a specific hour.\n\nExample: I have a dentist appointment tomorrow at three."
+    "definicioningles": "It's an agreed-upon time to meet someone, for example, a doctor or someone in an office, at a specific time.\n\nExample: I have a dentist appointment tomorrow at three."
   },
   {
     "id": "estacion-del-ano",
@@ -18869,7 +18869,7 @@
     "": "",
     "fechapublicacion": "",
     "ingles": "Efficiency",
-    "definicioningles": "Ability to perform a job to the best of one's ability with fewer resources."
+    "definicioningles": "Ability to perform a job in the best possible way with fewer resources."
   },
   {
     "id": "ejecucion",
@@ -21571,7 +21571,7 @@
     "": "",
     "fechapublicacion": "",
     "ingles": "Cadastre",
-    "definicioningles": "Organized register of properties, land and their characteristics."
+    "definicioningles": "Organized record of properties, land and their characteristics."
   },
   {
     "id": "semaforo",
@@ -21655,7 +21655,7 @@
     "": "",
     "fechapublicacion": "",
     "ingles": "Bicycle",
-    "definicioningles": "It's a two-wheeled vehicle that moves by pedaling.\n\nExample: I go to work by bicycle every day."
+    "definicioningles": "It's a two-wheeled vehicle that is propelled by pedaling.\n\nExample: I cycle to work every day."
   },
   {
     "id": "moto",
