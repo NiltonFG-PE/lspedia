@@ -718,6 +718,13 @@
       "nivel": "Fácil"
     },
     {
+      "caracter": "A",
+      "palabra": "Auto",
+      "imagen": "img/alfabetizacion/ejemplos/auto.webp",
+      "orden": 9,
+      "nivel": "Fácil"
+    },
+    {
       "caracter": "B",
       "palabra": "Barco",
       "imagen": "img/alfabetizacion/ejemplos/barco.webp",
