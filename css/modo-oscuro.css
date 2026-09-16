@@ -1,0 +1,411 @@
+/* ============================================================
+   LSPedia — Modo oscuro
+   ------------------------------------------------------------
+   Tema visual manual, pensado para conservar la identidad azul/amarillo
+   de LSPedia sin simplemente invertir colores. Se activa con:
+   <html data-lsp-tema="dark">.
+   ============================================================ */
+
+/* El botón vive dentro de la cápsula ES/EN para no ocupar una nueva zona
+   de la barra superior y seguir funcionando bien en móvil/tablet. */
+.lspedia-tema-btn {
+    width: 34px;
+    height: 32px;
+    margin-left: 3px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: #ffffff;
+    display: inline-grid;
+    place-items: center;
+    cursor: pointer;
+    position: relative;
+    flex: 0 0 auto;
+    box-shadow: inset 1px 0 0 rgba(255,255,255,.22);
+    transition: background-color .18s ease, color .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+.lspedia-tema-btn svg {
+    width: 17px;
+    height: 17px;
+    display: block;
+    transition: transform .28s cubic-bezier(.22,1,.36,1);
+}
+.lspedia-tema-btn:hover {
+    background: rgba(255,255,255,.13);
+    transform: translateY(-1px);
+}
+.lspedia-tema-btn:active { transform: scale(.92); }
+.lspedia-tema-btn:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+}
+.lspedia-tema-btn[aria-pressed="true"] {
+    color: #ffd43b;
+    background: rgba(255,193,7,.14);
+    box-shadow: inset 1px 0 0 rgba(255,255,255,.16), 0 0 0 1px rgba(255,193,7,.12);
+}
+.lspedia-tema-btn[aria-pressed="true"] svg { transform: rotate(18deg) scale(1.04); }
+
+/* Respaldo si el selector de idioma no estuviera disponible. */
+.lspedia-tema-standalone {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 8px;
+    padding: 3px;
+    border: 1px solid rgba(255,255,255,.24);
+    border-radius: 999px;
+    background: rgba(255,255,255,.12);
+    flex: 0 0 auto;
+}
+.lspedia-tema-standalone .lspedia-tema-btn {
+    margin-left: 0;
+    box-shadow: none;
+}
+
+html[data-lsp-tema="dark"] {
+    color-scheme: dark;
+    --background-color: #09111f;
+    --card-bg: #111c2f;
+    --text-main: #e7eef8;
+    --text-muted: #9aabc0;
+    --border-color: #2a3950;
+    --accent-color: #4fb3ff;
+    --lsp-dark-bg: #09111f;
+    --lsp-dark-surface: #111c2f;
+    --lsp-dark-surface-2: #17243a;
+    --lsp-dark-surface-3: #1b2a42;
+    --lsp-dark-border: #2a3950;
+    --lsp-dark-text: #e7eef8;
+    --lsp-dark-muted: #9aabc0;
+    --lsp-dark-blue: #5bb6ff;
+    --lsp-dark-amber: #ffc928;
+}
+
+html[data-lsp-tema="dark"] body {
+    background-color: var(--lsp-dark-bg) !important;
+    color: var(--lsp-dark-text) !important;
+}
+
+/* Transición breve solo en las superficies principales. */
+body,
+.card,
+.modal-content,
+.indice-alfabetico-card,
+.stat2-card,
+.stats-panel-destacado,
+.footer-lspedia,
+.footer-bottom,
+.categoria-card,
+.categoria-resultado-item,
+.nosotros-apoyo-card,
+.herr-movil-btn,
+.mobile-bottom-nav,
+.form-control,
+.form-select {
+    transition: background-color .2s ease, color .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+
+/* Tipografía general. */
+html[data-lsp-tema="dark"] h1,
+html[data-lsp-tema="dark"] h2,
+html[data-lsp-tema="dark"] h3,
+html[data-lsp-tema="dark"] h4,
+html[data-lsp-tema="dark"] h5,
+html[data-lsp-tema="dark"] h6,
+html[data-lsp-tema="dark"] .header-minimal h1,
+html[data-lsp-tema="dark"] .indice-alfabetico-titulo,
+html[data-lsp-tema="dark"] .stat2-titulo,
+html[data-lsp-tema="dark"] .stat2-numero,
+html[data-lsp-tema="dark"] .nosotros-apoyo-titulo,
+html[data-lsp-tema="dark"] .card-title {
+    color: var(--lsp-dark-text) !important;
+}
+html[data-lsp-tema="dark"] .text-dark { color: var(--lsp-dark-text) !important; }
+html[data-lsp-tema="dark"] .text-secondary,
+html[data-lsp-tema="dark"] .text-muted,
+html[data-lsp-tema="dark"] .stat2-redes-texto,
+html[data-lsp-tema="dark"] .stat2-completo,
+html[data-lsp-tema="dark"] .nosotros-apoyo-desc,
+html[data-lsp-tema="dark"] .footer-desarrollado,
+html[data-lsp-tema="dark"] .juego-desc,
+html[data-lsp-tema="dark"] .lsp-loader,
+html[data-lsp-tema="dark"] .lsp-loader-texto,
+html[data-lsp-tema="dark"] .lspedia-en-term {
+    color: var(--lsp-dark-muted) !important;
+}
+html[data-lsp-tema="dark"] a:not(.btn):not(.nav-link):not(.footer-red-icono):not(.stat2-red-icono) {
+    color: #69bfff;
+}
+html[data-lsp-tema="dark"] hr { border-color: var(--lsp-dark-border); opacity: .9; }
+
+/* Superficies Bootstrap y componentes generales. */
+html[data-lsp-tema="dark"] .bg-white,
+html[data-lsp-tema="dark"] .bg-light,
+html[data-lsp-tema="dark"] .bg-body,
+html[data-lsp-tema="dark"] .bg-body-tertiary,
+html[data-lsp-tema="dark"] .card,
+html[data-lsp-tema="dark"] .list-group-item,
+html[data-lsp-tema="dark"] .dropdown-menu,
+html[data-lsp-tema="dark"] .offcanvas,
+html[data-lsp-tema="dark"] .accordion-item,
+html[data-lsp-tema="dark"] .accordion-button,
+html[data-lsp-tema="dark"] .toast {
+    background-color: var(--lsp-dark-surface) !important;
+    color: var(--lsp-dark-text) !important;
+    border-color: var(--lsp-dark-border) !important;
+}
+html[data-lsp-tema="dark"] .accordion-button:not(.collapsed) {
+    background-color: #142944 !important;
+    color: #8ecbff !important;
+}
+html[data-lsp-tema="dark"] .accordion-button::after { filter: invert(1) brightness(1.6); }
+html[data-lsp-tema="dark"] .border,
+html[data-lsp-tema="dark"] .border-top,
+html[data-lsp-tema="dark"] .border-bottom,
+html[data-lsp-tema="dark"] .border-start,
+html[data-lsp-tema="dark"] .border-end {
+    border-color: var(--lsp-dark-border) !important;
+}
+
+/* Formularios y buscadores. */
+html[data-lsp-tema="dark"] .form-control,
+html[data-lsp-tema="dark"] .form-select,
+html[data-lsp-tema="dark"] .input-group-text,
+html[data-lsp-tema="dark"] #buscar,
+html[data-lsp-tema="dark"] #buscarCategorias {
+    background-color: #0e192b !important;
+    color: var(--lsp-dark-text) !important;
+    border-color: #32445f !important;
+}
+html[data-lsp-tema="dark"] .form-control::placeholder,
+html[data-lsp-tema="dark"] #buscar::placeholder,
+html[data-lsp-tema="dark"] #buscarCategorias::placeholder {
+    color: #8092aa !important;
+    opacity: 1;
+}
+html[data-lsp-tema="dark"] .form-control:focus,
+html[data-lsp-tema="dark"] .form-select:focus,
+html[data-lsp-tema="dark"] #buscar:focus,
+html[data-lsp-tema="dark"] #buscarCategorias:focus {
+    background-color: #101d31 !important;
+    color: #ffffff !important;
+    border-color: #4fb3ff !important;
+    box-shadow: 0 0 0 3px rgba(79,179,255,.16) !important;
+}
+html[data-lsp-tema="dark"] body.vista-temas-movil #bloqueBuscadorCategorias .input-group {
+    background: #0e192b !important;
+    border-color: #318cf4 !important;
+    box-shadow: 0 9px 22px rgba(0,0,0,.24), 0 0 0 4px rgba(49,140,244,.05) !important;
+}
+html[data-lsp-tema="dark"] body.vista-temas-movil #buscarCategorias {
+    background: #0e192b !important;
+    color: #dce8f7 !important;
+}
+
+/* Índice A-Z. */
+html[data-lsp-tema="dark"] .indice-alfabetico-card {
+    background: var(--lsp-dark-surface) !important;
+    border-color: var(--lsp-dark-border) !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,.18);
+}
+html[data-lsp-tema="dark"] .indice-alfabetico .btn-abc {
+    background-color: #17243a !important;
+    color: #c0ccda !important;
+    border-color: #2c3b52 !important;
+}
+html[data-lsp-tema="dark"] .indice-alfabetico .btn-abc:hover {
+    background-color: #1f3655 !important;
+    color: #74c4ff !important;
+}
+html[data-lsp-tema="dark"] .indice-alfabetico .btn-abc.active {
+    background-color: #4a3810 !important;
+    color: #ffd95c !important;
+    border-color: #7a5d18 !important;
+}
+
+/* Aviso institucional, introducción de Vocabulario y chips. */
+html[data-lsp-tema="dark"] .aviso-mision {
+    background: linear-gradient(135deg, #1d2330, #171f2d) !important;
+    border-left-color: #ffc107 !important;
+    box-shadow: inset 0 0 0 1px rgba(255,193,7,.08);
+}
+html[data-lsp-tema="dark"] .aviso-mision-linea1,
+html[data-lsp-tema="dark"] .aviso-mision-linea2,
+html[data-lsp-tema="dark"] .vocab-intro-texto,
+html[data-lsp-tema="dark"] .ejemplos-label {
+    color: #d6e0ed !important;
+}
+html[data-lsp-tema="dark"] body.vista-temas-movil #vocabularioIntroLista,
+html[data-lsp-tema="dark"] .vocab-intro-lista {
+    background: linear-gradient(145deg, #111c2f 0%, #13223a 100%) !important;
+    border-color: #2b4868 !important;
+    box-shadow: 0 7px 20px rgba(0,0,0,.18) !important;
+}
+html[data-lsp-tema="dark"] .ejemplo-chip {
+    background-color: #16304c !important;
+    color: #80c8ff !important;
+}
+html[data-lsp-tema="dark"] .ejemplo-chip:hover,
+html[data-lsp-tema="dark"] .ejemplo-chip:focus {
+    background-color: #167cc0 !important;
+    color: #ffffff !important;
+}
+
+/* Categorías, resultados, tarjetas y menús de herramientas/juegos. */
+html[data-lsp-tema="dark"] .categoria-card,
+html[data-lsp-tema="dark"] .categoria-resultado-item,
+html[data-lsp-tema="dark"] .quiz-card,
+html[data-lsp-tema="dark"] .herr-movil-btn,
+html[data-lsp-tema="dark"] #herramientasMenuMovil .herr-movil-btn,
+html[data-lsp-tema="dark"] #quizMenuJuegos .menu-juego-btn {
+    background: var(--lsp-dark-surface) !important;
+    color: var(--lsp-dark-text) !important;
+    border-color: var(--lsp-dark-border) !important;
+    box-shadow: 0 8px 22px rgba(0,0,0,.17) !important;
+}
+html[data-lsp-tema="dark"] .categoria-card:hover,
+html[data-lsp-tema="dark"] .categoria-resultado-item:hover {
+    background: #16243a !important;
+}
+html[data-lsp-tema="dark"] .categoria-card h5,
+html[data-lsp-tema="dark"] .categoria-card h6,
+html[data-lsp-tema="dark"] .categoria-card .fw-bold,
+html[data-lsp-tema="dark"] .categoria-resultado-titulo,
+html[data-lsp-tema="dark"] .juego-titulo,
+html[data-lsp-tema="dark"] .herr-movil-titulo {
+    color: var(--lsp-dark-text) !important;
+}
+/* Los cinco juegos mantienen su color conceptual, pero en una versión oscura. */
+html[data-lsp-tema="dark"] #btnMenuJuegoCompletar { background: #122840 !important; border-color: #27527a !important; }
+html[data-lsp-tema="dark"] #btnMenuJuegoUnir { background: #102d27 !important; border-color: #286354 !important; }
+html[data-lsp-tema="dark"] #btnMenuJuegoQuiz { background: #241b3b !important; border-color: #4c3b75 !important; }
+html[data-lsp-tema="dark"] #btnMenuJuegoMatematicas { background: #302812 !important; border-color: #685722 !important; }
+html[data-lsp-tema="dark"] #btnMenuJuegoOraciones { background: #332117 !important; border-color: #6e4630 !important; }
+
+/* Estadísticas: conserva los acentos pastel, con superficies oscuras. */
+html[data-lsp-tema="dark"] .stats-panel-destacado {
+    background: linear-gradient(145deg, #0d1b2d 0%, #13243a 100%) !important;
+    border-color: #254766 !important;
+    box-shadow: 0 16px 35px rgba(0,0,0,.22) !important;
+}
+html[data-lsp-tema="dark"] .stat2-card {
+    background: #111c2f !important;
+    border-color: #2a3950 !important;
+    box-shadow: 0 8px 22px rgba(0,0,0,.16) !important;
+}
+html[data-lsp-tema="dark"] .stat2-progreso-wrap { background-color: #26364d !important; }
+html[data-lsp-tema="dark"] .stat2-red-icono,
+html[data-lsp-tema="dark"] .footer-red-icono {
+    background-color: #1b2a42 !important;
+    color: #b7c5d7 !important;
+}
+html[data-lsp-tema="dark"] .stat2-red-tiktok:hover,
+html[data-lsp-tema="dark"] .footer-red-tiktok:hover { background-color: #050505 !important; color:#fff !important; }
+html[data-lsp-tema="dark"] .stat2-red-youtube:hover,
+html[data-lsp-tema="dark"] .footer-red-youtube:hover { background-color: #ff0000 !important; color:#fff !important; }
+
+/* Sobre Nosotros. */
+html[data-lsp-tema="dark"] .nosotros-apoyo-card {
+    background: linear-gradient(160deg, color-mix(in srgb, var(--nosotros-acento, #475569) 16%, #111c2f), #111c2f 68%) !important;
+    border-color: color-mix(in srgb, var(--nosotros-acento, #475569) 38%, #2a3950) !important;
+    box-shadow: 0 7px 20px rgba(0,0,0,.16) !important;
+}
+html[data-lsp-tema="dark"] .nosotros-apoyo-icono {
+    background: color-mix(in srgb, var(--nosotros-acento, #475569) 20%, #17243a) !important;
+    box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--nosotros-acento, #475569) 34%, #2a3950) !important;
+}
+html[data-lsp-tema="dark"] .btn-contacto-interprete {
+    background-color: #111c2f !important;
+    border-color: #2a3950 !important;
+    color: var(--lsp-dark-text) !important;
+    box-shadow: 0 6px 16px rgba(0,0,0,.17) !important;
+}
+html[data-lsp-tema="dark"] .nosotros-bloque-clicable:hover,
+html[data-lsp-tema="dark"] .nosotros-bloque-clicable:focus-visible {
+    background-color: rgba(79,179,255,.08) !important;
+}
+
+/* Modales. */
+html[data-lsp-tema="dark"] .modal-content {
+    background: #101a2b !important;
+    color: var(--lsp-dark-text) !important;
+    border: 1px solid var(--lsp-dark-border) !important;
+    box-shadow: 0 24px 65px rgba(0,0,0,.48) !important;
+}
+html[data-lsp-tema="dark"] .modal-header,
+html[data-lsp-tema="dark"] .modal-footer { border-color: var(--lsp-dark-border) !important; }
+html[data-lsp-tema="dark"] .modal-title { color: #f3f7fc !important; }
+html[data-lsp-tema="dark"] .btn-close { filter: invert(1) grayscale(1) brightness(1.9); }
+
+/* Reproductores y apoyos visuales. */
+html[data-lsp-tema="dark"] .apoyo-visual-caja {
+    background-color: #0d1727 !important;
+    border-color: #2a3950 !important;
+}
+html[data-lsp-tema="dark"] .controles-video {
+    background: rgba(255,193,7,.13) !important;
+    border-color: rgba(255,193,7,.28) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 6px 18px rgba(0,0,0,.18) !important;
+}
+html[data-lsp-tema="dark"] .controles-video-velocidad {
+    background-color: rgba(255,255,255,.07) !important;
+    border-color: #526278 !important;
+}
+html[data-lsp-tema="dark"] .controles-video-velocidad .small { color: #e2e8f0 !important; }
+
+/* Footer y navegación móvil. */
+html[data-lsp-tema="dark"] .footer-lspedia {
+    background-color: #0d1727 !important;
+    border-top-color: #24344a !important;
+}
+html[data-lsp-tema="dark"] .footer-top { border-bottom-color: #24344a !important; }
+html[data-lsp-tema="dark"] .footer-bottom {
+    background-color: #131f33 !important;
+    border: 1px solid #26364d;
+    box-shadow: 0 7px 18px rgba(0,0,0,.16) !important;
+}
+html[data-lsp-tema="dark"] .footer-corazon { background-color: #3a1d27 !important; }
+html[data-lsp-tema="dark"] .mobile-bottom-nav {
+    background: rgba(13,23,39,.97) !important;
+    border-top-color: #28384d !important;
+    box-shadow: 0 -5px 18px rgba(0,0,0,.28) !important;
+}
+html[data-lsp-tema="dark"] .mbn-item { color: #9aabc0 !important; }
+html[data-lsp-tema="dark"] .mbn-item.active { color: #ffffff !important; }
+
+/* Etiquetas y ayudas bilingües. */
+html[data-lsp-tema="dark"] .lspedia-lsp-label {
+    background: #142c46 !important;
+    color: #9bd4ff !important;
+}
+
+/* Splash coherente cuando el tema ya fue activado durante la sesión. */
+html[data-lsp-tema="dark"] #splashScreen { background: #09111f !important; }
+html[data-lsp-tema="dark"] #splashScreen .splash-barra-wrap {
+    background: #1c2a3d !important;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,.32) !important;
+}
+html[data-lsp-tema="dark"] #splashScreen .splash-frase { color: #a8b6c8 !important; }
+
+/* Tablas. */
+html[data-lsp-tema="dark"] .table {
+    --bs-table-bg: #111c2f;
+    --bs-table-color: #e7eef8;
+    --bs-table-border-color: #2a3950;
+    --bs-table-striped-bg: #142239;
+    --bs-table-hover-bg: #182943;
+    color: #e7eef8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .lspedia-tema-btn,
+    .lspedia-tema-btn svg,
+    body,
+    .card,
+    .modal-content,
+    .footer-lspedia {
+        transition: none !important;
+    }
+}
