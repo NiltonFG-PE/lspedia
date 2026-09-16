@@ -93,13 +93,13 @@ jobs:
       - name: Guardar cambios automáticos
         shell: bash
         run: |
-          if git diff --quiet -- data/palabras.json data/vocabulario.json data/nuevas-palabras.json data/traducciones-en.json index.html js/script.js sitemap.xml scripts/generar_paginas_seo.py palabra diccionario vocabulario; then
+          if git diff --quiet -- data/palabras.json data/vocabulario.json data/nuevas-palabras.json data/traducciones-en.json index.html js/script.js sitemap.xml scripts/generar_paginas_seo.py diccionario vocabulario; then
             echo "IDs, SEO, traducciones, Lo nuevo y sitemap ya estaban actualizados."
           else
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add data/palabras.json data/vocabulario.json data/nuevas-palabras.json data/traducciones-en.json index.html js/script.js sitemap.xml scripts/generar_paginas_seo.py
-            git add -A -- palabra diccionario vocabulario
+            git add -A -- diccionario vocabulario
             git commit -m "Actualizar páginas SEO canonicals y sitemap"
             git push origin HEAD:develop
           fi
@@ -144,7 +144,10 @@ jobs:
 
           git -C "$WORKTREE" config user.name "github-actions[bot]"
           git -C "$WORKTREE" config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git -C "$WORKTREE" add -A -- diccionario vocabulario palabra sitemap.xml index.html js/script.js
+          git -C "$WORKTREE" add -A -- diccionario vocabulario sitemap.xml index.html js/script.js
+          if [ -n "$(git -C "$WORKTREE" ls-files -- palavra)" ]; then
+            git -C "$WORKTREE" add -A -- palavra
+          fi
 
           if git -C "$WORKTREE" diff --cached --quiet; then
             echo "SEO de main ya estaba actualizado."
