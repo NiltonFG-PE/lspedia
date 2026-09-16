@@ -1045,7 +1045,7 @@
     "imagen": "img/diccionario/ecosistema.webp",
     "senasugerida": "",
     "": "",
-    "fechapublicacion": "",
+    "fechapublicacion": "03/09/2026",
     "ingles": "Ecosystem",
     "definicioningles": "🌿 *Ecosystem (Nature)*\n\n*Definition:*\nA community of living things (people, animals, plants, and other organisms) and the place where they live, interacting with each other and with the environment.\n\n*Example:*\nA forest, a river, or the sea are ecosystems.\n\n💻 *Ecosystem (Technology)*\n\n*Definition:*\nA community of devices, applications, services, and people that work together to offer a shared experience or achieve a common goal.\n\n*Example:*\nA mobile phone, a computer, cloud storage, and applications that work together form a technological ecosystem."
   },
@@ -2937,7 +2937,7 @@
     "": "",
     "fechapublicacion": "",
     "ingles": "Fish",
-    "definicioningles": "It's fish that comes from the sea or rivers, and is widely used in Peruvian cuisine.\n\nFor example: Ceviche is made with fresh fish."
+    "definicioningles": "It's fish that comes from the sea or river, and is widely used in Peruvian cuisine.\n\nFor example: Ceviche is made with fresh fish."
   },
   {
     "id": "sopa",
@@ -3733,7 +3733,7 @@
     "imagen": "img/diccionario/diccionario.webp",
     "senasugerida": "",
     "": "",
-    "fechapublicacion": "",
+    "fechapublicacion": "03/09/2026",
     "ingles": "Dictionary",
     "definicioningles": "A reference work that collects, defines and explains in an orderly manner —generally alphabetically— the words or terms of a language, a specific subject, a science or a technical field, indicating their meaning, spelling and, in many cases, their origin or use."
   },
@@ -3747,7 +3747,7 @@
     "imagen": "img/diccionario/vocabulario.webp",
     "senasugerida": "",
     "": "",
-    "fechapublicacion": "",
+    "fechapublicacion": "03/09/2026",
     "ingles": "Vocabulary",
     "definicioningles": "A set of words that are part of a particular language, that belong to the use of a linguistic community, or that are used by an individual, a discipline, or a specific technical field."
   },
@@ -4489,7 +4489,7 @@
     "imagen": "img/diccionario/gracias.webp",
     "senasugerida": "",
     "": "",
-    "fechapublicacion": "",
+    "fechapublicacion": "03/09/2026",
     "ingles": "Thank you",
     "definicioningles": "General expression to thank someone for a favor, a gift, or someone's kindness."
   },
@@ -4503,9 +4503,9 @@
     "imagen": "img/diccionario/porfavor.webp",
     "senasugerida": "",
     "": "",
-    "fechapublicacion": "",
+    "fechapublicacion": "03/09/2026",
     "ingles": "Please",
-    "definicioningles": "Basic formula for requesting something respectfully and without imposing your will."
+    "definicioningles": "Basic formula for requesting something respectfully and without imposing."
   },
   {
     "id": "disculpa",
@@ -4517,7 +4517,7 @@
     "imagen": "img/diccionario/Disculpa.webp",
     "senasugerida": "",
     "": "",
-    "fechapublicacion": "",
+    "fechapublicacion": "03/09/2026",
     "ingles": "Sorry",
     "definicioningles": "A request for forgiveness for a minor offense, or a formula for politely interrupting."
   },
@@ -4531,7 +4531,7 @@
     "imagen": "img/diccionario/de%20nada.webp",
     "senasugerida": "",
     "": "",
-    "fechapublicacion": "",
+    "fechapublicacion": "03/09/2026",
     "ingles": "You are welcome",
     "definicioningles": "Standard and polite response when someone thanks us."
   },
@@ -4545,7 +4545,7 @@
     "imagen": "img/diccionario/con%20gusto.webp",
     "senasugerida": "",
     "": "",
-    "fechapublicacion": "",
+    "fechapublicacion": "03/09/2026",
     "ingles": "With pleasure",
     "definicioningles": "A formal and polite indication that a favor is being done with pleasure."
   },
@@ -4559,7 +4559,7 @@
     "imagen": "img/diccionario/felicitaciones.webp",
     "senasugerida": "",
     "": "",
-    "fechapublicacion": "",
+    "fechapublicacion": "03/09/2026",
     "ingles": "Congratulations",
     "definicioningles": "Expression of joy and recognition for someone's success or celebration."
   },
@@ -4909,7 +4909,7 @@
     "imagen": "",
     "senasugerida": "",
     "": "",
-    "fechapublicacion": "Sat Sep 12 2026 01:04:09 GMT-0500 (Peru Standard Time)",
+    "fechapublicacion": "12/09/2026",
     "ingles": "Coach",
     "definicioningles": ""
   },
@@ -4923,7 +4923,7 @@
     "imagen": "",
     "senasugerida": "",
     "": "",
-    "fechapublicacion": "Sat Sep 12 2026 08:09:51 GMT-0500 (Peru Standard Time)",
+    "fechapublicacion": "12/09/2026",
     "ingles": "Goal",
     "definicioningles": ""
   },
@@ -4937,7 +4937,7 @@
     "imagen": "",
     "senasugerida": "",
     "": "",
-    "fechapublicacion": "Sat Sep 12 2026 14:14:40 GMT-0500 (Peru Standard Time)",
+    "fechapublicacion": "12/09/2026",
     "ingles": "Spot",
     "definicioningles": ""
   },
@@ -4951,7 +4951,7 @@
     "imagen": "",
     "senasugerida": "",
     "": "",
-    "fechapublicacion": "Sat Sep 12 2026 14:30:35 GMT-0500 (Peru Standard Time)",
+    "fechapublicacion": "12/09/2026",
     "ingles": "Defeat",
     "definicioningles": ""
   },
@@ -6351,7 +6351,7 @@
     "imagen": "img/diccionario/Hip%C3%B3tesis.webp",
     "senasugerida": "",
     "": "",
-    "fechapublicacion": "",
+    "fechapublicacion": "03/09/2026",
     "ingles": "Hypothesis",
     "definicioningles": "A reasonable assumption that serves as a starting point for investigation."
   },
@@ -6457,15 +6457,15 @@
     "id": "discrepancia",
     "palabra": "Discrepancia",
     "variantes": "Diferencia, Desacuerdo, Contradicción, Inconsistencia",
-    "definicion": "Cuando dos o más personas tienen ideas, opiniones o respuestas diferentes sobre un mismo tema.\n\n*Ejemplo:*\nAna dice que la reunión es a las 9. Luis dice que es a las 10. Hay una discrepancia.\n",
+    "definicion": "Cuando dos o más personas tienen ideas, opiniones o respuestas diferentes sobre un mismo tema.\n\n*Ejemplo:*\nAna dice que la reunión es a las 9. Luis dice que es a las 10. Hay una discrepancia.",
     "categoria": "Educación",
     "video": "-5o6RvevXMQ",
-    "imagen": "img/diccionario/discrepancia.webp ",
+    "imagen": "img/diccionario/discrepancia.webp",
     "senasugerida": "",
     "": "",
-    "fechapublicacion": "",
+    "fechapublicacion": "03/09/2026",
     "ingles": "Discrepancy",
-    "definicioningles": "When two or more people have different ideas, opinions, or answers about the same topic.\n\n*Example:*\nAna says the meeting is at 9. Luis says it's at 10. There's a discrepancy.\n\n"
+    "definicioningles": "When two or more people have different ideas, opinions, or answers about the same topic.\n\n*Example:*\nAna says the meeting is at 9. Luis says it's at 10. There's a discrepancy."
   },
   {
     "id": "docencia",
@@ -6709,13 +6709,13 @@
     "id": "uniformidad",
     "palabra": "Uniformidad",
     "variantes": "Homogeneidad, Regularidad, Igualdad, Consistencia, Estandarización",
-    "definicion": "Cualidad de mantener las mismas características, forma o manera, sin cambios ni diferencias entre sus partes.\r\n*Ejemplo:*\r\n*-En un colegio:* Todos los estudiantes llevan el mismo uniforme, lo que da uniformidad al grupo.\r\n*-Las reglas de un juego:* Si una regla aplica igual para todos los jugadores y en todo momento del juego, hay uniformidad. Nadie tiene ventajas ni excepciones.\r\n*-Ciencia, Industria, Cocina:* Distribución igualitaria de una propiedad o material en una superficie o producto. \r\nMezcla uniforme es aquella en la que todos sus ingredientes quedan distribuidos de manera pareja, de modo que cualquier parte de la mezcla tiene una composición muy similar.\r\n",
+    "definicion": "Cualidad de mantener las mismas características, forma o manera, sin cambios ni diferencias entre sus partes.\r\n*Ejemplo:*\r\n*-En un colegio:* Todos los estudiantes llevan el mismo uniforme, lo que da uniformidad al grupo.\r\n*-Las reglas de un juego:* Si una regla aplica igual para todos los jugadores y en todo momento del juego, hay uniformidad. Nadie tiene ventajas ni excepciones.\r\n*-Ciencia, Industria, Cocina:* Distribución igualitaria de una propiedad o material en una superficie o producto. \r\nMezcla uniforme es aquella en la que todos sus ingredientes quedan distribuidos de manera pareja, de modo que cualquier parte de la mezcla tiene una composición muy similar.",
     "categoria": "Educación",
     "video": "W9rQ1fRonOw",
     "imagen": "img/diccionario/uniformidad.webp",
     "senasugerida": "",
     "": "",
-    "fechapublicacion": "",
+    "fechapublicacion": "03/09/2026",
     "ingles": "Uniformity",
     "definicioningles": "The quality of maintaining the same characteristics, form, or manner, without changes or differences between its parts.\n\n*Example:*\n\n*-In a school:* All students wear the same uniform, which gives uniformity to the group.\n\n*-The rules of a game:* If a rule applies equally to all players at all times during the game, there is uniformity. No one has advantages or exceptions.\n\n*-Science, Industry, Cooking:* Equal distribution of a property or material on a surface or in a product.\n\nA uniform mixture is one in which all its ingredients are evenly distributed, so that any part of the mixture has a very similar composition."
   },
@@ -9515,7 +9515,7 @@
     "imagen": "img/diccionario/flexible.webp",
     "senasugerida": "",
     "": "",
-    "fechapublicacion": "",
+    "fechapublicacion": "12/09/2026",
     "ingles": "Flexible",
     "definicioningles": "Flexible means that a person or thing can easily change or adapt.\n\nFor example, a person is walking along a path and encounters a problem that prevents them from continuing. Instead of getting angry and staying there, they find another path and move on.\n\nThis can also happen at work. A person normally starts at a certain time, but one day their boss asks them to arrive earlier. If they can, they adjust their schedule and adapt to the new situation.\n\nA flexible object can also bend without breaking."
   },
@@ -11015,7 +11015,7 @@
     "": "",
     "fechapublicacion": "",
     "ingles": "Civil code",
-    "definicioningles": "Set of rules concerning persons, family, contracts, property and other civil matters."
+    "definicioningles": "A set of rules concerning people, family, contracts, property, and other civil matters."
   },
   {
     "id": "codigo-penal",
@@ -11181,7 +11181,7 @@
     "imagen": "img/diccionario/resiliencia.webp",
     "senasugerida": "",
     "": "",
-    "fechapublicacion": "",
+    "fechapublicacion": "12/09/2026",
     "ingles": "Resilience",
     "definicioningles": "Resilience is a person's ability to cope with difficult times, adapt to what has happened, and move forward.\n\nA person may feel sad, worried, or distressed. Having resilience doesn't mean not suffering. It means that, little by little, they find ways to deal with the problem, adapt to the changes, and continue with their life."
   },
@@ -11195,7 +11195,7 @@
     "imagen": "img/diccionario/psicosis.webp",
     "senasugerida": "",
     "": "",
-    "fechapublicacion": "",
+    "fechapublicacion": "12/09/2026",
     "ingles": "Psychosis",
     "definicioningles": "Psychosis is a state in which a person has difficulty distinguishing between what is real and what is not.\n\nFor example, they may hear or see things that other people do not perceive, or be very convinced that something is happening even though it is not.\n\nThey may also have difficulty organizing their thoughts or correctly understanding certain situations.\n\nPsychosis can be caused by various mental health problems, some illnesses, or the use of certain substances. It does not mean that the person is \"crazy\" or necessarily dangerous."
   },
@@ -11589,7 +11589,7 @@
     "": "",
     "fechapublicacion": "",
     "ingles": "Therapist",
-    "definicioningles": "Professional who accompanies a person in a process of treatment or therapeutic support."
+    "definicioningles": "Professional who accompanies a person in a treatment or therapeutic support process."
   },
   {
     "id": "evaluacion-psicologica",
@@ -12119,7 +12119,7 @@
     "imagen": "img/diccionario/abismo1.webp",
     "senasugerida": "",
     "": "",
-    "fechapublicacion": "",
+    "fechapublicacion": "03/09/2026",
     "ingles": "Abyss",
     "definicioningles": "An abyss is a very large and immeasurable depth. It can refer to a physical place, like a very deep precipice, or be used figuratively to describe a great difference, a danger, or a very difficult situation.\n\nIn short, an abyss is something so deep or so large that it seems to have no end or is very difficult to cross."
   },
@@ -12133,7 +12133,7 @@
     "imagen": "img/diccionario/Trascender1.webp, img/diccionario/Trascender2.webp",
     "senasugerida": "",
     "": "",
-    "fechapublicacion": "",
+    "fechapublicacion": "03/09/2026",
     "ingles": "Transcend",
     "definicioningles": "To transcend means to go beyond the ordinary or certain limits and leave an impact, a lesson, or a change that remains over time. In other words, to transcend is to do something that has lasting value or influence."
   },
@@ -14807,7 +14807,7 @@
     "imagen": "img/diccionario/hola.webp",
     "senasugerida": "",
     "": "",
-    "fechapublicacion": "",
+    "fechapublicacion": "03/09/2026",
     "ingles": "Hello",
     "definicioningles": "It's the word we use to greet someone when we see them or start talking to them. It doesn't matter what time it is."
   },
@@ -14821,7 +14821,7 @@
     "imagen": "img/diccionario/Adi%C3%B3s.webp",
     "senasugerida": "",
     "": "",
-    "fechapublicacion": "",
+    "fechapublicacion": "03/09/2026",
     "ingles": "Bye",
     "definicioningles": "Expression used to say goodbye to a person."
   },
@@ -14835,7 +14835,7 @@
     "imagen": "img/diccionario/Buenos%20d%C3%ADas.webp",
     "senasugerida": "",
     "": "",
-    "fechapublicacion": "",
+    "fechapublicacion": "03/09/2026",
     "ingles": "Good morning",
     "definicioningles": "It is the most common polite formula for greeting someone in the morning, but only from sunrise until noon (lunchtime)."
   },
@@ -14849,7 +14849,7 @@
     "imagen": "img/diccionario/buenas%20tardes.webp",
     "senasugerida": "",
     "": "",
-    "fechapublicacion": "",
+    "fechapublicacion": "03/09/2026",
     "ingles": "Good afternoon",
     "definicioningles": "It is the greeting we use from noon until sunset (when it starts to get dark)."
   },
@@ -14863,7 +14863,7 @@
     "imagen": "img/diccionario/Buenas%20noches.webp",
     "senasugerida": "",
     "": "",
-    "fechapublicacion": "",
+    "fechapublicacion": "03/09/2026",
     "ingles": "Good night",
     "definicioningles": "It's the greeting we use when it's dark (at night). It's also used to say goodbye to someone before going to sleep."
   },
@@ -14877,7 +14877,7 @@
     "imagen": "img/diccionario/Bienvenido.webp",
     "senasugerida": "",
     "": "",
-    "fechapublicacion": "",
+    "fechapublicacion": "03/09/2026",
     "ingles": "Welcome",
     "definicioningles": "A polite expression given to a person when they arrive at a place, a group, or your home."
   },
@@ -14961,7 +14961,7 @@
     "imagen": "img/diccionario/digno.webp",
     "senasugerida": "",
     "": "",
-    "fechapublicacion": "",
+    "fechapublicacion": "03/09/2026",
     "ingles": "Worthy",
     "definicioningles": "A person or thing that deserves respect, good treatment, or recognition for its value or for acting correctly.\n\n*Examples*\n\n👤 *Person*\nAll people are worthy and deserve respect.\n\n🏠 *Things*\nA family deserves decent housing: clean, safe, and in good condition.\n\n💼 *Work*\nEvery person deserves a living wage to cover their basic needs."
   },
@@ -15845,7 +15845,7 @@
     "": "",
     "fechapublicacion": "",
     "ingles": "Social referral",
-    "definicioningles": "Process of directing a person to another institution or professional that can address a specific need."
+    "definicioningles": "Process of directing a person to another institution or professional that can meet a specific need."
   },
   {
     "id": "sisfoh",
@@ -16025,7 +16025,7 @@
     "imagen": "img/diccionario/ia.webp",
     "senasugerida": "",
     "": "",
-    "fechapublicacion": "",
+    "fechapublicacion": "05/09/2026",
     "ingles": "Artificial intelligence",
     "definicioningles": "Artificial intelligence is a technology that attempts to mimic some of the capabilities of human intelligence. It can learn from vast amounts of information, recognize patterns, and improve its responses or results over time.\n\nFor example, an AI can recognize a face in a photo, translate text, answer questions, recommend videos, or create images."
   },
@@ -22521,7 +22521,7 @@
     "imagen": "img/diccionario/tesis.webp",
     "senasugerida": "",
     "": "",
-    "fechapublicacion": "",
+    "fechapublicacion": "08/09/2026",
     "ingles": "Thesis",
     "definicioningles": "It is a research project that a person undertakes at a university to obtain a degree or title, according to the rules of their institution.\n\n*How is it done?*\n• Choose a topic or problem you want to investigate.\n\n• Look for information in books, articles, interviews, surveys, or other sources.\n\n• Analyze the information and explain what you discovered.\n\n• Write your conclusions.\n\n*The final step: defending the thesis*\nThe person presents and explains their research to a panel of examiners, who may ask questions. If the thesis is approved and the other requirements of the institution are met, they can continue the process to obtain the corresponding degree or title.\n\nAt a master's or doctoral level, it may also be necessary to write and defend a new, more advanced thesis."
   },
@@ -23599,7 +23599,7 @@
     "imagen": "img/diccionario/retar.png",
     "senasugerida": "",
     "": "",
-    "fechapublicacion": "",
+    "fechapublicacion": "12/09/2026",
     "ingles": "Challenge",
     "definicioningles": "To challenge means to dare someone to do something difficult, to compete, or to prove they can do it.\n\nFor example, one person challenges another to a race to see who wins. That person is challenging them."
   },
