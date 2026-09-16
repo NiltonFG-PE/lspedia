@@ -1,0 +1,244 @@
+name: Corregir navegacion Diccionario temporal
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - ".github/workflows/corregir-navegacion-diccionario-temporal.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  corregir:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Aplicar correccion
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path('js/script.js')
+          js = path.read_text(encoding='utf-8')
+
+          # 1) El cambio de sección debe confirmarse ANTES de repintar widgets
+          # opcionales. Así, aunque un widget falle, URL y menú no quedan en
+          # Vocabulario mientras ya se muestra contenido de Diccionario.
+          old_nav = '''    document.body.classList.remove("vista-temas-movil");
+              mostrarBloqueInicio();
+              mostrarSenalDelDia();
+              actualizarTituloPrincipal("diccionario");
+              activarBotonMenu("btnInicio");
+              actualizarVistaUrl(null);
+          '''
+          new_nav = '''    document.body.classList.remove("vista-temas-movil");
+              // Primero confirmamos el estado principal de navegación. Ningún
+              // widget auxiliar debe poder dejar la interfaz a mitad de cambio.
+              actualizarTituloPrincipal("diccionario");
+              activarBotonMenu("btnInicio");
+              actualizarVistaUrl(null);
+              mostrarBloqueInicio();
+
+              // Si un aviso de error anterior reemplazó el panel de categorías,
+              // lo reconstruimos desde los datos que ya están en memoria.
+              try {
+                  if (window.App && Array.isArray(App.datos) && App.datos.length) {
+                      renderCategoriasDiccionario();
+                  }
+              } catch (error) {
+                  console.error("No se pudieron reconstruir las categorías del Diccionario:", error);
+              }
+
+              // Descubre es un widget auxiliar: si algo puntual falla acá, la
+              // navegación principal ya quedó correctamente en Diccionario.
+              try {
+                  mostrarSenalDelDia();
+              } catch (error) {
+                  console.error("No se pudo actualizar Descubre al volver al Diccionario:", error);
+              }
+          '''
+          if old_nav not in js:
+              raise SystemExit('No se encontró el bloque esperado de irAlBuscador')
+          js = js.replace(old_nav, new_nav, 1)
+
+          # 2) El aviso de error ya no destruye los nodos internos de Descubre.
+          # Antes reemplazaba .dia-rect-body con innerHTML; después, al volver de
+          # Vocabulario, mostrarSenalDelDia intentaba escribir en IDs que ya no
+          # existían y la navegación se interrumpía.
+          patron_error = re.compile(r'''function mostrarErrorCargaInicial\(\) \{.*?\n\}\n// "const App = \{\.\.\.\}"''', re.S)
+          nueva_error = '''function mostrarErrorCargaInicial() {
+              const senal = document.getElementById("senalDelDia");
+              const label = document.getElementById("labelSenalDelDia");
+              const titulo = document.getElementById("tituloDelDia");
+              const descripcion = document.getElementById("descripcionDelDia");
+              const categoria = document.getElementById("categoriaDelDia");
+              const btnVer = document.getElementById("btnVerDelDia");
+              const miniaturaWrap = document.getElementById("miniaturaDelDiaWrap");
+
+              // Conservamos la estructura original de la tarjeta para que pueda
+              // recuperarse sin recargar si los datos ya están disponibles.
+              if (senal) senal.style.display = "";
+              if (label) label.textContent = "⚠️ No se pudo cargar";
+              if (titulo) titulo.textContent = "Sin conexión";
+              if (descripcion) descripcion.textContent = "Revisa tu conexión a internet e inténtalo de nuevo.";
+              if (categoria) categoria.textContent = "";
+              if (miniaturaWrap) miniaturaWrap.classList.add("d-none");
+              if (btnVer) {
+                  btnVer.textContent = "🔄 Reintentar";
+                  btnVer.onclick = () => location.reload();
+                  btnVer.setAttribute("aria-label", "Reintentar la carga");
+                  btnVer.setAttribute("title", "Reintentar la carga");
+              }
+
+              const panelCategorias = document.getElementById("panelCategoriasDiccionario");
+              if (panelCategorias) {
+                  panelCategorias.innerHTML = `
+                      <div class="col-12 text-center text-muted small py-3">
+                          No se pudieron cargar las categorías. Revisa tu conexión e
+                          <button type="button" class="btn btn-sm btn-outline-primary ms-1" onclick="location.reload()">inténtalo de nuevo</button>.
+                      </div>`;
+              }
+          }
+          // "const App = {...}"'''
+          js, n = patron_error.subn(nueva_error, js, count=1)
+          if n != 1:
+              raise SystemExit(f'No se pudo reemplazar mostrarErrorCargaInicial: {n}')
+
+          # 3) Descubre restaura el texto/acción normal del botón cuando los
+          # datos vuelven a estar disponibles y siempre comprueba que exista.
+          old_btn = '''    document
+              .getElementById("btnVerDelDia")
+              .onclick=()=>{
+
+                  window.scrollTo({
+                      top:0,
+                      behavior:"smooth"
+                  });
+
+                  document.getElementById("senalDelDia").style.display = "none";
+                  mostrarPalabra(palabra);
+
+              };
+          '''
+          new_btn = '''    const btnVerDelDia = document.getElementById("btnVerDelDia");
+              if(btnVerDelDia){
+                  btnVerDelDia.textContent = "Ver";
+                  btnVerDelDia.setAttribute("aria-label", "Ver palabra");
+                  btnVerDelDia.setAttribute("title", "Ver palabra");
+                  btnVerDelDia.onclick=()=>{
+                      window.scrollTo({
+                          top:0,
+                          behavior:"smooth"
+                      });
+
+                      const tarjetaDelDiaActual = document.getElementById("senalDelDia");
+                      if(tarjetaDelDiaActual) tarjetaDelDiaActual.style.display = "none";
+                      mostrarPalabra(palabra);
+                  };
+              }
+          '''
+          if old_btn not in js:
+              raise SystemExit('No se encontró el botón de Descubre esperado')
+          js = js.replace(old_btn, new_btn, 1)
+
+          # 4) Si una excepción de interfaz ocurre DESPUÉS de cargar datos, no
+          # la presentamos como si hubiera fallado Internet ni destruimos el UI.
+          old_catch = '''          } catch (error) {
+                      restaurandoHistorialNavegador = false;
+                      console.error("Error al procesar los datos del diccionario:", error);
+                      mostrarErrorCargaInicial();
+                    }
+          '''
+          new_catch = '''          } catch (error) {
+                      restaurandoHistorialNavegador = false;
+                      console.error("Error al procesar los datos del diccionario:", error);
+                      if (!window.App || !Array.isArray(App.datos) || App.datos.length === 0) {
+                          mostrarErrorCargaInicial();
+                      } else {
+                          // Los datos sí existen: se recuperan los bloques básicos y
+                          // se deja el error técnico únicamente en la consola.
+                          try { renderCategoriasDiccionario(); } catch (errorCategorias) {
+                              console.error("No se pudieron recuperar las categorías:", errorCategorias);
+                          }
+                          try { mostrarSenalDelDia(); } catch (errorSenal) {
+                              console.error("No se pudo recuperar Descubre:", errorSenal);
+                          }
+                      }
+                    }
+          '''
+          if old_catch not in js:
+              raise SystemExit('No se encontró el catch esperado de procesarDatosApp')
+          js = js.replace(old_catch, new_catch, 1)
+
+          # 5) Datos externos: nunca asumimos que categoria/video son strings.
+          # Un valor raro de Sheets no debe romper toda la navegación.
+          replacements = {
+              'const normalizar = (s) => (s || "").trim().toLowerCase();':
+                  'const normalizar = (s) => String(s || "").trim().toLowerCase();',
+              '.filter(p => p.categoria && p.categoria.trim() !== "")':
+                  '.filter(p => p && p.categoria && String(p.categoria).trim() !== "")',
+              'const videosHoja1 = App.datos.filter(p => p.video && p.video.trim() !== "").length;':
+                  'const videosHoja1 = App.datos.filter(p => p.video && String(p.video).trim() !== "").length;',
+              'const senasSugeridas = App.datos.filter(p => p.senasugerida && p.senasugerida.trim() !== "").length;':
+                  'const senasSugeridas = App.datos.filter(p => p.senasugerida && String(p.senasugerida).trim() !== "").length;',
+              'const videosVocabulario = bancoHoja2.filter(p => p.video && p.video.trim() !== "").length;':
+                  'const videosVocabulario = bancoHoja2.filter(p => p && p.video && String(p.video).trim() !== "").length;',
+              'const cantidad = (App.datos || []).filter(p => p.categoria && p.categoria.trim().toLowerCase() === nombre.toLowerCase()).length;':
+                  'const cantidad = (App.datos || []).filter(p => p.categoria && String(p.categoria).trim().toLowerCase() === nombre.toLowerCase()).length;',
+              'const categories = [...new Set(datosVocabulario.map(p => p.categoria.trim()))].sort();':
+                  'const categories = [...new Set(datosVocabulario.map(p => String(p.categoria).trim()))].sort();',
+              'const cantidad = datosVocabulario.filter(p => p.categoria.trim() === nombre).length;':
+                  'const cantidad = datosVocabulario.filter(p => String(p.categoria).trim() === nombre).length;',
+              'obtenerDatosVocabulario().filter(p => p.categoria.trim() === nombre).forEach((p, i) => {':
+                  'obtenerDatosVocabulario().filter(p => String(p.categoria).trim() === nombre).forEach((p, i) => {'
+          }
+          for old, new in replacements.items():
+              if old in js:
+                  js = js.replace(old, new)
+
+          path.write_text(js, encoding='utf-8')
+
+          # 6) Forzar actualización de la PWA.
+          sw_path = Path('sw.js')
+          sw = sw_path.read_text(encoding='utf-8')
+          match = re.search(r'const VERSION_APP = "v(\d+)";', sw)
+          if not match:
+              raise SystemExit('No se encontró VERSION_APP en sw.js')
+          actual = int(match.group(1))
+          nuevo = max(actual + 1, 137)
+          sw = re.sub(r'const VERSION_APP = "v\d+";', f'const VERSION_APP = "v{nuevo}";', sw, count=1)
+          sw_path.write_text(sw, encoding='utf-8')
+          print(f'PWA actualizada a v{nuevo}')
+          PY
+
+      - name: Validar
+        shell: bash
+        run: |
+          node --check js/script.js
+          node --check sw.js
+          git diff --check
+          grep -q 'Ningún' js/script.js
+          grep -q 'No se pudo actualizar Descubre al volver al Diccionario' js/script.js
+          grep -q 'btnVerDelDia.textContent = "Ver"' js/script.js
+
+      - name: Publicar correccion
+        shell: bash
+        run: |
+          if git diff --quiet -- js/script.js sw.js; then
+            echo "No hubo cambios que publicar."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/script.js sw.js
+          git commit -m "Corregir regreso de Vocabulario a Diccionario"
+          git push origin HEAD:develop
