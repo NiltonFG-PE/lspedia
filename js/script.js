@@ -528,13 +528,31 @@ function recortarTextoSeo(texto, maximo = 158){
     return (ultimoEspacio > 90 ? cortado.slice(0, ultimoEspacio) : cortado).trim() + "…";
 }
 
+function normalizarReferenciaSeo(valor){
+    return String(valor || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+}
+
 function urlCanonicaPalabra(palabraOReferencia){
+    let referencia = palabraOReferencia;
+    let fuente = "diccionario";
+
     if(palabraOReferencia && typeof palabraOReferencia === "object"){
-        return construirUrlPalabra(SEO_LSPEDIA_BASE.url, palabraOReferencia);
+        referencia = obtenerIdPalabra(palabraOReferencia);
+        fuente = obtenerFuentePalabra(palabraOReferencia);
     }
-    // Compatibilidad: una referencia suelta, sin información de fuente,
-    // continúa significando Diccionario como en los enlaces históricos.
-    return SEO_LSPEDIA_BASE.url + "?p=" + encodeURIComponent(String(palabraOReferencia || "").trim());
+
+    const referenciaSeo = normalizarReferenciaSeo(referencia);
+    if(!referenciaSeo) return SEO_LSPEDIA_BASE.url;
+
+    return SEO_LSPEDIA_BASE.url
+        + (fuente === "vocabulario" ? "vocabulario/" : "palabra/")
+        + encodeURIComponent(referenciaSeo)
+        + "/";
 }
 
 function obtenerImagenSeoPalabra(palabra){

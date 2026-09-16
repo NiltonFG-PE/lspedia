@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-09-16T15:24:05Z",
+  "actualizado": "2026-09-16T20:30:03Z",
   "traducciones": [
     {
       "fuente": "diccionario",
@@ -1248,7 +1248,7 @@
       "categoria": "Trámites",
       "ingles": "Cadastre",
       "aliases": [],
-      "definicionIngles": "Organized record of properties, land and their characteristics."
+      "definicionIngles": "Organized register of properties, land and their characteristics."
     },
     {
       "fuente": "diccionario",
@@ -1384,7 +1384,7 @@
       "categoria": "Tiempo",
       "ingles": "Appointment",
       "aliases": [],
-      "definicionIngles": "It's an agreed-upon time to meet someone, for example, a doctor or someone in an office, at a specific time.\n\nExample: I have a dentist appointment tomorrow at three."
+      "definicionIngles": "It's an agreed-upon time to meet someone, for example, a doctor or someone in an office, at a specific hour.\n\nExample: I have a dentist appointment tomorrow at three."
     },
     {
       "fuente": "diccionario",
@@ -2136,7 +2136,7 @@
       "categoria": "Política",
       "ingles": "Civil code",
       "aliases": [],
-      "definicionIngles": "Set of rules concerning persons, family, contracts, property and other civil matters."
+      "definicionIngles": "A set of rules concerning people, family, contracts, property, and other civil matters."
     },
     {
       "fuente": "diccionario",
@@ -4560,7 +4560,7 @@
       "categoria": "Salud",
       "ingles": "Hospital",
       "aliases": [],
-      "definicionIngles": "It's a large place where doctors treat and heal sick or injured people.\n\nExample: They took my grandfather to the hospital because he wasn't feeling well."
+      "definicionIngles": "It's a large place where doctors treat and care for sick or injured people.\n\nExample: They took my grandfather to the hospital because he wasn't feeling well."
     },
     {
       "fuente": "diccionario",
@@ -6134,7 +6134,7 @@
       "fuente": "diccionario",
       "palabra": "Patrimonio contable",
       "categoria": "Economía",
-      "ingles": "accounting equity",
+      "ingles": "Accounting equity",
       "aliases": [],
       "definicionIngles": "Economic value resulting from assets less liabilities."
     },
@@ -6198,7 +6198,7 @@
       "fuente": "diccionario",
       "palabra": "Percepción tributaria",
       "categoria": "Economía",
-      "ingles": "Tax collection",
+      "ingles": "Tax perception",
       "aliases": [],
       "definicionIngles": "Additional amount that is charged in advance in some transactions with respect to taxes."
     },
@@ -6512,7 +6512,7 @@
       "categoria": "Comida",
       "ingles": "Dessert",
       "aliases": [],
-      "definicionIngles": "It's a sweet treat eaten at the end of a meal.\n\nExample: We had gelatin for dessert."
+      "definicionIngles": "It's a dessert that's eaten at the end of a meal.\n\nExample: We had gelatin for dessert."
     },
     {
       "fuente": "diccionario",

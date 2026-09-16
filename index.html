@@ -76,11 +76,18 @@
             const palabra = (params.get("p") || "").trim();
             if (!palabra) return;
             const fuente = (params.get("fuente") || "").trim().toLowerCase();
-            const esVocabulario = fuente === "vocabulario";
+            const vista = (params.get("vista") || "").trim().toLowerCase();
+            const esVocabulario = fuente === "vocabulario" || vista === "vocabulario";
+            const referenciaSeo = palabra
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/^-+|-+$/g, "");
 
             const url = esVocabulario
-                ? "https://lspedia.site/?vista=vocabulario&p=" + encodeURIComponent(palabra) + "&fuente=vocabulario"
-                : "https://lspedia.site/?p=" + encodeURIComponent(palabra);
+                ? "https://lspedia.site/vocabulario/" + encodeURIComponent(referenciaSeo) + "/"
+                : "https://lspedia.site/palabra/" + encodeURIComponent(referenciaSeo) + "/";
             const titulo = palabra + ": significado con apoyo en LSP | LSPedia";
             const descripcion = "Consulta el significado de " + palabra + " con apoyo visual y videos en Lengua de Señas Peruana (LSP) en LSPedia.";
 
