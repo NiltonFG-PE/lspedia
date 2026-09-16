@@ -1297,6 +1297,13 @@
       "imagen": "img/alfabetizacion/ejemplos/zorro.webp",
       "orden": 3,
       "nivel": ""
+    },
+    {
+      "caracter": "A",
+      "palabra": "Amigo",
+      "imagen": "img/alfabetizacion/ejemplos/amigo.webp",
+      "orden": 15,
+      "nivel": "Fácil"
     }
   ]
 }
