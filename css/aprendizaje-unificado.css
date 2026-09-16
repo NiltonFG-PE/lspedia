@@ -1,0 +1,311 @@
+/* ============================================================
+   LSPedia — Tu aprendizaje unificado
+   Diccionario + Vocabulario
+   2026-09-16
+   ------------------------------------------------------------
+   Objetivo:
+   - Conservar la identidad visual azul del bloque de Vocabulario.
+   - Reducir su altura para que no domine la pantalla.
+   - Aplicar el mismo lenguaje visual al bloque de Diccionario.
+   - No alterar la lógica ni los datos de progreso existentes.
+   ============================================================ */
+
+/* Base visual compartida */
+#panelAprendizajeVocabulario,
+#lspModoCard {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(37, 99, 235, .14) !important;
+    background:
+        radial-gradient(circle at 92% 12%, rgba(96, 165, 250, .18), transparent 28%),
+        linear-gradient(145deg, #ffffff 0%, #f7fbff 58%, #eef6ff 100%) !important;
+    box-shadow: 0 9px 24px rgba(30, 64, 175, .08) !important;
+    color: #172554;
+}
+
+#panelAprendizajeVocabulario::after,
+#lspModoCard::after {
+    content: "";
+    position: absolute;
+    width: 125px;
+    height: 125px;
+    right: -68px;
+    bottom: -78px;
+    border-radius: 50%;
+    border: 21px solid rgba(59, 130, 246, .05);
+    pointer-events: none;
+}
+
+/* ============================================================
+   VOCABULARIO — misma información, mucho más compacto
+   ============================================================ */
+#panelAprendizajeVocabulario {
+    margin: 6px 0 16px !important;
+    padding: 14px !important;
+    border-radius: 19px !important;
+}
+
+#panelAprendizajeVocabulario .vocab-learning-top {
+    align-items: center !important;
+    gap: 10px !important;
+    margin-bottom: 8px !important;
+}
+
+#panelAprendizajeVocabulario .vocab-learning-title-wrap {
+    gap: 10px !important;
+}
+
+#panelAprendizajeVocabulario .vocab-learning-icon {
+    flex: 0 0 40px !important;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 12px !important;
+    font-size: 19px !important;
+    box-shadow: 0 6px 14px rgba(37, 99, 235, .22) !important;
+}
+
+#panelAprendizajeVocabulario .vocab-learning-kicker {
+    margin-bottom: 1px !important;
+    font-size: 8.5px !important;
+    letter-spacing: .08em !important;
+}
+
+#panelAprendizajeVocabulario .vocab-learning-title {
+    font-size: 1.02rem !important;
+    line-height: 1.15 !important;
+}
+
+#panelAprendizajeVocabulario .vocab-learning-subtitle {
+    margin: 2px 0 0 !important;
+    font-size: .76rem !important;
+    line-height: 1.3 !important;
+}
+
+#panelAprendizajeVocabulario .vocab-learning-badge {
+    gap: 4px !important;
+    padding: 5px 8px !important;
+    font-size: 9px !important;
+}
+
+#panelAprendizajeVocabulario .vocab-learning-progress-row {
+    gap: 9px !important;
+    margin: 0 0 8px !important;
+}
+
+#panelAprendizajeVocabulario .vocab-learning-progress {
+    height: 7px !important;
+}
+
+#panelAprendizajeVocabulario .vocab-learning-percent {
+    min-width: 38px !important;
+    font-size: .76rem !important;
+}
+
+#panelAprendizajeVocabulario .vocab-learning-stats {
+    gap: 6px !important;
+    margin-bottom: 8px !important;
+}
+
+#panelAprendizajeVocabulario .vocab-learning-stat {
+    padding: 7px 9px !important;
+    border-radius: 11px !important;
+    box-shadow: 0 3px 9px rgba(15, 23, 42, .025) !important;
+}
+
+#panelAprendizajeVocabulario .vocab-learning-stat strong {
+    font-size: .88rem !important;
+    line-height: 1.05 !important;
+}
+
+#panelAprendizajeVocabulario .vocab-learning-stat span {
+    margin-top: 2px !important;
+    font-size: 8.5px !important;
+}
+
+#panelAprendizajeVocabulario .vocab-learning-actions {
+    gap: 7px !important;
+}
+
+#panelAprendizajeVocabulario .vocab-learning-primary,
+#panelAprendizajeVocabulario .vocab-learning-secondary {
+    min-height: 36px !important;
+    padding: 7px 12px !important;
+    border-radius: 11px !important;
+    font-size: .76rem !important;
+}
+
+#panelAprendizajeVocabulario .vocab-learning-primary {
+    box-shadow: 0 6px 14px rgba(37, 99, 235, .20) !important;
+}
+
+/* La nota repetía la misma idea del distintivo “Solo en este dispositivo”.
+   Se oculta para ahorrar altura sin quitar información esencial. */
+#panelAprendizajeVocabulario .vocab-learning-note {
+    display: none !important;
+}
+
+/* ============================================================
+   DICCIONARIO — toma la misma identidad visual de Vocabulario
+   ============================================================ */
+#lspModoCard {
+    padding: 14px !important;
+    border-radius: 19px !important;
+}
+
+#lspModoCard .lsp-mejora-head {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 7px !important;
+}
+
+#lspModoCard .lsp-mejora-titulo {
+    gap: 10px !important;
+    color: #172554 !important;
+    font-size: 1.02rem !important;
+    line-height: 1.15 !important;
+}
+
+#lspModoCard .lsp-mejora-icono {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 12px !important;
+    background: linear-gradient(145deg, #2563eb, #3b82f6) !important;
+    color: #fff !important;
+    font-size: 19px !important;
+    box-shadow: 0 6px 14px rgba(37, 99, 235, .22) !important;
+}
+
+#lspModoCard .lsp-mejora-sub {
+    position: relative;
+    z-index: 1;
+    margin: 0 0 8px !important;
+    color: #64748b !important;
+    font-size: .76rem !important;
+    line-height: 1.3 !important;
+}
+
+#lspModoCard .lsp-aprender-estado {
+    position: relative;
+    z-index: 1;
+    gap: 2px !important;
+    margin: 0 0 8px !important;
+    padding: 7px 9px !important;
+    border: 1px solid rgba(148, 163, 184, .18) !important;
+    border-radius: 11px !important;
+    background: rgba(255, 255, 255, .72) !important;
+    color: #64748b !important;
+    font-size: .70rem !important;
+    line-height: 1.25 !important;
+    box-shadow: 0 3px 9px rgba(15, 23, 42, .025) !important;
+}
+
+#lspModoCard .lsp-aprender-estado strong {
+    color: #172554 !important;
+    font-size: .82rem !important;
+    line-height: 1.12 !important;
+}
+
+#lspModoCard .lsp-aprender-btn {
+    position: relative;
+    z-index: 1;
+    min-height: 36px !important;
+    margin-top: 0 !important;
+    padding: 7px 12px !important;
+    border-radius: 11px !important;
+    background: linear-gradient(135deg, #2563eb, #3b82f6) !important;
+    color: #fff !important;
+    font-size: .76rem !important;
+    box-shadow: 0 6px 14px rgba(37, 99, 235, .20) !important;
+}
+
+#lspModoCard .lsp-aprender-meta {
+    position: relative;
+    z-index: 1;
+    margin-top: 6px !important;
+    color: #7b8799 !important;
+    font-size: .66rem !important;
+    line-height: 1.25 !important;
+}
+
+/* ============================================================
+   MÓVIL / TABLET
+   ============================================================ */
+@media (max-width: 767.98px) {
+    #panelAprendizajeVocabulario,
+    #lspModoCard {
+        padding: 12px !important;
+        border-radius: 17px !important;
+    }
+
+    #panelAprendizajeVocabulario {
+        margin: 6px 0 13px !important;
+    }
+
+    #panelAprendizajeVocabulario .vocab-learning-top {
+        align-items: flex-start !important;
+        margin-bottom: 7px !important;
+    }
+
+    #panelAprendizajeVocabulario .vocab-learning-icon,
+    #lspModoCard .lsp-mejora-icono {
+        flex-basis: 36px !important;
+        width: 36px !important;
+        height: 36px !important;
+        border-radius: 11px !important;
+        font-size: 17px !important;
+    }
+
+    #panelAprendizajeVocabulario .vocab-learning-title,
+    #lspModoCard .lsp-mejora-titulo {
+        font-size: .95rem !important;
+    }
+
+    #panelAprendizajeVocabulario .vocab-learning-subtitle,
+    #lspModoCard .lsp-mejora-sub {
+        font-size: .71rem !important;
+    }
+
+    #panelAprendizajeVocabulario .vocab-learning-stats {
+        gap: 5px !important;
+    }
+
+    #panelAprendizajeVocabulario .vocab-learning-stat {
+        padding: 6px 5px !important;
+        text-align: center;
+    }
+
+    #panelAprendizajeVocabulario .vocab-learning-stat strong {
+        font-size: .82rem !important;
+    }
+
+    #panelAprendizajeVocabulario .vocab-learning-stat span {
+        font-size: 8px !important;
+    }
+
+    #panelAprendizajeVocabulario .vocab-learning-actions {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 6px !important;
+    }
+
+    #panelAprendizajeVocabulario .vocab-learning-primary,
+    #panelAprendizajeVocabulario .vocab-learning-secondary,
+    #lspModoCard .lsp-aprender-btn {
+        min-height: 38px !important;
+        padding: 7px 9px !important;
+        font-size: .72rem !important;
+    }
+}
+
+@media (max-width: 430px) {
+    #panelAprendizajeVocabulario .vocab-learning-actions {
+        grid-template-columns: 1fr 1fr !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #panelAprendizajeVocabulario *,
+    #lspModoCard * {
+        transition: none !important;
+        animation: none !important;
+    }
+}
