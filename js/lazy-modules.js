@@ -40,6 +40,75 @@
     let repeticionProgramatica = false;
     let promesaCore = null;
 
+    // ---------------------------------------------------------
+    // AISLAMIENTO VISUAL DE SECCIONES
+    // ---------------------------------------------------------
+    // "Descubre / Seña del día" pertenece exclusivamente al Diccionario.
+    // script.js tiene una red de seguridad que, si palabras.json tarda o
+    // falla, convierte esa tarjeta en "No se pudo cargar / Sin conexión".
+    // Antes esa red podía ejecutarse mientras el usuario estaba dentro de
+    // Herramientas y volver a mostrar la tarjeta encima del menú al salir de
+    // Alfabeto y números. Esta clase actúa como última barrera visual: aunque
+    // otro código intente cambiar el style inline de #senalDelDia, fuera del
+    // Diccionario permanece oculto mediante !important.
+    const CLASE_SIN_DESCUBRE = 'lsp-vista-sin-descubre';
+
+    function vistaDebeOcultarDescubre() {
+        let vista = '';
+        try {
+            vista = String(new URLSearchParams(window.location.search).get('vista') || '').toLowerCase();
+        } catch (_e) {}
+
+        if (
+            vista === 'vocabulario' ||
+            vista === 'temas' ||
+            vista === 'nosotros' ||
+            vista.indexOf('herramientas') === 0
+        ) return true;
+
+        // Respaldo para navegación sin recarga: script.js marca el botón
+        // superior activo aunque esté oculto en móvil.
+        const ids = ['btnCategorias', 'btnHerramientas', 'btnSobreNosotros'];
+        return ids.some((id) => {
+            const boton = document.getElementById(id);
+            return !!(boton && boton.classList.contains('active'));
+        });
+    }
+
+    function sincronizarAislamientoDescubre() {
+        document.documentElement.classList.toggle(
+            CLASE_SIN_DESCUBRE,
+            vistaDebeOcultarDescubre()
+        );
+    }
+
+    function instalarAislamientoDescubre() {
+        if (!document.getElementById('lspedia-aislamiento-descubre')) {
+            const style = document.createElement('style');
+            style.id = 'lspedia-aislamiento-descubre';
+            style.textContent =
+                'html.' + CLASE_SIN_DESCUBRE + ' #senalDelDia{' +
+                'display:none!important;' +
+                '}';
+            document.head.appendChild(style);
+        }
+
+        sincronizarAislamientoDescubre();
+
+        // La navegación de LSPedia usa history.pushState/replaceState, que no
+        // dispara popstate. Después de cada interacción dejamos que script.js
+        // termine de actualizar la URL/botón activo y sincronizamos una vez.
+        document.addEventListener('click', () => {
+            setTimeout(sincronizarAislamientoDescubre, 0);
+        });
+        window.addEventListener('popstate', () => {
+            setTimeout(sincronizarAislamientoDescubre, 0);
+        });
+        window.addEventListener('pageshow', sincronizarAislamientoDescubre);
+    }
+
+    instalarAislamientoDescubre();
+
     function yaCargado(nombre) {
         const cfg = modulos[nombre];
         return !!(cfg && cfg.global && window[cfg.global]);
