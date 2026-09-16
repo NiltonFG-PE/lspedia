@@ -571,7 +571,7 @@ function urlCanonicaPalabra(palabraOReferencia){
     if(!referenciaSeo) return SEO_LSPEDIA_BASE.url;
 
     return SEO_LSPEDIA_BASE.url
-        + (fuente === "vocabulario" ? "vocabulario/" : "palabra/")
+        + (fuente === "vocabulario" ? "vocabulario/" : "diccionario/")
         + encodeURIComponent(referenciaSeo)
         + "/";
 }
