@@ -855,11 +855,24 @@ function irAlBuscador(opciones = {}){
     if(ultimasPalabrasCategorias) ultimasPalabrasCategorias.innerHTML = "";
     categoriaActualMostrada = null;
     document.body.classList.remove("vista-temas-movil");
-    mostrarBloqueInicio();
-    mostrarSenalDelDia();
     actualizarTituloPrincipal("diccionario");
     activarBotonMenu("btnInicio");
     actualizarVistaUrl(null);
+    mostrarBloqueInicio();
+
+    try {
+        if (window.App && Array.isArray(App.datos) && App.datos.length) {
+            renderCategoriasDiccionario();
+        }
+    } catch (error) {
+        console.error("No se pudieron reconstruir las categorías del Diccionario:", error);
+    }
+
+    try {
+        mostrarSenalDelDia();
+    } catch (error) {
+        console.error("No se pudo actualizar Descubre al volver al Diccionario:", error);
+    }
     // Inicio siempre vuelve al control A-Z compacto en estado cerrado.
     colapsarIndiceAlfabetico();
     desplegarIndiceAlfabetico();
@@ -2281,7 +2294,16 @@ function procesarDatosApp(data) {
           } catch (error) {
             restaurandoHistorialNavegador = false;
             console.error("Error al procesar los datos del diccionario:", error);
-            mostrarErrorCargaInicial();
+            if (!window.App || !Array.isArray(App.datos) || App.datos.length === 0) {
+                mostrarErrorCargaInicial();
+            } else {
+                try { renderCategoriasDiccionario(); } catch (errorCategorias) {
+                    console.error("No se pudieron recuperar las categorías:", errorCategorias);
+                }
+                try { mostrarSenalDelDia(); } catch (errorSenal) {
+                    console.error("No se pudo recuperar Descubre:", errorSenal);
+                }
+            }
           }
 }
 
@@ -2292,23 +2314,29 @@ function procesarDatosApp(data) {
 // ninguna tarjeta debajo, sin ninguna pista de que algo había fallado.
 function mostrarErrorCargaInicial() {
     const senal = document.getElementById("senalDelDia");
-    const cuerpoSenal = senal ? senal.querySelector(".dia-rect-body") : null;
-    if (cuerpoSenal) {
-        cuerpoSenal.innerHTML = `
-            <span class="dia-rect-label">⚠️ No se pudo cargar</span>
-            <p class="dia-rect-desc">Revisa tu conexión a internet e inténtalo de nuevo.</p>
-            <button type="button" class="btn dia-rect-btn" id="btnReintentarCargaInicial">🔄 Reintentar</button>`;
-        const btnReintentar = document.getElementById("btnReintentarCargaInicial");
-        if (btnReintentar) btnReintentar.onclick = () => location.reload();
+    const label = document.getElementById("labelSenalDelDia");
+    const titulo = document.getElementById("tituloDelDia");
+    const descripcion = document.getElementById("descripcionDelDia");
+    const categoria = document.getElementById("categoriaDelDia");
+    const btnVer = document.getElementById("btnVerDelDia");
+    const miniaturaWrap = document.getElementById("miniaturaDelDiaWrap");
+
+    if (senal) senal.style.display = "";
+    if (label) label.textContent = "⚠️ No se pudo cargar";
+    if (titulo) titulo.textContent = "Sin conexión";
+    if (descripcion) descripcion.textContent = "Revisa tu conexión a internet e inténtalo de nuevo.";
+    if (categoria) categoria.textContent = "";
+    if (miniaturaWrap) miniaturaWrap.classList.add("d-none");
+    if (btnVer) {
+        btnVer.textContent = "🔄 Reintentar";
+        btnVer.onclick = () => location.reload();
+        btnVer.setAttribute("aria-label", "Reintentar la carga");
+        btnVer.setAttribute("title", "Reintentar la carga");
     }
 
     const panelCategorias = document.getElementById("panelCategoriasDiccionario");
     if (panelCategorias) {
-        panelCategorias.innerHTML = `
-            <div class="col-12 text-center text-muted small py-3">
-                No se pudieron cargar las categorías. Revisa tu conexión e
-                <button type="button" class="btn btn-sm btn-outline-primary ms-1" onclick="location.reload()">inténtalo de nuevo</button>.
-            </div>`;
+        panelCategorias.innerHTML = `<div class="col-12 text-center text-muted small py-3">No se pudieron cargar las categorías. Revisa tu conexión e <button type="button" class="btn btn-sm btn-outline-primary ms-1" onclick="location.reload()">inténtalo de nuevo</button>.</div>`;
     }
 }
 // "const App = {...}" NO se agrega solo a window (a diferencia de "var"
@@ -4504,7 +4532,7 @@ function inicializarZoomImagenAmpliada(){
 // pequeño sigue mostrando cuánto aporta cada sección por separado.
 function actualizarEstadisticas(){
     const bancoHoja2 = obtenerBancoHoja2();
-    const normalizar = (s) => (s || "").trim().toLowerCase();
+    const normalizar = (s) => String(s || "").trim().toLowerCase();
 
     // --- Palabras ---
     const palabrasDiccionario = App.datos.map(p => normalizar(p.palabra));
@@ -4525,7 +4553,7 @@ function actualizarEstadisticas(){
     // --- Categorías ---
     const categoriasDiccionario = App.datos.map(p => normalizar(p.categoria));
     const categoriasVocabulario = bancoHoja2
-        .filter(p => p.categoria && p.categoria.trim() !== "")
+        .filter(p => p && p.categoria && String(p.categoria).trim() !== "")
         .map(p => normalizar(p.categoria));
     const categoriasDiccionarioUnicas = new Set(categoriasDiccionario).size;
     const categoriasVocabularioUnicas = new Set(categoriasVocabulario).size;
@@ -4545,10 +4573,10 @@ function actualizarEstadisticas(){
     // palabras compartan el mismo texto entre secciones. Diccionario:
     // video principal (columna "video") + seña sugerida (columna
     // "senasugerida"). Vocabulario: un video por palabra.
-    const videosHoja1 = App.datos.filter(p => p.video && p.video.trim() !== "").length;
-    const senasSugeridas = App.datos.filter(p => p.senasugerida && p.senasugerida.trim() !== "").length;
+    const videosHoja1 = App.datos.filter(p => p.video && String(p.video).trim() !== "").length;
+    const senasSugeridas = App.datos.filter(p => p.senasugerida && String(p.senasugerida).trim() !== "").length;
     const videosDiccionario = videosHoja1 + senasSugeridas;
-    const videosVocabulario = bancoHoja2.filter(p => p.video && p.video.trim() !== "").length;
+    const videosVocabulario = bancoHoja2.filter(p => p && p.video && String(p.video).trim() !== "").length;
 
     totalVideos.textContent = videosDiccionario + videosVocabulario;
     const detalleVideos = document.getElementById("detalleVideosStats");
@@ -4901,7 +4929,7 @@ function renderCategoriasDiccionario(){
         const iconoHtml = info.icono
             ? `<img src="${info.icono}" class="categoria-dicc-icono-img" alt="${nombre}" loading="lazy">`
             : `<span class="categoria-dicc-icono">📁</span>`;
-        const cantidad = (App.datos || []).filter(p => p.categoria && p.categoria.trim().toLowerCase() === nombre.toLowerCase()).length;
+        const cantidad = (App.datos || []).filter(p => p.categoria && String(p.categoria).trim().toLowerCase() === nombre.toLowerCase()).length;
         const cantidadTexto = cantidad === 1 ? "1 palabra" : `${cantidad} palabras`;
         const card = document.createElement("div");
         card.className = "col-4 col-md-4 col-lg-2 animate-fade-in";
@@ -5240,9 +5268,9 @@ function mostrarCategorias(){
         QuizV2.asegurarBancoCargado();
     }
     const datosVocabulario = obtenerDatosVocabulario();
-    const categories = [...new Set(datosVocabulario.map(p => p.categoria.trim()))].sort();
+    const categories = [...new Set(datosVocabulario.map(p => String(p.categoria).trim()))].sort();
     categories.forEach((nombre, indice)=>{
-        const cantidad = datosVocabulario.filter(p => p.categoria.trim() === nombre).length;
+        const cantidad = datosVocabulario.filter(p => String(p.categoria).trim() === nombre).length;
         const color = COLORES_CATEGORIAS[indice % COLORES_CATEGORIAS.length];
         const nombreClave = nombre.trim().toLowerCase();
         const icono = ICONOS_CATEGORIA_VOCABULARIO[nombreClave] || rutaIconoCategoriaDinamica(nombre);
@@ -5532,7 +5560,7 @@ function mostrarCategoria(nombre, opciones = {}){
     if(sugerenciasCategorias){ sugerenciasCategorias.innerHTML = ""; sugerenciasCategorias.style.display = "none"; }
     let html = botonAtrasCategorias() + `<h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">Categoría: ${nombre}</h6>
     <div class="categoria-resultados-grid">`;
-    obtenerDatosVocabulario().filter(p => p.categoria.trim() === nombre).forEach((p, i) => {
+    obtenerDatosVocabulario().filter(p => String(p.categoria).trim() === nombre).forEach((p, i) => {
         const nombreEscapado = obtenerIdPalabra(p).replace(/'/g, "\\'");
         html += `<button type="button" class="categoria-resultado-item shadow-sm" style="animation-delay: ${Math.min(i, 20) * 0.04}s" onclick="mostrarPalabraVocabularioPorReferencia('${nombreEscapado}')">
             ${generarMiniaturaVocabulario(p)}
@@ -5956,19 +5984,18 @@ function mostrarSenalDelDia(offset = offsetSenalDelDia){
         btnSenalAnterior.onclick = () => mostrarSenalDelDia(Math.min(1, offsetSenalDelDia + 1));
     }
 
-    document
-        .getElementById("btnVerDelDia")
-        .onclick=()=>{
-
-            window.scrollTo({
-                top:0,
-                behavior:"smooth"
-            });
-
-            document.getElementById("senalDelDia").style.display = "none";
+    const btnVerDelDia = document.getElementById("btnVerDelDia");
+    if(btnVerDelDia){
+        btnVerDelDia.textContent = "Ver";
+        btnVerDelDia.setAttribute("aria-label", "Ver palabra");
+        btnVerDelDia.setAttribute("title", "Ver palabra");
+        btnVerDelDia.onclick=()=>{
+            window.scrollTo({ top:0, behavior:"smooth" });
+            const tarjetaDelDiaActual = document.getElementById("senalDelDia");
+            if(tarjetaDelDiaActual) tarjetaDelDiaActual.style.display = "none";
             mostrarPalabra(palabra);
-
         };
+    }
 
     const btnCerrarDelDia = document.getElementById("btnCerrarDelDia");
     if(btnCerrarDelDia){
