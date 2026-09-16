@@ -1381,6 +1381,13 @@
       "imagen": "img/alfabetizacion/ejemplos/alcachofa.webp",
       "orden": 26,
       "nivel": "Medio"
+    },
+    {
+      "caracter": "A",
+      "palabra": "Alce",
+      "imagen": "img/alfabetizacion/ejemplos/alce.webp",
+      "orden": 27,
+      "nivel": "Medio"
     }
   ]
 }
