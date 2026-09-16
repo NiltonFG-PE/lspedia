@@ -303,13 +303,52 @@ function recortarTextoSeo(texto, maximo = 158){
     return (ultimoEspacio > 90 ? cortado.slice(0, ultimoEspacio) : cortado).trim() + "…";
 }
 
+function normalizarReferenciaSeo(valor){
+    return String(valor || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+}
+
+function tieneImagenSeoPublicable(valor){
+    const principal = String(valor || "").split(",", 1)[0].trim();
+    if(!principal) return false;
+    const tienePrefijo = /^(?:https?:\/\/|\/|\.\.?\/|img\/)/i.test(principal);
+    const tieneExtension = /\.(?:avif|gif|jpe?g|png|svg|webp)(?:[?#].*)?$/i.test(principal);
+    return tienePrefijo && tieneExtension;
+}
+
+function tienePaginaSeoPublicada(p){
+    if(!p || typeof p !== "object") return false;
+    const palabra = String(p.palabra || "").trim();
+    const categoria = String(p.categoria || "").trim();
+    const imagenOk = tieneImagenSeoPublicable(p.imagen);
+    if(!palabra || !categoria || !imagenOk) return false;
+    if(obtenerFuentePalabra(p) === "vocabulario") return true;
+    return Boolean(String(p.definicion || "").trim());
+}
+
 function urlCanonicaPalabra(palabraOReferencia){
+    let referencia = palabraOReferencia;
+    let fuente = "diccionario";
+
     if(palabraOReferencia && typeof palabraOReferencia === "object"){
-        return construirUrlPalabra(SEO_LSPEDIA_BASE.url, palabraOReferencia);
+        if(!tienePaginaSeoPublicada(palabraOReferencia)){
+            return SEO_LSPEDIA_BASE.url;
+        }
+        referencia = obtenerIdPalabra(palabraOReferencia);
+        fuente = obtenerFuentePalabra(palabraOReferencia);
     }
-    // Compatibilidad: una referencia suelta, sin información de fuente,
-    // continúa significando Diccionario como en los enlaces históricos.
-    return SEO_LSPEDIA_BASE.url + "?p=" + encodeURIComponent(String(palabraOReferencia || "").trim());
+
+    const referenciaSeo = normalizarReferenciaSeo(referencia);
+    if(!referenciaSeo) return SEO_LSPEDIA_BASE.url;
+
+    return SEO_LSPEDIA_BASE.url
+        + (fuente === "vocabulario" ? "vocabulario/" : "diccionario/")
+        + encodeURIComponent(referenciaSeo)
+        + "/";
 }
 
 function obtenerImagenSeoPalabra(palabra){
