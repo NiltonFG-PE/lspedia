@@ -537,11 +537,32 @@ function normalizarReferenciaSeo(valor){
         .replace(/^-+|-+$/g, "");
 }
 
+function tieneImagenSeoPublicable(valor){
+    const principal = String(valor || "").split(",", 1)[0].trim();
+    if(!principal) return false;
+    const tienePrefijo = /^(?:https?:\/\/|\/|\.\.?\/|img\/)/i.test(principal);
+    const tieneExtension = /\.(?:avif|gif|jpe?g|png|svg|webp)(?:[?#].*)?$/i.test(principal);
+    return tienePrefijo && tieneExtension;
+}
+
+function tienePaginaSeoPublicada(p){
+    if(!p || typeof p !== "object") return false;
+    const palabra = String(p.palabra || "").trim();
+    const categoria = String(p.categoria || "").trim();
+    const imagenOk = tieneImagenSeoPublicable(p.imagen);
+    if(!palabra || !categoria || !imagenOk) return false;
+    if(obtenerFuentePalabra(p) === "vocabulario") return true;
+    return Boolean(String(p.definicion || "").trim());
+}
+
 function urlCanonicaPalabra(palabraOReferencia){
     let referencia = palabraOReferencia;
     let fuente = "diccionario";
 
     if(palabraOReferencia && typeof palabraOReferencia === "object"){
+        if(!tienePaginaSeoPublicada(palabraOReferencia)){
+            return SEO_LSPEDIA_BASE.url;
+        }
         referencia = obtenerIdPalabra(palabraOReferencia);
         fuente = obtenerFuentePalabra(palabraOReferencia);
     }
