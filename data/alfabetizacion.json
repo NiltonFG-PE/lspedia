@@ -1353,6 +1353,13 @@
       "imagen": "img/alfabetizacion/ejemplos/arena.webp",
       "orden": 22,
       "nivel": "Fácil"
+    },
+    {
+      "caracter": "A",
+      "palabra": "Alfombra",
+      "imagen": "img/alfabetizacion/ejemplos/alfombra.webp",
+      "orden": 23,
+      "nivel": "Fácil"
     }
   ]
 }
