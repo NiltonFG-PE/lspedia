@@ -5,12 +5,127 @@
     'use strict';
 
     // Guarda la URL EXACTA con la que entró el usuario antes de que script.js
-    // pueda modificarla con history.pushState/replaceState. Esto permite que
-    // enlaces compartidos como ?vista=vocabulario&categoria=Emociones
-    // conserven la categoría durante toda la carga inicial.
+    // pueda modificarla con history.pushState/replaceState.
     if (!window.__LSPEDIA_URL_INICIAL__) {
         window.__LSPEDIA_URL_INICIAL__ = window.location.href;
     }
+
+    /* ------------------------------------------------------------
+       ENLACES DIRECTOS A CATEGORÍAS
+       ------------------------------------------------------------
+       La transición animada entre secciones intercepta y retrasa los clics
+       programáticos de #btnCategorias. En una carga directa eso puede hacer
+       que primero se intente abrir la categoría y, unos milisegundos después,
+       el clic retrasado vuelva a pintar la lista general de Vocabulario.
+
+       Para no depender de funciones internas ni del orden de carga, se guarda
+       aquí la categoría de la URL original y, cuando las tarjetas reales ya
+       existen, se pulsa la tarjeta correspondiente. Es exactamente el mismo
+       flujo que usa una persona al tocar "Emociones", "Tiempo", etc.
+       ------------------------------------------------------------ */
+    (function prepararCategoriaDirecta() {
+        let datos = null;
+        try {
+            const url = new URL(window.__LSPEDIA_URL_INICIAL__, window.location.href);
+            const categoriaDiccionario = String(url.searchParams.get('categoriaDiccionario') || '').trim();
+            const vista = String(url.searchParams.get('vista') || '').trim().toLowerCase();
+            const categoriaVocabulario = String(url.searchParams.get('categoria') || '').trim();
+
+            if (categoriaDiccionario) {
+                datos = { tipo: 'diccionario', nombre: categoriaDiccionario };
+            } else if ((vista === 'vocabulario' || vista === 'temas') && categoriaVocabulario) {
+                datos = { tipo: 'vocabulario', nombre: categoriaVocabulario };
+            }
+        } catch (_error) {}
+
+        if (!datos) return;
+        window.__LSPEDIA_CATEGORIA_DIRECTA__ = datos;
+
+        const normalizar = (valor) => String(valor || '').trim().toLocaleLowerCase('es');
+        const nombreNormalizado = normalizar(datos.nombre);
+
+        function reponerUrl() {
+            try {
+                const url = new URL(window.location.origin + window.location.pathname);
+                if (datos.tipo === 'vocabulario') {
+                    url.searchParams.set('vista', 'vocabulario');
+                    url.searchParams.set('categoria', datos.nombre);
+                } else {
+                    url.searchParams.set('categoriaDiccionario', datos.nombre);
+                }
+                const relativa = url.pathname + url.search;
+                if (window.location.pathname + window.location.search !== relativa) {
+                    window.history.replaceState(
+                        { tipo: datos.tipo === 'vocabulario' ? 'categoriaVocabulario' : 'categoriaDiccionario', categoria: datos.nombre },
+                        '',
+                        relativa
+                    );
+                }
+            } catch (_error) {}
+        }
+
+        function resultadoYaVisible() {
+            const id = datos.tipo === 'vocabulario'
+                ? 'resultadoCategorias'
+                : 'resultadoCategoriasDiccionario';
+            const contenedor = document.getElementById(id);
+            if (!contenedor || !contenedor.textContent.trim()) return false;
+            const texto = normalizar(contenedor.textContent);
+            return texto.includes(nombreNormalizado);
+        }
+
+        function buscarTarjeta() {
+            if (datos.tipo === 'vocabulario') {
+                const titulos = Array.from(document.querySelectorAll('.categoria-card h5'));
+                const titulo = titulos.find((el) => normalizar(el.textContent) === nombreNormalizado);
+                return titulo ? titulo.closest('.categoria-card') : null;
+            }
+
+            const nombres = Array.from(document.querySelectorAll('.categoria-dicc-card:not(.card-ver-todas) .categoria-dicc-nombre'));
+            const nombre = nombres.find((el) => normalizar(el.textContent) === nombreNormalizado);
+            return nombre ? nombre.closest('.categoria-dicc-card') : null;
+        }
+
+        function intentarAbrir() {
+            reponerUrl();
+
+            // Si ya quedó abierta, únicamente conservamos la URL exacta.
+            if (resultadoYaVisible()) return true;
+
+            const tarjeta = buscarTarjeta();
+            if (tarjeta) {
+                try { tarjeta.click(); } catch (_error) {}
+                reponerUrl();
+                return resultadoYaVisible();
+            }
+
+            // Vocabulario quizá todavía no terminó su transición/carga. Se
+            // solicita la vista y un intento posterior pulsará la tarjeta.
+            if (datos.tipo === 'vocabulario') {
+                const boton = document.getElementById('btnCategorias');
+                if (boton) {
+                    try { boton.click(); } catch (_error) {}
+                    reponerUrl();
+                }
+            }
+            return false;
+        }
+
+        function programarIntentos() {
+            // Los intentos posteriores son deliberados: cubren el clic diferido
+            // de la transición principal y la llegada asíncrona del banco.
+            [0, 120, 300, 650, 1100, 1800, 3000, 4800, 7000].forEach((ms) => {
+                setTimeout(intentarAbrir, ms);
+            });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', programarIntentos, { once: true });
+        } else {
+            programarIntentos();
+        }
+        window.addEventListener('load', programarIntentos, { once: true });
+    })();
 
     const HOSTS_OFICIALES = new Set(['lspedia.site', 'www.lspedia.site']);
     const HOSTS_DESARROLLO = new Set(['localhost', '127.0.0.1', '[::1]', '::1']);
