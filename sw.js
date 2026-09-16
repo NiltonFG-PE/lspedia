@@ -10,7 +10,7 @@
    ============================================================ */
 
 // Cambia esta versión cuando modifiques el cascarón de la aplicación.
-const VERSION_APP = "v33";
+const VERSION_APP = "v34";
 const PREFIJO_CACHE = "lspedia-shell-";
 const CACHE_NOMBRE = PREFIJO_CACHE + VERSION_APP;
 
@@ -86,7 +86,10 @@ self.addEventListener("fetch", (evento) => {
     if (esNavegacionApp) {
         evento.respondWith((async () => {
             try {
-                const respuestaRed = await fetch(request);
+                // no-store fuerza una comprobación realmente fresca del
+                // cascarón cuando hay internet y evita que Chrome reutilice
+                // una respuesta HTTP anterior después de una actualización.
+                const respuestaRed = await fetch(request, { cache: "no-store" });
                 if (respuestaRed && respuestaRed.ok) {
                     const cache = await caches.open(CACHE_NOMBRE);
                     await cache.put(URL_INDEX.href, respuestaRed.clone());
@@ -106,7 +109,10 @@ self.addEventListener("fetch", (evento) => {
     if (RUTAS_CASCARON.has(url.pathname)) {
         evento.respondWith((async () => {
             try {
-                const respuestaRed = await fetch(request);
+                // También se evita el HTTP cache en JS/CSS del cascarón para
+                // que correcciones visuales como la de Facebook aparezcan al
+                // recargar, sin quedar atrapadas por una copia anterior.
+                const respuestaRed = await fetch(request, { cache: "no-store" });
                 if (respuestaRed && respuestaRed.ok) {
                     const cache = await caches.open(CACHE_NOMBRE);
                     const claveCache = new Request(url.origin + url.pathname);
