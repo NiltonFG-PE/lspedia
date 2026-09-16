@@ -2333,3 +2333,54 @@ img.lspedia-imagen-fallback {
     padding: clamp(8px, 9%, 28px) !important;
     background: #f6f8fb !important;
 }
+
+
+/* --- Compartir categorías LSPedia --- */
+.categoria-card,
+.categoria-dicc-card {
+    position: relative;
+}
+
+.btn-compartir-categoria {
+    position: absolute;
+    top: 9px;
+    right: 9px;
+    z-index: 4;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 1px solid rgba(15, 23, 42, 0.12);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.90);
+    color: #0f172a;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.05rem;
+    font-weight: 800;
+    line-height: 1;
+    box-shadow: 0 2px 7px rgba(15, 23, 42, 0.12);
+    cursor: pointer;
+    transition: transform .16s ease, box-shadow .16s ease, background-color .16s ease;
+}
+
+.btn-compartir-categoria:hover {
+    transform: translateY(-1px) scale(1.04);
+    background: #fff;
+    box-shadow: 0 4px 11px rgba(15, 23, 42, 0.18);
+}
+
+.btn-compartir-categoria:focus-visible {
+    outline: 3px solid rgba(13, 110, 253, .35);
+    outline-offset: 2px;
+}
+
+@media (max-width: 575.98px) {
+    .btn-compartir-categoria {
+        top: 7px;
+        right: 7px;
+        width: 30px;
+        height: 30px;
+        font-size: .95rem;
+    }
+}

@@ -2873,6 +2873,65 @@ function compartirPalabra(palabraOReferencia){
     window.prompt("Copia este enlace para compartir:", url);
 }
 
+// --- COMPARTIR CATEGORÍAS ---
+// Las categorías tienen URL propia. En móviles usa el panel nativo y,
+// cuando no está disponible, copia el enlace para compartirlo.
+function copiarEnlaceCategoriaLSPedia(url){
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url)
+            .then(() => mostrarAvisoCompartir("🔗 Enlace de categoría copiado"))
+            .catch(() => window.prompt("Copia este enlace para compartir:", url));
+        return;
+    }
+    window.prompt("Copia este enlace para compartir:", url);
+}
+
+function compartirCategoriaLSPedia(nombre, fuente){
+    const categoria = String(nombre || "").trim();
+    if(!categoria) return;
+
+    const esVocabulario = fuente === "vocabulario";
+    const params = new URLSearchParams();
+    if(esVocabulario){
+        params.set("vista", "vocabulario");
+        params.set("categoria", categoria);
+    } else {
+        params.set("categoriaDiccionario", categoria);
+    }
+
+    const url = window.location.origin + window.location.pathname + "?" + params.toString();
+    const titulo = categoria + " | LSPedia";
+    const texto = esVocabulario
+        ? `Explora la categoría "${categoria}" en el Vocabulario de LSPedia.`
+        : `Explora la categoría "${categoria}" en el Diccionario de LSPedia.`;
+
+    if (navigator.share) {
+        navigator.share({ title: titulo, text: texto, url })
+            .catch(error => {
+                if(error && error.name === "AbortError") return;
+                copiarEnlaceCategoriaLSPedia(url);
+            });
+        return;
+    }
+    copiarEnlaceCategoriaLSPedia(url);
+}
+
+function agregarBotonCompartirCategoria(tarjeta, nombre, fuente){
+    if(!tarjeta || tarjeta.querySelector(".btn-compartir-categoria")) return;
+    const boton = document.createElement("button");
+    boton.type = "button";
+    boton.className = "btn-compartir-categoria";
+    boton.setAttribute("aria-label", `Compartir categoría ${nombre}`);
+    boton.setAttribute("title", "Compartir categoría");
+    boton.innerHTML = '<span aria-hidden="true">↗</span>';
+    boton.addEventListener("click", evento => {
+        evento.preventDefault();
+        evento.stopPropagation();
+        compartirCategoriaLSPedia(nombre, fuente);
+    });
+    tarjeta.appendChild(boton);
+}
+
 // Mensaje flotante breve (estilo "toast") que confirma que el enlace se
 // copió. Se crea una sola vez y se reutiliza en cada llamada.
 function mostrarAvisoCompartir(mensaje){
@@ -4856,6 +4915,7 @@ function renderCategoriasDiccionario(){
                 </div>
                 <span class="categoria-dicc-flecha" style="color: ${info.texto};">›</span>
             </div>`;
+        agregarBotonCompartirCategoria(card.querySelector(".categoria-dicc-card"), nombre, "diccionario");
         card.querySelector(".categoria-dicc-card").onclick = () => filtrarPorCategoriaDiccionario(nombre);
         panelCategoriasDiccionario.appendChild(card);
         observarEntradaAnimada(card.querySelector(".categoria-dicc-card"));
@@ -5193,6 +5253,7 @@ function mostrarCategorias(){
         const card = document.createElement("div");
         card.className = "col-4 col-md-3 animate-fade-in";
         card.innerHTML = `<div class="card h-100 shadow-sm categoria-card" style="border-radius: 16px; border: 2px solid ${color.borde}; background-color: ${color.fondo};"><div class="card-body text-center py-4">${iconoHtml}<h5 class="mb-2 fw-bold" style="color: ${color.texto}; font-size: 1.25rem;">${nombre}</h5><p class="mb-0 fw-semibold" style="color: ${color.texto}; opacity: 0.85; font-size: 1rem;">${cantidad} palabras</p></div></div>`;
+        agregarBotonCompartirCategoria(card.querySelector(".categoria-card"), nombre, "vocabulario");
         card.onclick = () => mostrarCategoria(nombre);
         panelCategorias.appendChild(card);
         observarEntradaAnimada(card.querySelector(".categoria-card"));
