@@ -1,7 +1,7 @@
-name: Actualizar IDs y sitemap
+name: Actualizar IDs, SEO y sitemap
 
-# Este workflow también puede reejecutarse al modificar su propio archivo para
-# recuperar automáticamente un sitemap desfasado detectado por la validación.
+# Este workflow mantiene sincronizados los datos públicos, las páginas SEO
+# estáticas, las canonicals y el sitemap de LSPedia.
 on:
   push:
     branches:
@@ -13,6 +13,8 @@ on:
       - "scripts/migrar_ids_palabras.py"
       - "scripts/separar_diccionario_vocabulario.py"
       - "scripts/generar_sitemap.py"
+      - "scripts/generar_paginas_seo.py"
+      - "scripts/aplicar_canonicas_seo.py"
       - "scripts/actualizar_nuevas_palabras.py"
       - "scripts/generar_traducciones_en.py"
       - "scripts/normalizar_categorias.py"
@@ -24,7 +26,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: actualizar-ids-sitemap-develop
+  group: actualizar-ids-seo-sitemap-develop
   cancel-in-progress: true
 
 jobs:
@@ -36,25 +38,40 @@ jobs:
         with:
           ref: develop
           fetch-depth: 0
+
       - name: Preparar Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.x"
+
       - name: Crear y migrar IDs únicos
         run: python scripts/migrar_ids_palabras.py
+
       - name: Separar Diccionario y Vocabulario
         run: python scripts/separar_diccionario_vocabulario.py
+
       - name: Normalizar categorías antes de validar
         run: python scripts/normalizar_categorias.py
+
+      - name: Alinear canonicals con las páginas SEO
+        run: python scripts/aplicar_canonicas_seo.py
+
+      - name: Generar páginas SEO estáticas
+        run: python scripts/generar_paginas_seo.py
+
       - name: Generar sitemap.xml
         run: python scripts/generar_sitemap.py
+
       - name: Generar Lo nuevo
         run: python scripts/actualizar_nuevas_palabras.py
+
       - name: Generar traducciones EN del Diccionario
         run: python scripts/generar_traducciones_en.py
-      - name: Validar datos antes de guardar
+
+      - name: Validar datos y SEO antes de guardar
         shell: bash
         run: |
+          python -m py_compile scripts/generar_paginas_seo.py scripts/aplicar_canonicas_seo.py scripts/generar_sitemap.py
           python -m json.tool data/palabras.json > /dev/null
           python -m json.tool data/vocabulario.json > /dev/null
           python -m json.tool data/nuevas-palabras.json > /dev/null
@@ -62,16 +79,21 @@ jobs:
           python scripts/validar_lspedia.py --fuente diccionario
           python scripts/validar_lspedia.py --fuente vocabulario
           node --check js/script.js
+          test -f palabra/.lspedia-seo-generated
+          test -f vocabulario/.lspedia-seo-generated
+          test "$(find palabra -mindepth 2 -name index.html | wc -l)" -gt 0
+          test "$(find vocabulario -mindepth 2 -name index.html | wc -l)" -gt 0
           git diff --check
+
       - name: Guardar cambios automáticos
         shell: bash
         run: |
-          if git diff --quiet -- data/palabras.json data/vocabulario.json data/nuevas-palabras.json data/traducciones-en.json js/script.js sitemap.xml; then
-            echo "IDs, traducciones, Lo nuevo y sitemap ya estaban actualizados."
+          if git diff --quiet -- data/palabras.json data/vocabulario.json data/nuevas-palabras.json data/traducciones-en.json index.html js/script.js sitemap.xml palabra vocabulario; then
+            echo "IDs, SEO, traducciones, Lo nuevo y sitemap ya estaban actualizados."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/palabras.json data/vocabulario.json data/nuevas-palabras.json data/traducciones-en.json js/script.js sitemap.xml
-          git commit -m "Actualizar Diccionario ingles Lo nuevo y sitemap"
+          git add data/palabras.json data/vocabulario.json data/nuevas-palabras.json data/traducciones-en.json index.html js/script.js sitemap.xml palabra vocabulario
+          git commit -m "Actualizar páginas SEO canonicals y sitemap"
           git push origin HEAD:develop
