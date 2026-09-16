@@ -4,8 +4,10 @@ on:
   push:
     branches: [develop]
     paths:
+      - "data/vocabulario.json"
       - "js/quiz.js"
       - "scripts/generar_vocabulario.py"
+      - "scripts/actualizar_nuevas_palabras.py"
       - "scripts/migrar_quiz_vocabulario_local.py"
       - "scripts/normalizar_categorias.py"
       - "scripts/validar_lspedia.py"
@@ -50,16 +52,50 @@ jobs:
           python scripts/validar_lspedia.py --fuente vocabulario
           node --check js/quiz.js
 
-      - name: Guardar cambios si hubo actualización
+      - name: Preparar historial local de Vocabulario
         shell: bash
         run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
           if git diff --quiet -- js/quiz.js data/vocabulario.json; then
             echo "Quiz y vocabulario ya estaban actualizados."
+          else
+            git add js/quiz.js data/vocabulario.json
+            git commit -m "Usar vocabulario local para Vocabulario y Quiz"
+          fi
+
+      - name: Regenerar Lo nuevo después de actualizar Vocabulario
+        run: python scripts/actualizar_nuevas_palabras.py
+
+      - name: Validar Lo nuevo
+        shell: bash
+        run: |
+          python -m json.tool data/nuevas-palabras.json > /dev/null
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data = json.loads(Path('data/nuevas-palabras.json').read_text(encoding='utf-8'))
+          items = data.get('items', []) if isinstance(data, dict) else []
+          if not isinstance(items, list):
+              raise SystemExit('data/nuevas-palabras.json no contiene items válidos')
+          if not any(str(x.get('fuente', '')).strip().lower() == 'vocabulario' for x in items if isinstance(x, dict)):
+              print('AVISO: Lo nuevo no tiene Vocabulario entre los 12 más recientes en este momento.')
+          else:
+              print('OK: Lo nuevo incluye contenido reciente de Vocabulario.')
+          PY
+
+      - name: Guardar Lo nuevo y publicar cambios
+        shell: bash
+        run: |
+          if ! git diff --quiet -- data/nuevas-palabras.json; then
+            git add data/nuevas-palabras.json
+            git commit -m "Actualizar Lo nuevo desde Diccionario y Vocabulario"
+          fi
+
+          if git rev-list --count origin/develop..HEAD | grep -q '^0$'; then
+            echo "No hay cambios nuevos para publicar."
             exit 0
           fi
 
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add js/quiz.js data/vocabulario.json
-          git commit -m "Usar vocabulario local para Vocabulario y Quiz"
           git push origin HEAD:develop
