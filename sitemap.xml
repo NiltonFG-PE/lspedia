@@ -171,7 +171,77 @@
         <priority>0.8</priority>
     </url>
     <url>
+        <loc>https://lspedia.site/?vista=vocabulario&amp;p=amarillo-colores&amp;fuente=vocabulario</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
         <loc>https://lspedia.site/?vista=vocabulario&amp;p=azul-colores&amp;fuente=vocabulario</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/?vista=vocabulario&amp;p=beige-colores&amp;fuente=vocabulario</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/?vista=vocabulario&amp;p=blanco-colores&amp;fuente=vocabulario</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/?vista=vocabulario&amp;p=celeste-colores&amp;fuente=vocabulario</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/?vista=vocabulario&amp;p=dorado-colores&amp;fuente=vocabulario</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/?vista=vocabulario&amp;p=guinda-colores&amp;fuente=vocabulario</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/?vista=vocabulario&amp;p=marron-colores&amp;fuente=vocabulario</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/?vista=vocabulario&amp;p=morado-colores&amp;fuente=vocabulario</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/?vista=vocabulario&amp;p=anaranjado-colores&amp;fuente=vocabulario</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/?vista=vocabulario&amp;p=negro-colores&amp;fuente=vocabulario</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/?vista=vocabulario&amp;p=rojo-colores&amp;fuente=vocabulario</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/?vista=vocabulario&amp;p=rosado-colores&amp;fuente=vocabulario</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/?vista=vocabulario&amp;p=turquesa-colores&amp;fuente=vocabulario</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/?vista=vocabulario&amp;p=verde-colores&amp;fuente=vocabulario</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
