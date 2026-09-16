@@ -1388,6 +1388,13 @@
       "imagen": "img/alfabetizacion/ejemplos/alce.webp",
       "orden": 27,
       "nivel": "Medio"
+    },
+    {
+      "caracter": "A",
+      "palabra": "Antena",
+      "imagen": "img/alfabetizacion/ejemplos/antena.webp",
+      "orden": 28,
+      "nivel": "Medio"
     }
   ]
 }
