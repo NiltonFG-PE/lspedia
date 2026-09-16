@@ -263,3 +263,144 @@
   if(document.readyState==='complete')setTimeout(cargar,0);
   else window.addEventListener('load',()=>setTimeout(cargar,0),{once:true});
 })();
+
+/* LSPedia Admin — tarjeta de países de los últimos 30 días.
+   Reutiliza la respuesta de GA4 que el panel ya solicita por defecto para
+   evitar una segunda consulta y no exige cambiar ni volver a desplegar Apps Script.
+   La lista muestra usuarios y visitas por país; las interacciones son el total
+   de eventos del mismo periodo, porque el backend actual no desglosa eventos
+   por país. */
+(function tarjetaPaises30Dias(){
+  'use strict';
+  if(window.__lspediaTarjetaPaises30Dias)return;
+  window.__lspediaTarjetaPaises30Dias=true;
+
+  const fmt=v=>new Intl.NumberFormat('es-PE').format(Number(v)||0);
+  const escapeHtml=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  let ultimo30=null;
+
+  function bandera(codigo){
+    const c=String(codigo||'').trim().toUpperCase();
+    if(!/^[A-Z]{2}$/.test(c))return '🌐';
+    return String.fromCodePoint(...[...c].map(ch=>127397+ch.charCodeAt(0)));
+  }
+
+  function asegurarEstilos(){
+    if(document.getElementById('lspediaCountry30Styles'))return;
+    const style=document.createElement('style');
+    style.id='lspediaCountry30Styles';
+    style.textContent=`
+      .country30-card{overflow:hidden;border-top:3px solid #0284c7;margin-top:0}
+      .country30-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-bottom:13px}
+      .country30-kpi{border:1px solid #e5edf5;border-radius:12px;background:#f8fbfe;padding:11px}
+      .country30-kpi strong{display:block;font-size:21px;line-height:1.1;color:#172033}
+      .country30-kpi span{display:block;margin-top:4px;font-size:10px;color:#64748b;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+      .country30-table{width:100%;border-collapse:collapse}
+      .country30-table th{font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:#718096;text-align:left;padding:8px 9px;border-bottom:1px solid #e6edf4}
+      .country30-table th:not(:first-child),.country30-table td:not(:first-child){text-align:right}
+      .country30-table td{padding:10px 9px;border-bottom:1px solid #eef2f6;font-size:12px}
+      .country30-table tr:last-child td{border-bottom:0}
+      .country30-name{display:flex;align-items:center;gap:7px;font-weight:800}
+      .country30-flag{font-size:17px;line-height:1}
+      .country30-value{font-weight:900}
+      .country30-note{font-size:10px;color:#64748b;margin-top:10px;line-height:1.4}
+      @media(max-width:720px){.country30-summary{grid-template-columns:1fr 1fr}.country30-summary .country30-kpi:last-child{grid-column:1/-1}}
+    `;
+    document.head.appendChild(style);
+  }
+
+  function crearTarjeta(){
+    const tab=document.getElementById('tabEstadisticas');
+    if(!tab)return null;
+    let card=document.getElementById('country30Card');
+    if(card)return card;
+    asegurarEstilos();
+
+    const resumen=document.getElementById('sumErrors');
+    const statsResumen=resumen&&resumen.closest('.stats');
+    if(!statsResumen)return null;
+
+    const titulo=document.createElement('div');
+    titulo.className='section-title';
+    titulo.id='country30Title';
+    titulo.innerHTML='<div><h2>Países · últimos 30 días</h2><p>De dónde llegan los usuarios y cuánta actividad registra LSPedia.</p></div>';
+
+    card=document.createElement('section');
+    card.id='country30Card';
+    card.className='card panel country30-card';
+    card.innerHTML=`
+      <div class="panel-head">
+        <div><h3>🌍 Audiencia internacional</h3><p>Usuarios activos, visitas e interacciones registradas por Google Analytics durante los últimos 30 días.</p></div>
+        <span class="mini-badge">30 días</span>
+      </div>
+      <div class="country30-summary">
+        <div class="country30-kpi"><strong id="country30Countries">0</strong><span>Países</span></div>
+        <div class="country30-kpi"><strong id="country30Users">0</strong><span>Usuarios</span></div>
+        <div class="country30-kpi"><strong id="country30Interactions">0</strong><span>Interacciones</span></div>
+      </div>
+      <div class="table-wrap">
+        <table class="country30-table">
+          <thead><tr><th>País</th><th>Usuarios</th><th>Visitas</th></tr></thead>
+          <tbody id="country30Body"><tr><td colspan="3" class="muted">Esperando datos de Analytics…</td></tr></tbody>
+        </table>
+      </div>
+      <div class="country30-note">Interacciones = total de eventos de GA4 en los últimos 30 días. La tabla desglosa usuarios y visitas por país. Los datos son agregados y no identifican personas.</div>`;
+
+    statsResumen.insertAdjacentElement('afterend',card);
+    card.insertAdjacentElement('beforebegin',titulo);
+    return card;
+  }
+
+  function render(data){
+    if(!data||data.ok!==true)return;
+    ultimo30=data;
+    const card=crearTarjeta();
+    if(!card)return;
+    const rows=(Array.isArray(data.paises)?data.paises:[]).filter(x=>x&&x.pais&&Number(x.usuarios)>0);
+    const usuarios=Number(data.resumen&&data.resumen.usuarios)||0;
+    const interacciones=Number(data.resumen&&data.resumen.eventos)||0;
+    const q=id=>document.getElementById(id);
+    if(q('country30Countries'))q('country30Countries').textContent=fmt(rows.length);
+    if(q('country30Users'))q('country30Users').textContent=fmt(usuarios);
+    if(q('country30Interactions'))q('country30Interactions').textContent=fmt(interacciones);
+    const body=q('country30Body');
+    if(!body)return;
+    if(!rows.length){body.innerHTML='<tr><td colspan="3" class="muted">Aún no hay datos geográficos en este periodo.</td></tr>';return}
+    body.innerHTML=rows.map(x=>'<tr><td><div class="country30-name"><span class="country30-flag" aria-hidden="true">'+bandera(x.codigo)+'</span><span>'+escapeHtml(x.pais)+'</span></div></td><td class="country30-value">'+fmt(x.usuarios)+'</td><td class="country30-value">'+fmt(x.sesiones)+'</td></tr>').join('');
+  }
+
+  // Captura únicamente la respuesta de 30 días del JSONP que ya usa el panel.
+  // Se instala antes del IIFE principal de busquedas.html, así que el callback
+  // ya existe cuando el <script> remoto se añade al documento.
+  const appendActual=Node.prototype.appendChild;
+  Node.prototype.appendChild=function(nodo){
+    try{
+      if(nodo&&nodo.nodeType===1&&String(nodo.tagName).toUpperCase()==='SCRIPT'){
+        const src=String(nodo.getAttribute('src')||nodo.src||'');
+        if(src){
+          const url=new URL(src,location.href);
+          if(url.searchParams.get('modo')==='admin_analytics'&&url.searchParams.get('periodo')==='30'){
+            const cb=url.searchParams.get('callback');
+            const original=cb&&window[cb];
+            if(typeof original==='function'&&!original.__lspediaCountry30Wrapped){
+              const wrapped=function(data){
+                try{render(data)}catch(error){console.warn('[LSPedia Admin] No se pudo renderizar países 30 días:',error)}
+                return original.apply(this,arguments);
+              };
+              wrapped.__lspediaCountry30Wrapped=true;
+              window[cb]=wrapped;
+            }
+          }
+        }
+      }
+    }catch(_error){}
+    return appendActual.call(this,nodo);
+  };
+
+  function iniciar(){
+    crearTarjeta();
+    if(ultimo30)render(ultimo30);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',iniciar,{once:true});
+  else iniciar();
+})();
