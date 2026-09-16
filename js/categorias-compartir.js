@@ -24,6 +24,16 @@
     }
 
     function obtenerCategoriaDeNavegacionOriginal(){
+        // security.js se ejecuta antes de script.js y conserva la URL exacta
+        // con la que se abrió la página. Esta es la fuente principal porque
+        // script.js puede quitar ?categoria=... mediante history.pushState.
+        const urlGuardada = String(window.__LSPEDIA_URL_INICIAL__ || '').trim();
+        if(urlGuardada){
+            const datosGuardados = datosCategoriaDesdeUrl(urlGuardada);
+            if(datosGuardados) return datosGuardados;
+        }
+
+        // Respaldo para navegadores/sesiones donde aún no exista la variable.
         try {
             const entradas = (window.performance && typeof performance.getEntriesByType === 'function')
                 ? performance.getEntriesByType('navigation')
