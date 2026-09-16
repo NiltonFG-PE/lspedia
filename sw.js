@@ -11,7 +11,7 @@
    - El panel /admin/ y los laboratorios quedan fuera del fallback público.
    ============================================================ */
 
-const VERSION_APP = "v140";
+const VERSION_APP = "v141";
 const PREFIJO_CACHE = "lspedia-shell-";
 const PREFIJO_RUNTIME = "lspedia-runtime-";
 const CACHE_NOMBRE = PREFIJO_CACHE + VERSION_APP;
@@ -91,10 +91,6 @@ self.addEventListener("fetch", (event) => {
 
     if (url.pathname.includes("/data/palabras.json") || url.pathname.includes("/data/busqueda-ayudas.json")) return;
 
-    // Abrir una imagen u otro archivo en una pestaña también cuenta como
-    // "navigate". Si dejamos que caiga en el bloque SPA de abajo, el SW
-    // devuelve index.html y aparece la pantalla de carga de LSPedia en vez
-    // del archivo. Para archivos estáticos, dejamos actuar a la red normal.
     if (request.mode === "navigate" && EXTENSION_ARCHIVO_ESTATICO.test(url.pathname)) return;
 
     if (request.mode === "navigate") {
