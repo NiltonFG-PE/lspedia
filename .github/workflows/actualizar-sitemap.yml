@@ -11,6 +11,7 @@ on:
       - "data/vocabulario.json"
       - "js/script.js"
       - "scripts/migrar_ids_palabras.py"
+      - "scripts/migrar_ruta_diccionario_seo.py"
       - "scripts/separar_diccionario_vocabulario.py"
       - "scripts/generar_sitemap.py"
       - "scripts/generar_paginas_seo.py"
@@ -53,6 +54,9 @@ jobs:
       - name: Normalizar categorías antes de validar
         run: python scripts/normalizar_categorias.py
 
+      - name: Migrar ruta SEO del Diccionario
+        run: python scripts/migrar_ruta_diccionario_seo.py
+
       - name: Alinear canonicals con las páginas SEO
         run: python scripts/aplicar_canonicas_seo.py
 
@@ -71,7 +75,7 @@ jobs:
       - name: Validar datos y SEO antes de guardar
         shell: bash
         run: |
-          python -m py_compile scripts/generar_paginas_seo.py scripts/aplicar_canonicas_seo.py scripts/generar_sitemap.py
+          python -m py_compile scripts/generar_paginas_seo.py scripts/aplicar_canonicas_seo.py scripts/generar_sitemap.py scripts/migrar_ruta_diccionario_seo.py
           python -m json.tool data/palabras.json > /dev/null
           python -m json.tool data/vocabulario.json > /dev/null
           python -m json.tool data/nuevas-palabras.json > /dev/null
@@ -79,21 +83,23 @@ jobs:
           python scripts/validar_lspedia.py --fuente diccionario
           python scripts/validar_lspedia.py --fuente vocabulario
           node --check js/script.js
-          test -f palabra/.lspedia-seo-generated
+          test -f diccionario/.lspedia-seo-generated
           test -f vocabulario/.lspedia-seo-generated
-          test "$(find palabra -mindepth 2 -name index.html | wc -l)" -gt 0
+          test "$(find diccionario -mindepth 2 -name index.html | wc -l)" -gt 0
           test "$(find vocabulario -mindepth 2 -name index.html | wc -l)" -gt 0
+          test ! -d palabra
           git diff --check
 
       - name: Guardar cambios automáticos
         shell: bash
         run: |
-          if git diff --quiet -- data/palabras.json data/vocabulario.json data/nuevas-palabras.json data/traducciones-en.json index.html js/script.js sitemap.xml palabra vocabulario; then
+          if git diff --quiet -- data/palabras.json data/vocabulario.json data/nuevas-palabras.json data/traducciones-en.json index.html js/script.js sitemap.xml scripts/generar_paginas_seo.py palabra diccionario vocabulario; then
             echo "IDs, SEO, traducciones, Lo nuevo y sitemap ya estaban actualizados."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/palabras.json data/vocabulario.json data/nuevas-palabras.json data/traducciones-en.json index.html js/script.js sitemap.xml palabra vocabulario
+          git add data/palabras.json data/vocabulario.json data/nuevas-palabras.json data/traducciones-en.json index.html js/script.js sitemap.xml scripts/generar_paginas_seo.py
+          git add -A -- palabra diccionario vocabulario
           git commit -m "Actualizar páginas SEO canonicals y sitemap"
           git push origin HEAD:develop
