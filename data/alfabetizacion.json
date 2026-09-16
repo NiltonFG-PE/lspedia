@@ -1374,6 +1374,13 @@
       "imagen": "img/alfabetizacion/ejemplos/acuario.webp",
       "orden": 25,
       "nivel": "Fácil"
+    },
+    {
+      "caracter": "A",
+      "palabra": "Alcachofa",
+      "imagen": "img/alfabetizacion/ejemplos/alcachofa.webp",
+      "orden": 26,
+      "nivel": "Medio"
     }
   ]
 }
