@@ -15,7 +15,29 @@ BLOQUE_INDEX_ANTERIOR = '''            const fuente = (params.get("fuente") || "
                 ? "https://lspedia.site/?vista=vocabulario&p=" + encodeURIComponent(palabra) + "&fuente=vocabulario"
                 : "https://lspedia.site/?p=" + encodeURIComponent(palabra);'''
 
+BLOQUE_INDEX_LEGACY = '''            const palabra = (new URLSearchParams(window.location.search).get("p") || "").trim();
+            if (!palabra) return;
+
+            const url = "https://lspedia.site/?p=" + encodeURIComponent(palabra);'''
+
 BLOQUE_INDEX_NUEVO = '''            const fuente = (params.get("fuente") || "").trim().toLowerCase();
+            const vista = (params.get("vista") || "").trim().toLowerCase();
+            const esVocabulario = fuente === "vocabulario" || vista === "vocabulario";
+            const referenciaSeo = palabra
+                .normalize("NFD")
+                .replace(/[\\u0300-\\u036f]/g, "")
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/^-+|-+$/g, "");
+
+            const url = esVocabulario
+                ? "https://lspedia.site/vocabulario/" + encodeURIComponent(referenciaSeo) + "/"
+                : "https://lspedia.site/diccionario/" + encodeURIComponent(referenciaSeo) + "/";'''
+
+BLOQUE_INDEX_LEGACY_NUEVO = '''            const params = new URLSearchParams(window.location.search);
+            const palabra = (params.get("p") || "").trim();
+            if (!palabra) return;
+            const fuente = (params.get("fuente") || "").trim().toLowerCase();
             const vista = (params.get("vista") || "").trim().toLowerCase();
             const esVocabulario = fuente === "vocabulario" || vista === "vocabulario";
             const referenciaSeo = palabra
@@ -116,7 +138,7 @@ function urlCanonicaPalabra(palabraOReferencia){
 
 def aplicar_index(ruta: Path) -> None:
     contenido = ruta.read_text(encoding="utf-8")
-    if BLOQUE_INDEX_NUEVO in contenido:
+    if BLOQUE_INDEX_NUEVO in contenido or BLOQUE_INDEX_LEGACY_NUEVO in contenido:
         print("index.html: ya estaba actualizado.")
         return
 
@@ -128,6 +150,15 @@ def aplicar_index(ruta: Path) -> None:
             newline="\n",
         )
         print("index.html: canonical migrada de /palabra/ a /diccionario/.")
+        return
+
+    if BLOQUE_INDEX_LEGACY in contenido:
+        ruta.write_text(
+            contenido.replace(BLOQUE_INDEX_LEGACY, BLOQUE_INDEX_LEGACY_NUEVO, 1),
+            encoding="utf-8",
+            newline="\n",
+        )
+        print("index.html: bloque SEO legado actualizado a /diccionario/ y /vocabulario/.")
         return
 
     if contenido.count(BLOQUE_INDEX_ANTERIOR) != 1:
