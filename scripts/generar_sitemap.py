@@ -5,8 +5,8 @@ Reglas vigentes:
 - Diccionario: palabra + definición + categoría + imagen real.
 - Vocabulario: palabra + categoría + imagen real; video opcional.
 - Conserva portada y licencia.
-- Diccionario usa ?p=<id>.
-- Vocabulario usa ?vista=vocabulario&p=<referencia>&fuente=vocabulario.
+- Diccionario usa páginas SEO /palabra/<id>/.
+- Vocabulario usa páginas SEO /vocabulario/<id>/.
 - Solo reescribe sitemap.xml cuando su contenido cambia.
 """
 from __future__ import annotations
@@ -77,7 +77,7 @@ def referencias_diccionario(filas: list[dict]) -> list[str]:
     for fila in filas:
         if not publicable_diccionario(fila):
             continue
-        referencia = texto(fila.get("id")) or slug(texto(fila.get("palabra")))
+        referencia = slug(texto(fila.get("id")) or texto(fila.get("palabra")))
         if not referencia:
             continue
         if referencia in vistas:
@@ -93,7 +93,7 @@ def referencias_vocabulario(filas: list[dict]) -> list[str]:
     for fila in filas:
         if not publicable_vocabulario(fila):
             continue
-        referencia = texto(fila.get("id"))
+        referencia = slug(texto(fila.get("id")))
         if not referencia:
             base = slug(texto(fila.get("palabra"))) or "palabra"
             categoria = slug(texto(fila.get("categoria")))
@@ -126,15 +126,11 @@ def construir_sitemap(diccionario: list[str], vocabulario: list[str]) -> str:
 
     for referencia in diccionario:
         encoded = quote(referencia, safe="")
-        lineas += bloque_url(f"{BASE_URL}/?p={encoded}", "monthly", "0.8")
+        lineas += bloque_url(f"{BASE_URL}/palabra/{encoded}/", "monthly", "0.8")
 
     for referencia in vocabulario:
         encoded = quote(referencia, safe="")
-        lineas += bloque_url(
-            f"{BASE_URL}/?vista=vocabulario&p={encoded}&fuente=vocabulario",
-            "monthly",
-            "0.8",
-        )
+        lineas += bloque_url(f"{BASE_URL}/vocabulario/{encoded}/", "monthly", "0.8")
 
     lineas.append("</urlset>")
     return "\n".join(lineas) + "\n"
@@ -156,14 +152,14 @@ def main() -> int:
 
     if nuevo == anterior:
         print(
-            "Sitemap ya estaba actualizado: "
+            "Sitemap SEO ya estaba actualizado: "
             f"Diccionario={len(refs_dic)} · Vocabulario={len(refs_voc)}."
         )
         return 0
 
     sitemap_path.write_text(nuevo, encoding="utf-8", newline="\n")
     print(
-        "Sitemap actualizado: "
+        "Sitemap SEO actualizado: "
         f"Diccionario={len(refs_dic)} · Vocabulario={len(refs_voc)} · portada + licencia."
     )
     return 0
