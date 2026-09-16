@@ -1,0 +1,63 @@
+/* LSPedia — ajustes visuales de Vocabulario
+   2026-09-15
+   - En escritorio muestra hasta 6 tarjetas de categoría por fila.
+   - Mantiene 4 por fila en tablet y 3 por fila en móvil, respetando el diseño existente.
+   - Oculta el bloque informativo/advertencia de Vocabulario solicitado por administración.
+*/
+
+/* El aviso introductorio de Vocabulario (conceptos / referencia / variantes)
+   deja de ocupar espacio visual. El contenido y la lógica se conservan en el
+   HTML por si en el futuro se decide volver a mostrarlo. */
+#vocabularioIntroLista {
+    display: none !important;
+}
+
+/* Escritorio: Bootstrap genera estas tarjetas como col-4 col-md-3 (4 por fila).
+   Se sobrescribe únicamente dentro de #panelCategorias para mostrar 6 por fila
+   sin afectar las categorías del Diccionario ni otros componentes. */
+@media (min-width: 1200px) {
+    #panelCategorias {
+        --bs-gutter-x: 0.75rem;
+        --bs-gutter-y: 0.75rem;
+    }
+
+    #panelCategorias > .col-4,
+    #panelCategorias > .col-md-3 {
+        flex: 0 0 auto !important;
+        width: 16.66666667% !important;
+        min-width: 0;
+    }
+
+    #panelCategorias .categoria-card .card-body {
+        padding: 12px 8px !important;
+    }
+
+    #panelCategorias .categoria-card img {
+        width: 42px !important;
+        height: 42px !important;
+        object-fit: contain;
+    }
+
+    #panelCategorias .categoria-card h5,
+    #panelCategorias .categoria-card h6 {
+        font-size: 0.92rem !important;
+        line-height: 1.15;
+    }
+
+    #panelCategorias .categoria-card p {
+        font-size: 0.72rem !important;
+        line-height: 1.2;
+    }
+}
+
+/* Tablet: conserva una densidad cómoda de 4 tarjetas por fila. */
+@media (min-width: 577px) and (max-width: 1199.98px) {
+    #panelCategorias > .col-4,
+    #panelCategorias > .col-md-3 {
+        flex: 0 0 auto !important;
+        width: 25% !important;
+        min-width: 0;
+    }
+}
+
+/* En móvil se conserva la regla existente de 3 tarjetas por fila. */
