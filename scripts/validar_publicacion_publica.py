@@ -87,6 +87,8 @@ def validar_integracion_frontend():
     lo_nuevo = ROOT / "js" / "lo-nuevo.js"
     buscador_visual = ROOT / "js" / "buscador-visual.js"
     generador_vocab = ROOT / "scripts" / "generar_vocabulario.py"
+    actualizador_nuevo = ROOT / "scripts" / "actualizar_nuevas_palabras.py"
+    workflow_vocab = ROOT / ".github" / "workflows" / "actualizar-vocabulario.yml"
     quiz = ROOT / "js" / "quiz.js"
     sw = ROOT / "sw.js"
 
@@ -98,6 +100,8 @@ def validar_integracion_frontend():
         lo_nuevo,
         buscador_visual,
         generador_vocab,
+        actualizador_nuevo,
+        workflow_vocab,
         quiz,
         sw,
     ):
@@ -111,6 +115,8 @@ def validar_integracion_frontend():
     texto_lo_nuevo = lo_nuevo.read_text(encoding="utf-8")
     texto_buscador_visual = buscador_visual.read_text(encoding="utf-8")
     texto_generador = generador_vocab.read_text(encoding="utf-8")
+    texto_actualizador_nuevo = actualizador_nuevo.read_text(encoding="utf-8")
+    texto_workflow_vocab = workflow_vocab.read_text(encoding="utf-8")
     texto_quiz = quiz.read_text(encoding="utf-8")
     texto_sw = sw.read_text(encoding="utf-8")
 
@@ -151,6 +157,21 @@ def validar_integracion_frontend():
         raise AssertionError(
             "generar_vocabulario.py volvió a exigir video para publicar: "
             + ", ".join(encontrados_generador)
+        )
+
+    # Toda actualización de Vocabulario debe regenerar Lo nuevo automáticamente.
+    if "data/nuevas-palabras.json" not in texto_actualizador_nuevo:
+        raise AssertionError("actualizar_nuevas_palabras.py perdió su destino data/nuevas-palabras.json")
+    requeridos_workflow = [
+        '"data/vocabulario.json"',
+        "python scripts/actualizar_nuevas_palabras.py",
+        "data/nuevas-palabras.json",
+    ]
+    faltantes_workflow = [x for x in requeridos_workflow if x not in texto_workflow_vocab]
+    if faltantes_workflow:
+        raise AssertionError(
+            "actualizar-vocabulario.yml dejó de refrescar Lo nuevo automáticamente: "
+            + ", ".join(faltantes_workflow)
         )
 
     # Quiz puede seguir filtrando video dentro de su propio banco.
@@ -221,6 +242,7 @@ def main():
             )
         print("Regla pública validada: Diccionario = definición + imagen; Vocabulario = imagen; video opcional.")
         print("Separación validada: publicación pública ≠ Quiz ≠ security.")
+        print("Automatización validada: Vocabulario con cambios refresca Lo nuevo.")
         return 0
     except Exception as exc:
         print(f"ERROR publicación pública: {exc}", file=sys.stderr)
