@@ -144,6 +144,9 @@
     activarAutoScrollIndiceDiccionario();
     desactivarAvisoModalVocabulario();
     agregarFacebookRedesSociales();
+    [250, 800, 1800, 3500].forEach(function(ms){
+        setTimeout(agregarFacebookRedesSociales, ms);
+    });
 
     cargar('js/categorias-compartir.js?v=20260915d');
     cargar('js/experiencia-vocabulario.js?v=20260916-2', function(){
@@ -176,6 +179,7 @@
                     cargar('js/i18n-restaurar.js?v=20260914', function(){
                         cargar('js/i18n-auto.js?v=20260914', function(){
                             cargar('js/i18n-nosotros.js?v=20260914', function(){
+                                agregarFacebookRedesSociales();
                                 cargar('js/buscador-visual.js?v=20260914', function(){
                                     cargar('js/buscador-predictivo.js?v=20260914');
                                 });
