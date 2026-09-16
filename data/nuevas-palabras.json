@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-09-16T02:07:39Z",
+  "generadoEn": "2026-09-16T02:42:56Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
@@ -24,9 +24,27 @@
     },
     {
       "id": "",
+      "palabra": "Anaranjado",
+      "categoria": "Colores",
+      "imagen": "img/vocabulario/anaranjado.png",
+      "fecha": "2026-09-15T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
       "palabra": "Rojo",
       "categoria": "Colores",
       "imagen": "img/vocabulario/rojo.png",
+      "fecha": "2026-09-15T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Verde",
+      "categoria": "Colores",
+      "imagen": "img/vocabulario/verde.png",
       "fecha": "2026-09-15T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
@@ -63,26 +81,8 @@
       "palabra": "Flexible",
       "categoria": "Habilidades",
       "imagen": "img/diccionario/flexible.webp",
-      "fecha": "2026-09-12T19:30:34Z",
-      "origenFecha": "imagen-git",
-      "fuente": "diccionario"
-    },
-    {
-      "id": "retar",
-      "palabra": "Retar",
-      "categoria": "Verbos",
-      "imagen": "img/diccionario/retar.png",
-      "fecha": "2026-09-12T19:14:39Z",
-      "origenFecha": "imagen-git",
-      "fuente": "diccionario"
-    },
-    {
-      "id": "psicosis",
-      "palabra": "Psicosis",
-      "categoria": "Psicología",
-      "imagen": "img/diccionario/psicosis.webp",
-      "fecha": "2026-09-12T13:09:50Z",
-      "origenFecha": "imagen-git",
+      "fecha": "2026-09-12T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
     {
@@ -90,26 +90,26 @@
       "palabra": "Resiliencia",
       "categoria": "Psicología",
       "imagen": "img/diccionario/resiliencia.webp",
-      "fecha": "2026-09-12T06:04:08Z",
-      "origenFecha": "imagen-git",
+      "fecha": "2026-09-12T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
     {
-      "id": "tesis",
-      "palabra": "Tesis",
-      "categoria": "Universidad",
-      "imagen": "img/diccionario/tesis.webp",
-      "fecha": "2026-09-08T01:20:28Z",
-      "origenFecha": "imagen-git",
+      "id": "psicosis",
+      "palabra": "Psicosis",
+      "categoria": "Psicología",
+      "imagen": "img/diccionario/psicosis.webp",
+      "fecha": "2026-09-12T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
     {
-      "id": "inteligencia-artificial",
-      "palabra": "Inteligencia artificial",
-      "categoria": "Tecnología",
-      "imagen": "img/diccionario/ia.webp",
-      "fecha": "2026-09-05T02:05:26Z",
-      "origenFecha": "imagen-git",
+      "id": "retar",
+      "palabra": "Retar",
+      "categoria": "Verbos",
+      "imagen": "img/diccionario/retar.png",
+      "fecha": "2026-09-12T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     }
   ]
