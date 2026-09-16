@@ -2,7 +2,7 @@
 """Genera páginas HTML estáticas SEO para términos públicos de LSPedia.
 
 Salida:
-- palabra/<id>/index.html       (Diccionario)
+- diccionario/<id>/index.html   (Diccionario)
 - vocabulario/<id>/index.html   (Vocabulario)
 
 Estas páginas son ligeras, indexables y contienen contenido único desde el
@@ -309,7 +309,7 @@ def pagina_html(
 
 
 def generar_diccionario(repo: Path, filas: list[dict]) -> int:
-    raiz = repo / "palabra"
+    raiz = repo / "diccionario"
     preparar_directorio(raiz)
     vistos: set[str] = set()
     total = 0
@@ -327,7 +327,7 @@ def generar_diccionario(repo: Path, filas: list[dict]) -> int:
         definicion = texto(fila.get("definicion"))
         variantes = texto(fila.get("variantes"))
         imagen = imagen_absoluta(fila.get("imagen"))
-        canonical = f"{BASE_URL}/palabra/{quote(ref, safe='')}/"
+        canonical = f"{BASE_URL}/diccionario/{quote(ref, safe='')}/"
         app_url = f"{BASE_URL}/?p={quote(ref, safe='')}"
         destino = raiz / ref
         destino.mkdir(parents=True, exist_ok=True)
