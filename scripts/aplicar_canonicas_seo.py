@@ -27,7 +27,7 @@ BLOQUE_INDEX_NUEVO = '''            const fuente = (params.get("fuente") || "").
 
             const url = esVocabulario
                 ? "https://lspedia.site/vocabulario/" + encodeURIComponent(referenciaSeo) + "/"
-                : "https://lspedia.site/palabra/" + encodeURIComponent(referenciaSeo) + "/";'''
+                : "https://lspedia.site/diccionario/" + encodeURIComponent(referenciaSeo) + "/";'''
 
 BLOQUE_SCRIPT_ORIGINAL = '''function urlCanonicaPalabra(palabraOReferencia){
     if(palabraOReferencia && typeof palabraOReferencia === "object"){
@@ -60,7 +60,7 @@ function urlCanonicaPalabra(palabraOReferencia){
     if(!referenciaSeo) return SEO_LSPEDIA_BASE.url;
 
     return SEO_LSPEDIA_BASE.url
-        + (fuente === "vocabulario" ? "vocabulario/" : "palabra/")
+        + (fuente === "vocabulario" ? "vocabulario/" : "diccionario/")
         + encodeURIComponent(referenciaSeo)
         + "/";
 }'''
@@ -108,7 +108,7 @@ function urlCanonicaPalabra(palabraOReferencia){
     if(!referenciaSeo) return SEO_LSPEDIA_BASE.url;
 
     return SEO_LSPEDIA_BASE.url
-        + (fuente === "vocabulario" ? "vocabulario/" : "palabra/")
+        + (fuente === "vocabulario" ? "vocabulario/" : "diccionario/")
         + encodeURIComponent(referenciaSeo)
         + "/";
 }'''
@@ -119,6 +119,17 @@ def aplicar_index(ruta: Path) -> None:
     if BLOQUE_INDEX_NUEVO in contenido:
         print("index.html: ya estaba actualizado.")
         return
+
+    bloque_previo = BLOQUE_INDEX_NUEVO.replace("/diccionario/", "/palabra/")
+    if bloque_previo in contenido:
+        ruta.write_text(
+            contenido.replace(bloque_previo, BLOQUE_INDEX_NUEVO, 1),
+            encoding="utf-8",
+            newline="\n",
+        )
+        print("index.html: canonical migrada de /palabra/ a /diccionario/.")
+        return
+
     if contenido.count(BLOQUE_INDEX_ANTERIOR) != 1:
         raise SystemExit("ERROR: no se encontró el bloque canonical esperado en index.html.")
     ruta.write_text(
@@ -134,14 +145,22 @@ def aplicar_script(ruta: Path) -> None:
     if BLOQUE_SCRIPT_V2 in contenido:
         print("js/script.js: ya estaba actualizado.")
         return
-    if BLOQUE_SCRIPT_V1 in contenido:
+
+    bloque_v2_previo = BLOQUE_SCRIPT_V2.replace('"diccionario/"', '"palabra/"')
+    bloque_v1_previo = BLOQUE_SCRIPT_V1.replace('"diccionario/"', '"palabra/"')
+
+    if bloque_v2_previo in contenido:
+        contenido = contenido.replace(bloque_v2_previo, BLOQUE_SCRIPT_V2, 1)
+    elif bloque_v1_previo in contenido:
+        contenido = contenido.replace(bloque_v1_previo, BLOQUE_SCRIPT_V2, 1)
+    elif BLOQUE_SCRIPT_V1 in contenido:
         contenido = contenido.replace(BLOQUE_SCRIPT_V1, BLOQUE_SCRIPT_V2, 1)
     elif BLOQUE_SCRIPT_ORIGINAL in contenido:
         contenido = contenido.replace(BLOQUE_SCRIPT_ORIGINAL, BLOQUE_SCRIPT_V2, 1)
     else:
         raise SystemExit("ERROR: no se encontró una versión conocida de urlCanonicaPalabra en js/script.js.")
     ruta.write_text(contenido, encoding="utf-8", newline="\n")
-    print("js/script.js: canonical publica solo si existe página SEO estática.")
+    print("js/script.js: canonical pública solo si existe página SEO estática.")
 
 
 def main() -> int:
