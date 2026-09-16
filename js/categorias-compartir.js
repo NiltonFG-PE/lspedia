@@ -1,14 +1,5 @@
 /* ============================================================
-   LSPedia — Compartir categorías con enlace directo
-   ------------------------------------------------------------
-   Objetivo:
-   - Cada botón Compartir de una categoría genera una URL que conserva
-     LA CATEGORÍA concreta, no solo la sección general.
-   - Diccionario: ?categoriaDiccionario=NOMBRE
-   - Vocabulario: ?vista=vocabulario&categoria=NOMBRE
-   - Al abrir el enlace se fuerza una segunda restauración cuando los
-     datos estén listos. Esto evita depender del orden de carga, caché,
-     service worker o del momento en que llegue Hoja 2.
+   LSPedia — compartir y restaurar categorías por URL
    ============================================================ */
 (function(){
     'use strict';
@@ -16,6 +7,40 @@
     const CLASE_BOTON = 'btn-compartir-categoria-lspedia';
     let restauracionVocabularioRegistrada = false;
     let ultimaRestauracionConfirmada = '';
+
+    function datosCategoriaDesdeUrl(urlTexto){
+        try {
+            const url = new URL(urlTexto, window.location.href);
+            const diccionario = (url.searchParams.get('categoriaDiccionario') || '').trim();
+            const vista = (url.searchParams.get('vista') || '').trim().toLowerCase();
+            const vocabulario = (url.searchParams.get('categoria') || '').trim();
+
+            if(diccionario) return { tipo: 'diccionario', nombre: diccionario };
+            if((vista === 'vocabulario' || vista === 'temas') && vocabulario){
+                return { tipo: 'vocabulario', nombre: vocabulario };
+            }
+        } catch(_error){}
+        return null;
+    }
+
+    // script.js puede hacer pushState("?vista=vocabulario") antes de que este
+    // módulo se ejecute y borrar ?categoria=... de la barra. Navigation Timing
+    // conserva la URL con la que realmente se abrió el documento, incluso
+    // después de un pushState. Guardamos esa categoría como respaldo.
+    function obtenerCategoriaDeNavegacionOriginal(){
+        try {
+            const entradas = (window.performance && typeof performance.getEntriesByType === 'function')
+                ? performance.getEntriesByType('navigation')
+                : [];
+            if(entradas && entradas[0] && entradas[0].name){
+                const datos = datosCategoriaDesdeUrl(entradas[0].name);
+                if(datos) return datos;
+            }
+        } catch(_error){}
+        return datosCategoriaDesdeUrl(window.location.href);
+    }
+
+    let categoriaPendienteOriginal = obtenerCategoriaDeNavegacionOriginal();
 
     function textoControl(control){
         if(!control) return '';
@@ -55,14 +80,12 @@
 
     function construirUrlCategoria(tipo, nombre){
         const url = new URL(window.location.origin + window.location.pathname);
-
         if(tipo === 'vocabulario'){
             url.searchParams.set('vista', 'vocabulario');
             url.searchParams.set('categoria', nombre);
         } else {
             url.searchParams.set('categoriaDiccionario', nombre);
         }
-
         return url.href;
     }
 
@@ -96,9 +119,6 @@
     async function compartirCategoria(tipo, nombre){
         const url = construirUrlCategoria(tipo, nombre);
         const seccion = tipo === 'vocabulario' ? 'Vocabulario' : 'Diccionario';
-        // Incluimos también la URL dentro del texto. Algunos destinos de
-        // Web Share (según navegador/app) ignoran el campo `url` separado;
-        // de esta manera el enlace específico nunca se pierde.
         const texto = `Explora la categoría "${nombre}" de ${seccion} en LSPedia:\n${url}`;
 
         if(navigator.share){
@@ -161,21 +181,18 @@
     }
 
     function parametrosCategoriaActuales(){
-        const params = new URLSearchParams(window.location.search);
-        const diccionario = params.get('categoriaDiccionario');
-        const vista = params.get('vista');
-        const vocabulario = params.get('categoria');
+        return datosCategoriaDesdeUrl(window.location.href) || categoriaPendienteOriginal;
+    }
 
-        if(diccionario) return { tipo: 'diccionario', nombre: diccionario };
-        if((vista === 'vocabulario' || vista === 'temas') && vocabulario){
-            return { tipo: 'vocabulario', nombre: vocabulario };
-        }
-        return null;
+    function mismaCategoria(a, b){
+        return !!a && !!b
+            && a.tipo === b.tipo
+            && String(a.nombre).trim().toLowerCase() === String(b.nombre).trim().toLowerCase();
     }
 
     function confirmarUrlCategoria(datos){
-        const objetivo = construirUrlCategoria(datos.tipo, datos.nombre);
-        const relativaObjetivo = new URL(objetivo).pathname + new URL(objetivo).search;
+        const objetivo = new URL(construirUrlCategoria(datos.tipo, datos.nombre));
+        const relativaObjetivo = objetivo.pathname + objetivo.search;
         const relativaActual = window.location.pathname + window.location.search;
         if(relativaActual !== relativaObjetivo){
             window.history.replaceState(
@@ -188,17 +205,18 @@
 
     function resultadoDiccionarioVisible(nombre){
         const contenedor = document.getElementById('resultadoCategoriasDiccionario');
-        if(!contenedor || !contenedor.textContent.trim()) return false;
-        return contenedor.textContent.toLowerCase().includes(String(nombre).trim().toLowerCase());
+        return !!(contenedor && contenedor.textContent.trim()
+            && contenedor.textContent.toLowerCase().includes(String(nombre).trim().toLowerCase()));
     }
 
     function resultadoVocabularioVisible(nombre){
         const contenedor = document.getElementById('resultadoCategorias');
-        if(!contenedor || !contenedor.textContent.trim()) return false;
-        return contenedor.textContent.toLowerCase().includes(String(nombre).trim().toLowerCase());
+        return !!(contenedor && contenedor.textContent.trim()
+            && contenedor.textContent.toLowerCase().includes(String(nombre).trim().toLowerCase()));
     }
 
     function restaurarDiccionario(datos){
+        confirmarUrlCategoria(datos);
         if(!window.App || !Array.isArray(window.App.datos) || !window.App.datos.length) return false;
         if(typeof window.filtrarPorCategoriaDiccionario !== 'function') return false;
 
@@ -211,53 +229,70 @@
             window.filtrarPorCategoriaDiccionario(datos.nombre, { noActualizarHistorial: true });
         }
         confirmarUrlCategoria(datos);
-        ultimaRestauracionConfirmada = 'diccionario:' + datos.nombre;
+        ultimaRestauracionConfirmada = 'diccionario:' + datos.nombre.toLowerCase();
+        categoriaPendienteOriginal = null;
         return true;
     }
 
     function abrirVistaVocabularioSinPerderUrl(datos){
         const cuerpo = document.body;
         const yaEnVocabulario = cuerpo && cuerpo.classList.contains('vista-temas-movil');
-        if(yaEnVocabulario) return;
 
-        const boton = document.getElementById('btnCategorias');
-        if(!boton) return;
-        boton.click();
-        // El clic normal actualiza la URL a ?vista=vocabulario. Reponemos
-        // inmediatamente la categoría concreta para que no se pierda.
+        if(!yaEnVocabulario){
+            const boton = document.getElementById('btnCategorias');
+            if(boton) boton.click();
+        }
+
+        // Aunque el manejador de Vocabulario haya reducido la URL a
+        // ?vista=vocabulario, la reponemos inmediatamente con la categoría.
         confirmarUrlCategoria(datos);
+    }
+
+    function categoriaVocabularioDisponible(nombre){
+        const buscado = String(nombre).trim().toLowerCase();
+
+        try {
+            const banco = (window.QuizV2 && typeof window.QuizV2.obtenerBanco === 'function')
+                ? window.QuizV2.obtenerBanco()
+                : [];
+            if(Array.isArray(banco) && banco.some(p =>
+                p && p.categoria && String(p.categoria).trim().toLowerCase() === buscado
+            )) return true;
+        } catch(_error){}
+
+        return Array.from(document.querySelectorAll('.categoria-card h5')).some(el =>
+            String(el.textContent || '').trim().toLowerCase() === buscado
+        );
     }
 
     function restaurarVocabulario(datos){
         abrirVistaVocabularioSinPerderUrl(datos);
-
         if(typeof window.mostrarCategoria !== 'function') return false;
 
         const intentarMostrar = () => {
             const actuales = parametrosCategoriaActuales();
-            if(!actuales || actuales.tipo !== 'vocabulario' || actuales.nombre !== datos.nombre) return;
+            if(!mismaCategoria(actuales, datos)) return false;
+            if(!categoriaVocabularioDisponible(datos.nombre)) return false;
 
-            const banco = (window.QuizV2 && typeof window.QuizV2.obtenerBanco === 'function')
-                ? window.QuizV2.obtenerBanco()
-                : [];
-            const existe = Array.isArray(banco) && banco.some(p =>
-                p && p.categoria && String(p.categoria).trim().toLowerCase() === datos.nombre.trim().toLowerCase()
-            );
-
-            if(!existe) return;
             if(!resultadoVocabularioVisible(datos.nombre)){
                 window.mostrarCategoria(datos.nombre, { noActualizarHistorial: true });
             }
             confirmarUrlCategoria(datos);
-            ultimaRestauracionConfirmada = 'vocabulario:' + datos.nombre;
+
+            if(resultadoVocabularioVisible(datos.nombre)){
+                ultimaRestauracionConfirmada = 'vocabulario:' + datos.nombre.toLowerCase();
+                categoriaPendienteOriginal = null;
+                return true;
+            }
+            return false;
         };
 
-        intentarMostrar();
+        if(intentarMostrar()) return true;
 
         if(!restauracionVocabularioRegistrada && window.QuizV2 && typeof window.QuizV2.onBancoListo === 'function'){
             restauracionVocabularioRegistrada = true;
             if(typeof window.QuizV2.asegurarBancoCargado === 'function'){
-                window.QuizV2.asegurarBancoCargado();
+                try { window.QuizV2.asegurarBancoCargado(); } catch(_error){}
             }
             window.QuizV2.onBancoListo(() => {
                 restauracionVocabularioRegistrada = false;
@@ -265,19 +300,18 @@
             });
         }
 
-        return resultadoVocabularioVisible(datos.nombre);
+        return false;
     }
 
     function restaurarCategoriaCompartida(){
         const datos = parametrosCategoriaActuales();
         if(!datos) return false;
 
-        const clave = datos.tipo + ':' + datos.nombre;
+        const clave = datos.tipo + ':' + datos.nombre.toLowerCase();
         if(ultimaRestauracionConfirmada === clave){
-            const sigueVisible = datos.tipo === 'diccionario'
+            return datos.tipo === 'diccionario'
                 ? resultadoDiccionarioVisible(datos.nombre)
                 : resultadoVocabularioVisible(datos.nombre);
-            if(sigueVisible) return true;
         }
 
         return datos.tipo === 'diccionario'
@@ -316,11 +350,8 @@
         });
         observador.observe(document.body, { childList: true, subtree: true });
 
-        // Intento inmediato y varios respaldos. El evento datosListos cubre
-        // Diccionario; onBancoListo cubre Vocabulario. Los reintentos cortos
-        // cubren cachés antiguas y teléfonos donde los eventos llegan en otro orden.
         restaurarCategoriaCompartida();
-        [100, 350, 800, 1600, 3000].forEach(ms => {
+        [50, 150, 350, 700, 1200, 2000, 3500, 5500].forEach(ms => {
             setTimeout(restaurarCategoriaCompartida, ms);
         });
     }
