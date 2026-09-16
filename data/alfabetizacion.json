@@ -704,6 +704,13 @@
       "nivel": "Fácil"
     },
     {
+      "caracter": "A",
+      "palabra": "Araña",
+      "imagen": "img/alfabetizacion/ejemplos/arana.webp",
+      "orden": 7,
+      "nivel": "Fácil"
+    },
+    {
       "caracter": "B",
       "palabra": "Barco",
       "imagen": "img/alfabetizacion/ejemplos/barco.webp",
