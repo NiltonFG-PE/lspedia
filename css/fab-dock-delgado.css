@@ -1,0 +1,87 @@
+/* LSPedia — ajuste del menú flotante a formato vertical delgado.
+   Mantiene la lógica y los destinos existentes; solo corrige proporciones.
+   Las etiquetas quedan fuera del dock como tooltips para que no ensanchen
+   el contenedor. */
+
+#fabMenuAccesos.fab-menu{
+    right:22px;
+    bottom:28px;
+}
+
+#fabMenuAccesos .fab-menu-lista{
+    display:flex !important;
+    flex-direction:column-reverse !important;
+    align-items:center !important;
+    justify-content:flex-end !important;
+    width:78px !important;
+    min-width:78px !important;
+    max-width:78px !important;
+    padding:10px 8px !important;
+    gap:10px !important;
+    border-radius:34px !important;
+}
+
+#fabMenuAccesos .fab-item{
+    position:relative !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    width:100% !important;
+    gap:0 !important;
+}
+
+#fabMenuAccesos .fab-item-btn{
+    width:56px !important;
+    height:56px !important;
+    border-radius:18px !important;
+    flex:0 0 56px !important;
+}
+
+#fabMenuAccesos .fab-item-etiqueta{
+    position:absolute !important;
+    right:68px !important;
+    top:50% !important;
+    width:max-content !important;
+    max-width:none !important;
+    margin:0 !important;
+    white-space:nowrap !important;
+    transform:translateY(-50%) translateX(8px) !important;
+    opacity:0;
+    pointer-events:none;
+}
+
+#fabMenuAccesos .fab-item:hover .fab-item-etiqueta,
+#fabMenuAccesos .fab-item:focus-within .fab-item-etiqueta{
+    opacity:1;
+    transform:translateY(-50%) translateX(0) !important;
+}
+
+/* El dock debe ser una cápsula angosta, nunca un panel ancho. */
+#fabMenuAccesos.fab-menu-abierto .fab-menu-lista{
+    width:78px !important;
+    min-width:78px !important;
+    max-width:78px !important;
+}
+
+@media (max-width:1199.98px) and (min-width:992px){
+    #fabMenuAccesos .fab-menu-lista,
+    #fabMenuAccesos.fab-menu-abierto .fab-menu-lista{
+        width:74px !important;
+        min-width:74px !important;
+        max-width:74px !important;
+        padding:9px 7px !important;
+        gap:9px !important;
+        border-radius:30px !important;
+    }
+
+    #fabMenuAccesos .fab-item-btn{
+        width:54px !important;
+        height:54px !important;
+        flex-basis:54px !important;
+        border-radius:17px !important;
+    }
+
+    #fabMenuAccesos .fab-item-etiqueta{
+        right:64px !important;
+    }
+}
