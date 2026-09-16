@@ -148,9 +148,20 @@
     <link rel="preconnect" href="https://i.ytimg.com" crossorigin>
 
     <!-- Favicon -->
+    <link rel="preload" href="img/favicon.png" as="image" fetchpriority="high">
     <link rel="icon" type="image/png" href="img/favicon.png">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f172a">
+
+    <!-- El splash debe mostrar la marca desde el primer fotograma, incluso con Internet lento. -->
+    <style id="splash-visible-inmediato">
+        #splashLogo {
+            opacity: 1 !important;
+            transform: none !important;
+            animation: none !important;
+            will-change: auto !important;
+        }
+    </style>
 
     <!-- Estilos de Animación Personalizados -->
     <style>
@@ -4197,7 +4208,7 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
             <span class="splash-estela splash-estela-1" aria-hidden="true"></span>
             <span class="splash-estela splash-estela-2" aria-hidden="true"></span>
             <div id="splashLogo" class="splash-marca-ligera" aria-label="LSPedia">
-    <img src="img/favicon.png" alt="" width="82" height="82" fetchpriority="high" decoding="async">
+    <img src="img/favicon.png" alt="" width="82" height="82" fetchpriority="high" loading="eager" decoding="sync">
     <span class="splash-marca-texto"><strong>LSP</strong><em>edia</em></span>
 </div>
         </div>
