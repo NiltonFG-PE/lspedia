@@ -10,8 +10,10 @@ Regla pública vigente de LSPedia:
 Esto separa deliberadamente dos conceptos que antes estaban mezclados:
 publicación pública de Vocabulario y disponibilidad para Quiz.
 
-Las columnas de definición, video, nivel, orden y traducción acompañan la ficha
-cuando existen, pero no cambian la regla pública por imagen.
+Las columnas de definición, video, nivel, idQuiz y traducción acompañan la ficha
+cuando existen, pero no cambian la regla pública por imagen. ``idQuiz`` es un
+identificador opaco y estable para el Quiz; no depende de la fila ni revela la
+palabra o la categoría.
 
 La sincronización conserva explícitamente ``definicion`` y
 ``fechaPublicacion``. Los errores de fórmula de Google Sheets (por ejemplo
@@ -41,7 +43,7 @@ CAMPOS = (
     "video",
     "categoria",
     "nivel",
-    "orden",
+    "idQuiz",
     "imagen",
     "definicion",
     "fechaPublicacion",
@@ -54,6 +56,7 @@ EXTENSION_IMAGEN_RE = re.compile(
     r"\.(?:avif|gif|jpe?g|png|svg|webp)(?:[?#].*)?$",
     re.I,
 )
+ID_QUIZ_RE = re.compile(r"^Q[A-F0-9]{10}$")
 
 
 def texto(valor: object) -> str:
@@ -90,6 +93,12 @@ def normalizar_nivel(valor: object) -> str:
     return original
 
 
+def normalizar_id_quiz(valor: object) -> str:
+    """Publica únicamente IDs opacos nuevos; nunca códigos que den pistas."""
+    candidato = texto(valor).upper()
+    return candidato if ID_QUIZ_RE.fullmatch(candidato) else ""
+
+
 def clave(valor: object) -> str:
     return texto(valor).casefold().replace(" ", "").replace("_", "")
 
@@ -100,7 +109,7 @@ def descargar_csv() -> list[dict[str, str]]:
     solicitud = urllib.request.Request(
         base + "?" + parametros,
         headers={
-            "User-Agent": "LSPedia-vocabulario-sync/3.0",
+            "User-Agent": "LSPedia-vocabulario-sync/3.1",
             "Accept": "text/csv,text/plain,*/*",
         },
     )
@@ -135,6 +144,7 @@ def limpiar(filas: list[dict[str, str]]) -> list[dict]:
     sin_video = 0
     con_definicion = 0
     con_fecha_publicacion = 0
+    con_id_quiz = 0
 
     for fila in filas:
         mapa = {clave(k): v for k, v in fila.items()}
@@ -161,6 +171,13 @@ def limpiar(filas: list[dict[str, str]]) -> list[dict]:
         video = texto(mapa.get("video"))
         definicion = texto(mapa.get("definicion"))
         fecha_publicacion = normalizar_fecha_publicacion(mapa.get("fechapublicacion"))
+        id_quiz = normalizar_id_quiz(mapa.get("idquiz"))
+
+        # Compatibilidad temporal durante la migración del encabezado de la hoja:
+        # si todavía se llama "orden", solo se acepta un valor que ya tenga el
+        # nuevo formato opaco. Los códigos antiguos nunca se publican como idQuiz.
+        if not id_quiz:
+            id_quiz = normalizar_id_quiz(mapa.get("orden"))
 
         if video:
             con_video += 1
@@ -170,6 +187,8 @@ def limpiar(filas: list[dict[str, str]]) -> list[dict]:
             con_definicion += 1
         if fecha_publicacion:
             con_fecha_publicacion += 1
+        if id_quiz:
+            con_id_quiz += 1
 
         registro = {
             "palabra": palabra,
@@ -177,7 +196,7 @@ def limpiar(filas: list[dict[str, str]]) -> list[dict]:
             "video": video,
             "categoria": normalizar_categoria_vocabulario(categoria),
             "nivel": normalizar_nivel(mapa.get("nivel")),
-            "orden": texto(mapa.get("orden")),
+            "idQuiz": id_quiz,
             "imagen": imagen,
             "definicion": definicion,
             "fechaPublicacion": fecha_publicacion,
@@ -200,7 +219,7 @@ def limpiar(filas: list[dict[str, str]]) -> list[dict]:
     print(
         "Vocabulario público: "
         f"{len(salida)} fichas; {con_video} con video; {sin_video} sin video; "
-        f"{con_definicion} con definición; "
+        f"{con_id_quiz} con idQuiz; {con_definicion} con definición; "
         f"{con_fecha_publicacion} con fechaPublicacion."
     )
     return salida
