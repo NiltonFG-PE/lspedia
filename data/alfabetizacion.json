@@ -844,6 +844,13 @@
       "nivel": "Fácil"
     },
     {
+      "caracter": "B",
+      "palabra": "Bufanda",
+      "imagen": "img/alfabetizacion/ejemplos/bufanda.webp",
+      "orden": 13,
+      "nivel": "Fácil"
+    },
+    {
       "caracter": "C",
       "palabra": "Caballo",
       "imagen": "img/alfabetizacion/ejemplos/caballo.webp",
