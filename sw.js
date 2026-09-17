@@ -5,17 +5,20 @@
    - Mantener la PWA instalable y rápida.
    - Abrir el cascarón desde caché inmediatamente en visitas repetidas.
    - Actualizar recursos en segundo plano sin bloquear al usuario.
+   - Reintentar una vez las lecturas de red del cascarón ante fallos breves.
    - No precargar módulos pesados que ahora se cargan bajo demanda.
    - Mantener palabras.json y busqueda-ayudas.json fuera del SW; otras
      fuentes pueden formar parte del cascarón según su estrategia de carga.
    - El panel /admin/ y los laboratorios quedan fuera del fallback público.
    ============================================================ */
 
-const VERSION_APP = "v157";
+const VERSION_APP = "v158";
 const PREFIJO_CACHE = "lspedia-shell-";
 const PREFIJO_RUNTIME = "lspedia-runtime-";
 const CACHE_NOMBRE = PREFIJO_CACHE + VERSION_APP;
 const CACHE_RUNTIME = PREFIJO_RUNTIME + VERSION_APP;
+const RED_TIMEOUT_MS = 8000;
+const RED_REINTENTOS = 1;
 
 const EXTENSION_ARCHIVO_ESTATICO = /\.(?:avif|bmp|gif|ico|jpe?g|png|svg|webp|css|js|mjs|json|map|webmanifest|woff2?|ttf|otf|mp3|wav|ogg|mp4|webm|pdf|txt|xml)$/i;
 
@@ -63,8 +66,44 @@ const ARCHIVOS_CASCARON = [
     "js/buscador-visual.js",
     "js/buscador-predictivo.js",
     "data/vocabulario.json",
+    "data/vocabulario-definiciones.json",
     "data/nuevas-palabras.json"
 ];
+
+function esperar(ms) {
+    return new Promise((resolve) => setTimeout(resolve, Math.max(0, Number(ms) || 0)));
+}
+
+async function fetchConReintento(request, opciones = {}) {
+    const timeoutMs = Math.max(1000, Number(opciones.timeoutMs) || RED_TIMEOUT_MS);
+    const reintentos = Math.max(0, Math.min(2, Number(opciones.reintentos ?? RED_REINTENTOS)));
+    let ultimoError = null;
+
+    for (let intento = 0; intento <= reintentos; intento += 1) {
+        const controlador = typeof AbortController !== "undefined" ? new AbortController() : null;
+        let temporizador = null;
+        try {
+            if (controlador) temporizador = setTimeout(() => controlador.abort(), timeoutMs);
+            const respuesta = await fetch(request.clone(), controlador ? { signal: controlador.signal } : undefined);
+            if (temporizador) clearTimeout(temporizador);
+            if (!respuesta || !respuesta.ok) {
+                const error = new Error("HTTP " + (respuesta ? respuesta.status : 0));
+                error.status = respuesta ? respuesta.status : 0;
+                throw error;
+            }
+            return respuesta;
+        } catch (error) {
+            if (temporizador) clearTimeout(temporizador);
+            ultimoError = error;
+            const status = Number(error && error.status) || 0;
+            const reintentable = !status || status === 408 || status === 425 || status === 429 || status >= 500;
+            if (!reintentable || intento >= reintentos) throw error;
+            await esperar(300 * (intento + 1));
+        }
+    }
+
+    throw ultimoError || new Error("No se pudo completar la solicitud de red.");
+}
 
 self.addEventListener("install", (event) => {
     event.waitUntil(caches.open(CACHE_NOMBRE).then((cache) => cache.addAll(ARCHIVOS_CASCARON)));
@@ -105,11 +144,9 @@ self.addEventListener("fetch", (event) => {
     if (request.mode === "navigate") {
         event.respondWith((async () => {
             const cached = await caches.match("./index.html");
-            const networkPromise = fetch(request).then(async (response) => {
-                if (response && response.ok) {
-                    const runtime = await caches.open(CACHE_RUNTIME);
-                    runtime.put(request, response.clone());
-                }
+            const networkPromise = fetchConReintento(request).then(async (response) => {
+                const runtime = await caches.open(CACHE_RUNTIME);
+                runtime.put(request, response.clone());
                 return response;
             }).catch(() => null);
 
@@ -127,11 +164,9 @@ self.addEventListener("fetch", (event) => {
 
     event.respondWith((async () => {
         const cached = await caches.match(request);
-        const networkPromise = fetch(request).then(async (response) => {
-            if (response && response.ok) {
-                const runtime = await caches.open(CACHE_RUNTIME);
-                runtime.put(request, response.clone());
-            }
+        const networkPromise = fetchConReintento(request).then(async (response) => {
+            const runtime = await caches.open(CACHE_RUNTIME);
+            runtime.put(request, response.clone());
             return response;
         }).catch(() => null);
 
