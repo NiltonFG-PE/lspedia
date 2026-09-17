@@ -199,20 +199,6 @@
     },
     {
       "tipo": "letra",
-      "caracter": "Ñ",
-      "imagenBoca": "img/alfabetizacion/boca/Ñ.webm",
-      "trazoVideo": "img/alfabetizacion/grafias/Ñ-mayuscula.mp4",
-      "nombre": "",
-      "grafiaMayuscula": "img/alfabetizacion/grafias/Ñ-mayuscula.mp4",
-      "grafiaMinuscula": "img/alfabetizacion/grafias/Ñ-minuscula.mp4",
-      "grafiaCursivaMayuscula": "img/alfabetizacion/grafias/Ñ-cursiva-mayuscula.mp4",
-      "grafiaCursivaMinuscula": "img/alfabetizacion/grafias/Ñ-cursiva-minuscula.mp4",
-      "imagenCirculo": "img/alfabetizacion/circulo/Ñ.webp",
-      "orden": 15,
-      "grafiaImagen": ""
-    },
-    {
-      "tipo": "letra",
       "caracter": "O",
       "imagenBoca": "img/alfabetizacion/boca/O.webm",
       "trazoVideo": "img/alfabetizacion/grafias/O-mayuscula.mp4",
@@ -382,7 +368,7 @@
     {
       "tipo": "numero",
       "caracter": "0",
-      "imagenBoca": "",
+      "imagenBoca": "img/alfabetizacion/boca/0.webm",
       "trazoVideo": "img/alfabetizacion/grafias/0.mp4",
       "nombre": "CERO",
       "grafiaMayuscula": "",
@@ -1084,14 +1070,14 @@
     {
       "caracter": "Ñ",
       "palabra": "Ñandú",
-      "imagen": "img/alfabetizacion/ejemplos/nandu.webp",
+      "imagen": "img/alfabetizacion/ejemplos/ñandu.webp",
       "orden": 1,
       "nivel": ""
     },
     {
       "caracter": "Ñ",
       "palabra": "Ñoquis",
-      "imagen": "img/alfabetizacion/ejemplos/noquis.webp",
+      "imagen": "img/alfabetizacion/ejemplos/ñoquis.webp",
       "orden": 2,
       "nivel": ""
     },
@@ -1231,7 +1217,7 @@
     {
       "caracter": "U",
       "palabra": "Uña",
-      "imagen": "img/alfabetizacion/ejemplos/una.webp",
+      "imagen": "img/alfabetizacion/ejemplos/uña.webp",
       "orden": 2,
       "nivel": ""
     },
