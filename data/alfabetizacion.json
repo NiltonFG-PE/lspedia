@@ -1542,6 +1542,13 @@
       "imagen": "img/alfabetizacion/ejemplos/biblioteca.webp",
       "orden": 25,
       "nivel": "Medio"
+    },
+    {
+      "caracter": "B",
+      "palabra": "Billetera",
+      "imagen": "img/alfabetizacion/ejemplos/billetera.webp",
+      "orden": 26,
+      "nivel": "Difícil"
     }
   ]
 }
