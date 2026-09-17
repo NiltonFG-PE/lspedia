@@ -1500,6 +1500,13 @@
       "imagen": "img/alfabetizacion/ejemplos/brazo.webp",
       "orden": 19,
       "nivel": "Fácil"
+    },
+    {
+      "caracter": "B",
+      "palabra": "Brazalete",
+      "imagen": "img/alfabetizacion/ejemplos/brazalete.webp",
+      "orden": 20,
+      "nivel": "Fácil"
     }
   ]
 }
