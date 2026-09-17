@@ -147,6 +147,24 @@ def describir(nombre, lista):
     if len(ordenados) > 30:
         print(f"  … y {len(ordenados) - 30} grupo(s) palabra/categoría más.")
 
+    # Las repeticiones en categorías distintas no deben ocultarse en un mero
+    # contador: normalmente son polisemia o usos contextuales y requieren una
+    # decisión editorial humana. Mostramos los registros para que la auditoría
+    # sea accionable sin borrar nada automáticamente.
+    multicategoria = []
+    for kp, items in por_palabra.items():
+        categorias = {clave(item.get("categoria")) for _, item in items}
+        if len(categorias) > 1:
+            multicategoria.append((kp, items))
+    multicategoria.sort(key=lambda kv: (kv[0], -len(kv[1])))
+    for _kp, items in multicategoria[:30]:
+        print(
+            f"  - [MULTICATEGORÍA] {texto(items[0][1].get('palabra'))} ({len(items)}): "
+            + " | ".join(detalle_item(idx, item) for idx, item in items)
+        )
+    if len(multicategoria) > 30:
+        print(f"  … y {len(multicategoria) - 30} grupo(s) multicategoría más.")
+
     return {
         "grupos_palabra": len(por_palabra),
         "extras_palabra": extras_palabra,
