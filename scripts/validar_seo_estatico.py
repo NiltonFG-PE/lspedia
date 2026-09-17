@@ -19,9 +19,9 @@ def main() -> int:
         '<title>LSPedia - Diccionario visual de español con apoyo en Lengua de Señas Peruana</title>',
         'rel="canonical" href="https://lspedia.site/"',
         h1,
-        'const esVocabulario = fuente === "vocabulario";',
-        'https://lspedia.site/?vista=vocabulario&p=',
-        '&fuente=vocabulario',
+        'const esVocabulario = fuente === "vocabulario" || vista === "vocabulario";',
+        '"https://lspedia.site/vocabulario/" + encodeURIComponent(referenciaSeo) + "/"',
+        '"https://lspedia.site/diccionario/" + encodeURIComponent(referenciaSeo) + "/"',
         '"@type": "WebSite"',
         '"@type": "SearchAction"',
     ]
@@ -50,7 +50,7 @@ def main() -> int:
         return 1
 
     print(
-        "SEO estático validado: H1, canonical por fuente, metadatos, robots "
+        "SEO estático validado: H1, canonical con rutas por fuente, metadatos, robots "
         f"y PWA v{version.group(1) if version else '?'} coherentes."
     )
     return 0
