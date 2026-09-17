@@ -1514,6 +1514,13 @@
       "imagen": "img/alfabetizacion/ejemplos/brocha.webp",
       "orden": 21,
       "nivel": "Fácil"
+    },
+    {
+      "caracter": "B",
+      "palabra": "Balde",
+      "imagen": "img/alfabetizacion/ejemplos/balde.webp",
+      "orden": 22,
+      "nivel": "Fácil"
     }
   ]
 }
