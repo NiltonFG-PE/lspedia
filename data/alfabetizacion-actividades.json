@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "actualizado": "2026-09-17",
+  "estado": "experimental",
+  "objetivo": "Organizar actividades progresivas de alfabetización sin modificar ni inventar recursos de LSP o fonética.",
+  "reglas": {
+    "fuentesPermitidas": ["data/alfabetizacion.json", "AlfabetizacionEjemplos"],
+    "noUsarDiccionarioEnJuegos": true,
+    "recursoPendienteConocido": "El número 0 todavía no tiene imagenBoca; no sustituirla por un recurso inventado."
+  },
+  "niveles": [
+    {
+      "id": "reconocer",
+      "nombre": "1 · Reconocer",
+      "objetivo": "Identificar visualmente una letra o número.",
+      "actividades": [
+        "Elegir el carácter que coincide con el modelo mostrado.",
+        "Distinguir una letra entre tres opciones visuales.",
+        "Relacionar mayúscula y minúscula de la misma letra."
+      ]
+    },
+    {
+      "id": "relacionar",
+      "nombre": "2 · Relacionar",
+      "objetivo": "Conectar el carácter con palabras y ejemplos conocidos.",
+      "actividades": [
+        "Elegir una palabra que empieza con la letra indicada.",
+        "Relacionar una imagen de ejemplo con su palabra escrita.",
+        "Clasificar ejemplos por letra inicial."
+      ]
+    },
+    {
+      "id": "ordenar",
+      "nombre": "3 · Ordenar",
+      "objetivo": "Comprender la posición de letras y números dentro de secuencias.",
+      "actividades": [
+        "Ordenar letras para formar una palabra de ejemplo ya existente.",
+        "Completar una secuencia numérica corta.",
+        "Encontrar qué letra o número falta en una secuencia."
+      ]
+    },
+    {
+      "id": "producir",
+      "nombre": "4 · Producir",
+      "objetivo": "Escribir o trazar el carácter y usarlo en una palabra.",
+      "actividades": [
+        "Repasar el trazo observando el video de grafía existente.",
+        "Copiar una palabra de ejemplo.",
+        "Completar una palabra con una letra faltante."
+      ]
+    }
+  ],
+  "criteriosDeProgreso": [
+    "La dificultad debe depender del nivel asignado a los ejemplos, no de imágenes del Diccionario.",
+    "Una respuesta incorrecta debe mostrar la respuesta correcta y permitir volver a intentarlo o continuar.",
+    "Las instrucciones deben usar frases cortas y una acción principal por pantalla.",
+    "No se debe bloquear el avance por falta de un recurso opcional; debe mostrarse una alternativa textual o visual ya existente."
+  ]
+}
