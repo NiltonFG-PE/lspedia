@@ -1535,6 +1535,13 @@
       "imagen": "img/alfabetizacion/ejemplos/bombero.webp",
       "orden": 24,
       "nivel": "Fácil"
+    },
+    {
+      "caracter": "B",
+      "palabra": "Biblioteca",
+      "imagen": "img/alfabetizacion/ejemplos/biblioteca.webp",
+      "orden": 25,
+      "nivel": "Medio"
     }
   ]
 }
