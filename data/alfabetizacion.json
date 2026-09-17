@@ -1486,6 +1486,13 @@
       "imagen": "img/alfabetizacion/ejemplos/bolsa.webp",
       "orden": 17,
       "nivel": "Fácil"
+    },
+    {
+      "caracter": "B",
+      "palabra": "Botón",
+      "imagen": "img/alfabetizacion/ejemplos/boton.webp",
+      "orden": 18,
+      "nivel": "Fácil"
     }
   ]
 }
