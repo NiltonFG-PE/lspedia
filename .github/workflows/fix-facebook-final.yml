@@ -22,83 +22,42 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           import re
-
-          index_path = Path('index.html')
-          html = index_path.read_text(encoding='utf-8')
-
-          # 1) CSS: exactamente el mismo patrón de interacción que las otras redes.
+          p = Path('index.html')
+          html = p.read_text(encoding='utf-8')
           footer_marker = '.footer-red-youtube:hover { background-color: #ff0000; }'
-          footer_rules = '''.footer-red-facebook { color: #1877F2; }
-        .footer-red-facebook:hover,
-        .footer-red-facebook:focus-visible,
-        .footer-red-facebook:active {
-            background-color: #1877F2;
-            color: #ffffff;
-        }'''
+          footer_rules = '.footer-red-facebook { color: #1877F2; }\n        .footer-red-facebook:hover,\n        .footer-red-facebook:focus-visible,\n        .footer-red-facebook:active {\n            background-color: #1877F2;\n            color: #ffffff;\n        }'
           if '.footer-red-facebook { color: #1877F2; }' not in html:
-              if footer_marker not in html:
-                  raise SystemExit('No se encontró el bloque CSS del footer')
+              if footer_marker not in html: raise SystemExit('No se encontró CSS footer')
               html = html.replace(footer_marker, footer_marker + '\n        ' + footer_rules, 1)
-
           stat_marker = '.stat2-red-youtube:hover { background-color: #ff0000; }'
-          stat_rules = '''.stat2-red-facebook { color: #1877F2; }
-        .stat2-red-facebook:hover,
-        .stat2-red-facebook:focus-visible,
-        .stat2-red-facebook:active {
-            background-color: #1877F2;
-            color: #ffffff;
-        }'''
+          stat_rules = '.stat2-red-facebook { color: #1877F2; }\n        .stat2-red-facebook:hover,\n        .stat2-red-facebook:focus-visible,\n        .stat2-red-facebook:active {\n            background-color: #1877F2;\n            color: #ffffff;\n        }'
           if '.stat2-red-facebook { color: #1877F2; }' not in html:
-              if stat_marker not in html:
-                  raise SystemExit('No se encontró el bloque CSS de estadísticas')
+              if stat_marker not in html: raise SystemExit('No se encontró CSS estadísticas')
               html = html.replace(stat_marker, stat_marker + '\n        ' + stat_rules, 1)
-
-          facebook_svg = '''<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.414c0-3.025 1.792-4.697 4.533-4.697 1.313 0 2.686.236 2.686.236v2.971h-1.513c-1.49 0-1.956.931-1.956 1.887v2.262h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>'''
-
-          def ensure_facebook(container_token, css_class):
-              nonlocal_html = None
-
-          # 2) Facebook fijo en el footer, no agregado después por JavaScript.
+          svg = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.414c0-3.025 1.792-4.697 4.533-4.697 1.313 0 2.686.236 2.686.236v2.971h-1.513c-1.49 0-1.956.931-1.956 1.887v2.262h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>'
           footer_pat = re.compile(r'(<div class="[^"]*\bfooter-redes\b[^"]*">)(.*?)(\n\s*</div>)', re.S)
           m = footer_pat.search(html)
-          if not m:
-              raise SystemExit('No se encontró .footer-redes')
+          if not m: raise SystemExit('No se encontró footer-redes')
           if 'facebook.com/lspedia.sign' not in m.group(2):
-              anchor = f'''\n                <a href="https://www.facebook.com/lspedia.sign" target="_blank" rel="noopener" class="footer-red-icono footer-red-facebook" title="LSPedia en Facebook" aria-label="Síguenos en Facebook @lspedia.sign">\n                    {facebook_svg}\n                </a>'''
+              anchor = '\n                <a href="https://www.facebook.com/lspedia.sign" target="_blank" rel="noopener" class="footer-red-icono footer-red-facebook" title="LSPedia en Facebook" aria-label="Síguenos en Facebook @lspedia.sign">\n                    ' + svg + '\n                </a>'
               html = html[:m.start(3)] + anchor + html[m.start(3):]
-
-          # 3) Facebook fijo también en la tarjeta Redes Sociales.
           stat_pat = re.compile(r'(<div class="[^"]*\bstat2-redes-iconos\b[^"]*">)(.*?)(\n\s*</div>)', re.S)
           m = stat_pat.search(html)
-          if not m:
-              raise SystemExit('No se encontró .stat2-redes-iconos')
+          if not m: raise SystemExit('No se encontró stat2-redes-iconos')
           if 'facebook.com/lspedia.sign' not in m.group(2):
-              anchor = f'''\n                            <a href="https://www.facebook.com/lspedia.sign" target="_blank" rel="noopener" class="stat2-red-icono stat2-red-facebook" title="LSPedia en Facebook" aria-label="Síguenos en Facebook @lspedia.sign">\n                                {facebook_svg}\n                            </a>'''
+              anchor = '\n                            <a href="https://www.facebook.com/lspedia.sign" target="_blank" rel="noopener" class="stat2-red-icono stat2-red-facebook" title="LSPedia en Facebook" aria-label="Síguenos en Facebook @lspedia.sign">\n                                ' + svg + '\n                            </a>'
               html = html[:m.start(3)] + anchor + html[m.start(3):]
-
-          # 4) Romper la caché del JS que antes insertaba Facebook dinámicamente.
-          html, n = re.subn(
-              r'<script src="js/subtitulos\.js(?:\?[^\"]*)?"></script>',
-              '<script src="js/subtitulos.js?v=20260916-facebook-final"></script>',
-              html,
-              count=1
-          )
-          if n != 1:
-              raise SystemExit('No se pudo versionar js/subtitulos.js')
-
-          index_path.write_text(html, encoding='utf-8')
-
-          # 5) Renovar caché PWA.
-          sw_path = Path('sw.js')
-          sw = sw_path.read_text(encoding='utf-8')
+          html, n = re.subn(r'<script src="js/subtitulos\.js(?:\?[^\"]*)?"></script>', '<script src="js/subtitulos.js?v=20260916-facebook-final"></script>', html, count=1)
+          if n != 1: raise SystemExit('No se pudo versionar subtitulos.js')
+          p.write_text(html, encoding='utf-8')
+          swp = Path('sw.js')
+          sw = swp.read_text(encoding='utf-8')
           sw, n = re.subn(r'const VERSION_APP = "v\d+";', 'const VERSION_APP = "v37";', sw, count=1)
-          if n != 1:
-              raise SystemExit('No se encontró VERSION_APP en sw.js')
-          sw_path.write_text(sw, encoding='utf-8')
+          if n != 1: raise SystemExit('No se encontró VERSION_APP')
+          swp.write_text(sw, encoding='utf-8')
           PY
 
       - name: Verificar corrección
-        shell: bash
         run: |
           grep -q 'footer-red-facebook' index.html
           grep -q 'stat2-red-facebook' index.html
@@ -107,12 +66,8 @@ jobs:
           grep -q 'VERSION_APP = "v37"' sw.js
 
       - name: Publicar
-        shell: bash
         run: |
-          if git diff --quiet; then
-            echo "No hay cambios pendientes"
-            exit 0
-          fi
+          if git diff --quiet; then exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html sw.js
