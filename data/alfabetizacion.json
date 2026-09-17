@@ -816,6 +816,13 @@
       "nivel": "Fácil"
     },
     {
+      "caracter": "B",
+      "palabra": "Banco",
+      "imagen": "img/alfabetizacion/ejemplos/banco.webp",
+      "orden": 9,
+      "nivel": "Fácil"
+    },
+    {
       "caracter": "C",
       "palabra": "Caballo",
       "imagen": "img/alfabetizacion/ejemplos/caballo.webp",
