@@ -1493,6 +1493,13 @@
       "imagen": "img/alfabetizacion/ejemplos/boton.webp",
       "orden": 18,
       "nivel": "Fácil"
+    },
+    {
+      "caracter": "B",
+      "palabra": "Brazo",
+      "imagen": "img/alfabetizacion/ejemplos/brazo.webp",
+      "orden": 19,
+      "nivel": "Fácil"
     }
   ]
 }
