@@ -35,17 +35,14 @@ Fuente oficial: https://www.gob.pe/institucion/vivienda/campañas/103693-concurs
 
 ## 3. BCP + El Comercio — Peruanos que Suman 2026
 
-**Estado:** ya no recibe nuevas historias para la edición actual.
+**Estado final para LSPedia:** postulación realizada, **no seleccionada entre los 9 participantes/finalistas de la edición 2026**.
 
-- La edición 2026 ya tiene nueve participantes/finalistas seleccionados.
-- La votación pública se realiza del 17/09/2026 al 06/11/2026.
-- Primer premio: S/ 30,000.
-- Segundo premio: S/ 10,000.
-- Tiene alcance nacional.
+- LSPedia sí participó en la convocatoria 2026.
+- El proyecto no avanzó a la selección de nueve participantes/finalistas.
+- Por tanto, esta oportunidad queda **cerrada y descartada para 2026** y no debe contarse como fuente de financiamiento pendiente o activa.
+- Conservar la postulación presentada puede servir como referencia para revisar qué evidencia, métricas, historia de impacto y presentación del proyecto conviene fortalecer en futuras convocatorias, sin asumir que se volverá a postular al mismo concurso.
 
-**Para LSPedia:** mantenerlo como objetivo de la siguiente edición. Conviene preparar una historia humana y verificable: problema que resuelve, por qué nació, número de palabras/videos, personas beneficiadas, colaboración de personas sordas y evidencia de impacto.
-
-Fuente: https://especial.elcomercio.pe/peruanos-que-suman/
+Fuente de contexto de la edición: https://especial.elcomercio.pe/peruanos-que-suman/
 
 ## 4. ProInnóvate / InnovaSuyu 2026
 
@@ -102,7 +99,9 @@ Revisar mensualmente:
 - CONADIS: concursos de inclusión, discapacidad y accesibilidad.
 - PCM: accesibilidad y transformación digital.
 - ProInnóvate: Startup Perú, innovación y concursos regionales.
-- BCP / El Comercio: siguiente edición de Peruanos que Suman.
-- Programas de responsabilidad social de empresas con líneas de educación, discapacidad, tecnología o inclusión.
+- Nuevas convocatorias privadas de educación, discapacidad, tecnología e inclusión.
+- Programas de responsabilidad social de empresas con líneas compatibles con LSPedia.
+
+**Peruanos que Suman 2026 queda registrado como postulación no seleccionada y no como oportunidad activa.**
 
 No registrar una oportunidad como “abierta” sin verificar primero las bases y la fecha de cierre vigente.
