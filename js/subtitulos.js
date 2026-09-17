@@ -26,8 +26,6 @@
     }
 
     function obtenerDestinoOriginal(){
-        // Navigation Timing conserva la URL usada para abrir realmente
-        // el documento aunque después la SPA haga pushState/replaceState.
         try {
             if(window.performance && typeof performance.getEntriesByType === 'function'){
                 const entradas = performance.getEntriesByType('navigation');
@@ -37,9 +35,6 @@
                 }
             }
         } catch(_e) {}
-
-        // Respaldo: en navegadores sin Navigation Timing, usamos la URL
-        // que existe exactamente en este momento de ejecución.
         return leerDestinoCategoria(window.location.href);
     }
 
@@ -76,8 +71,6 @@
             } catch(_e) {}
         }
 
-        // 1. Abre Vocabulario solo si todavía no está abierta la sección.
-        // Si script.js ya la abrió, no volvemos a simular otro clic.
         const cuerpo = document.body;
         const yaEnVocabulario = !!(cuerpo && cuerpo.classList.contains('vista-temas-movil'));
         if(!yaEnVocabulario){
@@ -87,11 +80,8 @@
             }
         }
 
-        // El clic anterior (o el arranque normal de script.js) puede haber
-        // reducido la URL a ?vista=vocabulario. La restauramos enseguida.
         reponerUrl();
 
-        // 2. Mostrar la categoría exacta cuando Hoja 2 esté disponible.
         const mostrar = () => {
             if(typeof window.mostrarCategoria !== 'function') return false;
             try {
@@ -109,8 +99,6 @@
                 try { window.QuizV2.asegurarBancoCargado(); } catch(_e) {}
             }
             window.QuizV2.onBancoListo(() => {
-                // Espera dos frames para que mostrarCategorias() termine de
-                // pintar antes de sustituirlo por los resultados exactos.
                 requestAnimationFrame(() => requestAnimationFrame(() => {
                     mostrar();
                     reponerUrl();
@@ -118,8 +106,6 @@
             });
         }
 
-        // Respaldo por si el banco ya estaba cargado o algún módulo tarda
-        // en exponer mostrarCategoria. Nunca abandonamos la categoría original.
         [50, 200, 500, 1000, 1800, 3000, 5000].forEach(ms => {
             setTimeout(() => {
                 mostrar();
@@ -128,17 +114,18 @@
         });
     }
 
-    // Facebook oficial de LSPedia. Se agrega a los dos grupos de redes
-    // que ya existen en la página sin duplicarlo si el script se ejecuta
-    // más de una vez (por ejemplo, al usar la PWA o restaurar una vista).
+    // Facebook oficial de LSPedia.
+    // Se crea igual que las demás redes, pero su estado visual se controla
+    // de forma directa para evitar conflictos con reglas antiguas del footer.
     function agregarFacebookRedesSociales(){
         const href = 'https://www.facebook.com/lspedia.sign';
         const usuario = '@lspedia.sign';
+        const AZUL = '#1877F2';
+        const FONDO = '#f8fafc';
         const svgFacebook = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.414c0-3.025 1.792-4.697 4.533-4.697 1.313 0 2.686.236 2.686.236v2.971h-1.513c-1.49 0-1.956.931-1.956 1.887v2.262h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>';
 
-        // Facebook sigue el mismo comportamiento visual que las demás redes:
-        // color oficial en reposo y, al pasar/tocar, círculo de marca + icono
-        // blanco + el mismo pequeño zoom del resto de botones.
+        // Respaldo CSS. Los estados activos también se fuerzan por JS abajo,
+        // de modo que ninguna regla global pueda volver gris o blanco el icono.
         let estilo = document.getElementById('lspediaFacebookEstilos');
         if(!estilo){
             estilo = document.createElement('style');
@@ -146,61 +133,87 @@
             document.head.appendChild(estilo);
         }
         estilo.textContent = [
-            '.stat2-red-facebook,.footer-redes .footer-red-facebook,a.footer-red-icono.footer-red-facebook{color:#1877F2!important;background:#f8fafc!important;border-color:rgba(24,119,242,.20)!important;opacity:1!important;filter:none!important;-webkit-tap-highlight-color:transparent!important;transition:transform .2s ease,background-color .2s ease,color .2s ease,box-shadow .2s ease!important;}',
-            '.footer-redes .footer-red-facebook::after,a.footer-red-icono.footer-red-facebook::after{border-color:rgba(24,119,242,.20)!important;}',
-            '.stat2-red-facebook:hover,.stat2-red-facebook:focus,.stat2-red-facebook:focus-visible,.stat2-red-facebook:active,.footer-redes .footer-red-facebook:hover,.footer-redes .footer-red-facebook:focus,.footer-redes .footer-red-facebook:focus-visible,.footer-redes .footer-red-facebook:active,a.footer-red-icono.footer-red-facebook:hover,a.footer-red-icono.footer-red-facebook:focus,a.footer-red-icono.footer-red-facebook:focus-visible,a.footer-red-icono.footer-red-facebook:active{background:#1877F2!important;color:#ffffff!important;border-color:#1877F2!important;transform:scale(1.12)!important;opacity:1!important;filter:none!important;box-shadow:0 7px 18px rgba(24,119,242,.28)!important;}',
-            '.footer-redes .footer-red-facebook svg,a.footer-red-icono.footer-red-facebook svg,.stat2-red-facebook svg{color:#1877F2!important;fill:currentColor!important;opacity:1!important;filter:none!important;}',
-            '.footer-redes .footer-red-facebook:hover svg,.footer-redes .footer-red-facebook:focus svg,.footer-redes .footer-red-facebook:focus-visible svg,.footer-redes .footer-red-facebook:active svg,a.footer-red-icono.footer-red-facebook:hover svg,a.footer-red-icono.footer-red-facebook:focus svg,a.footer-red-icono.footer-red-facebook:focus-visible svg,a.footer-red-icono.footer-red-facebook:active svg,.stat2-red-facebook:hover svg,.stat2-red-facebook:focus svg,.stat2-red-facebook:focus-visible svg,.stat2-red-facebook:active svg{color:#ffffff!important;fill:currentColor!important;opacity:1!important;filter:none!important;}'
+            '.stat2-red-facebook,.footer-red-facebook{transition:transform .2s ease,background-color .2s ease,color .2s ease,box-shadow .2s ease!important;opacity:1!important;filter:none!important;-webkit-tap-highlight-color:transparent!important;}',
+            '.stat2-red-facebook svg,.footer-red-facebook svg,.stat2-red-facebook path,.footer-red-facebook path{opacity:1!important;filter:none!important;}'
         ].join('');
 
-        // Versiones anteriores fijaban color y fondo como estilos inline
-        // !important. Eso impedía que :hover/:active pudiera animarse. Los
-        // retiramos para que el CSS anterior controle todos los estados.
-        function limpiarEstilosInlineViejos(enlace){
+        function aplicarEstado(enlace, activo){
             if(!enlace) return;
-            ['color','background','background-color','border-color','opacity','filter','transform','box-shadow','-webkit-tap-highlight-color'].forEach(prop => enlace.style.removeProperty(prop));
+            const colorIcono = activo ? '#ffffff' : AZUL;
+            const fondo = activo ? AZUL : FONDO;
+
+            enlace.style.setProperty('color', colorIcono, 'important');
+            enlace.style.setProperty('background', fondo, 'important');
+            enlace.style.setProperty('background-color', fondo, 'important');
+            enlace.style.setProperty('border-color', activo ? AZUL : 'rgba(24,119,242,.22)', 'important');
+            enlace.style.setProperty('opacity', '1', 'important');
+            enlace.style.setProperty('filter', 'none', 'important');
+            enlace.style.setProperty('transform', activo ? 'scale(1.12)' : 'scale(1)', 'important');
+            enlace.style.setProperty('box-shadow', activo ? '0 7px 18px rgba(24,119,242,.28)' : 'none', 'important');
+            enlace.style.setProperty('-webkit-tap-highlight-color', 'transparent', 'important');
+
             const svg = enlace.querySelector('svg');
             if(svg){
-                ['color','fill','opacity','filter'].forEach(prop => svg.style.removeProperty(prop));
+                svg.style.setProperty('color', colorIcono, 'important');
+                svg.style.setProperty('fill', colorIcono, 'important');
+                svg.style.setProperty('opacity', '1', 'important');
+                svg.style.setProperty('filter', 'none', 'important');
             }
+            enlace.querySelectorAll('path').forEach(path => {
+                path.style.setProperty('color', colorIcono, 'important');
+                path.style.setProperty('fill', colorIcono, 'important');
+                path.style.setProperty('opacity', '1', 'important');
+                path.style.setProperty('filter', 'none', 'important');
+            });
+        }
+
+        function prepararInteraccion(enlace){
+            if(!enlace) return;
+            aplicarEstado(enlace, false);
+            if(enlace.dataset.facebookAnimacionLista === '1') return;
+            enlace.dataset.facebookAnimacionLista = '1';
+
+            enlace.addEventListener('mouseenter', () => aplicarEstado(enlace, true));
+            enlace.addEventListener('mouseleave', () => aplicarEstado(enlace, false));
+            enlace.addEventListener('focus', () => aplicarEstado(enlace, true));
+            enlace.addEventListener('blur', () => aplicarEstado(enlace, false));
+            enlace.addEventListener('pointerdown', () => aplicarEstado(enlace, true));
+            enlace.addEventListener('pointerup', () => {
+                if(enlace.matches(':hover')) aplicarEstado(enlace, true);
+                else aplicarEstado(enlace, false);
+            });
+            enlace.addEventListener('pointercancel', () => aplicarEstado(enlace, false));
+        }
+
+        function crearEnlace(clases){
+            const enlace = document.createElement('a');
+            enlace.href = href;
+            enlace.target = '_blank';
+            enlace.rel = 'noopener noreferrer';
+            enlace.className = clases;
+            enlace.title = 'LSPedia en Facebook ' + usuario;
+            enlace.setAttribute('aria-label', 'Síguenos en Facebook ' + usuario);
+            enlace.innerHTML = svgFacebook;
+            prepararInteraccion(enlace);
+            return enlace;
         }
 
         document.querySelectorAll('.stat2-redes-iconos').forEach(contenedor => {
-            const existente = contenedor.querySelector('.stat2-red-facebook');
-            if(existente){
-                limpiarEstilosInlineViejos(existente);
-                return;
+            let enlace = contenedor.querySelector('.stat2-red-facebook');
+            if(!enlace){
+                enlace = crearEnlace('stat2-red-icono stat2-red-facebook');
+                contenedor.appendChild(enlace);
             }
-
-            const enlace = document.createElement('a');
-            enlace.href = href;
-            enlace.target = '_blank';
-            enlace.rel = 'noopener noreferrer';
-            enlace.className = 'stat2-red-icono stat2-red-facebook';
-            enlace.title = 'LSPedia en Facebook ' + usuario;
-            enlace.setAttribute('aria-label', 'Síguenos en Facebook ' + usuario);
-            enlace.innerHTML = svgFacebook;
-            limpiarEstilosInlineViejos(enlace);
-            contenedor.appendChild(enlace);
+            prepararInteraccion(enlace);
         });
 
         document.querySelectorAll('.footer-redes').forEach(contenedor => {
-            const existente = contenedor.querySelector('.footer-red-facebook');
-            if(existente){
-                limpiarEstilosInlineViejos(existente);
-                return;
+            let enlace = contenedor.querySelector('.footer-red-facebook');
+            if(!enlace){
+                enlace = crearEnlace('footer-red-icono footer-red-facebook');
+                contenedor.appendChild(enlace);
             }
-
-            const enlace = document.createElement('a');
-            enlace.href = href;
-            enlace.target = '_blank';
-            enlace.rel = 'noopener noreferrer';
-            enlace.className = 'footer-red-icono footer-red-facebook';
-            enlace.title = 'LSPedia en Facebook ' + usuario;
-            enlace.setAttribute('aria-label', 'Síguenos en Facebook ' + usuario);
-            enlace.innerHTML = svgFacebook;
-            limpiarEstilosInlineViejos(enlace);
-            contenedor.appendChild(enlace);
+            prepararInteraccion(enlace);
         });
     }
 
