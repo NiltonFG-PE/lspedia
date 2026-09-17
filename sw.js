@@ -6,8 +6,8 @@
    - Abrir el cascarón desde caché inmediatamente en visitas repetidas.
    - Actualizar recursos en segundo plano sin bloquear al usuario.
    - No precargar módulos pesados que ahora se cargan bajo demanda.
-   - Mantener los JSON de contenido fuera del SW: palabras.json conserva
-     su propia caché rápida + revalidación desde script.js.
+   - Mantener palabras.json y busqueda-ayudas.json fuera del SW; otras
+     fuentes pueden formar parte del cascarón según su estrategia de carga.
    - El panel /admin/ y los laboratorios quedan fuera del fallback público.
    ============================================================ */
 
