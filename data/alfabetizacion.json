@@ -1528,6 +1528,13 @@
       "imagen": "img/alfabetizacion/ejemplos/banera.webp",
       "orden": 23,
       "nivel": "Fácil"
+    },
+    {
+      "caracter": "B",
+      "palabra": "Bombero",
+      "imagen": "img/alfabetizacion/ejemplos/bombero.webp",
+      "orden": 24,
+      "nivel": "Fácil"
     }
   ]
 }
