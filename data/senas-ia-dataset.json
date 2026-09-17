@@ -8,6 +8,17 @@
   "modeloEntrada": "MediaPipe Hand Landmarker + Pose Landmarker + Face Landmarker (blendshapes)",
   "descripcion": "Dataset experimental multimodal para el buscador mediante señas de LSPedia. Las muestras almacenan landmarks normalizados y rasgos numéricos de expresión facial, no video ni fotografías.",
   "privacidad": "Solo deben incorporarse muestras obtenidas con consentimiento y revisadas antes de publicarse en este archivo.",
+  "evaluacion": {
+    "reglaPrincipal": "Separar entrenamiento y prueba por participante, nunca mezclando muestras de una misma persona entre ambos conjuntos.",
+    "metadatosRecomendadosPorMuestra": [
+      "participanteId seudónimo",
+      "concepto o etiqueta",
+      "fecha o sesión de captura",
+      "vectorDimension",
+      "consentimientoVerificado"
+    ],
+    "nota": "No publicar nombres, documentos de identidad ni datos de contacto dentro del dataset. El porcentaje de precisión solo debe calcularse con muestras reales reservadas para prueba."
+  },
   "conceptos": [],
   "muestras": [],
   "vectorDimensionsCompatibles": [
