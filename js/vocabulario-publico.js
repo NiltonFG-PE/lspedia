@@ -6,22 +6,26 @@
    - Vocabulario público/buscador/juegos: necesita IMAGEN REAL; el video
      es opcional, igual que la regla pública vigente de LSPedia.
 
-   Este módulo reemplaza únicamente el getter público obtenerBancoHoja2().
-   No modifica el banco interno del Quiz ni sus requisitos de video.
+   Desde 2026-09-17 también combina, sin sobrescribir datos editoriales,
+   las definiciones de apoyo de data/vocabulario-definiciones.json.
+   Así el JSON sincronizado desde Sheets puede seguir siendo la fuente
+   principal y las definiciones editoriales se mantienen separadas.
    ============================================================ */
 (function () {
     'use strict';
 
     if (window.LSPediaVocabularioPublico && window.LSPediaVocabularioPublico.version) return;
 
-    const VERSION = '2026.09.14.2';
+    const VERSION = '2026.09.17.1';
     const DATA_URL = 'data/vocabulario.json';
+    const DEFINICIONES_URL = 'data/vocabulario-definiciones.json';
     const getterAnterior = typeof window.obtenerBancoHoja2 === 'function'
         ? window.obtenerBancoHoja2
         : null;
 
     const estado = {
         datos: [],
+        definiciones: Object.create(null),
         listo: false,
         cargando: false,
         error: null
@@ -29,6 +33,17 @@
 
     function texto(valor) {
         return String(valor == null ? '' : valor).trim();
+    }
+
+    function clavePalabra(valor) {
+        const core = window.LSPediaCore;
+        if (core && typeof core.normalizarTexto === 'function') return core.normalizarTexto(valor);
+        return texto(valor)
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase()
+            .replace(/\s+/g, ' ')
+            .trim();
     }
 
     function esImagenReal(valor) {
@@ -54,14 +69,39 @@
         );
     }
 
+    function normalizarDefiniciones(data) {
+        const origen = data && data.definiciones && typeof data.definiciones === 'object'
+            ? data.definiciones
+            : {};
+        const mapa = Object.create(null);
+        Object.keys(origen).forEach(function (palabra) {
+            const clave = clavePalabra(palabra);
+            const definicion = texto(origen[palabra]);
+            if (clave && definicion) mapa[clave] = definicion;
+        });
+        return mapa;
+    }
+
+    function enriquecerDefinicion(item) {
+        if (!item) return item;
+        if (texto(item.definicion)) return item;
+        const definicion = estado.definiciones[clavePalabra(item.palabra)];
+        if (!definicion) return item;
+        return Object.assign({}, item, {
+            definicion: definicion,
+            _definicionLspedia: 'apoyo-editorial'
+        });
+    }
+
     function normalizarLista(data) {
         const lista = Array.isArray(data)
             ? data
             : (data && Array.isArray(data.preguntas) ? data.preguntas : []);
         return lista.filter(esPublicable).map(function (item) {
-            return item && item._fuenteLspedia === 'vocabulario'
+            const base = item && item._fuenteLspedia === 'vocabulario'
                 ? item
                 : Object.assign({}, item, { _fuenteLspedia: 'vocabulario' });
+            return enriquecerDefinicion(base);
         });
     }
 
@@ -93,9 +133,6 @@
             console.warn('[LSPedia] No se pudieron refrescar estadísticas de Vocabulario:', error);
         }
 
-        // Una URL directa a una palabra de Vocabulario pudo haberse evaluado
-        // antes de que este JSON terminara de cargar. Se intenta restaurar una
-        // sola vez cuando ya existe la colección pública completa.
         try {
             const params = new URLSearchParams(window.location.search);
             const fuente = texto(params.get('fuente')).toLowerCase();
@@ -107,7 +144,10 @@
         } catch (_e) {}
 
         document.dispatchEvent(new CustomEvent('lspedia:vocabularioPublicoListo', {
-            detail: { total: estado.datos.length }
+            detail: {
+                total: estado.datos.length,
+                conDefinicion: estado.datos.filter(function (item) { return texto(item && item.definicion); }).length
+            }
         }));
     }
 
@@ -132,9 +172,20 @@
         estado.cargando = true;
         estado.error = null;
 
-        const separador = DATA_URL.includes('?') ? '&' : '?';
-        const url = DATA_URL + separador + '_publico=' + Date.now();
-        leerDatos(url)
+        const marca = Date.now();
+        const promesaDefiniciones = leerDatos(DEFINICIONES_URL + '?_def=' + marca)
+            .then(function (data) {
+                estado.definiciones = normalizarDefiniciones(data);
+            })
+            .catch(function (error) {
+                estado.definiciones = Object.create(null);
+                console.warn('[LSPedia] Definiciones de apoyo no disponibles; Vocabulario continuará sin bloquearse.', error);
+            });
+
+        promesaDefiniciones
+            .then(function () {
+                return leerDatos(DATA_URL + '?_publico=' + marca);
+            })
             .then(function (data) {
                 estado.datos = normalizarLista(data);
                 estado.listo = true;
@@ -154,6 +205,9 @@
         obtener: function () { return estado.datos.slice(); },
         listo: function () { return estado.listo; },
         total: function () { return estado.datos.length; },
+        totalConDefinicion: function () {
+            return estado.datos.filter(function (item) { return texto(item && item.definicion); }).length;
+        },
         esPublicable: esPublicable,
         recargar: function () {
             estado.listo = false;
@@ -170,9 +224,6 @@
 
     cargar();
 
-    // Quiz puede terminar su precarga después. Como nuestro getter público ya
-    // está separado, solo refrescamos estadísticas al recibir esa señal; nunca
-    // sustituimos datos públicos por el banco de videos.
     try {
         if (window.QuizV2 && typeof window.QuizV2.onBancoListo === 'function') {
             window.QuizV2.onBancoListo(function () {
