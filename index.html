@@ -1633,6 +1633,51 @@
         .footer-red-tiktok:hover { background-color: #010101; }
         .footer-red-instagram:hover { background: radial-gradient(circle at 30% 110%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285AEB 90%); }
         .footer-red-youtube:hover { background-color: #ff0000; }
+        /* Facebook LSPedia — comportamiento consistente con las demás redes */
+        .footer-red-facebook,
+        .stat2-red-facebook {
+            color: #1877F2 !important;
+        }
+        .footer-red-facebook svg,
+        .footer-red-facebook path,
+        .stat2-red-facebook svg,
+        .stat2-red-facebook path {
+            color: currentColor !important;
+            fill: currentColor !important;
+            opacity: 1 !important;
+            filter: none !important;
+        }
+        @media (hover: hover) and (pointer: fine) {
+            .footer-red-facebook:hover,
+            .footer-red-facebook:focus-visible,
+            .stat2-red-facebook:hover,
+            .stat2-red-facebook:focus-visible {
+                background: #1877F2 !important;
+                color: #ffffff !important;
+                transform: scale(1.12);
+            }
+        }
+        @media (hover: none), (pointer: coarse) {
+            .footer-red-facebook,
+            .footer-red-facebook:hover,
+            .footer-red-facebook:focus,
+            .footer-red-facebook:focus-visible,
+            .footer-red-facebook:active,
+            .stat2-red-facebook,
+            .stat2-red-facebook:hover,
+            .stat2-red-facebook:focus,
+            .stat2-red-facebook:focus-visible,
+            .stat2-red-facebook:active {
+                background: #ffffff !important;
+                color: #1877F2 !important;
+                opacity: 1 !important;
+                filter: none !important;
+            }
+            .footer-red-facebook:active,
+            .stat2-red-facebook:active {
+                transform: scale(1.10) !important;
+            }
+        }
         @media (max-width: 767.98px) {
             .footer-logo { height: 48px; }
             .footer-desarrollado { max-width: none; }
@@ -4930,6 +4975,9 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                             <a href="https://www.youtube.com/@LSPedia-sign" target="_blank" rel="noopener" class="stat2-red-icono stat2-red-youtube" title="LSPedia en YouTube" aria-label="Síguenos en YouTube">
                                 <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.51 3.5 12 3.5 12 3.5s-7.51 0-9.38.55A3.02 3.02 0 0 0 .5 6.19 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.81 3.02 3.02 0 0 0 2.12 2.14c1.87.55 9.38.55 9.38.55s7.51 0 9.38-.55a3.02 3.02 0 0 0 2.12-2.14A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.81zM9.6 15.6V8.4l6.27 3.6z"/></svg>
                             </a>
+                            <a href="https://www.facebook.com/lspedia.sign" target="_blank" rel="noopener noreferrer" class="stat2-red-icono stat2-red-facebook" title="LSPedia en Facebook" aria-label="Síguenos en Facebook @lspedia.sign">
+                                <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.414c0-3.025 1.792-4.697 4.533-4.697 1.313 0 2.686.236 2.686.236v2.971h-1.513c-1.49 0-1.956.931-1.956 1.887v2.262h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -6504,6 +6552,9 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                 </a>
                 <a href="https://www.youtube.com/@LSPedia-sign" target="_blank" rel="noopener" class="footer-red-icono footer-red-youtube" title="LSPedia en YouTube" aria-label="Síguenos en YouTube">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.51 3.5 12 3.5 12 3.5s-7.51 0-9.38.55A3.02 3.02 0 0 0 .5 6.19 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.81 3.02 3.02 0 0 0 2.12 2.14c1.87.55 9.38.55 9.38.55s7.51 0 9.38-.55a3.02 3.02 0 0 0 2.12-2.14A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.81zM9.6 15.6V8.4l6.27 3.6z"/></svg>
+                </a>
+                <a href="https://www.facebook.com/lspedia.sign" target="_blank" rel="noopener noreferrer" class="footer-red-icono footer-red-facebook" title="LSPedia en Facebook" aria-label="Síguenos en Facebook @lspedia.sign">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.414c0-3.025 1.792-4.697 4.533-4.697 1.313 0 2.686.236 2.686.236v2.971h-1.513c-1.49 0-1.956.931-1.956 1.887v2.262h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>
                 </a>
             </div>
 
