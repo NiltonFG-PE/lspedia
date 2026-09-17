@@ -1549,6 +1549,13 @@
       "imagen": "img/alfabetizacion/ejemplos/billetera.webp",
       "orden": 26,
       "nivel": "Difícil"
+    },
+    {
+      "caracter": "B",
+      "palabra": "Billete",
+      "imagen": "img/alfabetizacion/ejemplos/billete.webp",
+      "orden": 27,
+      "nivel": "Medio"
     }
   ]
 }
