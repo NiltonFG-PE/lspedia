@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "actualizado": "2026-09-17",
+  "criterio": "Tanda editorial preparada para completar únicamente definiciones vacías del Diccionario. No modifica imágenes, videos ni señas.",
+  "definiciones": {
+    "mamifero": "Animal vertebrado que normalmente nace del cuerpo de su madre y, cuando es pequeño, se alimenta de leche materna. La mayoría tiene pelo. Ejemplo: El perro, el gato y la persona son mamíferos.",
+    "ave": "Animal vertebrado que tiene plumas, pico y dos alas. Muchas aves pueden volar, aunque algunas no. Ejemplo: La paloma es un ave.",
+    "reptil": "Animal vertebrado que suele tener la piel cubierta de escamas y cuya temperatura corporal depende mucho del ambiente. Ejemplo: La serpiente y la lagartija son reptiles.",
+    "insecto": "Animal pequeño que tiene seis patas y el cuerpo dividido en tres partes principales. Muchos insectos también tienen alas. Ejemplo: La hormiga y la mariposa son insectos.",
+    "mascota": "Animal que vive bajo el cuidado de una persona o familia y suele brindar compañía. Ejemplo: Mi perro es mi mascota.",
+    "autocuidado": "Acciones que una persona realiza para cuidar su salud física, emocional y bienestar diario. Ejemplo: Dormir bien, alimentarse y descansar son formas de autocuidado.",
+    "descansar": "Dejar por un tiempo una actividad o esfuerzo para recuperar energía física o mental. Ejemplo: Después de trabajar varias horas necesito descansar.",
+    "equilibrio-emocional": "Capacidad de reconocer y manejar las emociones sin que una emoción domine completamente la conducta durante mucho tiempo. No significa estar feliz todo el tiempo. Ejemplo: Una persona puede sentirse triste y aun así buscar apoyo y continuar con sus actividades.",
+    "rutina": "Conjunto de actividades que una persona repite con frecuencia y en un orden parecido. Ejemplo: Mi rutina de la mañana incluye levantarme, asearme y desayunar.",
+    "limite": "Punto, regla o condición que indica hasta dónde puede llegar algo o qué no debe sobrepasarse. Ejemplo: Una velocidad máxima es un límite.",
+    "salud-mental": "Estado relacionado con el bienestar emocional, psicológico y social de una persona. Influye en cómo piensa, siente, actúa, afronta dificultades y se relaciona con otras personas. Ejemplo: Pedir apoyo cuando una situación emocional es difícil también forma parte del cuidado de la salud mental.",
+    "salud-fisica": "Estado y funcionamiento del cuerpo. Se relaciona con aspectos como alimentación, sueño, actividad física, prevención y atención de enfermedades. Ejemplo: Hacer ejercicio adecuado y acudir a controles médicos ayuda a cuidar la salud física.",
+    "sueno": "Estado natural de descanso en el que una persona duerme. También puede significar una experiencia de imágenes o situaciones mientras duerme. Ejemplo: Dormir suficientes horas ayuda al cuerpo a recuperarse.",
+    "alimentacion-saludable": "Forma de alimentarse que aporta variedad y cantidad adecuada de nutrientes y energía para cuidar la salud, considerando las necesidades de cada persona. Ejemplo: Una alimentación saludable puede incluir frutas, verduras, cereales y fuentes de proteína.",
+    "hidratacion": "Proceso de dar al cuerpo los líquidos que necesita para funcionar correctamente. Ejemplo: Beber agua durante el día ayuda a mantener una buena hidratación.",
+    "higiene-personal": "Hábitos de limpieza y cuidado del cuerpo que ayudan al bienestar y a prevenir algunos problemas de salud. Ejemplo: Lavarse las manos y cepillarse los dientes son parte de la higiene personal.",
+    "relajacion": "Estado o actividad que ayuda a disminuir la tensión física o mental. Ejemplo: Respirar lentamente y descansar en un lugar tranquilo puede ayudar a la relajación.",
+    "recreacion": "Actividades realizadas en el tiempo libre para descansar, divertirse, compartir o disfrutar. Ejemplo: Pasear, jugar o practicar un pasatiempo pueden ser actividades de recreación.",
+    "rutina-saludable": "Conjunto de hábitos que se repiten con frecuencia y ayudan a cuidar la salud y el bienestar. Ejemplo: Dormir a una hora regular, alimentarse bien y moverse durante el día pueden formar una rutina saludable.",
+    "limite-personal": "Regla o decisión que una persona establece para proteger su bienestar, su tiempo, su cuerpo, sus emociones o sus relaciones. Ejemplo: Decir que no se desea un contacto físico es establecer un límite personal.",
+    "espacio-personal": "Distancia física o ámbito privado que una persona necesita para sentirse cómoda y segura. Puede variar según la persona, la relación y la situación. Ejemplo: Algunas personas prefieren mantener más distancia al conversar.",
+    "tiempo-libre": "Tiempo en el que una persona no está cumpliendo obligaciones principales y puede elegir actividades de descanso, recreación o interés personal. Ejemplo: En mi tiempo libre me gusta dibujar.",
+    "pausa": "Interrupción breve de una actividad antes de continuar. Ejemplo: Hicimos una pausa de diez minutos durante la reunión.",
+    "respirar": "Tomar aire hacia los pulmones y luego expulsarlo. Es una función necesaria para vivir. Ejemplo: Cuando hacemos ejercicio respiramos más rápido."
+  }
+}
