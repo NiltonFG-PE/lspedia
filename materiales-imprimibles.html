@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Materiales imprimibles | LSPedia</title>
+  <style>
+    :root{font-family:Arial,sans-serif;color:#172033;background:#f3f6fa}*{box-sizing:border-box}body{margin:0}header{background:#0f2f5f;color:#fff;padding:14px 18px}header div,main{max-width:1100px;margin:auto}.top{display:flex;align-items:center;justify-content:space-between;gap:12px}.top a{color:#fff}.panel{background:#fff;border:1px solid #dce3ec;border-radius:16px;padding:14px;margin:18px 0}.controles{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:10px}.campo label{display:block;font-weight:700;font-size:12px;margin-bottom:5px}.campo select,.campo input{width:100%;min-height:42px;border:1px solid #cbd5e1;border-radius:9px;padding:8px}.acciones{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.btn{border:0;border-radius:9px;padding:10px 14px;font-weight:700;cursor:pointer}.primario{background:#075ea8;color:#fff}.suave{background:#e8eef5;color:#24344d}.estado{font-size:12px;color:#526176;margin:10px 0 0}.hojas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.ficha{background:#fff;border:1px solid #aeb9c8;border-radius:12px;padding:12px;break-inside:avoid;min-height:245px;display:grid;grid-template-columns:130px 1fr;gap:12px;position:relative}.visual{height:130px;border:1px solid #e2e8f0;border-radius:10px;display:grid;place-items:center;overflow:hidden;background:#fff}.visual img{max-width:100%;max-height:100%;object-fit:contain}.palabra{font-size:1.45rem;font-weight:800;margin:0 0 5px}.categoria{font-size:11px;font-weight:700;color:#526176;text-transform:uppercase}.def{font-size:12px;line-height:1.4;margin:8px 0}.lineas{margin-top:12px}.linea{border-bottom:1px solid #8895a7;height:24px}.qr{position:absolute;right:10px;bottom:10px;width:58px;height:58px;border:1px solid #e2e8f0;background:#fff}.qr img{width:100%;height:100%}.qr-note{font-size:8px;color:#64748b;position:absolute;right:10px;bottom:70px;width:60px;text-align:center}.caracter{grid-template-columns:1fr;text-align:center;min-height:210px}.caracter .visual{height:120px;margin:auto;width:160px}.caracter .palabra{font-size:2.4rem}.nota{font-size:11px;color:#64748b;line-height:1.45}@media(max-width:700px){.controles{grid-template-columns:1fr 1fr}.hojas{grid-template-columns:1fr}.ficha{grid-template-columns:110px 1fr}.visual{height:110px}}@media print{body{background:#fff}header,.panel,.no-print{display:none!important}main{max-width:none;margin:0;padding:0}.hojas{gap:7mm;grid-template-columns:repeat(2,1fr)}.ficha{border:1px solid #777;box-shadow:none;min-height:62mm;padding:5mm;page-break-inside:avoid}.visual{height:32mm}.qr{width:16mm;height:16mm}.qr-note{bottom:19mm}.linea{height:7mm}@page{size:A4;margin:10mm}}
+  </style>
+</head>
+<body>
+<header><div class="top"><strong>LSPedia · Materiales imprimibles</strong><a href="./">Volver</a></div></header>
+<main>
+  <section class="panel">
+    <h1 style="margin-top:0">Generador de fichas</h1>
+    <p class="nota">Laboratorio no público. Genera fichas a partir de contenido real de LSPedia. No crea ni modifica señas. Los QR de Vocabulario apuntan a la página pública de cada palabra y requieren Internet para generarse en esta herramienta.</p>
+    <div class="controles">
+      <div class="campo"><label for="tipo">Material</label><select id="tipo"><option value="vocabulario">Vocabulario</option><option value="letras">Letras</option><option value="numeros">Números</option></select></div>
+      <div class="campo"><label for="categoria">Categoría</label><select id="categoria"><option value="">Todas</option></select></div>
+      <div class="campo"><label for="buscar">Buscar</label><input id="buscar" type="search" placeholder="Palabra"></div>
+      <div class="campo"><label for="cantidad">Máximo de fichas</label><select id="cantidad"><option>8</option><option selected>12</option><option>20</option><option value="999">Todas</option></select></div>
+    </div>
+    <div class="acciones"><button id="generar" class="btn primario" type="button">Generar fichas</button><button id="imprimir" class="btn suave" type="button">Imprimir / Guardar PDF</button></div>
+    <p id="estado" class="estado" role="status" aria-live="polite">Cargando datos…</p>
+  </section>
+  <section id="hojas" class="hojas" aria-label="Fichas para imprimir"></section>
+</main>
+<script>
+(function(){
+  'use strict';
+  const $=id=>document.getElementById(id);
+  const estado={vocabulario:[],alfabeto:[],definiciones:{}};
+  function txt(v){return String(v==null?'':v).trim()}
+  function slug(v){return txt(v).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')}
+  function imagenReal(v){const s=txt(v).split(',')[0].trim();return /^(?:https?:\/\/|\/|\.\.?\/|img\/)/i.test(s)&&/\.(?:avif|gif|jpe?g|png|svg|webp)(?:[?#].*)?$/i.test(s)?s:''}
+  async function leer(url){const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}
+  async function cargar(){
+    const resultados=await Promise.allSettled([leer('data/vocabulario.json'),leer('data/vocabulario-definiciones.json'),leer('data/alfabetizacion.json')]);
+    if(resultados[0].status==='fulfilled')estado.vocabulario=Array.isArray(resultados[0].value)?resultados[0].value:[];
+    if(resultados[1].status==='fulfilled')estado.definiciones=(resultados[1].value&&resultados[1].value.definiciones)||{};
+    if(resultados[2].status==='fulfilled')estado.alfabeto=(resultados[2].value&&Array.isArray(resultados[2].value.alfabeto))?resultados[2].value.alfabeto:[];
+    actualizarCategorias();render();
+  }
+  function actualizarCategorias(){
+    const sel=$('categoria');sel.replaceChildren(new Option('Todas',''));
+    const cats=[...new Set(estado.vocabulario.map(x=>txt(x.categoria)).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es'));
+    cats.forEach(c=>sel.appendChild(new Option(c,c)));
+    sel.disabled=$('tipo').value!=='vocabulario';
+  }
+  function qrUrl(palabra){
+    const destino='https://lspedia.site/vocabulario/'+slug(palabra)+'/';
+    return 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=4&data='+encodeURIComponent(destino);
+  }
+  function fichaVocab(item){
+    const art=document.createElement('article');art.className='ficha';
+    const vis=document.createElement('div');vis.className='visual';
+    const src=imagenReal(item.imagen);if(src){const img=document.createElement('img');img.src=src;img.alt='Ilustración de '+txt(item.palabra);vis.appendChild(img)}
+    const cuerpo=document.createElement('div');
+    const cat=document.createElement('div');cat.className='categoria';cat.textContent=txt(item.categoria);
+    const h=document.createElement('h2');h.className='palabra';h.textContent=txt(item.palabra);
+    const def=document.createElement('p');def.className='def';def.textContent=txt(item.definicion)||txt(estado.definiciones[item.palabra])||'Observa la imagen y escribe una frase usando esta palabra.';
+    const lineas=document.createElement('div');lineas.className='lineas';lineas.innerHTML='<div class="linea"></div><div class="linea"></div>';
+    cuerpo.append(cat,h,def,lineas);art.append(vis,cuerpo);
+    const nota=document.createElement('div');nota.className='qr-note';nota.textContent='Abrir en LSPedia';
+    const qr=document.createElement('div');qr.className='qr';const q=document.createElement('img');q.src=qrUrl(item.palabra);q.alt='Código QR para '+txt(item.palabra);qr.appendChild(q);art.append(nota,qr);return art;
+  }
+  function fichaCaracter(item){
+    const art=document.createElement('article');art.className='ficha caracter';
+    const h=document.createElement('h2');h.className='palabra';h.textContent=txt(item.caracter);
+    const vis=document.createElement('div');vis.className='visual';const src=imagenReal(item.imagenCirculo);if(src){const img=document.createElement('img');img.src=src;img.alt='Representación de '+txt(item.caracter);vis.appendChild(img)}
+    const p=document.createElement('p');p.className='def';p.textContent='Observa, reconoce y practica. Escribe el carácter en las líneas.';
+    const lineas=document.createElement('div');lineas.className='lineas';lineas.innerHTML='<div class="linea"></div><div class="linea"></div>';
+    art.append(h,vis,p,lineas);return art;
+  }
+  function render(){
+    const tipo=$('tipo').value, q=txt($('buscar').value).toLocaleLowerCase('es-PE'), cat=$('categoria').value, max=Number($('cantidad').value)||12;
+    let lista=[];
+    if(tipo==='vocabulario')lista=estado.vocabulario.filter(x=>imagenReal(x.imagen)&&(!cat||x.categoria===cat)&&(!q||txt(x.palabra).toLocaleLowerCase('es-PE').includes(q)));
+    else lista=estado.alfabeto.filter(x=>tipo==='letras'?txt(x.tipo)==='letra':txt(x.tipo)==='numero').filter(x=>!q||txt(x.caracter).toLocaleLowerCase('es-PE').includes(q));
+    lista=lista.slice(0,max);const caja=$('hojas');caja.replaceChildren();const frag=document.createDocumentFragment();lista.forEach(x=>frag.appendChild(tipo==='vocabulario'?fichaVocab(x):fichaCaracter(x)));caja.appendChild(frag);
+    $('estado').textContent=lista.length+' ficha(s) listas para imprimir.';
+  }
+  $('tipo').addEventListener('change',()=>{actualizarCategorias();render()});$('categoria').addEventListener('change',render);$('buscar').addEventListener('input',render);$('cantidad').addEventListener('change',render);$('generar').addEventListener('click',render);$('imprimir').addEventListener('click',()=>window.print());
+  cargar().catch(e=>{$('estado').textContent='No se pudieron cargar los datos: '+e.message});
+})();
+</script>
+</body>
+</html>
