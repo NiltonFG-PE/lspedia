@@ -4091,18 +4091,13 @@ function inicializarReproductorPalabra(videoId, opciones = {}) {
 // de forzar siempre un recuadro 16:9 fijo. Mismo patrón que se usa en el
 // reproductor del Quiz (js/quiz.js).
 function ajustarAspectoReproductorPalabra(videoId) {
+    const media = window.LSPediaMedia;
+    if (media && typeof media.ajustarAspecto === "function") {
+        media.ajustarAspecto("reproductorPalabraWrap", videoId);
+        return;
+    }
     const wrap = document.getElementById("reproductorPalabraWrap");
-    if (!wrap) return;
-    wrap.style.aspectRatio = "16 / 9"; // valor razonable mientras se confirma el real
-
-    fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent("https://www.youtube.com/watch?v=" + videoId)}&format=json`)
-        .then((res) => (res.ok ? res.json() : null))
-        .then((data) => {
-            const wrapActual = document.getElementById("reproductorPalabraWrap");
-            if (!data || !wrapActual || !data.width || !data.height) return;
-            wrapActual.style.aspectRatio = `${data.width} / ${data.height}`;
-        })
-        .catch(() => { /* si falla la red, se mantiene el valor por defecto */ });
+    if (wrap) wrap.style.aspectRatio = "16 / 9";
 }
 
 function crearReproductorPalabra(videoId, opciones = {}) {
@@ -4233,18 +4228,13 @@ function inicializarReproductorSugerida(videoId) {
 }
 
 function ajustarAspectoReproductorSugerida(videoId) {
+    const media = window.LSPediaMedia;
+    if (media && typeof media.ajustarAspecto === "function") {
+        media.ajustarAspecto("reproductorSugeridaWrap", videoId);
+        return;
+    }
     const wrap = document.getElementById("reproductorSugeridaWrap");
-    if (!wrap) return;
-    wrap.style.aspectRatio = "16 / 9";
-
-    fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent("https://www.youtube.com/watch?v=" + videoId)}&format=json`)
-        .then((res) => (res.ok ? res.json() : null))
-        .then((data) => {
-            const wrapActual = document.getElementById("reproductorSugeridaWrap");
-            if (!data || !wrapActual || !data.width || !data.height) return;
-            wrapActual.style.aspectRatio = `${data.width} / ${data.height}`;
-        })
-        .catch(() => { /* si falla la red, se mantiene el valor por defecto */ });
+    if (wrap) wrap.style.aspectRatio = "16 / 9";
 }
 
 function crearReproductorSugerida(videoId) {
