@@ -1472,6 +1472,13 @@
       "imagen": "img/alfabetizacion/ejemplos/aspiradora.webp",
       "orden": 29,
       "nivel": "Medio"
+    },
+    {
+      "caracter": "B",
+      "palabra": "Barba",
+      "imagen": "img/alfabetizacion/ejemplos/barba.webp",
+      "orden": 16,
+      "nivel": "Fácil"
     }
   ]
 }
