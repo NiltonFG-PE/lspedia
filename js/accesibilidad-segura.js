@@ -3,6 +3,8 @@
 (function(){
   'use strict';
 
+  let ultimoFocoAntesDialogo=null;
+
   function textoAccesible(el){
     if(!el)return'';
     return String(el.getAttribute('aria-label')||'').trim() ||
@@ -30,7 +32,7 @@
     const ids=[
       'resultado','resultadoVocabulario','resultadosVocabulario','sugerencias',
       'sugerenciasVocabulario','quizFeedback','feedbackQuiz','estadoSenas',
-      'resultadosSenas','progresoMuestraSenas'
+      'resultadosSenas','progresoMuestraSenas','feedbackJuego'
     ];
     ids.forEach(function(id){
       const el=document.getElementById(id);
@@ -47,6 +49,13 @@
     base.querySelectorAll('button.btn-close').forEach(function(el){
       if(!textoAccesible(el))el.setAttribute('aria-label','Cerrar');
     });
+    base.querySelectorAll('input[required], select[required], textarea[required]').forEach(function(el){
+      if(!el.hasAttribute('aria-required'))el.setAttribute('aria-required','true');
+    });
+    base.querySelectorAll('img:not([alt])').forEach(function(img){
+      // Solo tratamos como decorativas las imágenes explícitamente marcadas por CSS/datos.
+      if(img.classList.contains('decorativo')||img.hasAttribute('data-decorativo'))img.setAttribute('alt','');
+    });
   }
 
   function asegurarSaltoContenido(){
@@ -54,11 +63,66 @@
     const main=document.querySelector('main');
     if(!main)return;
     if(!main.id)main.id='contenidoPrincipal';
+    if(!main.hasAttribute('tabindex'))main.setAttribute('tabindex','-1');
     const enlace=document.createElement('a');
     enlace.className='lspedia-skip-link';
     enlace.href='#'+main.id;
     enlace.textContent='Saltar al contenido';
+    enlace.addEventListener('click',function(){
+      setTimeout(function(){
+        try{main.focus({preventScroll:true});}catch(_e){main.focus();}
+      },0);
+    });
     document.body.prepend(enlace);
+  }
+
+  function elementosEnfocables(dialogo){
+    if(!dialogo||!dialogo.querySelectorAll)return[];
+    return Array.from(dialogo.querySelectorAll(
+      'a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])'
+    )).filter(function(el){return !el.hasAttribute('hidden')&&el.getAttribute('aria-hidden')!=='true';});
+  }
+
+  function prepararDialogo(dialogo){
+    if(!(dialogo instanceof Element))return;
+    if(!dialogo.hasAttribute('role'))dialogo.setAttribute('role','dialog');
+    dialogo.setAttribute('aria-modal','true');
+
+    if(!dialogo.hasAttribute('aria-label')&&!dialogo.hasAttribute('aria-labelledby')){
+      const titulo=dialogo.querySelector('.modal-title,h1,h2,h3');
+      if(titulo){
+        if(!titulo.id)titulo.id='tituloDialogoLspedia-'+Math.random().toString(36).slice(2,9);
+        dialogo.setAttribute('aria-labelledby',titulo.id);
+      }
+    }
+  }
+
+  function enfocarDialogoSiCorresponde(dialogo){
+    if(!(dialogo instanceof Element))return;
+    const visible=dialogo.classList.contains('show')||dialogo.getAttribute('open')!==null||dialogo.getAttribute('aria-hidden')==='false';
+    if(!visible)return;
+    prepararDialogo(dialogo);
+    if(!dialogo.contains(document.activeElement)){
+      ultimoFocoAntesDialogo=document.activeElement instanceof HTMLElement?document.activeElement:null;
+      const foco=elementosEnfocables(dialogo)[0]||dialogo;
+      if(foco===dialogo&&!dialogo.hasAttribute('tabindex'))dialogo.setAttribute('tabindex','-1');
+      setTimeout(function(){try{foco.focus({preventScroll:true});}catch(_e){try{foco.focus();}catch(_e2){}}},0);
+    }
+  }
+
+  function restaurarFocoSiNoHayDialogo(){
+    const abierto=document.querySelector('.modal.show,[role="dialog"][aria-hidden="false"],dialog[open]');
+    if(abierto||!ultimoFocoAntesDialogo)return;
+    const destino=ultimoFocoAntesDialogo;
+    ultimoFocoAntesDialogo=null;
+    if(document.contains(destino))setTimeout(function(){try{destino.focus({preventScroll:true});}catch(_e){}},0);
+  }
+
+  function prepararDialogos(root){
+    const base=root&&root.querySelectorAll?root:document;
+    if(base instanceof Element&&base.matches('.modal,[role="dialog"],dialog'))prepararDialogo(base);
+    base.querySelectorAll('.modal,[role="dialog"],dialog').forEach(prepararDialogo);
+    document.querySelectorAll('.modal.show,[role="dialog"][aria-hidden="false"],dialog[open]').forEach(enfocarDialogoSiCorresponde);
   }
 
   function iniciar(){
@@ -66,22 +130,38 @@
     prepararNavegacion();
     prepararRegionesDinamicas();
     prepararControles(document);
+    prepararDialogos(document);
+
+    document.addEventListener('shown.bs.modal',function(event){
+      if(event.target instanceof Element)enfocarDialogoSiCorresponde(event.target);
+    });
+    document.addEventListener('hidden.bs.modal',restaurarFocoSiNoHayDialogo);
 
     if(!('MutationObserver' in window))return;
     const obs=new MutationObserver(function(cambios){
       let actualizarNav=false;
+      let revisarDialogos=false;
       cambios.forEach(function(cambio){
-        if(cambio.type==='attributes'&&cambio.attributeName==='class')actualizarNav=true;
+        if(cambio.type==='attributes'&&cambio.attributeName==='class'){
+          actualizarNav=true;
+          if(cambio.target instanceof Element&&cambio.target.matches('.modal,[role="dialog"],dialog'))revisarDialogos=true;
+        }
+        if(cambio.type==='attributes'&&(cambio.attributeName==='aria-hidden'||cambio.attributeName==='open'))revisarDialogos=true;
         cambio.addedNodes.forEach(function(nodo){
           if(!(nodo instanceof Element))return;
           if(nodo.matches('button, a, [role="button"]'))asegurarNombre(nodo);
           prepararControles(nodo);
+          prepararDialogos(nodo);
         });
       });
       if(actualizarNav)prepararNavegacion();
       prepararRegionesDinamicas();
+      if(revisarDialogos){
+        prepararDialogos(document);
+        restaurarFocoSiNoHayDialogo();
+      }
     });
-    obs.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
+    obs.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','aria-hidden','open']});
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',iniciar,{once:true});
