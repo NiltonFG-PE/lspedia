@@ -1,0 +1,54 @@
+name: Aplicar mejoras autonomas
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - '.github/workflows/aplicar-mejoras-autonomas.yml'
+      - 'scripts/aplicar_mejoras_autonomas.py'
+      - 'data/diccionario-definiciones-autonomas.json'
+      - 'js/lspedia-media.js'
+
+permissions:
+  contents: write
+
+jobs:
+  aplicar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Aplicar mejoras
+        run: python scripts/aplicar_mejoras_autonomas.py
+
+      - name: Validar JSON tocados
+        run: |
+          python -m json.tool data/palabras.json >/dev/null
+          python -m json.tool data/diccionario-definiciones-autonomas.json >/dev/null
+
+      - name: Validar sintaxis JavaScript modificada
+        run: |
+          node --check js/script.js
+          node --check js/lspedia-media.js
+          node --check sw.js
+
+      - name: Publicar cambios derivados
+        run: |
+          if git diff --quiet; then
+            echo 'No hay cambios derivados.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/palabras.json js/script.js index.html sw.js
+          git commit -m 'Aplicar definiciones y modularizacion segura'
+          git push origin HEAD:develop
