@@ -2,7 +2,8 @@ name: Corregir Facebook en develop
 
 on:
   push:
-    branches: [develop]
+    branches:
+      - develop
     paths:
       - '.github/workflows/fix-facebook-develop.yml'
 
@@ -28,55 +29,55 @@ jobs:
           p = Path('index.html')
           html = p.read_text(encoding='utf-8')
 
-          # CSS para Facebook: azul real en reposo. En PC, hover azul con icono blanco.
-          # En pantallas táctiles, nunca dejamos icono blanco sobre fondo blanco.
-          css = r'''
-        /* Facebook LSPedia — comportamiento consistente con las demás redes */
-        .footer-red-facebook,
-        .stat2-red-facebook {
-            color: #1877F2 !important;
-        }
-        .footer-red-facebook svg,
-        .footer-red-facebook path,
-        .stat2-red-facebook svg,
-        .stat2-red-facebook path {
-            color: currentColor !important;
-            fill: currentColor !important;
-            opacity: 1 !important;
-            filter: none !important;
-        }
-        @media (hover: hover) and (pointer: fine) {
-            .footer-red-facebook:hover,
-            .footer-red-facebook:focus-visible,
-            .stat2-red-facebook:hover,
-            .stat2-red-facebook:focus-visible {
-                background: #1877F2 !important;
-                color: #ffffff !important;
-                transform: scale(1.12);
-            }
-        }
-        @media (hover: none), (pointer: coarse) {
-            .footer-red-facebook,
-            .footer-red-facebook:hover,
-            .footer-red-facebook:focus,
-            .footer-red-facebook:focus-visible,
-            .footer-red-facebook:active,
-            .stat2-red-facebook,
-            .stat2-red-facebook:hover,
-            .stat2-red-facebook:focus,
-            .stat2-red-facebook:focus-visible,
-            .stat2-red-facebook:active {
-                background: #ffffff !important;
-                color: #1877F2 !important;
-                opacity: 1 !important;
-                filter: none !important;
-            }
-            .footer-red-facebook:active,
-            .stat2-red-facebook:active {
-                transform: scale(1.10) !important;
-            }
-        }
-'''
+          css_lines = [
+              '',
+              '        /* Facebook LSPedia — comportamiento consistente con las demás redes */',
+              '        .footer-red-facebook,',
+              '        .stat2-red-facebook {',
+              '            color: #1877F2 !important;',
+              '        }',
+              '        .footer-red-facebook svg,',
+              '        .footer-red-facebook path,',
+              '        .stat2-red-facebook svg,',
+              '        .stat2-red-facebook path {',
+              '            color: currentColor !important;',
+              '            fill: currentColor !important;',
+              '            opacity: 1 !important;',
+              '            filter: none !important;',
+              '        }',
+              '        @media (hover: hover) and (pointer: fine) {',
+              '            .footer-red-facebook:hover,',
+              '            .footer-red-facebook:focus-visible,',
+              '            .stat2-red-facebook:hover,',
+              '            .stat2-red-facebook:focus-visible {',
+              '                background: #1877F2 !important;',
+              '                color: #ffffff !important;',
+              '                transform: scale(1.12);',
+              '            }',
+              '        }',
+              '        @media (hover: none), (pointer: coarse) {',
+              '            .footer-red-facebook,',
+              '            .footer-red-facebook:hover,',
+              '            .footer-red-facebook:focus,',
+              '            .footer-red-facebook:focus-visible,',
+              '            .footer-red-facebook:active,',
+              '            .stat2-red-facebook,',
+              '            .stat2-red-facebook:hover,',
+              '            .stat2-red-facebook:focus,',
+              '            .stat2-red-facebook:focus-visible,',
+              '            .stat2-red-facebook:active {',
+              '                background: #ffffff !important;',
+              '                color: #1877F2 !important;',
+              '                opacity: 1 !important;',
+              '                filter: none !important;',
+              '            }',
+              '            .footer-red-facebook:active,',
+              '            .stat2-red-facebook:active {',
+              '                transform: scale(1.10) !important;',
+              '            }',
+              '        }',
+          ]
+          css = '\n'.join(css_lines)
 
           if 'Facebook LSPedia — comportamiento consistente' not in html:
               marker = '.footer-red-youtube:hover { background-color: #ff0000; }'
@@ -86,30 +87,24 @@ jobs:
 
           fb_svg = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.414c0-3.025 1.792-4.697 4.533-4.697 1.313 0 2.686.236 2.686.236v2.971h-1.513c-1.49 0-1.956.931-1.956 1.887v2.262h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>'
 
-          def add_to_container(class_token, link_class):
-              nonlocal_html = None
-
-          # Añadir Facebook a la tarjeta de Redes Sociales si aún no existe.
           stat = re.compile(r'(<div class="[^"]*\bstat2-redes-iconos\b[^"]*">)(.*?)(\n\s*</div>)', re.S)
           m = stat.search(html)
           if not m:
               raise SystemExit('No se encontró stat2-redes-iconos')
           if 'stat2-red-facebook' not in m.group(2):
-              a = f'''\n                            <a href="https://www.facebook.com/lspedia.sign" target="_blank" rel="noopener noreferrer" class="stat2-red-icono stat2-red-facebook" title="LSPedia en Facebook" aria-label="Síguenos en Facebook @lspedia.sign">\n                                {fb_svg}\n                            </a>'''
-              html = html[:m.start(3)] + a + html[m.start(3):]
+              anchor = '\n                            <a href="https://www.facebook.com/lspedia.sign" target="_blank" rel="noopener noreferrer" class="stat2-red-icono stat2-red-facebook" title="LSPedia en Facebook" aria-label="Síguenos en Facebook @lspedia.sign">\n                                ' + fb_svg + '\n                            </a>'
+              html = html[:m.start(3)] + anchor + html[m.start(3):]
 
-          # Añadir Facebook al footer si aún no existe.
           foot = re.compile(r'(<div class="[^"]*\bfooter-redes\b[^"]*">)(.*?)(\n\s*</div>)', re.S)
           m = foot.search(html)
           if not m:
               raise SystemExit('No se encontró footer-redes')
           if 'footer-red-facebook' not in m.group(2):
-              a = f'''\n                <a href="https://www.facebook.com/lspedia.sign" target="_blank" rel="noopener noreferrer" class="footer-red-icono footer-red-facebook" title="LSPedia en Facebook" aria-label="Síguenos en Facebook @lspedia.sign">\n                    {fb_svg}\n                </a>'''
-              html = html[:m.start(3)] + a + html[m.start(3):]
+              anchor = '\n                <a href="https://www.facebook.com/lspedia.sign" target="_blank" rel="noopener noreferrer" class="footer-red-icono footer-red-facebook" title="LSPedia en Facebook" aria-label="Síguenos en Facebook @lspedia.sign">\n                    ' + fb_svg + '\n                </a>'
+              html = html[:m.start(3)] + anchor + html[m.start(3):]
 
           p.write_text(html, encoding='utf-8')
 
-          # Renovar caché solo en develop.
           swp = Path('sw.js')
           sw = swp.read_text(encoding='utf-8')
           sw, n = re.subn(r'const VERSION_APP = "v(\d+)";', lambda m: f'const VERSION_APP = "v{int(m.group(1))+1}";', sw, count=1)
