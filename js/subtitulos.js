@@ -115,74 +115,121 @@
     }
 
     // Facebook oficial de LSPedia.
-    // Se crea igual que las demás redes, pero su estado visual se controla
-    // de forma directa para evitar conflictos con reglas antiguas del footer.
-    function agregarFacebookRedesSociales(){
+    // El botón ya existe de forma nativa en index.html. Este respaldo también
+    // lo crea si alguien abre una copia antigua de la PWA y, sobre todo,
+    // neutraliza el :hover persistente de Chrome Android que antes dejaba
+    // el icono blanco sobre fondo blanco después de tocarlo.
+    function prepararFacebookRedesSociales(){
         const href = 'https://www.facebook.com/lspedia.sign';
         const usuario = '@lspedia.sign';
-        const AZUL = '#1877F2';
-        const FONDO = '#f8fafc';
         const svgFacebook = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.414c0-3.025 1.792-4.697 4.533-4.697 1.313 0 2.686.236 2.686.236v2.971h-1.513c-1.49 0-1.956.931-1.956 1.887v2.262h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>';
 
-        // Respaldo CSS. Los estados activos también se fuerzan por JS abajo,
-        // de modo que ninguna regla global pueda volver gris o blanco el icono.
         let estilo = document.getElementById('lspediaFacebookEstilos');
         if(!estilo){
             estilo = document.createElement('style');
             estilo.id = 'lspediaFacebookEstilos';
             document.head.appendChild(estilo);
         }
-        estilo.textContent = [
-            '.stat2-red-facebook,.footer-red-facebook{transition:transform .2s ease,background-color .2s ease,color .2s ease,box-shadow .2s ease!important;opacity:1!important;filter:none!important;-webkit-tap-highlight-color:transparent!important;}',
-            '.stat2-red-facebook svg,.footer-red-facebook svg,.stat2-red-facebook path,.footer-red-facebook path{opacity:1!important;filter:none!important;}'
-        ].join('');
 
-        function aplicarEstado(enlace, activo){
-            if(!enlace) return;
-            const colorIcono = activo ? '#ffffff' : AZUL;
-            const fondo = activo ? AZUL : FONDO;
-
-            enlace.style.setProperty('color', colorIcono, 'important');
-            enlace.style.setProperty('background', fondo, 'important');
-            enlace.style.setProperty('background-color', fondo, 'important');
-            enlace.style.setProperty('border-color', activo ? AZUL : 'rgba(24,119,242,.22)', 'important');
-            enlace.style.setProperty('opacity', '1', 'important');
-            enlace.style.setProperty('filter', 'none', 'important');
-            enlace.style.setProperty('transform', activo ? 'scale(1.12)' : 'scale(1)', 'important');
-            enlace.style.setProperty('box-shadow', activo ? '0 7px 18px rgba(24,119,242,.28)' : 'none', 'important');
-            enlace.style.setProperty('-webkit-tap-highlight-color', 'transparent', 'important');
-
-            const svg = enlace.querySelector('svg');
-            if(svg){
-                svg.style.setProperty('color', colorIcono, 'important');
-                svg.style.setProperty('fill', colorIcono, 'important');
-                svg.style.setProperty('opacity', '1', 'important');
-                svg.style.setProperty('filter', 'none', 'important');
+        // Escritorio: mismo efecto de las demás redes (marca llena + icono blanco).
+        // Táctil: Chrome puede conservar :hover después del toque; por eso se
+        // fuerza siempre icono azul + fondo claro y solo se anima la escala.
+        estilo.textContent = `
+            .footer-red-facebook,
+            .stat2-red-facebook {
+                color: #1877F2 !important;
+                background: #f8fafc !important;
+                border-color: rgba(24,119,242,.20) !important;
+                opacity: 1 !important;
+                filter: none !important;
+                -webkit-tap-highlight-color: transparent !important;
+                transition: transform .2s ease, background-color .2s ease, color .2s ease, box-shadow .2s ease !important;
             }
-            enlace.querySelectorAll('path').forEach(path => {
-                path.style.setProperty('color', colorIcono, 'important');
-                path.style.setProperty('fill', colorIcono, 'important');
-                path.style.setProperty('opacity', '1', 'important');
-                path.style.setProperty('filter', 'none', 'important');
-            });
-        }
+            .footer-red-facebook svg,
+            .footer-red-facebook path,
+            .stat2-red-facebook svg,
+            .stat2-red-facebook path {
+                color: #1877F2 !important;
+                fill: #1877F2 !important;
+                opacity: 1 !important;
+                filter: none !important;
+            }
 
-        function prepararInteraccion(enlace){
+            @media (hover: hover) and (pointer: fine) {
+                .footer-red-facebook:hover,
+                .footer-red-facebook:focus-visible,
+                .stat2-red-facebook:hover,
+                .stat2-red-facebook:focus-visible {
+                    color: #ffffff !important;
+                    background: #1877F2 !important;
+                    border-color: #1877F2 !important;
+                    transform: scale(1.12) !important;
+                    box-shadow: 0 7px 18px rgba(24,119,242,.28) !important;
+                }
+                .footer-red-facebook:hover svg,
+                .footer-red-facebook:hover path,
+                .footer-red-facebook:focus-visible svg,
+                .footer-red-facebook:focus-visible path,
+                .stat2-red-facebook:hover svg,
+                .stat2-red-facebook:hover path,
+                .stat2-red-facebook:focus-visible svg,
+                .stat2-red-facebook:focus-visible path {
+                    color: #ffffff !important;
+                    fill: #ffffff !important;
+                }
+            }
+
+            @media (hover: none), (pointer: coarse) {
+                .footer-red-facebook,
+                .footer-red-facebook:hover,
+                .footer-red-facebook:focus,
+                .footer-red-facebook:focus-visible,
+                .footer-red-facebook:active,
+                .stat2-red-facebook,
+                .stat2-red-facebook:hover,
+                .stat2-red-facebook:focus,
+                .stat2-red-facebook:focus-visible,
+                .stat2-red-facebook:active {
+                    color: #1877F2 !important;
+                    background: #f8fafc !important;
+                    border-color: rgba(24,119,242,.24) !important;
+                    opacity: 1 !important;
+                    filter: none !important;
+                    box-shadow: none !important;
+                }
+                .footer-red-facebook:active,
+                .stat2-red-facebook:active {
+                    transform: scale(1.10) !important;
+                }
+                .footer-red-facebook svg,
+                .footer-red-facebook path,
+                .footer-red-facebook:hover svg,
+                .footer-red-facebook:hover path,
+                .footer-red-facebook:focus svg,
+                .footer-red-facebook:focus path,
+                .footer-red-facebook:active svg,
+                .footer-red-facebook:active path,
+                .stat2-red-facebook svg,
+                .stat2-red-facebook path,
+                .stat2-red-facebook:hover svg,
+                .stat2-red-facebook:hover path,
+                .stat2-red-facebook:focus svg,
+                .stat2-red-facebook:focus path,
+                .stat2-red-facebook:active svg,
+                .stat2-red-facebook:active path {
+                    color: #1877F2 !important;
+                    fill: #1877F2 !important;
+                    opacity: 1 !important;
+                    filter: none !important;
+                }
+            }
+        `;
+
+        function limpiarRestosViejos(enlace){
             if(!enlace) return;
-            aplicarEstado(enlace, false);
-            if(enlace.dataset.facebookAnimacionLista === '1') return;
-            enlace.dataset.facebookAnimacionLista = '1';
-
-            enlace.addEventListener('mouseenter', () => aplicarEstado(enlace, true));
-            enlace.addEventListener('mouseleave', () => aplicarEstado(enlace, false));
-            enlace.addEventListener('focus', () => aplicarEstado(enlace, true));
-            enlace.addEventListener('blur', () => aplicarEstado(enlace, false));
-            enlace.addEventListener('pointerdown', () => aplicarEstado(enlace, true));
-            enlace.addEventListener('pointerup', () => {
-                if(enlace.matches(':hover')) aplicarEstado(enlace, true);
-                else aplicarEstado(enlace, false);
-            });
-            enlace.addEventListener('pointercancel', () => aplicarEstado(enlace, false));
+            enlace.removeAttribute('style');
+            enlace.querySelectorAll('svg,path').forEach(nodo => nodo.removeAttribute('style'));
+            delete enlace.dataset.facebookAnimacionLista;
         }
 
         function crearEnlace(clases){
@@ -194,7 +241,6 @@
             enlace.title = 'LSPedia en Facebook ' + usuario;
             enlace.setAttribute('aria-label', 'Síguenos en Facebook ' + usuario);
             enlace.innerHTML = svgFacebook;
-            prepararInteraccion(enlace);
             return enlace;
         }
 
@@ -204,7 +250,7 @@
                 enlace = crearEnlace('stat2-red-icono stat2-red-facebook');
                 contenedor.appendChild(enlace);
             }
-            prepararInteraccion(enlace);
+            limpiarRestosViejos(enlace);
         });
 
         document.querySelectorAll('.footer-redes').forEach(contenedor => {
@@ -213,13 +259,13 @@
                 enlace = crearEnlace('footer-red-icono footer-red-facebook');
                 contenedor.appendChild(enlace);
             }
-            prepararInteraccion(enlace);
+            limpiarRestosViejos(enlace);
         });
     }
 
     function iniciarLSPediaComplementos(){
         restaurarCategoriaVocabularioDesdeUrl();
-        agregarFacebookRedesSociales();
+        prepararFacebookRedesSociales();
     }
 
     if(document.readyState === 'loading'){
