@@ -16,11 +16,6 @@
     function $(id){ return document.getElementById(id); }
     function texto(v){ return String(v == null ? '' : v).trim(); }
     function normal(v){ return texto(v).toLocaleLowerCase('es-PE'); }
-    function escapeHtml(v){
-        return String(v || '').replace(/[&<>"']/g, c => ({
-            '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-        })[c]);
-    }
 
     function refPalabra(p){
         try{
@@ -188,7 +183,12 @@
 
         const titulo = card.querySelector('.lsp-mejora-titulo');
         if(titulo){
-            titulo.innerHTML = '<span class="lsp-mejora-icono">✨</span>Lo nuevo';
+            titulo.replaceChildren();
+            const icono = document.createElement('span');
+            icono.className = 'lsp-mejora-icono';
+            icono.textContent = '✨';
+            icono.setAttribute('aria-hidden', 'true');
+            titulo.append(icono, document.createTextNode('Lo nuevo'));
         }
 
         const subtitulo = card.querySelector('.lsp-mejora-sub');
@@ -221,6 +221,54 @@
         location.href = location.pathname + '?p=' + encodeURIComponent(refPalabra(x.palabra) || x.palabra.palabra);
     }
 
+    function crearTarjeta(x){
+        const nombre = texto(x.palabra.palabra);
+        const categoria = texto(x.palabra.categoria || x.registro.categoria);
+        const etiquetaFuente = x.fuente === 'vocabulario' ? '🗂️ Vocabulario' : '📘 Diccionario';
+
+        const boton = document.createElement('button');
+        boton.type = 'button';
+        boton.className = 'lsp-nueva-palabra';
+        boton.setAttribute('aria-label', 'Abrir ' + nombre + ' en ' + (x.fuente === 'vocabulario' ? 'Vocabulario' : 'Diccionario'));
+        boton.addEventListener('click', () => abrirContenido(x));
+
+        const thumbWrap = document.createElement('span');
+        thumbWrap.className = 'lsp-nueva-thumb-wrap';
+        const img = document.createElement('img');
+        img.className = 'lsp-nueva-thumb';
+        img.src = miniatura(x);
+        img.alt = 'Miniatura de ' + nombre;
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        img.addEventListener('error', () => {
+            if(img.dataset.fallback) return;
+            img.dataset.fallback = '1';
+            img.src = 'img/imagen-no-disponible.svg';
+        });
+        thumbWrap.appendChild(img);
+
+        const fuente = document.createElement('span');
+        fuente.className = 'lsp-nueva-badge';
+        fuente.textContent = etiquetaFuente;
+
+        boton.append(thumbWrap, fuente);
+        if(esNuevo(x.registro.fecha)){
+            const nuevo = document.createElement('span');
+            nuevo.className = 'lsp-nueva-badge';
+            nuevo.textContent = 'NUEVO';
+            boton.appendChild(nuevo);
+        }
+
+        const nombreEl = document.createElement('span');
+        nombreEl.className = 'lsp-nueva-nombre';
+        nombreEl.textContent = nombre;
+        const categoriaEl = document.createElement('span');
+        categoriaEl.className = 'lsp-nueva-cat';
+        categoriaEl.textContent = categoria;
+        boton.append(nombreEl, categoriaEl);
+        return boton;
+    }
+
     function render(){
         actualizarEncabezado();
         const caja = $('lspNuevasLista');
@@ -231,60 +279,59 @@
             .filter(x => x && x.palabra && tieneVideoValido(x.palabra))
             .slice(0, 12);
 
+        caja.replaceChildren();
         if(!publicadas.length){
-            caja.innerHTML = '<span class="lsp-mejora-sub">Los próximos videos publicados aparecerán aquí.</span>';
+            const vacio = document.createElement('span');
+            vacio.className = 'lsp-mejora-sub';
+            vacio.textContent = 'Los próximos videos publicados aparecerán aquí.';
+            caja.appendChild(vacio);
             return;
         }
 
-        caja.innerHTML = publicadas.map((x, i) => {
-            const nombre = texto(x.palabra.palabra);
-            const categoria = texto(x.palabra.categoria || x.registro.categoria);
-            const etiquetaFuente = x.fuente === 'vocabulario' ? '🗂️ Vocabulario' : '📘 Diccionario';
-            const badgeNuevo = esNuevo(x.registro.fecha)
-                ? '<span class="lsp-nueva-badge">NUEVO</span>'
-                : '';
+        const fragmento = document.createDocumentFragment();
+        publicadas.forEach(x => fragmento.appendChild(crearTarjeta(x)));
+        caja.appendChild(fragmento);
+    }
 
-            return '<button type="button" class="lsp-nueva-palabra" data-lo-nuevo="' + i + '" aria-label="Abrir ' + escapeHtml(nombre) + ' en ' + escapeHtml(etiquetaFuente.replace(/^[^ ]+\s*/, '')) + '">' +
-                '<span class="lsp-nueva-thumb-wrap"><img class="lsp-nueva-thumb" src="' + escapeHtml(miniatura(x)) + '" alt="Miniatura de ' + escapeHtml(nombre) + '" loading="lazy" decoding="async"></span>' +
-                '<span class="lsp-nueva-badge">' + escapeHtml(etiquetaFuente) + '</span>' +
-                badgeNuevo +
-                '<span class="lsp-nueva-nombre">' + escapeHtml(nombre) + '</span>' +
-                '<span class="lsp-nueva-cat">' + escapeHtml(categoria) + '</span>' +
-                '</button>';
-        }).join('');
-
-        caja.querySelectorAll('.lsp-nueva-thumb').forEach(img => img.addEventListener('error', () => {
-            if(img.dataset.fallback) return;
-            img.dataset.fallback = '1';
-            img.src = 'img/imagen-no-disponible.svg';
-        }));
-
-        caja.querySelectorAll('[data-lo-nuevo]').forEach(btn => {
-            btn.onclick = () => abrirContenido(publicadas[Number(btn.dataset.loNuevo)]);
+    function leerJson(url){
+        const core = window.LSPediaCore;
+        if(core && typeof core.leerJsonSeguro === 'function'){
+            return core.leerJsonSeguro(url, {
+                timeoutMs: 6500,
+                reintentos: 1,
+                esperaReintentoMs: 350,
+                fetch: {cache:'no-store'}
+            });
+        }
+        return fetch(url, {cache:'no-store'}).then(res => {
+            if(!res.ok) throw new Error('HTTP ' + res.status);
+            return res.json();
         });
     }
 
     async function cargar(){
+        const marca = Date.now();
+        const resultados = await Promise.allSettled([
+            leerJson('data/nuevas-palabras.json?_=' + marca),
+            leerJson('data/palabras.json?_=' + marca)
+        ]);
+
         let registros = [];
-        try{
-            const resultados = await Promise.allSettled([
-                fetch('data/nuevas-palabras.json?_=' + Date.now(), {cache:'no-store'}),
-                fetch('data/palabras.json?_=' + Date.now(), {cache:'no-store'})
-            ]);
+        if(resultados[0].status === 'fulfilled'){
+            const d = resultados[0].value;
+            registros = Array.isArray(d && d.items) ? d.items : [];
+            const dias = Number(d && d.diasEtiquetaNuevo);
+            if(Number.isFinite(dias) && dias > 0) diasEtiquetaNuevo = dias;
+        }else{
+            console.warn('[LSPedia Lo nuevo] No se pudo cargar el índice de novedades:', resultados[0].reason);
+        }
 
-            if(resultados[0].status === 'fulfilled' && resultados[0].value.ok){
-                const d = await resultados[0].value.json();
-                registros = Array.isArray(d.items) ? d.items : [];
-                const dias = Number(d.diasEtiquetaNuevo);
-                if(Number.isFinite(dias) && dias > 0) diasEtiquetaNuevo = dias;
-            }
-
-            if(resultados[1].status === 'fulfilled' && resultados[1].value.ok){
-                const d = await resultados[1].value.json();
-                diccionarioCrudo = Array.isArray(d) ? d : [];
-            }
-        }catch(_e){
-            registros = [];
+        if(resultados[1].status === 'fulfilled'){
+            const d = resultados[1].value;
+            diccionarioCrudo = Array.isArray(d) ? d : [];
+        }else{
+            console.warn('[LSPedia Lo nuevo] No se pudo cargar el Diccionario; se conserva la vista disponible:', resultados[1].reason);
+            diccionarioCrudo = [];
         }
 
         itemsLoNuevo = integrarDiccionarioPorVideo(registros);
