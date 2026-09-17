@@ -858,6 +858,13 @@
       "nivel": "Fácil"
     },
     {
+      "caracter": "B",
+      "palabra": "Balanza",
+      "imagen": "img/alfabetizacion/ejemplos/balanza.webp",
+      "orden": 15,
+      "nivel": "Medio"
+    },
+    {
       "caracter": "C",
       "palabra": "Caballo",
       "imagen": "img/alfabetizacion/ejemplos/caballo.webp",
