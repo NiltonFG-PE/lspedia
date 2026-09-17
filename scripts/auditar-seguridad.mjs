@@ -34,6 +34,7 @@ const patronesCriticos = [
 
 const fuentesNoConfiables = /(?:location\.(?:search|hash|href)|URLSearchParams\s*\(|\.value\b|event\.data\b|e\.parameter\b|postMessage\b)/i;
 const sinksHtml = /(?:\.innerHTML\s*=|\.outerHTML\s*=|insertAdjacentHTML\s*\(|\.srcdoc\s*=|setAttribute\s*\(\s*["']srcdoc["'])/;
+const limpiezaHtml = /\.(?:innerHTML|outerHTML)\s*=\s*(?:["']\s*["']|`\s*`)\s*;?/;
 
 for (const archivo of archivos(RAIZ)) {
   const texto = fs.readFileSync(archivo, 'utf8');
@@ -62,7 +63,10 @@ for (const archivo of archivos(RAIZ)) {
       agregar('CRITICO', archivo, i + 1, 'evento-inline-dinamico', linea.trim().slice(0, 180));
     }
 
-    if (sinksHtml.test(linea)) {
+    // Vaciar un contenedor con innerHTML = "" no interpreta entrada externa
+    // y no constituye un sink de inyección. Excluirlo evita falsos positivos
+    // ALTO cuando una lectura de .value/location aparece cerca en el código.
+    if (sinksHtml.test(linea) && !limpiezaHtml.test(linea)) {
       const contexto = lineas.slice(Math.max(0, i - 3), Math.min(lineas.length, i + 4)).join(' ');
       const tieneDefensa = /(escaparHtml|escapeHtml|textContent|textoSeguro|sanit|createTextNode)/i.test(contexto);
       const usaFuenteNoConfiable = fuentesNoConfiables.test(contexto);
@@ -85,8 +89,12 @@ for (const archivo of archivos(RAIZ)) {
       agregar('CRITICO', archivo, i + 1, 'bearer-hardcoded', 'Token Bearer literal detectado.');
     }
 
-    if (/target\s*=\s*["']_blank["']/i.test(linea) && !/rel\s*=\s*["'][^"']*noopener/i.test(linea)) {
-      agregar('AVISO', archivo, i + 1, 'blank-sin-noopener', linea.trim().slice(0, 180));
+    if (/target\s*=\s*["']_blank["']/i.test(linea)) {
+      const contextoEnlace = lineas.slice(Math.max(0, i - 2), Math.min(lineas.length, i + 4)).join(' ');
+      const tieneNoopener = /(?:rel\s*=|\.rel\s*=)\s*["'][^"']*noopener/i.test(contextoEnlace);
+      if (!tieneNoopener) {
+        agregar('AVISO', archivo, i + 1, 'blank-sin-noopener', linea.trim().slice(0, 180));
+      }
     }
 
     if (/\bon[a-z]+\s*=\s*["']/i.test(linea) && path.extname(archivo).toLowerCase() === '.html') {
