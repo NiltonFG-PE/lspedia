@@ -1,0 +1,89 @@
+{
+  "version": 1,
+  "actualizado": "2026-09-17",
+  "estado": "borrador-editorial",
+  "nota": "Banco de propuestas para revisión antes de grabar, ilustrar o publicar. No define ni impone señas de LSP.",
+  "areas": {
+    "Psicología": [
+      {"palabra":"Cognición","concepto":"Conjunto de procesos mentales usados para conocer, pensar, recordar, aprender y resolver problemas."},
+      {"palabra":"Percepción","concepto":"Proceso por el que una persona organiza e interpreta información que recibe por los sentidos."},
+      {"palabra":"Memoria","concepto":"Capacidad de registrar, conservar y recuperar información o experiencias."},
+      {"palabra":"Atención","concepto":"Capacidad de concentrar los recursos mentales en información, una tarea o una situación."},
+      {"palabra":"Motivación","concepto":"Conjunto de razones o impulsos que orientan a una persona a iniciar, mantener o evitar una conducta."},
+      {"palabra":"Conducta","concepto":"Forma observable en que una persona actúa o responde ante una situación."},
+      {"palabra":"Autoestima","concepto":"Valoración que una persona hace de sí misma y de sus propias características."},
+      {"palabra":"Empatía","concepto":"Capacidad de comprender la experiencia o emociones de otra persona y responder considerando su perspectiva."}
+    ],
+    "Salud": [
+      {"palabra":"Síntoma","concepto":"Cambio o molestia que una persona siente y que puede estar relacionado con un problema de salud."},
+      {"palabra":"Diagnóstico","concepto":"Identificación profesional de una enfermedad o condición a partir de información clínica y evaluaciones."},
+      {"palabra":"Tratamiento","concepto":"Conjunto de medidas indicadas para cuidar, controlar o mejorar una enfermedad o condición."},
+      {"palabra":"Prevención","concepto":"Acciones destinadas a disminuir el riesgo de que aparezca una enfermedad, lesión u otro problema de salud."},
+      {"palabra":"Rehabilitación","concepto":"Proceso de apoyo para recuperar o mejorar funciones y participación después de una enfermedad, lesión o discapacidad."},
+      {"palabra":"Consentimiento informado","concepto":"Decisión libre de una persona después de recibir información suficiente y comprensible sobre un procedimiento o atención."},
+      {"palabra":"Dosis","concepto":"Cantidad indicada de un medicamento que debe administrarse en un momento o periodo determinado."},
+      {"palabra":"Historia clínica","concepto":"Registro organizado de información relevante sobre la salud y atención de una persona."}
+    ],
+    "Educación": [
+      {"palabra":"Currículo","concepto":"Plan que organiza qué se espera enseñar y aprender en un programa educativo."},
+      {"palabra":"Evaluación","concepto":"Proceso de recoger y analizar información para conocer el aprendizaje o desempeño."},
+      {"palabra":"Pedagogía","concepto":"Campo que estudia y orienta los procesos de enseñanza y aprendizaje."},
+      {"palabra":"Inclusión educativa","concepto":"Enfoque que busca que todas las personas participen y aprendan eliminando barreras y ofreciendo apoyos adecuados."},
+      {"palabra":"Competencia","concepto":"Capacidad de usar conocimientos, habilidades y actitudes para responder a una situación o tarea."},
+      {"palabra":"Rúbrica","concepto":"Guía con criterios y niveles que ayuda a evaluar un trabajo o desempeño."},
+      {"palabra":"Investigación","concepto":"Proceso ordenado para formular preguntas, recoger información, analizarla y producir conocimiento."},
+      {"palabra":"Metodología","concepto":"Conjunto organizado de métodos y procedimientos usados para realizar una actividad, estudio o proyecto."}
+    ],
+    "Nutrición": [
+      {"palabra":"Nutriente","concepto":"Sustancia que el cuerpo obtiene de los alimentos y necesita para funcionar, crecer o mantenerse."},
+      {"palabra":"Proteína","concepto":"Nutriente que participa en la formación y reparación de tejidos y en muchas funciones del organismo."},
+      {"palabra":"Carbohidrato","concepto":"Nutriente que es una fuente importante de energía para el cuerpo."},
+      {"palabra":"Grasa","concepto":"Nutriente que aporta energía y participa en funciones del organismo; existen diferentes tipos de grasas."},
+      {"palabra":"Fibra","concepto":"Parte de alimentos vegetales que ayuda al funcionamiento del sistema digestivo y tiene otros beneficios para la salud."},
+      {"palabra":"Caloría","concepto":"Unidad usada para expresar la cantidad de energía que aportan los alimentos o utiliza el cuerpo."},
+      {"palabra":"Porción","concepto":"Cantidad de un alimento que una persona sirve o consume en una ocasión."},
+      {"palabra":"Alergia alimentaria","concepto":"Reacción del sistema inmunitario a un alimento que normalmente no causa daño a la mayoría de personas."}
+    ],
+    "Veterinaria": [
+      {"palabra":"Veterinario","concepto":"Profesional de la salud capacitado para prevenir, diagnosticar y tratar problemas de salud en animales."},
+      {"palabra":"Vacunación animal","concepto":"Aplicación de vacunas a animales para ayudar a prevenir determinadas enfermedades."},
+      {"palabra":"Esterilización animal","concepto":"Procedimiento que impide de forma permanente la reproducción de un animal."},
+      {"palabra":"Parásito","concepto":"Organismo que vive en o sobre otro ser vivo y obtiene recursos de él, pudiendo causarle daño."},
+      {"palabra":"Especie","concepto":"Grupo de seres vivos con características biológicas comunes y relacionados entre sí."},
+      {"palabra":"Raza animal","concepto":"Grupo dentro de una especie doméstica con características heredadas seleccionadas o compartidas."},
+      {"palabra":"Desparasitación","concepto":"Uso de medidas o medicamentos para eliminar o controlar determinados parásitos en un animal."},
+      {"palabra":"Bienestar animal","concepto":"Estado físico y mental de un animal en relación con las condiciones en las que vive y es cuidado."}
+    ],
+    "Tecnología": [
+      {"palabra":"Algoritmo","concepto":"Conjunto ordenado de instrucciones o pasos para resolver un problema o realizar una tarea."},
+      {"palabra":"Base de datos","concepto":"Colección organizada de información que puede almacenarse, consultarse y actualizarse."},
+      {"palabra":"Interfaz","concepto":"Parte de un sistema con la que una persona interactúa, por ejemplo botones, menús y pantallas de una aplicación."},
+      {"palabra":"Servidor","concepto":"Sistema o computadora que ofrece datos, archivos o servicios a otros dispositivos o programas."},
+      {"palabra":"API","concepto":"Conjunto de reglas que permite que diferentes programas intercambien información o utilicen funciones entre sí."},
+      {"palabra":"Ciberseguridad","concepto":"Prácticas y tecnologías destinadas a proteger sistemas, cuentas, redes y datos frente a accesos o daños no autorizados."},
+      {"palabra":"Copia de seguridad","concepto":"Copia adicional de datos que puede usarse para recuperarlos si el original se pierde o se daña."},
+      {"palabra":"Accesibilidad digital","concepto":"Diseño de tecnología y contenidos para que puedan ser utilizados por personas con diferentes necesidades y discapacidades."}
+    ],
+    "Agronomía": [
+      {"palabra":"Cultivo","concepto":"Plantas que se siembran y manejan con un propósito como alimentación, producción o investigación."},
+      {"palabra":"Riego","concepto":"Aplicación controlada de agua a un cultivo o suelo cuando la lluvia no es suficiente o debe complementarse."},
+      {"palabra":"Fertilización","concepto":"Aporte planificado de nutrientes al suelo o a las plantas para favorecer su desarrollo."},
+      {"palabra":"Cosecha","concepto":"Proceso de recoger productos agrícolas cuando alcanzan el estado adecuado para su uso."},
+      {"palabra":"Suelo agrícola","concepto":"Capa de tierra utilizada para el crecimiento de cultivos y que contiene agua, aire, minerales y materia orgánica."},
+      {"palabra":"Semilla","concepto":"Estructura de una planta capaz de originar una nueva planta cuando encuentra condiciones adecuadas."},
+      {"palabra":"Plaga agrícola","concepto":"Organismo que puede causar pérdidas o daños importantes en un cultivo y que requiere manejo."},
+      {"palabra":"Invernadero","concepto":"Estructura cubierta que permite controlar parcialmente el ambiente para producir o proteger plantas."}
+    ],
+    "Trabajo y administración": [
+      {"palabra":"Contrato","concepto":"Acuerdo que establece derechos y obligaciones entre dos o más partes y puede tener efectos legales."},
+      {"palabra":"Presupuesto","concepto":"Plan que organiza cuánto dinero se espera recibir, gastar o necesitar durante un periodo o proyecto."},
+      {"palabra":"Inventario","concepto":"Registro ordenado de bienes, productos o materiales disponibles en una organización o negocio."},
+      {"palabra":"Productividad","concepto":"Relación entre los resultados obtenidos y los recursos o tiempo utilizados para lograrlos."},
+      {"palabra":"Cronograma","concepto":"Organización de actividades y fechas que muestra cuándo debe realizarse cada parte de un trabajo o proyecto."},
+      {"palabra":"Proveedor","concepto":"Persona u organización que suministra productos o servicios a otra persona o entidad."},
+      {"palabra":"Cliente","concepto":"Persona u organización que adquiere o utiliza un producto o servicio."},
+      {"palabra":"Emprendimiento","concepto":"Proyecto o actividad organizada para crear y desarrollar una solución, servicio, producto o negocio."
+      }
+    ]
+  }
+}
