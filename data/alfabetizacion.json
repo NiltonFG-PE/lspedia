@@ -1479,6 +1479,13 @@
       "imagen": "img/alfabetizacion/ejemplos/barba.webp",
       "orden": 16,
       "nivel": "Fácil"
+    },
+    {
+      "caracter": "B",
+      "palabra": "Bolsa",
+      "imagen": "img/alfabetizacion/ejemplos/bolsa.webp",
+      "orden": 17,
+      "nivel": "Fácil"
     }
   ]
 }
