@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-09-16T20:30:03Z",
+  "actualizado": "2026-09-17T00:19:39Z",
   "traducciones": [
     {
       "fuente": "diccionario",
@@ -912,7 +912,7 @@
       "categoria": "Transporte",
       "ingles": "Bicycle",
       "aliases": [],
-      "definicionIngles": "It's a two-wheeled vehicle that is propelled by pedaling.\n\nExample: I cycle to work every day."
+      "definicionIngles": "It's a two-wheeled vehicle that moves by pedaling.\n\nExample: I go to work by bicycle every day."
     },
     {
       "fuente": "diccionario",
@@ -1584,7 +1584,7 @@
       "categoria": "Comunicación",
       "ingles": "Institutional communication",
       "aliases": [],
-      "definicionIngles": "Official communication that an institution uses to relate to its internal and external audience."
+      "definicionIngles": "Official communication that an institution uses to relate to its internal and external public."
     },
     {
       "fuente": "diccionario",
@@ -1672,7 +1672,7 @@
       "categoria": "Comunicación",
       "ingles": "Press conference",
       "aliases": [],
-      "definicionIngles": "A meeting in which a person or organization provides information and answers questions from journalists."
+      "definicionIngles": "Meeting in which a person or organization provides information and answers questions from journalists."
     },
     {
       "fuente": "diccionario",
@@ -2016,7 +2016,7 @@
       "categoria": "Comunicación",
       "ingles": "Journalistic chronicle",
       "aliases": [],
-      "definicionIngles": "A journalistic account that tells real events in a specific order and provides details of the context."
+      "definicionIngles": "A journalistic account that tells real events following an order and providing details of the context."
     },
     {
       "fuente": "diccionario",
@@ -2888,7 +2888,7 @@
       "categoria": "Trabajo",
       "ingles": "Efficiency",
       "aliases": [],
-      "definicionIngles": "Ability to perform a job in the best possible way with fewer resources."
+      "definicionIngles": "Ability to perform a job to the best of one's ability with fewer resources."
     },
     {
       "fuente": "diccionario",
@@ -3848,7 +3848,7 @@
       "categoria": "Salud",
       "ingles": "Fever",
       "aliases": [],
-      "definicionIngles": "This is when the body has a higher than normal temperature, due to an illness.\n\nExample: My son has a fever, so I took him to the doctor."
+      "definicionIngles": "It's when the body has a higher than normal temperature, due to an illness.\n\nExample: My son has a fever, so I took him to the doctor."
     },
     {
       "fuente": "diccionario",
@@ -3872,7 +3872,7 @@
       "categoria": "Filosofía",
       "ingles": "Philosophy",
       "aliases": [],
-      "definicionIngles": "Study of the fundamental principles of life, truth, and knowledge."
+      "definicionIngles": "Study of the fundamental principles about life, truth, and knowledge."
     },
     {
       "fuente": "diccionario",
@@ -5840,7 +5840,7 @@
       "categoria": "Familia",
       "ingles": "Grandson",
       "aliases": [],
-      "definicionIngles": "It's your grandson or granddaughter. Example: My grandmother plays with her grandson every afternoon."
+      "definicionIngles": "It's your grandson or granddaughter. For example: My grandmother plays with her grandson every afternoon."
     },
     {
       "fuente": "diccionario",
@@ -6080,7 +6080,7 @@
       "categoria": "Deportes",
       "ingles": "Game",
       "aliases": [],
-      "definicionIngles": "It's a game between two teams or people in a sport.\n\nExample: We watched the soccer game on television."
+      "definicionIngles": "It's a game between two teams or two people in a sport.\n\nExample: We watched the soccer game on television."
     },
     {
       "fuente": "diccionario",
@@ -6134,7 +6134,7 @@
       "fuente": "diccionario",
       "palabra": "Patrimonio contable",
       "categoria": "Economía",
-      "ingles": "Accounting equity",
+      "ingles": "accounting equity",
       "aliases": [],
       "definicionIngles": "Economic value resulting from assets less liabilities."
     },
@@ -6198,7 +6198,7 @@
       "fuente": "diccionario",
       "palabra": "Percepción tributaria",
       "categoria": "Economía",
-      "ingles": "Tax perception",
+      "ingles": "Tax collection",
       "aliases": [],
       "definicionIngles": "Additional amount that is charged in advance in some transactions with respect to taxes."
     },
@@ -6280,7 +6280,7 @@
       "categoria": "Comida",
       "ingles": "Fish",
       "aliases": [],
-      "definicionIngles": "It's fish that comes from the sea or rivers, and is widely used in Peruvian cuisine.\n\nFor example: Ceviche is made with fresh fish."
+      "definicionIngles": "It's fish that comes from the sea or river, and is widely used in Peruvian cuisine.\n\nFor example: Ceviche is made with fresh fish."
     },
     {
       "fuente": "diccionario",
@@ -6384,7 +6384,7 @@
       "categoria": "Ciencia",
       "ingles": "Technical drawing",
       "aliases": [],
-      "definicionIngles": "A drawing with measurements and details used to manufacture, build, or install something."
+      "definicionIngles": "Drawing with measurements and details used to manufacture, build or install something."
     },
     {
       "fuente": "diccionario",
@@ -6480,7 +6480,7 @@
       "categoria": "Cortesía",
       "ingles": "Please",
       "aliases": [],
-      "definicionIngles": "Basic formula for requesting something respectfully and without imposing your will."
+      "definicionIngles": "Basic formula for requesting something respectfully and without imposing."
     },
     {
       "fuente": "diccionario",
@@ -6512,7 +6512,7 @@
       "categoria": "Comida",
       "ingles": "Dessert",
       "aliases": [],
-      "definicionIngles": "It's a dessert that's eaten at the end of a meal.\n\nExample: We had gelatin for dessert."
+      "definicionIngles": "It's a sweet treat eaten at the end of a meal.\n\nExample: We had gelatin for dessert."
     },
     {
       "fuente": "diccionario",
@@ -6544,7 +6544,7 @@
       "categoria": "Comunicación",
       "ingles": "Ask",
       "aliases": [],
-      "definicionIngles": "It's asking someone for information about something you don't know.\n\nExample: I asked the teacher about the homework."
+      "definicionIngles": "It's asking someone else for information about something you don't know.\n\nExample: I asked the teacher about the homework."
     },
     {
       "fuente": "diccionario",
@@ -7288,7 +7288,7 @@
       "categoria": "Ciudad",
       "ingles": "Municipal retreat",
       "aliases": [],
-      "definicionIngles": "Required distance between a building and certain boundaries of the land or public road."
+      "definicionIngles": "Required distance between a building and certain limits of the land or public road."
     },
     {
       "fuente": "diccionario",
@@ -7904,7 +7904,7 @@
       "categoria": "Psicología",
       "ingles": "Therapist",
       "aliases": [],
-      "definicionIngles": "Professional who accompanies a person in a process of treatment or therapeutic support."
+      "definicionIngles": "Professional who accompanies a person in a treatment or therapeutic support process."
     },
     {
       "fuente": "diccionario",
@@ -8064,7 +8064,7 @@
       "categoria": "Sociedad",
       "ingles": "Social worker",
       "aliases": [],
-      "definicionIngles": "Professional who assesses social situations, guides and connects individuals or families with support and services."
+      "definicionIngles": "Professional who assesses social situations, guides and connects people or families with support and services."
     },
     {
       "fuente": "diccionario",
@@ -8120,7 +8120,7 @@
       "categoria": "Comunicación",
       "ingles": "Live broadcast",
       "aliases": [],
-      "definicionIngles": "Broadcasting video or audio over the internet while the event is happening."
+      "definicionIngles": "Streaming video or audio over the internet while the event is happening."
     },
     {
       "fuente": "diccionario",
@@ -8256,7 +8256,7 @@
       "categoria": "Familia",
       "ingles": "Aunt",
       "aliases": [],
-      "definicionIngles": "She's your dad's or mom's sister.\n\nExample: My aunt gave me a book for my birthday."
+      "definicionIngles": "She's your dad's or your mom's sister.\n\nExample: My aunt gave me a book for my birthday."
     },
     {
       "fuente": "diccionario",
@@ -8424,7 +8424,7 @@
       "categoria": "Ciudad",
       "ingles": "Natural ventilation",
       "aliases": [],
-      "definicionIngles": "Air movement that enters and exits a space without the use of mechanical equipment."
+      "definicionIngles": "Air movement that enters and exits a space without using mechanical equipment."
     },
     {
       "fuente": "diccionario",
@@ -8608,7 +8608,7 @@
       "categoria": "Deportes",
       "ingles": "Referee",
       "aliases": [],
-      "definicionIngles": "This is the person who officiates a match and decides whether something is allowed or not.\n\nExample: The referee called a foul in the match."
+      "definicionIngles": "It's the person who officiates a match and decides whether something is allowed or not.\n\nExample: The referee called a foul in the match."
     },
     {
       "fuente": "diccionario",
