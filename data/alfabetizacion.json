@@ -1521,6 +1521,13 @@
       "imagen": "img/alfabetizacion/ejemplos/balde.webp",
       "orden": 22,
       "nivel": "Fácil"
+    },
+    {
+      "caracter": "B",
+      "palabra": "Bañera",
+      "imagen": "img/alfabetizacion/ejemplos/banera.webp",
+      "orden": 23,
+      "nivel": "Fácil"
     }
   ]
 }
