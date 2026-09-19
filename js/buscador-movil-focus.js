@@ -331,6 +331,38 @@
         cerrarOverlay(desenfocarAlCerrar);
     }
 
+    /* El botón inferior "Diccionario" representa navegación, no una orden de
+       búsqueda. script.js lo enlaza con #btnInicio, cuyo comportamiento antiguo
+       enfoca el input y por tanto abre esta capa. En móvil interceptamos ese clic
+       antes del listener general y volvemos al Diccionario SIN enfocar el campo.
+       Tocar directamente el input sigue abriendo la búsqueda normalmente. */
+    function prepararEntradaDiccionarioSinBusquedaAutomatica(){
+        const boton = document.getElementById('btnInicio');
+        if(!boton || boton.dataset.lspDiccionarioSinAutoFocus === '1') return;
+        boton.dataset.lspDiccionarioSinAutoFocus = '1';
+
+        boton.addEventListener('click', function(e){
+            if(!media.matches) return;
+
+            e.preventDefault();
+            e.stopPropagation();
+            if(typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
+
+            if(estado){
+                solicitarRegreso(false, function(){
+                    if(typeof window.irAlBuscador === 'function'){
+                        window.irAlBuscador({ sinEnfoque:true, irArriba:true });
+                    }
+                });
+                return;
+            }
+
+            if(typeof window.irAlBuscador === 'function'){
+                window.irAlBuscador({ sinEnfoque:true, irArriba:true });
+            }
+        }, true);
+    }
+
     function preparar(config){
         const input = document.getElementById(config.inputId);
         const panel = document.getElementById(config.panelId);
@@ -387,6 +419,7 @@
 
     function iniciar(){
         limpiarMarcaHuerfana();
+        prepararEntradaDiccionarioSinBusquedaAutomatica();
         configuraciones.forEach(preparar);
 
         /* capture=true hace que la capa se restaure antes del listener general
