@@ -14,8 +14,8 @@
     'personas y sociedad':'Personas',
     'salud y bienestar':'Salud',
     'aprendizaje y conocimiento':'Aprender',
-    'trabajo y ciudadanía':'Trabajo',
-    'tecnología':'Tecnología',
+    'trabajo y ciudadania':'Trabajo',
+    'tecnologia':'Tecnología',
     'naturaleza y mundo':'Naturaleza',
     'ocio y deporte':'Juegos',
     'otros':'Otros'
@@ -25,8 +25,8 @@
     'personas y sociedad',
     'salud y bienestar',
     'aprendizaje y conocimiento',
-    'trabajo y ciudadanía',
-    'tecnología',
+    'trabajo y ciudadania',
+    'tecnologia',
     'naturaleza y mundo',
     'ocio y deporte',
     'otros'
