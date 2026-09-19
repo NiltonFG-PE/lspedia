@@ -27,8 +27,8 @@
 <main>
   <nav class="admin-nav" aria-label="Secciones del panel Admin">
     <a class="active" href="./">🏠 Inicio</a>
-    <a href="busquedas.html#busquedas">🔎 Búsquedas</a>
-    <a href="busquedas.html#estadisticas">📊 Estadísticas</a>
+    <a href="#busquedas">🔎 Búsquedas</a>
+    <a href="#estadisticas">📊 Estadísticas</a>
     <a href="estado.html">🩺 Estado</a>
   </nav>
 
@@ -73,7 +73,7 @@
     </section>
 
     <section class="section-block" id="tendencias">
-      <div class="section-head"><div><span class="section-kicker">DEMANDA</span><h2>📈 Búsquedas en tendencia</h2><p>Ritmo de los últimos 7 días frente al promedio de los 23 días anteriores.</p></div><a class="text-link" href="busquedas.html#busquedas">Ver todas →</a></div>
+      <div class="section-head"><div><span class="section-kicker">DEMANDA</span><h2>📈 Búsquedas en tendencia</h2><p>Ritmo de los últimos 7 días frente al promedio de los 23 días anteriores.</p></div><a class="text-link" href="#busquedas">Ver todas →</a></div>
       <div id="trendGrid" class="trend-grid"><div class="skeleton h130"></div><div class="skeleton h130"></div><div class="skeleton h130"></div></div>
     </section>
 
@@ -119,8 +119,8 @@
 
 <nav class="mobile-nav" aria-label="Navegación móvil">
   <a class="active" href="./"><span>🏠</span>Inicio</a>
-  <a href="busquedas.html#busquedas"><span>🔎</span>Búsquedas</a>
-  <a href="busquedas.html#estadisticas"><span>📊</span>Estadísticas</a>
+  <a href="#busquedas"><span>🔎</span>Búsquedas</a>
+  <a href="#estadisticas"><span>📊</span>Estadísticas</a>
   <a href="estado.html"><span>🩺</span>Estado</a>
 </nav>
 
@@ -134,10 +134,10 @@
 </div>
 
 <div id="lockScreen" class="lock-screen d-none" role="dialog" aria-modal="true" aria-labelledby="lockTitle">
-  <div class="lock-card"><div class="lock-icon">🔒</div><h2 id="lockTitle">LSPedia Admin bloqueado</h2><p>Se bloqueó por seguridad. Vuelve a escribir tu clave para continuar.</p><input id="unlockKey" type="password" autocomplete="current-password" placeholder="Clave privada"><button id="btnUnlock" class="btn btn-primary" type="button">Desbloquear</button><a href="busquedas.html#busquedas">Ir a Búsquedas</a></div>
+  <div class="lock-card"><div class="lock-icon">🔒</div><h2 id="lockTitle">LSPedia Admin bloqueado</h2><p>Se bloqueó por seguridad. Vuelve a escribir tu clave para continuar.</p><input id="unlockKey" type="password" autocomplete="current-password" placeholder="Clave privada"><button id="btnUnlock" class="btn btn-primary" type="button">Desbloquear</button><a href="#busquedas">Ir a Búsquedas</a></div>
 </div>
 
 <script src="admin-dashboard.js?v=20260919-1"></script>
-<script src="admin-estadisticas-instantaneas.js?v=20260919-1"></script>
+<script src="admin-estadisticas-instantaneas.js?v=20260919-2"></script>
 </body>
 </html>
