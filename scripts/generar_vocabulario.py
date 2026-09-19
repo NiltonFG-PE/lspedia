@@ -7,18 +7,13 @@ Regla pública vigente de LSPedia:
 - QuizV2 lee el mismo JSON, pero filtra internamente solo las filas con video
   porque algunas actividades del Quiz sí lo necesitan.
 
-Esto separa deliberadamente dos conceptos que antes estaban mezclados:
-publicación pública de Vocabulario y disponibilidad para Quiz.
+La taxonomía no reemplaza las categorías existentes: añade un ``grupo`` más
+amplio y ``etiquetas`` de apoyo para navegación/búsqueda. Para categorías
+canónicas se usa data/taxonomia.json; las columnas del Sheet permiten añadir
+etiquetas editoriales y dar un grupo a categorías nuevas todavía no mapeadas.
 
-Las columnas de definición, video, nivel, idQuiz y traducción acompañan la ficha
-cuando existen, pero no cambian la regla pública por imagen. ``idQuiz`` es un
-identificador opaco y estable para el Quiz; no depende de la fila ni revela la
-palabra o la categoría.
-
-La sincronización conserva explícitamente ``definicion`` y
-``fechaPublicacion``. Los errores de fórmula de Google Sheets (por ejemplo
-``#N/A``) nunca se publican como si fueran una fecha real: se convierten a
-cadena vacía hasta que exista una fecha válida en la hoja.
+``idQuiz`` es un identificador opaco y estable para el Quiz; no depende de la
+fila ni revela la palabra o la categoría.
 """
 from __future__ import annotations
 
@@ -35,6 +30,7 @@ from normalizar_categorias import normalizar_categoria_vocabulario
 
 ROOT = Path(__file__).resolve().parent.parent
 DESTINO = ROOT / "data" / "vocabulario.json"
+TAXONOMIA = ROOT / "data" / "taxonomia.json"
 SPREADSHEET_ID = "1fqC1aUpwdz6l0xRyYYfki7vJtjIql6sOEzpfWElknT0"
 HOJA = "Vocabulario"
 CAMPOS = (
@@ -42,6 +38,8 @@ CAMPOS = (
     "variantes",
     "video",
     "categoria",
+    "grupo",
+    "etiquetas",
     "nivel",
     "idQuiz",
     "imagen",
@@ -103,13 +101,72 @@ def clave(valor: object) -> str:
     return texto(valor).casefold().replace(" ", "").replace("_", "")
 
 
+def cargar_taxonomia() -> dict:
+    try:
+        datos = json.loads(TAXONOMIA.read_text(encoding="utf-8"))
+        return datos if isinstance(datos, dict) else {}
+    except Exception as exc:
+        print(f"AVISO: no se pudo leer taxonomia.json: {exc}", file=sys.stderr)
+        return {}
+
+
+def normalizar_etiquetas(valor: object) -> list[str]:
+    if isinstance(valor, list):
+        partes = valor
+    else:
+        partes = re.split(r"[,;|]", texto(valor))
+    salida: list[str] = []
+    vistos: set[str] = set()
+    for parte in partes:
+        etiqueta = texto(parte)
+        if not etiqueta:
+            continue
+        k = etiqueta.casefold()
+        if k in vistos:
+            continue
+        vistos.add(k)
+        salida.append(etiqueta)
+    return salida[:12]
+
+
+def resolver_taxonomia(categoria: str, grupo_manual: object, etiquetas_manual: object, taxonomia: dict) -> tuple[str, list[str]]:
+    categorias = taxonomia.get("categorias") if isinstance(taxonomia, dict) else {}
+    if not isinstance(categorias, dict):
+        categorias = {}
+
+    config = None
+    categoria_cf = texto(categoria).casefold()
+    for nombre, valor in categorias.items():
+        if texto(nombre).casefold() == categoria_cf and isinstance(valor, dict):
+            config = valor
+            break
+
+    if config:
+        grupo = texto(config.get("grupo")) or texto(grupo_manual) or "Otros"
+        automaticas = normalizar_etiquetas(config.get("etiquetas"))
+    else:
+        grupo = texto(grupo_manual) or "Otros"
+        automaticas = []
+
+    manuales = normalizar_etiquetas(etiquetas_manual)
+    etiquetas: list[str] = []
+    vistos: set[str] = set()
+    for etiqueta in automaticas + manuales:
+        k = etiqueta.casefold()
+        if k in vistos:
+            continue
+        vistos.add(k)
+        etiquetas.append(etiqueta)
+    return grupo, etiquetas[:12]
+
+
 def descargar_csv() -> list[dict[str, str]]:
     base = f"https://docs.google.com/spreadsheets/d/{SPREADSHEET_ID}/gviz/tq"
     parametros = urllib.parse.urlencode({"tqx": "out:csv", "sheet": HOJA, "headers": "1"})
     solicitud = urllib.request.Request(
         base + "?" + parametros,
         headers={
-            "User-Agent": "LSPedia-vocabulario-sync/3.1",
+            "User-Agent": "LSPedia-vocabulario-sync/4.0",
             "Accept": "text/csv,text/plain,*/*",
         },
     )
@@ -145,23 +202,22 @@ def limpiar(filas: list[dict[str, str]]) -> list[dict]:
     con_definicion = 0
     con_fecha_publicacion = 0
     con_id_quiz = 0
+    taxonomia = cargar_taxonomia()
 
     for fila in filas:
         mapa = {clave(k): v for k, v in fila.items()}
         palabra = texto(mapa.get("palabra"))
-        categoria = texto(mapa.get("categoria"))
+        categoria = normalizar_categoria_vocabulario(texto(mapa.get("categoria")))
         imagen = texto(mapa.get("imagen"))
 
         if not palabra or not categoria:
             omitidos_campos_base += 1
             continue
 
-        # Regla pública de Vocabulario: la imagen real es obligatoria.
         if not imagen_real(imagen):
             omitidos_sin_imagen += 1
             continue
 
-        # En Vocabulario una misma palabra/categoría no debe duplicarse.
         identidad = (palabra.casefold(), categoria.casefold())
         if identidad in vistos:
             duplicados_omitidos += 1
@@ -172,12 +228,15 @@ def limpiar(filas: list[dict[str, str]]) -> list[dict]:
         definicion = texto(mapa.get("definicion"))
         fecha_publicacion = normalizar_fecha_publicacion(mapa.get("fechapublicacion"))
         id_quiz = normalizar_id_quiz(mapa.get("idquiz"))
-
-        # Compatibilidad temporal durante la migración del encabezado de la hoja:
-        # si todavía se llama "orden", solo se acepta un valor que ya tenga el
-        # nuevo formato opaco. Los códigos antiguos nunca se publican como idQuiz.
         if not id_quiz:
             id_quiz = normalizar_id_quiz(mapa.get("orden"))
+
+        grupo, etiquetas = resolver_taxonomia(
+            categoria,
+            mapa.get("grupo"),
+            mapa.get("etiquetas"),
+            taxonomia,
+        )
 
         if video:
             con_video += 1
@@ -194,7 +253,9 @@ def limpiar(filas: list[dict[str, str]]) -> list[dict]:
             "palabra": palabra,
             "variantes": texto(mapa.get("variantes")),
             "video": video,
-            "categoria": normalizar_categoria_vocabulario(categoria),
+            "categoria": categoria,
+            "grupo": grupo,
+            "etiquetas": etiquetas,
             "nivel": normalizar_nivel(mapa.get("nivel")),
             "idQuiz": id_quiz,
             "imagen": imagen,
@@ -240,7 +301,7 @@ def main() -> int:
             raise RuntimeError("El JSON temporal no pasó la validación.")
         temporal.replace(DESTINO)
         print(
-            f"Vocabulario actualizado: {len(datos)} fichas públicas por imagen. "
+            f"Vocabulario actualizado: {len(datos)} fichas públicas por imagen, con taxonomía. "
             "Quiz filtrará internamente las que tengan video."
         )
         return 0
