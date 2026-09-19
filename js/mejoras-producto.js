@@ -210,7 +210,8 @@
     cargarCss('css/vocabulario-layout.css?v=20260915-2');
     cargarCss('css/fab-dock-delgado.css?v=20260916-1');
     cargarCss('css/modo-oscuro.css?v=20260916-2');
-    cargarCss('css/buscador-dropdown-premium.css?v=20260919-1');
+    cargarCss('css/buscador-dropdown-premium.css?v=20260919-3');
+    cargar('js/buscador-movil-focus.js?v=20260919-2');
     cargarCss('css/lo-nuevo-premium.css?v=20260919-1');
     cargar('js/modo-oscuro.js?v=20260916-2');
 
