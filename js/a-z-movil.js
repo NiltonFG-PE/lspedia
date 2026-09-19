@@ -75,7 +75,7 @@
   }
   if(!document.querySelector('script[data-lsp-taxonomia]')){
     const js=document.createElement('script');
-    js.src='js/taxonomia-inteligente.js?v=20260919-2';
+    js.src='js/taxonomia-inteligente.js?v=20260919-3';
     js.async=false;
     js.dataset.lspTaxonomia='1';
     document.head.appendChild(js);
