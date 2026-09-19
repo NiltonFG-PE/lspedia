@@ -1,20 +1,18 @@
-/* LSPedia — navegación por grupos temáticos.
-   Complementa las categorías existentes; no las reemplaza. */
+/* LSPedia — navegación visual por grupos temáticos.
+   Pensada para reconocer por iconos y palabras cortas, no para leer frases. */
 .lsp-taxonomia-wrap{
   position:relative;
   isolation:isolate;
   overflow:hidden;
   margin:2px 0 18px;
-  padding:12px 12px 13px;
-  border:1px solid rgba(148,163,184,.28);
+  padding:12px;
+  border:1px solid rgba(148,163,184,.26);
   border-radius:22px;
   background:
-    radial-gradient(circle at 8% -18%,rgba(96,165,250,.18),transparent 34%),
-    radial-gradient(circle at 94% 120%,rgba(250,204,21,.10),transparent 34%),
-    linear-gradient(145deg,rgba(248,251,255,.98) 0%,#ffffff 58%,#f8fbff 100%);
-  box-shadow:
-    0 15px 34px rgba(15,23,42,.08),
-    inset 0 1px 0 rgba(255,255,255,.92);
+    radial-gradient(circle at 8% -20%,rgba(96,165,250,.16),transparent 34%),
+    radial-gradient(circle at 96% 118%,rgba(250,204,21,.08),transparent 34%),
+    linear-gradient(145deg,rgba(248,251,255,.98) 0%,#fff 62%,#f8fbff 100%);
+  box-shadow:0 14px 32px rgba(15,23,42,.075),inset 0 1px 0 rgba(255,255,255,.92);
 }
 .lsp-taxonomia-wrap::before{
   content:"";
@@ -24,28 +22,14 @@
   left:22px;
   right:22px;
   height:1px;
-  background:linear-gradient(90deg,transparent,rgba(37,99,235,.34),rgba(250,204,21,.36),transparent);
-}
-.lsp-taxonomia-wrap::after{
-  content:"";
-  position:absolute;
-  z-index:-1;
-  width:150px;
-  height:150px;
-  right:-92px;
-  top:-94px;
-  border-radius:50%;
-  border:22px solid rgba(59,130,246,.045);
-  pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(37,99,235,.30),rgba(250,204,21,.30),transparent);
 }
 .lsp-taxonomia-cabecera{
   position:relative;
   z-index:1;
   display:flex;
   align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  margin-bottom:9px;
+  margin-bottom:10px;
 }
 .lsp-taxonomia-titulo{
   display:flex;
@@ -53,7 +37,7 @@
   gap:8px;
   margin:0;
   color:#102f55;
-  font:800 .91rem/1.2 'Poppins',sans-serif;
+  font:800 .92rem/1.2 'Poppins',sans-serif;
   letter-spacing:-.015em;
 }
 .lsp-taxonomia-titulo::before{
@@ -67,88 +51,105 @@
   color:#0f5fb8;
   background:linear-gradient(145deg,#e7f2ff,#f7fbff);
   border:1px solid #d4e7fb;
-  box-shadow:0 4px 10px rgba(37,99,235,.10);
+  box-shadow:0 4px 10px rgba(37,99,235,.09);
   font-size:.86rem;
 }
-/* Menos texto visible: el título y los grupos son suficientes. */
 .lsp-taxonomia-ayuda,
-.lsp-taxonomia-resumen{
-  display:none!important;
-}
+.lsp-taxonomia-resumen{display:none!important}
+
+/* En vez de una fila horizontal que obliga a descubrir opciones deslizando,
+   mostramos todos los grupos como un tablero visual estable. */
 .lsp-taxonomia-chips{
   position:relative;
   z-index:1;
-  display:flex;
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
   gap:9px;
-  overflow-x:auto;
-  overscroll-behavior-x:contain;
-  padding:2px 1px 4px;
-  scroll-snap-type:x proximity;
-  scrollbar-width:none;
+  width:100%;
 }
-.lsp-taxonomia-chips::-webkit-scrollbar{display:none}
 .lsp-taxonomia-chip{
   position:relative;
-  flex:0 0 auto;
-  scroll-snap-align:start;
-  min-height:46px;
-  display:inline-flex;
+  min-width:0;
+  min-height:82px;
+  display:flex;
+  flex-direction:column;
   align-items:center;
-  gap:8px;
-  padding:6px 14px 6px 7px;
-  border:1px solid rgba(148,163,184,.32);
-  border-radius:16px;
-  background:rgba(255,255,255,.84);
+  justify-content:center;
+  gap:7px;
+  padding:9px 7px 8px;
+  border:1px solid rgba(148,163,184,.30);
+  border-radius:17px;
+  background:rgba(255,255,255,.88);
   -webkit-backdrop-filter:blur(10px);
   backdrop-filter:blur(10px);
-  color:#31465e;
-  font:700 .82rem/1.1 'Poppins',sans-serif;
-  box-shadow:
-    0 5px 13px rgba(15,23,42,.055),
-    inset 0 1px 0 rgba(255,255,255,.88);
+  color:#263e59;
+  font:700 .76rem/1.16 'Poppins',sans-serif;
+  text-align:center;
+  box-shadow:0 5px 13px rgba(15,23,42,.05),inset 0 1px 0 rgba(255,255,255,.92);
   transition:transform .18s ease,border-color .18s ease,background-color .18s ease,box-shadow .18s ease,color .18s ease;
+  cursor:pointer;
   -webkit-tap-highlight-color:transparent;
 }
 .lsp-taxonomia-chip .lsp-taxonomia-icono{
-  width:32px;
-  height:32px;
+  width:46px;
+  height:46px;
   display:grid;
   place-items:center;
-  flex:0 0 32px;
-  border-radius:11px;
-  background:linear-gradient(145deg,#edf6ff,#f8fbff);
+  flex:0 0 46px;
+  border-radius:15px;
+  background:linear-gradient(145deg,#edf6ff,#fbfdff);
   border:1px solid #dcebf9;
-  font-size:1rem;
+  font-size:1.5rem;
   line-height:1;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.95);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.96),0 3px 8px rgba(37,99,235,.055);
   transition:transform .18s ease,background-color .18s ease,border-color .18s ease;
+}
+.lsp-taxonomia-chip:first-child .lsp-taxonomia-icono{
+  color:#145ca8;
+  font-size:1.35rem;
+  font-weight:900;
+}
+.lsp-taxonomia-label{
+  display:block;
+  width:100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
 }
 .lsp-taxonomia-chip:hover,
 .lsp-taxonomia-chip:focus-visible{
   transform:translateY(-2px);
   border-color:#9dc2ed;
   outline:none;
-  box-shadow:0 10px 20px rgba(37,99,235,.12),inset 0 1px 0 rgba(255,255,255,.9);
+  box-shadow:0 10px 20px rgba(37,99,235,.11),inset 0 1px 0 rgba(255,255,255,.92);
 }
 .lsp-taxonomia-chip:hover .lsp-taxonomia-icono,
-.lsp-taxonomia-chip:focus-visible .lsp-taxonomia-icono{
-  transform:scale(1.06);
-}
-.lsp-taxonomia-chip:active{
-  transform:translateY(0) scale(.97);
-}
+.lsp-taxonomia-chip:focus-visible .lsp-taxonomia-icono{transform:scale(1.05)}
+.lsp-taxonomia-chip:active{transform:scale(.97)}
 .lsp-taxonomia-chip.active{
   border-color:transparent;
-  background:linear-gradient(135deg,#0f3a70 0%,#125ca8 100%);
+  background:linear-gradient(145deg,#0f3a70 0%,#125ca8 100%);
   color:#fff;
-  box-shadow:
-    0 10px 22px rgba(15,58,112,.24),
-    inset 0 1px 0 rgba(255,255,255,.18);
+  box-shadow:0 10px 22px rgba(15,58,112,.23),inset 0 1px 0 rgba(255,255,255,.17);
+}
+.lsp-taxonomia-chip.active::after{
+  content:"✓";
+  position:absolute;
+  top:6px;
+  right:7px;
+  width:20px;
+  height:20px;
+  display:grid;
+  place-items:center;
+  border-radius:999px;
+  background:rgba(255,255,255,.17);
+  color:#fff;
+  font:800 .67rem/1 'Poppins',sans-serif;
 }
 .lsp-taxonomia-chip.active .lsp-taxonomia-icono{
-  color:#fff;
   background:rgba(255,255,255,.14);
-  border-color:rgba(255,255,255,.16);
+  border-color:rgba(255,255,255,.17);
+  color:#fff;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.12);
 }
 .lsp-taxonomia-vacio{
@@ -167,7 +168,7 @@ html[data-lsp-tema="dark"] .lsp-taxonomia-wrap{
   border-color:rgba(75,100,133,.52);
   background:
     radial-gradient(circle at 8% -18%,rgba(59,130,246,.18),transparent 34%),
-    radial-gradient(circle at 94% 120%,rgba(250,204,21,.07),transparent 34%),
+    radial-gradient(circle at 94% 120%,rgba(250,204,21,.06),transparent 34%),
     linear-gradient(145deg,#101c2f 0%,#111c2f 58%,#0d1828 100%);
   box-shadow:0 15px 34px rgba(0,0,0,.23),inset 0 1px 0 rgba(255,255,255,.035);
 }
@@ -189,30 +190,36 @@ html[data-lsp-tema="dark"] .lsp-taxonomia-chip .lsp-taxonomia-icono{
   border-color:#334c6b;
   box-shadow:none;
 }
+html[data-lsp-tema="dark"] .lsp-taxonomia-chip:first-child .lsp-taxonomia-icono{color:#79bbff}
 html[data-lsp-tema="dark"] .lsp-taxonomia-chip.active{
   border-color:transparent;
-  background:linear-gradient(135deg,#15579c,#1974c7);
+  background:linear-gradient(145deg,#15579c,#1974c7);
   color:#fff;
 }
+html[data-lsp-tema="dark"] .lsp-taxonomia-chip.active .lsp-taxonomia-icono{color:#fff;background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.16)}
 html[data-lsp-tema="dark"] .lsp-taxonomia-vacio{
   border-color:#3a4b63;
   background:#142238;
   color:#aab9ca;
 }
 
+@media(max-width:900px){
+  .lsp-taxonomia-chips{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
 @media(max-width:576px){
   .lsp-taxonomia-wrap{
     margin:0 0 13px;
-    padding:10px 10px 11px;
+    padding:10px;
     border-radius:20px;
     box-shadow:0 11px 26px rgba(15,23,42,.075),inset 0 1px 0 rgba(255,255,255,.9);
   }
   .lsp-taxonomia-cabecera{margin-bottom:8px}
   .lsp-taxonomia-titulo{font-size:.86rem}
   .lsp-taxonomia-titulo::before{width:26px;height:26px;flex-basis:26px;border-radius:9px;font-size:.8rem}
-  .lsp-taxonomia-chips{gap:8px;padding-bottom:3px}
-  .lsp-taxonomia-chip{min-height:43px;padding:5px 12px 5px 6px;border-radius:15px;font-size:.78rem}
-  .lsp-taxonomia-chip .lsp-taxonomia-icono{width:31px;height:31px;flex-basis:31px;border-radius:10px;font-size:.96rem}
+  .lsp-taxonomia-chips{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .lsp-taxonomia-chip{min-height:78px;border-radius:16px;padding:8px 6px 7px;font-size:.76rem}
+  .lsp-taxonomia-chip .lsp-taxonomia-icono{width:43px;height:43px;flex-basis:43px;border-radius:14px;font-size:1.4rem}
+  .lsp-taxonomia-chip:first-child .lsp-taxonomia-icono{font-size:1.25rem}
 }
 @media(prefers-reduced-motion:reduce){
   .lsp-taxonomia-chip,
