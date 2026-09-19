@@ -2,10 +2,10 @@
    LSPedia — buscador desplegable premium
    2026-09-19
    ------------------------------------------------------------
-   - Las sugerencias siempre quedan sobre el resto del contenido.
-   - En móvil, JS añade body.lsp-search-focus mientras se escribe.
-   - Durante la búsqueda se ocultan temporalmente la barra inferior,
-     el aviso de instalación y los FAB para liberar espacio real.
+   Escritorio: panel flotante por encima del contenido.
+   Móvil: js/buscador-movil-focus.js mueve temporalmente el MISMO buscador
+   y el MISMO panel de resultados a una capa que ocupa el visualViewport.
+   Así el teclado de Android nunca deja la búsqueda perdida a media página.
    ============================================================ */
 
 #bloqueBuscador > .col-lg-8.position-relative,
@@ -125,57 +125,130 @@ html[data-lsp-tema="dark"] #sugerenciasCategorias .list-group-item {
 }
 
 /* ============================================================
-   MÓVIL — búsqueda enfocada
-   No usamos position:fixed para el campo: con el teclado de Android el
-   visualViewport puede desplazarse y dejar elementos fixed fuera de la zona
-   visible. El módulo buscador-movil-focus.js alinea por scroll el buscador
-   con la parte superior REAL del viewport y calcula el alto disponible.
+   MÓVIL — capa de búsqueda propia
+   Las variables --lsp-vv-* se actualizan desde visualViewport para que la
+   capa coincida con la parte REAL visible de Chrome cuando abre el teclado.
    ============================================================ */
 @media (max-width: 767.98px) {
-    body.lsp-search-focus #bloqueBuscador > .col-lg-8.position-relative,
-    body.lsp-search-focus #bloqueBuscadorCategorias > .col-lg-8.position-relative {
-        position: relative !important;
-        z-index: 6000 !important;
+    html.lsp-search-overlay-active,
+    body.lsp-search-overlay-active {
+        overscroll-behavior: none !important;
     }
 
-    /* Neutraliza la versión anterior basada en :has() si todavía coexistiera
-       un instante durante una actualización de caché. */
-    body.lsp-search-focus:has(#buscar:focus) #bloqueBuscador > .col-lg-8.position-relative,
-    body.lsp-search-focus:has(#buscarCategorias:focus) #bloqueBuscadorCategorias > .col-lg-8.position-relative {
-        position: relative !important;
-        top: auto !important;
-        left: auto !important;
-        right: auto !important;
-        width: auto !important;
-        max-width: 100% !important;
-        animation: none !important;
+    .lsp-mobile-search-overlay {
+        position: fixed !important;
+        top: var(--lsp-vv-top, 0px) !important;
+        left: var(--lsp-vv-left, 0px) !important;
+        width: var(--lsp-vv-width, 100vw) !important;
+        height: var(--lsp-vv-height, 100dvh) !important;
+        z-index: 2147483000 !important;
+        padding: 8px 10px 7px;
+        box-sizing: border-box;
+        overflow: hidden;
+        background:
+            radial-gradient(circle at 8% 0%, rgba(255,193,7,.10), transparent 28%),
+            linear-gradient(180deg, rgba(248,250,252,.995) 0%, rgba(241,245,249,.995) 100%);
+        backdrop-filter: blur(18px) saturate(1.06);
+        -webkit-backdrop-filter: blur(18px) saturate(1.06);
+        animation: lspMobileSearchIn .16s cubic-bezier(.2,.8,.2,1) both;
     }
 
-    body.lsp-search-focus .mobile-bottom-nav,
-    body.lsp-search-focus #lspPwaInstalar,
-    body.lsp-search-focus .fab-menu {
-        opacity: 0 !important;
-        visibility: hidden !important;
-        pointer-events: none !important;
+    .lsp-mobile-search-shell {
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
     }
 
-    body.lsp-search-focus .mobile-bottom-nav {
-        transform: translateY(calc(100% + env(safe-area-inset-bottom,0px))) !important;
+    .lsp-mobile-search-head {
+        flex: 0 0 auto;
+        min-height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 0 3px 1px 5px;
     }
 
-    body.lsp-search-focus #sugerencias,
-    body.lsp-search-focus #sugerenciasCategorias {
-        position: absolute !important;
-        top: 100% !important;
-        left: 0 !important;
-        right: 0 !important;
+    .lsp-mobile-search-title {
+        min-width: 0;
+        color: #172554;
+        font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        font-size: .92rem;
+        font-weight: 800;
+        letter-spacing: -.015em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .lsp-mobile-search-close {
+        width: 38px;
+        height: 38px;
+        flex: 0 0 38px;
+        display: grid;
+        place-items: center;
+        padding: 0;
+        border: 1px solid rgba(30,64,175,.10);
+        border-radius: 50%;
+        background: rgba(255,255,255,.82);
+        color: #334155;
+        box-shadow: 0 4px 12px rgba(15,23,42,.08);
+        font: 700 1.45rem/1 system-ui, sans-serif;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .lsp-mobile-search-close:active { transform: scale(.94); }
+
+    .lsp-mobile-search-controls {
+        flex: 0 0 auto;
+        width: 100%;
+        min-width: 0;
+        position: relative;
+        z-index: 2;
+    }
+
+    .lsp-mobile-search-controls .buscador-indice-linea {
         width: 100% !important;
-        margin-top: 7px !important;
+        margin: 0 !important;
+    }
+
+    .lsp-mobile-search-controls .input-group {
+        box-shadow: 0 9px 24px rgba(15,23,42,.13) !important;
+    }
+
+    .lsp-mobile-search-results {
+        flex: 1 1 auto;
+        min-height: 0;
+        width: 100%;
+        overflow: hidden;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Bootstrap da .position-absolute y .z-3 con !important. En la capa móvil
+       la lista debe participar del flex normal para aprovechar todo el alto. */
+    .lsp-mobile-search-results #sugerencias,
+    .lsp-mobile-search-results #sugerenciasCategorias {
+        position: static !important;
+        inset: auto !important;
+        width: 100% !important;
+        height: auto !important;
+        max-height: 100% !important;
+        margin: 0 !important;
         padding: 4px;
         border-radius: 18px !important;
+        overflow-y: auto !important;
         box-shadow:
-            0 22px 48px rgba(15,23,42,.36),
-            0 7px 18px rgba(15,23,42,.20) !important;
+            0 18px 42px rgba(15,23,42,.26),
+            0 5px 14px rgba(15,23,42,.16) !important;
+    }
+
+    .lsp-mobile-search-results #sugerencias:not(:empty),
+    .lsp-mobile-search-results #sugerenciasCategorias:not(:empty) {
+        display: block !important;
     }
 
     #sugerencias .list-group-item,
@@ -184,11 +257,44 @@ html[data-lsp-tema="dark"] #sugerenciasCategorias .list-group-item {
         padding: 8px 9px !important;
         border-radius: 12px !important;
     }
+
+    /* Nada flotante de la página puede competir con la búsqueda. */
+    body.lsp-search-overlay-active .mobile-bottom-nav,
+    body.lsp-search-overlay-active #lspPwaInstalar,
+    body.lsp-search-overlay-active .fab-menu,
+    body.lsp-search-overlay-active .toast-compartir,
+    body.lsp-search-overlay-active .lsp-share-toast {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+
+    html[data-lsp-tema="dark"] .lsp-mobile-search-overlay {
+        background:
+            radial-gradient(circle at 8% 0%, rgba(255,193,7,.06), transparent 28%),
+            linear-gradient(180deg, rgba(9,17,31,.997) 0%, rgba(13,24,41,.997) 100%);
+    }
+
+    html[data-lsp-tema="dark"] .lsp-mobile-search-title { color: #edf4ff; }
+    html[data-lsp-tema="dark"] .lsp-mobile-search-close {
+        background: rgba(23,36,58,.94);
+        border-color: rgba(148,163,184,.18);
+        color: #dce8f7;
+        box-shadow: 0 5px 14px rgba(0,0,0,.24);
+    }
+
+    @keyframes lspMobileSearchIn {
+        from { opacity: .72; transform: translateY(6px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
 }
 
 @media (max-width: 380px) {
-    body.lsp-search-focus #sugerencias,
-    body.lsp-search-focus #sugerenciasCategorias {
+    .lsp-mobile-search-overlay { padding-left: 7px; padding-right: 7px; }
+    .lsp-mobile-search-title { font-size: .86rem; }
+    .lsp-mobile-search-results #sugerencias,
+    .lsp-mobile-search-results #sugerenciasCategorias {
         border-radius: 16px !important;
     }
 }
@@ -196,7 +302,9 @@ html[data-lsp-tema="dark"] #sugerenciasCategorias .list-group-item {
 @media (prefers-reduced-motion: reduce) {
     #sugerencias .list-group-item,
     #sugerenciasCategorias .list-group-item,
-    .mobile-bottom-nav {
+    .lsp-mobile-search-overlay,
+    .lsp-mobile-search-close {
         transition: none !important;
+        animation: none !important;
     }
 }
