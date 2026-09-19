@@ -1,18 +1,26 @@
 /* LSPedia Admin — historial persistente de búsquedas y ayuda para interpretar Analytics.
    Trabaja sobre el panel existente: la cola de pendientes consulta siempre
-   desde el inicio del registro, aunque Estadísticas use otro periodo. */
+   desde el inicio del registro, aunque Estadísticas use otro periodo.
+
+   Rendimiento:
+   - Nunca lanza la consulta histórica mientras la consulta principal de GA4
+     sigue activa.
+   - No carga el histórico si el usuario está en Estadísticas.
+   - Reutiliza el histórico durante 2 minutos para evitar consultas repetidas.
+*/
 (function(){
   'use strict';
   const INICIO='10 sep 2026';
   const STORE_URL='lspedia_admin_busquedas_api_v1';
   const SESSION_KEY='lspedia_admin_busquedas_key_v1';
   const STORE_ACCESS='lspedia_admin_access_v2';
-  let historial=[],filtro='pending',consulta='',indice=null,cargando=false;
+  const HISTORIAL_TTL=2*60*1000;
+  let historial=[],filtro='pending',consulta='',indice=null,cargando=false,ultimaCarga=0,temporizadorProgramado=null;
   const $=id=>document.getElementById(id);
   const texto=v=>String(v==null?'':v).trim();
   const norm=v=>texto(v).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').toLocaleLowerCase('es-PE').trim();
   const fmt=v=>new Intl.NumberFormat('es-PE').format(Number(v)||0);
-  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
   function fecha(v){const s=texto(v);if(!/^\d{8}$/.test(s))return'—';const d=new Date(+s.slice(0,4),+s.slice(4,6)-1,+s.slice(6,8));return new Intl.DateTimeFormat('es-PE',{day:'2-digit',month:'short',year:'numeric'}).format(d);}
 
   function credenciales(){
@@ -39,6 +47,31 @@
       const timer=setTimeout(()=>{if(fin)return;fin=true;limpiar();reject(new Error('Tiempo de espera agotado.'));},30000);
       document.head.appendChild(s);
     });
+  }
+
+  function panelPrincipalCargando(){
+    const loading=$('loading');
+    return !!(loading&&!loading.classList.contains('d-none'));
+  }
+
+  function enPestanaBusquedas(){
+    return (location.hash||'#busquedas')!=='#estadisticas';
+  }
+
+  function esperarPanelPrincipal(maxMs){
+    return new Promise(resolve=>{
+      const inicio=Date.now();
+      (function revisar(){
+        if(!panelPrincipalCargando()){resolve(true);return;}
+        if(Date.now()-inicio>=maxMs){resolve(false);return;}
+        setTimeout(revisar,450);
+      })();
+    });
+  }
+
+  function programarHistorial(delay,forzar){
+    clearTimeout(temporizadorProgramado);
+    temporizadorProgramado=setTimeout(()=>actualizarHistorial(!!forzar),Math.max(0,Number(delay)||0));
   }
 
   async function cargarIndice(){
@@ -123,7 +156,7 @@
       caja=document.createElement('div');caja.id='lspHistorialResumen';caja.className='lsp-historial-resumen card';bloque.insertAdjacentElement('afterend',caja);
     }
     const pendientes=historial.filter(x=>!x.resuelta),intentos=historial.reduce((s,x)=>s+(Number(x.busquedas)||0),0),pendientesIntentos=pendientes.reduce((s,x)=>s+(Number(x.busquedas)||0),0);
-    caja.innerHTML='<strong>Historial desde '+INICIO+'</strong><span><b>'+fmt(historial.length)+'</b> términos registrados · <b>'+fmt(intentos)+'</b> intentos acumulados · <b>'+fmt(pendientes.length)+'</b> pendientes ('+fmt(pendientesIntentos)+' intentos).</span><small>Una búsqueda permanece pendiente hasta que la palabra o su equivalente tenga video. Cambiar el periodo de Estadísticas no borra esta cola.</small>';
+    caja.innerHTML='<strong>Historial desde '+INICIO+'</strong><span><b>'+fmt(historial.length)+'</b> términos registrados · <b>'+fmt(intentos)+'</b> intentos acumulados · <b>'+fmt(pendientes.length)+'</b> pendientes ('+fmt(pendientesIntentos)+' intentos).</span><small>Una búsqueda permanece pendiente hasta que la palabra o su equivalente tenga una imagen real y sea pública. Cambiar el periodo de Estadísticas no borra esta cola.</small>';
   }
 
   function explicarEstadisticas(){
@@ -162,21 +195,34 @@
     document.querySelectorAll('.filter-btn').forEach(btn=>btn.addEventListener('click',ev=>{if(!historial.length)return;ev.preventDefault();ev.stopImmediatePropagation();document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');filtro=btn.dataset.filter||'all';render();},true));
     const busc=$('tableSearch');if(busc)busc.addEventListener('input',ev=>{if(!historial.length)return;ev.stopImmediatePropagation();consulta=busc.value;render();},true);
     const btnCsv=$('btnCsv');if(btnCsv)btnCsv.addEventListener('click',ev=>{if(!historial.length)return;ev.preventDefault();ev.stopImmediatePropagation();csv();},true);
-    const top=$('btnCopyTop');if(top)top.addEventListener('click',async ev=>{if(!historial.length)return;ev.preventDefault();ev.stopImmediatePropagation();const items=historial.filter(x=>!x.resuelta).slice(0,5),t=items.map((x,i)=>(i+1)+'. '+x.termino+' — '+x.busquedas+' búsqueda'+(x.busquedas===1?'':'s')).join('\n');if(!t)return;try{await navigator.clipboard.writeText(t);top.textContent='✓ Copiado';setTimeout(()=>top.textContent='Copiar top 5',1000);}catch(_e){}},true);
+    const top=$('btnCopyTop');if(top)top.addEventListener('click',async ev=>{if(!historial.length)return;ev.preventDefault();ev.stopImmediatePropagation();const items=historial.filter(x=>!x.resuelta).slice(0,5),t=items.map((x,i)=>(i+1)+'. '+x.termino+' — '+x.busquedas+' búsqueda'+(x.busquedas===1?'':'s')).join('\n');if(!t)return;try{await navigator.clipboard.writeText(t);top.textContent='✓ Copiado';setTimeout(()=>top.textContent='Copiar top 5',1000);}catch(_e){}},true));
   }
 
-  async function actualizarHistorial(){
-    if(cargando)return;cargando=true;
-    try{const c=credenciales();if(!c.api||!c.key)return;if(!indice)await cargarIndice();const data=await jsonp(c.api,c.key);if(!data||data.ok!==true)return;historial=combinar(data);render();}
+  async function actualizarHistorial(forzar){
+    if(cargando||!enPestanaBusquedas())return;
+    if(!forzar&&historial.length&&Date.now()-ultimaCarga<HISTORIAL_TTL){render();return;}
+
+    const listo=await esperarPanelPrincipal(55000);
+    if(!listo||panelPrincipalCargando()||!enPestanaBusquedas())return;
+
+    cargando=true;
+    try{
+      const c=credenciales();if(!c.api||!c.key)return;
+      if(!indice)await cargarIndice();
+      const data=await jsonp(c.api,c.key);
+      if(!data||data.ok!==true)return;
+      historial=combinar(data);ultimaCarga=Date.now();render();
+    }
     catch(e){console.warn('[LSPedia Admin] No se pudo actualizar historial persistente:',e&&e.message||e);}
     finally{cargando=false;}
   }
 
   function iniciar(){
-    instalarEstilos();explicarEstadisticas();instalarControles();setTimeout(actualizarHistorial,900);
-    const refrescar=$('btnRefresh');if(refrescar)refrescar.addEventListener('click',()=>setTimeout(actualizarHistorial,900));
-    const conectar=$('btnConnect');if(conectar)conectar.addEventListener('click',()=>setTimeout(actualizarHistorial,1200));
-    document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(actualizarHistorial,300);});
+    instalarEstilos();explicarEstadisticas();instalarControles();programarHistorial(700,false);
+    const refrescar=$('btnRefresh');if(refrescar)refrescar.addEventListener('click',()=>programarHistorial(700,true));
+    const conectar=$('btnConnect');if(conectar)conectar.addEventListener('click',()=>programarHistorial(900,true));
+    document.addEventListener('visibilitychange',()=>{if(!document.hidden)programarHistorial(400,false);});
+    window.addEventListener('hashchange',()=>{if(enPestanaBusquedas())programarHistorial(500,false);});
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',iniciar,{once:true});else iniciar();
 })();
