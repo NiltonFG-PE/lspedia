@@ -1,0 +1,117 @@
+{
+  "version": 1,
+  "actualizado": "2026-09-19",
+  "descripcion": "Taxonomía editorial de LSPedia. Agrupa categorías existentes sin reemplazarlas y añade palabras clave de navegación/búsqueda.",
+  "grupos": [
+    {
+      "id": "vida-diaria",
+      "nombre": "Vida diaria",
+      "icono": "🏠",
+      "descripcion": "Palabras de uso cotidiano, hogar, alimentos, ropa, tiempo, cantidades, colores y transporte.",
+      "alias": ["cotidiano", "vida cotidiana", "día a día"]
+    },
+    {
+      "id": "personas-sociedad",
+      "nombre": "Personas y sociedad",
+      "icono": "👥",
+      "descripcion": "Personas, familia, comunicación, emociones, convivencia, valores y vida en sociedad.",
+      "alias": ["personas", "relaciones", "comunidad", "convivencia"]
+    },
+    {
+      "id": "aprendizaje-conocimiento",
+      "nombre": "Aprendizaje y conocimiento",
+      "icono": "📚",
+      "descripcion": "Educación, lenguaje, gramática, ciencia, estudios y habilidades.",
+      "alias": ["aprender", "estudio", "educación", "conocimiento"]
+    },
+    {
+      "id": "salud-bienestar",
+      "nombre": "Salud y bienestar",
+      "icono": "❤️",
+      "descripcion": "Cuerpo, salud física, salud mental, psicología y bienestar.",
+      "alias": ["salud", "cuerpo", "bienestar", "mente"]
+    },
+    {
+      "id": "trabajo-ciudadania",
+      "nombre": "Trabajo y ciudadanía",
+      "icono": "💼",
+      "descripcion": "Trabajo, profesiones, economía, trámites, ciudad y ciudadanía.",
+      "alias": ["trabajo", "empleo", "trámites", "ciudadanía"]
+    },
+    {
+      "id": "naturaleza-mundo",
+      "nombre": "Naturaleza y mundo",
+      "icono": "🌎",
+      "descripcion": "Animales, naturaleza, geografía y entorno.",
+      "alias": ["naturaleza", "mundo", "ambiente", "geografía"]
+    },
+    {
+      "id": "ocio-deporte",
+      "nombre": "Ocio y deporte",
+      "icono": "⚽",
+      "descripcion": "Deportes, juego, entretenimiento y tiempo libre.",
+      "alias": ["ocio", "deporte", "juego", "entretenimiento"]
+    },
+    {
+      "id": "tecnologia",
+      "nombre": "Tecnología",
+      "icono": "💻",
+      "descripcion": "Tecnología, dispositivos, internet y mundo digital.",
+      "alias": ["tecnología", "digital", "internet", "dispositivos"]
+    },
+    {
+      "id": "otros",
+      "nombre": "Otros",
+      "icono": "🧩",
+      "descripcion": "Categorías nuevas que todavía no tienen un grupo editorial asignado.",
+      "alias": []
+    }
+  ],
+  "categorias": {
+    "Adjetivos": {"grupo": "Aprendizaje y conocimiento", "etiquetas": ["gramática", "cualidades"]},
+    "Adverbios": {"grupo": "Aprendizaje y conocimiento", "etiquetas": ["gramática", "circunstancias"]},
+    "Animales": {"grupo": "Naturaleza y mundo", "etiquetas": ["fauna", "seres vivos", "mascotas"]},
+    "Bienestar": {"grupo": "Salud y bienestar", "etiquetas": ["autocuidado", "calidad de vida"]},
+    "Cantidad": {"grupo": "Vida diaria", "etiquetas": ["cantidad", "medida"]},
+    "Casa": {"grupo": "Vida diaria", "etiquetas": ["hogar", "vivienda"]},
+    "Ciencia": {"grupo": "Aprendizaje y conocimiento", "etiquetas": ["investigación", "conocimiento"]},
+    "Ciudad": {"grupo": "Trabajo y ciudadanía", "etiquetas": ["urbano", "servicios", "comunidad"]},
+    "Colegio": {"grupo": "Aprendizaje y conocimiento", "etiquetas": ["escuela", "estudiantes"]},
+    "Colores": {"grupo": "Vida diaria", "etiquetas": ["color", "apariencia"]},
+    "Comida": {"grupo": "Vida diaria", "etiquetas": ["alimentos", "cocina"]},
+    "Comportamiento": {"grupo": "Personas y sociedad", "etiquetas": ["conducta", "hábitos"]},
+    "Comunicación": {"grupo": "Personas y sociedad", "etiquetas": ["conversación", "lenguaje"]},
+    "Cortesía": {"grupo": "Personas y sociedad", "etiquetas": ["modales", "respeto"]},
+    "Cuerpo": {"grupo": "Salud y bienestar", "etiquetas": ["anatomía", "partes del cuerpo"]},
+    "Deportes": {"grupo": "Ocio y deporte", "etiquetas": ["ejercicio", "competencia"]},
+    "Descripción": {"grupo": "Aprendizaje y conocimiento", "etiquetas": ["características", "cualidades"]},
+    "Economía": {"grupo": "Trabajo y ciudadanía", "etiquetas": ["dinero", "finanzas"]},
+    "Educación": {"grupo": "Aprendizaje y conocimiento", "etiquetas": ["aprendizaje", "enseñanza"]},
+    "Emociones": {"grupo": "Personas y sociedad", "etiquetas": ["sentimientos", "estado de ánimo"]},
+    "Familia": {"grupo": "Personas y sociedad", "etiquetas": ["parentesco", "relaciones"]},
+    "Filosofía": {"grupo": "Aprendizaje y conocimiento", "etiquetas": ["pensamiento", "ideas"]},
+    "Geografía": {"grupo": "Naturaleza y mundo", "etiquetas": ["lugares", "territorio"]},
+    "Habilidades": {"grupo": "Aprendizaje y conocimiento", "etiquetas": ["capacidades", "destrezas"]},
+    "Naturaleza": {"grupo": "Naturaleza y mundo", "etiquetas": ["ambiente", "plantas", "entorno"]},
+    "Números": {"grupo": "Aprendizaje y conocimiento", "etiquetas": ["matemática", "numeración"]},
+    "Ocio": {"grupo": "Ocio y deporte", "etiquetas": ["entretenimiento", "diversión", "tiempo libre"]},
+    "Personas": {"grupo": "Personas y sociedad", "etiquetas": ["gente", "identidad"]},
+    "Política": {"grupo": "Personas y sociedad", "etiquetas": ["gobierno", "ciudadanía"]},
+    "Preguntas": {"grupo": "Aprendizaje y conocimiento", "etiquetas": ["interrogación", "comunicación"]},
+    "Profesiones": {"grupo": "Trabajo y ciudadanía", "etiquetas": ["ocupaciones", "empleo"]},
+    "Psicología": {"grupo": "Salud y bienestar", "etiquetas": ["mente", "conducta", "emociones"]},
+    "Reflexión": {"grupo": "Personas y sociedad", "etiquetas": ["pensamiento", "análisis"]},
+    "Ropa": {"grupo": "Vida diaria", "etiquetas": ["vestimenta", "prendas"]},
+    "Salud": {"grupo": "Salud y bienestar", "etiquetas": ["medicina", "enfermedad", "cuidado"]},
+    "Saludos": {"grupo": "Personas y sociedad", "etiquetas": ["encuentro", "despedida"]},
+    "Sociedad": {"grupo": "Personas y sociedad", "etiquetas": ["comunidad", "convivencia"]},
+    "Tecnología": {"grupo": "Tecnología", "etiquetas": ["digital", "internet", "dispositivos"]},
+    "Tiempo": {"grupo": "Vida diaria", "etiquetas": ["hora", "fecha", "calendario"]},
+    "Trabajo": {"grupo": "Trabajo y ciudadanía", "etiquetas": ["empleo", "ocupación"]},
+    "Trámites": {"grupo": "Trabajo y ciudadanía", "etiquetas": ["documentos", "servicios"]},
+    "Transporte": {"grupo": "Vida diaria", "etiquetas": ["movilidad", "vehículos", "viaje"]},
+    "Universidad": {"grupo": "Aprendizaje y conocimiento", "etiquetas": ["estudios superiores", "carrera"]},
+    "Valores": {"grupo": "Personas y sociedad", "etiquetas": ["principios", "convivencia"]},
+    "Verbos": {"grupo": "Aprendizaje y conocimiento", "etiquetas": ["acciones", "gramática"]}
+  }
+}
