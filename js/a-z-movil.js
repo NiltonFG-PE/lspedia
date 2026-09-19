@@ -61,3 +61,23 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar, { once: true });
   else iniciar();
 })();
+
+/* Carga la capa de taxonomía desde un módulo independiente para que el
+   índice A-Z y el resto del sitio sigan desacoplados y fáciles de revertir. */
+(function cargarTaxonomiaInteligente(){
+  'use strict';
+  if(!document.querySelector('link[data-lsp-taxonomia]')){
+    const css=document.createElement('link');
+    css.rel='stylesheet';
+    css.href='css/taxonomia-inteligente.css?v=20260919-1';
+    css.dataset.lspTaxonomia='1';
+    document.head.appendChild(css);
+  }
+  if(!document.querySelector('script[data-lsp-taxonomia]')){
+    const js=document.createElement('script');
+    js.src='js/taxonomia-inteligente.js?v=20260919-1';
+    js.async=false;
+    js.dataset.lspTaxonomia='1';
+    document.head.appendChild(js);
+  }
+})();
