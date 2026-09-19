@@ -1,202 +1,279 @@
-/* LSPedia — foco móvil del buscador
-   Mantiene el buscador en la zona alta realmente visible de Chrome/Android
-   cuando aparece el teclado y reserva el resto del viewport para resultados. */
+/* LSPedia — búsqueda móvil tipo app
+   ------------------------------------------------------------
+   En Android/Chrome el teclado reduce y puede desplazar el visualViewport.
+   En lugar de intentar empujar el buscador original con scroll/fixed, este
+   módulo mueve temporalmente EL MISMO buscador y EL MISMO panel de resultados
+   a una capa propia que ocupa exactamente el visualViewport disponible.
+
+   Ventajas:
+   - el buscador siempre queda arriba de la zona realmente visible;
+   - los resultados usan todo el espacio hasta el teclado;
+   - no los tapan "Tu aprendizaje", la navegación ni "Instalar LSPedia";
+   - no se clonan inputs ni resultados: se conservan todos sus listeners;
+   - al cerrar, los nodos vuelven a su lugar original.
+*/
 (function(){
     'use strict';
 
-    if(window.__LSPEDIA_BUSCADOR_MOVIL_FOCUS__) return;
-    window.__LSPEDIA_BUSCADOR_MOVIL_FOCUS__ = true;
+    if(window.__LSPEDIA_BUSCADOR_MOVIL_OVERLAY__) return;
+    window.__LSPEDIA_BUSCADOR_MOVIL_OVERLAY__ = true;
 
     const media = window.matchMedia('(max-width: 767.98px)');
-    const pares = [
-        ['buscar','sugerencias'],
-        ['buscarCategorias','sugerenciasCategorias']
+    const configuraciones = [
+        {
+            inputId: 'buscar',
+            panelId: 'sugerencias',
+            titulo: 'Buscar en Diccionario'
+        },
+        {
+            inputId: 'buscarCategorias',
+            panelId: 'sugerenciasCategorias',
+            titulo: 'Buscar en Vocabulario'
+        }
     ];
 
-    let cerrarTimer = 0;
-    let realinearTimer = 0;
-    let inputActivo = null;
-    let panelActivo = null;
+    let estado = null;
+    let cerrando = false;
+    let blurTimer = 0;
 
-    function visible(elemento){
-        if(!elemento || !elemento.isConnected) return false;
-        const estilo = getComputedStyle(elemento);
-        return estilo.display !== 'none' && estilo.visibility !== 'hidden' && elemento.getClientRects().length > 0;
+    function crearMarcador(nombre){
+        return document.createComment('lspedia-' + nombre);
     }
 
-    function hayResultados(panel){
-        return !!(panel && panel.children.length && visible(panel));
+    function obtenerLinea(input){
+        if(!input) return null;
+        return input.closest('.buscador-indice-linea') ||
+               input.closest('.input-group') ||
+               input.parentElement;
     }
 
-    function lineaBuscador(input){
-        return input && (
-            input.closest('.buscador-indice-linea') ||
-            input.closest('.col-lg-8.position-relative') ||
-            input.closest('#bloqueBuscador, #bloqueBuscadorCategorias') ||
-            input
-        );
+    function idiomaIngles(){
+        try {
+            return !!(window.LSPediaIdioma && typeof window.LSPediaIdioma.obtener === 'function' && window.LSPediaIdioma.obtener() === 'en');
+        } catch(_e){ return false; }
     }
 
-    function viewport(){
+    function traducirTitulo(titulo){
+        if(!idiomaIngles()) return titulo;
+        return titulo.indexOf('Vocabulario') >= 0 ? 'Search Vocabulary' : 'Search Dictionary';
+    }
+
+    function geometriaViewport(){
         const vv = window.visualViewport;
-        return {
-            offsetTop: vv ? Math.max(0, Number(vv.offsetTop) || 0) : 0,
-            height: vv ? Math.max(1, Number(vv.height) || window.innerHeight) : window.innerHeight
-        };
-    }
-
-    function margenSuperiorVisible(vp){
-        const nav = document.querySelector('nav.navbar');
-        if(!nav) return 10;
-
-        const r = nav.getBoundingClientRect();
-        const abajoVisual = r.bottom - vp.offsetTop;
-        const arribaVisual = r.top - vp.offsetTop;
-
-        // Solo reserva espacio para la barra de LSPedia cuando de verdad está
-        // dentro del viewport visual. Con el teclado abierto Chrome puede
-        // desplazar el viewport y dejar esa barra fuera de la zona visible.
-        if(abajoVisual > 0 && arribaVisual < vp.height && abajoVisual < vp.height * .42){
-            return Math.max(10, abajoVisual + 8);
+        if(vv){
+            return {
+                top: Math.max(0, Number(vv.offsetTop) || 0),
+                left: Math.max(0, Number(vv.offsetLeft) || 0),
+                width: Math.max(1, Number(vv.width) || window.innerWidth),
+                height: Math.max(1, Number(vv.height) || window.innerHeight)
+            };
         }
-        return 10;
+        return {top:0,left:0,width:window.innerWidth,height:window.innerHeight};
     }
 
-    function ajustarAlturaPanel(panel){
-        if(!panel || !visible(panel)) return;
-        const vp = viewport();
-        const r = panel.getBoundingClientRect();
-        const topVisual = Math.max(0, r.top - vp.offsetTop);
-        const disponible = Math.floor(vp.height - topVisual - 10);
-        const alto = Math.max(155, Math.min(470, disponible));
-        panel.style.setProperty('max-height', alto + 'px', 'important');
+    function ajustarOverlay(){
+        if(!estado || !estado.overlay || !estado.overlay.isConnected) return;
+        const g = geometriaViewport();
+        estado.overlay.style.setProperty('--lsp-vv-top', g.top + 'px');
+        estado.overlay.style.setProperty('--lsp-vv-left', g.left + 'px');
+        estado.overlay.style.setProperty('--lsp-vv-width', g.width + 'px');
+        estado.overlay.style.setProperty('--lsp-vv-height', g.height + 'px');
     }
 
-    function alinearBuscador(input, panel){
-        if(!media.matches || !input || document.activeElement !== input) return;
+    function crearOverlay(config, input, panel, linea){
+        const overlay = document.createElement('div');
+        overlay.id = 'lspMobileSearchOverlay';
+        overlay.className = 'lsp-mobile-search-overlay';
+        overlay.setAttribute('role','dialog');
+        overlay.setAttribute('aria-modal','true');
+        overlay.setAttribute('aria-label', traducirTitulo(config.titulo));
 
-        const objetivo = lineaBuscador(input);
-        if(!objetivo) return;
+        const shell = document.createElement('div');
+        shell.className = 'lsp-mobile-search-shell';
 
-        const vp = viewport();
-        const rect = objetivo.getBoundingClientRect();
-        const margen = margenSuperiorVisible(vp);
-        const topVisual = rect.top - vp.offsetTop;
-        const delta = topVisual - margen;
+        const cabecera = document.createElement('div');
+        cabecera.className = 'lsp-mobile-search-head';
 
-        // Chrome ya hace su propio scroll al abrir el teclado. Corregimos solo
-        // la diferencia restante respecto de la parte superior REAL visible.
-        if(Math.abs(delta) > 4){
-            window.scrollBy({ top: delta, left: 0, behavior: 'auto' });
-        }
+        const titulo = document.createElement('div');
+        titulo.className = 'lsp-mobile-search-title';
+        titulo.textContent = traducirTitulo(config.titulo);
 
-        requestAnimationFrame(function(){ ajustarAlturaPanel(panel); });
-    }
+        const cerrar = document.createElement('button');
+        cerrar.type = 'button';
+        cerrar.className = 'lsp-mobile-search-close';
+        cerrar.setAttribute('aria-label', idiomaIngles() ? 'Close search' : 'Cerrar búsqueda');
+        cerrar.innerHTML = '<span aria-hidden="true">×</span>';
 
-    function programarAlineado(input, panel){
-        clearTimeout(realinearTimer);
-        [25, 140, 320, 620].forEach(function(ms){
-            setTimeout(function(){ alinearBuscador(input, panel); }, ms);
-        });
-    }
+        const controles = document.createElement('div');
+        controles.className = 'lsp-mobile-search-controls';
 
-    function activarModo(input, panel){
-        if(!media.matches) return;
-        clearTimeout(cerrarTimer);
-        inputActivo = input || inputActivo;
-        panelActivo = panel || panelActivo;
-        document.body.classList.add('lsp-search-focus');
-        if(inputActivo) programarAlineado(inputActivo, panelActivo);
-    }
+        const resultados = document.createElement('div');
+        resultados.className = 'lsp-mobile-search-results';
 
-    function limpiarPaneles(){
-        pares.forEach(function(par){
-            const panel = document.getElementById(par[1]);
-            if(panel) panel.style.removeProperty('max-height');
-        });
-    }
+        cabecera.appendChild(titulo);
+        cabecera.appendChild(cerrar);
+        shell.appendChild(cabecera);
+        shell.appendChild(controles);
+        shell.appendChild(resultados);
+        overlay.appendChild(shell);
 
-    function desactivarModoConEspera(){
-        clearTimeout(cerrarTimer);
-        cerrarTimer = setTimeout(function(){
-            const algunoActivo = pares.some(function(par){
-                const input = document.getElementById(par[0]);
-                const panel = document.getElementById(par[1]);
-                return input === document.activeElement || hayResultados(panel);
-            });
-            if(algunoActivo) return;
-            document.body.classList.remove('lsp-search-focus');
-            inputActivo = null;
-            panelActivo = null;
-            limpiarPaneles();
-        }, 200);
-    }
-
-    function preparar(inputId, panelId){
-        const input = document.getElementById(inputId);
-        const panel = document.getElementById(panelId);
-        if(!input || !panel || input.dataset.lspMobileFocus === '1') return;
-        input.dataset.lspMobileFocus = '1';
-
-        input.addEventListener('focus', function(){
-            if(!media.matches) return;
-            activarModo(input, panel);
-        });
-
-        input.addEventListener('input', function(){
-            if(!media.matches) return;
-            activarModo(input, panel);
-            setTimeout(function(){ ajustarAlturaPanel(panel); }, 45);
-        });
-
-        input.addEventListener('blur', desactivarModoConEspera);
-
-        const observer = new MutationObserver(function(){
-            if(!media.matches) return;
-            if(hayResultados(panel)){
-                activarModo(input, panel);
-                setTimeout(function(){ ajustarAlturaPanel(panel); }, 20);
-            }else{
-                desactivarModoConEspera();
+        cerrar.addEventListener('click', function(){ cerrarOverlay(true); });
+        overlay.addEventListener('keydown', function(e){
+            if(e.key === 'Escape'){
+                e.preventDefault();
+                cerrarOverlay(true);
             }
         });
-        observer.observe(panel, {childList:true, subtree:false, attributes:true, attributeFilter:['style','class']});
+
+        // Si se toca un resultado, permitimos primero que el manejador actual
+        // de LSPedia abra la palabra y cerramos inmediatamente después.
+        resultados.addEventListener('click', function(e){
+            const item = e.target && e.target.closest && e.target.closest('.list-group-item, [data-pred-index]');
+            if(item){
+                setTimeout(function(){ cerrarOverlay(false); }, 80);
+            }
+        });
+
+        controles.appendChild(linea);
+        resultados.appendChild(panel);
+        document.body.appendChild(overlay);
+
+        return {overlay:overlay, controles:controles, resultados:resultados};
+    }
+
+    function abrirOverlay(config, input, panel){
+        if(!media.matches || cerrando) return;
+        if(estado && estado.input === input){
+            ajustarOverlay();
+            return;
+        }
+        if(estado) cerrarOverlay(false);
+
+        const linea = obtenerLinea(input);
+        if(!linea || !panel || !linea.parentNode || !panel.parentNode) return;
+
+        const marcadorLinea = crearMarcador('linea-buscador');
+        const marcadorPanel = crearMarcador('panel-sugerencias');
+        linea.parentNode.insertBefore(marcadorLinea, linea);
+        panel.parentNode.insertBefore(marcadorPanel, panel);
+
+        const scrollX = window.scrollX;
+        const scrollY = window.scrollY;
+        const previoHtmlOverflow = document.documentElement.style.overflow;
+        const previoBodyOverflow = document.body.style.overflow;
+
+        const ui = crearOverlay(config, input, panel, linea);
+        estado = {
+            config: config,
+            input: input,
+            panel: panel,
+            linea: linea,
+            marcadorLinea: marcadorLinea,
+            marcadorPanel: marcadorPanel,
+            overlay: ui.overlay,
+            scrollX: scrollX,
+            scrollY: scrollY,
+            previoHtmlOverflow: previoHtmlOverflow,
+            previoBodyOverflow: previoBodyOverflow
+        };
+
+        document.body.classList.add('lsp-search-overlay-active','lsp-search-focus');
+        document.documentElement.classList.add('lsp-search-overlay-active');
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
+        ajustarOverlay();
+
+        // Mover un elemento enfocado puede provocar blur en algunos Android.
+        // Recuperamos el foco sin pedir al navegador que vuelva a desplazar la página.
+        requestAnimationFrame(function(){
+            try { input.focus({preventScroll:true}); }
+            catch(_e){ try { input.focus(); } catch(_e2){} }
+            ajustarOverlay();
+        });
+    }
+
+    function restaurarNodo(nodo, marcador){
+        if(!nodo || !marcador || !marcador.parentNode) return;
+        marcador.parentNode.insertBefore(nodo, marcador.nextSibling);
+        marcador.remove();
+    }
+
+    function cerrarOverlay(devolverFoco){
+        if(!estado || cerrando) return;
+        cerrando = true;
+        clearTimeout(blurTimer);
+
+        const actual = estado;
+
+        // Primero restauramos los nodos reales; así ningún módulo ve IDs
+        // duplicados ni pierde sus listeners.
+        restaurarNodo(actual.linea, actual.marcadorLinea);
+        restaurarNodo(actual.panel, actual.marcadorPanel);
+
+        if(actual.overlay && actual.overlay.parentNode) actual.overlay.remove();
+
+        document.body.classList.remove('lsp-search-overlay-active','lsp-search-focus');
+        document.documentElement.classList.remove('lsp-search-overlay-active');
+        document.documentElement.style.overflow = actual.previoHtmlOverflow;
+        document.body.style.overflow = actual.previoBodyOverflow;
+
+        // Limpia límites de altura puestos por versiones anteriores.
+        actual.panel.style.removeProperty('max-height');
+
+        estado = null;
+        cerrando = false;
+
+        // Si se cerró con la X, quitamos teclado. Al elegir un resultado no
+        // forzamos foco alguno porque mostrarPalabra controla la navegación.
+        if(devolverFoco){
+            try { actual.input.blur(); } catch(_e){}
+            requestAnimationFrame(function(){
+                window.scrollTo(actual.scrollX, actual.scrollY);
+            });
+        }
+    }
+
+    function preparar(config){
+        const input = document.getElementById(config.inputId);
+        const panel = document.getElementById(config.panelId);
+        if(!input || !panel || input.dataset.lspMobileOverlay === '1') return;
+        input.dataset.lspMobileOverlay = '1';
+
+        input.addEventListener('focus', function(){
+            if(media.matches) abrirOverlay(config,input,panel);
+        });
+
+        input.addEventListener('blur', function(){
+            // No cerrar al tocar un resultado o el botón de lupa dentro de la
+            // misma capa. Solo cerramos si el foco salió realmente del diálogo.
+            clearTimeout(blurTimer);
+            blurTimer = setTimeout(function(){
+                if(!estado || estado.input !== input) return;
+                const activo = document.activeElement;
+                if(activo && estado.overlay && estado.overlay.contains(activo)) return;
+                const panelVisible = panel.children.length > 0 && getComputedStyle(panel).display !== 'none';
+                if(!panelVisible) cerrarOverlay(false);
+            }, 220);
+        });
     }
 
     function reaccionarViewport(){
-        if(!media.matches || !document.body.classList.contains('lsp-search-focus')) return;
-        clearTimeout(realinearTimer);
-        realinearTimer = setTimeout(function(){
-            if(inputActivo && document.activeElement === inputActivo){
-                alinearBuscador(inputActivo, panelActivo);
-            }else if(panelActivo){
-                ajustarAlturaPanel(panelActivo);
-            }
-        }, 35);
+        if(!media.matches){
+            if(estado) cerrarOverlay(false);
+            return;
+        }
+        ajustarOverlay();
     }
 
     function iniciar(){
-        pares.forEach(function(par){ preparar(par[0], par[1]); });
-
-        document.addEventListener('click', function(e){
-            if(!media.matches) return;
-            const dentro = e.target && e.target.closest && e.target.closest('#bloqueBuscador, #bloqueBuscadorCategorias, #sugerencias, #sugerenciasCategorias');
-            if(!dentro) desactivarModoConEspera();
-        }, true);
-
-        window.addEventListener('resize', function(){
-            if(!media.matches){
-                document.body.classList.remove('lsp-search-focus');
-                limpiarPaneles();
-                return;
-            }
-            reaccionarViewport();
-        }, {passive:true});
+        configuraciones.forEach(preparar);
 
         if(window.visualViewport){
             window.visualViewport.addEventListener('resize', reaccionarViewport, {passive:true});
             window.visualViewport.addEventListener('scroll', reaccionarViewport, {passive:true});
         }
+        window.addEventListener('resize', reaccionarViewport, {passive:true});
+        window.addEventListener('orientationchange', reaccionarViewport, {passive:true});
     }
 
     if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar, {once:true});
