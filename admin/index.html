@@ -2,11 +2,141 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="robots" content="noindex,nofollow,noarchive">
-  <title>LSPedia Admin</title>
-  <meta http-equiv="refresh" content="0; url=busquedas.html#busquedas">
-  <script>location.replace('busquedas.html#busquedas');</script>
+  <meta name="googlebot" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#0f172a">
+  <title>Inicio | LSPedia Admin</title>
+  <link rel="icon" type="image/png" href="../img/favicon.png">
+  <link rel="stylesheet" href="admin-dashboard.css?v=20260919-1">
 </head>
-<body></body>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="./" aria-label="Inicio LSPedia Admin">
+      <span class="brand-mark">L</span>
+      <span><strong>LSPedia Admin</strong><small>Centro de control</small></span>
+    </a>
+    <div class="top-actions">
+      <span class="private-badge">🔒 Vista privada</span>
+      <button id="btnLock" class="top-btn" type="button" title="Bloquear ahora">Bloquear</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <nav class="admin-nav" aria-label="Secciones del panel Admin">
+    <a class="active" href="./">🏠 Inicio</a>
+    <a href="busquedas.html#busquedas">🔎 Búsquedas</a>
+    <a href="busquedas.html#estadisticas">📊 Estadísticas</a>
+    <a href="estado.html">🩺 Estado</a>
+  </nav>
+
+  <section id="accessPanel" class="card access-card d-none">
+    <div class="access-head">
+      <div><h2>Acceso privado</h2><p>Usa la misma URL y clave de Analytics que ya utiliza el LSPedia Admin.</p></div>
+      <span id="accessStatus" class="chip">Sin conectar</span>
+    </div>
+    <div class="access-grid">
+      <label><span>URL de Apps Script</span><input id="apiUrl" type="url" autocomplete="off" placeholder="https://script.google.com/macros/s/.../exec"></label>
+      <label><span>Clave privada</span><input id="adminKey" type="password" autocomplete="current-password" placeholder="Clave de administrador"></label>
+      <button id="btnConnect" class="btn btn-primary" type="button">Entrar</button>
+    </div>
+    <label class="remember"><input id="rememberAccess" type="checkbox"><span><b>Recordar acceso en este dispositivo</b><small>Solo úsalo en un equipo personal.</small></span></label>
+  </section>
+
+  <section id="dashboard" class="d-none">
+    <div class="hero">
+      <div>
+        <div class="eyebrow">RESUMEN EJECUTIVO</div>
+        <h1>¿Cómo está LSPedia hoy?</h1>
+        <p>Prioridades, salud técnica, búsquedas, contenido y publicación en un solo lugar.</p>
+      </div>
+      <div class="hero-actions">
+        <span id="freshness" class="freshness">—</span>
+        <button id="btnRefresh" class="btn btn-soft" type="button">↻ Actualizar</button>
+      </div>
+    </div>
+
+    <section class="kpi-grid" aria-label="Indicadores principales">
+      <article class="card kpi"><span class="kpi-icon">👥</span><div><span class="kpi-label">Usuarios · 7 días</span><strong id="kpiUsers">—</strong><small id="kpiUsersSub">Cargando…</small></div></article>
+      <article class="card kpi"><span class="kpi-icon">🔎</span><div><span class="kpi-label">Sin resultado · 7 días</span><strong id="kpiMissing">—</strong><small id="kpiMissingSub">Cargando…</small></div></article>
+      <article class="card kpi"><span class="kpi-icon">🚨</span><div><span class="kpi-label">Alertas</span><strong id="kpiAlerts">—</strong><small id="kpiAlertsSub">Revisando…</small></div></article>
+      <article class="card kpi"><span class="kpi-icon">📚</span><div><span class="kpi-label">Contenido público</span><strong id="kpiContent">—</strong><small id="kpiContentSub">Diccionario + Vocabulario</small></div></article>
+    </section>
+
+    <div id="globalNotice" class="notice notice-info">Cargando primero los indicadores esenciales. Los análisis pesados aparecerán después.</div>
+
+    <section class="section-block" id="alertas">
+      <div class="section-head"><div><span class="section-kicker">PRIORIDAD</span><h2>🚨 Centro de alertas</h2><p>Solo lo que necesita atención, ordenado por importancia.</p></div></div>
+      <div id="alertsList" class="alerts-list"><div class="skeleton h90"></div></div>
+    </section>
+
+    <section class="section-block" id="tendencias">
+      <div class="section-head"><div><span class="section-kicker">DEMANDA</span><h2>📈 Búsquedas en tendencia</h2><p>Ritmo de los últimos 7 días frente al promedio de los 23 días anteriores.</p></div><a class="text-link" href="busquedas.html#busquedas">Ver todas →</a></div>
+      <div id="trendGrid" class="trend-grid"><div class="skeleton h130"></div><div class="skeleton h130"></div><div class="skeleton h130"></div></div>
+    </section>
+
+    <section class="section-block" id="pendientes">
+      <div class="section-head"><div><span class="section-kicker">COLA EDITORIAL</span><h2>⏳ Pendientes que conviene atender</h2><p>Frecuencia, última búsqueda y seguimiento desde este Admin.</p></div><div class="section-actions"><button id="btnPublisherSettings" class="btn btn-soft btn-small" type="button">⚙ Publicador</button></div></div>
+      <div id="pendingTable" class="card table-card"><div class="loading-inline">Cargando historial…</div></div>
+    </section>
+
+    <section class="section-block" id="contenido">
+      <div class="section-head"><div><span class="section-kicker">CONTENIDO</span><h2>📚 Analítica de contenido</h2><p>Inventario por categoría, completitud y páginas con mayor actividad en Analytics.</p></div></div>
+      <div class="grid-2">
+        <article class="card panel"><div class="panel-head"><div><h3>Categorías con más contenido</h3><p>Diccionario y Vocabulario publicados.</p></div></div><div id="categoryList" class="metric-list"></div></article>
+        <article class="card panel"><div class="panel-head"><div><h3>Páginas más vistas · 30 días</h3><p>Rutas principales informadas por GA4.</p></div></div><div id="pageListHome" class="metric-list"></div></article>
+      </div>
+      <div id="contentQuality" class="quality-grid"></div>
+    </section>
+
+    <section class="section-block" id="embudo">
+      <div class="section-head"><div><span class="section-kicker">RECORRIDO</span><h2>🔎 Embudo de búsqueda</h2><p>De la búsqueda al contenido y, cuando existe telemetría, hasta la reproducción del video.</p></div></div>
+      <div id="funnel" class="card funnel"></div>
+    </section>
+
+    <section class="section-block" id="salud">
+      <div class="section-head"><div><span class="section-kicker">CALIDAD</span><h2>🩺 Auditoría de contenido</h2><p>Duplicados, campos incompletos y coherencia básica de los JSON públicos.</p></div><button id="btnAuditResources" class="btn btn-soft btn-small" type="button">Probar recursos</button></div>
+      <div id="auditGrid" class="audit-grid"><div class="skeleton h130"></div><div class="skeleton h130"></div></div>
+    </section>
+
+    <section class="section-block" id="deploy">
+      <div class="section-head"><div><span class="section-kicker">PUBLICACIÓN</span><h2>🚀 Estado de deploy y PWA</h2><p>Compara ramas, commit publicado y versión visible del Service Worker.</p></div><a class="text-link" href="estado.html">Abrir Estado →</a></div>
+      <div id="deployGrid" class="deploy-grid"><div class="skeleton h130"></div><div class="skeleton h130"></div><div class="skeleton h130"></div></div>
+    </section>
+
+    <section class="section-block" id="acciones">
+      <div class="section-head"><div><span class="section-kicker">CONFIGURACIÓN</span><h2>⚙ Acciones rápidas</h2><p>Acceso al Publicador, caché del Admin y seguridad.</p></div></div>
+      <div class="action-grid">
+        <button id="btnOpenPublisher" class="card action-card" type="button"><span>➕</span><b>Abrir Publicador</b><small>Usa la URL privada guardada en este dispositivo.</small></button>
+        <button id="btnClearCache" class="card action-card" type="button"><span>⚡</span><b>Vaciar caché del Admin</b><small>Fuerza una consulta nueva a Analytics.</small></button>
+        <button id="btnForget" class="card action-card danger" type="button"><span>🔐</span><b>Olvidar acceso</b><small>Elimina URL y clave guardadas en este navegador.</small></button>
+      </div>
+    </section>
+  </section>
+</main>
+
+<nav class="mobile-nav" aria-label="Navegación móvil">
+  <a class="active" href="./"><span>🏠</span>Inicio</a>
+  <a href="busquedas.html#busquedas"><span>🔎</span>Búsquedas</a>
+  <a href="busquedas.html#estadisticas"><span>📊</span>Estadísticas</a>
+  <a href="estado.html"><span>🩺</span>Estado</a>
+</nav>
+
+<div id="publisherModal" class="modal d-none" role="dialog" aria-modal="true" aria-labelledby="publisherModalTitle">
+  <div class="modal-card">
+    <div class="modal-head"><div><h2 id="publisherModalTitle">Conectar Publicador</h2><p>La URL se guarda solo en este navegador.</p></div><button id="btnClosePublisherModal" class="icon-btn" type="button">×</button></div>
+    <label class="field"><span>URL privada completa del Publicador</span><input id="publisherUrl" type="url" placeholder="https://script.google.com/macros/s/.../exec?modo=publicador&key=..."></label>
+    <p class="modal-note">Cuando pulses “Crear” en una búsqueda, el Admin copiará la palabra y abrirá esta URL. No se publica la clave en GitHub.</p>
+    <div class="modal-actions"><button id="btnSavePublisher" class="btn btn-primary" type="button">Guardar</button><button id="btnRemovePublisher" class="btn btn-danger-soft" type="button">Quitar URL</button></div>
+  </div>
+</div>
+
+<div id="lockScreen" class="lock-screen d-none" role="dialog" aria-modal="true" aria-labelledby="lockTitle">
+  <div class="lock-card"><div class="lock-icon">🔒</div><h2 id="lockTitle">LSPedia Admin bloqueado</h2><p>Se bloqueó por seguridad. Vuelve a escribir tu clave para continuar.</p><input id="unlockKey" type="password" autocomplete="current-password" placeholder="Clave privada"><button id="btnUnlock" class="btn btn-primary" type="button">Desbloquear</button><a href="busquedas.html#busquedas">Ir a Búsquedas</a></div>
+</div>
+
+<script src="admin-dashboard.js?v=20260919-1"></script>
+</body>
 </html>
