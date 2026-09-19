@@ -69,13 +69,13 @@
   if(!document.querySelector('link[data-lsp-taxonomia]')){
     const css=document.createElement('link');
     css.rel='stylesheet';
-    css.href='css/taxonomia-inteligente.css?v=20260919-2';
+    css.href='css/taxonomia-inteligente.css?v=20260919-3';
     css.dataset.lspTaxonomia='1';
     document.head.appendChild(css);
   }
   if(!document.querySelector('script[data-lsp-taxonomia]')){
     const js=document.createElement('script');
-    js.src='js/taxonomia-inteligente.js?v=20260919-1';
+    js.src='js/taxonomia-inteligente.js?v=20260919-2';
     js.async=false;
     js.dataset.lspTaxonomia='1';
     document.head.appendChild(js);
