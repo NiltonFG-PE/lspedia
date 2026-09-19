@@ -83,9 +83,6 @@
             document.head.appendChild(style);
         }
 
-        // En la tarjeta "Redes sociales" los cuatro iconos muestran siempre
-        // su identidad visual. El toque en Android conserva el color para que
-        // ningún icono pase a blanco o gris por las reglas :active generales.
         style.textContent = [
             '.stat2-redes-iconos .stat2-red-icono{background:#f8fafc!important;-webkit-tap-highlight-color:transparent!important;}',
             '.stat2-redes-iconos .stat2-red-tiktok{color:#111111!important;background:linear-gradient(135deg,#e8ffff 0%,#fff0f7 100%)!important;}',
@@ -194,8 +191,6 @@
         setTimeout(agregarFacebookRedesSociales, ms);
     });
 
-    // Se carga temprano para interceptar la IFrame API antes de crear
-    // reproductores y poder diagnosticar cualquier video que YouTube rechace.
     cargar('js/youtube-diagnostico.js?v=20260916-1');
     cargar('js/categorias-compartir.js?v=20260915d');
     cargar('js/buscador-vocabulario-rescate.js?v=20260916-1');
@@ -210,8 +205,8 @@
     cargarCss('css/vocabulario-layout.css?v=20260915-2');
     cargarCss('css/fab-dock-delgado.css?v=20260916-1');
     cargarCss('css/modo-oscuro.css?v=20260916-2');
-    cargarCss('css/buscador-dropdown-premium.css?v=20260919-3');
-    cargar('js/buscador-movil-focus.js?v=20260919-2');
+    cargarCss('css/buscador-dropdown-premium.css?v=20260919-4');
+    cargar('js/buscador-movil-focus.js?v=20260919-3');
     cargarCss('css/lo-nuevo-premium.css?v=20260919-1');
     cargar('js/modo-oscuro.js?v=20260916-2');
 
