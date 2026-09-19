@@ -75,17 +75,61 @@
         document.body.style.removeProperty('overflow');
     }
 
+    function asegurarEstilosRedesSociales(){
+        let style = document.getElementById('lspediaFacebookEstilos');
+        if(!style){
+            style = document.createElement('style');
+            style.id = 'lspediaFacebookEstilos';
+            document.head.appendChild(style);
+        }
+
+        // En la tarjeta "Redes sociales" los cuatro iconos muestran siempre
+        // su identidad visual. El toque en Android conserva el color para que
+        // ningún icono pase a blanco o gris por las reglas :active generales.
+        style.textContent = [
+            '.stat2-redes-iconos .stat2-red-icono{background:#f8fafc!important;-webkit-tap-highlight-color:transparent!important;}',
+            '.stat2-redes-iconos .stat2-red-tiktok{color:#111111!important;background:linear-gradient(135deg,#e8ffff 0%,#fff0f7 100%)!important;}',
+            '.stat2-redes-iconos .stat2-red-instagram{color:#E1306C!important;background:#fff0f6!important;}',
+            '.stat2-redes-iconos .stat2-red-youtube{color:#FF0000!important;background:#fff1f1!important;}',
+            '.stat2-redes-iconos .stat2-red-facebook{color:#1877F2!important;background:#eef5ff!important;}',
+            '.stat2-redes-iconos .stat2-red-icono svg{color:currentColor!important;fill:currentColor!important;}',
+            '.stat2-redes-iconos .stat2-red-tiktok:hover,.stat2-redes-iconos .stat2-red-tiktok:focus,.stat2-redes-iconos .stat2-red-tiktok:focus-visible,.stat2-redes-iconos .stat2-red-tiktok:active{color:#111111!important;background:linear-gradient(135deg,#d7ffff 0%,#ffe1ef 100%)!important;}',
+            '.stat2-redes-iconos .stat2-red-instagram:hover,.stat2-redes-iconos .stat2-red-instagram:focus,.stat2-redes-iconos .stat2-red-instagram:focus-visible,.stat2-redes-iconos .stat2-red-instagram:active{color:#E1306C!important;background:#ffe1ee!important;}',
+            '.stat2-redes-iconos .stat2-red-youtube:hover,.stat2-redes-iconos .stat2-red-youtube:focus,.stat2-redes-iconos .stat2-red-youtube:focus-visible,.stat2-redes-iconos .stat2-red-youtube:active{color:#FF0000!important;background:#ffe1e1!important;}',
+            '.stat2-redes-iconos .stat2-red-facebook:hover,.stat2-redes-iconos .stat2-red-facebook:focus,.stat2-redes-iconos .stat2-red-facebook:focus-visible,.stat2-redes-iconos .stat2-red-facebook:active{color:#1877F2!important;background:#e0edff!important;}',
+            '.footer-red-facebook{color:#1877F2!important;-webkit-tap-highlight-color:transparent!important;}',
+            '.footer-red-facebook:hover,.footer-red-facebook:focus,.footer-red-facebook:focus-visible,.footer-red-facebook:active{background:#eef5ff!important;color:#1877F2!important;}',
+            '.footer-red-facebook svg{color:currentColor!important;fill:currentColor!important;}'
+        ].join('');
+    }
+
+    function fijarColoresRedesTarjeta(){
+        const redes = [
+            ['stat2-red-tiktok', '#111111'],
+            ['stat2-red-instagram', '#E1306C'],
+            ['stat2-red-youtube', '#FF0000'],
+            ['stat2-red-facebook', '#1877F2']
+        ];
+
+        redes.forEach(function(config){
+            document.querySelectorAll('.stat2-redes-iconos .' + config[0]).forEach(function(enlace){
+                enlace.style.setProperty('color', config[1], 'important');
+                enlace.style.setProperty('-webkit-tap-highlight-color', 'transparent', 'important');
+                const svg = enlace.querySelector('svg');
+                if(svg){
+                    svg.style.setProperty('color', config[1], 'important');
+                    svg.style.setProperty('fill', 'currentColor', 'important');
+                }
+            });
+        });
+    }
+
     function agregarFacebookRedesSociales(){
         const href = 'https://facebook.com/lspedia.sign';
         const usuario = '@lspedia.sign';
         const svgFacebook = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.414c0-3.025 1.792-4.697 4.533-4.697 1.313 0 2.686.236 2.686.236v2.971h-1.513c-1.49 0-1.956.931-1.956 1.887v2.262h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>';
 
-        if(!document.getElementById('lspediaFacebookEstilos')){
-            const style = document.createElement('style');
-            style.id = 'lspediaFacebookEstilos';
-            style.textContent = '.stat2-red-facebook:hover,.footer-red-facebook:hover{background:#1877F2!important;color:#fff!important;}';
-            document.head.appendChild(style);
-        }
+        asegurarEstilosRedesSociales();
 
         document.querySelectorAll('.stat2-redes-iconos').forEach(function(contenedor){
             if(contenedor.querySelector('.stat2-red-facebook')) return;
@@ -112,6 +156,8 @@
             enlace.innerHTML = svgFacebook;
             contenedor.appendChild(enlace);
         });
+
+        fijarColoresRedesTarjeta();
     }
 
     function cargarCss(href){
