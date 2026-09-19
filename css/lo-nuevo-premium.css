@@ -255,3 +255,99 @@
         transition: none !important;
     }
 }
+
+/* ============================================================
+   LO NUEVO COMPACTO V2 (2026-09-19)
+   Hace las tarjetas de contenido mas pequenas para que se vean mas
+   novedades simultaneamente, sin perder legibilidad ni el estilo premium.
+   ============================================================ */
+#lspNuevasCard .lsp-nuevas-lista {
+    gap: 7px !important;
+    padding-bottom: 6px !important;
+}
+
+#lspNuevasCard .lsp-nueva-palabra {
+    flex: 0 0 142px !important;
+    min-width: 142px !important;
+    max-width: 142px !important;
+    padding: 5px 6px 8px !important;
+    border-radius: 12px !important;
+}
+
+#lspNuevasCard .lsp-nueva-thumb-wrap {
+    margin-bottom: 6px !important;
+    border-radius: 8px !important;
+}
+
+#lspNuevasCard .lsp-nueva-badge {
+    margin-left: 2px !important;
+    margin-right: 1px !important;
+    margin-bottom: 4px !important;
+    padding: 2px 5px !important;
+    font-size: .56rem !important;
+    line-height: 1.25 !important;
+}
+
+#lspNuevasCard .lsp-nueva-nombre {
+    margin-left: 2px !important;
+    margin-right: 2px !important;
+    font-size: .80rem !important;
+    line-height: 1.25 !important;
+}
+
+#lspNuevasCard .lsp-nueva-cat {
+    margin-left: 2px !important;
+    margin-right: 2px !important;
+    margin-top: 2px !important;
+    font-size: .62rem !important;
+    line-height: 1.25 !important;
+}
+
+@media (max-width: 767.98px) {
+    #lspNuevasCard .lsp-nuevas-lista {
+        gap: 6px !important;
+        padding-bottom: 5px !important;
+        scroll-padding-inline: 1px !important;
+    }
+
+    #lspNuevasCard .lsp-nueva-palabra {
+        flex-basis: 122px !important;
+        min-width: 122px !important;
+        max-width: 122px !important;
+        padding: 5px 5px 7px !important;
+        border-radius: 11px !important;
+    }
+
+    #lspNuevasCard .lsp-nueva-thumb-wrap {
+        margin-bottom: 5px !important;
+        border-radius: 7px !important;
+    }
+
+    #lspNuevasCard .lsp-nueva-badge {
+        padding: 2px 4px !important;
+        font-size: .50rem !important;
+        letter-spacing: .02em !important;
+    }
+
+    #lspNuevasCard .lsp-nueva-nombre {
+        font-size: .76rem !important;
+    }
+
+    #lspNuevasCard .lsp-nueva-cat {
+        font-size: .59rem !important;
+    }
+}
+
+@media (max-width: 390px) {
+    #lspNuevasCard .lsp-nueva-palabra {
+        flex-basis: 116px !important;
+        min-width: 116px !important;
+        max-width: 116px !important;
+    }
+
+    #lspNuevasCard .lsp-nueva-badge {
+        font-size: .48rem !important;
+        padding-left: 3px !important;
+        padding-right: 3px !important;
+    }
+}
