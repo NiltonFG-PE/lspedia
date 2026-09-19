@@ -4,8 +4,33 @@
 (function(){
   'use strict';
 
-  const URL_TAXONOMIA='data/taxonomia.json?v=20260919-1';
+  const URL_TAXONOMIA='data/taxonomia.json?v=20260919-2';
   const ESTADO={taxonomia:null,activo:{diccionario:'',vocabulario:''},parchado:false};
+
+  /* Etiquetas visuales cortas: la taxonomía interna conserva sus nombres
+     completos, pero la interfaz usa palabras muy fáciles de reconocer. */
+  const ETIQUETAS_GRUPO={
+    'vida diaria':'Día a día',
+    'personas y sociedad':'Personas',
+    'salud y bienestar':'Salud',
+    'aprendizaje y conocimiento':'Aprender',
+    'trabajo y ciudadanía':'Trabajo',
+    'tecnología':'Tecnología',
+    'naturaleza y mundo':'Naturaleza',
+    'ocio y deporte':'Juegos',
+    'otros':'Otros'
+  };
+  const ORDEN_GRUPOS=[
+    'vida diaria',
+    'personas y sociedad',
+    'salud y bienestar',
+    'aprendizaje y conocimiento',
+    'trabajo y ciudadanía',
+    'tecnología',
+    'naturaleza y mundo',
+    'ocio y deporte',
+    'otros'
+  ];
 
   function txt(v){return String(v==null?'':v).trim();}
   function norm(v){return txt(v).toLocaleLowerCase('es-PE').normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
@@ -16,6 +41,7 @@
     base.forEach(x=>{const t=txt(x);const k=norm(t);if(!t||vistos.has(k))return;vistos.add(k);out.push(t);});
     return out.slice(0,12);
   }
+  function etiquetaGrupo(nombre){return ETIQUETAS_GRUPO[norm(nombre)]||txt(nombre)||'Otros';}
 
   function categoriasConfig(){
     const x=ESTADO.taxonomia&&ESTADO.taxonomia.categorias;
@@ -90,9 +116,17 @@
       const k=norm(nombre);
       if(!usados.has(k))usados.set(k,grupoInfo(nombre));
     });
-    return gruposConfig().filter(g=>usados.has(norm(g.nombre))).concat(
+    const grupos=gruposConfig().filter(g=>usados.has(norm(g.nombre))).concat(
       [...usados.values()].filter(g=>!gruposConfig().some(x=>norm(x.nombre)===norm(g.nombre)))
     );
+    return grupos.sort((a,b)=>{
+      const ka=norm(a&&a.nombre),kb=norm(b&&b.nombre);
+      const ia=ORDEN_GRUPOS.indexOf(ka),ib=ORDEN_GRUPOS.indexOf(kb);
+      if(ia<0&&ib<0)return etiquetaGrupo(ka).localeCompare(etiquetaGrupo(kb),'es');
+      if(ia<0)return 1;
+      if(ib<0)return -1;
+      return ia-ib;
+    });
   }
 
   function idToolbar(tipo){return 'lspTaxonomia'+(tipo==='diccionario'?'Diccionario':'Vocabulario');}
@@ -134,7 +168,7 @@
     let vacio=wrap&&wrap.querySelector('.lsp-taxonomia-vacio');
     if(activo&&visibles===0){
       if(!vacio){vacio=document.createElement('div');vacio.className='lsp-taxonomia-vacio';wrap.appendChild(vacio);}
-      vacio.textContent='Todavía no hay categorías públicas dentro de este grupo.';
+      vacio.textContent='No hay contenido aquí todavía.';
     }else if(vacio)vacio.remove();
   }
 
@@ -168,16 +202,17 @@
     const grupos=gruposUsados(tipo,panel);
     if(!grupos.length){wrap.classList.add('d-none');return;}
     const activo=ESTADO.activo[tipo]||'';
-    wrap.innerHTML='<div class="lsp-taxonomia-cabecera"><div><h3 class="lsp-taxonomia-titulo">Explorar por grupos</h3><p class="lsp-taxonomia-ayuda">Agrupa categorías relacionadas para encontrar palabras más rápido.</p></div></div><div class="lsp-taxonomia-chips" role="group" aria-label="Grupos temáticos"></div><div class="lsp-taxonomia-resumen"></div>';
+    wrap.innerHTML='<div class="lsp-taxonomia-cabecera"><h3 class="lsp-taxonomia-titulo">Explorar</h3></div><div class="lsp-taxonomia-chips" role="group" aria-label="Grupos temáticos"></div><div class="lsp-taxonomia-resumen"></div>';
     const chips=wrap.querySelector('.lsp-taxonomia-chips');
-    const opciones=[{nombre:'',icono:'✨',label:'Todos'}].concat(grupos.map(g=>({nombre:txt(g.nombre),icono:txt(g.icono)||'🧩',label:txt(g.nombre)})));
+    const opciones=[{nombre:'',icono:'▦',label:'Todo'}].concat(grupos.map(g=>({nombre:txt(g.nombre),icono:txt(g.icono)||'🧩',label:etiquetaGrupo(g.nombre)})));
     opciones.forEach(op=>{
       const b=document.createElement('button');
       b.type='button';
       b.className='lsp-taxonomia-chip'+(norm(op.nombre)===norm(activo)?' active':'');
       b.dataset.grupo=op.nombre;
       b.setAttribute('aria-pressed',norm(op.nombre)===norm(activo)?'true':'false');
-      b.innerHTML='<span class="lsp-taxonomia-icono" aria-hidden="true">'+esc(op.icono)+'</span><span>'+esc(op.label)+'</span>';
+      b.setAttribute('aria-label',op.nombre?'Ver '+op.label:'Ver todo');
+      b.innerHTML='<span class="lsp-taxonomia-icono" aria-hidden="true">'+esc(op.icono)+'</span><span class="lsp-taxonomia-label">'+esc(op.label)+'</span>';
       b.addEventListener('click',()=>seleccionarGrupo(tipo,panel,op.nombre));
       chips.appendChild(b);
     });
