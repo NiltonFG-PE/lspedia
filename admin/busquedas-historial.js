@@ -180,3 +180,64 @@
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',iniciar,{once:true});else iniciar();
 })();
+
+/* ADMIN_NAVEGACION_MOVIL_Y_PUBLICADOR_V2_20260919
+   Añade Inicio, navegación inferior móvil y acción directa hacia el Publicador
+   sin guardar la URL privada en GitHub. */
+(function(){
+  'use strict';
+  const STORE_PUBLISHER='lspedia_admin_publisher_url_v1';
+  const texto=v=>String(v==null?'':v).trim();
+
+  function instalarEstilos(){
+    if(document.getElementById('lspAdminNavV2Styles'))return;
+    const s=document.createElement('style');s.id='lspAdminNavV2Styles';
+    s.textContent='.lsp-admin-mobile-nav{display:none}@media(max-width:720px){body{padding-bottom:72px}.lsp-admin-mobile-nav{display:grid;grid-template-columns:repeat(4,1fr);position:fixed;left:0;right:0;bottom:0;z-index:90;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid #dce3ec;padding:6px 5px calc(6px + env(safe-area-inset-bottom));box-shadow:0 -6px 20px rgba(15,23,42,.08)}.lsp-admin-mobile-nav a{text-decoration:none;color:#64748b;text-align:center;font-size:9px;font-weight:800;padding:5px 2px;border-radius:10px}.lsp-admin-mobile-nav a span{display:block;font-size:18px;margin-bottom:2px}.lsp-admin-mobile-nav a.active{color:#0f6fb0;background:#eef8ff}.lsp-create-btn{margin-left:5px;border:1px solid #cde5f5;background:#eef8ff;color:#0f6fb0;border-radius:8px;padding:6px 8px;font-size:10px;font-weight:900}}';
+    document.head.appendChild(s);
+  }
+
+  function instalarInicio(){
+    const nav=document.querySelector('.admin-nav');if(!nav)return;
+    if(!nav.querySelector('a[href="./"]')){const a=document.createElement('a');a.href='./';a.textContent='🏠 Inicio';nav.insertBefore(a,nav.firstChild);}
+  }
+
+  function instalarNavMovil(){
+    if(document.querySelector('.lsp-admin-mobile-nav'))return;
+    const n=document.createElement('nav');n.className='lsp-admin-mobile-nav';n.setAttribute('aria-label','Navegación móvil');
+    n.innerHTML='<a href="./"><span>🏠</span>Inicio</a><a href="busquedas.html#busquedas"><span>🔎</span>Búsquedas</a><a href="busquedas.html#estadisticas"><span>📊</span>Estadísticas</a><a href="estado.html"><span>🩺</span>Estado</a>';
+    document.body.appendChild(n);actualizarActivo(n);window.addEventListener('hashchange',()=>actualizarActivo(n));
+  }
+
+  function actualizarActivo(nav){
+    const h=location.hash||'#busquedas';
+    nav.querySelectorAll('a').forEach(a=>a.classList.remove('active'));
+    const sel=h==='#estadisticas'?'a[href="busquedas.html#estadisticas"]':'a[href="busquedas.html#busquedas"]';
+    const a=nav.querySelector(sel);if(a)a.classList.add('active');
+  }
+
+  function urlValida(u){try{const x=new URL(u);return x.protocol==='https:'&&x.hostname==='script.google.com'&&/^\/macros\/s\/[^/]+\/exec\/?$/.test(x.pathname);}catch(_e){return false;}}
+
+  async function abrirPublicador(termino){
+    let u=texto(localStorage.getItem(STORE_PUBLISHER));
+    if(!u){u=texto(prompt('Pega una sola vez la URL privada completa de tu Publicador LSPedia:')||'');if(!u)return;if(!urlValida(u.split('?')[0])){alert('La URL debe ser una implementación /exec oficial de Google Apps Script.');return;}localStorage.setItem(STORE_PUBLISHER,u);}
+    try{await navigator.clipboard.writeText(termino);}catch(_e){}
+    try{const x=new URL(u);x.searchParams.set('lsp_prefill',termino);u=x.toString();}catch(_e){}
+    window.open(u,'_blank','noopener');
+  }
+
+  function enriquecerTabla(){
+    const body=document.getElementById('searchTableBody');if(!body)return;
+    body.querySelectorAll('tr').forEach(tr=>{
+      const cells=tr.querySelectorAll('td');if(cells.length<2)return;
+      const last=cells[cells.length-1];if(last.querySelector('.lsp-create-btn'))return;
+      const termino=texto(cells[1].querySelector('strong')?cells[1].querySelector('strong').textContent:cells[1].textContent);if(!termino)return;
+      const b=document.createElement('button');b.type='button';b.className='lsp-create-btn';b.textContent='➕ Crear';b.addEventListener('click',()=>abrirPublicador(termino));last.appendChild(b);
+    });
+  }
+
+  function iniciar(){
+    instalarEstilos();instalarInicio();instalarNavMovil();enriquecerTabla();
+    const body=document.getElementById('searchTableBody');if(body)new MutationObserver(enriquecerTabla).observe(body,{childList:true,subtree:true});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',iniciar,{once:true});else iniciar();
+})();
