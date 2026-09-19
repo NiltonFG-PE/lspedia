@@ -1,0 +1,92 @@
+/* LSPedia — navegación por grupos temáticos.
+   Complementa las categorías existentes; no las reemplaza. */
+.lsp-taxonomia-wrap{
+  margin:0 0 16px;
+  padding:14px;
+  border:1px solid #dbe5f0;
+  border-radius:18px;
+  background:linear-gradient(145deg,#f8fbff 0%,#ffffff 100%);
+  box-shadow:0 8px 22px rgba(15,23,42,.06);
+}
+.lsp-taxonomia-cabecera{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:10px;
+}
+.lsp-taxonomia-titulo{
+  margin:0;
+  color:#0f2f57;
+  font-size:.95rem;
+  font-weight:800;
+}
+.lsp-taxonomia-ayuda{
+  margin:2px 0 0;
+  color:#64748b;
+  font-size:.78rem;
+  line-height:1.35;
+}
+.lsp-taxonomia-chips{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding:2px 2px 5px;
+  scrollbar-width:thin;
+  scroll-snap-type:x proximity;
+}
+.lsp-taxonomia-chip{
+  flex:0 0 auto;
+  scroll-snap-align:start;
+  min-height:39px;
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:8px 13px;
+  border:1px solid #d7e2ee;
+  border-radius:999px;
+  background:#fff;
+  color:#31465e;
+  font:700 .82rem/1.1 'Poppins',sans-serif;
+  box-shadow:0 3px 10px rgba(15,23,42,.05);
+  transition:transform .15s ease,border-color .15s ease,background-color .15s ease,box-shadow .15s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.lsp-taxonomia-chip:hover,.lsp-taxonomia-chip:focus-visible{
+  transform:translateY(-1px);
+  border-color:#9fc4ef;
+  outline:none;
+  box-shadow:0 6px 15px rgba(37,99,235,.11);
+}
+.lsp-taxonomia-chip.active{
+  border-color:#123f78;
+  background:#123f78;
+  color:#fff;
+  box-shadow:0 7px 16px rgba(15,58,112,.2);
+}
+.lsp-taxonomia-chip .lsp-taxonomia-icono{font-size:1rem;line-height:1}
+.lsp-taxonomia-resumen{
+  margin-top:9px;
+  color:#52657a;
+  font-size:.76rem;
+}
+.lsp-taxonomia-vacio{
+  width:100%;
+  margin:8px 0 0;
+  padding:12px;
+  border:1px dashed #cbd5e1;
+  border-radius:13px;
+  background:#fff;
+  color:#64748b;
+  text-align:center;
+  font-size:.82rem;
+}
+@media(max-width:576px){
+  .lsp-taxonomia-wrap{margin-bottom:12px;padding:12px;border-radius:16px}
+  .lsp-taxonomia-cabecera{display:block}
+  .lsp-taxonomia-ayuda{margin-top:4px}
+  .lsp-taxonomia-chip{min-height:37px;padding:8px 11px;font-size:.78rem}
+}
+@media(prefers-reduced-motion:reduce){
+  .lsp-taxonomia-chip{transition:none}
+}
