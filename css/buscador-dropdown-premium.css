@@ -2,15 +2,12 @@
    LSPedia — buscador desplegable premium
    2026-09-19
    ------------------------------------------------------------
-   Corrige el solapamiento de "Tu aprendizaje" sobre las sugerencias.
-   Bootstrap aplica .z-3 con !important, así que el z-index 1060 de
-   estilos.css no llegaba a ganar. Este módulo eleva el contexto del
-   buscador y el panel con !important, y limita su altura en móvil.
+   Corrige el solapamiento de "Tu aprendizaje" sobre las sugerencias y
+   mejora la experiencia móvil: al buscar, el campo sube a una zona útil
+   de la pantalla y la barra inferior se aparta temporalmente para que la
+   lista no quede escondida.
    ============================================================ */
 
-/* El contenedor del buscador debe vivir por encima de las tarjetas que
-   aparecen después del hero. Así ningún hijo de "Tu aprendizaje" puede
-   dibujarse encima del desplegable mientras se está buscando. */
 #bloqueBuscador > .col-lg-8.position-relative,
 #bloqueBuscadorCategorias > .col-lg-8.position-relative {
     z-index: 60;
@@ -19,7 +16,7 @@
 #sugerencias,
 #sugerenciasCategorias {
     z-index: 1200 !important;
-    max-height: min(560px, 56dvh);
+    max-height: min(560px, 60dvh);
     overflow-x: hidden !important;
     overflow-y: auto !important;
     overscroll-behavior: contain;
@@ -50,12 +47,10 @@
 #sugerenciasCategorias::-webkit-scrollbar {
     width: 7px;
 }
-
 #sugerencias::-webkit-scrollbar-track,
 #sugerenciasCategorias::-webkit-scrollbar-track {
     background: transparent;
 }
-
 #sugerencias::-webkit-scrollbar-thumb,
 #sugerenciasCategorias::-webkit-scrollbar-thumb {
     background: rgba(255,255,255,.26);
@@ -64,9 +59,6 @@
     background-clip: padding-box;
 }
 
-/* Cada resultado queda como una fila separada y táctil, en vez de una
-   masa oscura continua. Se conservan los colores claros del texto para
-   mantener el contraste de la versión actual. */
 #sugerencias .list-group-item,
 #sugerenciasCategorias .list-group-item {
     min-height: 58px;
@@ -106,17 +98,14 @@
     border: 1px solid rgba(255,255,255,.10);
     box-shadow: 0 5px 13px rgba(0,0,0,.20);
 }
-
 #sugerencias .sugerencia-texto,
 #sugerenciasCategorias .sugerencia-texto {
     line-height: 1.22;
 }
-
 #sugerencias .sugerencia-texto > :first-child,
 #sugerenciasCategorias .sugerencia-texto > :first-child {
     color: #ffffff !important;
 }
-
 #sugerencias .badge,
 #sugerenciasCategorias .badge {
     padding: .34em .62em;
@@ -126,14 +115,11 @@
     color: #f8fafc !important;
     font-weight: 700;
 }
-
 #sugerencias .text-primary,
 #sugerenciasCategorias .text-primary {
     color: #a9ccff !important;
 }
 
-/* Si el tema oscuro está activo, el panel se integra con el resto de la
-   interfaz sin perder profundidad ni contraste. */
 html[data-lsp-tema="dark"] #sugerencias,
 html[data-lsp-tema="dark"] #sugerenciasCategorias {
     border-color: rgba(148,163,184,.16) !important;
@@ -144,13 +130,11 @@ html[data-lsp-tema="dark"] #sugerenciasCategorias {
         0 8px 24px rgba(0,0,0,.30),
         inset 0 1px 0 rgba(255,255,255,.035) !important;
 }
-
 html[data-lsp-tema="dark"] #sugerencias .list-group-item,
 html[data-lsp-tema="dark"] #sugerenciasCategorias .list-group-item {
     background: rgba(255,255,255,.025) !important;
     color: #edf4ff !important;
 }
-
 html[data-lsp-tema="dark"] #sugerencias .list-group-item:hover,
 html[data-lsp-tema="dark"] #sugerencias .list-group-item:focus-visible,
 html[data-lsp-tema="dark"] #sugerenciasCategorias .list-group-item:hover,
@@ -159,13 +143,27 @@ html[data-lsp-tema="dark"] #sugerenciasCategorias .list-group-item:focus-visible
     border-color: rgba(91,182,255,.25) !important;
 }
 
-/* En móvil el panel no puede crecer hasta la barra de navegación inferior.
-   Se convierte en una lista desplazable cómoda, manteniendo siempre visible
-   el buscador y evitando cubrir "Tu aprendizaje". */
+/* MODO DE BÚSQUEDA MÓVIL
+   Mientras se escribe, la navegación inferior se desliza fuera y el panel
+   puede usar ese espacio. Esto evita que los últimos resultados queden
+   escondidos detrás del dock fijo. */
 @media (max-width: 767.98px) {
+    body.lsp-search-focus .mobile-bottom-nav {
+        transform: translateY(calc(100% + env(safe-area-inset-bottom, 0px))) !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        transition: transform .22s ease, opacity .18s ease !important;
+    }
+
+    body.lsp-search-focus .fab-menu,
+    body.lsp-search-focus .fab-dock,
+    body.lsp-search-focus [class*="fab-"] {
+        pointer-events: none;
+    }
+
     #sugerencias,
     #sugerenciasCategorias {
-        max-height: min(52dvh, 455px);
+        max-height: min(64dvh, 560px);
         margin-top: 7px !important;
         padding: 4px;
         border-radius: 18px !important;
@@ -185,14 +183,15 @@ html[data-lsp-tema="dark"] #sugerenciasCategorias .list-group-item:focus-visible
 @media (max-width: 380px) {
     #sugerencias,
     #sugerenciasCategorias {
-        max-height: 48dvh;
+        max-height: 60dvh;
         border-radius: 16px !important;
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
     #sugerencias .list-group-item,
-    #sugerenciasCategorias .list-group-item {
+    #sugerenciasCategorias .list-group-item,
+    body.lsp-search-focus .mobile-bottom-nav {
         transition: none !important;
     }
 }
