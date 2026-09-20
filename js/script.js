@@ -5470,7 +5470,7 @@ function mostrarEtiquetaVocabulario(nombre, opciones = {}){
     }
 
     if(!opciones.noActualizarHistorial){
-        actualizarVistaUrl("vocabulario&etiqueta=" + encodeURIComponent(nombre));
+        actualizarVistaUrl("vocabulario");
     }
 
     let html = botonAtrasCategorias()
