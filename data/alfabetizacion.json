@@ -799,7 +799,7 @@
       "palabra": "Ambulancia",
       "imagen": "img/alfabetizacion/ejemplos/ambulancia.webp",
       "orden": 20,
-      "nivel": "Fácil"
+      "nivel": "Difícil"
     },
     {
       "caracter": "A",
@@ -1107,6 +1107,13 @@
       "palabra": "Camisa",
       "imagen": "img/alfabetizacion/ejemplos/camisa.webp",
       "orden": 5,
+      "nivel": "Fácil"
+    },
+    {
+      "caracter": "C",
+      "palabra": "Carro",
+      "imagen": "img/alfabetizacion/ejemplos/carro.webp",
+      "orden": 7,
       "nivel": "Fácil"
     },
     {
