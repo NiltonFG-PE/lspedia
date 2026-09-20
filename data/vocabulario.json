@@ -594,7 +594,9 @@
     "video": "21FZr-lKrAA",
     "categoria": "Tiempo",
     "grupo": "Otros",
-    "etiquetas": [],
+    "etiquetas": [
+      "meses del año"
+    ],
     "nivel": "Medio",
     "idQuiz": "Q844ADBA759",
     "imagen": "img/vocabulario/diciembre.webp",
