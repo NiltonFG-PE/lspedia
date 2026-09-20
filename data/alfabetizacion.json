@@ -199,6 +199,20 @@
     },
     {
       "tipo": "letra",
+      "caracter": "Ñ",
+      "imagenBoca": "img/alfabetizacion/boca/Ñ.webm",
+      "trazoVideo": "img/alfabetizacion/grafias/Ñ-mayuscula.mp4",
+      "nombre": "",
+      "grafiaMayuscula": "img/alfabetizacion/grafias/Ñ-mayuscula.mp4",
+      "grafiaMinuscula": "img/alfabetizacion/grafias/Ñ-minuscula.mp4",
+      "grafiaCursivaMayuscula": "img/alfabetizacion/grafias/Ñ-cursiva-mayuscula.mp4",
+      "grafiaCursivaMinuscula": "img/alfabetizacion/grafias/Ñ-cursiva-minuscula.mp4",
+      "imagenCirculo": "img/alfabetizacion/circulo/Ñ.webp",
+      "orden": 15,
+      "grafiaImagen": ""
+    },
+    {
+      "tipo": "letra",
       "caracter": "O",
       "imagenBoca": "img/alfabetizacion/boca/O.webm",
       "trazoVideo": "img/alfabetizacion/grafias/O-mayuscula.mp4",
@@ -368,7 +382,7 @@
     {
       "tipo": "numero",
       "caracter": "0",
-      "imagenBoca": "img/alfabetizacion/boca/0.webm",
+      "imagenBoca": "",
       "trazoVideo": "img/alfabetizacion/grafias/0.mp4",
       "nombre": "CERO",
       "grafiaMayuscula": "",
@@ -715,7 +729,7 @@
       "palabra": "Almohada",
       "imagen": "img/alfabetizacion/ejemplos/almohada.webp",
       "orden": 10,
-      "nivel": "Fácil"
+      "nivel": "Medio"
     },
     {
       "caracter": "A",
@@ -743,6 +757,118 @@
       "palabra": "Abrigo",
       "imagen": "img/alfabetizacion/ejemplos/abrigo.webp",
       "orden": 14,
+      "nivel": "Fácil"
+    },
+    {
+      "caracter": "A",
+      "palabra": "Amigo",
+      "imagen": "img/alfabetizacion/ejemplos/amigo.webp",
+      "orden": 15,
+      "nivel": "Fácil"
+    },
+    {
+      "caracter": "A",
+      "palabra": "Amiga",
+      "imagen": "img/alfabetizacion/ejemplos/amiga.webp",
+      "orden": 16,
+      "nivel": "Fácil"
+    },
+    {
+      "caracter": "A",
+      "palabra": "Arroz",
+      "imagen": "img/alfabetizacion/ejemplos/arroz.webp",
+      "orden": 17,
+      "nivel": "Fácil"
+    },
+    {
+      "caracter": "A",
+      "palabra": "Azúcar",
+      "imagen": "img/alfabetizacion/ejemplos/azucar.webp",
+      "orden": 18,
+      "nivel": "Fácil"
+    },
+    {
+      "caracter": "A",
+      "palabra": "Aceite",
+      "imagen": "img/alfabetizacion/ejemplos/aceite.webp",
+      "orden": 19,
+      "nivel": "Fácil"
+    },
+    {
+      "caracter": "A",
+      "palabra": "Ambulancia",
+      "imagen": "img/alfabetizacion/ejemplos/ambulancia.webp",
+      "orden": 20,
+      "nivel": "Fácil"
+    },
+    {
+      "caracter": "A",
+      "palabra": "Armario",
+      "imagen": "img/alfabetizacion/ejemplos/armario.webp",
+      "orden": 21,
+      "nivel": "Fácil"
+    },
+    {
+      "caracter": "A",
+      "palabra": "Arena",
+      "imagen": "img/alfabetizacion/ejemplos/arena.webp",
+      "orden": 22,
+      "nivel": "Fácil"
+    },
+    {
+      "caracter": "A",
+      "palabra": "Alfombra",
+      "imagen": "img/alfabetizacion/ejemplos/alfombra.webp",
+      "orden": 23,
+      "nivel": "Fácil"
+    },
+    {
+      "caracter": "A",
+      "palabra": "Alambre",
+      "imagen": "img/alfabetizacion/ejemplos/alambre.webp",
+      "orden": 24,
+      "nivel": "Fácil"
+    },
+    {
+      "caracter": "A",
+      "palabra": "Acuario",
+      "imagen": "img/alfabetizacion/ejemplos/acuario.webp",
+      "orden": 25,
+      "nivel": "Fácil"
+    },
+    {
+      "caracter": "A",
+      "palabra": "Alcachofa",
+      "imagen": "img/alfabetizacion/ejemplos/alcachofa.webp",
+      "orden": 26,
+      "nivel": "Medio"
+    },
+    {
+      "caracter": "A",
+      "palabra": "Alce",
+      "imagen": "img/alfabetizacion/ejemplos/alce.webp",
+      "orden": 27,
+      "nivel": "Medio"
+    },
+    {
+      "caracter": "A",
+      "palabra": "Antena",
+      "imagen": "img/alfabetizacion/ejemplos/antena.webp",
+      "orden": 28,
+      "nivel": "Medio"
+    },
+    {
+      "caracter": "A",
+      "palabra": "Aspiradora",
+      "imagen": "img/alfabetizacion/ejemplos/aspiradora.webp",
+      "orden": 29,
+      "nivel": "Medio"
+    },
+    {
+      "caracter": "A",
+      "palabra": "Ají",
+      "imagen": "img/alfabetizacion/ejemplos/aji.webp",
+      "orden": 30,
       "nivel": "Fácil"
     },
     {
@@ -848,6 +974,111 @@
       "palabra": "Balanza",
       "imagen": "img/alfabetizacion/ejemplos/balanza.webp",
       "orden": 15,
+      "nivel": "Medio"
+    },
+    {
+      "caracter": "B",
+      "palabra": "Barba",
+      "imagen": "img/alfabetizacion/ejemplos/barba.webp",
+      "orden": 16,
+      "nivel": "Fácil"
+    },
+    {
+      "caracter": "B",
+      "palabra": "Bolsa",
+      "imagen": "img/alfabetizacion/ejemplos/bolsa.webp",
+      "orden": 17,
+      "nivel": "Fácil"
+    },
+    {
+      "caracter": "B",
+      "palabra": "Botón",
+      "imagen": "img/alfabetizacion/ejemplos/boton.webp",
+      "orden": 18,
+      "nivel": "Fácil"
+    },
+    {
+      "caracter": "B",
+      "palabra": "Brazo",
+      "imagen": "img/alfabetizacion/ejemplos/brazo.webp",
+      "orden": 19,
+      "nivel": "Fácil"
+    },
+    {
+      "caracter": "B",
+      "palabra": "Brazalete",
+      "imagen": "img/alfabetizacion/ejemplos/brazalete.webp",
+      "orden": 20,
+      "nivel": "Difícil"
+    },
+    {
+      "caracter": "B",
+      "palabra": "Brocha",
+      "imagen": "img/alfabetizacion/ejemplos/brocha.webp",
+      "orden": 21,
+      "nivel": "Fácil"
+    },
+    {
+      "caracter": "B",
+      "palabra": "Balde",
+      "imagen": "img/alfabetizacion/ejemplos/balde.webp",
+      "orden": 22,
+      "nivel": "Fácil"
+    },
+    {
+      "caracter": "B",
+      "palabra": "Bañera",
+      "imagen": "img/alfabetizacion/ejemplos/banera.webp",
+      "orden": 23,
+      "nivel": "Fácil"
+    },
+    {
+      "caracter": "B",
+      "palabra": "Bombero",
+      "imagen": "img/alfabetizacion/ejemplos/bombero.webp",
+      "orden": 24,
+      "nivel": "Fácil"
+    },
+    {
+      "caracter": "B",
+      "palabra": "Biblioteca",
+      "imagen": "img/alfabetizacion/ejemplos/biblioteca.webp",
+      "orden": 25,
+      "nivel": "Medio"
+    },
+    {
+      "caracter": "B",
+      "palabra": "Billetera",
+      "imagen": "img/alfabetizacion/ejemplos/billetera.webp",
+      "orden": 26,
+      "nivel": "Difícil"
+    },
+    {
+      "caracter": "B",
+      "palabra": "Billete",
+      "imagen": "img/alfabetizacion/ejemplos/billete.webp",
+      "orden": 27,
+      "nivel": "Medio"
+    },
+    {
+      "caracter": "B",
+      "palabra": "Berenjena",
+      "imagen": "img/alfabetizacion/ejemplos/berenjena.webp",
+      "orden": 28,
+      "nivel": "Difícil"
+    },
+    {
+      "caracter": "B",
+      "palabra": "Brócoli",
+      "imagen": "img/alfabetizacion/ejemplos/brocoli.webp",
+      "orden": 29,
+      "nivel": "Medio"
+    },
+    {
+      "caracter": "B",
+      "palabra": "Batería",
+      "imagen": "img/alfabetizacion/ejemplos/bateria.webp",
+      "orden": 30,
       "nivel": "Medio"
     },
     {
@@ -1112,14 +1343,14 @@
     {
       "caracter": "Ñ",
       "palabra": "Ñandú",
-      "imagen": "img/alfabetizacion/ejemplos/ñandu.webp",
+      "imagen": "img/alfabetizacion/ejemplos/nandu.webp",
       "orden": 1,
       "nivel": ""
     },
     {
       "caracter": "Ñ",
       "palabra": "Ñoquis",
-      "imagen": "img/alfabetizacion/ejemplos/ñoquis.webp",
+      "imagen": "img/alfabetizacion/ejemplos/noquis.webp",
       "orden": 2,
       "nivel": ""
     },
@@ -1181,7 +1412,7 @@
     },
     {
       "caracter": "Q",
-      "palabra": "Quinoa",
+      "palabra": "Quinua",
       "imagen": "img/alfabetizacion/ejemplos/quinoa.webp",
       "orden": 3,
       "nivel": ""
@@ -1259,7 +1490,7 @@
     {
       "caracter": "U",
       "palabra": "Uña",
-      "imagen": "img/alfabetizacion/ejemplos/uña.webp",
+      "imagen": "img/alfabetizacion/ejemplos/una.webp",
       "orden": 2,
       "nivel": ""
     },
@@ -1360,216 +1591,6 @@
       "imagen": "img/alfabetizacion/ejemplos/zorro.webp",
       "orden": 3,
       "nivel": ""
-    },
-    {
-      "caracter": "A",
-      "palabra": "Amigo",
-      "imagen": "img/alfabetizacion/ejemplos/amigo.webp",
-      "orden": 15,
-      "nivel": "Fácil"
-    },
-    {
-      "caracter": "A",
-      "palabra": "Amiga",
-      "imagen": "img/alfabetizacion/ejemplos/amiga.webp",
-      "orden": 16,
-      "nivel": "Fácil"
-    },
-    {
-      "caracter": "A",
-      "palabra": "Arroz",
-      "imagen": "img/alfabetizacion/ejemplos/arroz.webp",
-      "orden": 17,
-      "nivel": "Fácil"
-    },
-    {
-      "caracter": "A",
-      "palabra": "Azúcar",
-      "imagen": "img/alfabetizacion/ejemplos/azucar.webp",
-      "orden": 18,
-      "nivel": "Fácil"
-    },
-    {
-      "caracter": "A",
-      "palabra": "Aceite",
-      "imagen": "img/alfabetizacion/ejemplos/aceite.webp",
-      "orden": 19,
-      "nivel": "Fácil"
-    },
-    {
-      "caracter": "A",
-      "palabra": "Ambulancia",
-      "imagen": "img/alfabetizacion/ejemplos/ambulancia.webp",
-      "orden": 20,
-      "nivel": "Fácil"
-    },
-    {
-      "caracter": "A",
-      "palabra": "Armario",
-      "imagen": "img/alfabetizacion/ejemplos/armario.webp",
-      "orden": 21,
-      "nivel": "Fácil"
-    },
-    {
-      "caracter": "A",
-      "palabra": "Arena",
-      "imagen": "img/alfabetizacion/ejemplos/arena.webp",
-      "orden": 22,
-      "nivel": "Fácil"
-    },
-    {
-      "caracter": "A",
-      "palabra": "Alfombra",
-      "imagen": "img/alfabetizacion/ejemplos/alfombra.webp",
-      "orden": 23,
-      "nivel": "Fácil"
-    },
-    {
-      "caracter": "A",
-      "palabra": "Alambre",
-      "imagen": "img/alfabetizacion/ejemplos/alambre.webp",
-      "orden": 24,
-      "nivel": "Fácil"
-    },
-    {
-      "caracter": "A",
-      "palabra": "Acuario",
-      "imagen": "img/alfabetizacion/ejemplos/acuario.webp",
-      "orden": 25,
-      "nivel": "Fácil"
-    },
-    {
-      "caracter": "A",
-      "palabra": "Alcachofa",
-      "imagen": "img/alfabetizacion/ejemplos/alcachofa.webp",
-      "orden": 26,
-      "nivel": "Medio"
-    },
-    {
-      "caracter": "A",
-      "palabra": "Alce",
-      "imagen": "img/alfabetizacion/ejemplos/alce.webp",
-      "orden": 27,
-      "nivel": "Medio"
-    },
-    {
-      "caracter": "A",
-      "palabra": "Antena",
-      "imagen": "img/alfabetizacion/ejemplos/antena.webp",
-      "orden": 28,
-      "nivel": "Medio"
-    },
-    {
-      "caracter": "A",
-      "palabra": "Aspiradora",
-      "imagen": "img/alfabetizacion/ejemplos/aspiradora.webp",
-      "orden": 29,
-      "nivel": "Medio"
-    },
-    {
-      "caracter": "B",
-      "palabra": "Barba",
-      "imagen": "img/alfabetizacion/ejemplos/barba.webp",
-      "orden": 16,
-      "nivel": "Fácil"
-    },
-    {
-      "caracter": "B",
-      "palabra": "Bolsa",
-      "imagen": "img/alfabetizacion/ejemplos/bolsa.webp",
-      "orden": 17,
-      "nivel": "Fácil"
-    },
-    {
-      "caracter": "B",
-      "palabra": "Botón",
-      "imagen": "img/alfabetizacion/ejemplos/boton.webp",
-      "orden": 18,
-      "nivel": "Fácil"
-    },
-    {
-      "caracter": "B",
-      "palabra": "Brazo",
-      "imagen": "img/alfabetizacion/ejemplos/brazo.webp",
-      "orden": 19,
-      "nivel": "Fácil"
-    },
-    {
-      "caracter": "B",
-      "palabra": "Brazalete",
-      "imagen": "img/alfabetizacion/ejemplos/brazalete.webp",
-      "orden": 20,
-      "nivel": "Difícil"
-    },
-    {
-      "caracter": "B",
-      "palabra": "Brocha",
-      "imagen": "img/alfabetizacion/ejemplos/brocha.webp",
-      "orden": 21,
-      "nivel": "Fácil"
-    },
-    {
-      "caracter": "B",
-      "palabra": "Balde",
-      "imagen": "img/alfabetizacion/ejemplos/balde.webp",
-      "orden": 22,
-      "nivel": "Fácil"
-    },
-    {
-      "caracter": "B",
-      "palabra": "Bañera",
-      "imagen": "img/alfabetizacion/ejemplos/banera.webp",
-      "orden": 23,
-      "nivel": "Fácil"
-    },
-    {
-      "caracter": "B",
-      "palabra": "Bombero",
-      "imagen": "img/alfabetizacion/ejemplos/bombero.webp",
-      "orden": 24,
-      "nivel": "Fácil"
-    },
-    {
-      "caracter": "B",
-      "palabra": "Biblioteca",
-      "imagen": "img/alfabetizacion/ejemplos/biblioteca.webp",
-      "orden": 25,
-      "nivel": "Medio"
-    },
-    {
-      "caracter": "B",
-      "palabra": "Billetera",
-      "imagen": "img/alfabetizacion/ejemplos/billetera.webp",
-      "orden": 26,
-      "nivel": "Difícil"
-    },
-    {
-      "caracter": "B",
-      "palabra": "Billete",
-      "imagen": "img/alfabetizacion/ejemplos/billete.webp",
-      "orden": 27,
-      "nivel": "Medio"
-    },
-    {
-      "caracter": "B",
-      "palabra": "Berenjena",
-      "imagen": "img/alfabetizacion/ejemplos/berenjena.webp",
-      "orden": 28,
-      "nivel": "Difícil"
-    },
-    {
-      "caracter": "B",
-      "palabra": "Brócoli",
-      "imagen": "img/alfabetizacion/ejemplos/brocoli.webp",
-      "orden": 29,
-      "nivel": "Medio"
-    },
-    {
-      "caracter": "B",
-      "palabra": "Batería",
-      "imagen": "img/alfabetizacion/ejemplos/bateria.webp",
-      "orden": 30,
-      "nivel": "Medio"
     }
   ]
 }
