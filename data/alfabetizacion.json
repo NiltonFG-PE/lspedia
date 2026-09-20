@@ -1556,6 +1556,13 @@
       "imagen": "img/alfabetizacion/ejemplos/billete.webp",
       "orden": 27,
       "nivel": "Medio"
+    },
+    {
+      "caracter": "B",
+      "palabra": "Berenjena",
+      "imagen": "img/alfabetizacion/ejemplos/berenjena.webp",
+      "orden": 28,
+      "nivel": "Fácil"
     }
   ]
 }
