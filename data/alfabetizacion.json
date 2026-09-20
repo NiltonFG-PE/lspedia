@@ -199,6 +199,20 @@
     },
     {
       "tipo": "letra",
+      "caracter": "Ñ",
+      "imagenBoca": "img/alfabetizacion/boca/Ñ.webm",
+      "trazoVideo": "img/alfabetizacion/grafias/Ñ-mayuscula.mp4",
+      "nombre": "",
+      "grafiaMayuscula": "img/alfabetizacion/grafias/Ñ-mayuscula.mp4",
+      "grafiaMinuscula": "img/alfabetizacion/grafias/Ñ-minuscula.mp4",
+      "grafiaCursivaMayuscula": "img/alfabetizacion/grafias/Ñ-cursiva-mayuscula.mp4",
+      "grafiaCursivaMinuscula": "img/alfabetizacion/grafias/Ñ-cursiva-minuscula.mp4",
+      "imagenCirculo": "img/alfabetizacion/circulo/Ñ.webp",
+      "orden": 15,
+      "grafiaImagen": ""
+    },
+    {
+      "tipo": "letra",
       "caracter": "O",
       "imagenBoca": "img/alfabetizacion/boca/O.webm",
       "trazoVideo": "img/alfabetizacion/grafias/O-mayuscula.mp4",
@@ -368,7 +382,7 @@
     {
       "tipo": "numero",
       "caracter": "0",
-      "imagenBoca": "img/alfabetizacion/boca/0.webm",
+      "imagenBoca": "",
       "trazoVideo": "img/alfabetizacion/grafias/0.mp4",
       "nombre": "CERO",
       "grafiaMayuscula": "",
@@ -872,6 +886,13 @@
       "nivel": ""
     },
     {
+      "caracter": "C",
+      "palabra": "Camisa",
+      "imagen": "img/alfabetizacion/ejemplos/camisa.webp",
+      "orden": 5,
+      "nivel": "Fácil"
+    },
+    {
       "caracter": "D",
       "palabra": "Dado",
       "imagen": "img/alfabetizacion/ejemplos/dado.webp",
@@ -1105,14 +1126,14 @@
     {
       "caracter": "Ñ",
       "palabra": "Ñandú",
-      "imagen": "img/alfabetizacion/ejemplos/ñandu.webp",
+      "imagen": "img/alfabetizacion/ejemplos/nandu.webp",
       "orden": 1,
       "nivel": ""
     },
     {
       "caracter": "Ñ",
       "palabra": "Ñoquis",
-      "imagen": "img/alfabetizacion/ejemplos/ñoquis.webp",
+      "imagen": "img/alfabetizacion/ejemplos/noquis.webp",
       "orden": 2,
       "nivel": ""
     },
@@ -1252,7 +1273,7 @@
     {
       "caracter": "U",
       "palabra": "Uña",
-      "imagen": "img/alfabetizacion/ejemplos/uña.webp",
+      "imagen": "img/alfabetizacion/ejemplos/una.webp",
       "orden": 2,
       "nivel": ""
     },
@@ -1492,7 +1513,7 @@
       "palabra": "Brazalete",
       "imagen": "img/alfabetizacion/ejemplos/brazalete.webp",
       "orden": 20,
-      "nivel": "Fácil"
+      "nivel": "Difícil"
     },
     {
       "caracter": "B",
