@@ -5354,6 +5354,20 @@ function ejecutarBusquedaDirectaCategorias() {
     registrarBusquedaGA4(consultaOriginal, "vocabulario");
 
     const datos = obtenerDatosVocabulario();
+
+    // Si el usuario escribió exactamente una etiqueta, abrimos la colección
+    // completa en lugar de abrir una sola palabra.
+    const etiquetaExacta = obtenerEtiquetaExactaVocabulario(datos, texto);
+    if(etiquetaExacta){
+        buscarCategorias.value = "";
+        if(sugerenciasCategorias){
+            sugerenciasCategorias.innerHTML = "";
+            sugerenciasCategorias.style.display = "none";
+        }
+        mostrarEtiquetaVocabulario(etiquetaExacta.nombre);
+        return;
+    }
+
     const coincidencias = [];
     datos.forEach(p => {
         const rango = clasificarCoincidencia(p, texto);
@@ -5376,7 +5390,6 @@ function ejecutarBusquedaDirectaCategorias() {
             }
         }
 
-        // Si solo coincide el significado/ejemplo, mostramos opciones.
         buscarEnCategorias();
         return;
     }
@@ -5410,6 +5423,89 @@ function limpiarResultadoCategorias(opciones = {}){
 }
 window.limpiarResultadoCategorias = limpiarResultadoCategorias;
 
+function obtenerEtiquetasVocabulario(p){
+    const valor = p && (p.etiquetas ?? p.tags);
+    if(Array.isArray(valor)){
+        return valor.map(t => String(t || "").trim()).filter(Boolean);
+    }
+    return String(valor || "")
+        .split(/[,;|]/)
+        .map(t => t.trim())
+        .filter(Boolean);
+}
+
+function obtenerEtiquetasDisponiblesVocabulario(datos){
+    const mapa = new Map();
+    datos.forEach(p => {
+        obtenerEtiquetasVocabulario(p).forEach(etiqueta => {
+            const clave = norm(etiqueta);
+            if(!clave) return;
+            if(!mapa.has(clave)) mapa.set(clave, { nombre: etiqueta, total: 0 });
+            mapa.get(clave).total += 1;
+        });
+    });
+    return Array.from(mapa.values()).sort((a,b) =>
+        a.nombre.localeCompare(b.nombre, "es", { sensitivity: "base" })
+    );
+}
+
+function obtenerEtiquetaExactaVocabulario(datos, texto){
+    const clave = norm(texto);
+    if(!clave) return null;
+    return obtenerEtiquetasDisponiblesVocabulario(datos)
+        .find(item => norm(item.nombre) === clave) || null;
+}
+
+function mostrarEtiquetaVocabulario(nombre, opciones = {}){
+    const datos = obtenerDatosVocabulario();
+    const clave = norm(nombre);
+    const filtradas = datos
+        .filter(p => obtenerEtiquetasVocabulario(p).some(t => norm(t) === clave))
+        .sort((a,b) => String(a.palabra || "").localeCompare(String(b.palabra || ""), "es", { sensitivity: "base" }));
+
+    if(buscarCategorias) buscarCategorias.value = "";
+    if(sugerenciasCategorias){
+        sugerenciasCategorias.innerHTML = "";
+        sugerenciasCategorias.style.display = "none";
+    }
+
+    if(!opciones.noActualizarHistorial){
+        actualizarVistaUrl("vocabulario&etiqueta=" + encodeURIComponent(nombre));
+    }
+
+    let html = botonAtrasCategorias()
+        + '<div class="mb-3">'
+        + '<h6 class="text-muted uppercase fw-bold mb-1 tracking-wider">🏷️ '
+        + escaparHtml(nombre)
+        + '</h6>'
+        + '<div class="small text-secondary">'
+        + filtradas.length + ' '
+        + (filtradas.length === 1 ? "palabra" : "palabras")
+        + ' relacionadas</div></div>'
+        + '<div class="categoria-resultados-grid">';
+
+    filtradas.forEach((p, i) => {
+        const referencia = escaparCadenaJsAtributo(obtenerIdPalabra(p));
+        html += '<button type="button" class="categoria-resultado-item shadow-sm" style="animation-delay: '
+            + (Math.min(i, 20) * 0.04)
+            + 's" onclick="mostrarPalabraVocabularioPorReferencia(\''
+            + referencia
+            + '\')">'
+            + generarMiniaturaVocabulario(p)
+            + '<span class="categoria-resultado-titulo">'
+            + escaparHtml(p.palabra)
+            + '</span>'
+            + '<span class="btn btn-sm btn-primary fw-bold categoria-resultado-boton">'
+            + ICONO_OJO_SVG
+            + ' Ver Seña</span></button>';
+    });
+
+    html += '</div>';
+    resultadoCategorias.innerHTML = html;
+    scrollAlPrimerResultado(resultadoCategorias);
+}
+window.mostrarEtiquetaVocabulario = mostrarEtiquetaVocabulario;
+
 // Igual que buscarPalabras() (buscador principal del Diccionario): al
 // escribir se muestra un panel flotante oscuro con las coincidencias
 // (miniatura + nombre + categoría), en vez de tarjetas completas debajo
@@ -5427,8 +5523,39 @@ function buscarEnCategorias(){
         return;
     }
 
-    // Misma prioridad que buscarPalabras(): de lo más exacto a lo más
-    // aproximado (ver clasificarCoincidencia / ordenarYLimitarCoincidencias).
+    const datosVocabulario = obtenerDatosVocabulario();
+    const etiquetasCoincidentes = obtenerEtiquetasDisponiblesVocabulario(datosVocabulario)
+        .filter(item => norm(item.nombre).includes(texto))
+        .slice(0, 6);
+
+    // Las etiquetas funcionan como colecciones: mientras el usuario escribe
+    // "meses del año", primero se ofrece abrir todas las palabras relacionadas.
+    if(etiquetasCoincidentes.length){
+        sugerenciasCategorias.style.display = "block";
+        const bloqueEtiquetas = document.createElement("div");
+        bloqueEtiquetas.className = "list-group-item";
+        bloqueEtiquetas.style.cssText = "background-color:#f8fbff;border:none;padding:10px 12px;";
+        bloqueEtiquetas.innerHTML = '<strong style="font-size:12px;color:#2563eb;">🏷️ Colecciones</strong>';
+        sugerenciasCategorias.appendChild(bloqueEtiquetas);
+
+        etiquetasCoincidentes.forEach(item => {
+            const botonEtiqueta = document.createElement("button");
+            botonEtiqueta.className = "list-group-item list-group-item-action text-start";
+            botonEtiqueta.innerHTML =
+                '<div class="d-flex justify-content-between align-items-center gap-2">'
+                + '<span><strong>🏷️ ' + escaparHtml(item.nombre) + '</strong></span>'
+                + '<span class="badge bg-primary" style="font-size:10px;">'
+                + item.total + ' ' + (item.total === 1 ? "palabra" : "palabras")
+                + '</span></div>';
+            botonEtiqueta.onclick = () => {
+                mostrarEtiquetaVocabulario(item.nombre);
+            };
+            sugerenciasCategorias.appendChild(botonEtiqueta);
+        });
+    }
+
+    // Después de las etiquetas se mantienen las coincidencias normales de palabras.
+    // Misma prioridad que buscarPalabras(): de lo más exacto a lo más aproximado.
     const coincidenciasClasificadas = [];
     obtenerDatosVocabulario().forEach(p => {
         const rango = clasificarCoincidencia(p, texto);
@@ -5440,6 +5567,7 @@ function buscarEnCategorias(){
     sugerenciasCategorias.style.display = "block";
 
     if(coincidencias.length === 0){
+        if(etiquetasCoincidentes.length) return;
         const cercanos = buscarCercanos(texto, obtenerDatosVocabulario());
         if(cercanos.length > 0){
             sugerenciasCategorias.innerHTML = `
