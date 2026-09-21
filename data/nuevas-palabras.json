@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-09-21T23:54:47Z",
+  "generadoEn": "2026-09-21T23:58:56Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
@@ -18,6 +18,15 @@
       "palabra": "Cuándo",
       "categoria": "Preguntas",
       "imagen": "img/vocabulario/cuando.webp",
+      "fecha": "2026-09-21T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Cuántos",
+      "categoria": "Preguntas",
+      "imagen": "img/vocabulario/cuantos.webp",
       "fecha": "2026-09-21T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
@@ -99,15 +108,6 @@
       "palabra": "Amarillo",
       "categoria": "Colores",
       "imagen": "img/vocabulario/amarillo.webp",
-      "fecha": "2026-09-15T05:00:00Z",
-      "origenFecha": "fechaPublicacion",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Azul",
-      "categoria": "Colores",
-      "imagen": "img/vocabulario/azul.webp",
       "fecha": "2026-09-15T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
