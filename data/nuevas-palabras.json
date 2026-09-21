@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-09-21T23:51:02Z",
+  "generadoEn": "2026-09-21T23:54:47Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
@@ -9,6 +9,15 @@
       "palabra": "Cómo",
       "categoria": "Preguntas",
       "imagen": "img/vocabulario/como.webp",
+      "fecha": "2026-09-21T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Cuándo",
+      "categoria": "Preguntas",
+      "imagen": "img/vocabulario/cuando.webp",
       "fecha": "2026-09-21T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
@@ -99,15 +108,6 @@
       "palabra": "Azul",
       "categoria": "Colores",
       "imagen": "img/vocabulario/azul.webp",
-      "fecha": "2026-09-15T05:00:00Z",
-      "origenFecha": "fechaPublicacion",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Celeste",
-      "categoria": "Colores",
-      "imagen": "img/vocabulario/celeste.webp",
       "fecha": "2026-09-15T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
