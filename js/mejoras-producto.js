@@ -225,7 +225,7 @@
         cargar('js/rendimiento-movil.js?v=20260914-1', function(){
             cargar('js/mejoras-producto-base.js?v=20260914', function(){
                 cargar('js/lo-nuevo.js?v=20260914');
-                cargar('js/i18n.js?v=20260914', function(){
+                cargar('js/i18n.js?v=20260922-2', function(){
                     cargar('js/i18n-restaurar.js?v=20260914', function(){
                         cargar('js/i18n-auto.js?v=20260914', function(){
                             cargar('js/i18n-nosotros.js?v=20260914', function(){
