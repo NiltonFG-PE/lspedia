@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-09-22T12:25:54Z",
+  "generadoEn": "2026-09-22T12:52:16Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
@@ -9,6 +9,15 @@
       "palabra": "Cómo",
       "categoria": "Preguntas",
       "imagen": "img/vocabulario/como.webp",
+      "fecha": "2026-09-21T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Cuál",
+      "categoria": "Preguntas",
+      "imagen": "img/vocabulario/cual.webp",
       "fecha": "2026-09-21T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
@@ -99,15 +108,6 @@
       "palabra": "Blanco",
       "categoria": "Colores",
       "imagen": "img/vocabulario/blanco.webp",
-      "fecha": "2026-09-16T05:00:00Z",
-      "origenFecha": "fechaPublicacion",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Guinda",
-      "categoria": "Colores",
-      "imagen": "img/vocabulario/guinda.webp",
       "fecha": "2026-09-16T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
