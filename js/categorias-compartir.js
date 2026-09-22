@@ -115,7 +115,7 @@
     async function compartirCategoria(tipo, nombre){
         const url = construirUrlCategoria(tipo, nombre);
         const seccion = tipo === 'vocabulario' ? 'Vocabulario' : 'Diccionario';
-        const texto = `Explora la categoría "${nombre}" de ${seccion} en LSPedia:\n${url}`;
+        const texto = `Explora la categoría \"${nombre}\" de ${seccion} en LSPedia:`;
         if(navigator.share){
             try {
                 await navigator.share({ title: 'LSPedia', text: texto, url });
