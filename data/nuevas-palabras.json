@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-09-22T12:54:23Z",
+  "generadoEn": "2026-09-22T12:57:09Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
@@ -15,7 +15,7 @@
     },
     {
       "id": "",
-      "palabra": "Cuál",
+      "palabra": "¿Cuál?",
       "categoria": "Preguntas",
       "imagen": "img/vocabulario/cual.webp",
       "fecha": "2026-09-21T05:00:00Z",
