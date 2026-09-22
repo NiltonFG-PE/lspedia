@@ -12,12 +12,12 @@
         left: 0 !important;
         right: 0 !important;
         z-index: 1030 !important;
-        height: 108px !important;
-        min-height: 108px !important;
+        height: 92px !important;
+        min-height: 92px !important;
         padding: 0 !important;
         box-sizing: border-box !important;
         overflow: visible !important;
-        background: rgba(25, 32, 51, 0.88) !important;
+        background: rgba(10, 23, 52, 0.88) !important;
         -webkit-backdrop-filter: blur(10px) saturate(1.08) !important;
         backdrop-filter: blur(10px) saturate(1.08) !important;
         border-bottom: 1px solid rgba(255,255,255,.10) !important;
@@ -29,7 +29,7 @@
         width: 100% !important;
         max-width: none !important;
         height: 100% !important;
-        min-height: 108px !important;
+        min-height: 92px !important;
         padding-left: 16px !important;
         padding-right: 16px !important;
         margin: 0 !important;
@@ -58,7 +58,7 @@
     html body nav.navbar .navbar-brand img {
         display: block !important;
         width: auto !important;
-        height: 70px !important;
+        height: 60px !important;
         max-width: 195px !important;
         object-fit: contain !important;
         object-position: center !important;
@@ -82,7 +82,7 @@
     }
 
     html body {
-        padding-top: 108px !important;
+        padding-top: 92px !important;
     }
 
     #buscar,
@@ -90,7 +90,7 @@
     #herramientasMenuMovil,
     #seccionSubtitulos,
     #seccionNosotros {
-        scroll-margin-top: 124px !important;
+        scroll-margin-top: 108px !important;
     }
 }
 
@@ -100,11 +100,11 @@ html.modo-movil-real nav.navbar {
     left: 0 !important;
     right: 0 !important;
     z-index: 1030 !important;
-    height: 108px !important;
-    min-height: 108px !important;
+    height: 92px !important;
+    min-height: 92px !important;
     padding: 0 !important;
     overflow: visible !important;
-    background: rgba(25, 32, 51, 0.88) !important;
+    background: rgba(10, 23, 52, 0.88) !important;
     -webkit-backdrop-filter: blur(10px) saturate(1.08) !important;
     backdrop-filter: blur(10px) saturate(1.08) !important;
     border-bottom: 1px solid rgba(255,255,255,.10) !important;
@@ -116,7 +116,7 @@ html.modo-movil-real nav.navbar .container {
     width: 100% !important;
     max-width: none !important;
     height: 100% !important;
-    min-height: 108px !important;
+    min-height: 92px !important;
     margin: 0 !important;
     padding-left: 16px !important;
     padding-right: 16px !important;
@@ -140,7 +140,7 @@ html.modo-movil-real nav.navbar .navbar-brand video,
 html.modo-movil-real nav.navbar .navbar-brand img {
     display: block !important;
     width: auto !important;
-    height: 70px !important;
+    height: 60px !important;
     max-width: 195px !important;
     object-fit: contain !important;
     object-position: center !important;
@@ -160,7 +160,7 @@ html.modo-movil-real nav.navbar [data-language-switcher] {
 }
 
 html.modo-movil-real body {
-    padding-top: 108px !important;
+    padding-top: 92px !important;
 }
 
 @media (min-width: 1200px) {
