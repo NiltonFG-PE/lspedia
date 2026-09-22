@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-09-22T22:59:44Z",
+  "generadoEn": "2026-09-22T23:04:07Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
@@ -18,6 +18,15 @@
       "palabra": "Estaciones",
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/estaciones.webp",
+      "fecha": "2026-09-22T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Primavera",
+      "categoria": "Tiempo",
+      "imagen": "img/vocabulario/primavera.webp",
       "fecha": "2026-09-22T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
@@ -99,15 +108,6 @@
       "palabra": "¿Quiénes?",
       "categoria": "Preguntas",
       "imagen": "img/vocabulario/quienes.webp",
-      "fecha": "2026-09-21T05:00:00Z",
-      "origenFecha": "fechaPublicacion",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "¿Cuáles?",
-      "categoria": "Preguntas",
-      "imagen": "img/vocabulario/cuales.webp",
       "fecha": "2026-09-21T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
