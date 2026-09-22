@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-09-22T13:00:37Z",
+  "generadoEn": "2026-09-22T13:01:19Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
@@ -33,7 +33,7 @@
     },
     {
       "id": "",
-      "palabra": "Dónde",
+      "palabra": "¿Dónde?",
       "categoria": "Preguntas",
       "imagen": "img/vocabulario/donde.webp",
       "fecha": "2026-09-21T05:00:00Z",
