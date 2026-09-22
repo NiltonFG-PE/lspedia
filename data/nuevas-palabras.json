@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-09-22T12:59:07Z",
+  "generadoEn": "2026-09-22T13:00:37Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
@@ -87,7 +87,7 @@
     },
     {
       "id": "",
-      "palabra": "Cuántos",
+      "palabra": "¿Cuántos?",
       "categoria": "Preguntas",
       "imagen": "img/vocabulario/cuantos.webp",
       "fecha": "2026-09-21T05:00:00Z",
