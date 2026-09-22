@@ -2752,6 +2752,7 @@ function buscarPalabras(){
             cercanos.forEach(p => {
                 const boton = document.createElement("button");
                 boton.className = "list-group-item list-group-item-action text-start";
+                boton.dataset.lspRef = obtenerIdPalabra(p);
                 boton.innerHTML = `<strong>${escaparHtml(p.palabra)}</strong> <span class="badge" style="font-size: 10px;">${escaparHtml(p.categoria.trim())}</span>`;
                 boton.onclick = () => mostrarPalabra(p);
                 sugerencias.appendChild(boton);
@@ -2771,6 +2772,7 @@ function buscarPalabras(){
     encontrados.forEach(p=>{
         const boton=document.createElement("button");
         boton.className="list-group-item list-group-item-action text-start";
+        boton.dataset.lspRef = obtenerIdPalabra(p);
         let textoMatch = `<strong>${escaparHtml(p.palabra)}</strong>`;
         const varianteCoincidente = obtenerVarianteQueCoincide(p.variantes, texto);
         if(varianteCoincidente && !norm(p.palabra).includes(texto)){
@@ -6576,31 +6578,42 @@ function mostrarSenalDelDia(offset = offsetSenalDelDia){
 })();
 
 
-// LSP_BUSQUEDA_MOVIL_TOUCH_FIX_20260922_V1
-(function activarToqueSeguroResultadosBusqueda(){
-    // En algunos navegadores móviles el clic sintético después de tocar un
-    // <button> dentro de una lista dinámica puede no llegar de forma fiable,
-    // especialmente cuando el dedo termina sobre una imagen o un <span>.
-    // Convertimos el touchend en el mismo click que ya usa la lógica normal.
-    function instalar(contenedor){
-        if(!contenedor || contenedor.dataset.lspTouchFix === "1") return;
-        contenedor.dataset.lspTouchFix = "1";
-        contenedor.addEventListener("touchend", (evento) => {
+// LSP_BUSQUEDA_MOVIL_TOUCH_FIX_20260922_V2
+(function activarToqueDirectoResultadosBusqueda(){
+    // En móvil no dependemos del click sintético del navegador. El primer
+    // contacto sobre una sugerencia abre directamente la ficha usando la
+    // referencia guardada en data-lsp-ref. Esto evita problemas de Chrome/
+    // Safari cuando la lista fue creada dinámicamente.
+    function instalar(contenedor, fuente){
+        if(!contenedor || contenedor.dataset.lspTouchFix === "2") return;
+        contenedor.dataset.lspTouchFix = "2";
+        contenedor.addEventListener("touchstart", (evento) => {
             const boton = evento.target && evento.target.closest
-                ? evento.target.closest("button.list-group-item-action")
+                ? evento.target.closest("button.list-group-item-action[data-lsp-ref]")
                 : null;
             if(!boton || !contenedor.contains(boton)) return;
 
+            const referencia = boton.dataset.lspRef || "";
+            if(!referencia) return;
+
             evento.preventDefault();
             evento.stopPropagation();
-            boton.dispatchEvent(new MouseEvent("click", {
-                bubbles: true,
-                cancelable: true,
-                view: window
-            }));
+
+            const palabra = buscarPalabraPorReferencia(
+                referencia,
+                fuente === "vocabulario" ? obtenerDatosVocabulario() : App.datos
+            );
+
+            if(!palabra) return;
+
+            if(fuente === "vocabulario"){
+                mostrarPalabraVocabularioPorReferencia(referencia);
+            } else {
+                mostrarPalabra(palabra);
+            }
         }, { passive: false });
     }
 
-    instalar(document.getElementById("sugerencias"));
-    instalar(document.getElementById("sugerenciasCategorias"));
+    instalar(document.getElementById("sugerencias"), "diccionario");
+    instalar(document.getElementById("sugerenciasCategorias"), "vocabulario");
 })();
