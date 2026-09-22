@@ -6478,3 +6478,74 @@ function mostrarSenalDelDia(offset = offsetSenalDelDia){
         iniciar();
     }
 })();
+
+
+
+// LSP_NAV_SCROLL_UI_20260922_V2
+(() => {
+    const navInferior = document.getElementById("mobileBottomNav");
+    if (!navInferior) return;
+
+    let ultimoScrollY = window.scrollY || window.pageYOffset || 0;
+    let rafScroll = 0;
+    let noOcultarHasta = 0;
+
+    function mostrarNavInferior() {
+        navInferior.classList.remove("lsp-nav-oculta-scroll");
+    }
+
+    function actualizarNavPorScroll() {
+        rafScroll = 0;
+        const y = Math.max(0, window.scrollY || window.pageYOffset || 0);
+        const ahora = performance.now();
+        const delta = y - ultimoScrollY;
+
+        // Al pulsar un botón inferior, la navegación puede hacer scroll
+        // programático hacia la sección. Ese movimiento NO debe ocultar
+        // la barra: el usuario la acaba de tocar.
+        if (ahora < noOcultarHasta) {
+            mostrarNavInferior();
+            ultimoScrollY = y;
+            return;
+        }
+
+        if (Math.abs(delta) < 6) return;
+
+        // Comportamiento tipo app:
+        // - scroll hacia abajo => barra se oculta
+        // - scroll hacia arriba => barra reaparece
+        // - cerca del inicio => siempre visible
+        if (delta > 0 && y > 80) {
+            navInferior.classList.add("lsp-nav-oculta-scroll");
+        } else if (delta < 0) {
+            mostrarNavInferior();
+        } else if (y <= 80) {
+            mostrarNavInferior();
+        }
+
+        ultimoScrollY = y;
+    }
+
+    document.addEventListener("click", (evento) => {
+        const boton = evento.target.closest(".mobile-bottom-nav .mbn-item");
+        if (!boton) return;
+
+        // Deja visible la barra durante el cambio de sección y su scroll
+        // suave asociado.
+        noOcultarHasta = performance.now() + 1400;
+        mostrarNavInferior();
+    }, true);
+
+    window.addEventListener("scroll", () => {
+        if (rafScroll) return;
+        rafScroll = requestAnimationFrame(actualizarNavPorScroll);
+    }, { passive: true });
+
+    window.addEventListener("resize", () => {
+        mostrarNavInferior();
+        ultimoScrollY = window.scrollY || window.pageYOffset || 0;
+    }, { passive: true });
+
+    mostrarNavInferior();
+})();
+
