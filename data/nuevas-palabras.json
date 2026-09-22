@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-09-22T00:13:39Z",
+  "generadoEn": "2026-09-22T00:15:41Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
@@ -60,6 +60,15 @@
     },
     {
       "id": "",
+      "palabra": "Quiénes",
+      "categoria": "Preguntas",
+      "imagen": "img/vocabulario/quienes.webp",
+      "fecha": "2026-09-21T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
       "palabra": "Cuántos",
       "categoria": "Preguntas",
       "imagen": "img/vocabulario/cuantos.webp",
@@ -99,15 +108,6 @@
       "palabra": "Marrón",
       "categoria": "Colores",
       "imagen": "img/vocabulario/marron.webp",
-      "fecha": "2026-09-16T05:00:00Z",
-      "origenFecha": "fechaPublicacion",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Morado",
-      "categoria": "Colores",
-      "imagen": "img/vocabulario/morado.webp",
       "fecha": "2026-09-16T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
