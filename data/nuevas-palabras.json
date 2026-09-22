@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-09-22T23:09:38Z",
+  "generadoEn": "2026-09-22T23:15:26Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
@@ -18,6 +18,15 @@
       "palabra": "Estaciones",
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/estaciones.webp",
+      "fecha": "2026-09-22T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Invierno",
+      "categoria": "Tiempo",
+      "imagen": "img/vocabulario/invierno.webp",
       "fecha": "2026-09-22T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
@@ -99,15 +108,6 @@
       "palabra": "¿Por qué?",
       "categoria": "Preguntas",
       "imagen": "img/vocabulario/por-que.webp",
-      "fecha": "2026-09-21T05:00:00Z",
-      "origenFecha": "fechaPublicacion",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "¿Qué?",
-      "categoria": "Preguntas",
-      "imagen": "img/vocabulario/que.webp",
       "fecha": "2026-09-21T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
