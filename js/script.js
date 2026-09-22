@@ -5624,6 +5624,7 @@ function buscarEnCategorias(){
     coincidencias.forEach(p => {
         const boton = document.createElement("button");
         boton.className = "list-group-item list-group-item-action text-start";
+        boton.dataset.lspRef = obtenerIdPalabra(p);
         let textoMatch = `<strong>${escaparHtml(p.palabra)}</strong>`;
         const varianteCoincidenteCat = obtenerVarianteQueCoincide(p.variantes, texto);
         if(varianteCoincidenteCat && !norm(p.palabra).includes(texto)){
