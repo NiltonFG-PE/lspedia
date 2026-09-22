@@ -6589,6 +6589,11 @@ function mostrarSenalDelDia(offset = offsetSenalDelDia){
         if(!contenedor || contenedor.dataset.lspTouchFix === "2") return;
         contenedor.dataset.lspTouchFix = "2";
         contenedor.addEventListener("touchstart", (evento) => {
+            // Cuando el buscador móvil está dentro de su overlay, ese módulo
+            // gestiona la selección completa (cerrar overlay + abrir ficha).
+            // Evitamos abrir aquí también para no duplicar la navegación.
+            if(document.getElementById("lspMobileSearchOverlay")) return;
+
             const boton = evento.target && evento.target.closest
                 ? evento.target.closest("button.list-group-item-action[data-lsp-ref]")
                 : null;
