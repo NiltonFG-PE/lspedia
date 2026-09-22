@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-09-22T00:11:36Z",
+  "generadoEn": "2026-09-22T00:13:39Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
@@ -45,6 +45,15 @@
       "palabra": "Qué",
       "categoria": "Preguntas",
       "imagen": "img/vocabulario/que.webp",
+      "fecha": "2026-09-21T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Quién",
+      "categoria": "Preguntas",
+      "imagen": "img/vocabulario/quien.webp",
       "fecha": "2026-09-21T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
@@ -99,15 +108,6 @@
       "palabra": "Morado",
       "categoria": "Colores",
       "imagen": "img/vocabulario/morado.webp",
-      "fecha": "2026-09-16T05:00:00Z",
-      "origenFecha": "fechaPublicacion",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Negro",
-      "categoria": "Colores",
-      "imagen": "img/vocabulario/negro.webp",
       "fecha": "2026-09-16T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
