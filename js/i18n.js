@@ -101,13 +101,59 @@
         const style = document.createElement('style');
         style.id = 'lspedia-i18n-estilos';
         style.textContent = `
-            .lspedia-idioma-selector{display:inline-flex;align-items:center;gap:2px;padding:3px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);margin-left:10px;flex:0 0 auto}
-            .lspedia-idioma-btn{border:0;border-radius:999px;background:transparent;color:#fff;font:700 12px/1 'Poppins',sans-serif;padding:8px 9px;min-width:38px;cursor:pointer;transition:.18s ease}
-            .lspedia-idioma-btn.active{background:#ffc107;color:#0f172a;box-shadow:0 2px 8px rgba(0,0,0,.15)}
-            .lspedia-idioma-btn:focus-visible{outline:2px solid #fff;outline-offset:2px}
+            /* Selector ES/EN + modo oscuro: cápsula premium de cristal, compacta y táctil. */
+            .lspedia-idioma-selector{
+                display:inline-flex;
+                align-items:center;
+                gap:4px;
+                padding:5px;
+                min-height:54px;
+                border-radius:999px;
+                background:linear-gradient(145deg,rgba(255,255,255,.18),rgba(255,255,255,.08));
+                border:1px solid rgba(255,255,255,.28);
+                box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 8px 24px rgba(0,0,0,.18),0 0 0 1px rgba(37,99,235,.08);
+                -webkit-backdrop-filter:blur(14px) saturate(1.25);
+                backdrop-filter:blur(14px) saturate(1.25);
+                margin-left:10px;
+                flex:0 0 auto;
+            }
+            .lspedia-idioma-btn{
+                border:1px solid transparent;
+                border-radius:999px;
+                background:transparent;
+                color:rgba(255,255,255,.88);
+                font:700 13px/1 'Poppins',sans-serif;
+                letter-spacing:.2px;
+                padding:0;
+                width:52px;
+                height:44px;
+                cursor:pointer;
+                transition:background .22s ease,color .22s ease,box-shadow .22s ease,transform .18s ease;
+            }
+            .lspedia-idioma-btn:hover{background:rgba(255,255,255,.11);color:#fff;transform:translateY(-1px)}
+            .lspedia-idioma-btn.active{
+                background:linear-gradient(145deg,#ffd329 0%,#ffbf00 100%);
+                color:#0f172a;
+                border-color:rgba(255,255,255,.32);
+                box-shadow:0 5px 14px rgba(255,193,7,.28),inset 0 1px 0 rgba(255,255,255,.5);
+            }
+            .lspedia-idioma-btn:focus-visible{outline:2px solid #ffd54a;outline-offset:2px}
+            .lspedia-idioma-selector #lspediaTemaBtn{
+                width:46px;
+                height:44px;
+                margin-left:2px;
+                border-left:1px solid rgba(255,255,255,.22);
+                border-radius:0 999px 999px 0;
+                box-shadow:none;
+            }
             .lspedia-en-term{font-size:.88rem;font-weight:700;color:#64748b;margin:-8px 0 12px}
             .lspedia-lsp-label{display:inline-flex;align-items:center;gap:6px;margin:0 auto 8px;padding:5px 10px;border-radius:999px;background:#eef6ff;color:#174a7e;font-size:.78rem;font-weight:700}
-            @media(max-width:1199.98px){nav.navbar .container{position:relative}.lspedia-idioma-selector{position:absolute;right:8px;top:50%;transform:translateY(-50%);margin-left:0}.lspedia-idioma-btn{padding:7px 8px;min-width:34px;font-size:11px}}
+            @media(max-width:1199.98px){
+                nav.navbar .container{position:relative}
+                .lspedia-idioma-selector{position:absolute;right:8px;top:50%;transform:translateY(-50%);margin-left:0;min-height:52px;padding:4px;gap:3px}
+                .lspedia-idioma-btn{width:48px;height:42px;font-size:12px}
+                .lspedia-idioma-selector #lspediaTemaBtn{width:44px;height:42px}
+            }
         `;
         document.head.appendChild(style);
     }
