@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-09-22T00:05:39Z",
+  "generadoEn": "2026-09-22T00:11:36Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
@@ -36,6 +36,15 @@
       "palabra": "Por qué",
       "categoria": "Preguntas",
       "imagen": "img/vocabulario/por-que.webp",
+      "fecha": "2026-09-21T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Qué",
+      "categoria": "Preguntas",
+      "imagen": "img/vocabulario/que.webp",
       "fecha": "2026-09-21T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
@@ -99,15 +108,6 @@
       "palabra": "Negro",
       "categoria": "Colores",
       "imagen": "img/vocabulario/negro.webp",
-      "fecha": "2026-09-16T05:00:00Z",
-      "origenFecha": "fechaPublicacion",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Rosado",
-      "categoria": "Colores",
-      "imagen": "img/vocabulario/rosado.webp",
       "fecha": "2026-09-16T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
