@@ -179,20 +179,86 @@
         /* Consumimos primero la entrada temporal de historial. Después del
            popstate reproducimos el click real del resultado. Así la palabra
            elegida conserva su propio historial sin dejar una entrada fantasma. */
+        function obtenerAccionResultadoMovil(item){
+            if(!item) return null;
+
+            const referencia = item.dataset && item.dataset.lspRef
+                ? String(item.dataset.lspRef).trim()
+                : "";
+
+            if(referencia){
+                const esVocabulario = config.inputId === 'buscarCategorias';
+                const palabra = buscarPalabraPorReferencia(
+                    referencia,
+                    esVocabulario ? obtenerDatosVocabulario() : App.datos
+                );
+                if(!palabra) return null;
+                return function(){
+                    if(esVocabulario){
+                        if(typeof window.mostrarPalabraVocabularioPorReferencia === 'function'){
+                            window.mostrarPalabraVocabularioPorReferencia(referencia);
+                        }
+                    } else if(typeof window.mostrarPalabra === 'function'){
+                        window.mostrarPalabra(palabra);
+                    }
+                };
+            }
+
+            const indice = item.dataset && item.dataset.predIndex;
+            const candidatos = estado && estado.panel && Array.isArray(estado.panel._lspPredCandidatos)
+                ? estado.panel._lspPredCandidatos
+                : [];
+            const candidato = indice != null ? candidatos[Number(indice)] : null;
+            if(candidato && candidato.p){
+                return function(){
+                    if(typeof window.mostrarPalabra === 'function'){
+                        window.mostrarPalabra(candidato.p);
+                    }
+                };
+            }
+
+            return null;
+        }
+
+        function ejecutarSeleccionResultadoMovil(item, evento){
+            const accion = obtenerAccionResultadoMovil(item);
+            if(!accion) return false;
+
+            if(evento){
+                evento.preventDefault();
+                evento.stopPropagation();
+                if(typeof evento.stopImmediatePropagation === 'function'){
+                    evento.stopImmediatePropagation();
+                }
+            }
+
+            // Cerrar primero la capa móvil evita que la ficha quede debajo del overlay.
+            cerrarOverlay(false);
+            setTimeout(accion, 0);
+            return true;
+        }
+
+        /* Selección táctil directa: no dependemos del click sintético que algunos
+           navegadores producen al cerrar el teclado móvil. */
+        resultados.addEventListener('pointerup', function(e){
+            const item = e.target && e.target.closest && e.target.closest('.list-group-item, [data-pred-index]');
+            if(!item || e.pointerType === 'mouse') return;
+            ejecutarSeleccionResultadoMovil(item, e);
+        }, true);
+
+        resultados.addEventListener('touchend', function(e){
+            const item = e.target && e.target.closest && e.target.closest('.list-group-item, [data-pred-index]');
+            if(!item) return;
+            ejecutarSeleccionResultadoMovil(item, e);
+        }, true);
+
         resultados.addEventListener('click', function(e){
             const item = e.target && e.target.closest && e.target.closest('.list-group-item, [data-pred-index]');
             if(!item) return;
+            if(!estado) return;
 
             if(historialOverlayActivo()){
-                e.preventDefault();
-                e.stopPropagation();
-                if(typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
-                const itemReal = item;
-                solicitarRegreso(false, function(){
-                    if(itemReal && itemReal.isConnected){
-                        try { itemReal.click(); } catch(_e){}
-                    }
-                });
+                ejecutarSeleccionResultadoMovil(item, e);
                 return;
             }
 
