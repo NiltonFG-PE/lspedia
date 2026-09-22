@@ -105,9 +105,9 @@
             .lspedia-idioma-selector{
                 display:inline-flex;
                 align-items:center;
-                gap:4px;
-                padding:5px;
-                min-height:54px;
+                gap:3px;
+                padding:4px;
+                min-height:48px;
                 border-radius:999px;
                 background:linear-gradient(145deg,rgba(255,255,255,.18),rgba(255,255,255,.08));
                 border:1px solid rgba(255,255,255,.28);
@@ -125,8 +125,8 @@
                 font:700 13px/1 'Poppins',sans-serif;
                 letter-spacing:.2px;
                 padding:0;
-                width:52px;
-                height:44px;
+                width:46px;
+                height:40px;
                 cursor:pointer;
                 transition:background .22s ease,color .22s ease,box-shadow .22s ease,transform .18s ease;
             }
@@ -139,8 +139,8 @@
             }
             .lspedia-idioma-btn:focus-visible{outline:2px solid #ffd54a;outline-offset:2px}
             .lspedia-idioma-selector #lspediaTemaBtn{
-                width:46px;
-                height:44px;
+                width:40px;
+                height:40px;
                 margin-left:2px;
                 border-left:1px solid rgba(255,255,255,.22);
                 border-radius:0 999px 999px 0;
@@ -150,9 +150,9 @@
             .lspedia-lsp-label{display:inline-flex;align-items:center;gap:6px;margin:0 auto 8px;padding:5px 10px;border-radius:999px;background:#eef6ff;color:#174a7e;font-size:.78rem;font-weight:700}
             @media(max-width:1199.98px){
                 nav.navbar .container{position:relative}
-                .lspedia-idioma-selector{position:absolute;right:8px;top:50%;transform:translateY(-50%);margin-left:0;min-height:52px;padding:4px;gap:3px}
-                .lspedia-idioma-btn{width:48px;height:42px;font-size:12px}
-                .lspedia-idioma-selector #lspediaTemaBtn{width:44px;height:42px}
+                .lspedia-idioma-selector{position:absolute;right:8px;top:50%;transform:translateY(-50%);margin-left:0;min-height:46px;padding:3px;gap:2px}
+                .lspedia-idioma-btn{width:44px;height:38px;font-size:11px}
+                .lspedia-idioma-selector #lspediaTemaBtn{width:38px;height:38px}
             }
         `;
         document.head.appendChild(style);
