@@ -1,12 +1,12 @@
 {
-  "generadoEn": "2026-09-22T12:57:09Z",
+  "generadoEn": "2026-09-22T12:59:07Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
   "items": [
     {
       "id": "",
-      "palabra": "Cómo",
+      "palabra": "¿Cómo?",
       "categoria": "Preguntas",
       "imagen": "img/vocabulario/como.webp",
       "fecha": "2026-09-21T05:00:00Z",
@@ -24,7 +24,7 @@
     },
     {
       "id": "",
-      "palabra": "Cuándo",
+      "palabra": "¿Cuándo?",
       "categoria": "Preguntas",
       "imagen": "img/vocabulario/cuando.webp",
       "fecha": "2026-09-21T05:00:00Z",
