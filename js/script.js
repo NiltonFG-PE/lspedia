@@ -2799,7 +2799,7 @@ function buscarPalabras(){
                     <span class="badge" style="font-size: 10px;">${escaparHtml(p.categoria.trim())}</span>
                 </div>
             </div>`;
-        boton.onclick=()=>mostrarPalabra(p);
+        boton.onclick=(e)=>{ e.preventDefault(); e.stopPropagation(); mostrarPalabra(p); };
         sugerencias.appendChild(boton);
     });
 }
@@ -2894,8 +2894,8 @@ function ejecutarBusquedaDirecta() {
 // llega ya es un ID "pelado" de 11 caracteres (como usa la columna
 // "video"), lo devuelve tal cual. Si no reconoce nada, devuelve "".
 function extraerIdYouTube(valor) {
-    if (!valor) return "";
-    const texto = valor.trim();
+    if (valor === null || valor === undefined) return "";
+    const texto = String(valor).trim();
     const match = texto.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{11})/);
     if (match) return match[1];
     if (/^[A-Za-z0-9_-]{11}$/.test(texto)) return texto;
@@ -3096,6 +3096,8 @@ function inicializarDefinicionColapsable(contenedor){
 }
 
 function mostrarPalabra(p, opciones = {}){
+    p = normalizarRegistroPalabraParaFicha(p);
+    if(!p || !p.palabra) return;
     // Barrera de separación: una entrada marcada como Vocabulario nunca debe
     // renderizarse con la ficha ni la navegación del Diccionario. Esto también
     // protege flujos antiguos que todavía pudieran llamar mostrarPalabra().
@@ -3292,6 +3294,26 @@ function mostrarPalabra(p, opciones = {}){
     setTimeout(() => contenedorDestino.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
 }
 
+
+// FIX_BUSQUEDA_FICHAS_20260922_V1
+function normalizarRegistroPalabraParaFicha(p){
+    if(!p || typeof p !== "object") return null;
+    // Los datos pueden venir de JSON o de Google Sheets. Antes de construir
+    // la ficha se fuerzan a texto los campos que usan .trim(), .split() o
+    // helpers de URL, evitando que un valor vacío/null rompa el clic.
+    return {
+        ...p,
+        palabra: String(p.palabra ?? "").trim(),
+        categoria: String(p.categoria ?? "").trim(),
+        definicion: String(p.definicion ?? ""),
+        variantes: String(p.variantes ?? ""),
+        ejemplo: String(p.ejemplo ?? ""),
+        video: String(p.video ?? ""),
+        senasugerida: String(p.senasugerida ?? ""),
+        imagen: String(p.imagen ?? "")
+    };
+}
+
 // --- FICHA DE VOCABULARIO PARA PALABRAS DE LA HOJA 2 ---
 // Vocabulario sigue usando el mismo banco que el Quiz, pero su ficha puede
 // mostrar definición, variantes e ilustración propias cuando esos campos
@@ -3300,6 +3322,8 @@ function mostrarPalabra(p, opciones = {}){
 // actualiza la URL (?p=...) para que restaurarPalabraDesdeUrl() pueda
 // recuperar este mismo resultado si el usuario refresca la página.
 function mostrarPalabraSimplificada(p, opciones = {}){
+    p = normalizarRegistroPalabraParaFicha(p);
+    if(!p || !p.palabra) return;
     p = marcarFuenteVocabulario(p);
     registrarProgresoPalabra(p);
     // opciones.enCategorias === true -> viene de "Temas orden" (categorías):
@@ -5611,7 +5635,9 @@ function buscarEnCategorias(){
                     <span class="badge" style="font-size: 10px;">${escaparHtml(p.categoria.trim())}</span>
                 </div>
             </div>`;
-        boton.onclick = () => {
+        boton.onclick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             buscarCategorias.value = "";
             sugerenciasCategorias.innerHTML = "";
             sugerenciasCategorias.style.display = "none";
