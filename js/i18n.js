@@ -159,7 +159,7 @@
                 nav.navbar .container{position:relative !important;}
                 nav.navbar .container > .navbar-brand{
                     position:absolute !important;
-                    left:18px !important;
+                    left:6px !important;
                     top:50% !important;
                     margin:0 !important;
                     transform:translateY(-50%) !important;
@@ -180,17 +180,17 @@
                     gap:1px !important;
                 }
                 .lspedia-idioma-selector .lspedia-idioma-btn{
-                    width:40px !important;
-                    min-width:40px !important;
-                    height:34px !important;
-                    min-height:34px !important;
+                    width:38px !important;
+                    min-width:38px !important;
+                    height:32px !important;
+                    min-height:32px !important;
                     padding:0 !important;
                 }
                 .lspedia-idioma-selector #lspediaTemaBtn{
-                    width:34px !important;
-                    min-width:34px !important;
-                    height:34px !important;
-                    min-height:34px !important;
+                    width:32px !important;
+                    min-width:32px !important;
+                    height:32px !important;
+                    min-height:32px !important;
                     padding:0 !important;
                 }
             }
