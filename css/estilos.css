@@ -1,57 +1,64 @@
 /* LSPedia: estilos base + ajuste de barra superior móvil */
 @import url("estilos-base.css");
 
-/* Cabecera móvil: azul de marca translúcido, con desenfoque de fondo y
-   el logo perfectamente centrado verticalmente. La navegación real sigue
-   viviendo en la barra inferior tipo app. */
+/*
+   CABECERA MÓVIL — RESTAURADA AL DISEÑO ANTERIOR
+   La referencia es la versión en la que el logotipo completo queda visible,
+   centrado dentro del grupo superior junto a ES / EN / Luna, con el navy
+   oscuro translúcido y desenfoque.
+*/
 @media (max-width: 1199.98px) {
+    .navbar-toggler {
+        display: none !important;
+    }
+
+    #menuPrincipal {
+        display: none !important;
+    }
+
     html body nav.navbar {
-        min-height: 80px !important;
-        height: 80px !important;
-        padding: 0 !important;
-        background: rgba(11, 47, 112, 0.78) !important;
-        background-color: rgba(11, 47, 112, 0.78) !important;
-        border-bottom: 1px solid rgba(255,255,255,.16) !important;
-        box-shadow: 0 8px 24px rgba(15,23,42,.16) !important;
-        -webkit-backdrop-filter: blur(10px) saturate(1.25) !important;
-        backdrop-filter: blur(10px) saturate(1.25) !important;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1030;
+        /* El color original: navy oscuro + transparencia + glassmorphism. */
+        background-color: rgba(15, 23, 42, 0.72) !important;
+        -webkit-backdrop-filter: blur(6px) brightness(0.55) saturate(1.4) !important;
+        backdrop-filter: blur(6px) brightness(0.55) saturate(1.4) !important;
     }
 
+    /* El grupo completo queda centrado. No volver a usar flex-start: eso
+       es lo que llevó el logo hasta el borde izquierdo en la versión rota. */
     html body nav.navbar .container {
-        width: 100% !important;
-        max-width: none !important;
-        height: 80px !important;
-        min-height: 80px !important;
-        padding-left: 18px !important;
-        padding-right: 18px !important;
-        justify-content: flex-start !important;
+        justify-content: center !important;
         align-items: center !important;
-        margin: 0 !important;
     }
 
+    /* Desplazamiento lateral original del logo para que forme el grupo
+       visual correcto con el selector ES / EN / Luna. */
     html body nav.navbar .navbar-brand {
         margin: 0 !important;
-        padding: 0 !important;
-        transform: none !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: flex-start !important;
+        transform: translateX(-34px) !important;
+        overflow: visible !important;
         flex: 0 0 auto !important;
-        min-width: 0;
-        height: 80px !important;
     }
 
+    /* MUY IMPORTANTE: mantener el recurso completo. No recortar el video
+       con width/height fijos ni object-fit:cover; eso fue lo que produjo
+       la versión donde solo aparecía el emblema circular. */
     html body nav.navbar .navbar-brand video,
     html body nav.navbar .navbar-brand img {
         display: block !important;
         width: auto !important;
-        height: 68px !important;
-        max-width: 62vw !important;
+        height: 64px !important;
+        max-width: none !important;
         object-fit: contain !important;
         object-position: center !important;
         margin: 0 !important;
     }
 
+    /* Reserva únicamente el espacio real de la cabecera anterior. */
     html body {
         padding-top: 80px !important;
     }
@@ -65,42 +72,36 @@
     }
 }
 
+/* Igual para teléfono/tablet en horizontal cuando el script añade
+   .modo-movil-real aunque el viewport supere el breakpoint de Bootstrap. */
 html.modo-movil-real nav.navbar {
-    min-height: 80px !important;
-    height: 80px !important;
-    padding: 0 !important;
-    background: rgba(11, 47, 112, 0.78) !important;
-    background-color: rgba(11, 47, 112, 0.78) !important;
-    border-bottom: 1px solid rgba(255,255,255,.16) !important;
-    box-shadow: 0 8px 24px rgba(15,23,42,.16) !important;
-    -webkit-backdrop-filter: blur(10px) saturate(1.25) !important;
-    backdrop-filter: blur(10px) saturate(1.25) !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1030;
+    background-color: rgba(15, 23, 42, 0.72) !important;
+    -webkit-backdrop-filter: blur(6px) brightness(0.55) saturate(1.4) !important;
+    backdrop-filter: blur(6px) brightness(0.55) saturate(1.4) !important;
 }
 
 html.modo-movil-real nav.navbar .container {
-    width: 100% !important;
-    max-width: none !important;
-    height: 80px !important;
-    min-height: 80px !important;
-    padding-left: 18px !important;
-    padding-right: 18px !important;
-    justify-content: flex-start !important;
+    justify-content: center !important;
     align-items: center !important;
 }
 
 html.modo-movil-real nav.navbar .navbar-brand {
     margin: 0 !important;
-    padding: 0 !important;
-    transform: none !important;
-    height: 80px !important;
-    display: flex !important;
-    align-items: center !important;
+    transform: translateX(-34px) !important;
+    overflow: visible !important;
+    flex: 0 0 auto !important;
 }
 
 html.modo-movil-real nav.navbar .navbar-brand video,
 html.modo-movil-real nav.navbar .navbar-brand img {
-    height: 68px !important;
-    max-width: 62vw !important;
+    width: auto !important;
+    height: 64px !important;
+    max-width: none !important;
     object-fit: contain !important;
     object-position: center !important;
     margin: 0 !important;
@@ -110,7 +111,8 @@ html.modo-movil-real body {
     padding-top: 80px !important;
 }
 
-/* Escritorio */
+/* En escritorio se mantiene la cabecera existente; este archivo solo
+   corrige la versión móvil/tablet solicitada. */
 @media (min-width: 1200px) {
     nav.navbar {
         min-height: 94px;
@@ -119,132 +121,4 @@ html.modo-movil-real body {
     nav.navbar .navbar-brand img {
         height: 82px !important;
     }
-}
-
-/* ============================================================
-   RESTAURACIÓN DEL DISEÑO MÓVIL ANTERIOR
-   - navy oscuro de la versión anterior
-   - barra alta tipo app
-   - logo/ícono centrado verticalmente y desplazado ligeramente a la
-     izquierda, dejando los controles ES/EN/Luna a la derecha
-   - acabado translúcido con glassmorphism
-   ============================================================ */
-@media (max-width: 1199.98px) {
-    html body nav.navbar {
-        min-height: 142px !important;
-        height: 142px !important;
-        background: rgba(26, 31, 50, 0.90) !important;
-        background-color: rgba(26, 31, 50, 0.90) !important;
-        border-bottom: 1px solid rgba(255,255,255,.12) !important;
-        box-shadow: 0 8px 24px rgba(15,23,42,.20) !important;
-        -webkit-backdrop-filter: blur(12px) saturate(1.15) !important;
-        backdrop-filter: blur(12px) saturate(1.15) !important;
-    }
-
-    html body nav.navbar .container {
-        width: 100% !important;
-        max-width: none !important;
-        height: 142px !important;
-        min-height: 142px !important;
-        padding-left: 18px !important;
-        padding-right: 18px !important;
-        justify-content: center !important;
-        align-items: center !important;
-        position: relative !important;
-    }
-
-    html body nav.navbar .navbar-brand {
-        position: relative !important;
-        width: 78px !important;
-        height: 78px !important;
-        min-width: 78px !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        transform: translateX(-34px) !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        overflow: hidden !important;
-        flex: 0 0 78px !important;
-        z-index: 2 !important;
-    }
-
-    /* El recurso actual contiene el logotipo completo; el diseño anterior
-       mostraba únicamente el emblema circular. object-fit:cover recorta
-       de forma limpia la parte izquierda del recurso sin deformarlo. */
-    html body nav.navbar .navbar-brand video,
-    html body nav.navbar .navbar-brand img {
-        display: block !important;
-        width: 78px !important;
-        height: 78px !important;
-        max-width: none !important;
-        object-fit: cover !important;
-        object-position: left center !important;
-        margin: 0 !important;
-    }
-
-    html body {
-        padding-top: 142px !important;
-    }
-
-    #buscar,
-    #panelCategorias,
-    #herramientasMenuMovil,
-    #seccionSubtitulos,
-    #seccionNosotros {
-        scroll-margin-top: 158px !important;
-    }
-}
-
-/* El mismo diseño para el modo móvil real en horizontal. */
-html.modo-movil-real nav.navbar {
-    min-height: 142px !important;
-    height: 142px !important;
-    background: rgba(26, 31, 50, 0.90) !important;
-    background-color: rgba(26, 31, 50, 0.90) !important;
-    border-bottom: 1px solid rgba(255,255,255,.12) !important;
-    box-shadow: 0 8px 24px rgba(15,23,42,.20) !important;
-    -webkit-backdrop-filter: blur(12px) saturate(1.15) !important;
-    backdrop-filter: blur(12px) saturate(1.15) !important;
-}
-
-html.modo-movil-real nav.navbar .container {
-    width: 100% !important;
-    max-width: none !important;
-    height: 142px !important;
-    min-height: 142px !important;
-    padding-left: 18px !important;
-    padding-right: 18px !important;
-    justify-content: center !important;
-    align-items: center !important;
-    position: relative !important;
-}
-
-html.modo-movil-real nav.navbar .navbar-brand {
-    width: 78px !important;
-    height: 78px !important;
-    min-width: 78px !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    transform: translateX(-34px) !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    overflow: hidden !important;
-    flex: 0 0 78px !important;
-    z-index: 2 !important;
-}
-
-html.modo-movil-real nav.navbar .navbar-brand video,
-html.modo-movil-real nav.navbar .navbar-brand img {
-    width: 78px !important;
-    height: 78px !important;
-    max-width: none !important;
-    object-fit: cover !important;
-    object-position: left center !important;
-    margin: 0 !important;
-}
-
-html.modo-movil-real body {
-    padding-top: 142px !important;
 }
