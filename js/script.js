@@ -6575,3 +6575,32 @@ function mostrarSenalDelDia(offset = offsetSenalDelDia){
     mostrarNavInferior();
 })();
 
+
+// LSP_BUSQUEDA_MOVIL_TOUCH_FIX_20260922_V1
+(function activarToqueSeguroResultadosBusqueda(){
+    // En algunos navegadores móviles el clic sintético después de tocar un
+    // <button> dentro de una lista dinámica puede no llegar de forma fiable,
+    // especialmente cuando el dedo termina sobre una imagen o un <span>.
+    // Convertimos el touchend en el mismo click que ya usa la lógica normal.
+    function instalar(contenedor){
+        if(!contenedor || contenedor.dataset.lspTouchFix === "1") return;
+        contenedor.dataset.lspTouchFix = "1";
+        contenedor.addEventListener("touchend", (evento) => {
+            const boton = evento.target && evento.target.closest
+                ? evento.target.closest("button.list-group-item-action")
+                : null;
+            if(!boton || !contenedor.contains(boton)) return;
+
+            evento.preventDefault();
+            evento.stopPropagation();
+            boton.dispatchEvent(new MouseEvent("click", {
+                bubbles: true,
+                cancelable: true,
+                view: window
+            }));
+        }, { passive: false });
+    }
+
+    instalar(document.getElementById("sugerencias"));
+    instalar(document.getElementById("sugerenciasCategorias"));
+})();
