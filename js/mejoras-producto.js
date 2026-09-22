@@ -206,7 +206,7 @@
     cargarCss('css/fab-dock-delgado.css?v=20260916-1');
     cargarCss('css/modo-oscuro.css?v=20260916-2');
     cargarCss('css/buscador-dropdown-premium.css?v=20260919-4');
-    cargar('js/buscador-movil-focus.js?v=20260919-3');
+    cargar('js/buscador-movil-focus.js?v=20260922-1');
     cargarCss('css/lo-nuevo-premium.css?v=20260919-1');
     cargar('js/modo-oscuro.js?v=20260916-2');
 
@@ -231,7 +231,7 @@
                             cargar('js/i18n-nosotros.js?v=20260914', function(){
                                 agregarFacebookRedesSociales();
                                 cargar('js/buscador-visual.js?v=20260914', function(){
-                                    cargar('js/buscador-predictivo.js?v=20260914');
+                                    cargar('js/buscador-predictivo.js?v=20260922-1');
                                 });
                             });
                         });
