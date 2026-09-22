@@ -101,8 +101,8 @@
     document.querySelectorAll('.modal.show,[role="dialog"][aria-hidden="false"],dialog[open]').forEach(enfocarDialogoSiCorresponde);
   }
 
-  /* Barra INFERIOR: se oculta solo mientras hay desplazamiento y reaparece
-     al terminar. La cabecera superior queda completamente fuera de esta lógica. */
+  /* Barra INFERIOR: se oculta únicamente cuando el usuario desplaza hacia arriba.
+     Al desplazarse hacia abajo permanece visible y fija. La cabecera superior no se toca. */
   function iniciarNavegacionInferiorAutoOcultable(){
     const estilos=document.createElement('style');
     estilos.textContent='.lspedia-nav-inferior-scroll-oculta{transform:translateY(calc(100% + 24px)) !important;opacity:0 !important;pointer-events:none !important;}';
@@ -121,34 +121,53 @@
 
     let temporizador=null;
     let raf=null;
-    let desplazando=false;
+    let ultimaPosicion=window.scrollY||window.pageYOffset||0;
+    let desplazandoHaciaArriba=false;
 
     function mostrar(){
       obtenerBarrasInferiores().forEach(function(el){el.classList.remove('lspedia-nav-inferior-scroll-oculta');});
-      desplazando=false;
+      desplazandoHaciaArriba=false;
     }
+
     function ocultar(){
       obtenerBarrasInferiores().forEach(function(el){el.classList.add('lspedia-nav-inferior-scroll-oculta');});
-      desplazando=true;
+      desplazandoHaciaArriba=true;
     }
+
     function scroll(){
       if(raf)return;
       raf=requestAnimationFrame(function(){
         raf=null;
-        ocultar();
-        clearTimeout(temporizador);
-        temporizador=setTimeout(mostrar,220);
+        const posicionActual=window.scrollY||window.pageYOffset||0;
+        const delta=posicionActual-ultimaPosicion;
+        ultimaPosicion=posicionActual;
+
+        // Hacia arriba: ocultar. Hacia abajo: mantener visible.
+        if(delta>0){
+          mostrar();
+        }else if(delta<0){
+          ocultar();
+        }
       });
     }
 
     window.addEventListener('scroll',scroll,{passive:true});
-    ['touchend','pointerup','wheel'].forEach(function(tipo){
+    window.addEventListener('resize',function(){
+      ultimaPosicion=window.scrollY||window.pageYOffset||0;
+      mostrar();
+    },{passive:true});
+
+    // Si se inicia un gesto hacia abajo, no dejamos que un temporizador
+    // anterior vuelva a ocultar la navegación.
+    ['touchmove','pointermove'].forEach(function(tipo){
       window.addEventListener(tipo,function(){
-        clearTimeout(temporizador);
-        temporizador=setTimeout(mostrar,220);
+        const posicionActual=window.scrollY||window.pageYOffset||0;
+        if(posicionActual>ultimaPosicion){
+          ultimaPosicion=posicionActual;
+          mostrar();
+        }
       },{passive:true});
     });
-    window.addEventListener('resize',function(){if(desplazando)ocultar();},{passive:true});
   }
 
   function iniciar(){
