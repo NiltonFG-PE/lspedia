@@ -299,6 +299,10 @@
             boton.type='button';
             boton.className='list-group-item list-group-item-action text-start lsp-pred-item';
             boton.dataset.predIndex=String(i);
+            // Referencia estable para la selección táctil dentro del overlay móvil.
+            if(typeof obtenerIdPalabra === 'function'){
+                boton.dataset.lspRef = obtenerIdPalabra(c.p);
+            }
             boton.setAttribute('role','option');
             boton.setAttribute('aria-selected','false');
             boton.innerHTML='<div class="sugerencia-fila">'+miniatura(c.p)+'<div class="sugerencia-texto"><div class="lsp-pred-titulo"><strong>'+escapar(c.p.palabra)+'</strong>'+meta(c)+'</div><span class="badge" style="font-size:10px">'+escapar(texto(c.p.categoria))+'</span></div></div>';
