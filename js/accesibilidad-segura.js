@@ -29,11 +29,7 @@
   }
 
   function prepararRegionesDinamicas(){
-    const ids=[
-      'resultado','resultadoVocabulario','resultadosVocabulario','sugerencias',
-      'sugerenciasVocabulario','quizFeedback','feedbackQuiz','estadoSenas',
-      'resultadosSenas','progresoMuestraSenas','feedbackJuego'
-    ];
+    const ids=['resultado','resultadoVocabulario','resultadosVocabulario','sugerencias','sugerenciasVocabulario','quizFeedback','feedbackQuiz','estadoSenas','resultadosSenas','progresoMuestraSenas','feedbackJuego'];
     ids.forEach(function(id){
       const el=document.getElementById(id);
       if(!el)return;
@@ -46,16 +42,9 @@
   function prepararControles(root){
     const base=root&&root.querySelectorAll?root:document;
     base.querySelectorAll('button, a, [role="button"]').forEach(asegurarNombre);
-    base.querySelectorAll('button.btn-close').forEach(function(el){
-      if(!textoAccesible(el))el.setAttribute('aria-label','Cerrar');
-    });
-    base.querySelectorAll('input[required], select[required], textarea[required]').forEach(function(el){
-      if(!el.hasAttribute('aria-required'))el.setAttribute('aria-required','true');
-    });
-    base.querySelectorAll('img:not([alt])').forEach(function(img){
-      // Solo tratamos como decorativas las imágenes explícitamente marcadas por CSS/datos.
-      if(img.classList.contains('decorativo')||img.hasAttribute('data-decorativo'))img.setAttribute('alt','');
-    });
+    base.querySelectorAll('button.btn-close').forEach(function(el){if(!textoAccesible(el))el.setAttribute('aria-label','Cerrar');});
+    base.querySelectorAll('input[required], select[required], textarea[required]').forEach(function(el){if(!el.hasAttribute('aria-required'))el.setAttribute('aria-required','true');});
+    base.querySelectorAll('img:not([alt])').forEach(function(img){if(img.classList.contains('decorativo')||img.hasAttribute('data-decorativo'))img.setAttribute('alt','');});
   }
 
   function asegurarSaltoContenido(){
@@ -65,35 +54,23 @@
     if(!main.id)main.id='contenidoPrincipal';
     if(!main.hasAttribute('tabindex'))main.setAttribute('tabindex','-1');
     const enlace=document.createElement('a');
-    enlace.className='lspedia-skip-link';
-    enlace.href='#'+main.id;
-    enlace.textContent='Saltar al contenido';
-    enlace.addEventListener('click',function(){
-      setTimeout(function(){
-        try{main.focus({preventScroll:true});}catch(_e){main.focus();}
-      },0);
-    });
+    enlace.className='lspedia-skip-link'; enlace.href='#'+main.id; enlace.textContent='Saltar al contenido';
+    enlace.addEventListener('click',function(){setTimeout(function(){try{main.focus({preventScroll:true});}catch(_e){main.focus();}},0);});
     document.body.prepend(enlace);
   }
 
   function elementosEnfocables(dialogo){
     if(!dialogo||!dialogo.querySelectorAll)return[];
-    return Array.from(dialogo.querySelectorAll(
-      'a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])'
-    )).filter(function(el){return !el.hasAttribute('hidden')&&el.getAttribute('aria-hidden')!=='true';});
+    return Array.from(dialogo.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])')).filter(function(el){return !el.hasAttribute('hidden')&&el.getAttribute('aria-hidden')!=='true';});
   }
 
   function prepararDialogo(dialogo){
     if(!(dialogo instanceof Element))return;
     if(!dialogo.hasAttribute('role'))dialogo.setAttribute('role','dialog');
     dialogo.setAttribute('aria-modal','true');
-
     if(!dialogo.hasAttribute('aria-label')&&!dialogo.hasAttribute('aria-labelledby')){
       const titulo=dialogo.querySelector('.modal-title,h1,h2,h3');
-      if(titulo){
-        if(!titulo.id)titulo.id='tituloDialogoLspedia-'+Math.random().toString(36).slice(2,9);
-        dialogo.setAttribute('aria-labelledby',titulo.id);
-      }
+      if(titulo){if(!titulo.id)titulo.id='tituloDialogoLspedia-'+Math.random().toString(36).slice(2,9);dialogo.setAttribute('aria-labelledby',titulo.id);}
     }
   }
 
@@ -113,8 +90,7 @@
   function restaurarFocoSiNoHayDialogo(){
     const abierto=document.querySelector('.modal.show,[role="dialog"][aria-hidden="false"],dialog[open]');
     if(abierto||!ultimoFocoAntesDialogo)return;
-    const destino=ultimoFocoAntesDialogo;
-    ultimoFocoAntesDialogo=null;
+    const destino=ultimoFocoAntesDialogo; ultimoFocoAntesDialogo=null;
     if(document.contains(destino))setTimeout(function(){try{destino.focus({preventScroll:true});}catch(_e){}},0);
   }
 
@@ -125,45 +101,74 @@
     document.querySelectorAll('.modal.show,[role="dialog"][aria-hidden="false"],dialog[open]').forEach(enfocarDialogoSiCorresponde);
   }
 
-  function iniciar(){
-    asegurarSaltoContenido();
-    prepararNavegacion();
-    prepararRegionesDinamicas();
-    prepararControles(document);
-    prepararDialogos(document);
+  /* Barra INFERIOR: se oculta solo mientras hay desplazamiento y reaparece
+     al terminar. La cabecera superior queda completamente fuera de esta lógica. */
+  function iniciarNavegacionInferiorAutoOcultable(){
+    const estilos=document.createElement('style');
+    estilos.textContent='.lspedia-nav-inferior-scroll-oculta{transform:translateY(calc(100% + 24px)) !important;opacity:0 !important;pointer-events:none !important;}';
+    document.head.appendChild(estilos);
 
-    document.addEventListener('shown.bs.modal',function(event){
-      if(event.target instanceof Element)enfocarDialogoSiCorresponde(event.target);
+    function obtenerBarrasInferiores(){
+      return Array.from(document.querySelectorAll('nav')).filter(function(el){
+        if(el.matches('nav.navbar'))return false;
+        const cs=getComputedStyle(el);
+        if(cs.display==='none'||cs.visibility==='hidden')return false;
+        const rect=el.getBoundingClientRect();
+        const pos=cs.position;
+        return (pos==='fixed'||pos==='sticky') && rect.height>0 && rect.top>window.innerHeight*0.45 && rect.bottom>=window.innerHeight-12;
+      });
+    }
+
+    let temporizador=null;
+    let raf=null;
+    let desplazando=false;
+
+    function mostrar(){
+      obtenerBarrasInferiores().forEach(function(el){el.classList.remove('lspedia-nav-inferior-scroll-oculta');});
+      desplazando=false;
+    }
+    function ocultar(){
+      obtenerBarrasInferiores().forEach(function(el){el.classList.add('lspedia-nav-inferior-scroll-oculta');});
+      desplazando=true;
+    }
+    function scroll(){
+      if(raf)return;
+      raf=requestAnimationFrame(function(){
+        raf=null;
+        ocultar();
+        clearTimeout(temporizador);
+        temporizador=setTimeout(mostrar,220);
+      });
+    }
+
+    window.addEventListener('scroll',scroll,{passive:true});
+    ['touchend','pointerup','wheel'].forEach(function(tipo){
+      window.addEventListener(tipo,function(){
+        clearTimeout(temporizador);
+        temporizador=setTimeout(mostrar,220);
+      },{passive:true});
     });
-    document.addEventListener('hidden.bs.modal',restaurarFocoSiNoHayDialogo);
+    window.addEventListener('resize',function(){if(desplazando)ocultar();},{passive:true});
+  }
 
+  function iniciar(){
+    asegurarSaltoContenido(); prepararNavegacion(); prepararRegionesDinamicas(); prepararControles(document); prepararDialogos(document);
+    document.addEventListener('shown.bs.modal',function(event){if(event.target instanceof Element)enfocarDialogoSiCorresponde(event.target);});
+    document.addEventListener('hidden.bs.modal',restaurarFocoSiNoHayDialogo);
+    iniciarNavegacionInferiorAutoOcultable();
     if(!('MutationObserver' in window))return;
     const obs=new MutationObserver(function(cambios){
-      let actualizarNav=false;
-      let revisarDialogos=false;
+      let actualizarNav=false,revisarDialogos=false;
       cambios.forEach(function(cambio){
-        if(cambio.type==='attributes'&&cambio.attributeName==='class'){
-          actualizarNav=true;
-          if(cambio.target instanceof Element&&cambio.target.matches('.modal,[role="dialog"],dialog'))revisarDialogos=true;
-        }
+        if(cambio.type==='attributes'&&cambio.attributeName==='class'){actualizarNav=true;if(cambio.target instanceof Element&&cambio.target.matches('.modal,[role="dialog"],dialog'))revisarDialogos=true;}
         if(cambio.type==='attributes'&&(cambio.attributeName==='aria-hidden'||cambio.attributeName==='open'))revisarDialogos=true;
-        cambio.addedNodes.forEach(function(nodo){
-          if(!(nodo instanceof Element))return;
-          if(nodo.matches('button, a, [role="button"]'))asegurarNombre(nodo);
-          prepararControles(nodo);
-          prepararDialogos(nodo);
-        });
+        cambio.addedNodes.forEach(function(nodo){if(!(nodo instanceof Element))return;if(nodo.matches('button, a, [role="button"]'))asegurarNombre(nodo);prepararControles(nodo);prepararDialogos(nodo);});
       });
-      if(actualizarNav)prepararNavegacion();
-      prepararRegionesDinamicas();
-      if(revisarDialogos){
-        prepararDialogos(document);
-        restaurarFocoSiNoHayDialogo();
-      }
+      if(actualizarNav)prepararNavegacion(); prepararRegionesDinamicas();
+      if(revisarDialogos){prepararDialogos(document);restaurarFocoSiNoHayDialogo();}
     });
     obs.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','aria-hidden','open']});
   }
 
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',iniciar,{once:true});
-  else iniciar();
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',iniciar,{once:true}); else iniciar();
 })();
