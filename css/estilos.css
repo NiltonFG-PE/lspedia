@@ -1,7 +1,7 @@
 /* LSPedia: estilos base + ajuste de barra superior móvil */
 @import url("estilos-base.css");
 
-/* CABECERA MÓVIL — restaurada según referencia visual */
+/* CABECERA MÓVIL — ajustada a la referencia visual */
 @media (max-width: 1199.98px) {
     .navbar-toggler { display: none !important; }
     #menuPrincipal { display: none !important; }
@@ -12,16 +12,17 @@
         left: 0 !important;
         right: 0 !important;
         z-index: 1030 !important;
-        height: 140px !important;
-        min-height: 140px !important;
+        height: 120px !important;
+        min-height: 120px !important;
         padding: 0 !important;
         box-sizing: border-box !important;
         overflow: visible !important;
-        background-color: rgba(15, 23, 42, 0.78) !important;
-        -webkit-backdrop-filter: blur(8px) saturate(1.25) !important;
-        backdrop-filter: blur(8px) saturate(1.25) !important;
+        /* Navy de la referencia (#192033), conservando un leve efecto glass */
+        background-color: rgba(25, 32, 51, 0.96) !important;
+        -webkit-backdrop-filter: blur(8px) saturate(1.08) !important;
+        backdrop-filter: blur(8px) saturate(1.08) !important;
         border-bottom: 1px solid rgba(255,255,255,.10) !important;
-        box-shadow: 0 8px 24px rgba(15,23,42,.18) !important;
+        box-shadow: 0 8px 24px rgba(10,15,28,.20) !important;
     }
 
     html body nav.navbar .container {
@@ -29,7 +30,7 @@
         width: 100% !important;
         max-width: none !important;
         height: 100% !important;
-        min-height: 140px !important;
+        min-height: 120px !important;
         padding-left: 16px !important;
         padding-right: 16px !important;
         margin: 0 !important;
@@ -58,8 +59,8 @@
     html body nav.navbar .navbar-brand img {
         display: block !important;
         width: auto !important;
-        height: 82px !important;
-        max-width: 210px !important;
+        height: 74px !important;
+        max-width: 195px !important;
         object-fit: contain !important;
         object-position: center !important;
         margin: 0 !important;
@@ -82,7 +83,7 @@
     }
 
     html body {
-        padding-top: 140px !important;
+        padding-top: 120px !important;
     }
 
     #buscar,
@@ -90,7 +91,7 @@
     #herramientasMenuMovil,
     #seccionSubtitulos,
     #seccionNosotros {
-        scroll-margin-top: 156px !important;
+        scroll-margin-top: 136px !important;
     }
 }
 
@@ -100,15 +101,15 @@ html.modo-movil-real nav.navbar {
     left: 0 !important;
     right: 0 !important;
     z-index: 1030 !important;
-    height: 140px !important;
-    min-height: 140px !important;
+    height: 120px !important;
+    min-height: 120px !important;
     padding: 0 !important;
     overflow: visible !important;
-    background-color: rgba(15, 23, 42, 0.78) !important;
-    -webkit-backdrop-filter: blur(8px) saturate(1.25) !important;
-    backdrop-filter: blur(8px) saturate(1.25) !important;
+    background-color: rgba(25, 32, 51, 0.96) !important;
+    -webkit-backdrop-filter: blur(8px) saturate(1.08) !important;
+    backdrop-filter: blur(8px) saturate(1.08) !important;
     border-bottom: 1px solid rgba(255,255,255,.10) !important;
-    box-shadow: 0 8px 24px rgba(15,23,42,.18) !important;
+    box-shadow: 0 8px 24px rgba(10,15,28,.20) !important;
 }
 
 html.modo-movil-real nav.navbar .container {
@@ -116,7 +117,7 @@ html.modo-movil-real nav.navbar .container {
     width: 100% !important;
     max-width: none !important;
     height: 100% !important;
-    min-height: 140px !important;
+    min-height: 120px !important;
     margin: 0 !important;
     padding-left: 16px !important;
     padding-right: 16px !important;
@@ -140,8 +141,8 @@ html.modo-movil-real nav.navbar .navbar-brand video,
 html.modo-movil-real nav.navbar .navbar-brand img {
     display: block !important;
     width: auto !important;
-    height: 82px !important;
-    max-width: 210px !important;
+    height: 74px !important;
+    max-width: 195px !important;
     object-fit: contain !important;
     object-position: center !important;
     margin: 0 !important;
@@ -160,7 +161,7 @@ html.modo-movil-real nav.navbar [data-language-switcher] {
 }
 
 html.modo-movil-real body {
-    padding-top: 140px !important;
+    padding-top: 120px !important;
 }
 
 @media (min-width: 1200px) {
