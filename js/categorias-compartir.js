@@ -123,7 +123,7 @@
 
         if(navigator.share){
             try {
-                await navigator.share({ title: 'LSPedia', text: texto, url });
+                await navigator.share({ title: 'LSPedia', text: texto });
                 return;
             } catch(error){
                 if(error && error.name === 'AbortError') return;
