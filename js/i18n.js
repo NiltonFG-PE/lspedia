@@ -194,6 +194,7 @@
                     padding:0 !important;
                 }
             }
+        `;
         document.head.appendChild(style);
     }
 
