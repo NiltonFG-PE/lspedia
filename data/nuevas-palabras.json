@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-09-22T13:11:52Z",
+  "generadoEn": "2026-09-22T13:12:41Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
@@ -42,7 +42,7 @@
     },
     {
       "id": "",
-      "palabra": "Por qué",
+      "palabra": "¿Por qué?",
       "categoria": "Preguntas",
       "imagen": "img/vocabulario/por-que.webp",
       "fecha": "2026-09-21T05:00:00Z",
