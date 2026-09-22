@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-09-22T00:15:41Z",
+  "generadoEn": "2026-09-22T00:28:55Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
@@ -78,6 +78,15 @@
     },
     {
       "id": "",
+      "palabra": "Para qué",
+      "categoria": "Preguntas",
+      "imagen": "img/vocabulario/para-que.webp",
+      "fecha": "2026-09-21T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
       "palabra": "Beige",
       "categoria": "Colores",
       "imagen": "img/vocabulario/beige.webp",
@@ -99,15 +108,6 @@
       "palabra": "Guinda",
       "categoria": "Colores",
       "imagen": "img/vocabulario/guinda.webp",
-      "fecha": "2026-09-16T05:00:00Z",
-      "origenFecha": "fechaPublicacion",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Marrón",
-      "categoria": "Colores",
-      "imagen": "img/vocabulario/marron.webp",
       "fecha": "2026-09-16T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
