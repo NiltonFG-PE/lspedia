@@ -155,6 +155,45 @@
                 .lspedia-idioma-selector #lspediaTemaBtn{width:38px;height:38px}
             }
         `;
+            @media(max-width:1199.98px){
+                nav.navbar .container{position:relative !important;}
+                nav.navbar .container > .navbar-brand{
+                    position:absolute !important;
+                    left:18px !important;
+                    top:50% !important;
+                    margin:0 !important;
+                    transform:translateY(-50%) !important;
+                    z-index:2 !important;
+                }
+                nav.navbar .container > .navbar-brand video,
+                nav.navbar .container > .navbar-brand img{
+                    height:58px !important;
+                    width:auto !important;
+                }
+                .lspedia-idioma-selector{
+                    right:8px !important;
+                    z-index:3 !important;
+                    transform:translateY(-50%) !important;
+                    min-height:42px !important;
+                    height:42px !important;
+                    padding:2px !important;
+                    gap:1px !important;
+                }
+                .lspedia-idioma-selector .lspedia-idioma-btn{
+                    width:40px !important;
+                    min-width:40px !important;
+                    height:34px !important;
+                    min-height:34px !important;
+                    padding:0 !important;
+                }
+                .lspedia-idioma-selector #lspediaTemaBtn{
+                    width:34px !important;
+                    min-width:34px !important;
+                    height:34px !important;
+                    min-height:34px !important;
+                    padding:0 !important;
+                }
+            }
         document.head.appendChild(style);
     }
 
