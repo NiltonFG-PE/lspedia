@@ -101,8 +101,8 @@
     document.querySelectorAll('.modal.show,[role="dialog"][aria-hidden="false"],dialog[open]').forEach(enfocarDialogoSiCorresponde);
   }
 
-  /* Barra INFERIOR: se oculta únicamente cuando el usuario desplaza hacia arriba.
-     Al desplazarse hacia abajo permanece visible y fija. La cabecera superior no se toca. */
+  /* Barra INFERIOR: se oculta únicamente cuando el usuario desplaza hacia abajo.
+     Al desplazarse hacia arriba permanece visible y fija. La cabecera superior no se toca. */
   function iniciarNavegacionInferiorAutoOcultable(){
     const estilos=document.createElement('style');
     estilos.textContent='.lspedia-nav-inferior-scroll-oculta{transform:translateY(calc(100% + 24px)) !important;opacity:0 !important;pointer-events:none !important;}';
@@ -119,19 +119,15 @@
       });
     }
 
-    let temporizador=null;
     let raf=null;
     let ultimaPosicion=window.scrollY||window.pageYOffset||0;
-    let desplazandoHaciaArriba=false;
 
     function mostrar(){
       obtenerBarrasInferiores().forEach(function(el){el.classList.remove('lspedia-nav-inferior-scroll-oculta');});
-      desplazandoHaciaArriba=false;
     }
 
     function ocultar(){
       obtenerBarrasInferiores().forEach(function(el){el.classList.add('lspedia-nav-inferior-scroll-oculta');});
-      desplazandoHaciaArriba=true;
     }
 
     function scroll(){
@@ -142,11 +138,11 @@
         const delta=posicionActual-ultimaPosicion;
         ultimaPosicion=posicionActual;
 
-        // Hacia arriba: ocultar. Hacia abajo: mantener visible.
+        // Hacia abajo (scrollY aumenta): ocultar. Hacia arriba: mantener visible.
         if(delta>0){
-          mostrar();
-        }else if(delta<0){
           ocultar();
+        }else if(delta<0){
+          mostrar();
         }
       });
     }
@@ -157,12 +153,10 @@
       mostrar();
     },{passive:true});
 
-    // Si se inicia un gesto hacia abajo, no dejamos que un temporizador
-    // anterior vuelva a ocultar la navegación.
     ['touchmove','pointermove'].forEach(function(tipo){
       window.addEventListener(tipo,function(){
         const posicionActual=window.scrollY||window.pageYOffset||0;
-        if(posicionActual>ultimaPosicion){
+        if(posicionActual<ultimaPosicion){
           ultimaPosicion=posicionActual;
           mostrar();
         }
