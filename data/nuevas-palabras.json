@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-09-22T13:14:25Z",
+  "generadoEn": "2026-09-22T13:14:52Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
@@ -69,7 +69,7 @@
     },
     {
       "id": "",
-      "palabra": "Quiénes",
+      "palabra": "¿Quiénes?",
       "categoria": "Preguntas",
       "imagen": "img/vocabulario/quienes.webp",
       "fecha": "2026-09-21T05:00:00Z",
