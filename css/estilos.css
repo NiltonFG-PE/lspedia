@@ -1,53 +1,60 @@
 /* LSPedia: estilos base + ajuste de barra superior móvil */
 @import url("estilos-base.css");
 
-/* La cabecera móvil debe sentirse como una barra principal de la app,
-   no como una franja estrecha. Conservamos la navegación inferior como
-   navegación principal y dejamos arriba solo marca/controles. */
+/* Cabecera móvil: azul de marca translúcido, con desenfoque de fondo y
+   el logo perfectamente centrado verticalmente. La navegación real sigue
+   viviendo en la barra inferior tipo app. */
 @media (max-width: 1199.98px) {
-    nav.navbar {
-        min-height: 88px !important;
-        height: 88px !important;
-        padding: 4px 0 !important;
-        background: linear-gradient(135deg, #0b2f70 0%, #102d61 100%) !important;
-        border-bottom: 1px solid rgba(255,255,255,.14);
-        box-shadow: 0 8px 22px rgba(15,23,42,.18) !important;
-        -webkit-backdrop-filter: none !important;
-        backdrop-filter: none !important;
+    html body nav.navbar {
+        min-height: 80px !important;
+        height: 80px !important;
+        padding: 0 !important;
+        background: rgba(11, 47, 112, 0.78) !important;
+        background-color: rgba(11, 47, 112, 0.78) !important;
+        border-bottom: 1px solid rgba(255,255,255,.16) !important;
+        box-shadow: 0 8px 24px rgba(15,23,42,.16) !important;
+        -webkit-backdrop-filter: blur(10px) saturate(1.25) !important;
+        backdrop-filter: blur(10px) saturate(1.25) !important;
     }
 
-    nav.navbar .container {
+    html body nav.navbar .container {
         width: 100% !important;
         max-width: none !important;
+        height: 80px !important;
         min-height: 80px !important;
-        padding-left: 12px !important;
-        padding-right: 12px !important;
+        padding-left: 18px !important;
+        padding-right: 18px !important;
         justify-content: flex-start !important;
+        align-items: center !important;
         margin: 0 !important;
     }
 
-    nav.navbar .navbar-brand {
+    html body nav.navbar .navbar-brand {
         margin: 0 !important;
         padding: 0 !important;
         transform: none !important;
         display: flex !important;
         align-items: center !important;
+        justify-content: flex-start !important;
         flex: 0 0 auto !important;
         min-width: 0;
+        height: 80px !important;
     }
 
-    nav.navbar .navbar-brand video,
-    nav.navbar .navbar-brand img {
+    html body nav.navbar .navbar-brand video,
+    html body nav.navbar .navbar-brand img {
         display: block !important;
         width: auto !important;
-        height: 78px !important;
-        max-width: 68vw !important;
+        height: 68px !important;
+        max-width: 62vw !important;
         object-fit: contain !important;
+        object-position: center !important;
+        margin: 0 !important;
     }
 
-    /* Reserva espacio real para la cabecera fija. */
-    body {
-        padding-top: 92px !important;
+    /* Reserva exactamente el alto visual de la cabecera fija. */
+    html body {
+        padding-top: 80px !important;
     }
 
     #buscar,
@@ -55,48 +62,58 @@
     #herramientasMenuMovil,
     #seccionSubtitulos,
     #seccionNosotros {
-        scroll-margin-top: 104px !important;
+        scroll-margin-top: 96px !important;
     }
 }
 
-/* También corrige el modo móvil real usado por script.js cuando un
-   dispositivo táctil tiene una ventana horizontal ancha. */
+/* Mismo acabado para el modo móvil real cuando el teléfono/tablet está
+   en horizontal y supera el breakpoint xl de Bootstrap. */
 html.modo-movil-real nav.navbar {
-    min-height: 88px !important;
-    height: 88px !important;
-    padding: 4px 0 !important;
-    background: linear-gradient(135deg, #0b2f70 0%, #102d61 100%) !important;
-    border-bottom: 1px solid rgba(255,255,255,.14);
-    box-shadow: 0 8px 22px rgba(15,23,42,.18) !important;
-    -webkit-backdrop-filter: none !important;
-    backdrop-filter: none !important;
+    min-height: 80px !important;
+    height: 80px !important;
+    padding: 0 !important;
+    background: rgba(11, 47, 112, 0.78) !important;
+    background-color: rgba(11, 47, 112, 0.78) !important;
+    border-bottom: 1px solid rgba(255,255,255,.16) !important;
+    box-shadow: 0 8px 24px rgba(15,23,42,.16) !important;
+    -webkit-backdrop-filter: blur(10px) saturate(1.25) !important;
+    backdrop-filter: blur(10px) saturate(1.25) !important;
 }
 
 html.modo-movil-real nav.navbar .container {
     width: 100% !important;
     max-width: none !important;
-    padding-left: 12px !important;
-    padding-right: 12px !important;
+    height: 80px !important;
+    min-height: 80px !important;
+    padding-left: 18px !important;
+    padding-right: 18px !important;
     justify-content: flex-start !important;
+    align-items: center !important;
 }
 
 html.modo-movil-real nav.navbar .navbar-brand {
     margin: 0 !important;
     padding: 0 !important;
     transform: none !important;
+    height: 80px !important;
+    display: flex !important;
+    align-items: center !important;
 }
 
 html.modo-movil-real nav.navbar .navbar-brand video,
 html.modo-movil-real nav.navbar .navbar-brand img {
-    height: 78px !important;
-    max-width: 68vw !important;
+    height: 68px !important;
+    max-width: 62vw !important;
+    object-fit: contain !important;
+    object-position: center !important;
+    margin: 0 !important;
 }
 
 html.modo-movil-real body {
-    padding-top: 92px !important;
+    padding-top: 80px !important;
 }
 
-/* Escritorio: un poco más de presencia sin cambiar la estructura. */
+/* Escritorio: conserva la barra sólida y solo da un poco más de presencia. */
 @media (min-width: 1200px) {
     nav.navbar {
         min-height: 94px;
