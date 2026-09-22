@@ -154,7 +154,7 @@
                 .lspedia-idioma-btn{width:44px;height:38px;font-size:11px}
                 .lspedia-idioma-selector #lspediaTemaBtn{width:38px;height:38px}
             }
-        `;
+            /* En móvil/tablet: el logo queda a la izquierda y ES/EN + modo oscuro quedan juntos a la derecha. */
             @media(max-width:1199.98px){
                 nav.navbar .container{position:relative !important;}
                 nav.navbar .container > .navbar-brand{
@@ -185,6 +185,7 @@
                     height:32px !important;
                     min-height:32px !important;
                     padding:0 !important;
+                    font-size:11px !important;
                 }
                 .lspedia-idioma-selector #lspediaTemaBtn{
                     width:32px !important;
