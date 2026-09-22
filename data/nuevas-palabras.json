@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-09-22T13:12:41Z",
+  "generadoEn": "2026-09-22T13:14:25Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
@@ -51,7 +51,7 @@
     },
     {
       "id": "",
-      "palabra": "Qué",
+      "palabra": "¿Qué?",
       "categoria": "Preguntas",
       "imagen": "img/vocabulario/que.webp",
       "fecha": "2026-09-21T05:00:00Z",
@@ -60,7 +60,7 @@
     },
     {
       "id": "",
-      "palabra": "Quién",
+      "palabra": "¿Quién?",
       "categoria": "Preguntas",
       "imagen": "img/vocabulario/quien.webp",
       "fecha": "2026-09-21T05:00:00Z",
