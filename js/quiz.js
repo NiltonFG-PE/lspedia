@@ -502,12 +502,67 @@ const QuizV2 = (function () {
     // ---------------------------------------------------------
     function prepararVideoQuiz(videoId) {
         estadoVideo.velocidadIndex = estadoVideo.velocidades.indexOf(1);
-        ajustarAspectoVideo(videoId);
-        if (window.YT && window.YT.Player) {
-            crearReproductorQuizVideo(videoId);
-        } else {
-            estadoVideo.videoIdPendiente = videoId;
+        const id = String(videoId || "").trim();
+        if (!id) return;
+
+        ajustarAspectoVideo(id);
+
+        if (window.YT && typeof window.YT.Player === "function") {
+            estadoVideo.apiListo = true;
+            crearReproductorQuizVideo(id);
+            return;
         }
+
+        estadoVideo.videoIdPendiente = id;
+
+        // El Quiz no puede asumir que script.js ya haya descargado la API:
+        // en una entrada directa a "Jugar" puede no existir todavía.
+        if (typeof window.asegurarApiYouTube === "function") {
+            try {
+                window.asegurarApiYouTube();
+                return;
+            } catch (e) {
+                console.warn("No se pudo solicitar la API de YouTube desde Quiz:", e);
+            }
+        }
+
+        // Respaldo independiente: carga la API y conserva el callback global
+        // del Quiz. Esto evita que el reproductor quede en negro en móviles
+        // cuando el módulo se abre antes que cualquier otro video de YouTube.
+        asegurarApiYouTubeQuiz();
+    }
+
+    let apiYouTubeQuizSolicitada = false;
+
+    function asegurarApiYouTubeQuiz() {
+        if (window.YT && typeof window.YT.Player === "function") {
+            estadoVideo.apiListo = true;
+            if (estadoVideo.videoIdPendiente) {
+                const pendiente = estadoVideo.videoIdPendiente;
+                estadoVideo.videoIdPendiente = null;
+                crearReproductorQuizVideo(pendiente);
+            }
+            return;
+        }
+
+        const existente = document.querySelector('script[src*="youtube.com/iframe_api"]');
+        if (existente) {
+            apiYouTubeQuizSolicitada = true;
+            return;
+        }
+
+        if (apiYouTubeQuizSolicitada) return;
+        apiYouTubeQuizSolicitada = true;
+
+        const script = document.createElement("script");
+        script.id = "lspediaQuizYoutubeIframeApi";
+        script.src = "https://www.youtube.com/iframe_api";
+        script.async = true;
+        script.onerror = () => {
+            apiYouTubeQuizSolicitada = false;
+            console.warn("No se pudo cargar la API de YouTube para el Quiz.");
+        };
+        document.head.appendChild(script);
     }
 
     // Consulta el oEmbed público de YouTube para conocer el ancho/alto
@@ -1241,15 +1296,45 @@ const QuizV2 = (function () {
             if (otroBoton) otroBoton.setAttribute("aria-expanded", "false");
         }
 
-        const btnNivel = el("btnQuizNivel");
-        if (btnNivel) btnNivel.addEventListener("click", () => {
-            alternarPanelQuiz("quizPanelNivel", "btnQuizNivel", "quizPanelModo", "btnQuizModo");
-        });
+        function instalarBotonConfigQuiz(boton, panelId, otroPanelId, otroBotonId){
+            if(!boton) return;
 
-        const btnModo = el("btnQuizModo");
-        if (btnModo) btnModo.addEventListener("click", () => {
-            alternarPanelQuiz("quizPanelModo", "btnQuizModo", "quizPanelNivel", "btnQuizNivel");
-        });
+            let ultimaActivacion = 0;
+            const activar = (evento) => {
+                const ahora = Date.now();
+                if(ahora - ultimaActivacion < 450) return;
+                ultimaActivacion = ahora;
+
+                if(evento && evento.type !== "click"){
+                    evento.preventDefault();
+                    evento.stopPropagation();
+                }
+
+                alternarPanelQuiz(panelId, boton.id, otroPanelId, otroBotonId);
+            };
+
+            // pointerup es más fiable que click en Chrome Android cuando la
+            // página tiene elementos fijos/overlays y el teclado o viewport
+            // acaba de cambiar.
+            if(window.PointerEvent){
+                boton.addEventListener("pointerup", activar, { passive: false });
+            }
+            boton.addEventListener("click", activar);
+        }
+
+        instalarBotonConfigQuiz(
+            el("btnQuizNivel"),
+            "quizPanelNivel",
+            "quizPanelModo",
+            "btnQuizModo"
+        );
+
+        instalarBotonConfigQuiz(
+            el("btnQuizModo"),
+            "quizPanelModo",
+            "quizPanelNivel",
+            "btnQuizNivel"
+        );
 
         const btnSiguiente = el("btnSiguientePregunta");
         if (btnSiguiente) btnSiguiente.addEventListener("click", siguientePregunta);
