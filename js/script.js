@@ -2453,6 +2453,42 @@ function obtenerBancoHoja2() {
     return (window.QuizV2 && typeof QuizV2.obtenerBanco === "function") ? QuizV2.obtenerBanco() : [];
 }
 
+// Busca una palabra exacta (o una variante exacta) en Vocabulario sin mezclar
+// sus resultados con el Diccionario. Se usa únicamente como puente cuando
+// la búsqueda principal del Diccionario no encuentra nada.
+function buscarCoincidenciaExactaEnVocabulario(texto){
+    const consulta = norm(String(texto || "").trim());
+    if(!consulta) return null;
+
+    const banco = obtenerBancoHoja2();
+    if(!Array.isArray(banco) || banco.length === 0) return null;
+
+    for(const registro of banco){
+        if(!registro) continue;
+        if(norm(registro.palabra) === consulta){
+            return registro;
+        }
+
+        const variantes = String(registro.variantes || "")
+            .split(",")
+            .map(v => v.trim())
+            .filter(Boolean);
+
+        if(variantes.some(v => norm(v) === consulta)){
+            return registro;
+        }
+    }
+
+    return null;
+}
+
+// Abre directamente la ficha de Vocabulario encontrada desde una búsqueda
+// sin resultado en Diccionario.
+function abrirResultadoVocabularioDesdeBusqueda(palabra){
+    if(!palabra) return;
+    mostrarPalabraSimplificada(marcarFuenteVocabulario(palabra));
+}
+
 // La precarga en segundo plano de QuizV2 puede tardar unos segundos en
 // llegar (esperando un "momento libre" del navegador + la respuesta de
 // Google Sheets). Para que el buscador no dependa de esa espera:
@@ -2743,6 +2779,7 @@ function buscarPalabras(){
     sugerencias.style.display = "block";
 
     if(encontrados.length===0){
+        const coincidenciaVocabulario = buscarCoincidenciaExactaEnVocabulario(texto);
         const cercanos = buscarCercanos(texto, App.datos);
         if(cercanos.length > 0){
             sugerencias.innerHTML = `
@@ -2759,6 +2796,22 @@ function buscarPalabras(){
             });
             return;
         }
+
+        if(coincidenciaVocabulario){
+            sugerencias.innerHTML = `
+                <div class="list-group-item text-center py-3" style="background-color: #343a40; border: none;">
+                    <span class="text-white d-block mb-2 small">No está en el Diccionario, pero sí en Vocabulario.</span>
+                    <button type="button" class="btn btn-sm btn-primary w-100 fw-bold" id="btnIrVocabularioBusqueda">
+                        🗂️ Ver en Vocabulario
+                    </button>
+                </div>`;
+            const btnVocab = document.getElementById("btnIrVocabularioBusqueda");
+            if(btnVocab){
+                btnVocab.onclick = () => abrirResultadoVocabularioDesdeBusqueda(coincidenciaVocabulario);
+            }
+            return;
+        }
+
         sugerencias.innerHTML = `
             <div class="list-group-item text-center py-3" style="background-color: #343a40; border: none;">
                 <span class="text-white d-block mb-2 small">No hay resultados para "${escaparHtml(texto)}"</span>
@@ -2856,6 +2909,43 @@ function ejecutarBusquedaDirecta() {
         if(sugerencias && sugerencias.children.length) {
             setTimeout(() => sugerencias.scrollIntoView({ behavior: "smooth", block: "nearest" }), 80);
         }
+        return;
+    }
+
+    // Antes de mostrar "no encontramos", comprobamos si la palabra exacta
+    // existe en Vocabulario. No mezclamos sus resultados con Diccionario:
+    // simplemente ofrecemos un acceso directo a la ficha de Vocabulario.
+    const coincidenciaVocabulario = buscarCoincidenciaExactaEnVocabulario(texto);
+    if(coincidenciaVocabulario){
+        buscar.blur();
+        panelCategorias.innerHTML = "";
+        resultadoCategoriasDiccionario.innerHTML = "";
+        categoriaActualMostrada = null;
+        ultimasPalabras.innerHTML = "";
+        ocultarPanelesGuardados();
+        const filaCategoriasDiccVocab = document.getElementById("filaCategoriasDiccionario");
+        if(filaCategoriasDiccVocab) filaCategoriasDiccVocab.style.display = "none";
+        const statsPanelVocab = document.querySelector(".stats-panel-destacado");
+        if(statsPanelVocab) statsPanelVocab.style.display = "none";
+        const statsHeaderVocab = document.querySelector(".stats-header");
+        if(statsHeaderVocab) statsHeaderVocab.style.display = "none";
+
+        resultado.innerHTML = `
+            <div class="card shadow-sm mb-4 border-0 animate-fade-in" style="border-radius: 15px; background-color: #f8f9fa;">
+                <div class="card-body p-4 text-center">
+                    <div class="mb-2" style="font-size: 42px;">🗂️</div>
+                    <h4 class="fw-bold mb-2 text-primary">"${escaparHtml(consultaOriginal)}" no está en el Diccionario</h4>
+                    <p class="text-muted small mb-3">Pero sí encontramos esta palabra en Vocabulario.</p>
+                    <button type="button" class="btn btn-primary px-4 py-2 rounded-pill fw-bold" id="btnIrVocabularioBusquedaDirecta">
+                        🗂️ Ver en Vocabulario
+                    </button>
+                </div>
+            </div>`;
+        const btnIrVocabulario = document.getElementById("btnIrVocabularioBusquedaDirecta");
+        if(btnIrVocabulario){
+            btnIrVocabulario.onclick = () => abrirResultadoVocabularioDesdeBusqueda(coincidenciaVocabulario);
+        }
+        setTimeout(() => resultado.scrollIntoView({ behavior: "smooth", block: "start" }), 300);
         return;
     }
 
