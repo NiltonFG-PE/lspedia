@@ -2779,6 +2779,10 @@ function buscarPalabras(){
     sugerencias.style.display = "block";
 
     if(encontrados.length===0){
+        // Una coincidencia exacta en Vocabulario tiene prioridad sobre una
+        // sugerencia aproximada del Diccionario. Así, si se busca "barato"
+        // y no existe en Diccionario pero sí en Vocabulario, no mostramos
+        // una corrección aproximada como "Felicitaciones".
         const coincidenciaVocabulario = buscarCoincidenciaExactaEnVocabulario(texto);
         const cercanos = buscarCercanos(texto, App.datos);
         if(cercanos.length > 0){
@@ -2900,21 +2904,8 @@ function ejecutarBusquedaDirecta() {
         return;
     }
 
-    // Si escribió la palabra con uno o varios errores razonables, no la
-    // declaramos inexistente: mostramos "¿Quisiste decir...?".
-    const cercanos = buscarCercanos(texto, App.datos);
-    if(cercanos.length > 0) {
-        buscarPalabras();
-        buscar.blur();
-        if(sugerencias && sugerencias.children.length) {
-            setTimeout(() => sugerencias.scrollIntoView({ behavior: "smooth", block: "nearest" }), 80);
-        }
-        return;
-    }
-
-    // Antes de mostrar "no encontramos", comprobamos si la palabra exacta
-    // existe en Vocabulario. No mezclamos sus resultados con Diccionario:
-    // simplemente ofrecemos un acceso directo a la ficha de Vocabulario.
+    // Primero comprobamos una coincidencia exacta en Vocabulario.
+    // Tiene prioridad sobre cualquier sugerencia aproximada del Diccionario.
     const coincidenciaVocabulario = buscarCoincidenciaExactaEnVocabulario(texto);
     if(coincidenciaVocabulario){
         buscar.blur();
@@ -2948,6 +2939,21 @@ function ejecutarBusquedaDirecta() {
         setTimeout(() => resultado.scrollIntoView({ behavior: "smooth", block: "start" }), 300);
         return;
     }
+
+    // Si escribió la palabra con uno o varios errores razonables, no la
+    // declaramos inexistente: mostramos "¿Quisiste decir...?".
+    const cercanos = buscarCercanos(texto, App.datos);
+    if(cercanos.length > 0) {
+        buscarPalabras();
+        buscar.blur();
+        if(sugerencias && sugerencias.children.length) {
+            setTimeout(() => sugerencias.scrollIntoView({ behavior: "smooth", block: "nearest" }), 80);
+        }
+        return;
+    }
+
+    // Antes de mostrar "no encontramos", la coincidencia exacta en
+    // Vocabulario ya fue comprobada arriba.
 
     // Solo ahora sabemos que fue una búsqueda confirmada sin resultados.
     registrarBusquedaSinResultado(consultaOriginal, "diccionario");
