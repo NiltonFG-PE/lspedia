@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-09-23T15:43:23Z",
+  "generadoEn": "2026-09-23T15:48:59Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
@@ -69,6 +69,15 @@
     },
     {
       "id": "",
+      "palabra": "Buenas tardes",
+      "categoria": "Cortesía",
+      "imagen": "img/vocabulario/buenas-tardes.webp",
+      "fecha": "2026-09-23T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
       "palabra": "Saludos",
       "categoria": "Cortesía",
       "imagen": "img/vocabulario/saludos.webp",
@@ -99,15 +108,6 @@
       "palabra": "Pregunta",
       "categoria": "Comunicación",
       "imagen": "img/vocabulario/pregunta.webp",
-      "fecha": "2026-09-22T05:00:00Z",
-      "origenFecha": "fechaPublicacion",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Estaciones del año",
-      "categoria": "Tiempo",
-      "imagen": "img/vocabulario/estaciones.webp",
       "fecha": "2026-09-22T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
