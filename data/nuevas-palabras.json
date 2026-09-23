@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-09-23T14:01:10Z",
+  "generadoEn": "2026-09-23T14:32:56Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
@@ -9,6 +9,15 @@
       "palabra": "Felicitaciones",
       "categoria": "Cortesía",
       "imagen": "img/vocabulario/felicitaciones.webp",
+      "fecha": "2026-09-23T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Gracias",
+      "categoria": "Cortesía",
+      "imagen": "img/vocabulario/gracias.webp",
       "fecha": "2026-09-23T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
@@ -99,15 +108,6 @@
       "palabra": "¿Cuál?",
       "categoria": "Preguntas",
       "imagen": "img/vocabulario/cual.webp",
-      "fecha": "2026-09-21T05:00:00Z",
-      "origenFecha": "fechaPublicacion",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "¿Cuándo?",
-      "categoria": "Preguntas",
-      "imagen": "img/vocabulario/cuando.webp",
       "fecha": "2026-09-21T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
