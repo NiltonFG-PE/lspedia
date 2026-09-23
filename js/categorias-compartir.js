@@ -288,6 +288,17 @@
         if(!datos) return false;
         if(datos.tipo === 'coleccion-vocabulario'){
             if(typeof window.mostrarEtiquetaVocabulario !== 'function') return false;
+            const confirmarUrlColeccion = () => {
+                const objetivo = new URL(construirUrlColeccion(datos.nombre));
+                const relativaObjetivo = objetivo.pathname + objetivo.search;
+                const relativaActual = window.location.pathname + window.location.search;
+                if(relativaActual !== relativaObjetivo){
+                    window.history.replaceState(
+                        { tipo: 'coleccionVocabulario', coleccion: datos.nombre },
+                        '', relativaObjetivo
+                    );
+                }
+            };
             const abrirYMostrar = () => {
                 try {
                     const yaEnVocabulario = document.body && document.body.classList.contains('vista-temas-movil');
@@ -296,6 +307,7 @@
                         if(boton) boton.click();
                     }
                     window.mostrarEtiquetaVocabulario(datos.nombre, { noActualizarHistorial: true });
+                    confirmarUrlColeccion();
                     return true;
                 } catch(_error){ return false; }
             };
