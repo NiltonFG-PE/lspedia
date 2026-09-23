@@ -2867,6 +2867,36 @@ function buscarPalabras(){
 if(btnBuscar) btnBuscar.addEventListener("click", ejecutarBusquedaDirecta);
 buscar.addEventListener("keypress", (e) => { if (e.key === "Enter") { e.preventDefault(); ejecutarBusquedaDirecta(); } });
 
+// Limpia toda la consulta con un solo toque y vuelve a dejar el buscador listo.
+function limpiarBuscadorPrincipal(){
+    if(!buscar) return;
+    buscar.value = "";
+    buscarPalabras();
+    sugerencias.style.display = "none";
+    buscar.focus({ preventScroll: true });
+}
+
+const btnLimpiarBuscar = document.getElementById("btnLimpiarBuscar");
+if(btnLimpiarBuscar){
+    btnLimpiarBuscar.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        limpiarBuscadorPrincipal();
+    });
+}
+
+function actualizarBotonLimpiarBuscar(){
+    if(!btnLimpiarBuscar || !buscar) return;
+    const tieneTexto = String(buscar.value || "").trim().length > 0;
+    btnLimpiarBuscar.style.display = tieneTexto ? "flex" : "none";
+    btnLimpiarBuscar.setAttribute("aria-hidden", tieneTexto ? "false" : "true");
+}
+
+if(buscar){
+    buscar.addEventListener("input", actualizarBotonLimpiarBuscar);
+    actualizarBotonLimpiarBuscar();
+}
+
 function ejecutarBusquedaDirecta() {
     const consultaOriginal = buscar.value.trim();
     const texto = norm(consultaOriginal);
@@ -6706,45 +6736,68 @@ function mostrarSenalDelDia(offset = offsetSenalDelDia){
 })();
 
 
-// LSP_BUSQUEDA_MOVIL_TOUCH_FIX_20260922_V2
+// LSP_BUSQUEDA_MOVIL_TOUCH_FIX_20260923_V3
 (function activarToqueDirectoResultadosBusqueda(){
-    // En móvil no dependemos del click sintético del navegador. El primer
-    // contacto sobre una sugerencia abre directamente la ficha usando la
-    // referencia guardada en data-lsp-ref. Esto evita problemas de Chrome/
-    // Safari cuando la lista fue creada dinámicamente.
+    // Importante: tocar una sugerencia no debe seleccionar nada mientras la
+    // persona está desplazándose por la lista. Dejamos que el navegador
+    // genere el click únicamente al finalizar un toque sin desplazamiento.
     function instalar(contenedor, fuente){
-        if(!contenedor || contenedor.dataset.lspTouchFix === "2") return;
-        contenedor.dataset.lspTouchFix = "2";
+        if(!contenedor || contenedor.dataset.lspTouchFix === "3") return;
+        contenedor.dataset.lspTouchFix = "3";
+
+        let inicioX = 0;
+        let inicioY = 0;
+        let botonInicial = null;
+        let huboDesplazamiento = false;
+
         contenedor.addEventListener("touchstart", (evento) => {
-            // Cuando el buscador móvil está dentro de su overlay, ese módulo
-            // gestiona la selección completa (cerrar overlay + abrir ficha).
-            // Evitamos abrir aquí también para no duplicar la navegación.
             if(document.getElementById("lspMobileSearchOverlay")) return;
 
-            const boton = evento.target && evento.target.closest
+            const toque = evento.touches && evento.touches[0];
+            if(!toque) return;
+
+            botonInicial = evento.target && evento.target.closest
                 ? evento.target.closest("button.list-group-item-action[data-lsp-ref]")
                 : null;
-            if(!boton || !contenedor.contains(boton)) return;
 
-            const referencia = boton.dataset.lspRef || "";
-            if(!referencia) return;
-
-            evento.preventDefault();
-            evento.stopPropagation();
-
-            const palabra = buscarPalabraPorReferencia(
-                referencia,
-                fuente === "vocabulario" ? obtenerDatosVocabulario() : App.datos
-            );
-
-            if(!palabra) return;
-
-            if(fuente === "vocabulario"){
-                mostrarPalabraVocabularioPorReferencia(referencia);
-            } else {
-                mostrarPalabra(palabra);
+            if(!botonInicial || !contenedor.contains(botonInicial)){
+                botonInicial = null;
+                return;
             }
-        }, { passive: false });
+
+            inicioX = toque.clientX;
+            inicioY = toque.clientY;
+            huboDesplazamiento = false;
+        }, { passive: true });
+
+        contenedor.addEventListener("touchmove", (evento) => {
+            if(!botonInicial) return;
+
+            const toque = evento.touches && evento.touches[0];
+            if(!toque) return;
+
+            const dx = toque.clientX - inicioX;
+            const dy = toque.clientY - inicioY;
+
+            // Un desplazamiento pequeño puede ser el movimiento natural del
+            // dedo; a partir de 10 px consideramos que la persona está
+            // recorriendo la lista y NO debe seleccionarse el elemento.
+            if(Math.hypot(dx, dy) > 10){
+                huboDesplazamiento = true;
+            }
+        }, { passive: true });
+
+        contenedor.addEventListener("touchend", () => {
+            // No hacemos preventDefault ni abrimos la ficha aquí.
+            // Si fue un toque sin desplazamiento, el click nativo del
+            // navegador ejecutará el onclick existente del botón.
+            botonInicial = null;
+        }, { passive: true });
+
+        contenedor.addEventListener("touchcancel", () => {
+            botonInicial = null;
+            huboDesplazamiento = false;
+        }, { passive: true });
     }
 
     instalar(document.getElementById("sugerencias"), "diccionario");
