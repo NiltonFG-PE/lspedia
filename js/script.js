@@ -2784,6 +2784,21 @@ function buscarPalabras(){
         // y no existe en Diccionario pero sí en Vocabulario, no mostramos
         // una corrección aproximada como "Felicitaciones".
         const coincidenciaVocabulario = buscarCoincidenciaExactaEnVocabulario(texto);
+        if(coincidenciaVocabulario){
+            sugerencias.innerHTML = `
+                <div class="list-group-item text-center py-3" style="background-color: #343a40; border: none;">
+                    <span class="text-white d-block mb-2 small">No está en el Diccionario, pero sí en Vocabulario.</span>
+                    <button type="button" class="btn btn-sm btn-primary w-100 fw-bold" id="btnIrVocabularioBusqueda">
+                        🗂️ Ver en Vocabulario
+                    </button>
+                </div>`;
+            const btnVocab = document.getElementById("btnIrVocabularioBusqueda");
+            if(btnVocab){
+                btnVocab.onclick = () => abrirResultadoVocabularioDesdeBusqueda(coincidenciaVocabulario);
+            }
+            return;
+        }
+
         const cercanos = buscarCercanos(texto, App.datos);
         if(cercanos.length > 0){
             sugerencias.innerHTML = `
@@ -2798,21 +2813,6 @@ function buscarPalabras(){
                 boton.onclick = () => mostrarPalabra(p);
                 sugerencias.appendChild(boton);
             });
-            return;
-        }
-
-        if(coincidenciaVocabulario){
-            sugerencias.innerHTML = `
-                <div class="list-group-item text-center py-3" style="background-color: #343a40; border: none;">
-                    <span class="text-white d-block mb-2 small">No está en el Diccionario, pero sí en Vocabulario.</span>
-                    <button type="button" class="btn btn-sm btn-primary w-100 fw-bold" id="btnIrVocabularioBusqueda">
-                        🗂️ Ver en Vocabulario
-                    </button>
-                </div>`;
-            const btnVocab = document.getElementById("btnIrVocabularioBusqueda");
-            if(btnVocab){
-                btnVocab.onclick = () => abrirResultadoVocabularioDesdeBusqueda(coincidenciaVocabulario);
-            }
             return;
         }
 
