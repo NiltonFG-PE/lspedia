@@ -2778,7 +2778,7 @@ function buscarPalabras(){
 
     sugerencias.style.display = "block";
 
-    if(encontrados.length===0){
+    if(encontrados.length===0 || (!encontrados.some(p => clasificarCoincidencia(p, texto) <= 5) && buscarCoincidenciaExactaEnVocabulario(texto))){
         // Una coincidencia exacta en Vocabulario tiene prioridad sobre una
         // sugerencia aproximada del Diccionario. Así, si se busca "barato"
         // y no existe en Diccionario pero sí en Vocabulario, no mostramos
@@ -2915,7 +2915,7 @@ function ejecutarBusquedaDirecta() {
         if (rango >= 0) coincidencias.push({ p, rango });
     });
 
-    if(coincidencias.length > 0) {
+    if(coincidencias.length > 0 && coincidencias.some(c => c.rango <= 5)) {
         const mejorRango = Math.min(...coincidencias.map(c => c.rango));
         if(mejorRango <= 5) {
             const ordenadas = ordenarYLimitarCoincidencias(coincidencias, 15);
