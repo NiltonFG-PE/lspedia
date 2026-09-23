@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-09-23T20:31:46Z",
+  "generadoEn": "2026-09-23T20:34:52Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
@@ -105,9 +105,9 @@
     },
     {
       "id": "",
-      "palabra": "Saludos",
-      "categoria": "Cortesía",
-      "imagen": "img/vocabulario/saludos.webp",
+      "palabra": "Mañana",
+      "categoria": "Tiempo",
+      "imagen": "img/vocabulario/manana.webp",
       "fecha": "2026-09-23T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
