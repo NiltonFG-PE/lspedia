@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-09-23T20:28:41Z",
+  "generadoEn": "2026-09-23T20:31:46Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
@@ -96,18 +96,18 @@
     },
     {
       "id": "",
-      "palabra": "Saludos",
-      "categoria": "Cortesía",
-      "imagen": "img/vocabulario/saludos.webp",
+      "palabra": "Hoy",
+      "categoria": "Tiempo",
+      "imagen": "img/vocabulario/hoy.webp",
       "fecha": "2026-09-23T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
     {
       "id": "",
-      "palabra": "Muchas gracias",
+      "palabra": "Saludos",
       "categoria": "Cortesía",
-      "imagen": "img/vocabulario/muchas-gracias.webp",
+      "imagen": "img/vocabulario/saludos.webp",
       "fecha": "2026-09-23T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
