@@ -1272,6 +1272,13 @@ const QuizV2 = (function () {
     // ENLAZAR BOTONES ESTÁTICOS (una sola vez)
     // ---------------------------------------------------------
     function enlazarEventos() {
+        // iniciar() puede llamarse cada vez que el usuario vuelve a entrar al
+        // Quiz. Sin esta guardia se acumulaban listeners: al tocar "Elegir
+        // nivel" uno abría el panel y el siguiente lo volvía a cerrar,
+        // dando la impresión de que el botón no funcionaba.
+        if (enlazarEventos._armado) return;
+        enlazarEventos._armado = true;
+
         const btnEmpezar = el("btnEmpezarQuiz");
         if (btnEmpezar) btnEmpezar.addEventListener("click", empezarPartida);
 
