@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-09-23T14:54:22Z",
+  "generadoEn": "2026-09-23T15:04:47Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
@@ -69,6 +69,15 @@
     },
     {
       "id": "",
+      "palabra": "Gratis",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/gratis.webp",
+      "fecha": "2026-09-23T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
       "palabra": "Pregunta",
       "categoria": "Comunicación",
       "imagen": "img/vocabulario/pregunta.webp",
@@ -99,15 +108,6 @@
       "palabra": "Otoño",
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/otono.webp",
-      "fecha": "2026-09-22T05:00:00Z",
-      "origenFecha": "fechaPublicacion",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Primavera",
-      "categoria": "Tiempo",
-      "imagen": "img/vocabulario/primavera.webp",
       "fecha": "2026-09-22T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
