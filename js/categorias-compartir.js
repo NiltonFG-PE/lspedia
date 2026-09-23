@@ -14,8 +14,12 @@
             const diccionario = (url.searchParams.get('categoriaDiccionario') || '').trim();
             const vista = (url.searchParams.get('vista') || '').trim().toLowerCase();
             const vocabulario = (url.searchParams.get('categoria') || '').trim();
+            const coleccion = (url.searchParams.get('coleccion') || '').trim();
 
             if(diccionario) return { tipo: 'diccionario', nombre: diccionario };
+            if((vista === 'vocabulario' || vista === 'temas') && coleccion){
+                return { tipo: 'coleccion-vocabulario', nombre: coleccion };
+            }
             if((vista === 'vocabulario' || vista === 'temas') && vocabulario){
                 return { tipo: 'vocabulario', nombre: vocabulario };
             }
@@ -76,6 +80,13 @@
             return nombre ? { tipo: 'vocabulario', nombre } : null;
         }
         return null;
+    }
+
+    function construirUrlColeccion(nombre){
+        const url = new URL(window.location.origin + window.location.pathname);
+        url.searchParams.set('vista', 'vocabulario');
+        url.searchParams.set('coleccion', nombre);
+        return url.href;
     }
 
     function construirUrlCategoria(tipo, nombre){
@@ -275,6 +286,23 @@
     function restaurarCategoriaCompartida(){
         const datos = parametrosCategoriaActuales();
         if(!datos) return false;
+        if(datos.tipo === 'coleccion-vocabulario'){
+            if(typeof window.mostrarEtiquetaVocabulario !== 'function') return false;
+            const mostrar = () => {
+                try {
+                    window.mostrarEtiquetaVocabulario(datos.nombre, { noActualizarHistorial: true });
+                    return true;
+                } catch(_error){ return false; }
+            };
+            if(mostrar()){
+                categoriaPendienteOriginal = null;
+                return true;
+            }
+            if(window.QuizV2 && typeof window.QuizV2.onBancoListo === 'function'){
+                window.QuizV2.onBancoListo(() => mostrar());
+            }
+            return false;
+        }
         const clave = datos.tipo + ':' + datos.nombre.toLowerCase();
         if(ultimaRestauracionConfirmada === clave){
             return datos.tipo === 'diccionario'
@@ -322,5 +350,6 @@
 
     window.compartirCategoriaLSPedia = compartirCategoria;
     window.construirUrlCategoriaLSPedia = construirUrlCategoria;
+    window.construirUrlColeccionLSPedia = construirUrlColeccion;
     window.restaurarCategoriaCompartidaLSPedia = restaurarCategoriaCompartida;
 })();
