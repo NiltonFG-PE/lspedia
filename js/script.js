@@ -5482,6 +5482,26 @@ function obtenerEtiquetaExactaVocabulario(datos, texto){
         .find(item => norm(item.nombre) === clave) || null;
 }
 
+function compartirColeccionVocabulario(nombre){
+    const coleccion = String(nombre || "").trim();
+    if(!coleccion) return;
+    const params = new URLSearchParams();
+    params.set("vista", "vocabulario");
+    params.set("coleccion", coleccion);
+    const url = window.location.origin + window.location.pathname + "?" + params.toString();
+    const titulo = coleccion + " | LSPedia";
+    const texto = `Explora la colección "${coleccion}" del Vocabulario de LSPedia.`;
+    if (navigator.share) {
+        navigator.share({ title: titulo, text: texto, url })
+            .catch(error => {
+                if(error && error.name === "AbortError") return;
+                copiarEnlaceCategoriaLSPedia(url);
+            });
+        return;
+    }
+    copiarEnlaceCategoriaLSPedia(url);
+}
+
 function mostrarEtiquetaVocabulario(nombre, opciones = {}){
     const datos = obtenerDatosVocabulario();
     const clave = norm(nombre);
@@ -5496,14 +5516,22 @@ function mostrarEtiquetaVocabulario(nombre, opciones = {}){
     }
 
     if(!opciones.noActualizarHistorial){
-        actualizarVistaUrl("vocabulario");
+        const urlColeccion = window.location.pathname
+            + "?vista=vocabulario&coleccion=" + encodeURIComponent(nombre);
+        registrarUrlEnHistorial(urlColeccion, { tipo: "coleccionVocabulario", coleccion: nombre });
     }
 
     let html = botonAtrasCategorias()
         + '<div class="mb-3">'
-        + '<h6 class="text-muted uppercase fw-bold mb-1 tracking-wider">🏷️ '
+        + '<div class="d-flex align-items-center justify-content-between gap-2 flex-wrap">'
+        + '<h6 class="text-muted uppercase fw-bold mb-1 tracking-wider mb-0">🏷️ '
         + escaparHtml(nombre)
         + '</h6>'
+        + '<button type="button" class="btn btn-sm btn-outline-primary fw-bold btn-compartir-coleccion" '
+        + 'aria-label="Compartir colección ' + escaparAtributoHtml(nombre) + '" title="Compartir colección" '
+        + 'onclick="event.preventDefault(); event.stopPropagation(); compartirColeccionVocabulario(\'' + escaparCadenaJsAtributo(nombre) + '\')">'
+        + '🔗 Compartir</button>'
+        + '</div>'
         + '<div class="small text-secondary">'
         + filtradas.length + ' '
         + (filtradas.length === 1 ? "palabra" : "palabras")
@@ -5912,7 +5940,10 @@ function restaurarInterfazDesdeHistorial(estado = {}){
             saltarScrollAlAbrirVocabulario = true;
             omitirAvisoVocabularioUnaVez = true;
             if(boton) boton.click();
-            if(categoriaVocabulario && typeof mostrarCategoria === "function") {
+            const coleccionVocabulario = params.get("coleccion");
+            if(coleccionVocabulario && typeof mostrarEtiquetaVocabulario === "function") {
+                mostrarEtiquetaVocabulario(coleccionVocabulario, { noActualizarHistorial: true });
+            } else if(categoriaVocabulario && typeof mostrarCategoria === "function") {
                 mostrarCategoria(categoriaVocabulario, { noActualizarHistorial: true });
             }
             return;
