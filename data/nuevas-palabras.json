@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-09-23T14:47:49Z",
+  "generadoEn": "2026-09-23T14:51:34Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
@@ -27,6 +27,15 @@
       "palabra": "Por favor",
       "categoria": "Cortesía",
       "imagen": "img/vocabulario/por-favor.webp",
+      "fecha": "2026-09-23T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Perdón",
+      "categoria": "Cortesía",
+      "imagen": "img/vocabulario/perdon.webp",
       "fecha": "2026-09-23T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
@@ -99,15 +108,6 @@
       "palabra": "Verano",
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/verano.webp",
-      "fecha": "2026-09-22T05:00:00Z",
-      "origenFecha": "fechaPublicacion",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Número",
-      "categoria": "Números",
-      "imagen": "img/vocabulario/numero.webp",
       "fecha": "2026-09-22T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
