@@ -288,18 +288,23 @@
         if(!datos) return false;
         if(datos.tipo === 'coleccion-vocabulario'){
             if(typeof window.mostrarEtiquetaVocabulario !== 'function') return false;
-            const mostrar = () => {
+            const abrirYMostrar = () => {
                 try {
+                    const yaEnVocabulario = document.body && document.body.classList.contains('vista-temas-movil');
+                    if(!yaEnVocabulario){
+                        const boton = document.getElementById('btnCategorias');
+                        if(boton) boton.click();
+                    }
                     window.mostrarEtiquetaVocabulario(datos.nombre, { noActualizarHistorial: true });
                     return true;
                 } catch(_error){ return false; }
             };
-            if(mostrar()){
+            if(abrirYMostrar()){
                 categoriaPendienteOriginal = null;
                 return true;
             }
             if(window.QuizV2 && typeof window.QuizV2.onBancoListo === 'function'){
-                window.QuizV2.onBancoListo(() => mostrar());
+                window.QuizV2.onBancoListo(() => abrirYMostrar());
             }
             return false;
         }
