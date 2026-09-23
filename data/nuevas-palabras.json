@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-09-23T15:04:47Z",
+  "generadoEn": "2026-09-23T15:35:58Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
@@ -45,6 +45,15 @@
       "palabra": "Bienvenido",
       "categoria": "Cortesía",
       "imagen": "img/vocabulario/bienvenido.webp",
+      "fecha": "2026-09-23T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Hasta luego",
+      "categoria": "Cortesía",
+      "imagen": "img/vocabulario/hasta-luego.webp",
       "fecha": "2026-09-23T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
@@ -99,15 +108,6 @@
       "palabra": "Invierno",
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/invierno.webp",
-      "fecha": "2026-09-22T05:00:00Z",
-      "origenFecha": "fechaPublicacion",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Otoño",
-      "categoria": "Tiempo",
-      "imagen": "img/vocabulario/otono.webp",
       "fecha": "2026-09-22T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
