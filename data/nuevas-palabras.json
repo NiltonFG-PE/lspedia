@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-09-23T14:39:29Z",
+  "generadoEn": "2026-09-23T14:44:54Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
@@ -18,6 +18,15 @@
       "palabra": "Gracias",
       "categoria": "Cortesía",
       "imagen": "img/vocabulario/gracias.webp",
+      "fecha": "2026-09-23T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Por favor",
+      "categoria": "Cortesía",
+      "imagen": "img/vocabulario/por-favor.webp",
       "fecha": "2026-09-23T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
@@ -100,15 +109,6 @@
       "categoria": "Números",
       "imagen": "img/vocabulario/numero.webp",
       "fecha": "2026-09-22T05:00:00Z",
-      "origenFecha": "fechaPublicacion",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "¿Cómo?",
-      "categoria": "Preguntas",
-      "imagen": "img/vocabulario/como.webp",
-      "fecha": "2026-09-21T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     }
