@@ -2659,6 +2659,26 @@ buscar.addEventListener("input", buscarPalabras);
 const norm = (s) => (s || "").toLowerCase()
     .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
+// Formas alternativas de búsqueda que ayudan con plurales sencillos y
+// traducciones al inglés. La palabra canónica en la ficha sigue siendo
+// siempre la de LSPedia.
+function normalizarFormaBusqueda(valor){
+    return norm(String(valor || ""))
+        .replace(/^(los|las|unos|unas|un|una|el|la)\s+/, "")
+        .replace(/es$/, "")
+        .replace(/s$/, "");
+}
+
+function formasInglesBusqueda(p){
+    return [
+        p && p.ingles,
+        p && p.word,
+        p && p.english,
+        p && p.traduccionIngles,
+        p && p.traduccioningles
+    ].map(v => String(v || "").trim()).filter(Boolean);
+}
+
 // Dado el texto de variantes tal como está en los datos (con tildes/ñ
 // originales) y el texto normalizado que escribió el usuario, devuelve
 // la variante ORIGINAL que hizo match (para mostrarla tal cual, no la
@@ -2676,14 +2696,24 @@ function obtenerVarianteQueCoincide(variantesStr, textoNormalizado) {
 // a lo más aproximado, sin importar el orden alfabético.
 function clasificarCoincidencia(p, texto) {
     const palabraNorm = norm(p.palabra);
-    const variantesNorm = p.variantes ? p.variantes.split(',').map(v => norm(v.trim())) : [];
+    const variantesNorm = p.variantes ? p.variantes.split(',').map(v => norm(v.trim())).filter(Boolean) : [];
+    const inglesNorm = formasInglesBusqueda(p).map(v => norm(v)).filter(Boolean);
 
-    if (palabraNorm === texto) return 0;                                  // la palabra es exactamente lo buscado
-    if (variantesNorm.includes(texto)) return 1;                          // una variante es exactamente lo buscado
-    if (palabraNorm.startsWith(texto)) return 2;                          // la palabra empieza así
-    if (variantesNorm.some(v => v.startsWith(texto))) return 3;           // una variante empieza así
-    if (palabraNorm.includes(texto)) return 4;                            // la palabra lo contiene en otra parte
-    if (variantesNorm.some(v => v.includes(texto))) return 5;             // una variante lo contiene en otra parte
+    if (palabraNorm === texto) return 0;                                  // palabra exacta
+    if (variantesNorm.includes(texto)) return 1;                          // variante exacta
+
+    // Singular/plural o artículo delante: conserva la ficha canónica.
+    if (texto.length >= 4 && normalizarFormaBusqueda(palabraNorm) === normalizarFormaBusqueda(texto)) return 2;
+
+    // También permite encontrar una entrada española por su equivalente en inglés.
+    if (inglesNorm.includes(texto)) return 3;
+
+    if (palabraNorm.startsWith(texto)) return 4;                          // prefijo
+    if (variantesNorm.some(v => v.startsWith(texto))) return 5;           // prefijo de variante
+    if (inglesNorm.some(v => v.startsWith(texto))) return 5;              // prefijo en inglés
+    if (palabraNorm.includes(texto)) return 6;                            // contiene
+    if (variantesNorm.some(v => v.includes(texto))) return 7;             // contiene en variante
+    if (inglesNorm.some(v => v.includes(texto))) return 7;                // contiene en inglés
 
     // Si el nombre no coincide, también buscamos dentro del significado y
     // del ejemplo. Esto ayuda a quien conoce la idea pero no recuerda la
@@ -2746,6 +2776,47 @@ function levenshtein(a, b) {
 // de "texto". Solo tiene sentido cuando el texto ya tiene al menos 3
 // letras (con 1-2 letras casi cualquier palabra "cabe" a distancia 1 y el
 // resultado sería puro ruido). Devuelve como máximo 3 candidatas.
+function buscarCercanosVocabulario(texto){
+    if(texto.length < 3) return [];
+    const banco = obtenerBancoHoja2();
+    if(!Array.isArray(banco) || !banco.length) return [];
+
+    const normalizarFoneticoBusqueda = (valor) => norm(valor)
+        .replace(/h/g, "")
+        .replace(/[bv]/g, "b")
+        .replace(/ll/g, "y")
+        .replace(/z/g, "s")
+        .replace(/qu/g, "k")
+        .replace(/c(?=[ei])/g, "s")
+        .replace(/g(?=[ei])/g, "j");
+
+    const maxDistancia = texto.length >= 11 ? 3 : (texto.length >= 6 ? 2 : 1);
+    const qFonetica = normalizarFoneticoBusqueda(texto);
+    const candidatos = [];
+
+    banco.forEach(registro => {
+        if(!registro || !registro.palabra) return;
+        const formas = [registro.palabra]
+            .concat(String(registro.variantes || "").split(","))
+            .concat(formasInglesBusqueda(registro))
+            .map(v => String(v || "").trim())
+            .filter(Boolean);
+
+        let mejor = Infinity;
+        formas.forEach(forma => {
+            mejor = Math.min(mejor, levenshtein(texto, norm(forma)));
+            mejor = Math.min(mejor, levenshtein(qFonetica, normalizarFoneticoBusqueda(forma)) + 0.25);
+        });
+
+        if(mejor <= maxDistancia){
+            candidatos.push({registro, puntaje: mejor});
+        }
+    });
+
+    candidatos.sort((a,b) => a.puntaje - b.puntaje || norm(a.registro.palabra).localeCompare(norm(b.registro.palabra), "es"));
+    return candidatos.slice(0,3).map(x => x.registro);
+}
+
 function buscarCercanos(texto, datos) {
     if (texto.length < 3) return [];
 
@@ -3105,8 +3176,27 @@ function ejecutarBusquedaDirecta() {
         setTimeout(() => resultado.scrollIntoView({ behavior: "smooth", block: "start" }), 300);
         return;
     }
-    // Si escribió la palabra con uno o varios errores razonables, no la
-    // declaramos inexistente: mostramos "¿Quisiste decir...?".
+    // Antes de sugerir una corrección del Diccionario, buscamos también
+    // coincidencias cercanas en Vocabulario. Una corrección nunca debe
+    // ignorar una entrada válida de la segunda fuente.
+    const cercanosVocabulario = buscarCercanosVocabulario(texto);
+    if(cercanosVocabulario.length > 0){
+        resultado.innerHTML =
+            '<div class="card shadow-sm mb-4 border-0 animate-fade-in" style="border-radius:15px;background-color:#f8f9fa;">' +
+            '<div class="card-body p-4 text-center">' +
+            '<div class="mb-2" style="font-size:42px;">🗂️</div>' +
+            '<h4 class="fw-bold mb-2 text-primary">¿Quizás quisiste buscar en Vocabulario?</h4>' +
+            '<p class="text-muted small mb-3">Encontramos una palabra parecida: <strong>' + escaparHtml(cercanosVocabulario[0].palabra) + '</strong>.</p>' +
+            '<button type="button" class="btn btn-primary px-4 py-2 rounded-pill fw-bold" id="btnIrVocabularioCercano">🗂️ Ver en Vocabulario</button>' +
+            '</div></div>';
+        const btnVocabCercano = document.getElementById("btnIrVocabularioCercano");
+        if(btnVocabCercano) btnVocabCercano.onclick = () => abrirResultadoVocabularioDesdeBusqueda(cercanosVocabulario[0]);
+        setTimeout(() => resultado.scrollIntoView({ behavior: "smooth", block: "start" }), 300);
+        return;
+    }
+
+    // Solo si ninguna fuente tiene una coincidencia razonable, mostramos
+    // una corrección del Diccionario.
     const cercanos = buscarCercanos(texto, App.datos);
     if(cercanos.length > 0) {
         buscarPalabras();
