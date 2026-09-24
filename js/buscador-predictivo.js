@@ -276,6 +276,36 @@
         }catch(_e){}
     }
 
+    // Comprueba una coincidencia EXACTA en Vocabulario sin depender de que
+    // script.js haya expuesto sus funciones auxiliares. Esto evita que una
+    // palabra que existe solo en Vocabulario termine convertida en una
+    // "Posible corrección" del Diccionario.
+    function vocabularioTieneCoincidenciaExacta(q){
+        try{
+            if(typeof window.buscarCoincidenciaEnVocabulario==='function'){
+                if(window.buscarCoincidenciaEnVocabulario(q)) return true;
+            }
+
+            if(typeof window.obtenerBancoHoja2!=='function') return false;
+            const banco=window.obtenerBancoHoja2();
+            if(!Array.isArray(banco)||!banco.length) return false;
+
+            const campos=['palabra','word','termino','término','nombre','titulo','título'];
+            return banco.some(item=>{
+                if(typeof item==='string') return normal(item)===q;
+                if(!item||typeof item!=='object') return false;
+                return campos.some(c=>normal(item[c])===q);
+            });
+        }catch(_e){
+            return false;
+        }
+    }
+
+    function diccionarioTieneCoincidenciaExacta(q){
+        const datos=window.App&&Array.isArray(window.App.datos)?window.App.datos:[];
+        return datos.some(p=>p&&normal(p.palabra)===q);
+    }
+
     function renderizar(){
         const input=document.getElementById('buscar');
         const cont=document.getElementById('sugerencias');
@@ -293,24 +323,15 @@
         // Si Vocabulario aún está cargando, tampoco debemos pintar predicciones:
         // dejamos visible el estado de carga de script.js hasta que el banco llegue.
         try {
-            if (typeof window.obtenerBancoHoja2 === 'function' &&
-                typeof window.buscarCoincidenciaEnVocabulario === 'function') {
-                const bancoVocabulario = window.obtenerBancoHoja2();
-                if (Array.isArray(bancoVocabulario) && bancoVocabulario.length) {
-                    const datosDiccionario = window.App && Array.isArray(window.App.datos)
-                        ? window.App.datos : [];
-                    const hayCoincidenciaDiccionario = typeof window.clasificarCoincidencia === 'function'
-                        ? datosDiccionario.some(p => window.clasificarCoincidencia(p, q) <= 5)
-                        : false;
-                    const coincidenciaVocabulario = window.buscarCoincidenciaEnVocabulario(q);
-                    if (!hayCoincidenciaDiccionario && coincidenciaVocabulario) {
-                        // script.js ya pintó el aviso y el botón "Ver en Vocabulario".
-                        // No lo sobrescribimos con predicciones del Diccionario.
-                        return;
-                    }
-                } else {
-                    return;
-                }
+            // Si la consulta existe exactamente en Vocabulario y NO existe
+            // exactamente en Diccionario, dejamos intacto el resultado que
+            // muestra script.js para Vocabulario. Nunca lo reemplazamos por
+            // una sugerencia como "Felicitaciones".
+            const hayCoincidenciaDiccionario = diccionarioTieneCoincidenciaExacta(q);
+            const hayCoincidenciaVocabulario = vocabularioTieneCoincidenciaExacta(q);
+
+            if (!hayCoincidenciaDiccionario && hayCoincidenciaVocabulario) {
+                return;
             }
         } catch (_e) {}
 
