@@ -2461,6 +2461,39 @@ function obtenerBancoHoja2() {
 //   2 = coincidencia por forma relacionada muy cercana
 // No usamos coincidencias parciales aquí: una palabra del Vocabulario solo
 // se ofrece como alternativa cuando existe una relación lingüística clara.
+function generarConjugacionesRegulares(infinitivo){
+    const verbo = norm(String(infinitivo || "").trim());
+    if(!/^[a-záéíóúñ]+(ar|er|ir)$/.test(verbo)) return [];
+    const terminacion = verbo.slice(-2);
+    const raiz = verbo.slice(0, -2);
+    const formas = new Set();
+
+    if(terminacion === "ar"){
+        ["o","as","a","amos","áis","an","é","aste","ó","amos","asteis","aron",
+         "aba","abas","aba","ábamos","abais","aban","aré","arás","ará","aremos","aréis","arán",
+         "ando","ado"].forEach(x => formas.add(raiz + x));
+    } else if(terminacion === "er"){
+        ["o","es","e","emos","éis","en","í","iste","ió","imos","isteis","ieron",
+         "ía","ías","ía","íamos","íais","ían","eré","erás","erá","eremos","eréis","erán",
+         "iendo","ido"].forEach(x => formas.add(raiz + x));
+    } else {
+        ["o","es","e","imos","ís","en","í","iste","ió","imos","isteis","ieron",
+         "ía","ías","ía","íamos","íais","ían","iré","irás","irá","iremos","iréis","irán",
+         "iendo","ido"].forEach(x => formas.add(raiz + x));
+    }
+
+    return Array.from(formas);
+}
+
+// Busca una palabra en Vocabulario sin mezclar sus resultados con el
+// Diccionario. Prioridad:
+//   0 = palabra exacta
+//   1 = variante registrada exactamente
+//   2 = conjugación regular de un verbo cuyo infinitivo está en Vocabulario
+//
+// No usamos similitud ortográfica aquí. Si una persona escribe mal una
+// palabra y no existe una variante/conjugación válida, el flujo pasa a
+// "¿Quizás quisiste decir...?".
 function buscarCoincidenciaEnVocabulario(texto, opciones = {}){
     const consulta = norm(String(texto || "").trim());
     if(!consulta) return null;
@@ -2468,50 +2501,37 @@ function buscarCoincidenciaEnVocabulario(texto, opciones = {}){
     const banco = obtenerBancoHoja2();
     if(!Array.isArray(banco) || banco.length === 0) return null;
 
-    const permitirRelacionCercana = opciones.permitirRelacionCercana !== false;
-
     for(const registro of banco){
         if(!registro) continue;
-        const palabra = norm(registro.palabra);
-        if(palabra === consulta){
+
+        if(norm(registro.palabra) === consulta){
             return { registro, tipo: "exacta", forma: registro.palabra };
         }
 
         const variantes = String(registro.variantes || "")
-            .split(",").map(v => v.trim()).filter(Boolean);
+            .split(",")
+            .map(v => v.trim())
+            .filter(Boolean);
+
         const varianteExacta = variantes.find(v => norm(v) === consulta);
         if(varianteExacta){
             return { registro, tipo: "variante", forma: varianteExacta };
         }
     }
 
-    // Comprobación conservadora para pequeñas diferencias de forma cuando
-    // la conjugación/variante no está escrita explícitamente en los datos.
-    if(permitirRelacionCercana && consulta.length >= 4){
-        const candidatos = [];
+    if(opciones.permitirConjugacion !== false){
         for(const registro of banco){
-            if(!registro) continue;
-            const formas = [registro.palabra].concat(String(registro.variantes || "").split(","))
-                .map(v => norm(String(v || "").trim())).filter(Boolean);
-            let mejor = Infinity;
-            formas.forEach(forma => {
-                if(!forma) return;
-                const diferenciaLongitud = Math.abs(consulta.length - forma.length);
-                if(diferenciaLongitud <= 2) mejor = Math.min(mejor, levenshtein(consulta, forma));
-            });
-            if(mejor <= (consulta.length >= 8 ? 2 : 1)){
-                candidatos.push({ registro, distancia: mejor });
+            if(!registro || !/^[a-záéíóúñ]+(ar|er|ir)$/i.test(String(registro.palabra || "").trim())) continue;
+            const conjugaciones = generarConjugacionesRegulares(registro.palabra);
+            const conjugacion = conjugaciones.find(v => norm(v) === consulta);
+            if(conjugacion && norm(registro.palabra) !== consulta){
+                return { registro, tipo: "conjugacion", forma: conjugacion };
             }
         }
-        candidatos.sort((a,b) => a.distancia - b.distancia ||
-            String(a.registro.palabra || "").localeCompare(String(b.registro.palabra || ""), "es"));
-        if(candidatos.length){
-            return { registro: candidatos[0].registro, tipo: "relacionada", forma: candidatos[0].registro.palabra };
-        }
     }
+
     return null;
 }
-
 // Compatibilidad con el nombre anterior.
 function buscarCoincidenciaExactaEnVocabulario(texto){
     const resultado = buscarCoincidenciaEnVocabulario(texto, { permitirRelacionCercana: false });
