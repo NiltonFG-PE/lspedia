@@ -286,6 +286,34 @@
         indiceActivo=-1;
         if(!q) return;
 
+        // El buscador principal tiene una prioridad estricta: una coincidencia
+        // exacta en Vocabulario debe ganar a cualquier corrección del Diccionario.
+        // Este módulo se ejecuta con setTimeout(0), después de script.js, y antes
+        // podía reemplazar "Barato" por una sugerencia como "Felicitaciones".
+        // Si Vocabulario aún está cargando, tampoco debemos pintar predicciones:
+        // dejamos visible el estado de carga de script.js hasta que el banco llegue.
+        try {
+            if (typeof window.obtenerBancoHoja2 === 'function' &&
+                typeof window.buscarCoincidenciaEnVocabulario === 'function') {
+                const bancoVocabulario = window.obtenerBancoHoja2();
+                if (Array.isArray(bancoVocabulario) && bancoVocabulario.length) {
+                    const datosDiccionario = window.App && Array.isArray(window.App.datos)
+                        ? window.App.datos : [];
+                    const hayCoincidenciaDiccionario = typeof window.clasificarCoincidencia === 'function'
+                        ? datosDiccionario.some(p => window.clasificarCoincidencia(p, q) <= 5)
+                        : false;
+                    const coincidenciaVocabulario = window.buscarCoincidenciaEnVocabulario(q);
+                    if (!hayCoincidenciaDiccionario && coincidenciaVocabulario) {
+                        // script.js ya pintó el aviso y el botón "Ver en Vocabulario".
+                        // No lo sobrescribimos con predicciones del Diccionario.
+                        return;
+                    }
+                } else {
+                    return;
+                }
+            }
+        } catch (_e) {}
+
         const candidatos=obtenerCandidatos(crudo);
         if(!candidatos.length) return; // conserva el mensaje original de script.js
 
