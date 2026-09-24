@@ -2558,6 +2558,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (window.QuizV2 && typeof QuizV2.onBancoListo === "function") {
         QuizV2.onBancoListo(() => {
             actualizarEstadisticas();
+            // Si la persona ya está escribiendo una búsqueda, actualizamos
+            // inmediatamente las sugerencias para que una coincidencia de
+            // Vocabulario aparezca sin tener que volver a escribir.
+            if(buscar && buscar.value && buscar.value.trim()){
+                buscarPalabras();
+            }
             // Si el panel de categorías (o una categoría abierta) ya estaba
             // visible antes de que llegaran los datos de la Vocabulario, se
             // refresca solo para que las palabras del Quiz aparezcan sin
@@ -2797,6 +2803,12 @@ function registrarBusquedaGA4(termino, origen){
 }
 
 function buscarPalabras(){
+    // La Vocabulario se carga en paralelo. Si la persona ya está buscando,
+    // forzamos la precarga y el listener de QuizV2 volverá a ejecutar esta
+    // búsqueda cuando el banco esté disponible.
+    if(window.QuizV2 && typeof QuizV2.asegurarBancoCargado === "function"){
+        QuizV2.asegurarBancoCargado();
+    }
     const texto = norm(buscar.value.trim());
     ocultarQuiz();
     ocultarAlfabetizacion();
