@@ -2449,8 +2449,56 @@ if(indiceAlfabetico){
 // ahora NUNCA se fusiona con App.datos (Diccionario): que ambas fuentes
 // tengan una palabra con el mismo nombre es válido y cada ficha conserva
 // su propio video, categoría y navegación.
+let bancoVocabularioBusquedaLocal = [];
+let cargaVocabularioBusquedaLocal = false;
+let vocabularioBusquedaLocalListo = false;
+
 function obtenerBancoHoja2() {
-    return (window.QuizV2 && typeof QuizV2.obtenerBanco === "function") ? QuizV2.obtenerBanco() : [];
+    const bancoQuiz = (window.QuizV2 && typeof QuizV2.obtenerBanco === "function")
+        ? QuizV2.obtenerBanco()
+        : [];
+    if (Array.isArray(bancoQuiz) && bancoQuiz.length) {
+        return bancoQuiz;
+    }
+    return bancoVocabularioBusquedaLocal;
+}
+
+// Respaldo independiente para el buscador. Aunque QuizV2 todavía esté
+// cargando, el buscador debe poder comprobar inmediatamente palabras que
+// existen en Vocabulario (por ejemplo "Barato"). Esto evita que una
+// sugerencia ortográfica del Diccionario aparezca antes de que termine la
+// carga de Vocabulario.
+function asegurarBancoVocabularioParaBusqueda(){
+    if(vocabularioBusquedaLocalListo || cargaVocabularioBusquedaLocal) return;
+
+    cargaVocabularioBusquedaLocal = true;
+    const url = "data/vocabulario.json?_lspedia_busqueda=" + Date.now();
+
+    fetch(url, { cache: "no-store" })
+        .then(res => {
+            if(!res.ok) throw new Error("HTTP " + res.status);
+            return res.json();
+        })
+        .then(data => {
+            const lista = Array.isArray(data)
+                ? data
+                : (data && Array.isArray(data.preguntas) ? data.preguntas : []);
+
+            bancoVocabularioBusquedaLocal = lista
+                .filter(p => p && p.palabra && p.video)
+                .map(p => ({ ...p, nivel: p.nivel || "" }));
+
+            vocabularioBusquedaLocalListo = bancoVocabularioBusquedaLocal.length > 0;
+            if(vocabularioBusquedaLocalListo && buscar && buscar.value && buscar.value.trim()){
+                buscarPalabras();
+            }
+        })
+        .catch(error => {
+            console.warn("No se pudo cargar Vocabulario para el buscador:", error);
+        })
+        .finally(() => {
+            cargaVocabularioBusquedaLocal = false;
+        });
 }
 
 // Busca una palabra en Vocabulario sin mezclar sus resultados con el
@@ -2809,6 +2857,8 @@ function buscarPalabras(){
     if(window.QuizV2 && typeof QuizV2.asegurarBancoCargado === "function"){
         QuizV2.asegurarBancoCargado();
     }
+    asegurarBancoVocabularioParaBusqueda();
+
     const texto = norm(buscar.value.trim());
     ocultarQuiz();
     ocultarAlfabetizacion();
