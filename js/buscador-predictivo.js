@@ -345,9 +345,15 @@
         }
     }
 
-    function diccionarioTieneCoincidenciaExacta(q){
+    function diccionarioTieneCoincidenciaFuerte(q){
         const datos=window.App&&Array.isArray(window.App.datos)?window.App.datos:[];
-        return datos.some(p=>p&&normal(p.palabra)===q);
+        return datos.some(p=>{
+            if(!p) return false;
+            if(normal(p.palabra)===q) return true;
+            if(variantes(p).some(v=>normal(v)===q)) return true;
+            if(formasIngles(p).some(v=>normal(v)===q)) return true;
+            return false;
+        });
     }
 
     function renderizar(){
@@ -371,7 +377,7 @@
             // exactamente en Diccionario, dejamos intacto el resultado que
             // muestra script.js para Vocabulario. Nunca lo reemplazamos por
             // una sugerencia como "Felicitaciones".
-            const hayCoincidenciaDiccionario = diccionarioTieneCoincidenciaExacta(q);
+            const hayCoincidenciaDiccionario = diccionarioTieneCoincidenciaFuerte(q);
             const hayCoincidenciaVocabulario = vocabularioTieneCoincidenciaExacta(q);
 
             if (!hayCoincidenciaDiccionario && hayCoincidenciaVocabulario) {
