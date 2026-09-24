@@ -2453,33 +2453,69 @@ function obtenerBancoHoja2() {
     return (window.QuizV2 && typeof QuizV2.obtenerBanco === "function") ? QuizV2.obtenerBanco() : [];
 }
 
-// Busca una palabra exacta (o una variante exacta) en Vocabulario sin mezclar
-// sus resultados con el Diccionario. Se usa únicamente como puente cuando
-// la búsqueda principal del Diccionario no encuentra nada.
-function buscarCoincidenciaExactaEnVocabulario(texto){
+// Busca una palabra en Vocabulario sin mezclar sus resultados con el
+// Diccionario. La prioridad es estricta:
+//   0 = palabra exacta
+//   1 = variante/forma exacta (incluye conjugaciones si están registradas
+//       en la columna "variantes")
+//   2 = coincidencia por forma relacionada muy cercana
+// No usamos coincidencias parciales aquí: una palabra del Vocabulario solo
+// se ofrece como alternativa cuando existe una relación lingüística clara.
+function buscarCoincidenciaEnVocabulario(texto, opciones = {}){
     const consulta = norm(String(texto || "").trim());
     if(!consulta) return null;
 
     const banco = obtenerBancoHoja2();
     if(!Array.isArray(banco) || banco.length === 0) return null;
 
+    const permitirRelacionCercana = opciones.permitirRelacionCercana !== false;
+
     for(const registro of banco){
         if(!registro) continue;
-        if(norm(registro.palabra) === consulta){
-            return registro;
+        const palabra = norm(registro.palabra);
+        if(palabra === consulta){
+            return { registro, tipo: "exacta", forma: registro.palabra };
         }
 
         const variantes = String(registro.variantes || "")
-            .split(",")
-            .map(v => v.trim())
-            .filter(Boolean);
-
-        if(variantes.some(v => norm(v) === consulta)){
-            return registro;
+            .split(",").map(v => v.trim()).filter(Boolean);
+        const varianteExacta = variantes.find(v => norm(v) === consulta);
+        if(varianteExacta){
+            return { registro, tipo: "variante", forma: varianteExacta };
         }
     }
 
+    // Comprobación conservadora para pequeñas diferencias de forma cuando
+    // la conjugación/variante no está escrita explícitamente en los datos.
+    if(permitirRelacionCercana && consulta.length >= 4){
+        const candidatos = [];
+        for(const registro of banco){
+            if(!registro) continue;
+            const formas = [registro.palabra].concat(String(registro.variantes || "").split(","))
+                .map(v => norm(String(v || "").trim())).filter(Boolean);
+            let mejor = Infinity;
+            formas.forEach(forma => {
+                if(!forma) return;
+                const diferenciaLongitud = Math.abs(consulta.length - forma.length);
+                if(diferenciaLongitud <= 2) mejor = Math.min(mejor, levenshtein(consulta, forma));
+            });
+            if(mejor <= (consulta.length >= 8 ? 2 : 1)){
+                candidatos.push({ registro, distancia: mejor });
+            }
+        }
+        candidatos.sort((a,b) => a.distancia - b.distancia ||
+            String(a.registro.palabra || "").localeCompare(String(b.registro.palabra || ""), "es"));
+        if(candidatos.length){
+            return { registro: candidatos[0].registro, tipo: "relacionada", forma: candidatos[0].registro.palabra };
+        }
+    }
     return null;
+}
+
+// Compatibilidad con el nombre anterior.
+function buscarCoincidenciaExactaEnVocabulario(texto){
+    const resultado = buscarCoincidenciaEnVocabulario(texto, { permitirRelacionCercana: false });
+    return resultado ? resultado.registro : null;
 }
 
 // Abre directamente la ficha de Vocabulario encontrada desde una búsqueda
@@ -2778,28 +2814,27 @@ function buscarPalabras(){
 
     sugerencias.style.display = "block";
 
-    if(encontrados.length===0 || (!encontrados.some(p => clasificarCoincidencia(p, texto) <= 5) && buscarCoincidenciaExactaEnVocabulario(texto))){
-        // Una coincidencia exacta en Vocabulario tiene prioridad sobre una
-        // sugerencia aproximada del Diccionario. Así, si se busca "barato"
-        // y no existe en Diccionario pero sí en Vocabulario, no mostramos
-        // una corrección aproximada como "Felicitaciones".
-        const coincidenciaVocabulario = buscarCoincidenciaExactaEnVocabulario(texto);
+    const coincidenciaVocabulario = (!encontrados.some(p => clasificarCoincidencia(p, texto) <= 5))
+        ? buscarCoincidenciaEnVocabulario(texto)
+        : null;
+
+    if(encontrados.length===0 || coincidenciaVocabulario){
         if(coincidenciaVocabulario){
-            sugerencias.innerHTML = `
-                <div class="list-group-item text-center py-3" style="background-color: #343a40; border: none;">
-                    <span class="text-white d-block mb-2 small">No está en el Diccionario, pero sí en Vocabulario.</span>
-                    <button type="button" class="btn btn-sm btn-primary w-100 fw-bold" id="btnIrVocabularioBusqueda">
-                        🗂️ Ver en Vocabulario
-                    </button>
-                </div>`;
+            const etiqueta = coincidenciaVocabulario.tipo === "exacta"
+                ? "coincidencia exacta"
+                : (coincidenciaVocabulario.tipo === "variante" ? "variante o conjugación" : "forma relacionada");
+            sugerencias.innerHTML =
+                '<div class="list-group-item text-center py-3" style="background-color: #343a40; border: none;">' +
+                '<span class="text-white d-block mb-2 small">No está en el Diccionario, pero sí en Vocabulario.</span>' +
+                '<span class="text-white-50 d-block mb-2" style="font-size:11px;">' + escaparHtml(etiqueta) + ': <strong>' + escaparHtml(coincidenciaVocabulario.forma || coincidenciaVocabulario.registro.palabra) + '</strong></span>' +
+                '<button type="button" class="btn btn-sm btn-primary w-100 fw-bold" id="btnIrVocabularioBusqueda">🗂️ Ver en Vocabulario</button>' +
+                '</div>';
             const btnVocab = document.getElementById("btnIrVocabularioBusqueda");
-            if(btnVocab){
-                btnVocab.onclick = () => abrirResultadoVocabularioDesdeBusqueda(coincidenciaVocabulario);
-            }
+            if(btnVocab) btnVocab.onclick = () => abrirResultadoVocabularioDesdeBusqueda(coincidenciaVocabulario.registro);
             return;
         }
 
-        const cercanos = buscarCercanos(texto, App.datos);
+                const cercanos = buscarCercanos(texto, App.datos);
         if(cercanos.length > 0){
             sugerencias.innerHTML = `
                 <div class="list-group-item text-center py-2" style="background-color: #343a40; border: none;">
@@ -2934,9 +2969,10 @@ function ejecutarBusquedaDirecta() {
         return;
     }
 
-    // Primero comprobamos una coincidencia exacta en Vocabulario.
-    // Tiene prioridad sobre cualquier sugerencia aproximada del Diccionario.
-    const coincidenciaVocabulario = buscarCoincidenciaExactaEnVocabulario(texto);
+    // Si no existe en Diccionario, comprobamos Vocabulario en este orden:
+    // palabra exacta → variante/conjugación registrada → forma relacionada
+    // muy cercana.
+    const coincidenciaVocabulario = buscarCoincidenciaEnVocabulario(texto);
     if(coincidenciaVocabulario){
         buscar.blur();
         panelCategorias.innerHTML = "";
@@ -2951,25 +2987,23 @@ function ejecutarBusquedaDirecta() {
         const statsHeaderVocab = document.querySelector(".stats-header");
         if(statsHeaderVocab) statsHeaderVocab.style.display = "none";
 
-        resultado.innerHTML = `
-            <div class="card shadow-sm mb-4 border-0 animate-fade-in" style="border-radius: 15px; background-color: #f8f9fa;">
-                <div class="card-body p-4 text-center">
-                    <div class="mb-2" style="font-size: 42px;">🗂️</div>
-                    <h4 class="fw-bold mb-2 text-primary">"${escaparHtml(consultaOriginal)}" no está en el Diccionario</h4>
-                    <p class="text-muted small mb-3">Pero sí encontramos esta palabra en Vocabulario.</p>
-                    <button type="button" class="btn btn-primary px-4 py-2 rounded-pill fw-bold" id="btnIrVocabularioBusquedaDirecta">
-                        🗂️ Ver en Vocabulario
-                    </button>
-                </div>
-            </div>`;
+        const etiqueta = coincidenciaVocabulario.tipo === "exacta"
+            ? "coincidencia exacta"
+            : (coincidenciaVocabulario.tipo === "variante" ? "variante o conjugación" : "forma relacionada");
+        resultado.innerHTML =
+            '<div class="card shadow-sm mb-4 border-0 animate-fade-in" style="border-radius: 15px; background-color: #f8f9fa;">' +
+            '<div class="card-body p-4 text-center">' +
+            '<div class="mb-2" style="font-size: 42px;">🗂️</div>' +
+            '<h4 class="fw-bold mb-2 text-primary">"' + escaparHtml(consultaOriginal) + '" no está en el Diccionario</h4>' +
+            '<p class="text-muted small mb-1">Pero sí encontramos una ' + escaparHtml(etiqueta) + ' en Vocabulario.</p>' +
+            '<p class="fw-bold text-primary mb-3">"' + escaparHtml(coincidenciaVocabulario.forma || coincidenciaVocabulario.registro.palabra) + '"</p>' +
+            '<button type="button" class="btn btn-primary px-4 py-2 rounded-pill fw-bold" id="btnIrVocabularioBusquedaDirecta">🗂️ Ver en Vocabulario</button>' +
+            '</div></div>';
         const btnIrVocabulario = document.getElementById("btnIrVocabularioBusquedaDirecta");
-        if(btnIrVocabulario){
-            btnIrVocabulario.onclick = () => abrirResultadoVocabularioDesdeBusqueda(coincidenciaVocabulario);
-        }
+        if(btnIrVocabulario) btnIrVocabulario.onclick = () => abrirResultadoVocabularioDesdeBusqueda(coincidenciaVocabulario.registro);
         setTimeout(() => resultado.scrollIntoView({ behavior: "smooth", block: "start" }), 300);
         return;
     }
-
     // Si escribió la palabra con uno o varios errores razonables, no la
     // declaramos inexistente: mostramos "¿Quisiste decir...?".
     const cercanos = buscarCercanos(texto, App.datos);
