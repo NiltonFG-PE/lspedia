@@ -2842,7 +2842,7 @@ function buscarPalabras(){
         if(coincidenciaVocabulario){
             const etiqueta = coincidenciaVocabulario.tipo === "exacta"
                 ? "coincidencia exacta"
-                : (coincidenciaVocabulario.tipo === "variante" ? "variante o conjugación" : "forma relacionada");
+                : (coincidenciaVocabulario.tipo === "variante" ? "variante" : "conjugación");
             sugerencias.innerHTML =
                 '<div class="list-group-item text-center py-3" style="background-color: #343a40; border: none;">' +
                 '<span class="text-white d-block mb-2 small">No está en el Diccionario, pero sí en Vocabulario.</span>' +
@@ -3009,7 +3009,7 @@ function ejecutarBusquedaDirecta() {
 
         const etiqueta = coincidenciaVocabulario.tipo === "exacta"
             ? "coincidencia exacta"
-            : (coincidenciaVocabulario.tipo === "variante" ? "variante o conjugación" : "forma relacionada");
+            : (coincidenciaVocabulario.tipo === "variante" ? "variante" : "conjugación");
         resultado.innerHTML =
             '<div class="card shadow-sm mb-4 border-0 animate-fade-in" style="border-radius: 15px; background-color: #f8f9fa;">' +
             '<div class="card-body p-4 text-center">' +
