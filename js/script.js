@@ -2454,13 +2454,20 @@ let cargaVocabularioBusquedaLocal = false;
 let vocabularioBusquedaLocalListo = false;
 
 function obtenerBancoHoja2() {
+    // Para el buscador, la fuente de verdad es el archivo local
+    // data/vocabulario.json que cargamos específicamente para búsqueda.
+    // QuizV2 puede conservar temporalmente un banco antiguo en localStorage;
+    // no debemos dejar que ese caché oculte palabras que sí existen en el
+    // archivo actual (por ejemplo "Barato").
+    if (Array.isArray(bancoVocabularioBusquedaLocal) && bancoVocabularioBusquedaLocal.length) {
+        return bancoVocabularioBusquedaLocal;
+    }
+
     const bancoQuiz = (window.QuizV2 && typeof QuizV2.obtenerBanco === "function")
         ? QuizV2.obtenerBanco()
         : [];
-    if (Array.isArray(bancoQuiz) && bancoQuiz.length) {
-        return bancoQuiz;
-    }
-    return bancoVocabularioBusquedaLocal;
+
+    return Array.isArray(bancoQuiz) ? bancoQuiz : [];
 }
 
 // Respaldo independiente para el buscador. Aunque QuizV2 todavía esté
