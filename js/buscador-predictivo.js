@@ -133,6 +133,31 @@
     function variantes(p){
         return texto(p&&p.variantes).split(',').map(x=>x.trim()).filter(Boolean);
     }
+
+    // Todas las formas que una persona puede usar para llegar a una entrada.
+    // Además del nombre y sus variantes, aprovechamos la traducción inglesa
+    // cuando existe. Esto mantiene una sola ficha canónica en español.
+    function formasIngles(p){
+        return [
+            p&&p.ingles,
+            p&&p.word,
+            p&&p.english,
+            p&&p.traduccionIngles,
+            p&&p.traduccioningles
+        ].map(texto).filter(Boolean);
+    }
+
+    function normalizarFormaSimple(v){
+        const q=normal(v);
+        if(!q) return '';
+        // Singular/plural sencillo del español. Solo se usa como señal de
+        // relevancia; nunca reemplaza una coincidencia exacta.
+        return q
+            .replace(/^(los|las|unos|unas|un|una|el|la)\\s+/,'')
+            .replace(/es$/,'')
+            .replace(/s$/,'');
+    }
+
     function aliasesOcultos(p){
         return Array.isArray(p&&p._aliasBusqueda)?p._aliasBusqueda.map(texto).filter(Boolean):[];
     }
@@ -159,10 +184,19 @@
         if(!nombre||!q) return null;
         const vars=variantes(p).map(v=>({original:v,norm:normal(v)})).filter(x=>x.norm);
         const ocultos=aliasesOcultos(p).map(v=>({original:v,norm:normal(v)})).filter(x=>x.norm);
+        const ingles=formasIngles(p).map(v=>({original:v,norm:normal(v)})).filter(x=>x.norm);
 
         if(nombre===q) return {score:0,tipo:'exacta',detalle:''};
         const vExacta=vars.find(x=>x.norm===q);
-        if(vExacta) return {score:8,tipo:'variante',detalle:vExacta.original};
+        if(vExacta) return {score:7,tipo:'variante',detalle:vExacta.original};
+
+        const inglesExacto=ingles.find(x=>x.norm===q);
+        if(inglesExacto) return {score:9,tipo:'ingles',detalle:inglesExacto.original};
+
+        const nombreMorf=normalizarFormaSimple(nombre);
+        if(q.length>=4 && nombreMorf && nombreMorf===normalizarFormaSimple(q)){
+            return {score:11,tipo:'morfologia',detalle:t('Forma singular/plural','Singular/plural form')};
+        }
 
         const gramatica=mapas.gramatica.get(q);
         if(gramatica&&objetivoCoincide(gramatica,p)){
@@ -181,9 +215,11 @@
             return {score:20+Math.min(5,(nombre.length-q.length)*0.25),tipo:'prefijo',detalle:''};
         }
         const vPref=vars.find(x=>x.norm.startsWith(q));
-        if(vPref) return {score:29+Math.min(5,(vPref.norm.length-q.length)*0.25),tipo:'variante',detalle:vPref.original};
+        if(vPref) return {score:27+Math.min(5,(vPref.norm.length-q.length)*0.25),tipo:'variante',detalle:vPref.original};
+        const iPref=ingles.find(x=>x.norm.startsWith(q));
+        if(iPref) return {score:31+Math.min(5,(iPref.norm.length-q.length)*0.25),tipo:'ingles',detalle:iPref.original};
         const oPref=ocultos.find(x=>x.norm.startsWith(q));
-        if(oPref) return {score:34+Math.min(5,(oPref.norm.length-q.length)*0.25),tipo:'relacionada',detalle:t('Coincidencia relacionada','Related match')};
+        if(oPref) return {score:36+Math.min(5,(oPref.norm.length-q.length)*0.25),tipo:'relacionada',detalle:t('Coincidencia relacionada','Related match')};
 
         // La corrección aproximada se calcula AUNQUE ya existan resultados
         // por prefijo. Así "carre" puede mostrar Carrera y también Carro.
@@ -192,6 +228,7 @@
             let mejor={d:Infinity,tipo:'',detalle:''};
             const formas=[{norm:nombre,tipo:'palabra',detalle:''}]
                 .concat(vars.map(x=>({norm:x.norm,tipo:'variante',detalle:x.original})))
+                .concat(ingles.map(x=>({norm:x.norm,tipo:'ingles',detalle:x.original})))
                 .concat(ocultos.map(x=>({norm:x.norm,tipo:'oculto',detalle:''})));
             formas.forEach(f=>{
                 const d=levenshtein(q,f.norm);
@@ -210,8 +247,13 @@
         if(vCont) return {score:84,tipo:'variante',detalle:vCont.original};
 
         if(q.length>=4){
-            const contenido=normal((p&&p.definicion||'')+' '+(p&&p.ejemplo||''));
+            const contenido=normal((p&&p.definicion||'')+' '+(p&&p.ejemplo||'')+' '+(p&&p.definicioningles||'')+' '+(p&&p.definicionIngles||''));
             if(contenido.includes(q)) return {score:110,tipo:'significado',detalle:t('Coincide con el significado','Matches the meaning')};
+
+            const tokens=q.split(/\\s+/).filter(x=>x.length>=3);
+            if(tokens.length>=2 && tokens.every(token=>contenido.includes(token))){
+                return {score:116,tipo:'significado',detalle:t('Coincide con el significado','Matches the meaning')};
+            }
         }
         return null;
     }
@@ -258,6 +300,8 @@
 
     function meta(c){
         if(c.tipo==='gramatica') return '<span class="lsp-pred-meta lsp-pred-gramatica">'+escapar(t('Forma gramatical','Grammar form'))+'</span>';
+        if(c.tipo==='morfologia') return '<span class="lsp-pred-meta lsp-pred-gramatica">'+escapar(c.detalle)+'</span>';
+        if(c.tipo==='ingles') return '<span class="lsp-pred-meta">'+escapar(t('Coincide en inglés: ','English match: ')+c.detalle)+'</span>';
         if(c.tipo==='correccion') return '<span class="lsp-pred-meta lsp-pred-correccion">'+escapar(t('Posible corrección','Possible correction'))+'</span>';
         if(c.tipo==='significado') return '<span class="lsp-pred-meta">'+escapar(t('En el significado','In the meaning'))+'</span>';
         if(c.tipo==='variante'&&c.detalle) return '<span class="lsp-pred-meta">'+escapar(t('Relacionado: ','Related: ')+c.detalle)+'</span>';
