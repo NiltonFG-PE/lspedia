@@ -2896,9 +2896,21 @@ function buscarPalabras(){
 
     sugerencias.style.display = "block";
 
+    const bancoVocabularioDisponible = obtenerBancoHoja2();
     const coincidenciaVocabulario = (!encontrados.some(p => clasificarCoincidencia(p, texto) <= 5))
         ? buscarCoincidenciaEnVocabulario(texto)
         : null;
+
+    // No mostramos una "posible corrección" del Diccionario mientras
+    // Vocabulario todavía está cargando. De lo contrario una palabra válida
+    // de Vocabulario (por ejemplo "Barato") puede quedar temporalmente
+    // reemplazada por una coincidencia irrelevante como "Felicitaciones".
+    if(encontrados.length === 0 && bancoVocabularioDisponible.length === 0){
+        sugerencias.innerHTML = '<div class="list-group-item text-center py-3" style="background-color: #343a40; border: none;">' +
+            '<span class="text-white small">Buscando también en Vocabulario…</span>' +
+            '</div>';
+        return;
+    }
 
     if(encontrados.length===0 || coincidenciaVocabulario){
         if(coincidenciaVocabulario){
