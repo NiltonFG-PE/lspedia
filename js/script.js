@@ -2186,6 +2186,25 @@ function buscarCercanos(texto, datos) {
 
 function buscarPalabras(){
     const texto = norm(buscar.value.trim());
+
+    // Una palabra que existe exactamente en Vocabulario nunca debe caer en
+    // buscarCercanos(). Esperamos la carga del archivo si todavía no terminó.
+    if(texto !== ""){
+        const coincidenciaVocabulario = buscarCoincidenciaExactaVocabulario(texto);
+        if(coincidenciaVocabulario && !(App.datos || []).some(p => clasificarCoincidencia(p, texto) <= 5)){
+            sugerencias.style.display = "block";
+            mostrarCoincidenciaVocabularioDesdeBusqueda(coincidenciaVocabulario);
+            return;
+        }
+        if(!bancoVocabularioBusqueda.length){
+            sugerencias.style.display = "block";
+            sugerencias.innerHTML = '<div class="list-group-item text-center py-3" style="background-color:#343a40;border:none;"><span class="text-white small">Buscando también en Vocabulario…</span></div>';
+            cargarVocabularioParaBusqueda().then(() => {
+                if(buscar && norm(buscar.value.trim()) === texto) buscarPalabras();
+            });
+            return;
+        }
+    }
     ocultarQuiz();
     ocultarAlfabetizacion();
     document.querySelectorAll(".btn-abc.active").forEach(boton => boton.classList.remove("active"));
