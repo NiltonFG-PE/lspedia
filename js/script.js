@@ -6869,3 +6869,63 @@ function mostrarSenalDelDia(offset = offsetSenalDelDia){
     instalar(document.getElementById("sugerencias"), "diccionario");
     instalar(document.getElementById("sugerenciasCategorias"), "vocabulario");
 })();
+
+
+// LSPEDIA_INSTALACION_UNA_VEZ_POR_SESION_20260924
+(function limitarAvisoInstalacionPorSesion(){
+    const CLAVE = "lspedia_instalar_mostrado_sesion";
+    const TEXTO = "instalar lspedia";
+
+    function yaSeMostro(){
+        try { return sessionStorage.getItem(CLAVE) === "1"; }
+        catch(error){ return false; }
+    }
+
+    function marcarComoMostrado(){
+        try { sessionStorage.setItem(CLAVE, "1"); }
+        catch(error) { /* Si sessionStorage no está disponible, no bloqueamos la web. */ }
+    }
+
+    function esBotonInstalar(elemento){
+        if(!elemento || elemento.nodeType !== 1) return false;
+        const texto = String(elemento.textContent || "").replace(/\\s+/g, " ").trim().toLowerCase();
+        return texto.includes(TEXTO) && /^(button|a)$/i.test(elemento.tagName);
+    }
+
+    function revisar(root){
+        if(!root || root.nodeType !== 1) return;
+        const elementos = [];
+        if(esBotonInstalar(root)) elementos.push(root);
+        if(root.querySelectorAll){
+            root.querySelectorAll("button, a").forEach(el => {
+                if(esBotonInstalar(el)) elementos.push(el);
+            });
+        }
+
+        elementos.forEach(el => {
+            if(yaSeMostro()){
+                el.style.display = "none";
+                el.setAttribute("aria-hidden", "true");
+            } else {
+                // La primera vez que aparece durante esta sesión sí se permite.
+                marcarComoMostrado();
+            }
+        });
+    }
+
+    function iniciar(){
+        revisar(document.body);
+        const observador = new MutationObserver(mutations => {
+            mutations.forEach(m => m.addedNodes.forEach(n => {
+                if(n.nodeType === 1) revisar(n);
+            }));
+        });
+        observador.observe(document.body, { childList: true, subtree: true });
+    }
+
+    if(document.readyState === "loading"){
+        document.addEventListener("DOMContentLoaded", iniciar, { once: true });
+    } else {
+        iniciar();
+    }
+})();
