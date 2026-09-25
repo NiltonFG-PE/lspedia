@@ -3999,6 +3999,11 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                 transform: scale(0.97) !important;
             }
 
+            #btnMenuJuegoChatEspanol {
+                background: #e8faf3 !important;
+                border-color: #a7e2cf !important;
+            }
+
             #btnMenuJuegoCompletar {
                 background: #eef6ff !important;
                 border-color: #bfdbfe !important;
@@ -5333,6 +5338,20 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                     <p class="text-muted small text-center mb-4 juegos-menu-subtitulo">Toca un juego. La animación te muestra qué harás.</p>
                     <div class="row g-3">
                         <div class="col-6 col-md-3 menu-juego-col">
+                            <button type="button" class="quiz-selector-btn menu-juego-btn w-100 h-100" id="btnMenuJuegoChatEspanol" aria-label="Juego Chat en Español">
+                                <span class="juego-preview preview-chat-espanol" aria-hidden="true">
+                                    <span class="jp-chat-phone">
+                                        <i class="jp-chat-top"></i>
+                                        <i class="jp-chat-msg jp-chat-msg-a">Hola 👋</i>
+                                        <i class="jp-chat-msg jp-chat-msg-b">¡Hola!</i>
+                                        <i class="jp-chat-cursor">✎</i>
+                                    </span>
+                                </span>
+                                <span class="fw-bold juego-titulo">Chat en Español</span>
+                                <span class="juego-desc">Conversa, escribe y mejora</span>
+                            </button>
+                        </div>
+                        <div class="col-6 col-md-3 menu-juego-col">
                             <button type="button" class="quiz-selector-btn menu-juego-btn w-100 h-100" id="btnMenuJuegoCompletar" aria-label="Juego Completar la palabra">
                                 <span class="juego-preview preview-completar" aria-hidden="true">
                                     <span class="jp-palabra"><b>C</b><b>A</b><b class="jp-hueco">_</b><b>A</b></span><i class="jp-ficha">S</i>
@@ -5384,7 +5403,7 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                                     <span class="jp-chip jp-chip-1">NIÑO</span><span class="jp-chip jp-chip-2">TOMA</span><span class="jp-chip jp-chip-3">AGUA</span>
                                 </span>
                                 <span class="fw-bold juego-titulo">Oraciones</span>
-                                <span class="juego-desc">Ordena ideas y conversa mejor</span>
+                                <span class="juego-desc">Ordena y escribe ideas</span>
                             </button>
                         </div>
                     </div>
