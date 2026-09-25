@@ -7,6 +7,7 @@ Reglas vigentes:
 - Conserva portada y licencia.
 - Diccionario usa páginas SEO /diccionario/<id>/.
 - Vocabulario usa páginas SEO /vocabulario/<id>/.
+- Categorías usan /categoria/<fuente>/<slug>/.
 - Solo reescribe sitemap.xml cuando su contenido cambia.
 """
 from __future__ import annotations
@@ -105,6 +106,12 @@ def referencias_vocabulario(filas: list[dict]) -> list[str]:
     return referencias
 
 
+
+def referencias_categorias(filas: list[dict], tipo: str) -> list[str]:
+    publicable = publicable_diccionario if tipo == "diccionario" else publicable_vocabulario
+    refs = {slug(texto(f.get("categoria"))) for f in filas if publicable(f) and texto(f.get("categoria"))}
+    return sorted(ref for ref in refs if ref)
+
 def bloque_url(loc: str, changefreq: str, priority: str) -> list[str]:
     loc_xml = xml_escape(loc, quote=False)
     return [
@@ -116,7 +123,7 @@ def bloque_url(loc: str, changefreq: str, priority: str) -> list[str]:
     ]
 
 
-def construir_sitemap(diccionario: list[str], vocabulario: list[str]) -> str:
+def construir_sitemap(diccionario: list[str], vocabulario: list[str], categorias_dic: list[str], categorias_voc: list[str]) -> str:
     lineas = [
         '<?xml version="1.0" encoding="UTF-8"?>',
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
@@ -132,6 +139,14 @@ def construir_sitemap(diccionario: list[str], vocabulario: list[str]) -> str:
         encoded = quote(referencia, safe="")
         lineas += bloque_url(f"{BASE_URL}/vocabulario/{encoded}/", "monthly", "0.8")
 
+    for referencia in categorias_dic:
+        encoded = quote(referencia, safe="")
+        lineas += bloque_url(f"{BASE_URL}/categoria/diccionario/{encoded}/", "weekly", "0.7")
+
+    for referencia in categorias_voc:
+        encoded = quote(referencia, safe="")
+        lineas += bloque_url(f"{BASE_URL}/categoria/vocabulario/{encoded}/", "weekly", "0.7")
+
     lineas.append("</urlset>")
     return "\n".join(lineas) + "\n"
 
@@ -142,25 +157,27 @@ def main() -> int:
     vocabulario = cargar_lista(repo / "data" / "vocabulario.json", "data/vocabulario.json")
     refs_dic = referencias_diccionario(diccionario)
     refs_voc = referencias_vocabulario(vocabulario)
+    cats_dic = referencias_categorias(diccionario, "diccionario")
+    cats_voc = referencias_categorias(vocabulario, "vocabulario")
 
     if not refs_dic and not refs_voc:
         raise SystemExit("ERROR: no se encontró contenido público para el sitemap.")
 
     sitemap_path = repo / "sitemap.xml"
-    nuevo = construir_sitemap(refs_dic, refs_voc)
+    nuevo = construir_sitemap(refs_dic, refs_voc, cats_dic, cats_voc)
     anterior = sitemap_path.read_text(encoding="utf-8") if sitemap_path.exists() else ""
 
     if nuevo == anterior:
         print(
             "Sitemap SEO ya estaba actualizado: "
-            f"Diccionario={len(refs_dic)} · Vocabulario={len(refs_voc)}."
+            f"Diccionario={len(refs_dic)} · Vocabulario={len(refs_voc)} · Categorías={len(cats_dic) + len(cats_voc)}."
         )
         return 0
 
     sitemap_path.write_text(nuevo, encoding="utf-8", newline="\n")
     print(
         "Sitemap SEO actualizado: "
-        f"Diccionario={len(refs_dic)} · Vocabulario={len(refs_voc)} · portada + licencia."
+        f"Diccionario={len(refs_dic)} · Vocabulario={len(refs_voc)} · Categorías={len(cats_dic) + len(cats_voc)} · portada + licencia."
     )
     return 0
 
