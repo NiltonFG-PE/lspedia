@@ -82,5 +82,383 @@
     "categoria": "Personajes",
     "imagen": "img/adivina/superheroina.svg",
     "fuente": "extra"
+  },
+  {
+    "palabra": "Abeja",
+    "categoria": "Animales",
+    "imagen": "img/alfabetizacion/ejemplos/abeja.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Águila",
+    "categoria": "Animales",
+    "imagen": "img/alfabetizacion/ejemplos/aguila.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Alce",
+    "categoria": "Animales",
+    "imagen": "img/alfabetizacion/ejemplos/alce.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Araña",
+    "categoria": "Animales",
+    "imagen": "img/alfabetizacion/ejemplos/arana.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Ardilla",
+    "categoria": "Animales",
+    "imagen": "img/alfabetizacion/ejemplos/ardilla.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Búho",
+    "categoria": "Animales",
+    "imagen": "img/alfabetizacion/ejemplos/buho.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Burro",
+    "categoria": "Animales",
+    "imagen": "img/alfabetizacion/ejemplos/burro.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Caballo",
+    "categoria": "Animales",
+    "imagen": "img/alfabetizacion/ejemplos/caballo.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Delfín",
+    "categoria": "Animales",
+    "imagen": "img/alfabetizacion/ejemplos/delfin.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Foca",
+    "categoria": "Animales",
+    "imagen": "img/alfabetizacion/ejemplos/foca.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Iguana",
+    "categoria": "Animales",
+    "imagen": "img/alfabetizacion/ejemplos/iguana.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Jirafa",
+    "categoria": "Animales",
+    "imagen": "img/alfabetizacion/ejemplos/jirafa.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Koala",
+    "categoria": "Animales",
+    "imagen": "img/alfabetizacion/ejemplos/koala.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Ñandú",
+    "categoria": "Animales",
+    "imagen": "img/alfabetizacion/ejemplos/nandu.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Oso",
+    "categoria": "Animales",
+    "imagen": "img/alfabetizacion/ejemplos/oso.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Pulpo",
+    "categoria": "Animales",
+    "imagen": "img/alfabetizacion/ejemplos/pulpo.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Tiburón",
+    "categoria": "Animales",
+    "imagen": "img/alfabetizacion/ejemplos/tiburon.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Vaca",
+    "categoria": "Animales",
+    "imagen": "img/alfabetizacion/ejemplos/vaca.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Zorro",
+    "categoria": "Animales",
+    "imagen": "img/alfabetizacion/ejemplos/zorro.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Bebé",
+    "categoria": "Personajes",
+    "imagen": "img/alfabetizacion/ejemplos/bebe.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Amigo",
+    "categoria": "Personajes",
+    "imagen": "img/alfabetizacion/ejemplos/amigo.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Amiga",
+    "categoria": "Personajes",
+    "imagen": "img/alfabetizacion/ejemplos/amiga.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Ambulancia",
+    "categoria": "Transportes",
+    "imagen": "img/alfabetizacion/ejemplos/ambulancia.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Auto",
+    "categoria": "Transportes",
+    "imagen": "img/alfabetizacion/ejemplos/auto.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Avión",
+    "categoria": "Transportes",
+    "imagen": "img/alfabetizacion/ejemplos/avion.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Barco",
+    "categoria": "Transportes",
+    "imagen": "img/alfabetizacion/ejemplos/barco.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Bicicleta",
+    "categoria": "Transportes",
+    "imagen": "img/alfabetizacion/ejemplos/bicicleta.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Bus",
+    "categoria": "Transportes",
+    "imagen": "img/alfabetizacion/ejemplos/bus.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Carro",
+    "categoria": "Transportes",
+    "imagen": "img/alfabetizacion/ejemplos/carro.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Tren",
+    "categoria": "Transportes",
+    "imagen": "img/alfabetizacion/ejemplos/tren.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Yate",
+    "categoria": "Transportes",
+    "imagen": "img/alfabetizacion/ejemplos/yate.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Arroz",
+    "categoria": "Comidas",
+    "imagen": "img/alfabetizacion/ejemplos/arroz.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Banana",
+    "categoria": "Comidas",
+    "imagen": "img/alfabetizacion/ejemplos/banana.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Brócoli",
+    "categoria": "Comidas",
+    "imagen": "img/alfabetizacion/ejemplos/brocoli.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Fresa",
+    "categoria": "Comidas",
+    "imagen": "img/alfabetizacion/ejemplos/fresa.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Helado",
+    "categoria": "Comidas",
+    "imagen": "img/alfabetizacion/ejemplos/helado.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Huevo",
+    "categoria": "Comidas",
+    "imagen": "img/alfabetizacion/ejemplos/huevo.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Limón",
+    "categoria": "Comidas",
+    "imagen": "img/alfabetizacion/ejemplos/limon.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Manzana",
+    "categoria": "Comidas",
+    "imagen": "img/alfabetizacion/ejemplos/manzana.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Naranja",
+    "categoria": "Comidas",
+    "imagen": "img/alfabetizacion/ejemplos/naranja.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Queso",
+    "categoria": "Comidas",
+    "imagen": "img/alfabetizacion/ejemplos/queso.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Quinoa",
+    "categoria": "Comidas",
+    "imagen": "img/alfabetizacion/ejemplos/quinoa.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Uvas",
+    "categoria": "Comidas",
+    "imagen": "img/alfabetizacion/ejemplos/uvas.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Zanahoria",
+    "categoria": "Comidas",
+    "imagen": "img/alfabetizacion/ejemplos/zanahoria.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Anillo",
+    "categoria": "Objetos",
+    "imagen": "img/alfabetizacion/ejemplos/anillo.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Balanza",
+    "categoria": "Objetos",
+    "imagen": "img/alfabetizacion/ejemplos/balanza.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Balde",
+    "categoria": "Objetos",
+    "imagen": "img/alfabetizacion/ejemplos/balde.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Balón",
+    "categoria": "Objetos",
+    "imagen": "img/alfabetizacion/ejemplos/balon.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Billetera",
+    "categoria": "Objetos",
+    "imagen": "img/alfabetizacion/ejemplos/billetera.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Botella",
+    "categoria": "Objetos",
+    "imagen": "img/alfabetizacion/ejemplos/botella.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Brocha",
+    "categoria": "Objetos",
+    "imagen": "img/alfabetizacion/ejemplos/brocha.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Bufanda",
+    "categoria": "Objetos",
+    "imagen": "img/alfabetizacion/ejemplos/bufanda.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Dado",
+    "categoria": "Objetos",
+    "imagen": "img/alfabetizacion/ejemplos/dado.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Espejo",
+    "categoria": "Objetos",
+    "imagen": "img/alfabetizacion/ejemplos/espejo.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Globo",
+    "categoria": "Objetos",
+    "imagen": "img/alfabetizacion/ejemplos/globo.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Jaula",
+    "categoria": "Objetos",
+    "imagen": "img/alfabetizacion/ejemplos/jaula.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Lupa",
+    "categoria": "Objetos",
+    "imagen": "img/alfabetizacion/ejemplos/lupa.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Maleta",
+    "categoria": "Objetos",
+    "imagen": "img/alfabetizacion/ejemplos/maleta.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Reloj",
+    "categoria": "Objetos",
+    "imagen": "img/alfabetizacion/ejemplos/reloj.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Silla",
+    "categoria": "Objetos",
+    "imagen": "img/alfabetizacion/ejemplos/silla.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Sombrero",
+    "categoria": "Objetos",
+    "imagen": "img/alfabetizacion/ejemplos/sombrero.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Taza",
+    "categoria": "Objetos",
+    "imagen": "img/alfabetizacion/ejemplos/taza.webp",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Zapato",
+    "categoria": "Objetos",
+    "imagen": "img/alfabetizacion/ejemplos/zapato.webp",
+    "fuente": "extra"
   }
 ]
