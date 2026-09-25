@@ -19,7 +19,7 @@ def git(repo, *args, check=True):
 
 def es_generado(path):
     return path in {"sitemap.xml", "data/nuevas-palabras.json"} or (
-        path.startswith(("diccionario/", "vocabulario/")) and
+        path.startswith(("diccionario/", "vocabulario/", "categoria/")) and
         (path.endswith("/index.html") or path.endswith("/.lspedia-seo-generated"))
     )
 
@@ -50,7 +50,7 @@ def regenerar(repo):
                    "actualizar_nuevas_palabras.py",
                    "validar_sitemap_publico.py"):
         subprocess.run([sys.executable, str(repo / "scripts" / nombre)], cwd=repo, check=True)
-    git(repo, "add", "-A", "--", "diccionario", "vocabulario", "sitemap.xml",
+    git(repo, "add", "-A", "--", "diccionario", "vocabulario", "categoria", "sitemap.xml",
         "data/nuevas-palabras.json")
 
 
