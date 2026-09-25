@@ -152,6 +152,8 @@ jobs:
           python -m json.tool data/senas-ia-dataset.json > /dev/null
           if [ -f data/nuevas-palabras.json ]; then python -m json.tool data/nuevas-palabras.json > /dev/null; fi
           echo "JSON válidos."
+      - name: Validar cobertura completa del modo EN
+        run: python scripts/validar_ingles.py
       - name: Validar dataset de señas IA
         run: python scripts/validar_senas_ia.py
       - name: Validar laboratorio de videojuego
