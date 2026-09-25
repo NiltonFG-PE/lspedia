@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-09-25T15:05:25Z",
+  "actualizado": "2026-09-25T16:48:42Z",
   "traducciones": [
     {
       "fuente": "diccionario",
@@ -232,7 +232,7 @@
       "categoria": "Economía",
       "ingles": "Saving",
       "aliases": [],
-      "definicionIngles": "It's money that a person saves without spending it, to use later.\n\nExample: I have savings to buy a laptop."
+      "definicionIngles": "It's money a person saves without spending it, to use later.\n\nExample: I have savings to buy a laptop."
     },
     {
       "fuente": "diccionario",
@@ -2992,7 +2992,7 @@
       "categoria": "Trabajo",
       "ingles": "Sales funnel",
       "aliases": [],
-      "definicionIngles": "Representation of the stages a person goes through from learning about an offer until they make a purchase."
+      "definicionIngles": "Representation of the stages a person goes through from the moment they learn about an offer until they make a purchase."
     },
     {
       "fuente": "diccionario",
@@ -3409,14 +3409,6 @@
       "ingles": "Season",
       "aliases": [],
       "definicionIngles": "It's the place where you wait for or board a train or bus.\n\nExample: We are at the subway station."
-    },
-    {
-      "fuente": "diccionario",
-      "palabra": "Estación del año",
-      "categoria": "Tiempo",
-      "ingles": "Season of the year",
-      "aliases": [],
-      "definicionIngles": "These are the four seasons of the year: summer, autumn, winter, and spring, each with a distinct climate.\n\nExample: My favorite season is summer."
     },
     {
       "fuente": "diccionario",
@@ -4336,7 +4328,7 @@
       "categoria": "Economía",
       "ingles": "Assessment",
       "aliases": [],
-      "definicionIngles": "A charge or tax that is applied to something."
+      "definicionIngles": "Charge or tax that is applied to something."
     },
     {
       "fuente": "diccionario",
@@ -4560,7 +4552,7 @@
       "categoria": "Salud",
       "ingles": "Hospital",
       "aliases": [],
-      "definicionIngles": "It's a large place where doctors treat and care for sick or injured people.\n\nExample: They took my grandfather to the hospital because he wasn't feeling well."
+      "definicionIngles": "It's a large place where doctors treat and heal sick or injured people.\n\nExample: They took my grandfather to the hospital because he wasn't feeling well."
     },
     {
       "fuente": "diccionario",
@@ -6134,7 +6126,7 @@
       "fuente": "diccionario",
       "palabra": "Patrimonio contable",
       "categoria": "Economía",
-      "ingles": "Accounting equity",
+      "ingles": "accounting equity",
       "aliases": [],
       "definicionIngles": "Economic value resulting from assets less liabilities."
     },
