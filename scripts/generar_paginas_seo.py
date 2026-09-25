@@ -19,6 +19,7 @@ import shutil
 import unicodedata
 from pathlib import Path
 from urllib.parse import quote
+from PIL import Image, ImageOps
 
 BASE_URL = "https://lspedia.site"
 MARCADOR = ".lspedia-seo-generated"
@@ -88,6 +89,40 @@ def referencia_vocabulario(fila: dict) -> str:
     base = slug(fila.get("palabra")) or "palabra"
     categoria = slug(fila.get("categoria"))
     return f"{base}-{categoria}" if categoria else base
+
+
+def crear_preview_categoria(repo: Path, items: list[dict], destino: Path) -> None:
+    """Crea un JPEG 1200x630 local y estable para vistas previas sociales."""
+    candidatos: list[Path] = []
+    for item in items:
+        valor = texto(item.get("imagen")).split(",", 1)[0].strip()
+        if not valor or valor.startswith(("http://", "https://")):
+            continue
+        ruta = repo / valor.lstrip("./")
+        if ruta.is_file():
+            candidatos.append(ruta)
+
+    fallback = repo / "img" / "lspedia.png"
+    if fallback.is_file():
+        candidatos.append(fallback)
+
+    ultimo_error: Exception | None = None
+    for origen in candidatos:
+        try:
+            with Image.open(origen) as base:
+                imagen = ImageOps.exif_transpose(base).convert("RGB")
+                preview = ImageOps.fit(
+                    imagen,
+                    (1200, 630),
+                    method=Image.Resampling.LANCZOS,
+                    centering=(0.5, 0.5),
+                )
+                preview.save(destino / "preview.jpg", "JPEG", quality=88, optimize=True, progressive=True)
+                return
+        except Exception as error:
+            ultimo_error = error
+
+    raise RuntimeError(f"No se pudo crear preview social para {destino}: {ultimo_error}")
 
 
 def limpiar_texto_meta(valor: object, maximo: int = 158) -> str:
@@ -420,12 +455,6 @@ def generar_categorias(repo: Path, filas_dic: list[dict], filas_voc: list[dict])
 
         for ref, items in sorted(grupos.items()):
             nombre = nombres[ref]
-            # Usa una imagen real de la propia categoría. Así la vista previa
-            # no depende de una descarga de red durante GitHub Actions.
-            imagen = next(
-                (imagen_absoluta(x.get("imagen")) for x in items if imagen_real(x.get("imagen"))),
-                f"{BASE_URL}/img/lspedia.png",
-            )
             canonical = f"{BASE_URL}/categoria/{tipo}/{quote(ref, safe='')}/"
             if tipo == "vocabulario":
                 app_url = f"{BASE_URL}/?vista=vocabulario&categoria={quote(nombre, safe='')}"
@@ -433,6 +462,11 @@ def generar_categorias(repo: Path, filas_dic: list[dict], filas_voc: list[dict])
             else:
                 app_url = f"{BASE_URL}/?categoriaDiccionario={quote(nombre, safe='')}"
                 seccion = "Diccionario"
+
+            destino = raiz / tipo / ref
+            destino.mkdir(parents=True, exist_ok=True)
+            crear_preview_categoria(repo, items, destino)
+            imagen = f"{canonical}preview.jpg"
 
             palabras = [texto(x.get("palabra")) for x in items if texto(x.get("palabra"))]
             muestra = ", ".join(palabras[:12])
@@ -470,8 +504,8 @@ def generar_categorias(repo: Path, filas_dic: list[dict], filas_voc: list[dict])
   <meta property="og:image" content="{escape(imagen, quote=True)}">
   <meta property="og:image:secure_url" content="{escape(imagen, quote=True)}">
   <meta property="og:image:type" content="image/jpeg">
-  <meta property="og:image:width" content="480">
-  <meta property="og:image:height" content="360">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Imagen de la categoría {escape(nombre, quote=True)} en LSPedia">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{escape(titulo, quote=True)}">
@@ -512,9 +546,6 @@ def generar_categorias(repo: Path, filas_dic: list[dict], filas_voc: list[dict])
 </article></main>
 </body></html>
 """
-            destino = raiz / tipo / ref
-            destino.mkdir(parents=True, exist_ok=True)
-
             (destino / "index.html").write_text(html, encoding="utf-8", newline="\n")
             total += 1
     return total
