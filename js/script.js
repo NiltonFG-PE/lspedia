@@ -2553,7 +2553,8 @@ function restaurarDestinoVocabularioInicial(){
         mostrarEtiquetaVocabulario(coleccion, {
             noActualizarHistorial: true,
             sinScroll: true,
-            animarEntrada: true
+            animarEntrada: true,
+            centrarAlAbrir: true
         });
         const url = '/?vista=vocabulario&coleccion=' + encodeURIComponent(coleccion);
         window.history.replaceState(
@@ -2571,7 +2572,8 @@ function restaurarDestinoVocabularioInicial(){
         mostrarCategoria(categoria, {
             noActualizarHistorial: true,
             sinScroll: true,
-            animarEntrada: true
+            animarEntrada: true,
+            centrarAlAbrir: true
         });
         const url = '/?vista=vocabulario&categoria=' + encodeURIComponent(categoria);
         window.history.replaceState(
@@ -5366,6 +5368,43 @@ function renderCategoriasDiccionario(){
 // depender de scrollIntoView(). Esto evita el conflicto con el "scroll
 // anchoring" y funciona igual sin importar en qué elemento viva el
 // scroll real (body, html, o el "scrollingElement" del navegador).
+function centrarResultadoCompartidoSuave(el){
+    if(!el) return;
+
+    const reducirMovimiento = window.matchMedia
+        && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Espera a que el resultado exista y a que el layout principal termine
+    // de acomodarse. El scroll ocurre mientras el splash aún se está
+    // retirando, por lo que la persona ve el destino ya centrado y sin saltos.
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+        const navbarEl = document.querySelector("nav.navbar");
+        const altoNavbarFijo = (navbarEl && getComputedStyle(navbarEl).position === "fixed")
+            ? navbarEl.getBoundingClientRect().height
+            : 0;
+
+        const rect = el.getBoundingClientRect();
+        const scrollActual = window.pageYOffset || document.documentElement.scrollTop || 0;
+        const yAbsoluto = rect.top + scrollActual;
+        const altoViewport = window.visualViewport
+            ? window.visualViewport.height
+            : window.innerHeight;
+        const espacioVisible = Math.max(220, altoViewport - altoNavbarFijo - 24);
+
+        // Si el bloque cabe en pantalla, lo centra visualmente. Si es más
+        // alto, deja su encabezado justo debajo de la barra fija para que se
+        // vea el nombre de la colección/categoría y las primeras tarjetas.
+        const destino = rect.height <= espacioVisible
+            ? yAbsoluto - altoNavbarFijo - Math.max(16, (espacioVisible - rect.height) / 2)
+            : yAbsoluto - altoNavbarFijo - 16;
+
+        window.scrollTo({
+            top: Math.max(0, destino),
+            behavior: reducirMovimiento ? "auto" : "smooth"
+        });
+    }));
+}
+
 function scrollAlPrimerResultado(el){
     if(!el) return;
 
@@ -5894,7 +5933,11 @@ function mostrarEtiquetaVocabulario(nombre, opciones = {}){
         void resultadoCategorias.offsetWidth;
         resultadoCategorias.classList.add('lsp-destino-suave');
     }
-    if(!opciones.sinScroll) scrollAlPrimerResultado(resultadoCategorias);
+    if(opciones.centrarAlAbrir){
+        centrarResultadoCompartidoSuave(resultadoCategorias);
+    } else if(!opciones.sinScroll) {
+        scrollAlPrimerResultado(resultadoCategorias);
+    }
 
     const apiVocabulario = window.LSPediaVocabularioPublico;
     const datosResueltos = !apiVocabulario
@@ -6144,7 +6187,11 @@ function mostrarCategoria(nombre, opciones = {}){
         void resultadoCategorias.offsetWidth;
         resultadoCategorias.classList.add('lsp-destino-suave');
     }
-    if(!opciones.sinScroll) scrollAlPrimerResultado(resultadoCategorias);
+    if(opciones.centrarAlAbrir){
+        centrarResultadoCompartidoSuave(resultadoCategorias);
+    } else if(!opciones.sinScroll) {
+        scrollAlPrimerResultado(resultadoCategorias);
+    }
 
     const apiVocabulario = window.LSPediaVocabularioPublico;
     const datosResueltos = !apiVocabulario
