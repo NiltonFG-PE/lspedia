@@ -3178,7 +3178,7 @@ function compartirCategoriaLSPedia(nombre, fuente){
     // reciban título, descripción e imagen de esta categoría sin ejecutar JS.
     const url = window.location.origin
         + "/categoria/" + (esVocabulario ? "vocabulario" : "diccionario")
-        + "/" + encodeURIComponent(referenciaCategoria) + "/";
+        + "/" + encodeURIComponent(referenciaCategoria) + "/?v=20260925-1";
     const titulo = categoria + " | LSPedia";
     const texto = esVocabulario
         ? `Explora la categoría "${categoria}" en el Vocabulario de LSPedia.`
