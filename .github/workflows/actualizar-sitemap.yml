@@ -49,6 +49,9 @@ jobs:
         with:
           python-version: "3.x"
 
+      - name: Instalar dependencias SEO
+        run: python -m pip install --disable-pip-version-check Pillow
+
       - name: Crear y migrar IDs únicos
         run: python scripts/migrar_ids_palabras.py
 
@@ -93,6 +96,9 @@ jobs:
           test -f categoria/.lspedia-seo-generated
           test "$(find categoria -mindepth 3 -name index.html | wc -l)" -gt 0
           grep -q 'property="og:image"' categoria/vocabulario/colores/index.html
+          grep -q '/categoria/vocabulario/colores/preview.jpg' categoria/vocabulario/colores/index.html
+          test -s categoria/vocabulario/colores/preview.jpg
+          test "$(find categoria -mindepth 3 -name preview.jpg | wc -l)" -eq "$(find categoria -mindepth 3 -name index.html | wc -l)"
           ! grep -q '__LSPEDIA_CATEGORY_IMAGE__' categoria/vocabulario/colores/index.html
           test "$(find diccionario -mindepth 2 -name index.html | wc -l)" -gt 0
           test "$(find vocabulario -mindepth 2 -name index.html | wc -l)" -gt 0
