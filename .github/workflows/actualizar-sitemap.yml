@@ -76,7 +76,7 @@ jobs:
       - name: Generar Lo nuevo
         run: python scripts/actualizar_nuevas_palabras.py
 
-      - name: Generar traducciones EN del Diccionario
+      - name: Generar traducciones EN de Diccionario y Vocabulario
         run: python scripts/generar_traducciones_en.py
 
       - name: Validar datos y SEO antes de guardar
