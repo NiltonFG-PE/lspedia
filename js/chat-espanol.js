@@ -1222,7 +1222,8 @@ function showHelp(){
   showModal("💬","Cómo se juega",`
     <p><strong>Chat en Español</strong> es una práctica visual de conversación para aprender a escribir mejor en español del Perú.</p>
     <p>La persona del chat es una <strong>simulación educativa</strong>. Puedes escribir con tus propias palabras: no necesitas copiar una frase exacta.</p>
-    <p>Después de enviar, el tutor revisa claridad, palabras importantes, acentos y puntuación. Si tu idea es válida, la reconoce; si puede mejorar, te muestra una forma más natural.</p>
+    <p>Después de enviar, el tutor trabaja sobre <strong>tu misma respuesta</strong>. Revisa ortografía y tildes, mayúsculas y signos, artículos como “el / la / al”, conectores como “porque / pero / después / también” y si el tiempo verbal corresponde a la pregunta.</p>
+    <p>Cuando muestra una versión mejorada, conserva tu idea. No intenta obligarte a copiar una respuesta preparada.</p>
     <p><strong>La conversación puede cambiar según lo que escribas.</strong> Si mencionas una hora, un medio de transporte, una razón, una forma de pago, un problema o un tema nuevo, el interlocutor puede tomar ese detalle y preguntarte algo relacionado antes de continuar.</p>
     <p>🎨 <strong>Guía de colores:</strong> azul = quién, rojo = acción/verbo, verde = qué o dónde, morado = cuándo y amarillo = conector. El texto acompaña siempre al color para que la guía no dependa solo de distinguir colores.</p>
     <p>🃏 <strong>Comodín:</strong> abre tres respuestas posibles cuando no sabes qué escribir. Todas están redactadas para que puedas aprender de ellas.</p>
