@@ -210,7 +210,7 @@
                 border-radius:0 999px 999px 0;
                 box-shadow:none;
             }
-            .lspedia-en-term{font-size:.88rem;font-weight:700;color:#64748b;margin:-8px 0 12px}
+            .lspedia-en-term,.lspedia-es-term{font-size:.88rem;font-weight:700;color:#64748b;margin:-8px 0 12px}
             .lspedia-lsp-label{display:inline-flex;align-items:center;gap:6px;margin:0 auto 8px;padding:5px 10px;border-radius:999px;background:#eef6ff;color:#174a7e;font-size:.78rem;font-weight:700}
             @media(max-width:1199.98px){
                 nav.navbar .container{position:relative}
@@ -492,24 +492,46 @@
         setPlaceholder('buscarCategorias','Buscar vocabulario','Search sign vocabulary');
     }
 
+    function resolverTraduccionResultado(original, root){
+        const fuente = root === document.getElementById('resultadoCategorias')
+            ? 'vocabulario'
+            : 'diccionario';
+        const mapa = fuente === 'vocabulario' ? MAPA_VOCAB : MAPA_DICC;
+        const local = mapa.get(norm(original));
+        if(local) return local;
+
+        if(window.LSPediaI18nAuto && typeof window.LSPediaI18nAuto.traduccion === 'function'){
+            try {
+                return window.LSPediaI18nAuto.traduccion(original, fuente) || null;
+            } catch(_e) {}
+        }
+        return null;
+    }
+
     function traducirResultado(root){
         if(!root) return;
         const titulo = root.querySelector('h3.fw-bold');
-        if(!titulo) return;
-        const esDiccionario = root === document.getElementById('resultado') ||
-            root === document.getElementById('resultadoCategoriasDiccionario');
-        const tr = esDiccionario ? MAPA_DICC.get(norm(titulo.textContent)) : null;
-        const filaTitulo = titulo.parentElement;
-        let etiqueta = root.querySelector('.lspedia-en-term');
-        if(idioma === 'en' && tr && filaTitulo){
-            if(!etiqueta){
-                etiqueta = document.createElement('div');
-                etiqueta.className = 'lspedia-en-term';
-                filaTitulo.insertAdjacentElement('afterend', etiqueta);
+        if(titulo){
+            if(!titulo.dataset.lspediaEs){
+                titulo.dataset.lspediaEs = String(titulo.textContent || '').trim();
             }
-            etiqueta.textContent = 'English: ' + tr.term;
-        } else if(etiqueta){
-            etiqueta.remove();
+            const original = titulo.dataset.lspediaEs;
+            const tr = resolverTraduccionResultado(original, root);
+            const filaTitulo = titulo.parentElement;
+            let etiqueta = root.querySelector('.lspedia-es-term:not(.lspedia-es-term-auto)');
+
+            if(idioma === 'en' && tr && filaTitulo){
+                titulo.textContent = tr.term;
+                if(!etiqueta){
+                    etiqueta = document.createElement('div');
+                    etiqueta.className = 'lspedia-es-term';
+                    filaTitulo.insertAdjacentElement('afterend', etiqueta);
+                }
+                etiqueta.textContent = 'Spanish: ' + original;
+            } else {
+                titulo.textContent = original;
+                if(etiqueta) etiqueta.remove();
+            }
         }
 
         let etiquetaVideo = root.querySelector('.lspedia-lsp-label');
@@ -546,19 +568,12 @@
         });
 
         traducirHero();
-        [
-            document.querySelector('nav.navbar'),
-            document.getElementById('mobileBottomNav'),
-            document.getElementById('filaHeroPrincipal'),
-            document.getElementById('filaCategoriasDiccionario'),
-            document.getElementById('panelCategorias'),
-            document.getElementById('herramientasMenuMovil'),
-            document.getElementById('seccionNosotros'),
-            document.querySelector('footer.footer-lspedia'),
-            document.getElementById('resultado'),
-            document.getElementById('resultadoCategorias'),
-            document.getElementById('resultadoCategoriasDiccionario')
-        ].forEach(traducirNodos);
+
+        // Recorremos toda la interfaz visible, no solo unas pocas secciones.
+        // El diccionario de traducciones es exacto y conserva el texto ES
+        // original en WeakMap, por lo que volver a ES restaura la UI sin recargar.
+        traducirNodos(document.body);
+        traducirAtributos(document.body);
 
         traducirResultado(document.getElementById('resultado'));
         traducirResultado(document.getElementById('resultadoCategorias'));
@@ -580,9 +595,10 @@
         const ref = params.get('p');
         if(!ref) return;
         const esVocab = params.get('fuente') === 'vocabulario' || params.get('vista') === 'vocabulario';
-        if(esVocab) return;
         try {
-            if(typeof window.mostrarPalabraPorNombre === 'function'){
+            if(esVocab && typeof window.mostrarPalabraVocabularioPorReferencia === 'function'){
+                window.mostrarPalabraVocabularioPorReferencia(ref);
+            } else if(typeof window.mostrarPalabraPorNombre === 'function'){
                 window.mostrarPalabraPorNombre(ref);
             }
         } catch(_e) {}
@@ -598,29 +614,62 @@
         document.dispatchEvent(new CustomEvent('lspedia:idiomaCambiado', { detail: { idioma } }));
     }
 
+    let observadorInterfaz = null;
+    function iniciarObservadorInterfaz(){
+        if(observadorInterfaz || !document.body || typeof MutationObserver === 'undefined') return;
+        observadorInterfaz = new MutationObserver(cambios => {
+            if(idioma !== 'en') return;
+            cambios.forEach(cambio => {
+                cambio.addedNodes.forEach(node => {
+                    if(node.nodeType === Node.TEXT_NODE){
+                        const padre = node.parentElement;
+                        if(padre) traducirNodos(padre);
+                        return;
+                    }
+                    if(node.nodeType !== Node.ELEMENT_NODE) return;
+                    traducirNodos(node);
+                    traducirAtributos(node);
+                });
+            });
+            traducirResultado(document.getElementById('resultado'));
+            traducirResultado(document.getElementById('resultadoCategorias'));
+            traducirResultado(document.getElementById('resultadoCategoriasDiccionario'));
+        });
+        observadorInterfaz.observe(document.body, { childList:true, subtree:true });
+    }
+
     function iniciar(){
         inyectarEstilos();
         inyectarSelector();
         aplicarDatos();
         aplicarInterfaz();
+        iniciarObservadorInterfaz();
 
         document.addEventListener('lspedia:datosListos', () => {
             setTimeout(programarAplicacion, 0);
             setTimeout(programarAplicacion, 350);
         });
+        document.addEventListener('lspedia:vocabularioPublicoListo', () => {
+            setTimeout(programarAplicacion, 0);
+            setTimeout(programarAplicacion, 250);
+        });
+        document.addEventListener('lspedia:traduccionesEnListas', () => {
+            setTimeout(programarAplicacion, 0);
+        });
         document.addEventListener('click', () => setTimeout(programarAplicacion, 0), true);
         document.addEventListener('keydown', (e) => {
             if(e.key === 'Enter') setTimeout(programarAplicacion, 0);
         }, true);
-
-        // No se espera ni se modifica el banco de Vocabulario: la capa
-        // bilingüe de conceptos trabaja únicamente con el Diccionario.
     }
 
     window.LSPediaIdioma = {
         obtener: () => idioma,
         cambiar: cambiarIdioma,
-        traduccionIngles: (palabra) => MAPA_DICC.get(norm(palabra)) || null
+        traduccionIngles: (palabra) =>
+            MAPA_DICC.get(norm(palabra))
+            || MAPA_VOCAB.get(norm(palabra))
+            || null,
+        traducirInterfaz: programarAplicacion
     };
 
     if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar, { once:true });
