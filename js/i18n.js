@@ -130,7 +130,39 @@
         'Desarrollado con corazón para potenciar la comunicación y la inclusión en el Perú.':'Developed with care to strengthen communication and inclusion in Peru.',
         'Ver licencia':'View license','Todos los derechos reservados.':'All rights reserved.',
         'Colecciones':'Collections','palabra':'word','palabras':'words','relacionadas':'related',
-        'Categoría:':'Category:','¿Quisiste decir...?':'Did you mean...?'
+        'Categoría:':'Category:','¿Quisiste decir...?':'Did you mean...?',
+        'LSPedia está preparando el contenido':'LSPedia is preparing the content',
+        'Logo LSPedia animado':'Animated LSPedia logo','Navegación principal':'Main navigation',
+        'Acceso directo a Vocabulario':'Shortcut to Vocabulary','Acceso directo a Herramientas':'Shortcut to Tools','Acceso directo a Jugar':'Shortcut to Games',
+        'Mostrar u ocultar accesos rápidos':'Show or hide quick links','Contraer Descubre':'Collapse Discover',
+        'Ver palabra':'View word','Ver la palabra completa':'View the full word entry','Ver palabra de ayer':"View yesterday's word",
+        'Ver la palabra del día anterior':"View the previous day's word",'Volver a hoy':'Back to today',"Volver a la palabra de hoy":"Back to today's word",
+        'Abrir índice alfabético A a Z':'Open A–Z alphabetical index','Abrir índice alfabético':'Open alphabetical index',
+        'Borrar búsqueda':'Clear search','Personaje de LSPedia sosteniendo una lupa':'LSPedia character holding a magnifying glass',
+        'Abrir índice alfabético de Vocabulario A a Z':'Open Vocabulary A–Z index','Abrir índice alfabético de Vocabulario':'Open Vocabulary alphabetical index',
+        'Buscar palabra del vocabulario':'Search a vocabulary word',
+        'LSPedia en TikTok':'LSPedia on TikTok','Síguenos en TikTok':'Follow us on TikTok',
+        'LSPedia en Instagram':'LSPedia on Instagram','Síguenos en Instagram':'Follow us on Instagram',
+        'LSPedia en YouTube':'LSPedia on YouTube','Síguenos en YouTube':'Follow us on YouTube',
+        'LSPedia en Facebook':'LSPedia on Facebook','Síguenos en Facebook @lspedia.sign':'Follow us on Facebook @lspedia.sign',
+        'Borrar todo el historial':'Clear all history','Borrar todo el historial de búsqueda':'Clear all search history',
+        'Salir de Subtítulos':'Exit Captions','Copiar todo el texto subtitulado':'Copy all caption text','Pantalla completa':'Full screen',
+        'Reducir tamaño de texto':'Decrease text size','Aumentar tamaño de texto':'Increase text size',
+        'Cambiar color de la palabra en vivo':'Change live-word color','Borrar el texto en pantalla':'Clear on-screen text',
+        'Salir de pantalla completa':'Exit full screen','Juego Completar la palabra':'Complete the Word game',
+        'Juego Unir con flechas':'Match with Arrows game','Juego Quiz':'Quiz game','Juego Matematicas':'Math game',
+        'Juego Construye la oración':'Build the Sentence game','Volver al menú del juego':'Back to game menu',
+        'Elegir nivel':'Choose level','Sumar':'Add','Restar':'Subtract','Multiplicar':'Multiply','Dividir':'Divide',
+        'Volver al menú':'Back to menu','Tipo de contenido':'Content type','Carácter anterior':'Previous character',
+        'Carácter siguiente':'Next character','Ver grafía en mayúscula':'Show uppercase spelling','Ver grafía en minúscula':'Show lowercase spelling',
+        'Ver grafía en cursiva mayúscula':'Show uppercase cursive','Ver grafía en cursiva minúscula':'Show lowercase cursive',
+        'Ver grafía del número':'Show number form','Reducir velocidad':'Decrease speed','Aumentar velocidad':'Increase speed',
+        'Repetir animación':'Replay animation','Ejemplo anterior':'Previous example','Ejemplo siguiente':'Next example',
+        'Mantené presionado y arrastrá para mover el video':'Press and drag to move the video','Mover la ventana de video':'Move video window',
+        'Retroceder 3 segundos':'Go back 3 seconds','Reproducir o pausar':'Play or pause','Reiniciar desde el principio':'Restart from the beginning',
+        'Avanzar 5 segundos':'Go forward 5 seconds','Ver en pantalla completa':'View full screen',
+        'Formulario para sugerir una nueva palabra':'Form to suggest a new word','Formulario para enviar una idea':'Form to send an idea',
+        'Alejar':'Zoom out','Acercar':'Zoom in','Restablecer zoom':'Reset zoom'
     };
     Object.assign(UI_EN, CATEGORIAS_EN, COLECCIONES_EN);
 
@@ -363,8 +395,9 @@
         m = limpio.match(/^(\d+)\s+palabra(?:s)?(?:\s+relacionadas)?$/i);
         if(m){
             const n = Number(m[1]);
-            return n + (n === 1 ? ' word' : ' words')
-                + (/relacionadas/i.test(limpio) ? ' related' : '');
+            return /relacionadas/i.test(limpio)
+                ? n + (n === 1 ? ' related word' : ' related words')
+                : n + (n === 1 ? ' word' : ' words');
         }
 
         m = limpio.match(/^🏷️\s*(.+)$/);
@@ -483,9 +516,10 @@
             }
             if(intro && vocabActivo){
                 const textos = intro.querySelectorAll('.vocab-intro-texto');
-                if(textos[0]) textos[0].innerHTML = 'Signs represent <strong>concepts</strong>, not always individual words.';
-                if(textos[1]) textos[1].innerHTML = 'Spanish terms are a <strong>reference</strong> that makes searching and learning easier.';
+                if(textos[0]) textos[0].innerHTML = 'Spanish words are a <strong>reference</strong> that makes searching easier.';
+                if(textos[1]) textos[1].innerHTML = 'Signs represent <strong>concepts</strong>, not just individual words.';
                 if(textos[2]) textos[2].innerHTML = '<strong>Regional variations</strong> enrich Peruvian Sign Language.';
+                if(textos[3]) textos[3].innerHTML = 'Learning vocabulary is not enough; it also <strong>requires contact</strong> with Deaf people.';
             }
         }
         setPlaceholder('buscar','Buscar palabra y significado','Search a Spanish word or type in English');
