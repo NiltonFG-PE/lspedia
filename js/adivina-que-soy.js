@@ -7,13 +7,7 @@
   let state = 'home', round = [], answers = [], position = 0, remaining = 0, deadline = 0;
   let ticker, transition, countdownTimer, motionTimer, loadGeneration = 0, prepareGeneration = 0;
   let audio, wakeLock, motionEnabled = false, latestSensor = 0;
-  let orientationMode = (() => {
-    try {
-      const saved = localStorage.getItem('adivina-orientation');
-      if (saved === 'landscape' || saved === 'portrait') return saved;
-    } catch {}
-    return innerWidth > innerHeight ? 'landscape' : 'portrait';
-  })();
+  let orientationMode = 'landscape';
   const imageCache = new Map();
   const cardColors = ['#e1d6fa','#ccebe1','#ffe1bc','#cfe5ff','#f9d8e7','#f4edb9','#d6e9c4'];
   let colorOffset = 0;
