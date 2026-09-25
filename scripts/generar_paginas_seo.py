@@ -27,7 +27,7 @@ MARCADOR = ".lspedia-seo-generated"
 IMAGEN_RE = re.compile(r"\.(?:avif|gif|jpe?g|png|svg|webp)(?:[?#].*)?$", re.I)
 PREFIJO_RE = re.compile(r"^(?:https?://|/|\.\.?/|img/)", re.I)
 YOUTUBE_ID_RE = re.compile(r"^[A-Za-z0-9_-]{11}$")
-SOCIAL_PREVIEW_VERSION = "v8"
+SOCIAL_PREVIEW_VERSION = "v9"
 
 
 def texto(valor: object) -> str:
@@ -132,17 +132,23 @@ def crear_preview_categoria(
     for origen in candidatos:
         try:
             with Image.open(origen) as base:
-                imagen = ImageOps.exif_transpose(base).convert("RGB")
-                # No recorta la ilustración: la encaja completa sobre un fondo
-                # neutro para que WhatsApp no muestre solo un fragmento/color.
-                preview = ImageOps.pad(
-                    imagen,
-                    (1200, 630),
-                    method=Image.Resampling.LANCZOS,
-                    color=(245, 248, 252),
-                    centering=(0.5, 0.5),
-                )
-                preview.save(destino / "preview.jpg", "JPEG", quality=90, optimize=True, progressive=False)
+                origen_img = ImageOps.exif_transpose(base).convert("RGBA")
+
+                # La tarjeta de categoría puede usar un WEBP con transparencia.
+                # Para compartir, reutilizamos ESE MISMO icono y lo colocamos
+                # completo sobre un lienzo limpio 1200x630. Así no se recorta,
+                # no aparecen fondos negros por perder el canal alfa y la
+                # miniatura de WhatsApp coincide visualmente con la tarjeta.
+                fondo = Image.new("RGBA", (1200, 630), (245, 248, 252, 255))
+                icono = origen_img.copy()
+                icono.thumbnail((560, 560), Image.Resampling.LANCZOS)
+
+                x = (1200 - icono.width) // 2
+                y = (630 - icono.height) // 2
+                fondo.alpha_composite(icono, (x, y))
+
+                preview = fondo.convert("RGB")
+                preview.save(destino / "preview.jpg", "JPEG", quality=92, optimize=True, progressive=False)
                 return
         except Exception as error:
             ultimo_error = error
