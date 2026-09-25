@@ -101,17 +101,17 @@ const scenarios = [
     ]
   },
   {
-    id:"banco-dni", level:3, avatar:"🏦", name:"Asesor del banco", situation:"Hacer una consulta en el banco", place:"Banco", duration:"5–6 min",
-    goal:"Practica explicar una necesidad y pedir información.", closing:"Eso sería todo. Guarde su constancia, por favor. Que tenga buen día.",
+    id:"banco-dni", level:3, avatar:"🏦", name:"Asesor del banco", situation:"Revisar datos en el banco", place:"Banco", duration:"5–6 min",
+    goal:"Practica confirmar datos, responder sí/no cuando corresponde y pedir una corrección si hace falta.", closing:"Muy bien. La revisión terminó. Guarde su constancia si la necesita. Que tenga buen día.",
     turns:[
-      {prompt:"Buenos días. ¿En qué puedo ayudarlo?", model:"Buenos días. Quiero actualizar mis datos personales.", alternatives:["Buenos días. Necesito actualizar mis datos.","Quisiera hacer una actualización de mis datos personales."], keywords:["actualiz","datos"], why:"En un trámite explica tu objetivo desde el primer mensaje."},
-      {prompt:"Claro. ¿Tiene su DNI?", model:"Sí, aquí está mi DNI.", alternatives:["Sí, lo tengo aquí.","Claro, aquí tiene mi DNI."], keywords:["dni","aqui"], why:"Con documentos, “aquí está” o “aquí tiene” son formas naturales."},
-      {prompt:"Gracias. ¿Cambió su dirección o su número de teléfono?", model:"Cambió mi dirección y también mi número de teléfono.", alternatives:["Sí, cambiaron mi dirección y mi teléfono.","Necesito actualizar la dirección y el número de celular."], keywords:["direccion","telefono","numero"], why:"“También” permite añadir un segundo dato sin separar demasiado la idea."},
-      {prompt:"¿Cuál es su nueva dirección?", model:"Mi nueva dirección es avenida Los Pinos 245.", alternatives:["Ahora vivo en la avenida Los Pinos 245.","La dirección nueva es avenida Los Pinos 245."], keywords:["avenida","pinos","245"], why:"En una dirección conviene responder de forma directa y completa."},
-      {prompt:"¿Y cuál es su número actual?", model:"Mi número actual es 987 654 321.", alternatives:["El nuevo número es 987 654 321.","Ahora uso el número 987 654 321."], keywords:["987","numero"], why:"“Actual” ayuda a diferenciar el número nuevo del anterior."},
-      {prompt:"Perfecto. Voy a registrar los cambios.", model:"Gracias. ¿Necesito firmar algún documento?", alternatives:["Muchas gracias. ¿Tengo que firmar algo?","¿Debo firmar algún documento?"], keywords:["firm","documento"], why:"“Necesito”, “tengo que” y “debo” pueden expresar obligación."},
-      {prompt:"Sí, esta constancia.", model:"De acuerdo. ¿Dónde debo firmar?", alternatives:["Está bien. ¿En qué parte firmo?","Claro. Indíqueme dónde debo firmar."], keywords:["donde","firm"], why:"“¿Dónde…?” lleva tilde porque es una pregunta."},
-      {prompt:"Aquí, en la parte inferior.", model:"Listo. Muchas gracias por la atención.", alternatives:["Ya firmé. Gracias por la ayuda.","Listo, gracias por atenderme."], keywords:["listo","gracias","atencion"], why:"Al terminar un trámite, confirma que terminaste y agradece."}
+      {prompt:"Buenos días. ¿En qué puedo ayudarlo?",model:"Buenos días. Quiero revisar mis datos personales.",alternatives:["Buenos días. Quisiera verificar que mis datos estén correctos.","Necesito revisar la información de mi cuenta."],keywords:["revis","datos","informacion"],why:"Explica de forma directa qué quieres revisar."},
+      {prompt:"Claro. ¿Tiene su DNI?",model:"Sí, aquí está mi DNI.",alternatives:["Sí, lo tengo aquí.","Claro, aquí tiene mi DNI."],keywords:["si","dni","aqui"],why:"Si la pregunta es directa, “Sí” puede bastar; puedes agregar el documento para dar más información."},
+      {prompt:"Gracias. ¿Cambió su dirección o su número de teléfono?",model:"No, mis datos siguen iguales.",alternatives:["No, no cambió ninguno.","Sí, cambió mi dirección.","Sí, cambió mi número de teléfono."],keywords:["no","direccion","telefono","cambio"],why:"Responde según tu situación. “No” es suficiente si nada cambió."},
+      {prompt:"Entendido. ¿Desea revisar que la dirección registrada esté correcta?",model:"Sí, quiero verificarla.",alternatives:["Sí, por favor.","No, no es necesario."],keywords:["si","no","verific"],why:"En una pregunta de confirmación puedes responder brevemente."},
+      {prompt:"¿La dirección registrada está correcta?",model:"Sí, está correcta.",alternatives:["Sí.","No, necesito corregirla."],keywords:["si","no","correct"],why:"“Sí” o “No” es natural cuando solo debes confirmar un dato."},
+      {prompt:"¿Desea revisar también su número de teléfono?",model:"Sí, por favor.",alternatives:["Sí.","No, gracias."],keywords:["si","no","telefono"],why:"No necesitas una frase larga cuando la elección es simple."},
+      {prompt:"¿El número registrado está correcto?",model:"Sí, está correcto.",alternatives:["Sí.","No, necesito cambiarlo."],keywords:["si","no","correct"],why:"Una respuesta breve puede ser totalmente correcta por contexto."},
+      {prompt:"Perfecto. La revisión quedó lista. ¿Necesita una constancia?",model:"No, gracias.",alternatives:["Sí, por favor.","No es necesario, gracias."],keywords:["si","no","constancia","gracias"],why:"Al final puedes aceptar o rechazar la constancia con una respuesta corta y cortés."}
     ]
   },
   {
@@ -470,7 +470,8 @@ function salientWord(text){
   const ws=(String(text).match(/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+/g)||[]).filter(w=>w.length>=4&&!TOPIC_STOPWORDS.has(normalize(w))&&!VERB_HINTS.has(normalize(w)));
   return ws.length?ws[ws.length-1]:"";
 }
-function adaptiveAcknowledgement(user){
+function adaptiveAcknowledgement(user,turn,semantic){
+  if(semantic?.valid && semantic.ack)return semantic.ack;
   const d=extractDetails(user);
   if(d.reason)return "Entiendo; dices que "+d.reason.replace(/[.!?]+$/,"")+".";
   if(d.time)return "Perfecto, tomo en cuenta "+d.time+".";
@@ -576,7 +577,51 @@ function structureHint(text){
   const roles=mapSentenceParts(text).map(p=>p.label);
   return roles.length?"Guía: "+roles.join(" + "):"Escribe una idea completa.";
 }
-function spellingTips(user,model){
+
+function questionKind(prompt){
+  const n=normalize(prompt);
+  if(/todos? los documentos|documentos.*falta|falta.*documentos/.test(n)) return "completeness";
+  if(/cambio.*direccion.*(?:telefono|numero)|cambiaron.*direccion.*(?:telefono|numero)/.test(n)) return "changes";
+  if(/(?:direccion|datos|telefono|numero).*(?:correct|igual)/.test(n)) return "confirm-data";
+  if(/\?/.test(String(prompt)) && /\b(?:si|no)\b/.test(n) && /\bo\b/.test(n)) return "choice";
+  if(/\?/.test(String(prompt)) && /^(?:.*?)(?:tiene|tienes|puede|puedes|desea|quieres|quiere|ya|es|esta|viaja|necesita|acepta|prefiere|lleva|hay|debo|podemos)\b/.test(n)) return "yesno";
+  return "open";
+}
+function semanticDirectAnswer(user,turn){
+  const raw=String(user||"").trim(), n=normalize(raw), kind=questionKind(turn?.prompt||"");
+  const yes=/^(si|sí|claro|correcto|de acuerdo|esta bien|está bien|por supuesto)\b/.test(raw.toLocaleLowerCase("es-PE"));
+  const no=/^(no|ninguno|ninguna|nada)\b/.test(n);
+  if(kind==="completeness"){
+    if(/tengo todo|ya tengo todo|tengo todos|todos los documentos|no me falta nada|no falta nada/.test(n)){
+      return {valid:true,type:"complete",natural:"Tengo todos los documentos.",ack:"Perfecto, ya tienes todos los documentos.",why:"La pregunta era si te faltaba algún documento. “Tengo todo” responde directamente y es suficiente."};
+    }
+    if(/me falta|todavia.*falta|aun.*falta|no tengo todo|falta un|falta una/.test(n)){
+      return {valid:true,type:"missing",natural:sentenceCase(raw),ack:"Entiendo, todavía te falta algo.",why:"Tu respuesta indica claramente que todavía falta un requisito."};
+    }
+  }
+  if(kind==="changes"){
+    if(no||/no cambio|no cambió|siguen igual|todo igual|ningun cambio|ningún cambio/.test(n)){
+      return {valid:true,type:"no-change",natural:"No, mis datos siguen iguales.",ack:"Entiendo, entonces esos datos siguen iguales.",why:"Como preguntaron si hubo cambios, “No” es una respuesta válida. La frase completa es opcional."};
+    }
+    if(/direccion/.test(n)&&/(telefono|numero|celular)/.test(n)){
+      return {valid:true,type:"both-change",natural:sentenceCase(raw),ack:"Entiendo, cambiaron ambos datos.",why:"Mencionaste los dos datos que cambiaron."};
+    }
+    if(/direccion/.test(n)){
+      return {valid:true,type:"address-change",natural:sentenceCase(raw),ack:"Entiendo, cambió tu dirección.",why:"La respuesta identifica exactamente qué dato cambió."};
+    }
+    if(/telefono|numero|celular/.test(n)){
+      return {valid:true,type:"phone-change",natural:sentenceCase(raw),ack:"Entiendo, cambió tu número de teléfono.",why:"La respuesta identifica exactamente qué dato cambió."};
+    }
+  }
+  if(kind==="confirm-data" && (yes||no)){
+    return {valid:true,type:yes?"yes":"no",natural:yes?"Sí, está correcto.":"No, necesito corregirlo.",ack:yes?"Perfecto, ese dato está correcto.":"Entiendo, entonces hay que corregir ese dato.",why:"En una pregunta de confirmación, “Sí” o “No” puede ser suficiente."};
+  }
+  if(kind==="yesno" && (yes||no)){
+    return {valid:true,type:yes?"yes":"no",natural:yes?"Sí.":"No.",ack:yes?"Perfecto.":"Entiendo.",why:"Esta es una pregunta de sí o no. Una respuesta breve puede ser natural y suficiente."};
+  }
+  return {valid:false,type:"",natural:"",ack:"",why:""};
+}
+function spellingTips(user,model,semantic){
   const tips=[], raw=String(user||"").trim(), m=String(model||"").trim();
   if(raw && /^[a-záéíóúüñ]/.test(raw))tips.push("Empieza la oración con mayúscula.");
   const modelQuestion=m.startsWith("¿")||m.endsWith("?");
@@ -587,9 +632,9 @@ function spellingTips(user,model){
   const userPlain=new Set(userWords.map(w=>normalize(w)));
   const accentFix=modelWords.find(w=>w!==stripAccents(w) && userPlain.has(normalize(w)) && !userWords.some(u=>u.toLocaleLowerCase("es-PE")===w.toLocaleLowerCase("es-PE")));
   if(accentFix)tips.push('Mira la tilde en “'+accentFix+'”.');
-  if(words(raw).length<=2 && words(m).length>=6)tips.push("Tu respuesta es muy corta: agrega qué, dónde, cuándo o por qué.");
+  if(!semantic?.valid && words(raw).length<=2 && words(m).length>=6)tips.push("La idea es muy corta para esta pregunta: agrega un dato importante.");
   const conn=detectConnector(m);
-  if(conn && !detectConnector(raw) && words(raw).length>=4)tips.push('Puedes unir mejor las ideas con “'+conn+'”.');
+  if(!semantic?.valid && conn && !detectConnector(raw) && words(raw).length>=4)tips.push('Puedes unir mejor las ideas con “'+conn+'”.');
   return tips.slice(0,2);
 }
 
@@ -601,14 +646,18 @@ function evaluate(user,turn,usedWildcard=false){
   const keys=(turn.keywords||[]).map(normalize);
   const matches=keys.filter(k=>k&&n.includes(k)).length;
   const keyRatio=keys.length?matches/Math.min(keys.length,3):0;
+  const semantic=semanticDirectAnswer(user,turn);
   let grade="improve";
   const userWordCount=words(user).length;
-  if(sim>=.86)grade="excellent";
+  if(semantic.valid)grade="excellent";
+  else if(sim>=.86)grade="excellent";
   else if(sim>=.52||keyRatio>=.50||(userWordCount>=5&&matches>=1))grade="good";
-  const corrected=mechanicalCorrection(user,turn.model);
+  const corrected=semantic.valid
+    ? (semantic.natural||sentenceCase(user))
+    : mechanicalCorrection(user,turn.model);
   const mechanicalChanged=normalize(corrected)===normalize(user) && corrected.trim()!==String(user).trim();
   const points=usedWildcard?1:(grade==="excellent"?2:grade==="good"?2:1);
-  return {grade,sim,keyRatio,corrected,mechanicalChanged,points,matches,userWordCount};
+  return {grade,sim,keyRatio,corrected,mechanicalChanged,points,matches,userWordCount,semantic};
 }
 function shuffle(arr){
   const a=arr.slice();
@@ -670,12 +719,20 @@ function addMessage(side,text){
 }
 function addCorrection(result,turn,usedWildcard,userText){
   const note=document.createElement("div");
-  note.className="ai-note "+(result.grade==="improve"?"improve":"good");
+  const semantic=result.semantic||{valid:false};
+  note.className="ai-note "+(result.grade==="improve"?"improve":"good")+(semantic.valid?" concise":"");
   let title="",modelLine="",why="";
   if(usedWildcard){
     title="🃏 Aprendiste con una ayuda";
     modelLine="Esta respuesta funciona bien en la situación.";
     why=turn.why;
+  }else if(semantic.valid){
+    title="✅ Respuesta adecuada";
+    const same=normalize(userText)===normalize(semantic.natural||userText);
+    modelLine=same
+      ? "Tu respuesta es suficiente para esta pregunta."
+      : "Tu respuesta es válida. Forma completa opcional: “"+semantic.natural+"”";
+    why=semantic.why;
   }else if(result.grade==="excellent"){
     title="✨ Tu mensaje funciona muy bien";
     modelLine=result.corrected.trim()!==String(userText).trim()
@@ -691,15 +748,17 @@ function addCorrection(result,turn,usedWildcard,userText){
     modelLine="Una forma útil: “"+turn.model+"”";
     why=turn.why;
   }
-  const tips=spellingTips(userText,turn.model);
-  const mapText=result.grade==="excellent" ? (result.corrected||userText) : turn.model;
+  const tips=spellingTips(userText,turn.model,semantic);
+  const mapText=semantic.valid
+    ? (semantic.natural||userText)
+    : (result.grade==="excellent" ? (result.corrected||userText) : turn.model);
   note.innerHTML=
     '<div class="ai-note-head">'+escapeHTML(title)+'</div>'+
     '<div class="ai-note-model">'+escapeHTML(modelLine)+'</div>'+
-    sentenceMapHTML(mapText)+
+    (words(mapText).length>1?sentenceMapHTML(mapText):"")+
     (tips.length?'<div class="correction-list">'+tips.map(t=>'<div class="correction-item"><span>👀</span><span>'+escapeHTML(t)+'</span></div>').join("")+'</div>':"")+
     '<div class="ai-note-why">'+escapeHTML(why)+'</div>'+
-    '<div class="ai-note-focus"><span>🎨</span><span>Los colores muestran cómo se organiza la frase.</span></div>';
+    (words(mapText).length>1?'<div class="ai-note-focus"><span>🎨</span><span>Los colores muestran cómo se organiza la frase.</span></div>':"");
   $("messages").appendChild(note);scrollBottom();
 }
 function showTypingThen(fn,delay=650,token=state.runToken){
@@ -751,12 +810,12 @@ function sendMessage(text,usedWildcard=false){
 
   setTimeout(()=>{
     if(token!==state.runToken||!state.scenario)return;
-    const ack=adaptiveAcknowledgement(text);
+    const ack=adaptiveAcknowledgement(text,turn,result.semantic);
 
     // Después de una respuesta principal, el chat puede tomar un detalle del usuario
     // y abrir una pequeña rama antes de volver al objetivo de la situación.
     if(!wasDetour && state.turn<state.scenario.turns.length){
-      const branch=buildAdaptiveDetour(text,state.scenario,sourceIndex);
+      const branch=result.semantic?.valid && result.userWordCount<=4 ? null : buildAdaptiveDetour(text,state.scenario,sourceIndex);
       if(branch){
         state.detour=branch;state.detoursUsed++;updateChatHud();
         showTypingThen(()=>{
