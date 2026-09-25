@@ -222,7 +222,8 @@ const scenarios = [
 
 const state = {
   level:1, scenario:null, turn:0, score:0, possible:0, wildcardUsed:0,
-  startedAt:0, sending:false, runToken:0, progress:loadProgress()
+  startedAt:0, sending:false, runToken:0, userMessages:0,
+  detour:null, detoursUsed:0, adaptiveSeen:[], progress:loadProgress()
 };
 
 function loadProgress(){
@@ -260,7 +261,7 @@ function similarity(a,b){
   return m?1-levenshtein(aa,bb)/m:1;
 }
 function words(s){return normalize(s).split(" ").filter(Boolean)}
-function currentTurn(){return state.scenario?.turns[state.turn]||null}
+function currentTurn(){return state.detour||state.scenario?.turns[state.turn]||null}
 function nowTime(){
   const d=new Date(); return d.toLocaleTimeString("es-PE",{hour:"2-digit",minute:"2-digit",hour12:false});
 }
@@ -302,6 +303,78 @@ function mechanicalCorrection(user,model){
   }
   return s;
 }
+
+const CONNECTORS = ["porque","pero","aunque","entonces","por eso","para que","si","cuando","mientras","también","tambien","y"];
+const TIME_PATTERNS = [
+  /\\b(?:hoy|ayer|mañana|manana|esta tarde|esta noche|esta mañana|esta manana|por la mañana|por la manana|por la tarde|por la noche)\\b/i,
+  /\\b(?:lunes|martes|miércoles|miercoles|jueves|viernes|sábado|sabado|domingo)\\b/i,
+  /\\ba las?\\s+(?:\\d{1,2}|una|dos|tres|cuatro|cinco|seis|siete|ocho|nueve|diez|once|doce)(?:\\s+y\\s+(?:media|cuarto))?(?:\\s+de la\\s+(?:mañana|manana|tarde|noche))?/i
+];
+function firstMatch(text,patterns){
+  for(const re of patterns){const m=String(text).match(re);if(m)return m[0]}
+  return "";
+}
+function detectConnector(text){
+  const n=normalize(text);
+  return CONNECTORS.find(x=>n.includes(normalize(x)))||"";
+}
+function extractDetails(text){
+  const raw=String(text||"").trim(), n=normalize(raw);
+  const time=firstMatch(raw,TIME_PATTERNS);
+  const transport=(n.match(/\\b(bus|taxi|moto|carro|auto|bicicleta|caminando|a pie|combi)\\b/)||[])[1]||"";
+  const payment=(n.match(/\\b(tarjeta|efectivo|transferencia|yape|plin)\\b/)||[])[1]||"";
+  const feeling=(n.match(/\\b(cansad[oa]|nervios[oa]|feliz|content[oa]|preocupad[oa]|tranquil[oa]|apurad[oa]|enfermo|enferma)\\b/)||[])[1]||"";
+  const reasonMatch=raw.match(/\\bporque\\s+([^.!?]{3,70})/i);
+  const reason=reasonMatch?reasonMatch[1].trim():"";
+  return {time,transport,payment,feeling,reason,yes:/^(si|sí)\\b/i.test(raw),no:/^no\\b/i.test(raw)};
+}
+function adaptiveAcknowledgement(user){
+  const d=extractDetails(user);
+  if(d.reason)return "Entiendo; dices que "+d.reason.replace(/[.!?]+$/,"")+".";
+  if(d.time)return "Perfecto, tomo en cuenta "+d.time+".";
+  if(d.transport)return (d.transport==="caminando"||d.transport==="a pie")?"Ah, irás "+d.transport+".":"Ah, irás en "+d.transport+".";
+  if(d.payment)return "De acuerdo, prefieres pagar con "+d.payment+".";
+  if(d.feeling)return "Entiendo, te sientes "+d.feeling+".";
+  if(d.yes)return "Perfecto.";
+  if(d.no)return "Entiendo.";
+  return "Te entiendo.";
+}
+function scenarioDomain(sc){
+  const p=normalize(sc?.place||"");
+  if(/salud|farmacia/.test(p))return "health";
+  if(/trabajo/.test(p))return "work";
+  if(/colegio|universidad|estudio/.test(p))return "study";
+  if(/transporte|viaje/.test(p))return "transport";
+  if(/mercado|compras|tienda|delivery/.test(p))return "shopping";
+  if(/tramite|banco|municip/.test(p))return "admin";
+  if(/familia|amigos|vecindario|social|deporte/.test(p))return "social";
+  if(/tecnologia|internet/.test(p))return "tech";
+  return "daily";
+}
+function buildAdaptiveDetour(user,sc,sourceIndex){
+  if(!sc||state.detoursUsed>=2||sourceIndex<0)return null;
+  if(sourceIndex!==1 && sourceIndex!==4 && sourceIndex!==7)return null;
+  const d=extractDetails(user), domain=scenarioDomain(sc);
+  const base={adaptive:true,alternatives:[],keywords:[],why:""};
+  if(domain==="health")return Object.assign(base,{prompt:"Quiero entender mejor eso. ¿Ese malestar empezó hoy o ya venía de antes?",model:"Empezó ayer y hoy todavía lo siento.",alternatives:["Empezó hoy en la mañana.","Ya lo tenía desde ayer."],keywords:["empez","hoy","ayer","antes"],why:"Para explicar un síntoma, agrega cuándo empezó y si continúa."});
+  if(domain==="work"||domain==="study")return Object.assign(base,{prompt:"Eso me da una idea más clara. ¿Qué parte te parece más importante o más difícil?",model:"La parte más difícil es organizar toda la información.",alternatives:["Lo más importante es terminar a tiempo.","Me cuesta un poco explicar las ideas con claridad."],keywords:["dificil","importante","organ","tiempo","clar"],why:"Explicar qué parte cuesta ayuda a continuar una conversación de estudio o trabajo."});
+  if(domain==="transport"){
+    if(d.time)return Object.assign(base,{prompt:"Ya que mencionaste "+d.time+", ¿por qué te conviene ese horario?",model:"Porque a esa hora tengo más tiempo y puedo llegar tranquilo.",alternatives:["Porque salgo del trabajo antes.","Porque así evito llegar tarde."],keywords:["porque","tiempo","trabajo","tarde"],why:"Usa “porque” para explicar la razón de una elección."});
+    return Object.assign(base,{prompt:"¿Qué es lo que más te importa en este viaje: llegar rápido, gastar menos o ir más cómodo?",model:"Prefiero llegar a tiempo, aunque el viaje cueste un poco más.",alternatives:["Prefiero gastar menos.","Para mí es más importante viajar cómodo."],keywords:["prefiero","tiempo","menos","comodo","rapido"],why:"“Prefiero…” ayuda a expresar una elección y después puedes explicar por qué."});
+  }
+  if(domain==="shopping"){
+    if(d.payment)return Object.assign(base,{prompt:"¿Sueles pagar con "+d.payment+" o hoy lo elegiste por alguna razón?",model:"Hoy lo elegí porque es más práctico.",alternatives:["Casi siempre pago así.","Normalmente pago en efectivo, pero hoy prefiero esto."],keywords:["porque","pago","normalmente","practico"],why:"Puedes explicar una costumbre con “normalmente” o una razón con “porque”."});
+    return Object.assign(base,{prompt:"Además de lo que ya pediste, ¿hay algo que cambiarías de tu compra?",model:"Sí, prefiero llevar una cantidad más pequeña.",alternatives:["No, así está bien.","Cambiaría un producto por otro más económico."],keywords:["prefiero","cambiar","bien","pequena","econom"],why:"Practica preferencias con “prefiero” y cambios con “cambiaría”."});
+  }
+  if(domain==="admin")return Object.assign(base,{prompt:"Antes de seguir, ¿ya tienes todos los documentos o todavía te falta alguno?",model:"Tengo casi todo, pero todavía me falta una copia.",alternatives:["Sí, ya tengo todos los documentos.","Me falta un documento y debo conseguirlo."],keywords:["document","falta","todos","copia"],why:"“Me falta…” sirve para decir qué requisito todavía no tienes."});
+  if(domain==="tech")return Object.assign(base,{prompt:"¿Ese problema ocurre siempre o solo en algunos momentos?",model:"Ocurre varias veces al día, sobre todo por la noche.",alternatives:["Solo ocurre a veces.","Me pasa casi siempre cuando uso esa función."],keywords:["siempre","veces","noche","cuando"],why:"Las expresiones de frecuencia ayudan a describir un problema con precisión."});
+  if(domain==="social"){
+    if(d.time)return Object.assign(base,{prompt:"¿Por qué te conviene "+d.time+"?",model:"Porque antes tengo otras cosas que hacer.",alternatives:["Porque a esa hora ya estoy libre.","Porque así todos pueden llegar con tiempo."],keywords:["porque","hora","tiempo","libre"],why:"Una conversación real suele continuar preguntando la razón de una hora o plan."});
+    return Object.assign(base,{prompt:"Y tú, ¿qué prefieres que pase en ese plan?",model:"Prefiero que sea tranquilo y que podamos conversar.",alternatives:["Prefiero algo sencillo.","Me gustaría que todos podamos participar."],keywords:["prefiero","gustaria","tranquilo","particip"],why:"“Prefiero…” y “me gustaría…” ayudan a expresar gustos con claridad."});
+  }
+  return Object.assign(base,{prompt:"Cuéntame un detalle más de lo que acabas de decir.",model:"Lo más importante para mí es que todo salga bien.",alternatives:["Hay un detalle que todavía quiero confirmar.","También quiero explicar una cosa más."],keywords:["importante","detalle","tambien","explicar"],why:"Agregar un detalle ayuda a pasar de respuestas cortas a una conversación más natural."});
+}
+
 function evaluate(user,turn,usedWildcard=false){
   const variants=[turn.model,...(turn.alternatives||[])];
   let sim=0;
