@@ -27,7 +27,7 @@ MARCADOR = ".lspedia-seo-generated"
 IMAGEN_RE = re.compile(r"\.(?:avif|gif|jpe?g|png|svg|webp)(?:[?#].*)?$", re.I)
 PREFIJO_RE = re.compile(r"^(?:https?://|/|\.\.?/|img/)", re.I)
 YOUTUBE_ID_RE = re.compile(r"^[A-Za-z0-9_-]{11}$")
-SOCIAL_PREVIEW_VERSION = "20260925-7"
+SOCIAL_PREVIEW_VERSION = "v8"
 
 
 def texto(valor: object) -> str:
@@ -93,19 +93,39 @@ def referencia_vocabulario(fila: dict) -> str:
     return f"{base}-{categoria}" if categoria else base
 
 
-def crear_preview_categoria(repo: Path, items: list[dict], destino: Path) -> None:
+def buscar_imagen_categoria(repo: Path, ref: str) -> Path | None:
+    """Busca una ilustración específica de la categoría por slug normalizado."""
+    carpeta = repo / "img" / "categorias"
+    if not carpeta.is_dir():
+        return None
+    extensiones = {".webp", ".png", ".jpg", ".jpeg"}
+    for ruta in carpeta.iterdir():
+        if ruta.is_file() and ruta.suffix.lower() in extensiones and slug(ruta.stem) == ref:
+            return ruta
+    return None
+
+
+def crear_preview_categoria(
+    repo: Path,
+    items: list[dict],
+    destino: Path,
+    preferida: Path | None = None,
+) -> None:
     """Crea un JPEG 1200x630 local y estable para vistas previas sociales."""
     candidatos: list[Path] = []
+    if preferida and preferida.is_file():
+        candidatos.append(preferida)
+
     for item in items:
         valor = texto(item.get("imagen")).split(",", 1)[0].strip()
         if not valor or valor.startswith(("http://", "https://")):
             continue
         ruta = repo / valor.lstrip("./")
-        if ruta.is_file():
+        if ruta.is_file() and ruta not in candidatos:
             candidatos.append(ruta)
 
     fallback = repo / "img" / "lspedia.png"
-    if fallback.is_file():
+    if fallback.is_file() and fallback not in candidatos:
         candidatos.append(fallback)
 
     ultimo_error: Exception | None = None
@@ -113,13 +133,16 @@ def crear_preview_categoria(repo: Path, items: list[dict], destino: Path) -> Non
         try:
             with Image.open(origen) as base:
                 imagen = ImageOps.exif_transpose(base).convert("RGB")
-                preview = ImageOps.fit(
+                # No recorta la ilustración: la encaja completa sobre un fondo
+                # neutro para que WhatsApp no muestre solo un fragmento/color.
+                preview = ImageOps.pad(
                     imagen,
                     (1200, 630),
                     method=Image.Resampling.LANCZOS,
+                    color=(245, 248, 252),
                     centering=(0.5, 0.5),
                 )
-                preview.save(destino / "preview.jpg", "JPEG", quality=88, optimize=True, progressive=False)
+                preview.save(destino / "preview.jpg", "JPEG", quality=90, optimize=True, progressive=False)
                 return
         except Exception as error:
             ultimo_error = error
@@ -465,7 +488,12 @@ def generar_colecciones(repo: Path, filas_voc: list[dict]) -> int:
         app_url = f"{BASE_URL}/index.html?vista=vocabulario&coleccion={quote(nombre, safe='')}"
         destino = raiz / "vocabulario" / ref
         destino.mkdir(parents=True, exist_ok=True)
-        crear_preview_categoria(repo, items, destino)
+        crear_preview_categoria(
+            repo,
+            items,
+            destino,
+            preferida=buscar_imagen_categoria(repo, ref),
+        )
         imagen = f"{canonical}preview.jpg"
 
         palabras = [texto(x.get("palabra")) for x in items if texto(x.get("palabra"))]
