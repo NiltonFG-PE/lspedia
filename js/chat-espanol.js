@@ -832,8 +832,16 @@ function smartPunctuation(text,turn){
 }
 function grammarCoach(user,turn,semantic){
   const notes=[];
-  let improved=semantic?.valid && semantic.natural ? semantic.natural : String(user||"").trim();
+  const rawUser=String(user||"").trim();
+  const keepUserDetail=semantic?.valid && words(rawUser).length>2 && semantic.type!=="choice";
+  let improved=keepUserDetail ? rawUser : (semantic?.valid && semantic.natural ? semantic.natural : rawUser);
   const original=improved;
+
+  // “si” afirmativo al inicio lleva tilde; no se cambia el “si” condicional.
+  if(/^si\b/i.test(improved) && !/^si\s+(?:tengo|puedo|quiero|voy|estoy|soy|me|lo|la|el|un|una).*\b(?:entonces|,)/i.test(improved)){
+    improved=improved.replace(/^si\b/i,m=>m[0]===m[0].toUpperCase()?"SÍ":m[0]==="S"?"Sí":"sí");
+    notes.push({kind:"orthography",icon:"🔤",label:"Ortografía",text:"“Sí” lleva tilde cuando significa afirmación."});
+  }
 
   const accents=applyCommonAccents(improved);
   improved=accents.text;
