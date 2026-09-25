@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-09-25T05:41:25Z",
+  "actualizado": "2026-09-25T12:21:38Z",
   "traducciones": [
     {
       "fuente": "diccionario",
@@ -232,7 +232,7 @@
       "categoria": "Economía",
       "ingles": "Saving",
       "aliases": [],
-      "definicionIngles": "It's money that a person saves without spending it, to use later.\n\nExample: I have savings to buy a laptop."
+      "definicionIngles": "It's money a person saves without spending it, to use later.\n\nExample: I have savings to buy a laptop."
     },
     {
       "fuente": "diccionario",
@@ -264,7 +264,7 @@
       "categoria": "Salud",
       "ingles": "Allergy",
       "aliases": [],
-      "definicionIngles": "This is when the body reacts badly to something, like food or dust, causing discomfort.\n\nExample: I have a dust allergy, that's why I sneeze a lot."
+      "definicionIngles": "This occurs when the body reacts adversely to something, such as food or dust, causing discomfort.\n\nExample: I have a dust allergy, that's why I sneeze a lot."
     },
     {
       "fuente": "diccionario",
@@ -896,7 +896,7 @@
       "categoria": "Educación",
       "ingles": "Literature",
       "aliases": [],
-      "definicionIngles": "List of books and sources you used to do a paper or research."
+      "definicionIngles": "List of books and sources you used to do a project or research."
     },
     {
       "fuente": "diccionario",
@@ -2992,7 +2992,7 @@
       "categoria": "Trabajo",
       "ingles": "Sales funnel",
       "aliases": [],
-      "definicionIngles": "Representation of the stages a person goes through from learning about an offer until they make a purchase."
+      "definicionIngles": "Representation of the stages a person goes through from the moment they learn about an offer until they make a purchase."
     },
     {
       "fuente": "diccionario",
@@ -4336,7 +4336,7 @@
       "categoria": "Economía",
       "ingles": "Assessment",
       "aliases": [],
-      "definicionIngles": "A charge or tax that is applied to something."
+      "definicionIngles": "Charge or tax that is applied to something."
     },
     {
       "fuente": "diccionario",
@@ -6134,7 +6134,7 @@
       "fuente": "diccionario",
       "palabra": "Patrimonio contable",
       "categoria": "Economía",
-      "ingles": "Accounting equity",
+      "ingles": "accounting equity",
       "aliases": [],
       "definicionIngles": "Economic value resulting from assets less liabilities."
     },
@@ -6384,7 +6384,7 @@
       "categoria": "Ciencia",
       "ingles": "Technical drawing",
       "aliases": [],
-      "definicionIngles": "A drawing with measurements and details used to manufacture, build, or install something."
+      "definicionIngles": "Drawing with measurements and details used to manufacture, build or install something."
     },
     {
       "fuente": "diccionario",
@@ -6792,7 +6792,7 @@
       "categoria": "Universidad",
       "ingles": "Pre-professional practice",
       "aliases": [],
-      "definicionIngles": "It's the time a student spends working at a company to learn about their field of study before finishing their degree.\n\nExample: I'm starting my pre-professional internship at a hospital next month."
+      "definicionIngles": "It's the time a student spends working at a company to learn about their field of study before graduating.\n\nExample: I'm starting my pre-professional internship at a hospital next month."
     },
     {
       "fuente": "diccionario",
@@ -7480,7 +7480,7 @@
       "categoria": "Universidad",
       "ingles": "Semester",
       "aliases": [],
-      "definicionIngles": "It's one of the two parts into which a university year is divided.\n\nExample: This semester I'm taking five courses."
+      "definicionIngles": "It's one of the two parts into which a university academic year is divided.\n\nExample: This semester I'm taking five courses."
     },
     {
       "fuente": "diccionario",
