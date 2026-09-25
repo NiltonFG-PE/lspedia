@@ -7,6 +7,7 @@ from generar_sitemap import (
     cargar_lista,
     referencias_diccionario,
     referencias_vocabulario,
+    referencias_categorias,
     construir_sitemap,
 )
 
@@ -18,7 +19,9 @@ def main() -> int:
     vocabulario = cargar_lista(ROOT / "data" / "vocabulario.json", "data/vocabulario.json")
     refs_dic = referencias_diccionario(diccionario)
     refs_voc = referencias_vocabulario(vocabulario)
-    esperado = construir_sitemap(refs_dic, refs_voc)
+    cats_dic = referencias_categorias(diccionario, "diccionario")
+    cats_voc = referencias_categorias(vocabulario, "vocabulario")
+    esperado = construir_sitemap(refs_dic, refs_voc, cats_dic, cats_voc)
 
     ruta = ROOT / "sitemap.xml"
     if not ruta.is_file():
@@ -42,10 +45,18 @@ def main() -> int:
                 print(f"ERROR sitemap público: falta página o canonical coherente: {carpeta}/{ref}/", file=sys.stderr)
                 return 1
 
-    total = 2 + len(refs_dic) + len(refs_voc)
+    for fuente, refs in (("diccionario", cats_dic), ("vocabulario", cats_voc)):
+        for ref in refs:
+            pagina = ROOT / "categoria" / fuente / ref / "index.html"
+            canonical = f'https://lspedia.site/categoria/{fuente}/{ref}/'
+            if not pagina.is_file() or f'rel="canonical" href="{canonical}"' not in pagina.read_text(encoding="utf-8"):
+                print(f"ERROR sitemap público: falta categoría o canonical coherente: categoria/{fuente}/{ref}/", file=sys.stderr)
+                return 1
+
+    total = 2 + len(refs_dic) + len(refs_voc) + len(cats_dic) + len(cats_voc)
     print(
         "Sitemap público validado: "
-        f"Diccionario={len(refs_dic)} · Vocabulario={len(refs_voc)} · total URLs={total}."
+        f"Diccionario={len(refs_dic)} · Vocabulario={len(refs_voc)} · Categorías={len(cats_dic) + len(cats_voc)} · total URLs={total}."
     )
     return 0
 
