@@ -1399,7 +1399,7 @@ function abrirJuegoMatematicas(opciones = {}){
 }
 
 function abrirJuegoChatEspanol(){
-    window.location.assign("juegos/chat-espanol.html?v=20260925-1");
+    window.location.assign("juegos/chat-espanol.html?v=20260925-2");
 }
 
 function abrirJuegoCarrera(){
