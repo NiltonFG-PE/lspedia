@@ -46,31 +46,94 @@
     ];
 
     const VOCABULARIO_EN = [
-        ['Adulto','Adult',['grown-up']],['Caro','Expensive',['costly']],['Débil','Weak',['fragile']],['Difícil','Difficult',['hard']],['Distraído','Distracted',['inattentive']],
-        ['Cansado','Tired',['exhausted']],['Aburrido','Bored',['boring']],['Amor','Love',['love']],['Asustado','Scared',['frightened','afraid']],['Cariño','Affection',['fondness']],['Celos','Jealousy',['jealous']],['Contento','Happy',['content','satisfied']],['Enojado','Angry',['mad']],['Envidia','Envy',['jealousy']],['Esperanza','Hope',['hope']],['Feliz','Happy',['glad','joyful']],['Extrañar','Miss',['miss someone','long for']],['Orgullo (negativo)','Pride',['arrogance','negative pride']],['Soledad','Loneliness',['solitude']],['Sorprendido','Surprised',['amazed']],['Triste','Sad',['unhappy']],['Vergüenza','Embarrassment',['shame']],
-        ['Abril','April',[]],['Agosto','August',[]],['Diciembre','December',[]],['Domingo','Sunday',[]],['Enero','January',[]],['Febrero','February',[]],['Jueves','Thursday',[]],['Julio','July',[]],['Junio','June',[]],['Lunes','Monday',[]],['Martes','Tuesday',[]],['Marzo','March',[]],['Mayo','May',[]],['Miércoles','Wednesday',[]],['Noviembre','November',[]],['Octubre','October',[]],['Sábado','Saturday',[]],['Septiembre','September',[]],['Viernes','Friday',[]],
-        ['Apoyar','Support',['back','support']],['Ayudar','Help',['assist']],['Examinar','Examine',['inspect','review']],['Advertir','Warn',['warning']],['Practicar','Practice',['practise','rehearse']],['Aceptar','Accept',['agree','receive']],['Añadir','Add',['insert']],['Abrir','Open',['open']],['Bromear','Joke',['kid','joking']],['Abrazar','Hug',['embrace']],['Atender','Attend',['serve','pay attention']],['Aplaudir','Applaud',['clap']],['Escuchar','Listen',['hear']],['Agradecer','Thank',['give thanks','thank']],['Jugar','Play',['play a game']]
+        ['Adulto','Adult',['grown-up']],['Alto','Tall',[]],['Ancho','Wide',[]],['Angosto','Narrow',[]],['Antiguo','Old',['ancient']],['Bajo','Short',['low']],['Barato','Cheap',['inexpensive']],['Caro','Expensive',['costly']],['Débil','Weak',['fragile']],['Difícil','Difficult',['hard']],['Distraído','Distracted',['inattentive']],
+        ['Amarillo','Yellow',[]],['Azul','Blue',[]],['Beige','Beige',[]],['Blanco','White',[]],['Celeste','Light blue',[]],['Dorado','Gold',['golden']],['Guinda','Burgundy',['maroon']],['Marrón','Brown',[]],['Morado','Purple',[]],['Anaranjado','Orange',[]],['Negro','Black',[]],['Rojo','Red',[]],['Rosado','Pink',[]],['Turquesa','Turquoise',[]],['Verde','Green',[]],
+        ['Pregunta','Question',[]],
+        ['Felicitaciones','Congratulations',['congrats']],['Gracias','Thank you',['thanks']],['Por favor','Please',[]],['Perdón','Sorry',['excuse me']],['Bienvenido','Welcome',[]],['Hasta luego','See you later',[]],['Buenos días','Good morning',[]],['Buenas tardes','Good afternoon',[]],['Buenas noches','Good evening',['good night']],
+        ['Cansado','Tired',['exhausted']],['Aburrido','Bored',[]],['Amor','Love',[]],['Asustado','Scared',['afraid','frightened']],['Cariño','Affection',['fondness']],['Celos','Jealousy',['jealous']],['Contento','Happy',['content']],['Enojado','Angry',['mad']],['Envidia','Envy',[]],['Esperanza','Hope',[]],['Feliz','Happy',['glad']],['Extrañar','Miss',['miss someone']],['Orgullo (negativo)','Pride (negative)',['negative pride']],['Soledad','Loneliness',[]],['Sorprendido','Surprised',['amazed']],['Triste','Sad',['unhappy']],['Vergüenza','Embarrassment',['shame']],
+        ['¿Cómo?','How?',[]],['¿Cuál?','Which?',[]],['¿Cuándo?','When?',[]],['¿Dónde?','Where?',[]],['¿Por qué?','Why?',[]],['¿Qué?','What?',[]],['¿Quién?','Who?',[]],['¿Quiénes?','Who?',[]],['¿Cuáles?','Which ones?',[]],['¿Cuántos?','How many?',[]],['¿Para qué?','What for?',[]],
+        ['Abril','April',[]],['Agosto','August',[]],['Ahora','Now',[]],['Anteayer','The day before yesterday',[]],['Ayer','Yesterday',[]],['Todos los días','Every day',[]],['Diciembre','December',[]],['Domingo','Sunday',[]],['Enero','January',[]],['Estaciones del año','Seasons of the year',['seasons']],['Febrero','February',[]],['Hoy','Today',[]],['Invierno','Winter',[]],['Jueves','Thursday',[]],['Julio','July',[]],['Junio','June',[]],['Lunes','Monday',[]],['Mañana','Tomorrow',[]],['Martes','Tuesday',[]],['Marzo','March',[]],['Mayo','May',[]],['Miércoles','Wednesday',[]],['Noviembre','November',[]],['Octubre','October',[]],['Otoño','Autumn',['fall']],['Pasado mañana','The day after tomorrow',[]],['Primavera','Spring',[]],['Sábado','Saturday',[]],['Septiembre','September',[]],['Verano','Summer',[]],['Viernes','Friday',[]],
+        ['Apoyar','Support',['back']],['Ayudar','Help',['assist']],['Examinar','Examine',['inspect','review']],['Advertir','Warn',['warning']],['Practicar','Practice',['practise']],['Aceptar','Accept',['agree']],['Añadir','Add',['insert']],['Abrir','Open',[]],['Bromear','Joke',['kid']],['Abrazar','Hug',['embrace']],['Atender','Attend to',['assist']],['Aplaudir','Applaud',['clap']],['Escuchar','Listen',['hear']],['Agradecer','Thank',['give thanks']],['Jugar','Play',['play a game']],
+        ['Número','Number',[]],['Saludos','Greetings',[]],['Muchas gracias','Thank you very much',[]],['Gratis','Free',['free of charge']],['Nos vemos','See you',[]],['Hola','Hello',['hi']],['Chau','Bye',['goodbye']],['Cuídate','Take care',[]],['Educado','Polite',['well-mannered']]
     ];
 
     const CATEGORIAS_EN = {
         'Adjetivos':'Adjectives','Adverbios':'Adverbs','Animales':'Animals','Bienestar':'Well-being','Calle':'Street','Cantidad':'Quantity','Casa':'Home','Ciencia':'Science','Ciudad':'City','Colegio':'School','Colores':'Colors','Comida':'Food','Comportamiento':'Behavior','Comunicación':'Communication','Cortesía':'Courtesy','Cuerpo':'Body','Deportes':'Sports','Descripción':'Description','Economía':'Economy','Educación':'Education','Emociones':'Emotions','Familia':'Family','Filosofía':'Philosophy','Geografía':'Geography','Habilidades':'Skills','Naturaleza':'Nature','Números':'Numbers','Ocio':'Leisure','Personas':'People','Política':'Politics','Preguntas':'Questions','Profesiones':'Professions','Psicología':'Psychology','Reflexión':'Reflection','Ropa':'Clothing','Salud':'Health','Saludos':'Greetings','Sociedad':'Society','Tecnología':'Technology','Tiempo':'Time','Trabajo':'Work','Trámites':'Procedures','Transporte':'Transport','Universidad':'University','Valores':'Values','Verbos':'Verbs'
     };
 
+    const COLECCIONES_EN = {
+        'meses del año':'months of the year',
+        'Estaciones del año':'Seasons of the year',
+        'Gratuito':'Free','Sin costo':'Free','Sin cargo':'No charge','De cortesía':'Complimentary','Gratuitamente':'Free of charge'
+    };
+
     const UI_EN = {
         'Diccionario':'Dictionary','Vocabulario':'Vocabulary','Herramientas':'Tools','Sobre Nosotros':'About us','Nosotros':'About us',
-        'Índice':'Index','Categorías':'Categories','Palabras sugeridas':'Suggested words','Descubre':'Discover','Ver':'View','Ver Seña':'View sign',
+        'Desarrollado con corazón':'Made with care','Apoyar LSPedia':'Support LSPedia','Ir a Vocabulario':'Go to Vocabulary',
+        'Ir a Herramientas':'Go to Tools','Ir a Jugar':'Go to Games','🎥 VIDEO':'🎥 VIDEO','✨ Descubre':'✨ Discover',
+        'Cargando...':'Loading...','Cargando…':'Loading…','Cargando la palabra de hoy…':"Loading today's word…",
+        'Un momento, estamos trayendo el contenido.':'One moment, we are loading the content.','Ver':'View',
+        'Diccionario visual':'Visual dictionary','Índice':'Index','Categorías':'Categories','Cargando categorías…':'Loading categories…',
+        'Palabras sugeridas':'Suggested words','⭐ Palabras sugeridas':'⭐ Suggested words','Descubre':'Discover','Ver Seña':'View sign',
         'Buscar palabra y significado':'Search a Spanish word or type in English','Buscar palabra':'Search a word','Buscar vocabulario':'Search vocabulary',
-        'Tu progreso':'Your progress','Continuar':'Continue','Favoritos':'Favorites','Historial':'History','Borrar historial':'Clear history',
+        'Tu progreso':'Your progress','Continuar':'Continue','Favoritos':'Favorites','⭐ Mis Favoritos':'⭐ My Favorites',
+        'Historial':'History','🕒 Mi Historial de Búsqueda':'🕒 My Search History','Borrar historial':'Clear history',
         'Aún no tienes favoritos.':'You do not have favorites yet.','Aún no tienes búsquedas recientes.':'You do not have recent searches yet.',
-        'Palabras':'Words','Videos':'Videos','Redes Sociales':'Social media','ESTADÍSTICAS':'STATISTICS','Estadísticas':'Statistics',
-        'Compartir':'Share','Agregar a favoritos':'Add to favorites','Quitar de favoritos':'Remove from favorites','Atrás':'Back',
-        'Anterior':'Previous','Siguiente':'Next','Salir':'Exit','Ver más':'View more','Ver menos':'View less','Cerrar':'Close',
+        'Palabras':'Words','PALABRAS':'WORDS','Categorías':'Categories','CATEGORÍAS':'CATEGORIES','Videos':'Videos','VIDEOS':'VIDEOS',
+        'Redes Sociales':'Social media','REDES SOCIALES':'SOCIAL MEDIA','ESTADÍSTICAS':'STATISTICS','Estadísticas':'Statistics',
+        'Sigue aprendiendo y descubre más cada día.':'Keep learning and discover more every day.',
+        'Síguenos y no te pierdas nada':'Follow us and do not miss anything',
+        'Compartir':'Share','Compartir colección':'Share collection','Agregar a favoritos':'Add to favorites','Quitar de favoritos':'Remove from favorites','Atrás':'Back',
+        'Anterior':'Previous','Siguiente':'Next','Siguiente →':'Next →','Salir':'Exit','↩ Salir':'↩ Exit','⏻ Salir':'⏻ Exit','✕ Salir':'✕ Exit',
+        'Ver más':'View more','Ver menos':'View less','Cerrar':'Close','Empezar':'Start','▶ Empezar':'▶ Start','▶ JUGAR':'▶ PLAY',
+        'Iniciar':'Start','Detener':'Stop','Guardar':'Save','💾 Guardar':'💾 Save','⏹ Detener subtítulos':'⏹ Stop captions',
         'Conjugaciones o variantes:':'Conjugations or variants:','CONJUGACIONES O VARIANTES:':'CONJUGATIONS OR VARIANTS:',
-        'Apoyo visual':'Visual support','Seña sugerida':'Suggested sign','Video principal':'Main video',
+        'Apoyo visual':'Visual support','📸 Apoyo visual:':'📸 Visual support:','Seña sugerida':'Suggested sign','Video principal':'Main video',
+        'Alfabeto y números':'Alphabet and numbers','Alfabeto y Números':'Alphabet and Numbers',
+        'Mira, reconoce y practica letras y números':'Look, recognize, and practice letters and numbers',
+        'Jugar':'Games','Aprende tocando, ordenando y resolviendo':'Learn by tapping, ordering, and solving',
+        'Subtítulos':'Captions','Convierte la voz en texto en tiempo real':'Turn speech into text in real time',
+        '💬 Subtítulos en vivo':'💬 Live captions','🎚️ Probar nivel de audio':'🎚️ Test audio level',
+        'Escuchando el ambiente…':'Listening to the environment…','Idioma de los subtítulos':'Caption language',
+        'Español (Perú)':'Spanish (Peru)','Español (Latinoamérica)':'Spanish (Latin America)','Español (España)':'Spanish (Spain)',
+        '🎤 Empezar':'🎤 Start','📢 Consejos para captar mejor el audio:':'📢 Tips for better audio capture:',
+        'EN VIVO':'LIVE','Tu navegador no admite el reconocimiento de voz':'Your browser does not support speech recognition',
+        'Para usar los subtítulos en tiempo real, abre esta página en':'To use live captions, open this page in',
+        'Toca un juego. La animación te muestra qué harás.':'Tap a game. The animation shows what you will do.',
+        'Completar la palabra':'Complete the word','Lleva la letra al espacio':'Move the letter into the blank',
+        'Unir con flechas':'Match with arrows','Arrastra y conecta':'Drag and connect',
+        'Quiz':'Quiz','Mira, piensa y elige':'Look, think, and choose',
+        'Matemáticas':'Math','Junta, quita, agrupa y reparte':'Add, remove, group, and share',
+        'Oraciones':'Sentences','Ordena ideas y conversa mejor':'Organize ideas and communicate better',
+        'Preparando el juego…':'Preparing the game…','↩ Elegir otro juego':'↩ Choose another game',
+        'Elige el nivel y el modo de juego para tu ronda de práctica.':'Choose the level and game mode for your practice round.',
+        '🌱 Elegir nivel':'🌱 Choose level','🎲 Modo de juego':'🎲 Game mode','Nivel':'Level','Modo de juego':'Game mode',
+        'Pregunta 1':'Question 1','Fácil':'Easy','Medio':'Medium','Difícil':'Hard','Básico':'Basic',
+        '↩ Menú':'↩ Menu','Intentos: 0':'Attempts: 0','¡Ronda completada!':'Round complete!',
+        'Correctas':'Correct','Incorrectas':'Incorrect','Precisión':'Accuracy','Revisión de respuestas':'Answer review',
+        '🔁 Jugar de nuevo':'🔁 Play again','Palabra 1':'Word 1','Ronda 1':'Round 1','🖼️ Imágenes':'🖼️ Images','🔤 Palabras':'🔤 Words',
+        'Preparando contenido…':'Preparing content…','🔡 Abecedario A-Z':'🔡 Alphabet A-Z','🔢 Números 0-19':'🔢 Numbers 0-19',
+        'Ocultar índice':'Hide index','🔊👄 Fonética':'🔊👄 Phonetics','Ampliar 🔍':'Enlarge 🔍','✏️ Grafía':'✏️ Spelling',
+        '📚 Ejemplos de palabras':'📚 Word examples',
+        'Sugerir palabra':'Suggest a word','¿Falta un término? Envíanos tu propuesta.':'Is a term missing? Send us your suggestion.',
+        'Enviar una idea':'Send an idea','Comparte sugerencias para mejorar LSPedia.':'Share suggestions to improve LSPedia.',
+        'Ayuda a mantener el proyecto gratuito y en crecimiento.':'Help keep the project free and growing.',
+        'Contratar un intérprete':'Hire an interpreter','Solicita servicios de interpretación en LSP.':'Request Peruvian Sign Language interpreting services.',
+        'Sugerir nueva palabra en LSP':'Suggest a new LSP word','¿Quieres apoyar LSPedia?':'Would you like to support LSPedia?',
+        'LSPedia es un proyecto independiente financiado con recursos propios. Puedes contactarme para cualquier aporte o sugerencia.':'LSPedia is an independent project funded with personal resources. You can contact me with any contribution or suggestion.',
+        'Si deseas brindar un apoyo económico, escríbeme por WhatsApp y con gusto te compartiré los medios de pago disponibles.':'If you would like to provide financial support, message me on WhatsApp and I will gladly share the available payment options.',
+        'Cada aporte, por pequeño que sea, contribuye a crear más contenido y mantener LSPedia gratuita para todos.':'Every contribution, no matter how small, helps create more content and keep LSPedia free for everyone.',
+        'Escríbenos por el medio que prefieras y coordinamos los detalles de tu solicitud. Puedes contactarme para ofertas de trabajo o servicios de traducción e interpretación.':'Contact us through your preferred channel and we will coordinate the details of your request. You can also contact me for work offers or translation and interpreting services.',
+        'Correo electrónico':'Email','Vocabulario en fase de prueba':'Vocabulary in testing phase',
+        'La sección':'The section','está en fase de prueba. Esperamos contar en el futuro con la ayuda de personas sordas en la grabación de estos videos.':'is currently in testing. We hope to have the support of Deaf people in recording these videos in the future.',
+        'ENTIENDO, CONTINUAR':'I UNDERSTAND, CONTINUE',
         'Desarrollado con corazón para potenciar la comunicación y la inclusión en el Perú.':'Developed with care to strengthen communication and inclusion in Peru.',
-        'Ver licencia':'View license','Todos los derechos reservados.':'All rights reserved.'
+        'Ver licencia':'View license','Todos los derechos reservados.':'All rights reserved.',
+        'Colecciones':'Collections','palabra':'word','palabras':'words','relacionadas':'related',
+        'Categoría:':'Category:','¿Quisiste decir...?':'Did you mean...?'
     };
-    Object.assign(UI_EN, CATEGORIAS_EN);
+    Object.assign(UI_EN, CATEGORIAS_EN, COLECCIONES_EN);
+
 
     function crearMapa(lista){
         const mapa = new Map();
