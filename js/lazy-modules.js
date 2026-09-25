@@ -25,7 +25,7 @@
             global: 'MatematicasV2'
         },
         oraciones: {
-            js: 'js/oraciones.js?v=20260908c',
+            js: 'js/oraciones.js?v=20260925-1',
             css: null,
             global: 'OracionesV2'
         },
