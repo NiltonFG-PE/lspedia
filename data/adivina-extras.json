@@ -1,0 +1,86 @@
+[
+  {
+    "palabra": "Gato",
+    "categoria": "Animales",
+    "imagen": "img/adivina/gato.svg",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Perro",
+    "categoria": "Animales",
+    "imagen": "img/adivina/perro.svg",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Conejo",
+    "categoria": "Animales",
+    "imagen": "img/adivina/conejo.svg",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "León",
+    "categoria": "Animales",
+    "imagen": "img/adivina/leon.svg",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Elefante",
+    "categoria": "Animales",
+    "imagen": "img/adivina/elefante.svg",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Pez",
+    "categoria": "Animales",
+    "imagen": "img/adivina/pez.svg",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Médica",
+    "categoria": "Profesiones",
+    "imagen": "img/adivina/medica.svg",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Chef",
+    "categoria": "Profesiones",
+    "imagen": "img/adivina/chef.svg",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Bombera",
+    "categoria": "Profesiones",
+    "imagen": "img/adivina/bombera.svg",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Agricultor",
+    "categoria": "Profesiones",
+    "imagen": "img/adivina/agricultor.svg",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Pirata",
+    "categoria": "Personajes",
+    "imagen": "img/adivina/pirata.svg",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Astronauta",
+    "categoria": "Personajes",
+    "imagen": "img/adivina/astronauta.svg",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Robot",
+    "categoria": "Personajes",
+    "imagen": "img/adivina/robot.svg",
+    "fuente": "extra"
+  },
+  {
+    "palabra": "Superheroína",
+    "categoria": "Personajes",
+    "imagen": "img/adivina/superheroina.svg",
+    "fuente": "extra"
+  }
+]
