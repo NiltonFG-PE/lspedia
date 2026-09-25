@@ -64,12 +64,21 @@ function doGet(e) {
   try {
     const modo = String(params.modo || "");
 
-    if (modo !== "admin_busquedas" && modo !== "admin_analytics") {
+    if (modo !== "admin_busquedas" && modo !== "admin_analytics" && modo !== "admin_ping") {
       return responder_(callback, { ok: false, error: "Modo no válido." });
     }
 
     if (!claveValida_(params.key)) {
       return responder_(callback, { ok: false, error: "Clave incorrecta." });
+    }
+
+    // Validación de acceso ultraligera: comprueba la clave sin llamar a GA4.
+    if (modo === "admin_ping") {
+      return responder_(callback, {
+        ok: true,
+        modo: "admin_ping",
+        generadoEn: new Date().toISOString()
+      });
     }
 
     const propertyId = obtenerPropertyId_();
