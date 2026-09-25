@@ -1398,9 +1398,16 @@ function abrirJuegoMatematicas(opciones = {}){
     if(window.MatematicasV2 && typeof MatematicasV2.iniciar === "function") MatematicasV2.iniciar();
 }
 
+function abrirJuegoChatEspanol(){
+    window.location.assign("juegos/chat-espanol.html?v=20260925-1");
+}
+
 function abrirJuegoCarrera(){
     window.location.assign("juegos/carrera-matematica.html?v=20260925-11");
 }
+
+const btnMenuJuegoChatEspanol = document.getElementById("btnMenuJuegoChatEspanol");
+if(btnMenuJuegoChatEspanol) btnMenuJuegoChatEspanol.addEventListener("click", abrirJuegoChatEspanol);
 
 const btnMenuJuegoCompletar = document.getElementById("btnMenuJuegoCompletar");
 if(btnMenuJuegoCompletar) btnMenuJuegoCompletar.addEventListener("click", abrirJuegoCompletar);
