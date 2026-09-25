@@ -1398,6 +1398,10 @@ function abrirJuegoMatematicas(opciones = {}){
     if(window.MatematicasV2 && typeof MatematicasV2.iniciar === "function") MatematicasV2.iniciar();
 }
 
+function abrirJuegoCarrera(){
+    window.location.assign("juegos/carrera-matematica.html");
+}
+
 const btnMenuJuegoCompletar = document.getElementById("btnMenuJuegoCompletar");
 if(btnMenuJuegoCompletar) btnMenuJuegoCompletar.addEventListener("click", abrirJuegoCompletar);
 
@@ -1409,6 +1413,9 @@ if(btnMenuJuegoQuiz) btnMenuJuegoQuiz.addEventListener("click", abrirJuegoQuiz);
 
 const btnMenuJuegoMatematicas = document.getElementById("btnMenuJuegoMatematicas");
 if(btnMenuJuegoMatematicas) btnMenuJuegoMatematicas.addEventListener("click", abrirJuegoMatematicas);
+
+const btnMenuJuegoCarrera = document.getElementById("btnMenuJuegoCarrera");
+if(btnMenuJuegoCarrera) btnMenuJuegoCarrera.addEventListener("click", abrirJuegoCarrera);
 
 document.querySelectorAll(".btn-volver-menu-juegos").forEach((btn) => {
     btn.addEventListener("click", () => {
