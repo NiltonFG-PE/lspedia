@@ -2319,7 +2319,8 @@ function procesarDatosApp(data) {
                         if(apiVocabulario && typeof apiVocabulario.listo === "function" && apiVocabulario.listo()){
                             mostrarEtiquetaVocabulario(coleccionUrl, {
                                 noActualizarHistorial: true,
-                                sinScroll: true
+                                sinScroll: true,
+                                animarEntrada: true
                             });
                         }
                     } else if (categoriaUrl && typeof mostrarCategoria === "function") {
@@ -2514,12 +2515,29 @@ document.addEventListener('lspedia:vocabularioPublicoListo', () => {
     if (new URLSearchParams(location.search).get('p')) return;
 
     if (coleccionActualMostrada) {
-        mostrarEtiquetaVocabulario(coleccionActualMostrada, {
-            noActualizarHistorial: true,
-            sinScroll: true
-        });
+        const claveColeccion = norm(coleccionActualMostrada);
+        const yaPintada = resultadoCategorias
+            && resultadoCategorias.dataset.lspColeccion === claveColeccion
+            && resultadoCategorias.querySelector('.categoria-resultado-item');
+        if(!yaPintada){
+            mostrarEtiquetaVocabulario(coleccionActualMostrada, {
+                noActualizarHistorial: true,
+                sinScroll: true,
+                animarEntrada: true
+            });
+        }
     } else if (categoriaActualMostrada) {
-        mostrarCategoria(categoriaActualMostrada, { noActualizarHistorial: true });
+        const claveCategoria = norm(categoriaActualMostrada);
+        const yaPintada = resultadoCategorias
+            && resultadoCategorias.dataset.lspCategoria === claveCategoria
+            && resultadoCategorias.querySelector('.categoria-resultado-item');
+        if(!yaPintada){
+            mostrarCategoria(categoriaActualMostrada, {
+                noActualizarHistorial: true,
+                sinScroll: true,
+                animarEntrada: true
+            });
+        }
     } else if (document.body.classList.contains('vista-temas-movil')) {
         mostrarCategorias();
     }
@@ -5792,7 +5810,25 @@ function mostrarEtiquetaVocabulario(nombre, opciones = {}){
 
     html += '</div>';
     resultadoCategorias.innerHTML = html;
+    resultadoCategorias.dataset.lspColeccion = clave;
+    delete resultadoCategorias.dataset.lspCategoria;
+
+    if(opciones.animarEntrada){
+        resultadoCategorias.classList.remove('lsp-destino-suave');
+        void resultadoCategorias.offsetWidth;
+        resultadoCategorias.classList.add('lsp-destino-suave');
+    }
     if(!opciones.sinScroll) scrollAlPrimerResultado(resultadoCategorias);
+
+    const apiVocabulario = window.LSPediaVocabularioPublico;
+    const datosResueltos = !apiVocabulario
+        || typeof apiVocabulario.listo !== 'function'
+        || apiVocabulario.listo();
+    if(datosResueltos){
+        document.dispatchEvent(new CustomEvent('lspedia:destinoInicialListo', {
+            detail: { tipo: 'coleccion-vocabulario', nombre, total: filtradas.length }
+        }));
+    }
 }
 window.mostrarEtiquetaVocabulario = mostrarEtiquetaVocabulario;
 
@@ -6003,6 +6039,8 @@ window.filtrarVocabularioPorLetra = filtrarVocabularioPorLetra;
 function mostrarCategoria(nombre, opciones = {}){
     categoriaActualMostrada = nombre;
     coleccionActualMostrada = null;
+    const filtradasCategoria = obtenerDatosVocabulario()
+        .filter(p => String(p.categoria).trim() === nombre);
     if(!opciones.noActualizarHistorial){
         const urlCategoria = window.location.pathname
             + "?vista=vocabulario&categoria=" + encodeURIComponent(nombre);
@@ -6012,7 +6050,7 @@ function mostrarCategoria(nombre, opciones = {}){
     if(sugerenciasCategorias){ sugerenciasCategorias.innerHTML = ""; sugerenciasCategorias.style.display = "none"; }
     let html = botonAtrasCategorias() + `<h6 class="text-muted uppercase fw-bold mb-3 tracking-wider">Categoría: ${nombre}</h6>
     <div class="categoria-resultados-grid">`;
-    obtenerDatosVocabulario().filter(p => String(p.categoria).trim() === nombre).forEach((p, i) => {
+    filtradasCategoria.forEach((p, i) => {
         const nombreEscapado = obtenerIdPalabra(p).replace(/'/g, "\\'");
         html += `<button type="button" class="categoria-resultado-item shadow-sm" style="animation-delay: ${Math.min(i, 20) * 0.04}s" onclick="mostrarPalabraVocabularioPorReferencia('${nombreEscapado}')">
             ${generarMiniaturaVocabulario(p)}
@@ -6022,7 +6060,25 @@ function mostrarCategoria(nombre, opciones = {}){
     });
     html += `</div>`;
     resultadoCategorias.innerHTML = html;
-    scrollAlPrimerResultado(resultadoCategorias);
+    resultadoCategorias.dataset.lspCategoria = norm(nombre);
+    delete resultadoCategorias.dataset.lspColeccion;
+
+    if(opciones.animarEntrada){
+        resultadoCategorias.classList.remove('lsp-destino-suave');
+        void resultadoCategorias.offsetWidth;
+        resultadoCategorias.classList.add('lsp-destino-suave');
+    }
+    if(!opciones.sinScroll) scrollAlPrimerResultado(resultadoCategorias);
+
+    const apiVocabulario = window.LSPediaVocabularioPublico;
+    const datosResueltos = !apiVocabulario
+        || typeof apiVocabulario.listo !== 'function'
+        || apiVocabulario.listo();
+    if(datosResueltos){
+        document.dispatchEvent(new CustomEvent('lspedia:destinoInicialListo', {
+            detail: { tipo: 'categoria-vocabulario', nombre, total: filtradasCategoria.length }
+        }));
+    }
 }
 
 // Abre una palabra exclusivamente desde Vocabulario. Aunque exista otra
@@ -6189,7 +6245,8 @@ function restaurarInterfazDesdeHistorial(estado = {}){
                 if(apiVocabulario && typeof apiVocabulario.listo === "function" && apiVocabulario.listo()){
                     mostrarEtiquetaVocabulario(coleccionVocabulario, {
                         noActualizarHistorial: true,
-                        sinScroll: true
+                        sinScroll: true,
+                        animarEntrada: true
                     });
                 }
             } else if(categoriaVocabulario && typeof mostrarCategoria === "function") {
