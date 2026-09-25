@@ -933,7 +933,7 @@ const SPR = {
     ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, -w * 0.15); ctx.moveTo(0, 0); ctx.lineTo(w * 0.13, w * 0.07); ctx.stroke();
     ctx.restore();
   },
-  billboard(x, y, w, dir = 1, variant = 0) {
+  billboard(x, y, w, dir = 1) {
     const bw = w * 1.45, bh = w * 0.72, postH = w * 0.62;
     ctx.save();
     ctx.translate(x, y);
@@ -944,60 +944,55 @@ const SPR = {
 
     // soportes metálicos
     const mg = ctx.createLinearGradient(-bw*.45, 0, bw*.45, 0);
-    mg.addColorStop(0,'#272b30'); mg.addColorStop(.35,'#89919a'); mg.addColorStop(.52,'#3e444b'); mg.addColorStop(1,'#1e2227');
+    mg.addColorStop(0,'#272b30'); mg.addColorStop(.35,'#89919a');
+    mg.addColorStop(.52,'#3e444b'); mg.addColorStop(1,'#1e2227');
     ctx.fillStyle = mg;
     rr(ctx, -bw*.34, -postH, bw*.075, postH, bw*.015); ctx.fill();
     rr(ctx, bw*.265, -postH, bw*.075, postH, bw*.015); ctx.fill();
-
-    // travesaño
     rr(ctx, -bw*.43, -postH*.78, bw*.86, w*.07, w*.012); ctx.fill();
 
-    // panel, con leve inclinación según lado de la pista
+    // panel publicitario
     ctx.translate(dir * w * .03, -postH - bh*.62);
     ctx.transform(1, 0, dir * -0.08, 1, 0, 0);
 
-    ctx.fillStyle='#15191f'; rr(ctx,-bw*.52,-bh*.52,bw*1.04,bh*1.04,w*.035); ctx.fill();
+    ctx.fillStyle='#15191f';
+    rr(ctx,-bw*.52,-bh*.52,bw*1.04,bh*1.04,w*.035); ctx.fill();
+
     const face=ctx.createLinearGradient(0,-bh*.48,0,bh*.48);
-    face.addColorStop(0,'#ffffff'); face.addColorStop(.62,'#f9fbff'); face.addColorStop(1,'#e8eef6');
-    ctx.fillStyle=face; rr(ctx,-bw*.485,-bh*.465,bw*.97,bh*.93,w*.028); ctx.fill();
+    face.addColorStop(0,'#ffffff');
+    face.addColorStop(.65,'#fbfcff');
+    face.addColorStop(1,'#e7edf5');
+    ctx.fillStyle=face;
+    rr(ctx,-bw*.485,-bh*.465,bw*.97,bh*.93,w*.028); ctx.fill();
 
-    // franjas LSPedia
+    // Solo la marca LSPedia, como en el logo: LSP azul + edia amarillo
+    ctx.textBaseline='middle';
+    ctx.textAlign='left';
+    ctx.font=`900 ${Math.max(10,bh*.43)}px Arial, sans-serif`;
+
+    const blueText='LSP', yellowText='edia';
+    const blueW=ctx.measureText(blueText).width;
+    const yellowW=ctx.measureText(yellowText).width;
+    const totalW=blueW+yellowW;
+    const tx=-totalW/2;
+
+    // sombra muy suave para dar volumen sin añadir más contenido
+    ctx.save();
+    ctx.shadowColor='rgba(0,0,0,.16)';
+    ctx.shadowBlur=Math.max(1,w*.025);
+    ctx.shadowOffsetY=Math.max(1,w*.012);
     ctx.fillStyle='#063b79';
-    ctx.beginPath(); ctx.moveTo(-bw*.48,-bh*.46); ctx.lineTo(-bw*.10,-bh*.46); ctx.lineTo(-bw*.33,-bh*.23); ctx.lineTo(-bw*.48,-bh*.16); ctx.closePath(); ctx.fill();
+    ctx.fillText(blueText,tx,0);
     ctx.fillStyle='#ffc400';
-    ctx.beginPath(); ctx.moveTo(bw*.48,bh*.46); ctx.lineTo(bw*.08,bh*.46); ctx.lineTo(bw*.30,bh*.23); ctx.lineTo(bw*.48,bh*.16); ctx.closePath(); ctx.fill();
+    ctx.fillText(yellowText,tx+blueW,0);
+    ctx.restore();
 
-    // isotipo simplificado circular
-    const lx=-bw*.31, ly=-bh*.01, lr=bh*.24;
-    ctx.fillStyle='#ffc400'; ctx.beginPath(); ctx.arc(lx,ly,lr,0,Math.PI*2); ctx.fill();
-    ctx.strokeStyle='#063b79'; ctx.lineWidth=Math.max(1.5,w*.035); ctx.beginPath(); ctx.arc(lx,ly,lr*1.12,.28,Math.PI*2-.20); ctx.stroke();
-    ctx.fillStyle='#063b79';
-    ctx.beginPath(); ctx.moveTo(lx+lr*.63,ly-lr*1.05); ctx.lineTo(lx+lr*1.20,ly-lr*.72); ctx.lineTo(lx+lr*.72,ly-lr*.35); ctx.closePath(); ctx.fill();
-    // manos/gesto simplificado
-    ctx.strokeStyle='#fff'; ctx.lineWidth=Math.max(1.5,w*.026); ctx.lineCap='round';
-    ctx.beginPath(); ctx.moveTo(lx-lr*.48,ly+lr*.22); ctx.lineTo(lx-lr*.10,ly-lr*.22); ctx.lineTo(lx,ly); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(lx+lr*.48,ly+lr*.22); ctx.lineTo(lx+lr*.10,ly-lr*.22); ctx.lineTo(lx,ly); ctx.stroke();
-
-    const slogans=[
-      ['LSP','edia','Aprende jugando'],
-      ['LSP','edia','Diccionario • Vocabulario'],
-      ['LSP','edia','Señas • Juegos • Aprendizaje']
-    ];
-    const s=slogans[Math.abs(variant||0)%slogans.length];
-    ctx.textBaseline='middle'; ctx.textAlign='left';
-    ctx.font=`900 ${Math.max(8,bh*.31)}px Arial, sans-serif`;
-    ctx.fillStyle='#063b79'; ctx.fillText(s[0],-bw*.07,-bh*.08);
-    const m=ctx.measureText(s[0]).width;
-    ctx.fillStyle='#ffc400'; ctx.fillText(s[1],-bw*.07+m,-bh*.08);
-
-    ctx.fillStyle='#063b79'; rr(ctx,-bw*.05,bh*.14,bw*.48,bh*.22,bh*.08); ctx.fill();
-    ctx.fillStyle='#fff'; ctx.font=`700 ${Math.max(6,bh*.105)}px Arial, sans-serif`;
-    ctx.textAlign='center'; ctx.fillText(s[2],bw*.19,bh*.25);
-
-    // brillo
+    // brillo sutil del panel
     const gloss=ctx.createLinearGradient(0,-bh*.46,0,bh*.02);
-    gloss.addColorStop(0,'rgba(255,255,255,.44)'); gloss.addColorStop(1,'rgba(255,255,255,0)');
-    ctx.fillStyle=gloss; rr(ctx,-bw*.46,-bh*.43,bw*.92,bh*.34,w*.02); ctx.fill();
+    gloss.addColorStop(0,'rgba(255,255,255,.42)');
+    gloss.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.fillStyle=gloss;
+    rr(ctx,-bw*.46,-bh*.43,bw*.92,bh*.28,w*.02); ctx.fill();
 
     ctx.restore();
   }
