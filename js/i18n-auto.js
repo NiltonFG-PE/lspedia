@@ -266,6 +266,12 @@
             .then(documento => {
                 integrarDocumento(documento);
                 aplicarYRefrescar();
+                document.dispatchEvent(new CustomEvent('lspedia:traduccionesEnListas', {
+                    detail: {
+                        diccionario: mapas.diccionario.palabra.size,
+                        vocabulario: mapas.vocabulario.palabra.size
+                    }
+                }));
             })
             .catch(error => {
                 // La capa bilingüe curada de i18n.js sigue funcionando si este
