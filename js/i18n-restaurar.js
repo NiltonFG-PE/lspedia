@@ -24,9 +24,10 @@
 
         if(intro && vocabActivo){
             const textos = intro.querySelectorAll('.vocab-intro-texto');
-            if(textos[0]) textos[0].innerHTML = 'Las señas representan <strong>conceptos</strong>, no siempre palabras.';
-            if(textos[1]) textos[1].innerHTML = 'Los términos en español son solo una <strong>referencia</strong> para facilitar la búsqueda y el aprendizaje.';
-            if(textos[2]) textos[2].innerHTML = 'Las <strong>variantes regionales</strong> enriquecen la Lengua de Señas Peruana.';
+            if(textos[0]) textos[0].innerHTML = 'Las palabras en español sirven como <strong>referencia</strong> para facilitar las búsquedas.';
+            if(textos[1]) textos[1].innerHTML = 'Las señas representan <strong>conceptos</strong>, no solo palabras.';
+            if(textos[2]) textos[2].innerHTML = 'Las <strong>variantes regionales</strong> enriquecen la Lengua de señas.';
+            if(textos[3]) textos[3].innerHTML = 'No basta aprender vocabulario, también <strong>requiere contacto</strong> con personas sordas.';
         }
     }
 
