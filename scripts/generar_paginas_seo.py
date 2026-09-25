@@ -26,6 +26,7 @@ MARCADOR = ".lspedia-seo-generated"
 IMAGEN_RE = re.compile(r"\.(?:avif|gif|jpe?g|png|svg|webp)(?:[?#].*)?$", re.I)
 PREFIJO_RE = re.compile(r"^(?:https?://|/|\.\.?/|img/)", re.I)
 YOUTUBE_ID_RE = re.compile(r"^[A-Za-z0-9_-]{11}$")
+SOCIAL_PREVIEW_VERSION = "20260925-3"
 
 
 def texto(valor: object) -> str:
@@ -117,7 +118,7 @@ def crear_preview_categoria(repo: Path, items: list[dict], destino: Path) -> Non
                     method=Image.Resampling.LANCZOS,
                     centering=(0.5, 0.5),
                 )
-                preview.save(destino / "preview.jpg", "JPEG", quality=88, optimize=True, progressive=True)
+                preview.save(destino / "preview.jpg", "JPEG", quality=88, optimize=True, progressive=False)
                 return
         except Exception as error:
             ultimo_error = error
@@ -547,6 +548,31 @@ def generar_categorias(repo: Path, filas_dic: list[dict], filas_voc: list[dict])
 </body></html>
 """
             (destino / "index.html").write_text(html, encoding="utf-8", newline="\n")
+
+            # Página exclusiva para compartir. Usa una URL física versionada
+            # (sin query string) y og:url idéntico a la URL compartida, para
+            # evitar que WhatsApp reutilice previews antiguos de la canonical.
+            social_dir = destino / f"compartir-{SOCIAL_PREVIEW_VERSION}"
+            social_dir.mkdir(parents=True, exist_ok=True)
+            social_image_name = f"preview-{SOCIAL_PREVIEW_VERSION}.jpg"
+            social_image_path = destino / social_image_name
+            shutil.copyfile(destino / "preview.jpg", social_image_path)
+            social_url = f"{canonical}compartir-{SOCIAL_PREVIEW_VERSION}/"
+            social_image = f"{canonical}{social_image_name}"
+            social_html = html
+            social_html = social_html.replace(
+                '<meta name="robots" content="index,follow,max-image-preview:large">',
+                '<meta name="robots" content="noindex,follow,max-image-preview:large">',
+            )
+            social_html = social_html.replace(
+                f'<meta property="og:url" content="{escape(canonical, quote=True)}">',
+                f'<meta property="og:url" content="{escape(social_url, quote=True)}">',
+            )
+            social_html = social_html.replace(
+                escape(imagen, quote=True),
+                escape(social_image, quote=True),
+            )
+            (social_dir / "index.html").write_text(social_html, encoding="utf-8", newline="\n")
             total += 1
     return total
 
