@@ -7,7 +7,6 @@
     const CLASE_BOTON = 'btn-compartir-categoria-lspedia';
     const VERSION_PREVIEW_SOCIAL = '20260925-4';
     let restauracionVocabularioRegistrada = false;
-    let restauracionColeccionRegistrada = false;
     let ultimaRestauracionConfirmada = '';
 
     function datosCategoriaDesdeUrl(urlTexto){
@@ -313,82 +312,27 @@
         return false;
     }
 
-    function obtenerEtiquetasColeccion(item){
-        const valor = item && (item.etiquetas ?? item.tags);
-        if(Array.isArray(valor)) return valor.map(x => String(x || '').trim()).filter(Boolean);
-        return String(valor || '').split(/[,;|]/).map(x => x.trim()).filter(Boolean);
-    }
-
-    function coleccionVocabularioDisponible(nombre){
-        const buscado = String(nombre || '').trim().toLowerCase();
-        if(!buscado) return false;
-        try {
-            const banco = (window.QuizV2 && typeof window.QuizV2.obtenerBanco === 'function')
-                ? window.QuizV2.obtenerBanco() : [];
-            return Array.isArray(banco) && banco.some(item =>
-                obtenerEtiquetasColeccion(item).some(etiqueta => etiqueta.toLowerCase() === buscado)
-            );
-        } catch(_error){
-            return false;
-        }
-    }
-
-    function resultadoColeccionVisible(nombre){
-        const contenedor = document.getElementById('resultadoCategorias');
-        if(!contenedor) return false;
-        const texto = String(contenedor.textContent || '').toLowerCase();
-        return texto.includes(String(nombre || '').trim().toLowerCase())
-            && !!contenedor.querySelector('.categoria-resultado-item');
-    }
-
     function restaurarCategoriaCompartida(){
         const datos = parametrosCategoriaActuales();
         if(!datos) return false;
         if(datos.tipo === 'coleccion-vocabulario'){
-            if(typeof window.mostrarEtiquetaVocabulario !== 'function') return false;
-            const confirmarUrlColeccion = () => {
-                const objetivo = new URL(construirUrlColeccionApp(datos.nombre));
-                const relativaObjetivo = objetivo.pathname + objetivo.search;
-                const relativaActual = window.location.pathname + window.location.search;
-                if(relativaActual !== relativaObjetivo){
-                    window.history.replaceState(
-                        { tipo: 'coleccionVocabulario', coleccion: datos.nombre },
-                        '', relativaObjetivo
-                    );
-                }
-            };
-            const abrirYMostrar = () => {
-                try {
-                    const actuales = parametrosCategoriaActuales();
-                    if(!mismaCategoria(actuales, datos)) return false;
-                    const yaEnVocabulario = document.body && document.body.classList.contains('vista-temas-movil');
-                    if(!yaEnVocabulario){
-                        const boton = document.getElementById('btnCategorias');
-                        if(boton) boton.click();
-                    }
-                    confirmarUrlColeccion();
-                    if(!coleccionVocabularioDisponible(datos.nombre)) return false;
-                    window.mostrarEtiquetaVocabulario(datos.nombre, { noActualizarHistorial: true });
-                    confirmarUrlColeccion();
-                    if(!resultadoColeccionVisible(datos.nombre)) return false;
-                    categoriaPendienteOriginal = null;
-                    ultimaRestauracionConfirmada = 'coleccion-vocabulario:' + datos.nombre.toLowerCase();
-                    return true;
-                } catch(_error){ return false; }
-            };
-            if(abrirYMostrar()) return true;
-
-            if(!restauracionColeccionRegistrada && window.QuizV2 && typeof window.QuizV2.onBancoListo === 'function'){
-                restauracionColeccionRegistrada = true;
-                if(typeof window.QuizV2.asegurarBancoCargado === 'function'){
-                    try { window.QuizV2.asegurarBancoCargado(); } catch(_error){}
-                }
-                window.QuizV2.onBancoListo(() => {
-                    restauracionColeccionRegistrada = false;
-                    abrirYMostrar();
-                });
+            // La restauración visual de colecciones pertenece a script.js.
+            // Antes este módulo también simulaba clics y reintentaba en
+            // 50/150/350/... ms; ambos restauradores competían entre sí y
+            // hacían que la pantalla parpadeara varias veces. Aquí solo
+            // conservamos la URL destino y dejamos una única autoridad.
+            const objetivo = new URL(construirUrlColeccionApp(datos.nombre));
+            const relativaObjetivo = objetivo.pathname + objetivo.search;
+            const relativaActual = window.location.pathname + window.location.search;
+            if(relativaActual !== relativaObjetivo){
+                window.history.replaceState(
+                    { tipo: 'coleccionVocabulario', coleccion: datos.nombre },
+                    '', relativaObjetivo
+                );
             }
-            return false;
+            categoriaPendienteOriginal = null;
+            ultimaRestauracionConfirmada = 'coleccion-vocabulario:' + datos.nombre.toLowerCase();
+            return true;
         }
         const clave = datos.tipo + ':' + datos.nombre.toLowerCase();
         if(ultimaRestauracionConfirmada === clave){
