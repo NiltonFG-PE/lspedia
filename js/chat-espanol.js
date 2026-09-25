@@ -334,7 +334,7 @@ const scenarios = [
       {prompt:"El cambio tiene una diferencia de veinte soles.",model:"Está bien. ¿Ese monto se paga ahora o al llegar?",alternatives:["De acuerdo. ¿Cuándo debo pagar la diferencia?","Está bien. ¿Puedo pagar los veinte soles en el hotel?"],keywords:["pagar","ahora","llegar","diferencia"],why:"Pregunta cuándo debe realizarse un pago adicional."},
       {prompt:"Puede pagarlo al llegar.",model:"Perfecto. Entonces lo pagaré durante el check-in.",alternatives:["De acuerdo, pagaré al llegar.","Perfecto. Haré el pago cuando me registre."],keywords:["pagar","llegar","check"],why:"“Entonces” conecta la información recibida con tu decisión."},
       {prompt:"¿Necesita mantener la habitación con dos camas?",model:"Sí, por favor. Viajamos dos personas y necesitamos dos camas.",alternatives:["Sí, mantenga la habitación con dos camas.","Sí. Somos dos personas y preferimos camas separadas."],keywords:["dos","camas","personas"],why:"Explica la preferencia y la razón para que la solicitud sea clara."},
-      {prompt:"Perfecto. La habitación se mantiene igual.",model:"Gracias. ¿Me enviarán una nueva confirmación con la fecha actualizada?",alternatives:["Muchas gracias. ¿Recibiré la reserva actualizada por correo?","¿Pueden enviarme una confirmación del cambio?"],keywords:["confirm","fecha","correo","actualiz"],why:"Después de un cambio importante, pide una confirmación escrita."},
+      {prompt:"De acuerdo. La reserva ya está actualizada. ¿Desea que le enviemos una nueva confirmación?",model:"Sí, por favor. Envíenme la confirmación por correo.",alternatives:["Sí, quisiera recibir la reserva actualizada.","Sí, por favor. Quiero una confirmación del cambio."],keywords:["si","confirm","correo","actualiz"],why:"Después de un cambio importante, pedir una confirmación escrita ayuda a verificar la información."},
       {prompt:"Sí, la enviaremos por correo en unos minutos.",model:"Excelente. Revisaré mi correo. Muchas gracias por la ayuda.",alternatives:["Perfecto. Estaré atento al correo. Gracias.","Muchas gracias. Revisaré la confirmación cuando llegue."],keywords:["correo","gracias","revis"],why:"Cierra indicando qué harás después y agradeciendo."}
     ]
   },
@@ -358,7 +358,7 @@ const scenarios = [
 const state = {
   level:1, scenario:null, turn:0, score:0, possible:0, wildcardUsed:0,
   startedAt:0, sending:false, runToken:0, userMessages:0,
-  detour:null, detoursUsed:0, adaptiveSeen:[], progress:loadProgress()
+  detour:null, detoursUsed:0, adaptiveSeen:[], closingOverride:"", progress:loadProgress()
 };
 
 function loadProgress(){
@@ -703,7 +703,7 @@ function startScenario(id){
   state.runToken++;
   const token=state.runToken;
   state.scenario=sc;state.turn=0;state.score=0;state.possible=0;state.wildcardUsed=0;state.startedAt=Date.now();state.sending=false;
-  state.userMessages=0;state.detour=null;state.detoursUsed=0;state.adaptiveSeen=[];
+  state.userMessages=0;state.detour=null;state.detoursUsed=0;state.adaptiveSeen=[];state.closingOverride="";
   $("screenHome").classList.add("hidden");$("screenChat").classList.remove("hidden");
   $("contactAvatar").textContent=sc.avatar;$("contactName").textContent=sc.name;
   $("contactStatus").textContent="Tutor inteligente · práctica simulada";
@@ -786,6 +786,39 @@ function autoGrow(){
 function setInputEnabled(enabled){
   $("messageInput").disabled=!enabled;$("btnSend").disabled=!enabled;state.sending=!enabled;
 }
+
+function applyContextualFlow(sc,sourceIndex,semantic){
+  if(!sc||!semantic?.valid)return null;
+
+  // Bodega: si no pide nada más, no preguntar por el tamaño de un producto no pedido.
+  if(sc.id==="bodega-pan" && sourceIndex===1 && semantic.type==="no"){
+    return {nextTurn:3};
+  }
+
+  // RENIEC: si el pago ya está hecho, saltar la explicación de canales de pago.
+  if(sc.id==="reniec-dni" && sourceIndex===2 && semantic.type==="yes"){
+    return {nextTurn:4};
+  }
+
+  // Entrevista: si no tiene consultas, cerrar sin inventar una pregunta.
+  if(sc.id==="entrevista-trabajo" && sourceIndex===6 && semantic.type==="no"){
+    return {
+      nextTurn:sc.turns.length,
+      closing:"Perfecto. Entonces queda confirmada la entrevista para el martes. Muchas gracias y éxitos."
+    };
+  }
+
+  // Terminal: si decide no pagar aún, no afirmar después que el pago fue aprobado.
+  if(sc.id==="viaje-terminal" && sourceIndex===8 && semantic.type==="no"){
+    return {
+      nextTurn:sc.turns.length,
+      closing:"De acuerdo. El pasaje todavía no queda emitido hasta completar el pago. Puedes continuar cuando estés listo."
+    };
+  }
+
+  return null;
+}
+
 function sendMessage(text,usedWildcard=false){
   const turn=currentTurn();
   const wasDetour=!!state.detour;
@@ -805,7 +838,14 @@ function sendMessage(text,usedWildcard=false){
   setTimeout(()=>{if(token===state.runToken)addCorrection(result,turn,usedWildcard,text)},220);
 
   if(wasDetour)state.detour=null;
-  else state.turn++;
+  else {
+    state.turn++;
+    const flow=applyContextualFlow(state.scenario,sourceIndex,result.semantic);
+    if(flow){
+      if(Number.isInteger(flow.nextTurn))state.turn=flow.nextTurn;
+      if(flow.closing)state.closingOverride=flow.closing;
+    }
+  }
   updateChatHud();
 
   setTimeout(()=>{
@@ -828,7 +868,7 @@ function sendMessage(text,usedWildcard=false){
 
     if(state.turn>=state.scenario.turns.length && !state.detour){
       showTypingThen(()=>{
-        addMessage("them",ack+" "+state.scenario.closing);
+        addMessage("them",ack+" "+(state.closingOverride||state.scenario.closing));
         $("lessonProgress").style.width="100%";
         setTimeout(()=>{if(token===state.runToken)finishScenario()},850);
       },520,token);
