@@ -19,7 +19,6 @@ import shutil
 import unicodedata
 from pathlib import Path
 from urllib.parse import quote
-from urllib.request import Request, urlopen
 
 BASE_URL = "https://lspedia.site"
 MARCADOR = ".lspedia-seo-generated"
@@ -421,11 +420,12 @@ def generar_categorias(repo: Path, filas_dic: list[dict], filas_voc: list[dict])
 
         for ref, items in sorted(grupos.items()):
             nombre = nombres[ref]
-            # Para compartir, prioriza la miniatura pública de YouTube. Las
-            # imágenes nuevas del vocabulario pueden existir aún solo en develop
-            # mientras main publica únicamente SEO; WhatsApp necesita una URL que
-            # exista realmente en producción.
-            video_id = next((texto(x.get("video")) for x in items if texto(x.get("video"))), "")
+            # Usa una imagen real de la propia categoría. Así la vista previa
+            # no depende de una descarga de red durante GitHub Actions.
+            imagen = next(
+                (imagen_absoluta(x.get("imagen")) for x in items if imagen_real(x.get("imagen"))),
+                f"{BASE_URL}/img/lspedia.png",
+            )
             canonical = f"{BASE_URL}/categoria/{tipo}/{quote(ref, safe='')}/"
             if tipo == "vocabulario":
                 app_url = f"{BASE_URL}/?vista=vocabulario&categoria={quote(nombre, safe='')}"
@@ -441,7 +441,6 @@ def generar_categorias(repo: Path, filas_dic: list[dict], filas_voc: list[dict])
                 "con apoyo visual y Lengua de Señas Peruana (LSP)."
             )
             titulo = f"{nombre} — {seccion} | LSPedia"
-            imagen = "__LSPEDIA_CATEGORY_IMAGE__"
             ld = {
                 "@context": "https://schema.org",
                 "@type": "CollectionPage",
@@ -516,28 +515,6 @@ def generar_categorias(repo: Path, filas_dic: list[dict], filas_voc: list[dict])
             destino = raiz / tipo / ref
             destino.mkdir(parents=True, exist_ok=True)
 
-            # WhatsApp es más fiable cuando og:image vive en el mismo dominio
-            # que la página compartida. Guardamos una copia JPEG de la miniatura
-            # dentro de la propia página SEO, en vez de depender de ytimg.com.
-            imagen = f"{BASE_URL}/img/lspedia.png"
-            preview = destino / "preview.jpg"
-            if video_id:
-                try:
-                    req = Request(
-                        f"https://i.ytimg.com/vi/{quote(video_id, safe='')}/hqdefault.jpg",
-                        headers={"User-Agent": "Mozilla/5.0 LSPedia-SEO/1.0"},
-                    )
-                    with urlopen(req, timeout=15) as respuesta:
-                        contenido_imagen = respuesta.read()
-                    if len(contenido_imagen) >= 10_000:
-                        preview.write_bytes(contenido_imagen)
-                        imagen = f"{canonical}preview.jpg"
-                except Exception as error:
-                    print(f"AVISO: miniatura de categoría {tipo}/{ref}: {error}")
-
-            # El HTML se construyó antes de descargar la miniatura; sustituimos
-            # únicamente el fallback/URL de imagen por la copia pública final.
-            html = html.replace("__LSPEDIA_CATEGORY_IMAGE__", imagen)
             (destino / "index.html").write_text(html, encoding="utf-8", newline="\n")
             total += 1
     return total
