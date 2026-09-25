@@ -421,7 +421,7 @@ const LEVELS = [];
 for (let n = 1; n <= 12; n++) {
   LEVELS.push({
     n, theme: THEME_ORDER[(n - 1) % THEME_ORDER.length],
-    length: 850 + n * 210,                       // ~20% más recorrido para carreras más largas
+    length: 1250 + n * 310,                      // recorrido más largo para disfrutar mejor cada carrera
     ops: n <= 2 ? ['+'] : n <= 4 ? ['+', '-'] : n <= 7 ? ['+', '-', '×'] : ['+', '-', '×', '÷'],
     top: Math.min(4 + n, 10), mul: Math.min(2 + Math.floor(n / 2), 5), div: Math.min(2 + Math.floor((n - 6) / 2), 4),
     traffic: 10 + Math.round(n * 2.4), maxSpeed: 1 + n * 0.06
@@ -526,13 +526,13 @@ function buildTrack(L) {
     rampN += rand(270, 390);
   }
 
-  // premios flotantes: turbos y vidas, poco frecuentes para que se sientan especiales
+  // premios flotantes: turbo, escudo, ralentización y vida
   let bonusN = 230 + rand(0, 90);
   let bonusIndex = 0;
+  const bonusCycle = ['pickupTurbo', 'pickupShield', 'pickupSlow', 'pickupTurbo', 'pickupLife', 'pickupShield', 'pickupSlow'];
   while (bonusN < segments.length - 300) {
     const lane = rand(0, 2);
-    const life = bonusIndex % 3 === 2; // aproximadamente 1 vida por cada 2 turbos
-    const kind = life ? 'pickupLife' : 'pickupTurbo';
+    const kind = bonusCycle[bonusIndex % bonusCycle.length];
     segments[bonusN].sprites.push({
       kind,
       offset: LANE_OFF[lane],
@@ -541,7 +541,7 @@ function buildTrack(L) {
       id: kind + '-' + bonusN + '-' + lane
     });
     bonusIndex++;
-    bonusN += rand(300, 470);
+    bonusN += rand(260, 420);
   }
 }
 function findSegment(z) { return segments[Math.floor(z / SEG_LEN) % segments.length]; }
@@ -557,7 +557,9 @@ function project(p, camX, camY, camZ) {
 let gameState = 'start';
 let currentLevel = LEVELS[0], theme = THEMES.campo;
 let score = 0, lives = 3, starsTotal = 0, turboMeter = 0, turbo = 0, invuln = 0, position = 8;
+let shieldTime = 0, slowTime = 0;
 const MAX_LIVES = 5, TURBO_NEED = 5, LIFE_EVERY = 12, RIVAL_COUNT = 7;
+const SHIELD_DURATION = 6000, SLOW_DURATION = 5000, SLOW_FACTOR = 0.40;
 let positionZ = 0, speed = 0, maxSpeed = 1, baseSpeedFrac = 0.62;
 let playerLane = 1, playerX = 0, playerTilt = 0, skyOffset = 0, bounce = 0;
 let jumpActive = false, jumpElapsed = 0, jumpDuration = 1100, jumpLift = 0, jumpRotation = 0, jumpSpinDir = 1;
@@ -817,9 +819,44 @@ const SPR = {
     ctx.bezierCurveTo(w * 0.34, -w * 0.34, w * 0.46, 0, 0, w * 0.27);
     ctx.fill();
     ctx.restore();
+  },
+  pickupShield(x, y, w) {
+    const bob = Math.sin(time / 250 + 2.1) * w * 0.1;
+    const cy = y - w * 0.85 + bob;
+    ctx.save();
+    ctx.translate(x, cy);
+    ctx.shadowColor = '#62e8ff'; ctx.shadowBlur = w * 0.45;
+    const g = ctx.createRadialGradient(-w * 0.12, -w * 0.15, w * 0.03, 0, 0, w * 0.56);
+    g.addColorStop(0, '#e9fdff'); g.addColorStop(0.42, '#62e8ff'); g.addColorStop(1, '#1769aa');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, w * 0.52, 0, Math.PI * 2); ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = 'rgba(255,255,255,.95)';
+    ctx.beginPath();
+    ctx.moveTo(0, -w * 0.32); ctx.lineTo(w * 0.27, -w * 0.2); ctx.lineTo(w * 0.22, w * 0.1);
+    ctx.quadraticCurveTo(0, w * 0.35, -w * 0.22, w * 0.1); ctx.lineTo(-w * 0.27, -w * 0.2); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = '#48c9e8';
+    ctx.beginPath();
+    ctx.moveTo(0, -w * 0.22); ctx.lineTo(w * 0.17, -w * 0.14); ctx.lineTo(w * 0.13, w * 0.06);
+    ctx.quadraticCurveTo(0, w * 0.22, -w * 0.13, w * 0.06); ctx.lineTo(-w * 0.17, -w * 0.14); ctx.closePath(); ctx.fill();
+    ctx.restore();
+  },
+  pickupSlow(x, y, w) {
+    const bob = Math.sin(time / 270 + 3.5) * w * 0.1;
+    const cy = y - w * 0.85 + bob;
+    ctx.save();
+    ctx.translate(x, cy);
+    ctx.shadowColor = '#bda4ff'; ctx.shadowBlur = w * 0.42;
+    const g = ctx.createRadialGradient(-w * 0.12, -w * 0.15, w * 0.03, 0, 0, w * 0.56);
+    g.addColorStop(0, '#f4efff'); g.addColorStop(0.45, '#a78bfa'); g.addColorStop(1, '#5531a7');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, w * 0.52, 0, Math.PI * 2); ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = Math.max(2, w * 0.07); ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.arc(0, 0, w * 0.25, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, -w * 0.15); ctx.moveTo(0, 0); ctx.lineTo(w * 0.13, w * 0.07); ctx.stroke();
+    ctx.restore();
   }
 };
-const SPR_W = { tree: 900, bush: 500, rock: 600, palm: 800, cactus: 500, pine: 800, lamp: 500, post: 220, chevron: 520, star: 330, ramp: 1500, pickupTurbo: 520, pickupLife: 520 };
+const SPR_W = { tree: 900, bush: 500, rock: 600, palm: 800, cactus: 500, pine: 800, lamp: 500, post: 220, chevron: 520, star: 330, ramp: 1500, pickupTurbo: 520, pickupLife: 520, pickupShield: 520, pickupSlow: 520 };
 
 // ===================== VEHÍCULOS =====================
 function rr(c, x, y, w, h, r) { r = Math.min(r, w / 2, h / 2); c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
@@ -925,6 +962,22 @@ function updateJump(dt) {
   }
 }
 function startTurbo() { turbo = 3500; turboMeter = 0; sfx.boost(); vibrate([60, 30, 60, 30, 200]); flashAlpha = 0.35; flashColor = '255,210,60'; }
+function activateShield() {
+  shieldTime = Math.max(shieldTime, SHIELD_DURATION);
+  score += 50;
+  playTone(680, 'sine', 0.22, 0.16, 980);
+  vibrate([55, 25, 55]);
+  flashAlpha = 0.25; flashColor = '90,225,255';
+  spawnParticles(W / 2 + playerX * W * 0.3, H - 145, '#62e8ff', 28);
+}
+function activateSlowField() {
+  slowTime = Math.max(slowTime, SLOW_DURATION);
+  score += 50;
+  playTone(360, 'triangle', 0.28, 0.15, 190);
+  vibrate([70, 30, 70]);
+  flashAlpha = 0.22; flashColor = '165,135,255';
+  spawnParticles(W / 2 + playerX * W * 0.3, H - 145, '#a78bfa', 28);
+}
 
 function update(dt) {
   if (gameState === 'paused') return;
@@ -932,8 +985,10 @@ function update(dt) {
   if (shake > 0) shake = Math.max(0, shake - dt * 0.002);
   if (flashAlpha > 0) flashAlpha = Math.max(0, flashAlpha - dt * 0.004);
   if (gameState !== 'playing') { if (gameState === 'math') updateEngineSound(speed * 0.35); return; }
-  if (turbo > 0) turbo -= dt;
-  if (invuln > 0) invuln -= dt;
+  if (turbo > 0) turbo = Math.max(0, turbo - dt);
+  if (invuln > 0) invuln = Math.max(0, invuln - dt);
+  if (shieldTime > 0) shieldTime = Math.max(0, shieldTime - dt);
+  if (slowTime > 0) slowTime = Math.max(0, slowTime - dt);
 
   // aceleración suave hacia la velocidad objetivo
   const target = maxSpeed * (turbo > 0 ? 1.6 : baseSpeedFrac);
@@ -959,16 +1014,17 @@ function update(dt) {
 
   // tráfico y rivales
   const playerZ = positionZ + PLAYER_Z;
-  cars.forEach(c => { c.z += c.speed * SPEED_UNIT * dt; if (c.z < positionZ - 6 * SEG_LEN) { const nz = positionZ + (DRAW_DIST + rand(10, 80)) * SEG_LEN; if (nz < finishZ - 40 * SEG_LEN) { c.z = nz; c.lane = rand(0, 2); c.offset = LANE_OFF[c.lane]; } else c.z = -9e9; } });
+  const othersSpeed = slowTime > 0 ? SLOW_FACTOR : 1;
+  cars.forEach(c => { c.z += c.speed * othersSpeed * SPEED_UNIT * dt; if (c.z < positionZ - 6 * SEG_LEN) { const nz = positionZ + (DRAW_DIST + rand(10, 80)) * SEG_LEN; if (nz < finishZ - 40 * SEG_LEN) { c.z = nz; c.lane = rand(0, 2); c.offset = LANE_OFF[c.lane]; } else c.z = -9e9; } });
   rivals.forEach(r => {
     r.jitter += (Math.random() - 0.5) * 0.02; r.jitter = clamp(r.jitter, -0.12, 0.12);
-    r.z += r.speed * (1 + r.jitter) * SPEED_UNIT * dt;
+    r.z += r.speed * (1 + r.jitter) * othersSpeed * SPEED_UNIT * dt;
     // cambia de carril si viene sobre el jugador
     const dz = r.z - playerZ;
     if (dz < 0 && dz > -12 * SEG_LEN && Math.abs(r.offset - playerX) < 0.5) {
       // viene por detrás en mi carril: esquiva si puede, si no frena hasta encontrar hueco
       if (r.laneT <= 0) { r.lane = playerLane === 1 ? (Math.random() < 0.5 ? 0 : 2) : 1; r.laneT = 1200; }
-      if (dz > -4 * SEG_LEN) r.z -= (r.speed * (1 + r.jitter) - speed * 0.95) * SPEED_UNIT * dt;
+      if (dz > -4 * SEG_LEN) r.z -= (r.speed * (1 + r.jitter) * othersSpeed - speed * 0.95) * SPEED_UNIT * dt;
     }
     if (r.laneT > 0) r.laneT -= dt;
     r.offset += (LANE_OFF[r.lane] - r.offset) * clamp(0.004 * dt, 0, 1);
@@ -993,7 +1049,7 @@ function update(dt) {
 
   // colisiones y estrellas
   const hitZ = 2.6 * SEG_LEN;
-  if (!jumpActive && invuln <= 0) for (const c of cars.concat(rivals)) {
+  if (!jumpActive && invuln <= 0 && shieldTime <= 0) for (const c of cars.concat(rivals)) {
     if (Math.abs(c.z - playerZ) < hitZ && Math.abs(c.offset - playerX) < 0.45) {
       if (c.rival) { c.z = playerZ - 6 * SEG_LEN; c.lane = c.lane === playerLane ? (playerLane === 1 ? 0 : 1) : c.lane; c.offset = LANE_OFF[c.lane]; } else c.z = positionZ - 30 * SEG_LEN;
       crash(); return;
@@ -1019,6 +1075,12 @@ function update(dt) {
         else score += 60;
         vibrate([70, 35, 70]); flashAlpha = 0.25; flashColor = '255,80,120';
         spawnParticles(W / 2 + playerX * W * 0.3, H - 145, '#ff5d7a', 22);
+      } else if (s.kind === 'pickupShield') {
+        collected.add(s.id);
+        activateShield();
+      } else if (s.kind === 'pickupSlow') {
+        collected.add(s.id);
+        activateSlowField();
       }
     });
   }
@@ -1062,7 +1124,7 @@ function render() {
     if (seg.finish) drawFinishGate(p.x - p.w * 1.15, p.x + p.w * 1.15, p.y, p.w * 2.3);
     ctx.globalAlpha = 1;
     seg.sprites.forEach(s => {
-      if ((s.kind === 'star' || s.kind === 'pickupTurbo' || s.kind === 'pickupLife') && collected.has(s.id)) return;
+      if ((s.kind === 'star' || s.kind === 'pickupTurbo' || s.kind === 'pickupLife' || s.kind === 'pickupShield' || s.kind === 'pickupSlow') && collected.has(s.id)) return;
       const sw = p.scale * SPR_W[s.kind] * s.size * SX, sx = p.x + p.scale * s.offset * ROAD_W * SX;
       if (sw < 1.5) return;
       ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, seg.clip); ctx.clip();
@@ -1076,6 +1138,14 @@ function render() {
       const sc = lerp(seg.p1.screen.scale, seg.p2.screen.scale, pct), sx = lerp(seg.p1.screen.x, seg.p2.screen.x, pct) + sc * c.offset * ROAD_W * SX, sy = lerp(seg.p1.screen.y, seg.p2.screen.y, pct);
       const cw = sc * 620 * SX; if (cw < 2) return;
       ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, seg.clip); ctx.clip(); ctx.globalAlpha = Math.min(1, 0.3 + seg.fog * 1.2);
+      if (slowTime > 0) {
+        ctx.save();
+        ctx.globalAlpha *= 0.36 + 0.12 * Math.sin(time / 120);
+        ctx.strokeStyle = '#bda4ff'; ctx.lineWidth = Math.max(1.5, cw * 0.025);
+        ctx.shadowColor = '#a78bfa'; ctx.shadowBlur = cw * 0.22;
+        ctx.beginPath(); ctx.ellipse(sx, sy - cw * 0.38, cw * 0.64, cw * 0.48, 0, 0, Math.PI * 2); ctx.stroke();
+        ctx.restore();
+      }
       drawVehicle(ctx, c.v, sx, sy, cw, false, c.wobble);
       if (c.rival) { const rr2 = cw * 0.11; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(sx, sy - cw * 0.78 * 0.83, rr2, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#1b2230'; ctx.font = `700 ${rr2 * 1.5}px Fredoka, sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(c.num, sx, sy - cw * 0.78 * 0.83 + rr2 * 0.05); }
       ctx.restore();
@@ -1094,11 +1164,32 @@ function render() {
     ctx.beginPath(); ctx.ellipse(px, groundPy + 3, pw * (0.52 - jumpLift * 0.12), pw * 0.1, 0, 0, Math.PI * 2); ctx.fill();
     ctx.restore();
   }
-  if (invuln > 0 && turbo <= 0 && Math.floor(time / 90) % 2) ctx.globalAlpha = 0.5;
+  if (shieldTime > 0) {
+    ctx.save();
+    const pulse = 1 + Math.sin(time / 90) * 0.05;
+    ctx.translate(px, py - pw * 0.38);
+    ctx.scale(pulse, pulse);
+    const shieldG = ctx.createRadialGradient(0, 0, pw * 0.28, 0, 0, pw * 1.02);
+    shieldG.addColorStop(0, 'rgba(150,245,255,0.08)');
+    shieldG.addColorStop(0.58, 'rgba(98,232,255,0.18)');
+    shieldG.addColorStop(0.82, 'rgba(98,232,255,0.42)');
+    shieldG.addColorStop(1, 'rgba(98,232,255,0)');
+    ctx.fillStyle = shieldG;
+    ctx.beginPath(); ctx.ellipse(0, 0, pw * 0.92, pw * 0.76, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = 'rgba(210,252,255,0.9)'; ctx.lineWidth = Math.max(2, pw * 0.025);
+    ctx.shadowColor = '#62e8ff'; ctx.shadowBlur = pw * 0.22;
+    ctx.beginPath(); ctx.ellipse(0, 0, pw * 0.78, pw * 0.64, 0, 0, Math.PI * 2); ctx.stroke();
+    ctx.restore();
+  }
+  if (invuln > 0 && shieldTime <= 0 && turbo <= 0 && Math.floor(time / 90) % 2) ctx.globalAlpha = 0.5;
   ctx.save();
   ctx.translate(px, py);
   if (jumpActive) ctx.rotate(jumpRotation);
   if (turbo > 0) drawFlames(0, -pw * 0.06, pw);
+  if (shieldTime > 0) {
+    ctx.shadowColor = '#bff8ff';
+    ctx.shadowBlur = pw * (0.22 + 0.06 * Math.sin(time / 80));
+  }
   drawVehicle(ctx, vehicle(), 0, 0, pw, true, playerTilt * 0.12);
   ctx.restore();
   ctx.globalAlpha = 1;
@@ -1165,7 +1256,7 @@ function endGame() {
 function startLevel(n) {
   currentLevel = LEVELS[n - 1]; theme = THEMES[currentLevel.theme];
   buildTrack(currentLevel.length);
-  score = 0; lives = 3; starsTotal = 0; turboMeter = 0; turbo = 0; invuln = 0; position = RIVAL_COUNT + 1;
+  score = 0; lives = 3; starsTotal = 0; turboMeter = 0; turbo = 0; invuln = 0; shieldTime = 0; slowTime = 0; position = RIVAL_COUNT + 1;
   positionZ = 0; speed = 0; maxSpeed = currentLevel.maxSpeed; playerLane = 1; playerX = 0; playerTilt = 0; skyOffset = 0;
   jumpActive = false; jumpElapsed = 0; jumpLift = 0; jumpRotation = 0; usedRamps = new Set(); pendingMathAfterPause = false;
   document.getElementById('pause-overlay').classList.remove('active');
