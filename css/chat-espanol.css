@@ -104,6 +104,11 @@ button{cursor:pointer}
 .msg-check{color:#34b7f1;font-weight:900;letter-spacing:-2px}
 .ai-note{max-width:min(92%,680px);margin:7px auto 11px;border-radius:15px;padding:10px 12px;background:rgba(255,255,255,.96);border-left:4px solid #1f8f83;box-shadow:0 5px 16px rgba(34,65,75,.12);animation:noteIn .25s ease both}
 .ai-note.good{border-left-color:#29a35a}
+.ai-note.concise{padding:9px 11px;border-left-color:#29a35a}
+.ai-note.concise .ai-note-model{font-size:.82rem}
+.ai-note.concise .sentence-map{margin-top:6px}
+.ai-note.concise .ai-note-why{margin-top:5px}
+.ai-note.concise .ai-note-focus{margin-top:6px;padding-top:6px}
 .ai-note.improve{border-left-color:#f0a20c}
 .ai-note-head{display:flex;align-items:center;gap:7px;font-size:.73rem;font-weight:900;color:#47626c}
 .ai-note-model{margin-top:5px;font-size:.9rem;font-weight:800;color:#1f333b;line-height:1.4}
