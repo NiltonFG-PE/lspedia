@@ -2,8 +2,10 @@
 """Genera páginas HTML estáticas SEO para términos públicos de LSPedia.
 
 Salida:
-- diccionario/<id>/index.html   (Diccionario)
-- vocabulario/<id>/index.html   (Vocabulario)
+- diccionario/<id>/index.html              (Diccionario)
+- vocabulario/<id>/index.html              (Vocabulario)
+- categoria/diccionario/<slug>/index.html  (Categoría de Diccionario)
+- categoria/vocabulario/<slug>/index.html  (Categoría de Vocabulario)
 
 Estas páginas son ligeras, indexables y contienen contenido único desde el
 HTML inicial. La experiencia interactiva completa sigue viviendo en index.html.
@@ -394,15 +396,125 @@ def generar_vocabulario(repo: Path, filas: list[dict]) -> int:
     return total
 
 
+
+def generar_categorias(repo: Path, filas_dic: list[dict], filas_voc: list[dict]) -> int:
+    """Genera páginas compartibles de categorías con Open Graph estático."""
+    raiz = repo / "categoria"
+    preparar_directorio(raiz)
+    total = 0
+
+    for tipo, filas in (("diccionario", filas_dic), ("vocabulario", filas_voc)):
+        publicables = [
+            fila for fila in filas
+            if (publicable_diccionario(fila) if tipo == "diccionario" else publicable_vocabulario(fila))
+        ]
+        grupos: dict[str, list[dict]] = {}
+        nombres: dict[str, str] = {}
+        for fila in publicables:
+            nombre = texto(fila.get("categoria"))
+            ref = slug(nombre)
+            if not ref:
+                continue
+            grupos.setdefault(ref, []).append(fila)
+            nombres.setdefault(ref, nombre)
+
+        for ref, items in sorted(grupos.items()):
+            nombre = nombres[ref]
+            # Usa una imagen real de la propia categoría; si alguna fila futura
+            # carece de imagen, imagen_absoluta conserva el fallback de LSPedia.
+            imagen = imagen_absoluta(items[0].get("imagen"))
+            canonical = f"{BASE_URL}/categoria/{tipo}/{quote(ref, safe='')}/"
+            if tipo == "vocabulario":
+                app_url = f"{BASE_URL}/?vista=vocabulario&categoria={quote(nombre, safe='')}"
+                seccion = "Vocabulario"
+            else:
+                app_url = f"{BASE_URL}/?categoriaDiccionario={quote(nombre, safe='')}"
+                seccion = "Diccionario"
+
+            palabras = [texto(x.get("palabra")) for x in items if texto(x.get("palabra"))]
+            muestra = ", ".join(palabras[:12])
+            descripcion = limpiar_texto_meta(
+                f"Explora {len(palabras)} palabras de la categoría {nombre} en {seccion} de LSPedia, "
+                "con apoyo visual y Lengua de Señas Peruana (LSP)."
+            )
+            titulo = f"{nombre} — {seccion} | LSPedia"
+            ld = {
+                "@context": "https://schema.org",
+                "@type": "CollectionPage",
+                "name": titulo,
+                "url": canonical,
+                "description": descripcion,
+                "inLanguage": "es-PE",
+                "isPartOf": {"@type": "WebSite", "name": "LSPedia", "url": f"{BASE_URL}/"},
+                "primaryImageOfPage": {"@type": "ImageObject", "contentUrl": imagen},
+            }
+            html = f"""<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{escape(titulo)}</title>
+  <meta name="description" content="{escape(descripcion, quote=True)}">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="{escape(canonical, quote=True)}">
+  <link rel="icon" type="image/png" href="{BASE_URL}/img/favicon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="LSPedia">
+  <meta property="og:locale" content="es_PE">
+  <meta property="og:url" content="{escape(canonical, quote=True)}">
+  <meta property="og:title" content="{escape(titulo, quote=True)}">
+  <meta property="og:description" content="{escape(descripcion, quote=True)}">
+  <meta property="og:image" content="{escape(imagen, quote=True)}">
+  <meta property="og:image:alt" content="Imagen de la categoría {escape(nombre, quote=True)} en LSPedia">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{escape(titulo, quote=True)}">
+  <meta name="twitter:description" content="{escape(descripcion, quote=True)}">
+  <meta name="twitter:image" content="{escape(imagen, quote=True)}">
+  <script type="application/ld+json">{json.dumps(ld, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")}</script>
+  <style>
+    body{{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#f5f8fc;color:#172033;line-height:1.6}}
+    header{{background:#0f1c35;padding:18px 20px}} header img{{width:150px;height:auto}}
+    main{{max-width:900px;margin:32px auto;padding:0 18px 48px}}
+    article{{background:#fff;border:1px solid #dbe5f0;border-radius:24px;padding:clamp(22px,4vw,40px);box-shadow:0 18px 45px rgba(15,28,53,.08)}}
+    h1{{color:#1265d8;font-size:clamp(2rem,5vw,3.2rem);margin:.2em 0}} .tipo{{font-weight:700;color:#667085}}
+    .grid{{display:grid;grid-template-columns:1fr minmax(220px,340px);gap:28px;align-items:start;margin-top:24px}}
+    .imagen{{width:100%;border-radius:18px;border:1px solid #dbe5f0}} .palabras{{color:#475467}}
+    .cta{{display:inline-flex;margin-top:20px;background:#ffc107;color:#14213a;text-decoration:none;font-weight:800;border-radius:14px;padding:13px 18px}}
+    @media(max-width:680px){{.grid{{grid-template-columns:1fr}}}}
+  </style>
+</head>
+<body>
+<header><a href="{BASE_URL}/"><img src="{BASE_URL}/img/lspedia.png" alt="LSPedia"></a></header>
+<main><article>
+  <div class="tipo">{escape(seccion)} · Categoría</div>
+  <h1>{escape(nombre)}</h1>
+  <p>{escape(descripcion)}</p>
+  <div class="grid">
+    <div>
+      <p class="palabras"><strong>Incluye:</strong> {escape(muestra)}{("…" if len(palabras) > 12 else "")}</p>
+      <a class="cta" href="{escape(app_url, quote=True)}">Explorar categoría en LSPedia →</a>
+    </div>
+    <img class="imagen" src="{escape(imagen, quote=True)}" alt="Categoría {escape(nombre, quote=True)}" loading="eager">
+  </div>
+</article></main>
+</body></html>
+"""
+            destino = raiz / tipo / ref
+            destino.mkdir(parents=True, exist_ok=True)
+            (destino / "index.html").write_text(html, encoding="utf-8", newline="\n")
+            total += 1
+    return total
+
 def main() -> int:
     repo = Path(__file__).resolve().parent.parent
     diccionario = cargar_lista(repo / "data" / "palabras.json")
     vocabulario = cargar_lista(repo / "data" / "vocabulario.json")
     total_dic = generar_diccionario(repo, diccionario)
     total_voc = generar_vocabulario(repo, vocabulario)
+    total_cat = generar_categorias(repo, diccionario, vocabulario)
     if total_dic == 0 and total_voc == 0:
         raise SystemExit("ERROR: no se generó ninguna página SEO.")
-    print(f"Páginas SEO generadas: Diccionario={total_dic} · Vocabulario={total_voc}.")
+    print(f"Páginas SEO generadas: Diccionario={total_dic} · Vocabulario={total_voc} · Categorías={total_cat}.")
     return 0
 
 
