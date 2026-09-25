@@ -160,6 +160,32 @@ def resolver_taxonomia(categoria: str, grupo_manual: object, etiquetas_manual: o
     return grupo, etiquetas[:12]
 
 
+def cargar_traducciones_previas() -> dict[tuple[str, str], tuple[str, str]]:
+    """Conserva EN ya revisado si la hoja todavía no tiene esas columnas llenas."""
+    if not DESTINO.exists():
+        return {}
+    try:
+        datos = json.loads(DESTINO.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+    salida: dict[tuple[str, str], tuple[str, str]] = {}
+    if not isinstance(datos, list):
+        return salida
+    for item in datos:
+        if not isinstance(item, dict):
+            continue
+        palabra = texto(item.get("palabra"))
+        categoria = normalizar_categoria_vocabulario(texto(item.get("categoria")))
+        if not palabra or not categoria:
+            continue
+        salida[(palabra.casefold(), categoria.casefold())] = (
+            texto(item.get("ingles")),
+            texto(item.get("definicionIngles")),
+        )
+    return salida
+
+
 def descargar_csv() -> list[dict[str, str]]:
     base = f"https://docs.google.com/spreadsheets/d/{SPREADSHEET_ID}/gviz/tq"
     parametros = urllib.parse.urlencode({"tqx": "out:csv", "sheet": HOJA, "headers": "1"})
@@ -191,7 +217,10 @@ def descargar_csv() -> list[dict[str, str]]:
     return salida
 
 
-def limpiar(filas: list[dict[str, str]]) -> list[dict]:
+def limpiar(
+    filas: list[dict[str, str]],
+    traducciones_previas: dict[tuple[str, str], tuple[str, str]] | None = None,
+) -> list[dict]:
     salida: list[dict] = []
     vistos: set[tuple[str, str]] = set()
     omitidos_campos_base = 0
@@ -249,6 +278,12 @@ def limpiar(filas: list[dict[str, str]]) -> list[dict]:
         if id_quiz:
             con_id_quiz += 1
 
+        ingles_hoja = texto(mapa.get("ingles"))
+        definicion_ingles_hoja = texto(mapa.get("definicioningles"))
+        ingles_previo, definicion_ingles_previa = (
+            (traducciones_previas or {}).get(identidad, ("", ""))
+        )
+
         registro = {
             "palabra": palabra,
             "variantes": texto(mapa.get("variantes")),
@@ -261,8 +296,8 @@ def limpiar(filas: list[dict[str, str]]) -> list[dict]:
             "imagen": imagen,
             "definicion": definicion,
             "fechaPublicacion": fecha_publicacion,
-            "ingles": texto(mapa.get("ingles")),
-            "definicionIngles": texto(mapa.get("definicioningles")),
+            "ingles": ingles_hoja or ingles_previo,
+            "definicionIngles": definicion_ingles_hoja or definicion_ingles_previa,
         }
         salida.append({campo: registro[campo] for campo in CAMPOS})
 
@@ -289,7 +324,8 @@ def limpiar(filas: list[dict[str, str]]) -> list[dict]:
 def main() -> int:
     temporal = DESTINO.with_suffix(".json.tmp")
     try:
-        datos = limpiar(descargar_csv())
+        traducciones_previas = cargar_traducciones_previas()
+        datos = limpiar(descargar_csv(), traducciones_previas)
         DESTINO.parent.mkdir(parents=True, exist_ok=True)
         temporal.write_text(
             json.dumps(datos, ensure_ascii=False, indent=2) + "\n",
