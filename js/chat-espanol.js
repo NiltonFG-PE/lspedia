@@ -217,6 +217,139 @@ const scenarios = [
       {prompt:"Gracias. El total es ciento veinte soles. ¿Desea pagar ahora?", model:"Sí, voy a pagar ahora con tarjeta.", alternatives:["Sí, pagaré con tarjeta.","Sí, por favor. Haré el pago ahora."], keywords:["si","pagar","tarjeta","ahora"], why:"Confirma tanto el momento del pago como el medio que usarás."},
       {prompt:"Pago aprobado. El embarque empieza treinta minutos antes de la salida.", model:"Entendido. Entonces debo estar en el terminal antes de las ocho y media.", alternatives:["De acuerdo. Llegaré al terminal con suficiente anticipación.","Entiendo. Estaré allí por lo menos treinta minutos antes."], keywords:["terminal","antes","ocho","treinta"], why:"Calcular y repetir la hora de llegada demuestra que entendiste la indicación."}
     ]
+  },
+  {
+    id:"cumple-prima", level:1, avatar:"🎂", name:"Valeria", situation:"Responder una invitación de cumpleaños", place:"Amigos", duration:"3–4 min",
+    goal:"Practica aceptar una invitación, preguntar hora y confirmar un plan.", closing:"¡Genial! Entonces nos vemos el sábado. Me alegra que puedas venir. 🎉",
+    turns:[
+      {prompt:"Hola 🙂. El sábado es mi cumpleaños. ¿Puedes venir?",model:"Sí, puedo ir. Gracias por invitarme.",alternatives:["Sí, gracias por la invitación.","Claro, me gustaría ir."],keywords:["si","gracias","invit"],why:"Primero responde si puedes ir y luego agradece la invitación."},
+      {prompt:"¡Qué bueno! Empezamos a las seis.",model:"Perfecto. Llegaré a las seis.",alternatives:["Está bien, estaré allí a las seis.","Perfecto, nos vemos a las seis."],keywords:["seis","lleg","vemos"],why:"Repetir la hora ayuda a confirmar que entendiste."},
+      {prompt:"¿Quieres que te mande la ubicación?",model:"Sí, por favor. Envíame la ubicación.",alternatives:["Sí, mándamela por favor.","Sí, así podré llegar sin problema."],keywords:["si","ubicacion","favor"],why:"En una petición breve puedes usar “por favor” para sonar amable."},
+      {prompt:"Te la envío ahora. ¿Vienes solo?",model:"Sí, voy solo.",alternatives:["Sí, esta vez iré solo.","Voy a ir solo."],keywords:["si","solo"],why:"Una respuesta corta es suficiente cuando la pregunta es directa."},
+      {prompt:"Habrá comida y música. ¿Hay algo que no comas?",model:"No, como de todo. Gracias por preguntar.",alternatives:["No tengo problema con la comida.","No, puedo comer de todo."],keywords:["no","com","gracias"],why:"Puedes responder y agregar un agradecimiento por la consideración."},
+      {prompt:"Perfecto. Nos vemos entonces.",model:"Sí, nos vemos el sábado. ¡Feliz cumpleaños por adelantado!",alternatives:["Nos vemos el sábado. Gracias otra vez.","Perfecto. Que tengas un bonito cumpleaños."],keywords:["sabado","vemos","cumple"],why:"Un cierre puede confirmar el día y añadir un mensaje amable."}
+    ]
+  },
+  {
+    id:"mascota-vecino", level:1, avatar:"🐶", name:"Mario", situation:"Pedir ayuda para cuidar una mascota", place:"Vecindario", duration:"3–4 min",
+    goal:"Practica pedir un favor y explicar instrucciones simples.", closing:"Listo, yo me encargo. Escríbeme si necesitas algo más. 🐾",
+    turns:[
+      {prompt:"Hola, vecino. ¿Todo bien?",model:"Hola, Mario. Sí, todo bien. Quería pedirte un favor.",alternatives:["Hola. Sí, gracias. ¿Puedo pedirte un favor?","Todo bien. Necesito pedirte una ayuda."],keywords:["favor","ayuda"],why:"Para pedir ayuda, primero puedes avisar que quieres pedir un favor."},
+      {prompt:"Claro, dime.",model:"Mañana saldré temprano. ¿Puedes darle comida a mi perro?",alternatives:["¿Puedes alimentar a mi perro mañana?","Mañana no estaré. ¿Podrías darle comida a mi perro?"],keywords:["manana","perro","comida"],why:"Explica cuándo necesitas ayuda y qué debe hacer la otra persona."},
+      {prompt:"Sí. ¿A qué hora come?",model:"Come a las ocho de la mañana.",alternatives:["A las ocho de la mañana.","Normalmente come a las ocho."],keywords:["ocho","mañana","come"],why:"Para una instrucción, indica una hora concreta."},
+      {prompt:"¿Dónde está su comida?",model:"Está en la cocina, al lado de la refrigeradora.",alternatives:["La comida está en la cocina.","Está junto a la refrigeradora."],keywords:["cocina","refrigeradora"],why:"Usa “en”, “al lado de” o “junto a” para indicar ubicación."},
+      {prompt:"¿Le doy también agua?",model:"Sí, por favor. Cambia el agua de su plato.",alternatives:["Sí, gracias. Ponle agua limpia.","Sí, también necesita agua."],keywords:["agua","favor","plato"],why:"Una instrucción clara usa un verbo de acción: cambia, pon, dale."},
+      {prompt:"Entendido. No te preocupes.",model:"Muchas gracias, Mario. Me ayudas mucho.",alternatives:["Gracias por ayudarme.","Te agradezco mucho el favor."],keywords:["gracias","ayud","favor"],why:"Agradecer cierra bien una petición de ayuda."}
+    ]
+  },
+  {
+    id:"delivery-almuerzo", level:2, avatar:"🥡", name:"Restaurante", situation:"Hacer un pedido por delivery", place:"Delivery", duration:"4–5 min",
+    goal:"Practica elegir comida, dar dirección y confirmar un pedido.", closing:"Pedido confirmado. Te avisaremos cuando el repartidor salga del restaurante. 🛵",
+    turns:[
+      {prompt:"Hola. Gracias por escribirnos. ¿Qué desea pedir?",model:"Hola. Quisiera un pollo a la plancha con arroz.",alternatives:["Quiero un pollo a la plancha con arroz, por favor.","Buenas tardes. Deseo pedir un pollo a la plancha."],keywords:["pollo","arroz"],why:"Empieza diciendo claramente qué deseas pedir."},
+      {prompt:"¿Desea ensalada o papas como acompañamiento?",model:"Prefiero ensalada, por favor.",alternatives:["Quisiera ensalada.","Ensalada está bien, gracias."],keywords:["ensalada","prefiero"],why:"“Prefiero” sirve para elegir entre opciones."},
+      {prompt:"¿Alguna bebida?",model:"Sí, una limonada mediana.",alternatives:["Una limonada, por favor.","Sí, agregue una limonada mediana."],keywords:["limonada"],why:"Indica producto y tamaño cuando haya opciones."},
+      {prompt:"¿A qué dirección enviamos el pedido?",model:"Envíenlo a la avenida Grau 320.",alternatives:["Mi dirección es avenida Grau 320.","El pedido es para la avenida Grau 320."],keywords:["grau","320","direccion"],why:"En delivery, una dirección completa evita errores."},
+      {prompt:"El tiempo aproximado es cuarenta minutos.",model:"Está bien. ¿Me avisan cuando el repartidor salga?",alternatives:["Perfecto. Avísenme cuando salga el pedido.","De acuerdo. ¿Recibiré un aviso?"],keywords:["avisa","repartidor","salga"],why:"Puedes preguntar cómo recibirás una actualización del pedido."},
+      {prompt:"Sí. ¿Pagará con efectivo, tarjeta o Yape?",model:"Voy a pagar con Yape.",alternatives:["Pagaré por Yape.","Con Yape, por favor."],keywords:["yape","pagar"],why:"Indica el medio de pago de forma directa."},
+      {prompt:"Perfecto. ¿Desea algo más?",model:"No, gracias. Eso es todo.",alternatives:["No, muchas gracias.","No. El pedido está completo."],keywords:["no","gracias","todo"],why:"Para cerrar un pedido, confirma que no necesitas nada más."}
+    ]
+  },
+  {
+    id:"partido-barrio", level:2, avatar:"⚽", name:"Equipo del barrio", situation:"Organizar un partido", place:"Deporte", duration:"4–5 min",
+    goal:"Practica horarios, roles, objetos y cambios de plan.", closing:"¡Listo! Quedamos para el domingo. Nos vemos en la cancha. ⚽",
+    turns:[
+      {prompt:"Estamos organizando un partido el domingo. ¿Te apuntas?",model:"Sí, quiero jugar.",alternatives:["Sí, cuenten conmigo.","Claro, puedo jugar el domingo."],keywords:["si","jugar","domingo"],why:"Puedes aceptar con “quiero”, “puedo” o “cuenten conmigo”."},
+      {prompt:"Buenazo. ¿Prefieres jugar de defensa o adelante?",model:"Prefiero jugar de defensa.",alternatives:["Me gusta más jugar de defensa.","Puedo jugar de defensa."],keywords:["defensa","prefiero"],why:"Usa “prefiero” para expresar una elección."},
+      {prompt:"Empezamos a las nueve de la mañana.",model:"Perfecto. Llegaré un poco antes.",alternatives:["Está bien. Estaré allí antes de las nueve.","De acuerdo, llegaré temprano."],keywords:["nueve","antes","temprano"],why:"Llegar “antes” o “temprano” expresa anticipación."},
+      {prompt:"¿Puedes llevar una pelota?",model:"Sí, puedo llevar una pelota.",alternatives:["Sí, yo llevo la pelota.","Claro, llevaré una."],keywords:["si","pelota","llevar"],why:"Confirma el objeto que te comprometes a llevar."},
+      {prompt:"Parece que hará bastante sol.",model:"Entonces llevaré agua y una gorra.",alternatives:["Llevaré agua porque hará calor.","Buena idea. Llevaré algo para el sol."],keywords:["agua","gorra","sol"],why:"“Entonces” conecta una situación con una decisión."},
+      {prompt:"Si alguien falta, quizá cambiemos los equipos.",model:"No hay problema. Podemos organizarnos allá.",alternatives:["Está bien, vemos los equipos al llegar.","De acuerdo. Nos acomodamos según cuántos seamos."],keywords:["problema","equipos","lleg"],why:"En un cambio de plan, muestra flexibilidad y propone qué hacer."},
+      {prompt:"Perfecto. Te agrego al grupo.",model:"Gracias. Estaré atento a los mensajes.",alternatives:["Gracias, revisaré el grupo.","Perfecto. Avísenme si cambia algo."],keywords:["gracias","mensajes","avisa"],why:"Un grupo de chat sirve para seguir cambios; puedes decir que estarás atento."}
+    ]
+  },
+  {
+    id:"internet-soporte", level:3, avatar:"📶", name:"Soporte técnico", situation:"Reportar una falla de internet", place:"Tecnología", duration:"5–6 min",
+    goal:"Practica describir un problema, frecuencia y pasos que ya intentaste.", closing:"Registré el reporte. Si la conexión vuelve a fallar, responde a este chat con el número de caso.",
+    turns:[
+      {prompt:"Hola. Soy soporte técnico. ¿Qué problema presenta su servicio?",model:"Hola. Mi internet se desconecta varias veces al día.",alternatives:["La conexión se corta varias veces.","Tengo problemas porque el internet se desconecta."],keywords:["internet","desconecta","veces"],why:"Describe qué ocurre y con qué frecuencia."},
+      {prompt:"¿Desde cuándo sucede?",model:"Desde ayer por la noche.",alternatives:["Empezó anoche.","El problema comenzó ayer."],keywords:["ayer","anoche","empez"],why:"“Desde” indica el momento en que empezó un problema."},
+      {prompt:"¿Las luces del módem cambian cuando se corta?",model:"Sí, una luz se pone roja.",alternatives:["Sí, la luz de internet cambia a rojo.","Sí, veo una luz roja cuando falla."],keywords:["luz","roja"],why:"Describe lo que observas; eso ayuda a identificar la falla."},
+      {prompt:"¿Ya reinició el módem?",model:"Sí, lo reinicié dos veces, pero el problema continúa.",alternatives:["Sí, ya lo reinicié y sigue igual.","Lo reinicié, pero todavía se desconecta."],keywords:["reinici","pero","continua"],why:"“Pero” sirve para mostrar que una acción no resolvió el problema."},
+      {prompt:"Voy a revisar la línea. ¿Puede esperar un momento?",model:"Sí, claro. Espero.",alternatives:["De acuerdo, espero.","Sí, no hay problema."],keywords:["si","espero"],why:"Una confirmación breve es suficiente mientras la otra persona revisa algo."},
+      {prompt:"Veo una señal inestable. Haré un ajuste remoto.",model:"Entiendo. ¿Necesito hacer algo aquí?",alternatives:["De acuerdo. ¿Debo tocar el módem?","Está bien. ¿Tengo que hacer algún paso?"],keywords:["necesito","hacer","algo"],why:"Pregunta si debes realizar alguna acción de tu lado."},
+      {prompt:"No por ahora. Espere dos minutos y pruebe de nuevo.",model:"Perfecto. Voy a esperar y luego probaré la conexión.",alternatives:["De acuerdo. Probaré nuevamente en dos minutos.","Entendido. Espero y vuelvo a probar."],keywords:["esper","probar","dos"],why:"Repite los pasos para confirmar que entendiste la instrucción."}
+    ]
+  },
+  {
+    id:"alquiler-cuarto", level:3, avatar:"🏠", name:"Propietaria", situation:"Consultar por un cuarto en alquiler", place:"Vivienda", duration:"5–6 min",
+    goal:"Practica preguntas sobre precio, servicios, reglas y disponibilidad.", closing:"Perfecto. Si decides verlo, escríbeme y coordinamos una visita.",
+    turns:[
+      {prompt:"Hola. Vi que preguntaste por el cuarto en alquiler.",model:"Hola. Sí, quisiera saber si todavía está disponible.",alternatives:["Hola. ¿El cuarto sigue disponible?","Sí, estoy interesado en el alquiler."],keywords:["disponible","cuarto","alquiler"],why:"Primero confirma qué vivienda te interesa y si sigue disponible."},
+      {prompt:"Sí, todavía está disponible.",model:"¿Cuánto cuesta al mes?",alternatives:["¿Cuál es el precio mensual?","¿Cuánto es el alquiler mensual?"],keywords:["cuanto","mes","precio","alquiler"],why:"“¿Cuánto cuesta?” es una forma directa de preguntar el precio."},
+      {prompt:"Son setecientos soles mensuales.",model:"¿El precio incluye agua y luz?",alternatives:["¿Los servicios están incluidos?","¿Agua y luz se pagan aparte?"],keywords:["agua","luz","inclu"],why:"Pregunta qué servicios están incluidos antes de comparar precios."},
+      {prompt:"El agua está incluida; la luz se paga aparte.",model:"Entiendo. ¿Tiene internet disponible?",alternatives:["¿Hay conexión a internet?","¿El cuarto cuenta con internet?"],keywords:["internet"],why:"Puedes usar “tiene”, “hay” o “cuenta con” para preguntar por servicios."},
+      {prompt:"Sí, hay wifi compartido.",model:"Perfecto. ¿Se puede usar la cocina?",alternatives:["¿La cocina es de uso compartido?","¿Tengo acceso a la cocina?"],keywords:["cocina","usar"],why:"Pregunta por espacios comunes usando “se puede” o “tengo acceso”."},
+      {prompt:"Sí, la cocina es compartida.",model:"Está bien. ¿Cuándo podría ir a ver el cuarto?",alternatives:["¿Podría visitarlo mañana?","¿Qué día puedo pasar a verlo?"],keywords:["cuando","ver","visitar"],why:"Después de aclarar condiciones, puedes proponer una visita."},
+      {prompt:"Mañana después de las cinco.",model:"Mañana a las seis me queda bien.",alternatives:["Puedo ir mañana a las seis.","Perfecto, pasaré a las seis."],keywords:["mañana","seis"],why:"Confirma una hora concreta para cerrar la coordinación."}
+    ]
+  },
+  {
+    id:"universidad-proyecto", level:4, avatar:"📚", name:"Grupo de estudio", situation:"Organizar un proyecto universitario", place:"Universidad", duration:"6–7 min",
+    goal:"Practica repartir tareas, justificar decisiones y acordar fechas.", closing:"Excelente. Ya tenemos tareas, fecha y forma de revisión. Avancemos y nos escribimos por el grupo.",
+    turns:[
+      {prompt:"Tenemos que dividir el proyecto. ¿Qué parte te gustaría hacer?",model:"Me gustaría preparar la introducción y buscar las fuentes.",alternatives:["Prefiero encargarme de la introducción.","Puedo buscar información y redactar la primera parte."],keywords:["introduccion","fuentes","informacion"],why:"Para repartir tareas, di qué parte prefieres asumir."},
+      {prompt:"Bien. Yo puedo hacer el análisis.",model:"Perfecto. Entonces nos falta asignar las conclusiones.",alternatives:["Está bien. Todavía debemos decidir quién hará las conclusiones.","Perfecto. Falta la parte final."],keywords:["conclus","falta"],why:"“Entonces” ayuda a conectar lo que ya se decidió con lo que falta."},
+      {prompt:"Podemos preguntarle a Lucía.",model:"Sí. Le escribiré para saber si puede encargarse.",alternatives:["De acuerdo, voy a preguntarle.","Sí, le consulto ahora."],keywords:["lucia","pregunt","escrib"],why:"Puedes expresar una acción futura para resolver una tarea pendiente."},
+      {prompt:"¿Cuándo deberíamos tener el primer borrador?",model:"Propongo tenerlo listo el jueves por la noche.",alternatives:["Podemos terminar el primer borrador el jueves.","El jueves en la noche sería una buena fecha."],keywords:["jueves","borrador","noche"],why:"“Propongo” es útil para sugerir una fecha al grupo."},
+      {prompt:"El jueves me sirve. ¿Cómo revisamos todo?",model:"Podemos hacer una videollamada y revisar el documento juntos.",alternatives:["Revisemos el documento por videollamada.","Podemos conectarnos y corregirlo entre todos."],keywords:["videollamada","revis","documento"],why:"Explica el medio y la acción: videollamada + revisar juntos."},
+      {prompt:"¿A qué hora?",model:"A las ocho de la noche.",alternatives:["Podría ser a las ocho.","A las ocho me queda bien."],keywords:["ocho","noche"],why:"Una hora concreta facilita que todos confirmen."},
+      {prompt:"Perfecto. Yo crearé el enlace.",model:"Gracias. Yo avisaré a Lucía y subiré mi avance antes de la reunión.",alternatives:["Gracias. Enviaré mi parte antes de reunirnos.","Perfecto. Le aviso a Lucía y comparto mi avance."],keywords:["lucia","avance","reunion","aviso"],why:"Resume dos acciones usando “y” para dejar claro tu compromiso."},
+      {prompt:"Buen plan. Así llegamos preparados.",model:"Sí, así podremos usar la reunión para corregir y cerrar el proyecto.",alternatives:["Exacto. En la reunión podremos enfocarnos en los cambios finales.","Sí, eso nos ayudará a terminar a tiempo."],keywords:["reunion","correg","termin","tiempo"],why:"Explica el beneficio de un plan con “así podremos…” o “eso nos ayudará…”."}
+    ]
+  },
+  {
+    id:"accesibilidad-cita", level:4, avatar:"🤟", name:"Recepción", situation:"Solicitar apoyo de comunicación para una cita", place:"Accesibilidad", duration:"6–7 min",
+    goal:"Practica explicar una necesidad de accesibilidad con claridad y respeto.", closing:"Queda registrada la solicitud. También anotamos que prefieres confirmación por mensaje. Gracias por avisarnos con anticipación.",
+    turns:[
+      {prompt:"Buenos días. ¿En qué podemos ayudarlo con su cita?",model:"Buenos días. Necesito apoyo de interpretación en lengua de señas para mi cita.",alternatives:["Quisiera solicitar un intérprete de lengua de señas.","Necesito apoyo de comunicación para poder seguir la cita."],keywords:["interpret","lengua","señas","apoyo"],why:"Explica la necesidad de accesibilidad de forma directa: qué apoyo necesitas y para qué."},
+      {prompt:"Claro. ¿Para qué fecha es su cita?",model:"Mi cita es el miércoles a las diez de la mañana.",alternatives:["Es este miércoles a las diez.","La cita está programada para el miércoles a las diez."],keywords:["miercoles","diez"],why:"Indica día y hora completos para evitar confusiones."},
+      {prompt:"¿La cita es presencial?",model:"Sí, será presencial en la sede del centro.",alternatives:["Sí, tengo que ir a la sede.","Sí, la atención será presencial."],keywords:["si","presencial","sede"],why:"Confirma la modalidad y, si es útil, el lugar."},
+      {prompt:"Voy a registrar la solicitud. ¿Tiene alguna preferencia adicional de comunicación?",model:"Sí. Prefiero recibir las indicaciones importantes también por escrito.",alternatives:["Sí, por favor. Quisiera que la información importante esté escrita.","Me ayuda recibir las instrucciones por escrito."],keywords:["escrito","informacion","indicaciones"],why:"Puedes explicar qué forma de comunicación te ayuda más."},
+      {prompt:"Entendido. Lo anotaremos.",model:"Gracias. ¿Me confirmarán si el apoyo estará disponible?",alternatives:["Muchas gracias. ¿Recibiré una confirmación?","¿Me pueden avisar cuando quede confirmado?"],keywords:["confirm","avisa","disponible"],why:"Pide una confirmación para saber si la solicitud quedó resuelta."},
+      {prompt:"Sí, le enviaremos un mensaje.",model:"Perfecto. Prefiero que la confirmación sea por mensaje de texto.",alternatives:["Gracias. Un mensaje de texto está bien.","Perfecto, por favor envíenme la confirmación por escrito."],keywords:["mensaje","texto","confirm"],why:"Puedes indicar el canal de comunicación que prefieres."},
+      {prompt:"De acuerdo. ¿Hay algo más que debamos saber?",model:"No, con eso es suficiente. Muchas gracias por la ayuda.",alternatives:["Eso es todo. Gracias por la atención.","No, gracias. Ya quedó claro."],keywords:["no","gracias","ayuda"],why:"Cierra confirmando que la información quedó clara y agradeciendo."}
+    ]
+  },
+  {
+    id:"hotel-reserva", level:5, avatar:"🏨", name:"Hotel Andino", situation:"Modificar una reserva de hotel", place:"Viaje", duration:"7–8 min",
+    goal:"Practica explicar un cambio, comparar opciones y confirmar condiciones.", closing:"Listo. La reserva quedó modificada y enviamos la confirmación a tu correo. Te esperamos el viernes.",
+    turns:[
+      {prompt:"Buenas tardes. ¿En qué podemos ayudarlo?",model:"Buenas tardes. Tengo una reserva y necesito cambiar la fecha de llegada.",alternatives:["Hola. Quisiera modificar la fecha de mi reserva.","Tengo una reserva, pero necesito llegar un día después."],keywords:["reserva","cambiar","fecha","llegada"],why:"Explica primero qué reserva tienes y qué cambio necesitas."},
+      {prompt:"Claro. ¿A nombre de quién está la reserva?",model:"Está a nombre de Luis Pérez.",alternatives:["La reserva está a nombre de Luis Pérez.","Mi nombre es Luis Pérez."],keywords:["luis","perez","nombre"],why:"En una gestión de reserva, da el nombre tal como fue registrado."},
+      {prompt:"La reserva empieza el jueves. ¿Qué día desea llegar?",model:"Quisiera llegar el viernes por la tarde.",alternatives:["Necesito cambiar la llegada para el viernes.","Llegaré el viernes en la tarde."],keywords:["viernes","tarde","lleg"],why:"Indica el nuevo día y, si puedes, el momento aproximado."},
+      {prompt:"Tenemos disponibilidad el viernes. ¿Mantiene dos noches?",model:"Sí, quisiera mantener las dos noches.",alternatives:["Sí, la cantidad de noches no cambia.","Sí, me quedaré dos noches."],keywords:["si","dos","noches"],why:"Aclara qué parte de la reserva se mantiene igual."},
+      {prompt:"El cambio tiene una diferencia de veinte soles.",model:"Está bien. ¿Ese monto se paga ahora o al llegar?",alternatives:["De acuerdo. ¿Cuándo debo pagar la diferencia?","Está bien. ¿Puedo pagar los veinte soles en el hotel?"],keywords:["pagar","ahora","llegar","diferencia"],why:"Pregunta cuándo debe realizarse un pago adicional."},
+      {prompt:"Puede pagarlo al llegar.",model:"Perfecto. Entonces lo pagaré durante el check-in.",alternatives:["De acuerdo, pagaré al llegar.","Perfecto. Haré el pago cuando me registre."],keywords:["pagar","llegar","check"],why:"“Entonces” conecta la información recibida con tu decisión."},
+      {prompt:"¿Necesita mantener la habitación con dos camas?",model:"Sí, por favor. Viajamos dos personas y necesitamos dos camas.",alternatives:["Sí, mantenga la habitación con dos camas.","Sí. Somos dos personas y preferimos camas separadas."],keywords:["dos","camas","personas"],why:"Explica la preferencia y la razón para que la solicitud sea clara."},
+      {prompt:"Perfecto. La habitación se mantiene igual.",model:"Gracias. ¿Me enviarán una nueva confirmación con la fecha actualizada?",alternatives:["Muchas gracias. ¿Recibiré la reserva actualizada por correo?","¿Pueden enviarme una confirmación del cambio?"],keywords:["confirm","fecha","correo","actualiz"],why:"Después de un cambio importante, pide una confirmación escrita."},
+      {prompt:"Sí, la enviaremos por correo en unos minutos.",model:"Excelente. Revisaré mi correo. Muchas gracias por la ayuda.",alternatives:["Perfecto. Estaré atento al correo. Gracias.","Muchas gracias. Revisaré la confirmación cuando llegue."],keywords:["correo","gracias","revis"],why:"Cierra indicando qué harás después y agradeciendo."}
+    ]
+  },
+  {
+    id:"junta-vecinal", level:5, avatar:"🌳", name:"Grupo vecinal", situation:"Organizar una actividad para el barrio", place:"Vecindario", duration:"7–8 min",
+    goal:"Practica propuestas, acuerdos, responsabilidades y solución de problemas.", closing:"Muy bien. Ya tenemos fecha, tareas y un plan alternativo. Compartiremos el resumen en el grupo para que todos puedan leerlo.",
+    turns:[
+      {prompt:"Queremos hacer una actividad para mejorar el parque. ¿Qué podríamos organizar?",model:"Podríamos organizar una jornada de limpieza y plantar algunas flores.",alternatives:["Propongo limpiar el parque y mejorar las áreas verdes.","Podemos hacer una actividad de limpieza con los vecinos."],keywords:["limpieza","parque","flores","organ"],why:"Una propuesta clara dice qué actividad se hará y dónde."},
+      {prompt:"Me gusta. ¿Qué día sería mejor?",model:"El sábado por la mañana podría funcionar bien.",alternatives:["Propongo el sábado en la mañana.","Podríamos hacerlo el sábado temprano."],keywords:["sabado","mañana"],why:"Usa “podría” para sugerir una opción sin imponerla."},
+      {prompt:"¿A qué hora empezamos?",model:"Podríamos empezar a las nueve.",alternatives:["A las nueve me parece bien.","Propongo comenzar a las nueve de la mañana."],keywords:["nueve","empez"],why:"Una hora concreta ayuda a organizar responsabilidades."},
+      {prompt:"Necesitamos bolsas, guantes y herramientas.",model:"Yo puedo encargarme de conseguir bolsas y guantes.",alternatives:["Puedo llevar las bolsas y los guantes.","Yo me responsabilizo por esos materiales."],keywords:["bolsas","guantes","encarg"],why:"“Me encargo de…” sirve para asumir una responsabilidad."},
+      {prompt:"Perfecto. ¿Quién puede avisar a los demás vecinos?",model:"Puedo preparar un mensaje y enviarlo al grupo del barrio.",alternatives:["Yo puedo escribir el aviso para el grupo.","Me encargo de comunicar la actividad a los vecinos."],keywords:["mensaje","grupo","vecinos","aviso"],why:"Explica el medio de comunicación y a quién va dirigido."},
+      {prompt:"¿Qué información debe tener el mensaje?",model:"Debe incluir el día, la hora, el lugar y lo que cada persona puede llevar.",alternatives:["Hay que poner fecha, hora y materiales necesarios.","El aviso debe explicar cuándo, dónde y qué necesitamos."],keywords:["dia","hora","lugar","llevar"],why:"Un aviso útil responde preguntas básicas: cuándo, dónde y qué se necesita."},
+      {prompt:"¿Y si llueve ese día?",model:"Si llueve, podemos mover la actividad al domingo.",alternatives:["Podemos tener el domingo como fecha alternativa.","Si hay lluvia, avisamos que se cambia para el día siguiente."],keywords:["llueve","domingo","cambiar"],why:"Usa “si” para presentar una condición y una solución."},
+      {prompt:"Buena idea. ¿Cómo confirmamos el cambio?",model:"Lo confirmamos por el grupo y pedimos que todos respondan que leyeron el mensaje.",alternatives:["Enviaremos un mensaje al grupo y pediremos confirmación.","Avisamos por escrito para que todos sepan el nuevo plan."],keywords:["grupo","mensaje","confirm","escrito"],why:"En una coordinación grupal, conviene indicar cómo se confirmará la información."},
+      {prompt:"Perfecto. Creo que ya tenemos un buen plan.",model:"Sí. Voy a escribir un resumen con las tareas de cada persona.",alternatives:["Sí, haré un resumen para que todos sepan qué deben hacer.","De acuerdo. Compartiré las responsabilidades por escrito."],keywords:["resumen","tareas","personas","escrito"],why:"Un resumen final ayuda a que un acuerdo largo quede claro para todos."}
+    ]
   }
 ];
 
@@ -346,7 +479,7 @@ function scenarioDomain(sc){
   if(/colegio|universidad|estudio/.test(p))return "study";
   if(/transporte|viaje/.test(p))return "transport";
   if(/mercado|compras|tienda|delivery/.test(p))return "shopping";
-  if(/tramite|banco|municip/.test(p))return "admin";
+  if(/tramite|banco|municip|accesibilidad|vivienda/.test(p))return "admin";
   if(/familia|amigos|vecindario|social|deporte/.test(p))return "social";
   if(/tecnologia|internet/.test(p))return "tech";
   return "daily";
