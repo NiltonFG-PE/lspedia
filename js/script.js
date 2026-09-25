@@ -1574,7 +1574,7 @@ function volverAlMenuHerramientasMovilSiCorresponde(){
     const menuMovil = document.getElementById("herramientasMenuMovil");
     if(menuMovil){
         menuMovil.classList.remove("d-none");
-        menuMovil.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        centrarHerramientasEnPantalla(menuMovil);
     }
     actualizarVistaUrl("herramientas");
 }
@@ -1655,6 +1655,61 @@ function mostrarBloqueInicio(){
     // ocultarBloqueInicio() la ocultaba pero nadie la revertía).
     const senal = document.getElementById("senalDelDia");
     if(senal) senal.style.display = "";
+}
+
+function centrarHerramientasEnPantalla(elemento){
+    if(!elemento) return;
+
+    const reducirMovimiento = window.matchMedia
+        && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function calcularDestino(){
+        const rect = elemento.getBoundingClientRect();
+        const scrollActual = window.pageYOffset || document.documentElement.scrollTop || 0;
+        const viewport = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+
+        const navbar = document.querySelector("nav.navbar");
+        const navRect = navbar ? navbar.getBoundingClientRect() : null;
+        const altoSuperior = navbar && getComputedStyle(navbar).position === "fixed" && navRect
+            ? Math.max(0, navRect.height)
+            : 0;
+
+        const barraInferior = document.getElementById("mobileBottomNav");
+        const bottomRect = barraInferior && !barraInferior.classList.contains("d-none")
+            ? barraInferior.getBoundingClientRect()
+            : null;
+        const altoInferior = bottomRect && bottomRect.height > 0 ? bottomRect.height : 0;
+
+        const centroVisible = altoSuperior + Math.max(
+            0,
+            (viewport - altoSuperior - altoInferior) / 2
+        );
+        const centroElemento = rect.top + (rect.height / 2);
+
+        return Math.max(0, scrollActual + centroElemento - centroVisible);
+    }
+
+    // Espera dos frames para que ocultar/mostrar los módulos termine de
+    // recalcular alturas antes de decidir dónde centrar Herramientas.
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+        window.scrollTo({
+            top: calcularDestino(),
+            behavior: reducirMovimiento ? "auto" : "smooth"
+        });
+
+        // Si fuentes/iconos cambian un poco el alto del selector, ajusta una
+        // sola vez al terminar la animación para mantenerlo realmente centrado.
+        setTimeout(() => {
+            const destino = calcularDestino();
+            const actual = window.pageYOffset || document.documentElement.scrollTop || 0;
+            if(Math.abs(actual - destino) > 20){
+                window.scrollTo({
+                    top: destino,
+                    behavior: reducirMovimiento ? "auto" : "smooth"
+                });
+            }
+        }, 420);
+    }));
 }
 
 function mostrarSeccionHerramientas(){
@@ -1766,7 +1821,7 @@ function mostrarSeccionHerramientas(){
         } catch(err){ console.error("No se pudo iniciar Alfabetización:", err); }
     }
 
-    if(seccionSubtitulos) seccionSubtitulos.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if(seccionSubtitulos) centrarHerramientasEnPantalla(seccionSubtitulos);
 }
 
 // --- SECCIÓN "SOBRE NOSOTROS" (reemplaza el antiguo modal) ---
