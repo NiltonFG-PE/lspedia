@@ -5818,7 +5818,7 @@ function compartirColeccionVocabulario(nombre){
         .replace(/^-+|-+$/g, "");
     const url = window.location.origin
         + "/coleccion/vocabulario/" + encodeURIComponent(refColeccion)
-        + "/compartir-20260925-6/";
+        + "/compartir-20260925-7/";
     const titulo = coleccion + " | LSPedia";
     const texto = `Explora la colección "${coleccion}" del Vocabulario de LSPedia.`;
     if (navigator.share) {
