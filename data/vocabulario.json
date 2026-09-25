@@ -11,7 +11,7 @@
     "imagen": "img/vocabulario/adulto.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Adult",
     "definicionIngles": ""
   },
   {
@@ -26,7 +26,7 @@
     "imagen": "img/vocabulario/alto.webp",
     "definicion": "",
     "fechaPublicacion": "23/09/2026",
-    "ingles": "",
+    "ingles": "Tall",
     "definicionIngles": ""
   },
   {
@@ -41,7 +41,7 @@
     "imagen": "img/vocabulario/ancho.webp",
     "definicion": "",
     "fechaPublicacion": "23/09/2026",
-    "ingles": "",
+    "ingles": "Wide",
     "definicionIngles": ""
   },
   {
@@ -56,7 +56,7 @@
     "imagen": "img/vocabulario/angosto.webp",
     "definicion": "",
     "fechaPublicacion": "23/09/2026",
-    "ingles": "",
+    "ingles": "Narrow",
     "definicionIngles": ""
   },
   {
@@ -71,7 +71,7 @@
     "imagen": "img/vocabulario/antiguo.webp",
     "definicion": "",
     "fechaPublicacion": "23/09/2026",
-    "ingles": "",
+    "ingles": "Old",
     "definicionIngles": ""
   },
   {
@@ -86,7 +86,7 @@
     "imagen": "img/vocabulario/bajo.webp",
     "definicion": "",
     "fechaPublicacion": "23/09/2026",
-    "ingles": "",
+    "ingles": "Short",
     "definicionIngles": ""
   },
   {
@@ -101,7 +101,7 @@
     "imagen": "img/vocabulario/barato.webp",
     "definicion": "",
     "fechaPublicacion": "23/09/2026",
-    "ingles": "",
+    "ingles": "Cheap",
     "definicionIngles": ""
   },
   {
@@ -116,7 +116,7 @@
     "imagen": "img/vocabulario/caro.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Expensive",
     "definicionIngles": ""
   },
   {
@@ -131,7 +131,7 @@
     "imagen": "img/vocabulario/debil.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Weak",
     "definicionIngles": ""
   },
   {
@@ -146,7 +146,7 @@
     "imagen": "img/vocabulario/dificil.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Difficult",
     "definicionIngles": ""
   },
   {
@@ -161,7 +161,7 @@
     "imagen": "img/vocabulario/distraido.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Distracted",
     "definicionIngles": ""
   },
   {
@@ -176,7 +176,7 @@
     "imagen": "img/vocabulario/amarillo.webp",
     "definicion": "",
     "fechaPublicacion": "15/09/2026",
-    "ingles": "",
+    "ingles": "Yellow",
     "definicionIngles": ""
   },
   {
@@ -191,7 +191,7 @@
     "imagen": "img/vocabulario/azul.webp",
     "definicion": "",
     "fechaPublicacion": "15/09/2026",
-    "ingles": "",
+    "ingles": "Blue",
     "definicionIngles": ""
   },
   {
@@ -206,7 +206,7 @@
     "imagen": "img/vocabulario/beige.webp",
     "definicion": "",
     "fechaPublicacion": "16/09/2026",
-    "ingles": "",
+    "ingles": "Beige",
     "definicionIngles": ""
   },
   {
@@ -221,7 +221,7 @@
     "imagen": "img/vocabulario/blanco.webp",
     "definicion": "",
     "fechaPublicacion": "16/09/2026",
-    "ingles": "",
+    "ingles": "White",
     "definicionIngles": ""
   },
   {
@@ -236,7 +236,7 @@
     "imagen": "img/vocabulario/celeste.webp",
     "definicion": "",
     "fechaPublicacion": "15/09/2026",
-    "ingles": "",
+    "ingles": "Light blue",
     "definicionIngles": ""
   },
   {
@@ -251,7 +251,7 @@
     "imagen": "img/vocabulario/dorado.webp",
     "definicion": "",
     "fechaPublicacion": "15/09/2026",
-    "ingles": "",
+    "ingles": "Gold",
     "definicionIngles": ""
   },
   {
@@ -266,7 +266,7 @@
     "imagen": "img/vocabulario/guinda.webp",
     "definicion": "",
     "fechaPublicacion": "16/09/2026",
-    "ingles": "",
+    "ingles": "Burgundy",
     "definicionIngles": ""
   },
   {
@@ -281,7 +281,7 @@
     "imagen": "img/vocabulario/marron.webp",
     "definicion": "",
     "fechaPublicacion": "16/09/2026",
-    "ingles": "",
+    "ingles": "Brown",
     "definicionIngles": ""
   },
   {
@@ -296,7 +296,7 @@
     "imagen": "img/vocabulario/morado.webp",
     "definicion": "",
     "fechaPublicacion": "16/09/2026",
-    "ingles": "",
+    "ingles": "Purple",
     "definicionIngles": ""
   },
   {
@@ -311,7 +311,7 @@
     "imagen": "img/vocabulario/anaranjado.webp",
     "definicion": "",
     "fechaPublicacion": "15/09/2026",
-    "ingles": "",
+    "ingles": "Orange",
     "definicionIngles": ""
   },
   {
@@ -326,7 +326,7 @@
     "imagen": "img/vocabulario/negro.webp",
     "definicion": "",
     "fechaPublicacion": "16/09/2026",
-    "ingles": "",
+    "ingles": "Black",
     "definicionIngles": ""
   },
   {
@@ -341,7 +341,7 @@
     "imagen": "img/vocabulario/rojo.webp",
     "definicion": "",
     "fechaPublicacion": "15/09/2026",
-    "ingles": "",
+    "ingles": "Red",
     "definicionIngles": ""
   },
   {
@@ -356,7 +356,7 @@
     "imagen": "img/vocabulario/rosado.webp",
     "definicion": "",
     "fechaPublicacion": "16/09/2026",
-    "ingles": "",
+    "ingles": "Pink",
     "definicionIngles": ""
   },
   {
@@ -371,7 +371,7 @@
     "imagen": "img/vocabulario/turquesa.webp",
     "definicion": "",
     "fechaPublicacion": "16/09/2026",
-    "ingles": "",
+    "ingles": "Turquoise",
     "definicionIngles": ""
   },
   {
@@ -386,7 +386,7 @@
     "imagen": "img/vocabulario/verde.webp",
     "definicion": "",
     "fechaPublicacion": "15/09/2026",
-    "ingles": "",
+    "ingles": "Green",
     "definicionIngles": ""
   },
   {
@@ -401,7 +401,7 @@
     "imagen": "img/vocabulario/pregunta.webp",
     "definicion": "",
     "fechaPublicacion": "22/09/2026",
-    "ingles": "",
+    "ingles": "Question",
     "definicionIngles": ""
   },
   {
@@ -416,7 +416,7 @@
     "imagen": "img/vocabulario/felicitaciones.webp",
     "definicion": "",
     "fechaPublicacion": "23/09/2026",
-    "ingles": "",
+    "ingles": "Congratulations",
     "definicionIngles": ""
   },
   {
@@ -431,7 +431,7 @@
     "imagen": "img/vocabulario/gracias.webp",
     "definicion": "",
     "fechaPublicacion": "23/09/2026",
-    "ingles": "",
+    "ingles": "Thank you",
     "definicionIngles": ""
   },
   {
@@ -446,7 +446,7 @@
     "imagen": "img/vocabulario/por-favor.webp",
     "definicion": "",
     "fechaPublicacion": "23/09/2026",
-    "ingles": "",
+    "ingles": "Please",
     "definicionIngles": ""
   },
   {
@@ -461,7 +461,7 @@
     "imagen": "img/vocabulario/perdon.webp",
     "definicion": "",
     "fechaPublicacion": "23/09/2026",
-    "ingles": "",
+    "ingles": "Sorry",
     "definicionIngles": ""
   },
   {
@@ -476,7 +476,7 @@
     "imagen": "img/vocabulario/bienvenido.webp",
     "definicion": "",
     "fechaPublicacion": "23/09/2026",
-    "ingles": "",
+    "ingles": "Welcome",
     "definicionIngles": ""
   },
   {
@@ -491,7 +491,7 @@
     "imagen": "img/vocabulario/hasta-luego.webp",
     "definicion": "",
     "fechaPublicacion": "23/09/2026",
-    "ingles": "",
+    "ingles": "See you later",
     "definicionIngles": ""
   },
   {
@@ -506,7 +506,7 @@
     "imagen": "img/vocabulario/buenos-dias.webp",
     "definicion": "",
     "fechaPublicacion": "23/09/2026",
-    "ingles": "",
+    "ingles": "Good morning",
     "definicionIngles": ""
   },
   {
@@ -521,7 +521,7 @@
     "imagen": "img/vocabulario/buenas-tardes.webp",
     "definicion": "",
     "fechaPublicacion": "23/09/2026",
-    "ingles": "",
+    "ingles": "Good afternoon",
     "definicionIngles": ""
   },
   {
@@ -536,7 +536,7 @@
     "imagen": "img/vocabulario/buenas-noches.webp",
     "definicion": "",
     "fechaPublicacion": "23/09/2026",
-    "ingles": "",
+    "ingles": "Good evening",
     "definicionIngles": ""
   },
   {
@@ -551,7 +551,7 @@
     "imagen": "img/vocabulario/cansado.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Tired",
     "definicionIngles": ""
   },
   {
@@ -566,7 +566,7 @@
     "imagen": "img/vocabulario/aburrido.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Bored",
     "definicionIngles": ""
   },
   {
@@ -581,7 +581,7 @@
     "imagen": "img/vocabulario/amor.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Love",
     "definicionIngles": ""
   },
   {
@@ -596,7 +596,7 @@
     "imagen": "img/vocabulario/asustado.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Scared",
     "definicionIngles": ""
   },
   {
@@ -611,7 +611,7 @@
     "imagen": "img/vocabulario/cariño.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Affection",
     "definicionIngles": ""
   },
   {
@@ -626,7 +626,7 @@
     "imagen": "img/vocabulario/celos.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Jealousy",
     "definicionIngles": ""
   },
   {
@@ -641,7 +641,7 @@
     "imagen": "img/vocabulario/contento.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Happy",
     "definicionIngles": ""
   },
   {
@@ -656,7 +656,7 @@
     "imagen": "img/vocabulario/enojado.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Angry",
     "definicionIngles": ""
   },
   {
@@ -671,7 +671,7 @@
     "imagen": "img/vocabulario/envidia.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Envy",
     "definicionIngles": ""
   },
   {
@@ -686,7 +686,7 @@
     "imagen": "img/vocabulario/esperanza.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Hope",
     "definicionIngles": ""
   },
   {
@@ -701,7 +701,7 @@
     "imagen": "img/vocabulario/feliz.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Happy",
     "definicionIngles": ""
   },
   {
@@ -716,7 +716,7 @@
     "imagen": "img/vocabulario/extrañar.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Miss",
     "definicionIngles": ""
   },
   {
@@ -731,7 +731,7 @@
     "imagen": "img/vocabulario/orgullo.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Pride (negative)",
     "definicionIngles": ""
   },
   {
@@ -746,7 +746,7 @@
     "imagen": "img/vocabulario/soledad.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Loneliness",
     "definicionIngles": ""
   },
   {
@@ -761,7 +761,7 @@
     "imagen": "img/vocabulario/sorprendido.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Surprised",
     "definicionIngles": ""
   },
   {
@@ -776,7 +776,7 @@
     "imagen": "img/vocabulario/tristeza.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Sad",
     "definicionIngles": ""
   },
   {
@@ -791,7 +791,7 @@
     "imagen": "img/vocabulario/verguenza.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Embarrassment",
     "definicionIngles": ""
   },
   {
@@ -806,7 +806,7 @@
     "imagen": "img/vocabulario/como.webp",
     "definicion": "",
     "fechaPublicacion": "21/09/2026",
-    "ingles": "",
+    "ingles": "How?",
     "definicionIngles": ""
   },
   {
@@ -821,7 +821,7 @@
     "imagen": "img/vocabulario/cual.webp",
     "definicion": "",
     "fechaPublicacion": "21/09/2026",
-    "ingles": "",
+    "ingles": "Which?",
     "definicionIngles": ""
   },
   {
@@ -836,7 +836,7 @@
     "imagen": "img/vocabulario/cuando.webp",
     "definicion": "",
     "fechaPublicacion": "21/09/2026",
-    "ingles": "",
+    "ingles": "When?",
     "definicionIngles": ""
   },
   {
@@ -851,7 +851,7 @@
     "imagen": "img/vocabulario/donde.webp",
     "definicion": "",
     "fechaPublicacion": "21/09/2026",
-    "ingles": "",
+    "ingles": "Where?",
     "definicionIngles": ""
   },
   {
@@ -866,7 +866,7 @@
     "imagen": "img/vocabulario/por-que.webp",
     "definicion": "",
     "fechaPublicacion": "21/09/2026",
-    "ingles": "",
+    "ingles": "Why?",
     "definicionIngles": ""
   },
   {
@@ -881,7 +881,7 @@
     "imagen": "img/vocabulario/que.webp",
     "definicion": "",
     "fechaPublicacion": "21/09/2026",
-    "ingles": "",
+    "ingles": "What?",
     "definicionIngles": ""
   },
   {
@@ -896,7 +896,7 @@
     "imagen": "img/vocabulario/quien.webp",
     "definicion": "",
     "fechaPublicacion": "21/09/2026",
-    "ingles": "",
+    "ingles": "Who?",
     "definicionIngles": ""
   },
   {
@@ -911,7 +911,7 @@
     "imagen": "img/vocabulario/quienes.webp",
     "definicion": "",
     "fechaPublicacion": "21/09/2026",
-    "ingles": "",
+    "ingles": "Who?",
     "definicionIngles": ""
   },
   {
@@ -926,7 +926,7 @@
     "imagen": "img/vocabulario/cuales.webp",
     "definicion": "",
     "fechaPublicacion": "21/09/2026",
-    "ingles": "",
+    "ingles": "Which ones?",
     "definicionIngles": ""
   },
   {
@@ -941,7 +941,7 @@
     "imagen": "img/vocabulario/cuantos.webp",
     "definicion": "",
     "fechaPublicacion": "21/09/2026",
-    "ingles": "",
+    "ingles": "How many?",
     "definicionIngles": ""
   },
   {
@@ -956,7 +956,7 @@
     "imagen": "img/vocabulario/para-que.webp",
     "definicion": "",
     "fechaPublicacion": "21/09/2026",
-    "ingles": "",
+    "ingles": "What for?",
     "definicionIngles": ""
   },
   {
@@ -973,7 +973,7 @@
     "imagen": "img/vocabulario/abril.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "April",
     "definicionIngles": ""
   },
   {
@@ -990,7 +990,7 @@
     "imagen": "img/vocabulario/agosto.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "August",
     "definicionIngles": ""
   },
   {
@@ -1005,7 +1005,7 @@
     "imagen": "img/vocabulario/ahora.webp",
     "definicion": "",
     "fechaPublicacion": "23/09/2026",
-    "ingles": "",
+    "ingles": "Now",
     "definicionIngles": ""
   },
   {
@@ -1020,7 +1020,7 @@
     "imagen": "img/vocabulario/anteayer.webp",
     "definicion": "",
     "fechaPublicacion": "23/09/2026",
-    "ingles": "",
+    "ingles": "The day before yesterday",
     "definicionIngles": ""
   },
   {
@@ -1035,7 +1035,7 @@
     "imagen": "img/vocabulario/ayer.webp",
     "definicion": "",
     "fechaPublicacion": "23/09/2026",
-    "ingles": "",
+    "ingles": "Yesterday",
     "definicionIngles": ""
   },
   {
@@ -1050,7 +1050,7 @@
     "imagen": "img/vocabulario/todos-los-dias-a-diario.webp",
     "definicion": "",
     "fechaPublicacion": "23/09/2026",
-    "ingles": "",
+    "ingles": "Every day",
     "definicionIngles": ""
   },
   {
@@ -1067,7 +1067,7 @@
     "imagen": "img/vocabulario/diciembre.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "December",
     "definicionIngles": ""
   },
   {
@@ -1082,7 +1082,7 @@
     "imagen": "img/vocabulario/domingo.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Sunday",
     "definicionIngles": ""
   },
   {
@@ -1099,7 +1099,7 @@
     "imagen": "img/vocabulario/enero.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "January",
     "definicionIngles": ""
   },
   {
@@ -1116,7 +1116,7 @@
     "imagen": "img/vocabulario/estaciones.webp",
     "definicion": "",
     "fechaPublicacion": "22/09/2026",
-    "ingles": "",
+    "ingles": "Seasons of the year",
     "definicionIngles": ""
   },
   {
@@ -1133,7 +1133,7 @@
     "imagen": "img/vocabulario/febrero.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "February",
     "definicionIngles": ""
   },
   {
@@ -1148,7 +1148,7 @@
     "imagen": "img/vocabulario/hoy.webp",
     "definicion": "",
     "fechaPublicacion": "23/09/2026",
-    "ingles": "",
+    "ingles": "Today",
     "definicionIngles": ""
   },
   {
@@ -1165,7 +1165,7 @@
     "imagen": "img/vocabulario/invierno.webp",
     "definicion": "",
     "fechaPublicacion": "22/09/2026",
-    "ingles": "",
+    "ingles": "Winter",
     "definicionIngles": ""
   },
   {
@@ -1180,7 +1180,7 @@
     "imagen": "img/vocabulario/jueves.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Thursday",
     "definicionIngles": ""
   },
   {
@@ -1197,7 +1197,7 @@
     "imagen": "img/vocabulario/julio.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "July",
     "definicionIngles": ""
   },
   {
@@ -1214,7 +1214,7 @@
     "imagen": "img/vocabulario/junio.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "June",
     "definicionIngles": ""
   },
   {
@@ -1229,7 +1229,7 @@
     "imagen": "img/vocabulario/lunes.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Monday",
     "definicionIngles": ""
   },
   {
@@ -1244,7 +1244,7 @@
     "imagen": "img/vocabulario/manana.webp",
     "definicion": "",
     "fechaPublicacion": "23/09/2026",
-    "ingles": "",
+    "ingles": "Tomorrow",
     "definicionIngles": ""
   },
   {
@@ -1259,7 +1259,7 @@
     "imagen": "img/vocabulario/martes.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Tuesday",
     "definicionIngles": ""
   },
   {
@@ -1276,7 +1276,7 @@
     "imagen": "img/vocabulario/marzo.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "March",
     "definicionIngles": ""
   },
   {
@@ -1293,7 +1293,7 @@
     "imagen": "img/vocabulario/mayo.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "May",
     "definicionIngles": ""
   },
   {
@@ -1308,7 +1308,7 @@
     "imagen": "img/vocabulario/miercoles.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Wednesday",
     "definicionIngles": ""
   },
   {
@@ -1325,7 +1325,7 @@
     "imagen": "img/vocabulario/noviembre.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "November",
     "definicionIngles": ""
   },
   {
@@ -1342,7 +1342,7 @@
     "imagen": "img/vocabulario/octubre.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "October",
     "definicionIngles": ""
   },
   {
@@ -1359,7 +1359,7 @@
     "imagen": "img/vocabulario/otono.webp",
     "definicion": "",
     "fechaPublicacion": "22/09/2026",
-    "ingles": "",
+    "ingles": "Autumn",
     "definicionIngles": ""
   },
   {
@@ -1374,7 +1374,7 @@
     "imagen": "img/vocabulario/pasado-manana.webp",
     "definicion": "",
     "fechaPublicacion": "23/09/2026",
-    "ingles": "",
+    "ingles": "The day after tomorrow",
     "definicionIngles": ""
   },
   {
@@ -1391,7 +1391,7 @@
     "imagen": "img/vocabulario/primavera.webp",
     "definicion": "",
     "fechaPublicacion": "22/09/2026",
-    "ingles": "",
+    "ingles": "Spring",
     "definicionIngles": ""
   },
   {
@@ -1406,7 +1406,7 @@
     "imagen": "img/vocabulario/sabado.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Saturday",
     "definicionIngles": ""
   },
   {
@@ -1423,7 +1423,7 @@
     "imagen": "img/vocabulario/septiembre.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "September",
     "definicionIngles": ""
   },
   {
@@ -1440,7 +1440,7 @@
     "imagen": "img/vocabulario/verano.webp",
     "definicion": "",
     "fechaPublicacion": "22/09/2026",
-    "ingles": "",
+    "ingles": "Summer",
     "definicionIngles": ""
   },
   {
@@ -1455,7 +1455,7 @@
     "imagen": "img/vocabulario/viernes.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Friday",
     "definicionIngles": ""
   },
   {
@@ -1470,7 +1470,7 @@
     "imagen": "img/vocabulario/apoyar.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Support",
     "definicionIngles": ""
   },
   {
@@ -1485,7 +1485,7 @@
     "imagen": "img/vocabulario/ayudar.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Help",
     "definicionIngles": ""
   },
   {
@@ -1500,7 +1500,7 @@
     "imagen": "img/vocabulario/examinar.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Examine",
     "definicionIngles": ""
   },
   {
@@ -1515,7 +1515,7 @@
     "imagen": "img/vocabulario/advertir.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Warn",
     "definicionIngles": ""
   },
   {
@@ -1530,7 +1530,7 @@
     "imagen": "img/vocabulario/practicar.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Practice",
     "definicionIngles": ""
   },
   {
@@ -1545,7 +1545,7 @@
     "imagen": "img/vocabulario/aceptar.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Accept",
     "definicionIngles": ""
   },
   {
@@ -1560,7 +1560,7 @@
     "imagen": "img/vocabulario/añadir.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Add",
     "definicionIngles": ""
   },
   {
@@ -1575,7 +1575,7 @@
     "imagen": "img/vocabulario/abrir.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Open",
     "definicionIngles": ""
   },
   {
@@ -1590,7 +1590,7 @@
     "imagen": "img/vocabulario/bromear.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Joke",
     "definicionIngles": ""
   },
   {
@@ -1605,7 +1605,7 @@
     "imagen": "img/vocabulario/abrazar.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Hug",
     "definicionIngles": ""
   },
   {
@@ -1620,7 +1620,7 @@
     "imagen": "img/vocabulario/atender.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Attend to",
     "definicionIngles": ""
   },
   {
@@ -1635,7 +1635,7 @@
     "imagen": "img/vocabulario/aplaudir.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Applaud",
     "definicionIngles": ""
   },
   {
@@ -1650,7 +1650,7 @@
     "imagen": "img/vocabulario/oir.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Listen",
     "definicionIngles": ""
   },
   {
@@ -1665,7 +1665,7 @@
     "imagen": "img/vocabulario/agradecer.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Thank",
     "definicionIngles": ""
   },
   {
@@ -1680,7 +1680,7 @@
     "imagen": "img/vocabulario/jugar.webp",
     "definicion": "",
     "fechaPublicacion": "",
-    "ingles": "",
+    "ingles": "Play",
     "definicionIngles": ""
   },
   {
@@ -1695,7 +1695,7 @@
     "imagen": "img/vocabulario/numero.webp",
     "definicion": "",
     "fechaPublicacion": "22/09/2026",
-    "ingles": "",
+    "ingles": "Number",
     "definicionIngles": ""
   },
   {
@@ -1710,7 +1710,7 @@
     "imagen": "img/vocabulario/saludos.webp",
     "definicion": "",
     "fechaPublicacion": "23/09/2026",
-    "ingles": "",
+    "ingles": "Greetings",
     "definicionIngles": ""
   },
   {
@@ -1725,7 +1725,7 @@
     "imagen": "img/vocabulario/muchas-gracias.webp",
     "definicion": "",
     "fechaPublicacion": "23/09/2026",
-    "ingles": "",
+    "ingles": "Thank you very much",
     "definicionIngles": ""
   },
   {
@@ -1746,7 +1746,7 @@
     "imagen": "img/vocabulario/gratis.webp",
     "definicion": "",
     "fechaPublicacion": "23/09/2026",
-    "ingles": "",
+    "ingles": "Free",
     "definicionIngles": ""
   },
   {
@@ -1761,7 +1761,7 @@
     "imagen": "img/vocabulario/nos-vemos.webp",
     "definicion": "",
     "fechaPublicacion": "23/09/2026",
-    "ingles": "",
+    "ingles": "See you",
     "definicionIngles": ""
   },
   {
@@ -1776,7 +1776,7 @@
     "imagen": "img/vocabulario/hola.webp",
     "definicion": "",
     "fechaPublicacion": "23/09/2026",
-    "ingles": "",
+    "ingles": "Hello",
     "definicionIngles": ""
   },
   {
@@ -1791,7 +1791,7 @@
     "imagen": "img/vocabulario/chau.webp",
     "definicion": "",
     "fechaPublicacion": "23/09/2026",
-    "ingles": "",
+    "ingles": "Bye",
     "definicionIngles": ""
   },
   {
@@ -1806,7 +1806,7 @@
     "imagen": "img/vocabulario/cuidate.webp",
     "definicion": "",
     "fechaPublicacion": "23/09/2026",
-    "ingles": "",
+    "ingles": "Take care",
     "definicionIngles": ""
   },
   {
@@ -1821,7 +1821,7 @@
     "imagen": "img/vocabulario/educado.webp",
     "definicion": "",
     "fechaPublicacion": "23/09/2026",
-    "ingles": "",
+    "ingles": "Polite",
     "definicionIngles": ""
   }
 ]
