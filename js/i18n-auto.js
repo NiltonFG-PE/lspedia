@@ -4,7 +4,7 @@
    muestra la definición inglesa cuando la interfaz está en EN.
 
    Reglas:
-   - SOLO Diccionario participa de esta capa bilingüe.
+   - Diccionario y Vocabulario participan de esta capa bilingüe.
    - El español sigue siendo la palabra canónica y la URL permanece en español.
    - La búsqueda en inglés funciona incluso si la interfaz está en español,
      mediante aliases ocultos que no se muestran como variantes correctas.
@@ -56,8 +56,7 @@
 
         lista.forEach(item => {
             if(!item || !item.palabra || !item.ingles) return;
-            if(norm(item.fuente) === 'vocabulario') return;
-            const fuente = 'diccionario';
+            const fuente = norm(item.fuente) === 'vocabulario' ? 'vocabulario' : 'diccionario';
             const traduccion = {
                 es: String(item.palabra || '').trim(),
                 categoria: String(item.categoria || '').trim(),
@@ -164,44 +163,70 @@
         });
     }
 
-    function resolverTraduccionVisible(palabra){
+    function resolverTraduccionVisible(palabra, fuente){
         const curada = traduccionCurada(palabra);
         if(curada) return curada;
-        return mapas.diccionario.palabra.get(norm(palabra)) || null;
+        const principal = mapas[fuente] || mapas.diccionario;
+        return principal.palabra.get(norm(palabra))
+            || mapas.diccionario.palabra.get(norm(palabra))
+            || mapas.vocabulario.palabra.get(norm(palabra))
+            || null;
     }
 
     function etiquetarResultado(root){
         if(!root) return;
         const titulo = root.querySelector('h3.fw-bold');
         if(!titulo) return;
-        const tr = resolverTraduccionVisible(titulo.textContent);
-        let etiqueta = root.querySelector('.lspedia-en-term-auto');
+
+        if(!titulo.dataset.lspediaEs){
+            titulo.dataset.lspediaEs = String(titulo.textContent || '').trim();
+        }
+        const original = titulo.dataset.lspediaEs;
+        const fuente = root.id === 'resultadoCategorias' ? 'vocabulario' : 'diccionario';
+        const tr = resolverTraduccionVisible(original, fuente);
+        let etiqueta = root.querySelector('.lspedia-es-term-auto');
 
         if(idiomaActual() === 'en' && tr){
-            // Si la capa curada de i18n.js ya creó una etiqueta, no se duplica.
-            const existente = root.querySelector('.lspedia-en-term:not(.lspedia-en-term-auto)');
-            if(existente){
-                existente.textContent = 'English: ' + tr.term;
+            titulo.textContent = tr.term;
+            const manual = root.querySelector('.lspedia-es-term:not(.lspedia-es-term-auto)');
+            if(manual){
+                manual.textContent = 'Spanish: ' + original;
                 if(etiqueta) etiqueta.remove();
-                return;
+            } else {
+                if(!etiqueta){
+                    etiqueta = document.createElement('div');
+                    etiqueta.className = 'lspedia-es-term lspedia-es-term-auto';
+                    titulo.parentElement.insertAdjacentElement('afterend', etiqueta);
+                }
+                etiqueta.textContent = 'Spanish: ' + original;
             }
-            if(!etiqueta){
-                etiqueta = document.createElement('div');
-                etiqueta.className = 'lspedia-en-term lspedia-en-term-auto';
-                titulo.parentElement.insertAdjacentElement('afterend', etiqueta);
-            }
-            etiqueta.textContent = 'English: ' + tr.term;
-        } else if(etiqueta){
-            etiqueta.remove();
+        } else {
+            titulo.textContent = original;
+            if(etiqueta) etiqueta.remove();
         }
+    }
+
+    function traducirTarjetasVocabulario(){
+        const en = idiomaActual() === 'en';
+        document.querySelectorAll('#resultadoCategorias .categoria-resultado-titulo').forEach(el => {
+            if(!el.dataset.lspediaEs) el.dataset.lspediaEs = String(el.textContent || '').trim();
+            const original = el.dataset.lspediaEs;
+            const tr = resolverTraduccionVisible(original, 'vocabulario');
+            el.textContent = en && tr ? tr.term : original;
+        });
     }
 
     function aplicarTodo(){
         if(window.App && Array.isArray(window.App.datos)){
             aplicarColeccion(window.App.datos, 'diccionario');
         }
+        if(window.LSPediaVocabularioPublico && typeof window.LSPediaVocabularioPublico.obtener === 'function'){
+            aplicarColeccion(window.LSPediaVocabularioPublico.obtener(), 'vocabulario');
+        }
         etiquetarResultado(document.getElementById('resultado'));
+        etiquetarResultado(document.getElementById('resultadoCategorias'));
         etiquetarResultado(document.getElementById('resultadoCategoriasDiccionario'));
+        traducirTarjetasVocabulario();
     }
 
     function programar(){
@@ -256,6 +281,10 @@
             setTimeout(programar, 0);
             setTimeout(programar, 300);
         });
+        document.addEventListener('lspedia:vocabularioPublicoListo', () => {
+            setTimeout(programar, 0);
+            setTimeout(programar, 250);
+        });
 
         document.addEventListener('lspedia:idiomaCambiado', () => {
             setTimeout(aplicarYRefrescar, 0);
@@ -266,13 +295,13 @@
             if(evento.key === 'Enter') setTimeout(programar, 0);
         }, true);
 
-        // Vocabulario no participa de esta capa bilingüe de conceptos.
     }
 
     window.LSPediaI18nAuto = {
         recargar: cargarTraducciones,
         aplicar: aplicarYRefrescar,
-        cargado: () => cargado
+        cargado: () => cargado,
+        traduccion: (palabra, fuente) => resolverTraduccionVisible(palabra, fuente || 'diccionario')
     };
 
     if(document.readyState === 'loading'){
