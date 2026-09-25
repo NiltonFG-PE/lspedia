@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-09-25T16:48:42Z",
+  "actualizado": "2026-09-25T17:24:41Z",
   "traducciones": [
     {
       "fuente": "diccionario",
@@ -3409,6 +3409,14 @@
       "ingles": "Season",
       "aliases": [],
       "definicionIngles": "It's the place where you wait for or board a train or bus.\n\nExample: We are at the subway station."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Estación del año",
+      "categoria": "Tiempo",
+      "ingles": "Season of the year",
+      "aliases": [],
+      "definicionIngles": "These are the four seasons of the year: summer, autumn, winter, and spring, each with a distinct climate.\n\nExample: My favorite season is summer."
     },
     {
       "fuente": "diccionario",
