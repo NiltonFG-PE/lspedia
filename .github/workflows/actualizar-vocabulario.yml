@@ -40,6 +40,9 @@ jobs:
         with:
           python-version: "3.x"
 
+      - name: Instalar dependencias SEO
+        run: python -m pip install --disable-pip-version-check Pillow
+
       - name: Migrar Quiz a vocabulario local
         run: python scripts/migrar_quiz_vocabulario_local.py
 
@@ -51,6 +54,7 @@ jobs:
         run: |
           python -m json.tool data/vocabulario.json > /dev/null
           python scripts/validar_lspedia.py --fuente vocabulario
+          python scripts/validar_ingles.py
           node --check js/quiz.js
 
       - name: Preparar historial local de Vocabulario
