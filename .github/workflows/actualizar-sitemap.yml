@@ -92,6 +92,8 @@ jobs:
           test -f vocabulario/.lspedia-seo-generated
           test -f categoria/.lspedia-seo-generated
           test "$(find categoria -mindepth 3 -name index.html | wc -l)" -gt 0
+          grep -q 'property="og:image"' categoria/vocabulario/colores/index.html
+          ! grep -q '__LSPEDIA_CATEGORY_IMAGE__' categoria/vocabulario/colores/index.html
           test "$(find diccionario -mindepth 2 -name index.html | wc -l)" -gt 0
           test "$(find vocabulario -mindepth 2 -name index.html | wc -l)" -gt 0
           test ! -d palabra
