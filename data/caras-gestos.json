@@ -1,0 +1,452 @@
+[
+  {
+    "id": "cg-01",
+    "palabra": "Feliz",
+    "categoria": "Emociones",
+    "imagen": "img/vocabulario/feliz.webp",
+    "expresion": "cara",
+    "nivel": "Fácil",
+    "pista": "Sonríe como si acabara de pasar algo muy bueno."
+  },
+  {
+    "id": "cg-02",
+    "palabra": "Triste",
+    "categoria": "Emociones",
+    "imagen": "img/vocabulario/tristeza.webp",
+    "expresion": "cara",
+    "nivel": "Fácil",
+    "pista": "Muestra tristeza solo con tu rostro."
+  },
+  {
+    "id": "cg-03",
+    "palabra": "Enojado",
+    "categoria": "Emociones",
+    "imagen": "img/vocabulario/enojado.webp",
+    "expresion": "cara",
+    "nivel": "Fácil",
+    "pista": "Haz una cara de enojo sin decir la palabra."
+  },
+  {
+    "id": "cg-04",
+    "palabra": "Sorprendido",
+    "categoria": "Emociones",
+    "imagen": "img/vocabulario/sorprendido.webp",
+    "expresion": "cara",
+    "nivel": "Fácil",
+    "pista": "Reacciona como si vieras algo inesperado."
+  },
+  {
+    "id": "cg-05",
+    "palabra": "Asustado",
+    "categoria": "Emociones",
+    "imagen": "img/vocabulario/asustado.webp",
+    "expresion": "cara",
+    "nivel": "Fácil",
+    "pista": "Muestra miedo con la cara y el cuerpo."
+  },
+  {
+    "id": "cg-06",
+    "palabra": "Cansado",
+    "categoria": "Emociones",
+    "imagen": "img/vocabulario/cansado.webp",
+    "expresion": "cara-cuerpo",
+    "nivel": "Fácil",
+    "pista": "Actúa como si estuvieras muy cansado."
+  },
+  {
+    "id": "cg-07",
+    "palabra": "Aburrido",
+    "categoria": "Emociones",
+    "imagen": "img/vocabulario/aburrido.webp",
+    "expresion": "cara",
+    "nivel": "Fácil",
+    "pista": "Haz notar que nada te interesa."
+  },
+  {
+    "id": "cg-08",
+    "palabra": "Contento",
+    "categoria": "Emociones",
+    "imagen": "img/vocabulario/contento.webp",
+    "expresion": "cara",
+    "nivel": "Fácil",
+    "pista": "Muestra satisfacción y alegría tranquila."
+  },
+  {
+    "id": "cg-09",
+    "palabra": "Vergüenza",
+    "categoria": "Emociones",
+    "imagen": "img/vocabulario/verguenza.webp",
+    "expresion": "cara-cuerpo",
+    "nivel": "Medio",
+    "pista": "Actúa como si algo te diera mucha vergüenza."
+  },
+  {
+    "id": "cg-10",
+    "palabra": "Celos",
+    "categoria": "Emociones",
+    "imagen": "img/vocabulario/celos.webp",
+    "expresion": "cara",
+    "nivel": "Medio",
+    "pista": "Representa celos sin hablar."
+  },
+  {
+    "id": "cg-11",
+    "palabra": "Envidia",
+    "categoria": "Emociones",
+    "imagen": "img/vocabulario/envidia.webp",
+    "expresion": "cara",
+    "nivel": "Medio",
+    "pista": "Mira algo ajeno como si quisieras tenerlo."
+  },
+  {
+    "id": "cg-12",
+    "palabra": "Soledad",
+    "categoria": "Emociones",
+    "imagen": "img/vocabulario/soledad.webp",
+    "expresion": "cara-cuerpo",
+    "nivel": "Medio",
+    "pista": "Actúa como si te sintieras solo."
+  },
+  {
+    "id": "cg-13",
+    "palabra": "Extrañar",
+    "categoria": "Emociones",
+    "imagen": "img/vocabulario/extrañar.webp",
+    "expresion": "cara-cuerpo",
+    "nivel": "Medio",
+    "pista": "Muestra que extrañas mucho a alguien."
+  },
+  {
+    "id": "cg-14",
+    "palabra": "Cariño",
+    "categoria": "Emociones",
+    "imagen": "img/vocabulario/cariño.webp",
+    "expresion": "cara-manos",
+    "nivel": "Medio",
+    "pista": "Expresa cariño con tu cara y tus manos."
+  },
+  {
+    "id": "cg-15",
+    "palabra": "Amor",
+    "categoria": "Emociones",
+    "imagen": "img/vocabulario/amor.webp",
+    "expresion": "cara-manos",
+    "nivel": "Medio",
+    "pista": "Representa amor sin usar la palabra."
+  },
+  {
+    "id": "cg-16",
+    "palabra": "Esperanza",
+    "categoria": "Emociones",
+    "imagen": "img/vocabulario/esperanza.webp",
+    "expresion": "cara-cuerpo",
+    "nivel": "Difícil",
+    "pista": "Actúa como si esperaras que algo salga bien."
+  },
+  {
+    "id": "cg-17",
+    "palabra": "Orgullo",
+    "categoria": "Emociones",
+    "imagen": "img/vocabulario/orgullo.webp",
+    "expresion": "cara-cuerpo",
+    "nivel": "Difícil",
+    "pista": "Muestra orgullo con postura y expresión."
+  },
+  {
+    "id": "cg-18",
+    "palabra": "Aplaudir",
+    "categoria": "Acciones",
+    "imagen": "img/vocabulario/aplaudir.webp",
+    "expresion": "manos",
+    "nivel": "Fácil",
+    "pista": "Haz la acción de aplaudir."
+  },
+  {
+    "id": "cg-19",
+    "palabra": "Abrazar",
+    "categoria": "Acciones",
+    "imagen": "img/vocabulario/abrazar.webp",
+    "expresion": "cuerpo",
+    "nivel": "Fácil",
+    "pista": "Representa un abrazo."
+  },
+  {
+    "id": "cg-20",
+    "palabra": "Jugar",
+    "categoria": "Acciones",
+    "imagen": "img/vocabulario/jugar.webp",
+    "expresion": "cuerpo",
+    "nivel": "Fácil",
+    "pista": "Actúa como si estuvieras jugando."
+  },
+  {
+    "id": "cg-21",
+    "palabra": "Ayudar",
+    "categoria": "Acciones",
+    "imagen": "img/vocabulario/ayudar.webp",
+    "expresion": "manos-cuerpo",
+    "nivel": "Fácil",
+    "pista": "Muestra que estás ayudando a otra persona."
+  },
+  {
+    "id": "cg-22",
+    "palabra": "Abrir",
+    "categoria": "Acciones",
+    "imagen": "img/vocabulario/abrir.webp",
+    "expresion": "manos",
+    "nivel": "Fácil",
+    "pista": "Imagina una puerta o caja y ábrela."
+  },
+  {
+    "id": "cg-23",
+    "palabra": "Agradecer",
+    "categoria": "Acciones",
+    "imagen": "img/vocabulario/agradecer.webp",
+    "expresion": "cara-manos",
+    "nivel": "Fácil",
+    "pista": "Muestra agradecimiento."
+  },
+  {
+    "id": "cg-24",
+    "palabra": "Bromear",
+    "categoria": "Acciones",
+    "imagen": "img/vocabulario/bromear.webp",
+    "expresion": "cara-cuerpo",
+    "nivel": "Medio",
+    "pista": "Haz notar que estás haciendo una broma."
+  },
+  {
+    "id": "cg-25",
+    "palabra": "Atender",
+    "categoria": "Acciones",
+    "imagen": "img/vocabulario/atender.webp",
+    "expresion": "cuerpo",
+    "nivel": "Medio",
+    "pista": "Actúa como si atendieras a una persona."
+  },
+  {
+    "id": "cg-26",
+    "palabra": "Practicar",
+    "categoria": "Acciones",
+    "imagen": "img/vocabulario/practicar.webp",
+    "expresion": "cuerpo",
+    "nivel": "Medio",
+    "pista": "Representa practicar algo varias veces."
+  },
+  {
+    "id": "cg-27",
+    "palabra": "Examinar",
+    "categoria": "Acciones",
+    "imagen": "img/vocabulario/examinar.webp",
+    "expresion": "manos-cara",
+    "nivel": "Medio",
+    "pista": "Mira algo con mucha atención."
+  },
+  {
+    "id": "cg-28",
+    "palabra": "Advertir",
+    "categoria": "Acciones",
+    "imagen": "img/vocabulario/advertir.webp",
+    "expresion": "cara-manos",
+    "nivel": "Medio",
+    "pista": "Haz una advertencia sin hablar."
+  },
+  {
+    "id": "cg-29",
+    "palabra": "Aceptar",
+    "categoria": "Acciones",
+    "imagen": "img/vocabulario/aceptar.webp",
+    "expresion": "cara-manos",
+    "nivel": "Medio",
+    "pista": "Muestra que aceptas una propuesta."
+  },
+  {
+    "id": "cg-30",
+    "palabra": "Apoyar",
+    "categoria": "Acciones",
+    "imagen": "img/vocabulario/apoyar.webp",
+    "expresion": "manos-cuerpo",
+    "nivel": "Difícil",
+    "pista": "Representa que apoyas a alguien."
+  },
+  {
+    "id": "cg-31",
+    "palabra": "Añadir",
+    "categoria": "Acciones",
+    "imagen": "img/vocabulario/añadir.webp",
+    "expresion": "manos",
+    "nivel": "Difícil",
+    "pista": "Haz como si agregaras algo a otra cosa."
+  },
+  {
+    "id": "cg-32",
+    "palabra": "Escuchar",
+    "categoria": "Acciones",
+    "imagen": "img/vocabulario/oir.webp",
+    "expresion": "cara-cuerpo",
+    "nivel": "Difícil",
+    "pista": "Representa prestar atención a algo que ocurre."
+  },
+  {
+    "id": "cg-33",
+    "palabra": "Llegas tarde",
+    "categoria": "Situaciones",
+    "imagen": "img/alfabetizacion/ejemplos/reloj.webp",
+    "expresion": "cara-cuerpo",
+    "nivel": "Fácil",
+    "pista": "Mira la hora y actúa como si llegaras tarde."
+  },
+  {
+    "id": "cg-34",
+    "palabra": "Comes un limón",
+    "categoria": "Situaciones",
+    "imagen": "img/alfabetizacion/ejemplos/limon.webp",
+    "expresion": "cara",
+    "nivel": "Fácil",
+    "pista": "Imagina que muerdes un limón muy ácido."
+  },
+  {
+    "id": "cg-35",
+    "palabra": "Hace mucho frío",
+    "categoria": "Situaciones",
+    "imagen": "img/alfabetizacion/ejemplos/bufanda.webp",
+    "expresion": "cara-cuerpo",
+    "nivel": "Fácil",
+    "pista": "Actúa como si tuvieras muchísimo frío."
+  },
+  {
+    "id": "cg-36",
+    "palabra": "Pierdes tu billetera",
+    "categoria": "Situaciones",
+    "imagen": "img/alfabetizacion/ejemplos/billetera.webp",
+    "expresion": "cara-cuerpo",
+    "nivel": "Fácil",
+    "pista": "Busca tus bolsillos y descubre que no está."
+  },
+  {
+    "id": "cg-37",
+    "palabra": "Encuentras dinero",
+    "categoria": "Situaciones",
+    "imagen": "img/alfabetizacion/ejemplos/billete.webp",
+    "expresion": "cara-cuerpo",
+    "nivel": "Fácil",
+    "pista": "Actúa como si encontraras un billete inesperadamente."
+  },
+  {
+    "id": "cg-38",
+    "palabra": "Esperas el bus",
+    "categoria": "Situaciones",
+    "imagen": "img/alfabetizacion/ejemplos/bus.webp",
+    "expresion": "cuerpo",
+    "nivel": "Fácil",
+    "pista": "Actúa como si esperaras un bus que demora."
+  },
+  {
+    "id": "cg-39",
+    "palabra": "Cargas una maleta pesada",
+    "categoria": "Situaciones",
+    "imagen": "img/alfabetizacion/ejemplos/maleta.webp",
+    "expresion": "cuerpo",
+    "nivel": "Fácil",
+    "pista": "Haz como si levantaras una maleta muy pesada."
+  },
+  {
+    "id": "cg-40",
+    "palabra": "Te duele un diente",
+    "categoria": "Situaciones",
+    "imagen": "img/alfabetizacion/ejemplos/diente.webp",
+    "expresion": "cara-manos",
+    "nivel": "Fácil",
+    "pista": "Muestra dolor de muela."
+  },
+  {
+    "id": "cg-41",
+    "palabra": "Te quemas",
+    "categoria": "Situaciones",
+    "imagen": "img/alfabetizacion/ejemplos/fuego.webp",
+    "expresion": "cara-cuerpo",
+    "nivel": "Medio",
+    "pista": "Actúa como si tocaras algo muy caliente."
+  },
+  {
+    "id": "cg-42",
+    "palabra": "Se va el internet",
+    "categoria": "Situaciones",
+    "imagen": "img/alfabetizacion/ejemplos/wifi.webp",
+    "expresion": "cara-manos",
+    "nivel": "Medio",
+    "pista": "Imagina que el internet deja de funcionar justo cuando lo necesitas."
+  },
+  {
+    "id": "cg-43",
+    "palabra": "Compras en el mercado",
+    "categoria": "Situaciones",
+    "imagen": "img/alfabetizacion/ejemplos/balanza.webp",
+    "expresion": "manos-cuerpo",
+    "nivel": "Medio",
+    "pista": "Representa escoger, pesar y comprar productos."
+  },
+  {
+    "id": "cg-44",
+    "palabra": "Vas al hospital",
+    "categoria": "Situaciones",
+    "imagen": "img/alfabetizacion/ejemplos/ambulancia.webp",
+    "expresion": "cara-cuerpo",
+    "nivel": "Medio",
+    "pista": "Actúa como si necesitaras atención médica."
+  },
+  {
+    "id": "cg-45",
+    "palabra": "Pierdes el bus",
+    "categoria": "Situaciones",
+    "imagen": "img/alfabetizacion/ejemplos/bus.webp",
+    "expresion": "cara-cuerpo",
+    "nivel": "Medio",
+    "pista": "Corre y reacciona al ver que el bus se va."
+  },
+  {
+    "id": "cg-46",
+    "palabra": "Buscas algo pequeño",
+    "categoria": "Situaciones",
+    "imagen": "img/alfabetizacion/ejemplos/lupa.webp",
+    "expresion": "cara-manos",
+    "nivel": "Medio",
+    "pista": "Busca algo diminuto con mucha atención."
+  },
+  {
+    "id": "cg-47",
+    "palabra": "Ganas un partido",
+    "categoria": "Situaciones",
+    "imagen": "img/alfabetizacion/ejemplos/balon.webp",
+    "expresion": "cara-cuerpo",
+    "nivel": "Medio",
+    "pista": "Celebra como si tu equipo acabara de ganar."
+  },
+  {
+    "id": "cg-48",
+    "palabra": "Te sorprende una tormenta",
+    "categoria": "Situaciones",
+    "imagen": "img/alfabetizacion/ejemplos/nube.webp",
+    "expresion": "cara-cuerpo",
+    "nivel": "Difícil",
+    "pista": "Actúa como si empezara una tormenta y no estuvieras preparado."
+  },
+  {
+    "id": "cg-49",
+    "palabra": "Ves un animal enorme",
+    "categoria": "Situaciones",
+    "imagen": "img/alfabetizacion/ejemplos/elefante.webp",
+    "expresion": "cara-cuerpo",
+    "nivel": "Difícil",
+    "pista": "Reacciona como si apareciera un animal enorme frente a ti."
+  },
+  {
+    "id": "cg-50",
+    "palabra": "Te mareas en el bus",
+    "categoria": "Situaciones",
+    "imagen": "img/alfabetizacion/ejemplos/bus.webp",
+    "expresion": "cara-cuerpo",
+    "nivel": "Difícil",
+    "pista": "Actúa como si el movimiento del bus te mareara."
+  }
+]
