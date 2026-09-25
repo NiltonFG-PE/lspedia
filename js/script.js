@@ -2308,16 +2308,20 @@ function procesarDatosApp(data) {
                         buscarCategorias.value = textoBusquedaUrl;
                         buscarEnCategorias();
                     } else if (coleccionUrl && typeof mostrarEtiquetaVocabulario === "function") {
-                        // La colección se restaura UNA sola vez desde la carga
-                        // principal. Si QuizV2 todavía no llegó, la variable
-                        // coleccionActualMostrada permite repintarla al quedar
-                        // listo el banco, sin volver a abrir Vocabulario ni
-                        // disparar varios clics/scrolls.
+                        // Conserva el destino, pero no pinta una colección vacía
+                        // mientras data/vocabulario.json sigue cargando.
                         coleccionActualMostrada = coleccionUrl;
-                        mostrarEtiquetaVocabulario(coleccionUrl, {
-                            noActualizarHistorial: true,
-                            sinScroll: true
-                        });
+                        categoriaActualMostrada = null;
+                        const apiVocabulario = window.LSPediaVocabularioPublico;
+                        if(apiVocabulario && typeof apiVocabulario.cargar === "function"){
+                            apiVocabulario.cargar();
+                        }
+                        if(apiVocabulario && typeof apiVocabulario.listo === "function" && apiVocabulario.listo()){
+                            mostrarEtiquetaVocabulario(coleccionUrl, {
+                                noActualizarHistorial: true,
+                                sinScroll: true
+                            });
+                        }
                     } else if (categoriaUrl && typeof mostrarCategoria === "function") {
                         // La categoría puede pedirse antes de que QuizV2 termine
                         // de cargar. Conservamos el destino y la repintamos en
@@ -2507,9 +2511,18 @@ function mostrarEstadoBusqueda(tipo) {
 // Refrescar solo una consulta que sigue abierta: no reabrir la lista sobre una ficha.
 document.addEventListener('lspedia:vocabularioPublicoListo', () => {
     if (buscar.value.trim() && sugerencias.style.display !== 'none') buscarPalabras();
-    if (categoriaActualMostrada && !new URLSearchParams(location.search).get('p')) {
+    if (new URLSearchParams(location.search).get('p')) return;
+
+    if (coleccionActualMostrada) {
+        mostrarEtiquetaVocabulario(coleccionActualMostrada, {
+            noActualizarHistorial: true,
+            sinScroll: true
+        });
+    } else if (categoriaActualMostrada) {
         mostrarCategoria(categoriaActualMostrada, { noActualizarHistorial: true });
-    } else if (document.body.classList.contains('vista-temas-movil')) mostrarCategorias();
+    } else if (document.body.classList.contains('vista-temas-movil')) {
+        mostrarCategorias();
+    }
 });
 document.addEventListener('lspedia:datosListos', () => {
     if (buscar.value.trim() && sugerencias.style.display !== 'none') buscarPalabras();
@@ -2604,33 +2617,10 @@ document.addEventListener("DOMContentLoaded", () => {
             if(buscar && buscar.value && buscar.value.trim()){
                 buscarPalabras();
             }
-            // Si el panel de categorías (o una categoría abierta) ya estaba
-            // visible antes de que llegaran los datos de la Vocabulario, se
-            // refresca solo para que las palabras del Quiz aparezcan sin
-            // que el usuario tenga que volver a hacer clic.
-            if (coleccionActualMostrada && !new URLSearchParams(window.location.search).get("p")) {
-                // Las colecciones también pueden haberse solicitado antes de
-                // que llegue QuizV2. Las repintamos con el banco ya cargado.
-                mostrarEtiquetaVocabulario(coleccionActualMostrada, { noActualizarHistorial: true, sinScroll: true });
-            } else if (categoriaActualMostrada && !new URLSearchParams(window.location.search).get("p")) {
-                // Es un refresco silencioso de los datos de la categoría, no
-                // una navegación nueva: conserva la URL y el historial.
-                mostrarCategoria(categoriaActualMostrada, { noActualizarHistorial: true });
-            } else if (document.body.classList.contains("vista-temas-movil")) {
-                // Antes se usaba "panelCategorias.children.length > 0" para
-                // decidir si tocaba refrescar. Pero justo al refrescar la
-                // página estando en Vocabulario, mostrarCategorias() corre
-                // ANTES de que la Vocabulario (banco de QuizV2) termine de
-                // cargar, así que panelCategorias queda con 0 tarjetas — y
-                // esa condición nunca volvía a ser true cuando los datos
-                // sí llegaban, dejando "Vocabulario" sin categorías para
-                // siempre. La clase "vista-temas-movil" (agregada al
-                // <body> mientras esta sección está abierta, sin importar
-                // cuántas tarjetas tenga en un momento dado) es un
-                // indicador confiable de que seguimos en Vocabulario y hay
-                // que repintar apenas llegan los datos.
-                mostrarCategorias();
-            }
+            // QuizV2 ya no repinta Vocabulario/Colecciones. La interfaz
+            // pública usa data/vocabulario.json y escucha únicamente
+            // lspedia:vocabularioPublicoListo. Tener dos fuentes de "listo"
+            // hacía que una colección se vaciara o se repintara varias veces.
         });
     } else {
         console.warn("QuizV2 no está disponible: las categorías no podrán mostrar palabras de la Vocabulario.");
@@ -6190,7 +6180,18 @@ function restaurarInterfazDesdeHistorial(estado = {}){
             if(boton) boton.click();
             const coleccionVocabulario = params.get("coleccion");
             if(coleccionVocabulario && typeof mostrarEtiquetaVocabulario === "function") {
-                mostrarEtiquetaVocabulario(coleccionVocabulario, { noActualizarHistorial: true });
+                coleccionActualMostrada = coleccionVocabulario;
+                categoriaActualMostrada = null;
+                const apiVocabulario = window.LSPediaVocabularioPublico;
+                if(apiVocabulario && typeof apiVocabulario.cargar === "function"){
+                    apiVocabulario.cargar();
+                }
+                if(apiVocabulario && typeof apiVocabulario.listo === "function" && apiVocabulario.listo()){
+                    mostrarEtiquetaVocabulario(coleccionVocabulario, {
+                        noActualizarHistorial: true,
+                        sinScroll: true
+                    });
+                }
             } else if(categoriaVocabulario && typeof mostrarCategoria === "function") {
                 mostrarCategoria(categoriaVocabulario, { noActualizarHistorial: true });
             }
