@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-09-25T17:24:41Z",
+  "actualizado": "2026-09-25T17:33:30Z",
   "traducciones": [
     {
       "fuente": "diccionario",
@@ -264,7 +264,7 @@
       "categoria": "Salud",
       "ingles": "Allergy",
       "aliases": [],
-      "definicionIngles": "This is when the body reacts badly to something, like food or dust, causing discomfort.\n\nExample: I have a dust allergy, that's why I sneeze a lot."
+      "definicionIngles": "This occurs when the body reacts adversely to something, such as food or dust, causing discomfort.\n\nExample: I have a dust allergy, that's why I sneeze a lot."
     },
     {
       "fuente": "diccionario",
@@ -896,7 +896,7 @@
       "categoria": "Educación",
       "ingles": "Literature",
       "aliases": [],
-      "definicionIngles": "List of books and sources you used to do a paper or research."
+      "definicionIngles": "List of books and sources you used to do a project or research."
     },
     {
       "fuente": "diccionario",
@@ -4560,7 +4560,7 @@
       "categoria": "Salud",
       "ingles": "Hospital",
       "aliases": [],
-      "definicionIngles": "It's a large place where doctors treat and heal sick or injured people.\n\nExample: They took my grandfather to the hospital because he wasn't feeling well."
+      "definicionIngles": "It's a large place where doctors treat and care for sick or injured people.\n\nExample: They took my grandfather to the hospital because he wasn't feeling well."
     },
     {
       "fuente": "diccionario",
@@ -6384,7 +6384,7 @@
       "categoria": "Ciencia",
       "ingles": "Technical drawing",
       "aliases": [],
-      "definicionIngles": "A drawing with measurements and details used to manufacture, build, or install something."
+      "definicionIngles": "Drawing with measurements and details used to manufacture, build or install something."
     },
     {
       "fuente": "diccionario",
@@ -6792,7 +6792,7 @@
       "categoria": "Universidad",
       "ingles": "Pre-professional practice",
       "aliases": [],
-      "definicionIngles": "It's the time a student spends working at a company to learn about their field of study before finishing their degree.\n\nExample: I'm starting my pre-professional internship at a hospital next month."
+      "definicionIngles": "It's the time a student spends working at a company to learn about their field of study before graduating.\n\nExample: I'm starting my pre-professional internship at a hospital next month."
     },
     {
       "fuente": "diccionario",
@@ -7480,7 +7480,7 @@
       "categoria": "Universidad",
       "ingles": "Semester",
       "aliases": [],
-      "definicionIngles": "It's one of the two parts into which a university year is divided.\n\nExample: This semester I'm taking five courses."
+      "definicionIngles": "It's one of the two parts into which a university academic year is divided.\n\nExample: This semester I'm taking five courses."
     },
     {
       "fuente": "diccionario",
