@@ -1,14 +1,9 @@
 #!/usr/bin/env python3
-"""Genera data/traducciones-en.json desde Diccionario de Google Sheets.
+"""Genera data/traducciones-en.json para Diccionario y Vocabulario.
 
-La traducción escrita en la hoja es la fuente de verdad para el contenido
-nuevo. Publicador.gs rellena `ingles` y `definicionIngles` automáticamente.
-Este generador mantiene GitHub sincronizado y sirve también para reconstruir
-el banco completo sin tocar el español canónico.
-
-Solo genera traducciones de fichas consultables del Diccionario: registros que
-tienen video, definición o imagen. Los borradores que solo tienen palabra y
-categoría permanecen fuera hasta que tengan contenido educativo.
+El Diccionario se sincroniza desde Google Sheets. Vocabulario se toma del JSON
+público ya generado en el repositorio. El español sigue siendo canónico: estas
+traducciones alimentan la búsqueda y la experiencia EN sin cambiar URLs ni IDs.
 """
 from __future__ import annotations
 
@@ -23,6 +18,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DESTINO = ROOT / "data" / "traducciones-en.json"
+VOCABULARIO = ROOT / "data" / "vocabulario.json"
 SPREADSHEET_ID = "1fqC1aUpwdz6l0xRyYYfki7vJtjIql6sOEzpfWElknT0"
 HOJA = "Diccionario"
 
@@ -127,11 +123,58 @@ def generar(filas: list[dict[str, str]], anterior: dict) -> list[dict]:
     return salida
 
 
+def generar_vocabulario_local() -> list[dict]:
+    if not VOCABULARIO.exists():
+        return []
+    try:
+        datos = json.loads(VOCABULARIO.read_text(encoding="utf-8"))
+    except Exception as error:
+        raise RuntimeError(f"No se pudo leer {VOCABULARIO}: {error}") from error
+
+    if not isinstance(datos, list):
+        raise RuntimeError("data/vocabulario.json debe ser una lista.")
+
+    salida: list[dict] = []
+    vistos: set[tuple[str, str]] = set()
+    for fila in datos:
+        if not isinstance(fila, dict):
+            continue
+        palabra = texto(fila.get("palabra"))
+        categoria = texto(fila.get("categoria"))
+        ingles = texto(fila.get("ingles"))
+        definicion_ingles = texto(fila.get("definicionIngles"))
+        if not palabra or not categoria or not ingles:
+            continue
+
+        identidad = (clave(palabra), clave(categoria))
+        if identidad in vistos:
+            continue
+        vistos.add(identidad)
+
+        aliases = fila.get("aliasesIngles")
+        salida.append({
+            "fuente": "vocabulario",
+            "palabra": palabra,
+            "categoria": categoria,
+            "ingles": ingles,
+            "aliases": [texto(x) for x in aliases if texto(x)] if isinstance(aliases, list) else [],
+            "definicionIngles": definicion_ingles,
+        })
+    return salida
+
+
 def main() -> int:
     anterior = cargar_anterior()
     traducciones = generar(descargar_csv(), anterior)
+    vocabulario = generar_vocabulario_local()
+    traducciones.extend(vocabulario)
+    traducciones.sort(key=lambda x: (
+        texto(x.get("fuente")).casefold(),
+        texto(x.get("palabra")).casefold(),
+        texto(x.get("categoria")).casefold(),
+    ))
     if not traducciones:
-        raise RuntimeError("No se generó ninguna traducción consultable del Diccionario.")
+        raise RuntimeError("No se generó ninguna traducción consultable.")
 
     anteriores = anterior.get("traducciones") if isinstance(anterior.get("traducciones"), list) else []
     cambiado = traducciones != anteriores
@@ -150,7 +193,9 @@ def main() -> int:
         encoding="utf-8",
         newline="\n",
     )
-    print(f"Traducciones EN: {len(traducciones)} fichas del Diccionario sincronizadas.")
+    total_dic = sum(1 for x in traducciones if x.get("fuente") == "diccionario")
+    total_voc = sum(1 for x in traducciones if x.get("fuente") == "vocabulario")
+    print(f"Traducciones EN: Diccionario={total_dic} · Vocabulario={total_voc}.")
     return 0
 
 
