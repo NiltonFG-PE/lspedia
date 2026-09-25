@@ -178,6 +178,8 @@
   }
   async function prepare() {
     if (state === 'loading') return;
+    // On browsers requiring a gesture (notably iOS), ask when the player starts.
+    if (!motionEnabled) await enableMotion();
     const generation = ++prepareGeneration;
     enterTurnHistory();
     state = 'loading'; initAudio(); notice(''); $('start').disabled = true; $('again').disabled = true;
@@ -330,5 +332,8 @@
   });
   $('card-image').addEventListener('error',()=>{if(state==='playing'){pause();$('pause-dialog').querySelector('p').textContent='No se pudo mostrar esta imagen. Termina el turno y vuelve a cargar las tarjetas.';}});
   updateOrientationUI();
+  // Motion is the default; browsers requiring permission must wait for a tap.
+  if (typeof window.DeviceOrientationEvent?.requestPermission !== 'function') enableMotion();
+  else $('sensor-status').textContent = 'Movimiento predeterminado · se solicitará permiso al jugar';
   loadBank();
 })();
