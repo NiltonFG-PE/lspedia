@@ -39,6 +39,18 @@
     #orientation-toast { position:absolute; left:50%; bottom:calc(env(safe-area-inset-bottom,0px) + 102px); transform:translateX(-50%) translateY(10px); z-index:50; width:min(92%,480px); padding:10px 14px; border-radius:14px; background:rgba(17,24,39,.93); color:#fff; font-size:.82rem; font-weight:700; text-align:center; opacity:0; pointer-events:none; transition:opacity .2s ease,transform .2s ease; box-shadow:0 10px 30px rgba(0,0,0,.3); }
     #orientation-toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
+    #pauseBtn { cursor:pointer; pointer-events:auto; min-width:42px; justify-content:center; }
+    #pauseBtn svg { width:1.2em; height:1.2em; }
+    #pauseBtn:active { transform:scale(.95); }
+    #pause-overlay { position:absolute; inset:0; z-index:46; display:none; align-items:center; justify-content:center; padding:20px; background:rgba(10,14,22,.72); backdrop-filter:blur(5px); }
+    #pause-overlay.active { display:flex; }
+    .pause-card { width:min(90%,340px); padding:24px 20px; border-radius:26px; background:rgba(35,43,58,.97); border:1px solid rgba(255,255,255,.12); box-shadow:0 22px 70px rgba(0,0,0,.5); display:flex; flex-direction:column; align-items:center; gap:16px; }
+    .pause-icon { width:78px; height:78px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:linear-gradient(180deg,#ffd95e,#f2aa22); box-shadow:0 8px 0 #a76b0d; }
+    .pause-icon svg { width:38px; height:38px; }
+    .pause-title { font-size:clamp(1.6rem,7vw,2.25rem); font-weight:700; }
+    .pause-resume { border:none; min-width:180px; min-height:54px; padding:10px 22px; border-radius:18px; background:linear-gradient(180deg,#4ade80,#16a34a); color:#fff; font:700 1.05rem var(--font); box-shadow:0 6px 0 #14532d; cursor:pointer; }
+    .pause-resume:active { transform:translateY(3px); box-shadow:0 3px 0 #14532d; }
+
     @media (orientation: landscape) and (max-height: 520px) {
       #hud { top:calc(env(safe-area-inset-top,0px) + 6px); left:8px; right:8px; gap:5px; }
       .hud-row { gap:4px; }
@@ -234,6 +246,9 @@
         </div>
       </div>
       <div class="hud-row">
+        <div class="hud-box" id="pauseBtn" role="button" tabindex="0" title="Pausar" aria-label="Pausar juego">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1" fill="#f7f9fc"/><rect x="14" y="5" width="4" height="14" rx="1" fill="#f7f9fc"/></svg>
+        </div>
         <div class="hud-box" id="tiltCenterBtn" role="button" tabindex="0" title="Recentrar inclinación" aria-label="Recentrar inclinación">◎</div>
         <div class="hud-box" id="score-box">
           <svg viewBox="0 0 24 24"><path fill="#ffc93c" d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
@@ -248,6 +263,14 @@
     </div>
 
     <div id="lights"><div class="light-bar"><div class="lamp" id="l1"></div><div class="lamp" id="l2"></div><div class="lamp" id="l3"></div></div></div>
+
+    <div id="pause-overlay" aria-hidden="true">
+      <div class="pause-card" role="dialog" aria-modal="true" aria-label="Juego en pausa">
+        <div class="pause-icon"><svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1" fill="#1b2230"/><rect x="14" y="5" width="4" height="14" rx="1" fill="#1b2230"/></svg></div>
+        <div class="pause-title">Pausa</div>
+        <button type="button" class="pause-resume" id="resumeBtn">▶ Continuar</button>
+      </div>
+    </div>
 
     <div id="math-modal">
       <div class="q-card">
@@ -398,10 +421,10 @@ const LEVELS = [];
 for (let n = 1; n <= 12; n++) {
   LEVELS.push({
     n, theme: THEME_ORDER[(n - 1) % THEME_ORDER.length],
-    length: 700 + n * 180,                       // segmentos hasta la meta
+    length: 850 + n * 210,                       // ~20% más recorrido para carreras más largas
     ops: n <= 2 ? ['+'] : n <= 4 ? ['+', '-'] : n <= 7 ? ['+', '-', '×'] : ['+', '-', '×', '÷'],
     top: Math.min(4 + n, 10), mul: Math.min(2 + Math.floor(n / 2), 5), div: Math.min(2 + Math.floor((n - 6) / 2), 4),
-    traffic: 10 + n * 3, maxSpeed: 1 + n * 0.06
+    traffic: 10 + Math.round(n * 2.4), maxSpeed: 1 + n * 0.06
   });
 }
 const SAVE_KEY = 'carrera-matematica-v4';
@@ -490,6 +513,14 @@ function buildTrack(L) {
   }
   // estrellas
   for (let n = 80; n < segments.length - 300; n += rand(35, 60)) { const lane = rand(0, 2); for (let k = 0; k < 4; k++) segments[n + k * 3].sprites.push({ kind: 'star', offset: LANE_OFF[lane], lane, size: 1, id: n + '-' + k }); }
+
+  // rampas: separadas entre sí y siempre dentro de un carril jugable
+  let rampN = 170 + rand(0, 60);
+  while (rampN < segments.length - 330) {
+    const lane = rand(0, 2);
+    segments[rampN].sprites.push({ kind: 'ramp', offset: LANE_OFF[lane], lane, size: 1, id: 'ramp-' + rampN + '-' + lane });
+    rampN += rand(260, 380);
+  }
 }
 function findSegment(z) { return segments[Math.floor(z / SEG_LEN) % segments.length]; }
 function project(p, camX, camY, camZ) {
@@ -507,6 +538,8 @@ let score = 0, lives = 3, starsTotal = 0, turboMeter = 0, turbo = 0, invuln = 0,
 const MAX_LIVES = 5, TURBO_NEED = 5, LIFE_EVERY = 12, RIVAL_COUNT = 7;
 let positionZ = 0, speed = 0, maxSpeed = 1, baseSpeedFrac = 0.62;
 let playerLane = 1, playerX = 0, playerTilt = 0, skyOffset = 0, bounce = 0;
+let jumpActive = false, jumpElapsed = 0, jumpDuration = 1100, jumpLift = 0, jumpRotation = 0, jumpSpinDir = 1;
+let usedRamps = new Set(), pendingMathAfterPause = false;
 let cars = [], rivals = [], particles = [], clouds = [], skyStars = [], birds = [], collected = new Set();
 let correctAnswers = 0, wrongAnswers = 0;
 let tiltEnabled = false, tiltGamma = 0, lastLaneChange = 0;
@@ -717,9 +750,22 @@ const SPR = {
   lamp(x, y, w) { const h = w * 2.4; ctx.fillStyle = '#6c757d'; ctx.fillRect(x - w * 0.04, y - h, w * 0.08, h); ctx.fillRect(x - w * 0.04, y - h, w * 0.4, w * 0.07); ctx.shadowColor = '#ffe08a'; ctx.shadowBlur = w * 0.4; ctx.fillStyle = '#fff2b0'; ctx.beginPath(); ctx.arc(x + w * 0.36, y - h + w * 0.1, w * 0.1, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0; const g = ctx.createRadialGradient(x + w * 0.36, y, w * 0.05, x + w * 0.36, y, w * 0.9); g.addColorStop(0, 'rgba(255,225,140,0.35)'); g.addColorStop(1, 'rgba(255,225,140,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(x + w * 0.36, y, w * 0.9, w * 0.3, 0, 0, Math.PI * 2); ctx.fill(); },
   post(x, y, w) { const h = w * 0.9; ctx.fillStyle = '#ececec'; ctx.fillRect(x - w * 0.05, y - h, w * 0.1, h); ctx.fillStyle = '#e63946'; ctx.fillRect(x - w * 0.05, y - h, w * 0.1, h * 0.25); ctx.fillStyle = '#fff'; ctx.shadowColor = '#fff'; ctx.shadowBlur = w * 0.15; ctx.fillRect(x - w * 0.06, y - h * 0.7, w * 0.12, h * 0.12); ctx.shadowBlur = 0; },
   chevron(x, y, w, d) { const h = w * 0.8; ctx.fillStyle = '#4a4a4a'; ctx.fillRect(x - w * 0.04, y - h, w * 0.08, h); poly([x - w * 0.5, y - h - w * 0.4, x + w * 0.5, y - h - w * 0.4, x + w * 0.5, y - h, x - w * 0.5, y - h], '#ffc93c'); for (let i = -1; i <= 1; i++) { const cx = x + i * w * 0.3 * (d || 1); poly([cx - w * 0.1 * d, y - h - w * 0.36, cx + w * 0.02 * d, y - h - w * 0.36, cx + w * 0.14 * d, y - h - w * 0.2, cx + w * 0.02 * d, y - h - w * 0.04, cx - w * 0.1 * d, y - h - w * 0.04, cx + w * 0.02 * d, y - h - w * 0.2], '#e63946'); } },
-  star(x, y, w) { ctx.save(); ctx.translate(x, y - w * 0.5); ctx.rotate(Math.sin(time / 300) * 0.3); ctx.shadowColor = '#ffe58a'; ctx.shadowBlur = w * 0.5; ctx.fillStyle = '#ffd23f'; ctx.beginPath(); for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, r = i % 2 ? w * 0.22 : w * 0.5; ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r); } ctx.closePath(); ctx.fill(); ctx.restore(); }
+  star(x, y, w) { ctx.save(); ctx.translate(x, y - w * 0.5); ctx.rotate(Math.sin(time / 300) * 0.3); ctx.shadowColor = '#ffe58a'; ctx.shadowBlur = w * 0.5; ctx.fillStyle = '#ffd23f'; ctx.beginPath(); for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, r = i % 2 ? w * 0.22 : w * 0.5; ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r); } ctx.closePath(); ctx.fill(); ctx.restore(); },
+  ramp(x, y, w) {
+    shadow(x, y + w * 0.02, w * 0.68);
+    const h = w * 0.38;
+    poly([x - w * 0.52, y, x + w * 0.52, y, x + w * 0.36, y - h, x - w * 0.36, y - h], '#f59e0b');
+    poly([x - w * 0.52, y, x - w * 0.36, y - h, x - w * 0.28, y - h, x - w * 0.39, y], '#a85f08');
+    poly([x + w * 0.39, y, x + w * 0.28, y - h, x + w * 0.36, y - h, x + w * 0.52, y], '#7c4707');
+    for (let i = -1; i <= 1; i++) {
+      const ax = x + i * w * 0.22;
+      poly([ax - w * 0.08, y - h * 0.42, ax, y - h * 0.68, ax + w * 0.08, y - h * 0.42, ax + w * 0.035, y - h * 0.42, ax + w * 0.035, y - h * 0.2, ax - w * 0.035, y - h * 0.2, ax - w * 0.035, y - h * 0.42], '#fff3b0');
+    }
+    ctx.strokeStyle = '#ffd966'; ctx.lineWidth = Math.max(1, w * 0.018);
+    ctx.beginPath(); ctx.moveTo(x - w * 0.35, y - h); ctx.lineTo(x + w * 0.35, y - h); ctx.stroke();
+  }
 };
-const SPR_W = { tree: 900, bush: 500, rock: 600, palm: 800, cactus: 500, pine: 800, lamp: 500, post: 220, chevron: 520, star: 330 };
+const SPR_W = { tree: 900, bush: 500, rock: 600, palm: 800, cactus: 500, pine: 800, lamp: 500, post: 220, chevron: 520, star: 330, ramp: 1300 };
 
 // ===================== VEHÍCULOS =====================
 function rr(c, x, y, w, h, r) { r = Math.min(r, w / 2, h / 2); c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
@@ -793,11 +839,41 @@ function crash() {
   sfx.crash(); vibrate([400]); shake = 1; flashAlpha = 0.55; flashColor = '255,60,60';
   spawnParticles(W / 2 + playerX * W * 0.3, H - 90, '#ff6b6b', 20); spawnParticles(W / 2 + playerX * W * 0.3, H - 90, '#ffd166', 12);
   speed *= 0.35; turbo = 0;
-  setTimeout(triggerMathQuestion, 350);
+  setTimeout(() => {
+    if (gameState === 'paused') pendingMathAfterPause = true;
+    else triggerMathQuestion();
+  }, 350);
+}
+function launchRamp(ramp) {
+  if (jumpActive || usedRamps.has(ramp.id)) return;
+  usedRamps.add(ramp.id);
+  jumpActive = true; jumpElapsed = 0;
+  jumpDuration = 1050 + Math.min(250, speed * 120);
+  jumpLift = 0; jumpRotation = 0;
+  jumpSpinDir = playerTilt < -0.03 ? -1 : playerTilt > 0.03 ? 1 : (Math.random() < 0.5 ? -1 : 1);
+  score += 25;
+  playTone(420, 'sine', 0.16, 0.16, 720);
+  vibrate([45, 25, 70]);
+  spawnParticles(W / 2 + playerX * W * 0.3, H - 70, '#ffd166', 12);
+}
+function updateJump(dt) {
+  if (!jumpActive) { jumpLift = 0; jumpRotation = 0; return; }
+  jumpElapsed += dt;
+  const p = clamp(jumpElapsed / jumpDuration, 0, 1);
+  jumpLift = Math.sin(Math.PI * p);
+  jumpRotation = jumpSpinDir * Math.PI * 2 * p;
+  if (p >= 1) {
+    jumpActive = false; jumpLift = 0; jumpRotation = 0;
+    invuln = Math.max(invuln, 320);
+    playTone(180, 'sine', 0.12, 0.12, 120);
+    vibrate([35, 20, 35]);
+    shake = Math.max(shake, 0.22);
+  }
 }
 function startTurbo() { turbo = 3500; turboMeter = 0; sfx.boost(); vibrate([60, 30, 60, 30, 200]); flashAlpha = 0.35; flashColor = '255,210,60'; }
 
 function update(dt) {
+  if (gameState === 'paused') return;
   time += dt; updateParticles(dt);
   if (shake > 0) shake = Math.max(0, shake - dt * 0.002);
   if (flashAlpha > 0) flashAlpha = Math.max(0, flashAlpha - dt * 0.004);
@@ -817,6 +893,7 @@ function update(dt) {
   playerX += (targetX - playerX) * clamp(0.012 * dt, 0, 1);
   playerTilt += (((targetX - playerX) * 0.25 - playerSeg.curve * 0.012 * speed) - playerTilt) * clamp(0.01 * dt, 0, 1);
   bounce = Math.sin(time / 60) * speed * 1.2;
+  updateJump(dt);
 
   if (tiltEnabled && !tiltCalibrating) {
     const now = performance.now();
@@ -844,9 +921,25 @@ function update(dt) {
   });
   position = 1 + rivals.filter(r => r.z > playerZ).length;
 
+  // rampas: si el jugador está alineado con el carril, salta y realiza un giro completo
+  if (!jumpActive) {
+    const idx = Math.floor(playerZ / SEG_LEN);
+    for (let di = -2; di <= 2 && !jumpActive; di++) {
+      const si = idx + di;
+      if (si < 0 || si >= segments.length) continue;
+      const seg = segments[si];
+      for (const s of seg.sprites) {
+        if (s.kind === 'ramp' && !usedRamps.has(s.id) && Math.abs(s.offset - playerX) < 0.34 && Math.abs(seg.p1.world.z - playerZ) < SEG_LEN * 1.25) {
+          launchRamp(s);
+          break;
+        }
+      }
+    }
+  }
+
   // colisiones y estrellas
   const hitZ = 2.6 * SEG_LEN;
-  for (const c of cars.concat(rivals)) {
+  if (!jumpActive && invuln <= 0) for (const c of cars.concat(rivals)) {
     if (Math.abs(c.z - playerZ) < hitZ && Math.abs(c.offset - playerX) < 0.45) {
       if (c.rival) { c.z = playerZ - 6 * SEG_LEN; c.lane = c.lane === playerLane ? (playerLane === 1 ? 0 : 1) : c.lane; c.offset = LANE_OFF[c.lane]; } else c.z = positionZ - 30 * SEG_LEN;
       crash(); return;
@@ -917,10 +1010,24 @@ function render() {
   }
   ctx.globalAlpha = 1;
   // jugador
-  const pw = (camDepth / PLAYER_Z) * 620 * SX, px = W / 2 + playerX * 0.4 * (camDepth / PLAYER_Z) * ROAD_W * SX + playerTilt * 8, py = H - H * 0.06 + bounce;
-  if (turbo > 0) drawFlames(px, py - pw * 0.06, pw);
+  const pw = (camDepth / PLAYER_Z) * 620 * SX, px = W / 2 + playerX * 0.4 * (camDepth / PLAYER_Z) * ROAD_W * SX + playerTilt * 8;
+  const groundPy = H - H * 0.06 + bounce;
+  const airPx = jumpActive ? Math.min(H * 0.24, pw * 1.7) * jumpLift : 0;
+  const py = groundPy - airPx;
+  if (jumpActive) {
+    ctx.save();
+    ctx.globalAlpha = 0.3 * (1 - jumpLift * 0.55);
+    ctx.fillStyle = '#000';
+    ctx.beginPath(); ctx.ellipse(px, groundPy + 3, pw * (0.52 - jumpLift * 0.12), pw * 0.1, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  }
   if (invuln > 0 && turbo <= 0 && Math.floor(time / 90) % 2) ctx.globalAlpha = 0.5;
-  drawVehicle(ctx, vehicle(), px, py, pw, true, playerTilt * 0.12);
+  ctx.save();
+  ctx.translate(px, py);
+  if (jumpActive) ctx.rotate(jumpRotation);
+  if (turbo > 0) drawFlames(0, -pw * 0.06, pw);
+  drawVehicle(ctx, vehicle(), 0, 0, pw, true, playerTilt * 0.12);
+  ctx.restore();
   ctx.globalAlpha = 1;
   if (turbo > 0 && Math.random() > 0.3) particles.push({ x: px + (Math.random() - 0.5) * pw * 0.5, y: py - 4, vx: (Math.random() - 0.5) * 1.2, vy: 2 + Math.random() * 2, life: 0.7, decay: 0.05, size: 4 + Math.random() * 5, color: Math.random() > 0.5 ? '#ff7a1a' : '#ffd166', g: -0.05 });
   if (speed > 0.6) { ctx.strokeStyle = turbo > 0 ? 'rgba(255,220,120,0.4)' : 'rgba(255,255,255,0.15)'; ctx.lineWidth = 1.5; for (let i = 0; i < 10; i++) { const lx = Math.random() < 0.5 ? Math.random() * W * 0.18 : W - Math.random() * W * 0.18, ly = horizonY + Math.random() * (H - horizonY); ctx.beginPath(); ctx.moveTo(lx, ly); ctx.lineTo(lx, ly + 20 + speed * 60); ctx.stroke(); } }
@@ -987,6 +1094,9 @@ function startLevel(n) {
   buildTrack(currentLevel.length);
   score = 0; lives = 3; starsTotal = 0; turboMeter = 0; turbo = 0; invuln = 0; position = RIVAL_COUNT + 1;
   positionZ = 0; speed = 0; maxSpeed = currentLevel.maxSpeed; playerLane = 1; playerX = 0; playerTilt = 0; skyOffset = 0;
+  jumpActive = false; jumpElapsed = 0; jumpLift = 0; jumpRotation = 0; usedRamps = new Set(); pendingMathAfterPause = false;
+  document.getElementById('pause-overlay').classList.remove('active');
+  document.getElementById('pause-overlay').setAttribute('aria-hidden', 'true');
   particles = []; collected = new Set(); correctAnswers = 0; wrongAnswers = 0;
   resetCars(); updateHearts(); updateHud(); showScreen(null);
   document.getElementById('math-modal').classList.remove('active');
@@ -1147,7 +1257,12 @@ function onTilt(e) {
   tiltGamma = Math.abs(tiltFilter) < 4 ? 0 : tiltFilter;
 }
 function moveLane(dir) { if (gameState !== 'playing') return; playerLane = clamp(playerLane + dir, 0, 2); vibrate(15); }
-window.addEventListener('keydown', e => { if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') moveLane(-1); if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') moveLane(1); if (e.key === 'm' || e.key === 'M') toggleMute(); });
+window.addEventListener('keydown', e => {
+  if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') moveLane(-1);
+  if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') moveLane(1);
+  if (e.key === 'm' || e.key === 'M') toggleMute();
+  if (e.key === 'p' || e.key === 'P') togglePause();
+});
 let touchStartX = null;
 canvas.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
 canvas.addEventListener('touchend', e => { if (touchStartX === null) return; const dx = e.changedTouches[0].clientX - touchStartX; if (Math.abs(dx) > 30) moveLane(dx < 0 ? -1 : 1); else moveLane(e.changedTouches[0].clientX < W / 2 ? -1 : 1); touchStartX = null; });
@@ -1169,6 +1284,36 @@ if (tiltCenterBtn) {
   tiltCenterBtn.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') recenter(); });
 }
 updateDisplayModeUI();
+
+const pauseOverlay = document.getElementById('pause-overlay');
+const pauseBtn = document.getElementById('pauseBtn');
+const resumeBtn = document.getElementById('resumeBtn');
+function pauseGame() {
+  if (gameState !== 'playing') return;
+  gameState = 'paused';
+  stopEngine();
+  pauseOverlay.classList.add('active');
+  pauseOverlay.setAttribute('aria-hidden', 'false');
+}
+function resumeGame() {
+  if (gameState !== 'paused') return;
+  pauseOverlay.classList.remove('active');
+  pauseOverlay.setAttribute('aria-hidden', 'true');
+  gameState = 'playing';
+  resetTiltCalibration();
+  startEngine();
+  if (pendingMathAfterPause) {
+    pendingMathAfterPause = false;
+    setTimeout(() => { if (gameState === 'playing') triggerMathQuestion(); }, 80);
+  }
+}
+function togglePause() { if (gameState === 'paused') resumeGame(); else pauseGame(); }
+if (pauseBtn) {
+  pauseBtn.addEventListener('click', pauseGame);
+  pauseBtn.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pauseGame(); } });
+}
+if (resumeBtn) resumeBtn.addEventListener('click', resumeGame);
+document.addEventListener('visibilitychange', () => { if (document.hidden && gameState === 'playing') pauseGame(); });
 
 const muteBtn = document.getElementById('muteBtn');
 function toggleMute() { isMuted = !isMuted; document.getElementById('snd-on').style.display = isMuted ? 'none' : ''; document.getElementById('snd-off').style.display = isMuted ? '' : 'none'; if (engineGain && audioCtx) engineGain.gain.setTargetAtTime(isMuted ? 0 : 0.07, audioCtx.currentTime, 0.1); }
