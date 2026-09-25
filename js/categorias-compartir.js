@@ -5,8 +5,9 @@
     'use strict';
 
     const CLASE_BOTON = 'btn-compartir-categoria-lspedia';
-    const VERSION_PREVIEW_SOCIAL = '20260925-3';
+    const VERSION_PREVIEW_SOCIAL = '20260925-4';
     let restauracionVocabularioRegistrada = false;
+    let restauracionColeccionRegistrada = false;
     let ultimaRestauracionConfirmada = '';
 
     function datosCategoriaDesdeUrl(urlTexto){
@@ -84,7 +85,15 @@
     }
 
     function construirUrlColeccion(nombre){
-        const url = new URL(window.location.origin + window.location.pathname);
+        const ref = slugCategoria(nombre);
+        return new URL(
+            '/coleccion/vocabulario/' + encodeURIComponent(ref) + '/compartir-' + VERSION_PREVIEW_SOCIAL + '/',
+            window.location.origin
+        ).href;
+    }
+
+    function construirUrlColeccionApp(nombre){
+        const url = new URL(window.location.origin + '/');
         url.searchParams.set('vista', 'vocabulario');
         url.searchParams.set('coleccion', nombre);
         return url.href;
@@ -304,13 +313,41 @@
         return false;
     }
 
+    function obtenerEtiquetasColeccion(item){
+        const valor = item && (item.etiquetas ?? item.tags);
+        if(Array.isArray(valor)) return valor.map(x => String(x || '').trim()).filter(Boolean);
+        return String(valor || '').split(/[,;|]/).map(x => x.trim()).filter(Boolean);
+    }
+
+    function coleccionVocabularioDisponible(nombre){
+        const buscado = String(nombre || '').trim().toLowerCase();
+        if(!buscado) return false;
+        try {
+            const banco = (window.QuizV2 && typeof window.QuizV2.obtenerBanco === 'function')
+                ? window.QuizV2.obtenerBanco() : [];
+            return Array.isArray(banco) && banco.some(item =>
+                obtenerEtiquetasColeccion(item).some(etiqueta => etiqueta.toLowerCase() === buscado)
+            );
+        } catch(_error){
+            return false;
+        }
+    }
+
+    function resultadoColeccionVisible(nombre){
+        const contenedor = document.getElementById('resultadoCategorias');
+        if(!contenedor) return false;
+        const texto = String(contenedor.textContent || '').toLowerCase();
+        return texto.includes(String(nombre || '').trim().toLowerCase())
+            && !!contenedor.querySelector('.categoria-resultado-item');
+    }
+
     function restaurarCategoriaCompartida(){
         const datos = parametrosCategoriaActuales();
         if(!datos) return false;
         if(datos.tipo === 'coleccion-vocabulario'){
             if(typeof window.mostrarEtiquetaVocabulario !== 'function') return false;
             const confirmarUrlColeccion = () => {
-                const objetivo = new URL(construirUrlColeccion(datos.nombre));
+                const objetivo = new URL(construirUrlColeccionApp(datos.nombre));
                 const relativaObjetivo = objetivo.pathname + objetivo.search;
                 const relativaActual = window.location.pathname + window.location.search;
                 if(relativaActual !== relativaObjetivo){
@@ -322,22 +359,34 @@
             };
             const abrirYMostrar = () => {
                 try {
+                    const actuales = parametrosCategoriaActuales();
+                    if(!mismaCategoria(actuales, datos)) return false;
                     const yaEnVocabulario = document.body && document.body.classList.contains('vista-temas-movil');
                     if(!yaEnVocabulario){
                         const boton = document.getElementById('btnCategorias');
                         if(boton) boton.click();
                     }
+                    confirmarUrlColeccion();
+                    if(!coleccionVocabularioDisponible(datos.nombre)) return false;
                     window.mostrarEtiquetaVocabulario(datos.nombre, { noActualizarHistorial: true });
                     confirmarUrlColeccion();
+                    if(!resultadoColeccionVisible(datos.nombre)) return false;
+                    categoriaPendienteOriginal = null;
+                    ultimaRestauracionConfirmada = 'coleccion-vocabulario:' + datos.nombre.toLowerCase();
                     return true;
                 } catch(_error){ return false; }
             };
-            if(abrirYMostrar()){
-                categoriaPendienteOriginal = null;
-                return true;
-            }
-            if(window.QuizV2 && typeof window.QuizV2.onBancoListo === 'function'){
-                window.QuizV2.onBancoListo(() => abrirYMostrar());
+            if(abrirYMostrar()) return true;
+
+            if(!restauracionColeccionRegistrada && window.QuizV2 && typeof window.QuizV2.onBancoListo === 'function'){
+                restauracionColeccionRegistrada = true;
+                if(typeof window.QuizV2.asegurarBancoCargado === 'function'){
+                    try { window.QuizV2.asegurarBancoCargado(); } catch(_error){}
+                }
+                window.QuizV2.onBancoListo(() => {
+                    restauracionColeccionRegistrada = false;
+                    abrirYMostrar();
+                });
             }
             return false;
         }
