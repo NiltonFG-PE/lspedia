@@ -113,7 +113,7 @@ const server = http.createServer((req, res) => {
         await page.locator('.lspedia-idioma-btn[data-idioma="en"]').click();
         await page.waitForFunction(() => document.documentElement.lang === 'en');
         assert.equal(await page.locator('#buscar').getAttribute('placeholder'), 'Search a Spanish word or type in English');
-        assert.match(await page.locator('nav.navbar').innerText(), /Vocabulary/);
+        assert.match(await page.locator('nav.navbar').innerText(), /Vocabulary/i);
 
         await page.locator('#btnCategorias').click();
         await page.waitForFunction(() => /Colors/.test(document.getElementById('panelCategorias')?.innerText || ''));
