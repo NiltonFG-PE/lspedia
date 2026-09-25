@@ -145,6 +145,7 @@
 
     let idioma = leerIdioma();
     const originalesTexto = new WeakMap();
+    const originalesAtributos = new WeakMap();
 
     function leerIdioma(){
         try {
@@ -286,11 +287,22 @@
         if(!Object.prototype.hasOwnProperty.call(p, '_i18nDefinicionEs')) p._i18nDefinicionEs = String(p.definicion || '');
     }
 
+    function traduccionDirecta(p){
+        const term = String(p && p.ingles || '').trim();
+        if(!term) return null;
+        return {
+            es: String(p.palabra || '').trim(),
+            term,
+            aliases: Array.isArray(p.aliasesIngles) ? p.aliasesIngles : [],
+            definition: String(p.definicionIngles || '').trim()
+        };
+    }
+
     function aplicarColeccion(coleccion, mapa){
         if(!Array.isArray(coleccion)) return;
         coleccion.forEach(p => {
             if(!p || !p.palabra) return;
-            const traduccion = mapa.get(norm(p.palabra));
+            const traduccion = traduccionDirecta(p) || mapa.get(norm(p.palabra));
             if(!traduccion) return;
             guardarOriginalesPalabra(p);
             p._traduccionEn = traduccion.term;
@@ -307,16 +319,80 @@
     }
 
     function aplicarDatos(){
-        // Los conceptos bilingües pertenecen al Diccionario. Vocabulario
-        // conserva su banco original de videos de señas sin aliases ni
-        // definiciones inglesas inyectadas en los registros.
-        if(window.App && Array.isArray(window.App.datos)) aplicarColeccion(window.App.datos, MAPA_DICC);
+        if(window.App && Array.isArray(window.App.datos)){
+            aplicarColeccion(window.App.datos, MAPA_DICC);
+        }
+        if(window.LSPediaVocabularioPublico && typeof window.LSPediaVocabularioPublico.obtener === 'function'){
+            aplicarColeccion(window.LSPediaVocabularioPublico.obtener(), MAPA_VOCAB);
+        }
+    }
+
+    function traduccionConcepto(texto){
+        const limpio = String(texto || '').trim();
+        if(!limpio) return '';
+        const exacta = UI_EN[limpio];
+        if(exacta) return exacta;
+
+        const vocab = MAPA_VOCAB.get(norm(limpio));
+        if(vocab) return vocab.term;
+        const dicc = MAPA_DICC.get(norm(limpio));
+        if(dicc) return dicc.term;
+
+        if(window.LSPediaI18nAuto && typeof window.LSPediaI18nAuto.traduccion === 'function'){
+            try {
+                const auto = window.LSPediaI18nAuto.traduccion(limpio);
+                if(auto && auto.term) return auto.term;
+            } catch(_e) {}
+        }
+        return '';
+    }
+
+    function traducirTextoDinamico(texto){
+        const limpio = String(texto || '').trim();
+        if(!limioSeguro(limpio)) return '';
+
+        const exacta = traduccionConcepto(limpio);
+        if(exacta) return exacta;
+
+        let m = limpio.match(/^Categoría:\s*(.+)$/i);
+        if(m){
+            const nombre = m[1].trim();
+            return 'Category: ' + (traduccionConcepto(nombre) || nombre);
+        }
+
+        m = limpio.match(/^(\d+)\s+palabra(?:s)?(?:\s+relacionadas)?$/i);
+        if(m){
+            const n = Number(m[1]);
+            return n + (n === 1 ? ' word' : ' words')
+                + (/relacionadas/i.test(limpio) ? ' related' : '');
+        }
+
+        m = limpio.match(/^🏷️\s*(.+)$/);
+        if(m){
+            const nombre = m[1].trim();
+            return '🏷️ ' + (traduccionConcepto(nombre) || nombre);
+        }
+
+        m = limpio.match(/^Pregunta\s+(\d+)$/i);
+        if(m) return 'Question ' + m[1];
+        m = limpio.match(/^Palabra\s+(\d+)$/i);
+        if(m) return 'Word ' + m[1];
+        m = limpio.match(/^Ronda\s+(\d+)$/i);
+        if(m) return 'Round ' + m[1];
+        m = limpio.match(/^Intentos:\s*(\d+)$/i);
+        if(m) return 'Attempts: ' + m[1];
+
+        return '';
+    }
+
+    function limioSeguro(texto){
+        return !!texto && texto.length < 220;
     }
 
     function estaExcluido(node){
         const el = node.parentElement;
         if(!el) return true;
-        return !!el.closest('h3.fw-bold, .categoria-resultado-titulo, #tituloDelDia, .ejemplo-chip, #listaFavoritos h6, #listaHistorial h6, .dia-rect-titulo');
+        return !!el.closest('script, style, noscript, .lspedia-es-term, .lspedia-en-term, h3.fw-bold');
     }
 
     function traducirNodos(root){
@@ -326,23 +402,71 @@
         while(walker.nextNode()) nodos.push(walker.currentNode);
         nodos.forEach(node => {
             if(estaExcluido(node)) return;
+            const actual = String(node.nodeValue || '');
+            if(!originalesTexto.has(node)) originalesTexto.set(node, actual);
+            const original = originalesTexto.get(node);
             if(idioma === 'es'){
-                if(originalesTexto.has(node)) node.nodeValue = originalesTexto.get(node);
+                if(node.nodeValue !== original) node.nodeValue = original;
                 return;
             }
-            const bruto = String(node.nodeValue || '');
-            const limpio = bruto.trim();
+            const limpio = String(original || '').trim();
             if(!limpio) return;
-            const traduccion = UI_EN[limpio];
+            const traduccion = traducirTextoDinamico(limpio);
             if(!traduccion) return;
-            if(!originalesTexto.has(node)) originalesTexto.set(node, bruto);
-            node.nodeValue = bruto.replace(limpio, traduccion);
+            const nuevo = original.replace(limpio, traduccion);
+            if(node.nodeValue !== nuevo) node.nodeValue = nuevo;
+        });
+    }
+
+    function traducirAtributos(root){
+        if(!root || !root.querySelectorAll) return;
+        const elementos = [];
+        if(root.nodeType === 1 && root.matches('[placeholder],[title],[aria-label],[alt]')) elementos.push(root);
+        root.querySelectorAll('[placeholder],[title],[aria-label],[alt]').forEach(el => elementos.push(el));
+
+        elementos.forEach(el => {
+            let originales = originalesAtributos.get(el);
+            if(!originales){
+                originales = {};
+                originalesAtributos.set(el, originales);
+            }
+            ['placeholder','title','aria-label','alt'].forEach(attr => {
+                if(!el.hasAttribute(attr)) return;
+                if(!Object.prototype.hasOwnProperty.call(originales, attr)){
+                    originales[attr] = el.getAttribute(attr);
+                }
+                const original = originales[attr];
+                if(idioma === 'es'){
+                    if(el.getAttribute(attr) !== original) el.setAttribute(attr, original);
+                    return;
+                }
+
+                let traduccion = traducirTextoDinamico(original);
+                if(!traduccion){
+                    const compartirCategoria = original.match(/^Compartir categoría\s+(.+)$/i);
+                    const compartirColeccion = original.match(/^Compartir colección\s+(.+)$/i);
+                    if(compartirCategoria){
+                        const nombre = compartirCategoria[1].trim();
+                        traduccion = 'Share category ' + (traduccionConcepto(nombre) || nombre);
+                    } else if(compartirColeccion){
+                        const nombre = compartirColeccion[1].trim();
+                        traduccion = 'Share collection ' + (traduccionConcepto(nombre) || nombre);
+                    }
+                }
+                if(traduccion && el.getAttribute(attr) !== traduccion){
+                    el.setAttribute(attr, traduccion);
+                }
+            });
         });
     }
 
     function setPlaceholder(id, es, en){
         const el = document.getElementById(id);
-        if(el) el.setAttribute('placeholder', idioma === 'en' ? en : es);
+        if(!el) return;
+        if(!originalesAtributos.has(el)) originalesAtributos.set(el, {});
+        const originales = originalesAtributos.get(el);
+        if(!Object.prototype.hasOwnProperty.call(originales, 'placeholder')) originales.placeholder = es;
+        el.setAttribute('placeholder', idioma === 'en' ? en : es);
     }
 
     function traducirHero(){
