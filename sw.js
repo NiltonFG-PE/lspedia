@@ -12,7 +12,7 @@
    - El panel /admin/ y los laboratorios quedan fuera del fallback público.
    ============================================================ */
 
-const VERSION_APP = "v194";
+const VERSION_APP = "v195";
 const PREFIJO_CACHE = "lspedia-shell-";
 const PREFIJO_RUNTIME = "lspedia-runtime-";
 const CACHE_NOMBRE = PREFIJO_CACHE + VERSION_APP;
@@ -20,7 +20,7 @@ const CACHE_RUNTIME = PREFIJO_RUNTIME + VERSION_APP;
 const RED_TIMEOUT_MS = 8000;
 const RED_REINTENTOS = 1;
 
-const EXTENSION_ARCHIVO_ESTATICO = /\.(?:avif|bmp|gif|ico|jpe?g|png|svg|webp|css|js|mjs|json|map|webmanifest|woff2?|ttf|otf|mp3|wav|ogg|mp4|webm|pdf|txt|xml)$/i;
+const EXTENSION_ARCHIVO_ESTATICO = /\.(?:avif|bmp|gif|ico|jpe?g|png|svg|webp|css|html?|js|mjs|json|map|webmanifest|woff2?|ttf|otf|mp3|wav|ogg|mp4|webm|pdf|txt|xml)$/i;
 
 const ARCHIVOS_CASCARON = [
     "./",
