@@ -160,7 +160,7 @@
   }
   async function requestPreferredOrientation() {
     updateOrientationUI();
-    const coarse = matchMedia?.('(pointer: coarse)')?.matches ?? true;
+    const coarse = window.matchMedia ? window.matchMedia('(pointer: coarse)').matches : true;
     if (!coarse) return;
     try {
       if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
@@ -271,6 +271,7 @@
   function showMenu() {
     ++prepareGeneration;
     clearRoundTimers();releaseWake();state='home';gate.reset();unlockOrientation();
+    if(document.fullscreenElement) document.exitFullscreen().catch(()=>{});
     $('feedback').hidden=true;$('countdown').hidden=true;
     for (const id of ['pause-dialog','help-dialog']) if ($(id).open) $(id).close();
     $('again').disabled=false;
