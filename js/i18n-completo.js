@@ -167,6 +167,51 @@
         'Meses del año':'Months of the year'
     }));
 
+    const VOCAB_EN = new Map(Object.entries({
+        'Adulto':'Adult','Alto':'Tall','Ancho':'Wide','Angosto':'Narrow','Antiguo':'Old',
+        'Bajo':'Short','Barato':'Cheap','Caro':'Expensive','Débil':'Weak','Difícil':'Difficult',
+        'Distraído':'Distracted','Amarillo':'Yellow','Azul':'Blue','Beige':'Beige','Blanco':'White',
+        'Celeste':'Light blue','Dorado':'Golden','Guinda':'Burgundy','Marrón':'Brown','Morado':'Purple',
+        'Anaranjado':'Orange','Negro':'Black','Rojo':'Red','Rosado':'Pink','Turquesa':'Turquoise',
+        'Verde':'Green','Pregunta':'Question','Felicitaciones':'Congratulations','Gracias':'Thank you',
+        'Por favor':'Please','Perdón':'Sorry','Bienvenido':'Welcome','Hasta luego':'See you later',
+        'Buenos días':'Good morning','Buenas tardes':'Good afternoon','Buenas noches':'Good evening',
+        'Cansado':'Tired','Aburrido':'Bored','Amor':'Love','Asustado':'Scared','Cariño':'Affection',
+        'Celos':'Jealousy','Contento':'Happy','Enojado':'Angry','Envidia':'Envy','Esperanza':'Hope',
+        'Feliz':'Happy','Extrañar':'Miss','Orgullo (negativo)':'Pride (negative)','Soledad':'Loneliness',
+        'Sorprendido':'Surprised','Triste':'Sad','Vergüenza':'Embarrassment','¿Cómo?':'How?',
+        '¿Cuál?':'Which?','¿Cuándo?':'When?','¿Dónde?':'Where?','¿Por qué?':'Why?','¿Qué?':'What?',
+        '¿Quién?':'Who?','¿Quiénes?':'Who?','¿Cuáles?':'Which ones?','¿Cuántos?':'How many?',
+        '¿Para qué?':'What for?','Abril':'April','Agosto':'August','Ahora':'Now',
+        'Anteayer':'The day before yesterday','Ayer':'Yesterday','Todos los días':'Every day',
+        'Diciembre':'December','Domingo':'Sunday','Enero':'January','Estaciones del año':'Seasons of the year',
+        'Febrero':'February','Hoy':'Today','Invierno':'Winter','Jueves':'Thursday','Julio':'July',
+        'Junio':'June','Lunes':'Monday','Mañana':'Tomorrow','Martes':'Tuesday','Marzo':'March',
+        'Mayo':'May','Miércoles':'Wednesday','Noviembre':'November','Octubre':'October',
+        'Otoño':'Autumn','Pasado mañana':'The day after tomorrow','Primavera':'Spring','Sábado':'Saturday',
+        'Septiembre':'September','Verano':'Summer','Viernes':'Friday','Apoyar':'Support','Ayudar':'Help',
+        'Examinar':'Examine','Advertir':'Warn','Practicar':'Practice','Aceptar':'Accept','Añadir':'Add',
+        'Abrir':'Open','Bromear':'Joke','Abrazar':'Hug','Atender':'Attend','Aplaudir':'Applaud',
+        'Escuchar':'Listen','Agradecer':'Thank','Jugar':'Play','Número':'Number','Saludos':'Greetings',
+        'Muchas gracias':'Thank you very much','Gratis':'Free','Nos vemos':'See you','Hola':'Hello',
+        'Chau':'Bye','Cuídate':'Take care','Educado':'Polite'
+    }));
+
+    function installVocabularyEnglishAliases(){
+        const api = window.LSPediaVocabularioPublico;
+        if(!api || typeof api.obtener !== 'function') return;
+        try {
+            api.obtener().forEach(item => {
+                if(!item || !item.palabra) return;
+                const english = VOCAB_EN.get(String(item.palabra).trim());
+                if(!english) return;
+                item.ingles = english;
+                item.traduccionIngles = english;
+            });
+        } catch(_error) {}
+    }
+
+
     const ATTR = new Map(Object.entries({
         'Pantalla completa':'Full screen',
         'Salir de Subtítulos':'Exit Captions',
@@ -319,6 +364,7 @@
 
     function apply(){
         document.documentElement.lang = language() === 'en' ? 'en' : 'es';
+        installVocabularyEnglishAliases();
         walk(document.body);
         translateMetadata();
     }
@@ -356,7 +402,10 @@
             setTimeout(apply, 300);
         });
         document.addEventListener('lspedia:datosListos', schedule);
-        document.addEventListener('lspedia:vocabularioPublicoListo', schedule);
+        document.addEventListener('lspedia:vocabularioPublicoListo', () => {
+            installVocabularyEnglishAliases();
+            schedule();
+        });
         document.addEventListener('click', () => setTimeout(schedule, 0), true);
     }
 
