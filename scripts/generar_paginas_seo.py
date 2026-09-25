@@ -27,7 +27,7 @@ MARCADOR = ".lspedia-seo-generated"
 IMAGEN_RE = re.compile(r"\.(?:avif|gif|jpe?g|png|svg|webp)(?:[?#].*)?$", re.I)
 PREFIJO_RE = re.compile(r"^(?:https?://|/|\.\.?/|img/)", re.I)
 YOUTUBE_ID_RE = re.compile(r"^[A-Za-z0-9_-]{11}$")
-SOCIAL_PREVIEW_VERSION = "20260925-5"
+SOCIAL_PREVIEW_VERSION = "20260925-6"
 
 
 def texto(valor: object) -> str:
@@ -527,6 +527,13 @@ def generar_colecciones(repo: Path, filas_voc: list[dict]) -> int:
   <meta name="twitter:image" content="{escape(imagen, quote=True)}">
   <script type="application/ld+json">{json.dumps(ld, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")}</script>
   <style>
+    html.lsp-redireccion-app body{{opacity:0;visibility:hidden}}
+  </style>
+  <script>
+    document.documentElement.classList.add("lsp-redireccion-app");
+    window.location.replace({json.dumps(app_url, ensure_ascii=False)});
+  </script>
+  <style>
     body{{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#f5f8fc;color:#172033;line-height:1.6}}
     main{{max-width:900px;margin:32px auto;padding:0 18px 48px}}
     article{{background:#fff;border:1px solid #dbe5f0;border-radius:24px;padding:clamp(22px,4vw,40px)}}
@@ -646,10 +653,13 @@ def generar_categorias(repo: Path, filas_dic: list[dict], filas_voc: list[dict])
   <meta name="twitter:description" content="{escape(descripcion, quote=True)}">
   <meta name="twitter:image" content="{escape(imagen, quote=True)}">
   <script type="application/ld+json">{json.dumps(ld, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")}</script>
+  <style>
+    html.lsp-redireccion-app body{{opacity:0;visibility:hidden}}
+  </style>
   <script>
-    // Los rastreadores sociales leen el Open Graph anterior. Un navegador
-    // humano entra inmediatamente a la aplicación completa y conserva la
-    // categoría solicitada.
+    // Los rastreadores sociales leen Open Graph; los navegadores humanos
+    // entran a la aplicación sin mostrar la página SEO intermedia.
+    document.documentElement.classList.add("lsp-redireccion-app");
     window.location.replace({json.dumps(app_url, ensure_ascii=False)});
   </script>
   <style>
