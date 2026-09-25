@@ -99,16 +99,22 @@
   }
 
   async function probeAccess(api,key){
-    // Backend nuevo: validación casi instantánea, sin consultar GA4.
+    // Compatibilidad inmediata con el backend nuevo (admin_ping) y con
+    // implementaciones anteriores (admin_busquedas). Se prueban en paralelo
+    // para que una versión antigua de Apps Script no deje el Admin esperando.
+    const ping=requestJsonp(api,key,'7','admin_ping',8000);
+    const legacy=requestJsonp(api,key,'7','admin_busquedas',12000);
     try{
-      return await requestJsonp(api,key,'7','admin_ping',6500);
+      if(typeof Promise.any==='function') return await Promise.any([ping,legacy]);
+      return await new Promise((resolve,reject)=>{
+        let failed=0,last=null;
+        [ping,legacy].forEach(p=>p.then(resolve).catch(e=>{last=e;if(++failed===2)reject(last);}));
+      });
     }catch(e){
-      // Compatibilidad con implementaciones anteriores: una sola consulta de búsquedas,
-      // mucho más liviana que cargar todo el panel de Analytics.
-      if(/Modo no válido/i.test(String(e&&e.message||''))){
-        return requestJsonp(api,key,'7','admin_busquedas',12000);
-      }
-      throw e;
+      const errors=e&&Array.isArray(e.errors)?e.errors:[e];
+      const keyError=errors.find(x=>/clave incorrecta|unauthorized|no autorizado/i.test(String(x&&x.message||'')));
+      if(keyError)throw keyError;
+      throw new Error('No se pudo validar el acceso en 12 segundos. Verifica que la URL termine en /exec y que la implementación de Apps Script esté activa.');
     }
   }
 
