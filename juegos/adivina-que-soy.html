@@ -7,9 +7,9 @@
 <meta name="description" content="Adivina qué soy: juega en grupo con imágenes de Vocabulario, animales, profesiones y personajes. Da pistas en señas y mueve el celular para acertar o pasar.">
 <title>Adivina qué soy | LSPedia</title>
 <link rel="icon" href="../img/favicon.png">
-<link rel="stylesheet" href="../css/adivina-que-soy.css?v=2">
+<link rel="stylesheet" href="../css/adivina-que-soy.css?v=3">
 <script defer src="../js/adivina-core.js?v=2"></script>
-<script defer src="../js/adivina-que-soy.js?v=2"></script>
+<script defer src="../js/adivina-que-soy.js?v=3"></script>
 </head>
 <body>
 <svg xmlns="http://www.w3.org/2000/svg" class="icon-sprite" aria-hidden="true"><defs><symbol id="i-phone" viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M10 5h4m-3 14h2"/></symbol><symbol id="i-vibrate" viewBox="0 0 24 24"><rect x="8" y="5" width="8" height="14" rx="2"/><path d="M4 6l-2 4 2 4-2 4m18-12 2 4-2 4 2 4"/></symbol><symbol id="i-expand" viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></symbol><symbol id="i-people" viewBox="0 0 24 24"><circle cx="8" cy="7" r="3"/><path d="M2 21v-5a6 6 0 0 1 12 0v5m3-17a3 3 0 0 1 0 6m1 3a5 5 0 0 1 4 5v3"/></symbol><symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></symbol></defs></svg>
@@ -24,12 +24,22 @@
 <button class="deck" data-deck="Animales" aria-pressed="false"><img src="../img/adivina/gato.svg" alt=""><strong>Animales</strong><small data-count="Animales">…</small></button>
 <button class="deck" data-deck="Profesiones" aria-pressed="false"><img src="../img/adivina/chef.svg" alt=""><strong>Profesiones</strong><small data-count="Profesiones">…</small></button>
 <button class="deck" data-deck="Personajes" aria-pressed="false"><img src="../img/adivina/robot.svg" alt=""><strong>Personajes</strong><small data-count="Personajes">…</small></button>
+<button class="deck" data-deck="Transportes" aria-pressed="false"><img src="../img/alfabetizacion/ejemplos/bus.webp" alt=""><strong>Transportes</strong><small data-count="Transportes">…</small></button>
+<button class="deck" data-deck="Comidas" aria-pressed="false"><img src="../img/alfabetizacion/ejemplos/manzana.webp" alt=""><strong>Comidas</strong><small data-count="Comidas">…</small></button>
+<button class="deck" data-deck="Objetos" aria-pressed="false"><img src="../img/alfabetizacion/ejemplos/reloj.webp" alt=""><strong>Objetos</strong><small data-count="Objetos">…</small></button>
 </div>
 <div id="category-wrap" hidden><label for="category">Categoría de Vocabulario</label><select id="category"><option value="">Todas las categorías</option></select></div>
 <div class="settings-row"><fieldset><legend>Tiempo por turno</legend><div id="durations" class="segmented"><button data-seconds="60" aria-pressed="true" class="selected">60 s</button><button data-seconds="90" aria-pressed="false">90 s</button><button data-seconds="120" aria-pressed="false">120 s</button><button data-seconds="0" aria-pressed="false" aria-label="Sin límite de tiempo">∞</button></div></fieldset><div class="toggles"><button id="sound" class="toggle" aria-pressed="true">♪ <span>Sonido</span></button><button id="vibration" class="toggle" aria-pressed="true"><svg class="ui-icon" aria-hidden="true"><use href="#i-vibrate"/></svg> <span>Vibración</span></button></div></div>
+<div class="orientation-choice">
+  <div><strong>↔ Orientación de juego</strong><small id="orientation-status">Elige cómo quieres sostener el celular durante la partida.</small></div>
+  <div id="orientations" class="segmented orientation-segmented" role="group" aria-label="Orientación de pantalla">
+    <button type="button" data-orientation="portrait" aria-pressed="true" class="selected">📱 Vertical</button>
+    <button type="button" data-orientation="landscape" aria-pressed="false">↔ Horizontal</button>
+  </div>
+</div>
 <div class="control-choice"><div><strong><svg class="ui-icon" aria-hidden="true"><use href="#i-phone"/></svg> Mover el celular</strong><small id="sensor-status">Opcional · también puedes usar botones</small></div><button id="motion" class="toggle" aria-pressed="false">Activar</button></div>
 <p id="notice" class="notice" role="status" hidden></p><button id="reload" class="text-button" hidden>↻ Volver a cargar tarjetas</button>
-<button id="start" class="primary" disabled>Preparando imágenes…</button><p class="footnote">Imágenes grandes · pistas en señas o con gestos<br>Hasta 30 tarjetas diferentes por turno</p>
+<button id="start" class="primary" disabled>Preparando imágenes…</button><p class="footnote">Imágenes grandes · pistas en señas o con gestos<br>Hasta 30 tarjetas diferentes por turno · modo vertical u horizontal</p>
 </section>
 <section id="ready" class="screen centered" hidden aria-labelledby="ready-title"><p class="eyebrow">ES TU TURNO</p><h2 id="ready-title">Celular en la frente</h2><img class="guide-image" src="../img/adivina/como-jugar.svg" alt="Una persona sostiene el celular en la frente con la pantalla hacia su compañero, que da pistas con las manos."><p>Mira las señas de tu compañero.<br>Él ve la imagen. ¡Tú adivinas!</p><div class="tilt-hints"><span>↓ <b>✓ Acierto</b></span><span>↑ <b>↷ Pasar</b></span></div><p id="ready-sensor" class="footnote"></p><button id="begin" class="primary">▶ Estoy listo</button><button class="text-button" id="cancel-ready">← Volver</button></section>
 <section id="play" class="screen play" hidden aria-label="Partida">
@@ -42,7 +52,7 @@
 <section id="results" class="screen centered" hidden aria-labelledby="results-title"><div class="result-star" aria-hidden="true">✦</div><p class="eyebrow">¡BIEN JUGADO!</p><h2 id="results-title">Un turno para recordar</h2><p id="end-reason"></p><div class="result-counts"><div><strong id="final-correct">0</strong><span>✓ Aciertos</span></div><div><strong id="final-pass">0</strong><span>↷ Pases</span></div></div><button id="again" class="primary">▶ Siguiente jugador</button><button id="menu" class="text-button">Elegir otras tarjetas</button><div id="review" class="review" aria-label="Tarjetas de esta partida"></div></section>
 <div id="countdown" class="overlay countdown" hidden role="status"><span>Celular en la frente</span><strong id="count">3</strong><small><svg class="ui-icon" aria-hidden="true"><use href="#i-eye"/></svg> Mira a tu compañero</small><button id="cancel-count" class="text-button">Cancelar</button></div>
 <div id="feedback" class="overlay feedback" hidden role="status"><strong></strong><span></span><small>Vuelve a la posición inicial</small></div>
-<dialog id="help-dialog"><button class="close icon-button" data-close="help-dialog" aria-label="Cerrar ayuda">×</button><p class="eyebrow">ASÍ SE JUEGA</p><h2>Las manos dan la pista</h2><img class="guide-image" src="../img/adivina/como-jugar.svg" alt="Celular en la frente, pantalla hacia el compañero que hace señas."><ol class="instructions"><li><b><svg class="ui-icon" aria-hidden="true"><use href="#i-phone"/></svg> A la frente.</b> Tu compañero ve la imagen.</li><li><b><svg class="ui-icon" aria-hidden="true"><use href="#i-eye"/></svg> Mira sus pistas.</b> Puede usar señas o gestos.</li><li><b>↓ ✓ Acierto.</b> Inclina la pantalla hacia el suelo.</li><li><b>↑ ↷ Pasar.</b> Inclina la pantalla hacia el techo.</li></ol><p class="footnote">Vuelve a poner el celular vertical entre tarjetas. Puedes sostenerlo horizontal. Si no usas movimiento, tu compañero toca los botones.</p><button class="primary" data-close="help-dialog">✓ Entendido</button></dialog>
+<dialog id="help-dialog"><button class="close icon-button" data-close="help-dialog" aria-label="Cerrar ayuda">×</button><p class="eyebrow">ASÍ SE JUEGA</p><h2>Las manos dan la pista</h2><img class="guide-image" src="../img/adivina/como-jugar.svg" alt="Celular en la frente, pantalla hacia el compañero que hace señas."><ol class="instructions"><li><b><svg class="ui-icon" aria-hidden="true"><use href="#i-phone"/></svg> A la frente.</b> Tu compañero ve la imagen.</li><li><b><svg class="ui-icon" aria-hidden="true"><use href="#i-eye"/></svg> Mira sus pistas.</b> Puede usar señas o gestos.</li><li><b>↓ ✓ Acierto.</b> Inclina la pantalla hacia el suelo.</li><li><b>↑ ↷ Pasar.</b> Inclina la pantalla hacia el techo.</li></ol><p class="footnote">Entre tarjetas, vuelve a la posición inicial. Puedes jugar en vertical u horizontal: el detector de inclinación funciona en ambas orientaciones. Si no usas movimiento, tu compañero toca los botones.</p><button class="primary" data-close="help-dialog">✓ Entendido</button></dialog>
 <dialog id="pause-dialog"><span class="result-star" aria-hidden="true">Ⅱ</span><h2>Partida en pausa</h2><p>El tiempo está detenido.</p><button id="resume" class="primary">▶ Continuar</button><button id="finish" class="text-button">Terminar turno</button></dialog>
 </main>
 </body>
