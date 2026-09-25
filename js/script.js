@@ -1399,7 +1399,7 @@ function abrirJuegoMatematicas(opciones = {}){
 }
 
 function abrirJuegoCarrera(){
-    window.location.assign("juegos/carrera-matematica.html?v=20260925-10");
+    window.location.assign("juegos/carrera-matematica.html?v=20260925-11");
 }
 
 const btnMenuJuegoCompletar = document.getElementById("btnMenuJuegoCompletar");
