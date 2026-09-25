@@ -6,6 +6,7 @@ Salida:
 - vocabulario/<id>/index.html              (Vocabulario)
 - categoria/diccionario/<slug>/index.html  (Categoría de Diccionario)
 - categoria/vocabulario/<slug>/index.html  (Categoría de Vocabulario)
+- coleccion/vocabulario/<slug>/index.html  (Colección de Vocabulario)
 
 Estas páginas son ligeras, indexables y contienen contenido único desde el
 HTML inicial. La experiencia interactiva completa sigue viviendo en index.html.
@@ -26,7 +27,7 @@ MARCADOR = ".lspedia-seo-generated"
 IMAGEN_RE = re.compile(r"\.(?:avif|gif|jpe?g|png|svg|webp)(?:[?#].*)?$", re.I)
 PREFIJO_RE = re.compile(r"^(?:https?://|/|\.\.?/|img/)", re.I)
 YOUTUBE_ID_RE = re.compile(r"^[A-Za-z0-9_-]{11}$")
-SOCIAL_PREVIEW_VERSION = "20260925-3"
+SOCIAL_PREVIEW_VERSION = "20260925-4"
 
 
 def texto(valor: object) -> str:
@@ -433,6 +434,121 @@ def generar_vocabulario(repo: Path, filas: list[dict]) -> int:
 
 
 
+def etiquetas_vocabulario(fila: dict) -> list[str]:
+    valor = fila.get("etiquetas", fila.get("tags", []))
+    if isinstance(valor, list):
+        return [texto(x) for x in valor if texto(x)]
+    return [x.strip() for x in re.split(r"[,;|]", texto(valor)) if x.strip()]
+
+
+def generar_colecciones(repo: Path, filas_voc: list[dict]) -> int:
+    """Genera páginas sociales para colecciones (etiquetas) de Vocabulario."""
+    raiz = repo / "coleccion"
+    preparar_directorio(raiz)
+
+    grupos: dict[str, list[dict]] = {}
+    nombres: dict[str, str] = {}
+    for fila in filas_voc:
+        if not publicable_vocabulario(fila):
+            continue
+        for nombre in etiquetas_vocabulario(fila):
+            ref = slug(nombre)
+            if not ref:
+                continue
+            grupos.setdefault(ref, []).append(fila)
+            nombres.setdefault(ref, nombre)
+
+    total = 0
+    for ref, items in sorted(grupos.items()):
+        nombre = nombres[ref]
+        canonical = f"{BASE_URL}/coleccion/vocabulario/{quote(ref, safe='')}/"
+        app_url = f"{BASE_URL}/?vista=vocabulario&coleccion={quote(nombre, safe='')}"
+        destino = raiz / "vocabulario" / ref
+        destino.mkdir(parents=True, exist_ok=True)
+        crear_preview_categoria(repo, items, destino)
+        imagen = f"{canonical}preview.jpg"
+
+        palabras = [texto(x.get("palabra")) for x in items if texto(x.get("palabra"))]
+        muestra = ", ".join(palabras[:12])
+        descripcion = limpiar_texto_meta(
+            f"Explora la colección {nombre} del Vocabulario de LSPedia con {len(palabras)} palabras y apoyo visual en Lengua de Señas Peruana (LSP)."
+        )
+        titulo = f"{nombre} — Colección de Vocabulario | LSPedia"
+        ld = {
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            "name": titulo,
+            "url": canonical,
+            "description": descripcion,
+            "inLanguage": "es-PE",
+            "isPartOf": {"@type": "WebSite", "name": "LSPedia", "url": f"{BASE_URL}/"},
+            "primaryImageOfPage": {"@type": "ImageObject", "contentUrl": imagen},
+        }
+        html = f"""<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{escape(titulo)}</title>
+  <meta name="description" content="{escape(descripcion, quote=True)}">
+  <meta name="robots" content="noindex,follow,max-image-preview:large">
+  <link rel="canonical" href="{escape(canonical, quote=True)}">
+  <link rel="icon" type="image/png" href="{BASE_URL}/img/favicon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="LSPedia">
+  <meta property="og:locale" content="es_PE">
+  <meta property="og:url" content="{escape(canonical, quote=True)}">
+  <meta property="og:title" content="{escape(titulo, quote=True)}">
+  <meta property="og:description" content="{escape(descripcion, quote=True)}">
+  <meta property="og:image" content="{escape(imagen, quote=True)}">
+  <meta property="og:image:secure_url" content="{escape(imagen, quote=True)}">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Imagen de la colección {escape(nombre, quote=True)} en LSPedia">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{escape(titulo, quote=True)}">
+  <meta name="twitter:description" content="{escape(descripcion, quote=True)}">
+  <meta name="twitter:image" content="{escape(imagen, quote=True)}">
+  <script type="application/ld+json">{json.dumps(ld, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")}</script>
+  <script>window.location.replace({json.dumps(app_url, ensure_ascii=False)});</script>
+  <style>
+    body{{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#f5f8fc;color:#172033;line-height:1.6}}
+    main{{max-width:900px;margin:32px auto;padding:0 18px 48px}}
+    article{{background:#fff;border:1px solid #dbe5f0;border-radius:24px;padding:clamp(22px,4vw,40px)}}
+    h1{{color:#1265d8}} .imagen{{width:100%;max-width:520px;border-radius:18px}}
+  </style>
+</head>
+<body><main><article>
+  <div>Vocabulario · Colección</div>
+  <h1>{escape(nombre)}</h1>
+  <p>{escape(descripcion)}</p>
+  <p><strong>Incluye:</strong> {escape(muestra)}{("…" if len(palabras) > 12 else "")}</p>
+  <img class="imagen" src="{escape(imagen, quote=True)}" alt="Colección {escape(nombre, quote=True)}" loading="eager">
+  <p><a href="{escape(app_url, quote=True)}">Abrir colección en LSPedia</a></p>
+</article></main></body></html>
+"""
+        (destino / "index.html").write_text(html, encoding="utf-8", newline="\n")
+
+        social_dir = destino / f"compartir-{SOCIAL_PREVIEW_VERSION}"
+        social_dir.mkdir(parents=True, exist_ok=True)
+        social_image_name = f"preview-{SOCIAL_PREVIEW_VERSION}.jpg"
+        shutil.copyfile(destino / "preview.jpg", destino / social_image_name)
+        social_url = f"{canonical}compartir-{SOCIAL_PREVIEW_VERSION}/"
+        social_image = f"{canonical}{social_image_name}"
+        social_html = html.replace(
+            f'<meta property="og:url" content="{escape(canonical, quote=True)}">',
+            f'<meta property="og:url" content="{escape(social_url, quote=True)}">',
+        ).replace(
+            escape(imagen, quote=True),
+            escape(social_image, quote=True),
+        )
+        (social_dir / "index.html").write_text(social_html, encoding="utf-8", newline="\n")
+        total += 1
+
+    return total
+
+
 def generar_categorias(repo: Path, filas_dic: list[dict], filas_voc: list[dict]) -> int:
     """Genera páginas compartibles de categorías con Open Graph estático."""
     raiz = repo / "categoria"
@@ -583,9 +699,10 @@ def main() -> int:
     total_dic = generar_diccionario(repo, diccionario)
     total_voc = generar_vocabulario(repo, vocabulario)
     total_cat = generar_categorias(repo, diccionario, vocabulario)
+    total_col = generar_colecciones(repo, vocabulario)
     if total_dic == 0 and total_voc == 0:
         raise SystemExit("ERROR: no se generó ninguna página SEO.")
-    print(f"Páginas SEO generadas: Diccionario={total_dic} · Vocabulario={total_voc} · Categorías={total_cat}.")
+    print(f"Páginas SEO generadas: Diccionario={total_dic} · Vocabulario={total_voc} · Categorías={total_cat} · Colecciones={total_col}.")
     return 0
 
 
