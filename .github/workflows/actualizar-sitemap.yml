@@ -100,17 +100,17 @@ jobs:
           grep -q '/categoria/vocabulario/colores/preview.jpg' categoria/vocabulario/colores/index.html
           test -s categoria/vocabulario/colores/preview.jpg
           test "$(find categoria -mindepth 3 -maxdepth 3 -name preview.jpg | wc -l)" -eq "$(find categoria -mindepth 3 -maxdepth 3 -name index.html | wc -l)"
-          test -s categoria/vocabulario/colores/preview-v9.jpg
-          test -f categoria/vocabulario/colores/compartir-v9/index.html
-          grep -q 'og:url" content="https://lspedia.site/categoria/vocabulario/colores/compartir-v9/' categoria/vocabulario/colores/compartir-v9/index.html
-          grep -q '/categoria/vocabulario/colores/preview-v9.jpg' categoria/vocabulario/colores/compartir-v9/index.html
-          test -s coleccion/vocabulario/estaciones-del-ano/preview-v9.jpg
-          test -f coleccion/vocabulario/estaciones-del-ano/compartir-v9/index.html
-          grep -q 'og:url" content="https://lspedia.site/coleccion/vocabulario/estaciones-del-ano/compartir-v9/' coleccion/vocabulario/estaciones-del-ano/compartir-v9/index.html
-          grep -q '/coleccion/vocabulario/estaciones-del-ano/preview-v9.jpg' coleccion/vocabulario/estaciones-del-ano/compartir-v9/index.html
-          grep -q 'window.location.replace' coleccion/vocabulario/estaciones-del-ano/compartir-v9/index.html
-          grep -q '>Estaciones del año<' coleccion/vocabulario/estaciones-del-ano/compartir-v9/index.html
-          grep -q '>Invierno<' coleccion/vocabulario/estaciones-del-ano/compartir-v9/index.html
+          test -s categoria/vocabulario/colores/preview-v10.jpg
+          test -f categoria/vocabulario/colores/compartir-v10/index.html
+          grep -q 'og:url" content="https://lspedia.site/categoria/vocabulario/colores/compartir-v10/' categoria/vocabulario/colores/compartir-v10/index.html
+          grep -q '/categoria/vocabulario/colores/preview-v10.jpg' categoria/vocabulario/colores/compartir-v10/index.html
+          test -s coleccion/vocabulario/estaciones-del-ano/preview-v10.jpg
+          test -f coleccion/vocabulario/estaciones-del-ano/compartir-v10/index.html
+          grep -q 'og:url" content="https://lspedia.site/coleccion/vocabulario/estaciones-del-ano/compartir-v10/' coleccion/vocabulario/estaciones-del-ano/compartir-v10/index.html
+          grep -q '/coleccion/vocabulario/estaciones-del-ano/preview-v10.jpg' coleccion/vocabulario/estaciones-del-ano/compartir-v10/index.html
+          grep -q 'window.location.replace' coleccion/vocabulario/estaciones-del-ano/compartir-v10/index.html
+          grep -q '>Estaciones del año<' coleccion/vocabulario/estaciones-del-ano/compartir-v10/index.html
+          grep -q '>Invierno<' coleccion/vocabulario/estaciones-del-ano/compartir-v10/index.html
           ! grep -q '__LSPEDIA_CATEGORY_IMAGE__' categoria/vocabulario/colores/index.html
           test "$(find diccionario -mindepth 2 -name index.html | wc -l)" -gt 0
           test "$(find vocabulario -mindepth 2 -name index.html | wc -l)" -gt 0
