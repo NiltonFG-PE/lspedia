@@ -35,19 +35,19 @@
     let armed = false, neutralSince = null, heldSince = null, direction = null;
     return {
       reset() {armed = false; neutralSince = heldSince = direction = null;},
-      update(z, now) {
+      update(z, now, allowAction = true) {
         if (z === null || !Number.isFinite(z)) return null;
-        if (Math.abs(z) < .28) {
+        if (Math.abs(z) < .34) {
           heldSince = direction = null;
           if (neutralSince === null) neutralSince = now;
-          if (now - neutralSince >= 300) armed = true;
+          if (now - neutralSince >= 90) armed = true;
           return null;
         }
         neutralSince = null;
-        if (!armed || Math.abs(z) < .57) {heldSince = direction = null; return null;}
+        if (!allowAction || !armed || Math.abs(z) < .45) {heldSince = direction = null; return null;}
         const next = z < 0 ? 'correct' : 'pass';
         if (direction !== next) {direction = next; heldSince = now;}
-        if (now - heldSince < 180) return null;
+        if (now - heldSince < 90) return null;
         armed = false; heldSince = direction = null;
         return next;
       }

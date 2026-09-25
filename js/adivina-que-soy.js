@@ -5,9 +5,20 @@
   const base = new URL('../', location.href), gate = C.tiltGate();
   let bank = [], deck = 'todos', seconds = 60, sound = true, vibration = true;
   let state = 'home', round = [], answers = [], position = 0, remaining = 0, deadline = 0;
-  let ticker, transition, countdownTimer, motionTimer, loadGeneration = 0;
+  let ticker, transition, countdownTimer, motionTimer, loadGeneration = 0, prepareGeneration = 0;
   let audio, wakeLock, motionEnabled = false, latestSensor = 0;
   const imageCache = new Map();
+  const cardColors = ['#e1d6fa','#ccebe1','#ffe1bc','#cfe5ff','#f9d8e7','#f4edb9','#d6e9c4'];
+  let colorOffset = 0;
+  history.replaceState({...history.state, adivinaScreen:'menu'}, '', location.href);
+  function enterTurnHistory() {
+    if (history.state?.adivinaScreen !== 'turn') history.pushState({adivinaScreen:'turn'}, '', location.href);
+  }
+  window.addEventListener('popstate', () => {
+    // Forward must not restore an expired timer or a discarded loading task.
+    if (history.state?.adivinaScreen === 'turn') history.replaceState({adivinaScreen:'menu'}, '', location.href);
+    showMenu();
+  });
   function show(name) {
     ['home','ready','play','results'].forEach(id => $(id).hidden = id !== name);
     document.body.classList.toggle('playing', name === 'play');
@@ -93,12 +104,13 @@
     if (z === null) return;
     latestSensor = performance.now();
     if (!motionEnabled) return;
-    if (state === 'playing' && !$('help-dialog').open) {
-      const action = gate.update(z, latestSensor);
+    if (['playing','feedback','countdown'].includes(state) && !$('help-dialog').open) {
+      // Track the return to center even while the response overlay is visible.
+      const action = gate.update(z, latestSensor, state === 'playing');
       if (action) answer(action);
     } else gate.reset();
     if (['home','ready'].includes(state)) {
-      const hint = Math.abs(z) < .28 ? '✓ Posición inicial: pantalla hacia tu compañero' : z < -.57 ? '↓ ✓ Acierto: pantalla hacia el suelo' : z > .57 ? '↑ ↷ Pasar: pantalla hacia el techo' : '↕ Vuelve a la posición inicial';
+      const hint = Math.abs(z) < .34 ? '✓ Posición inicial: pantalla hacia tu compañero' : z < -.45 ? '↓ ✓ Acierto: pantalla hacia el suelo' : z > .45 ? '↑ ↷ Pasar: pantalla hacia el techo' : '↕ Vuelve a la posición inicial';
       $('sensor-status').textContent = hint; $('ready-sensor').textContent = hint;
     }
   }
@@ -125,16 +137,20 @@
   }
   async function prepare() {
     if (state === 'loading') return;
+    const generation = ++prepareGeneration;
+    enterTurnHistory();
     state = 'loading'; initAudio(); notice(''); $('start').disabled = true; $('again').disabled = true;
     const candidates = C.shuffle(selected()).slice(0, 30); let cursor = 0, loaded = 0; const usable = [];
     // Bound concurrent image loads; no round starts with a missing picture.
     await Promise.all(Array.from({length:Math.min(6,candidates.length)}, async () => {
-      while(cursor < candidates.length) {
+      while(cursor < candidates.length && generation === prepareGeneration) {
         const index = cursor++, card = candidates[index];
         if (await preload(card)) usable.push({index,card});
+        if (generation !== prepareGeneration) return;
         loaded++; $('start').textContent = `Preparando imágenes · ${loaded}/${candidates.length}`;
       }
     }));
+    if (generation !== prepareGeneration) return;
     round = usable.sort((a,b) => a.index-b.index).map(x => x.card);
     $('again').disabled = false; updateDecks();
     if (!round.length) {state='home'; show('home'); notice('No pudimos cargar las imágenes. Revisa tu conexión e inténtalo otra vez.');$('reload').hidden=false;return;}
@@ -146,20 +162,34 @@
   function clearRoundTimers() {clearInterval(ticker);clearTimeout(transition);clearInterval(countdownTimer);}
   function begin() {
     if(state !== 'ready') return;
-    initAudio(); answers=[];position=0;remaining=seconds*1000;gate.reset();
+    initAudio(); answers=[];position=0;colorOffset=Math.floor(Math.random()*cardColors.length);remaining=seconds*1000;gate.reset();
     state='countdown';show('play');$('card').style.visibility='hidden';$('countdown').hidden=false;
     $('score').textContent='✓ 0';$('time').textContent=seconds || '∞';$('time-bar').firstElementChild.style.width='100%';
     let count=3; $('count').textContent=count; keepAwake();
     countdownTimer = setInterval(() => {
       count--; if(count>0){$('count').textContent=count;return;}
       clearInterval(countdownTimer);$('countdown').hidden=true;state='playing';deadline=performance.now()+remaining;
-      showCard();gate.reset();cue('start');ticker=setInterval(tick,100);tick();
+      showCard();cue('start');ticker=setInterval(tick,100);tick();
     },1000);
   }
+  function fitWord() {
+    if (!['playing','feedback','paused'].includes(state)) return;
+    const word=$('card-word'), card=$('card');
+    word.style.fontSize='';
+    const horizontal = innerWidth > innerHeight && innerHeight <= 600;
+    const budget = horizontal ? card.clientHeight - 48 : Math.max(70,card.clientHeight*.42);
+    let size=parseFloat(getComputedStyle(word).fontSize);
+    while(size>28 && (word.scrollHeight>budget || word.scrollWidth>word.clientWidth+1)) {
+      size-=2; word.style.fontSize=`${size}px`;
+    }
+  }
+  window.addEventListener('resize', () => requestAnimationFrame(fitWord));
   function showCard() {
     if(position >= round.length){finish('¡Completaron todas las tarjetas!');return;}
+    $('card').style.setProperty('--card-color',cardColors[(colorOffset+position)%cardColors.length]);
     const card=round[position];$('card-category').textContent=card.category;$('card-word').textContent=card.word;
     $('card-image').src=card.url;$('card-image').alt=card.word;$('card').style.visibility='visible';
+    requestAnimationFrame(fitWord);
     $('motion-hint').textContent=motionEnabled ? '↓ Acierto · ↑ Pasar · vuelve al centro entre tarjetas' : 'Tu compañero toca un botón · ↓ Acierto · ↑ Pasar';
   }
   function tick() {
@@ -175,7 +205,7 @@
     answers.push({...round[position],correct:kind==='correct'});position++;
     $('score').textContent=`✓ ${answers.filter(a=>a.correct).length}`;cue(kind);
     $('feedback').classList.toggle('passed',kind==='pass');$('feedback').querySelector('strong').textContent=kind==='correct'?'✓':'↷';$('feedback').querySelector('span').textContent=kind==='correct'?'¡Acertaste!':'Pasamos';$('feedback').querySelector('small').textContent=motionEnabled?'Vuelve a la posición inicial':'Siguiente tarjeta…';$('feedback').hidden=false;
-    transition=setTimeout(() => {$('feedback').hidden=true;if(state!=='feedback')return;state='playing';gate.reset();showCard();},850);
+    transition=setTimeout(() => {$('feedback').hidden=true;if(state!=='feedback')return;state='playing';showCard();},650);
   }
   function pause() {
     if(state==='countdown'){clearRoundTimers();$('countdown').hidden=true;state='ready';show('ready');releaseWake();return;}
@@ -196,7 +226,19 @@
     $('review').replaceChildren(...answers.map(a => {const row=document.createElement('div');row.className='review-item';row.dataset.correct=a.correct;const img=document.createElement('img');img.src=a.url;img.alt='';const word=document.createElement('span');word.textContent=a.word;const badge=document.createElement('span');badge.textContent=a.correct?'✓':'↷';badge.setAttribute('aria-label',a.correct?'Acierto':'Pasada');row.append(img,word,badge);return row;}));
     show('results');$('again').focus({preventScroll:true});
   }
-  function menu() {clearRoundTimers();releaseWake();state='home';gate.reset();show('home');document.body.classList.remove('time-low');updateDecks();}
+  function showMenu() {
+    ++prepareGeneration;
+    clearRoundTimers();releaseWake();state='home';gate.reset();
+    $('feedback').hidden=true;$('countdown').hidden=true;
+    for (const id of ['pause-dialog','help-dialog']) if ($(id).open) $(id).close();
+    $('again').disabled=false;
+    show('home');document.body.classList.remove('time-low');updateDecks();
+  }
+  function menu() {
+    showMenu();
+    if(history.state?.adivinaScreen==='turn') history.back();
+  }
+  document.querySelector('.topbar .back').addEventListener('click',e=>{if(state!=='home'){e.preventDefault();menu();}});
   $('decks').addEventListener('click',e=>{const button=e.target.closest('[data-deck]');if(!button || button.disabled)return;deck=button.dataset.deck;updateDecks();});
   $('category').addEventListener('change',updateDecks);
   $('durations').addEventListener('click',e=>{const button=e.target.closest('[data-seconds]');if(!button)return;seconds=Number(button.dataset.seconds);document.querySelectorAll('[data-seconds]').forEach(b=>{b.setAttribute('aria-pressed',b===button);b.classList.toggle('selected',b===button);});});
@@ -209,7 +251,7 @@
   $('finish').onclick=()=>finish();$('menu').onclick=menu;
   $('help').onclick=()=>{$('help-dialog').showModal();};
   document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$(b.dataset.close).close());
-  $('pause-dialog').addEventListener('cancel',e=>{e.preventDefault();resume();});
+  $('pause-dialog').addEventListener('cancel',e=>{e.preventDefault();menu();});
   $('fullscreen').onclick=async()=>{try {if(document.fullscreenElement)await document.exitFullscreen();else if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();else $('motion-hint').textContent='Gira el celular horizontalmente.';} catch {$('motion-hint').textContent='Puedes jugar girando el celular horizontalmente.';}};
   if(!document.documentElement.requestFullscreen){$('fullscreen').hidden=true;}
   document.addEventListener('keydown',e=>{if(state==='playing' && !e.repeat){if(e.key==='ArrowDown'){e.preventDefault();answer('correct');}if(e.key==='ArrowUp'){e.preventDefault();answer('pass');}if(e.key==='Escape'||e.key===' '){e.preventDefault();pause();}}});

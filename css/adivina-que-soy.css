@@ -5,3 +5,11 @@
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;animation:none!important}}
 
 .icon-sprite{position:absolute;width:0;height:0;overflow:hidden}.ui-icon{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;flex-shrink:0}.pill .ui-icon{width:14px;height:14px;margin-right:3px}.toggle .ui-icon{width:17px;height:17px}.control-choice strong .ui-icon{margin-right:4px}.countdown small .ui-icon{width:24px;height:24px}
+
+/* Large, high-contrast words and a fresh color on every card. */
+.game-card{background:var(--card-color,#e1d6fa);border-color:transparent}
+.game-card h2{font-size:clamp(44px,8vw,76px);font-weight:850;letter-spacing:-.045em;color:#242238;line-height:1.08;flex-shrink:0}
+.game-card img{max-height:calc(100% - 115px)}
+.game-card .eyebrow{color:#45405b}
+@media(max-width:600px){.game-card h2{font-size:clamp(40px,11vw,64px)}.game-card img{max-height:calc(100% - 110px)}}
+@media(orientation:landscape) and (max-height:600px){.game-card{grid-template-columns:minmax(0,45%) minmax(0,55%);column-gap:10px}.game-card h2{font-size:clamp(40px,7.5vw,72px);max-height:100%;overflow-wrap:anywhere}.game-card img{max-height:100%}}

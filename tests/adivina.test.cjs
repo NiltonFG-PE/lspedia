@@ -21,3 +21,13 @@ test('no accidental point before neutral, no duplicate while held, jitter ignore
  g.reset();assert.equal(g.update(-.9,3600),null);
 });
 test('shuffle preserves every card without mutating input',()=>{const source=[1,2,3,4,5];const result=C.shuffle(source,()=>.2);assert.deepEqual([...result].sort(),source);assert.notDeepEqual(result,source);});
+
+test('quick return during feedback rearms without consuming an answer',()=>{
+ const g=C.tiltGate();g.update(0,0);g.update(0,100);g.update(-.5,110);
+ assert.equal(g.update(-.5,210),'correct');
+ g.reset();g.update(.15,240,false);g.update(.15,340,false);
+ assert.equal(g.update(-.5,400,false),null);
+ assert.equal(g.update(-.5,900),null);
+ assert.equal(g.update(-.5,1000),'correct');
+ assert.equal(g.update(-.5,1500),null);
+});
