@@ -11,6 +11,7 @@ on:
       - "scripts/migrar_quiz_vocabulario_local.py"
       - "scripts/normalizar_categorias.py"
       - "scripts/validar_lspedia.py"
+      - "scripts/publicar_generados.py"
       - ".github/workflows/actualizar-vocabulario.yml"
   schedule:
     - cron: "*/5 * * * *"
@@ -100,9 +101,4 @@ jobs:
             git commit -m "Actualizar Lo nuevo y páginas públicas junto a Vocabulario"
           fi
 
-          if git rev-list --count origin/develop..HEAD | grep -q '^0$'; then
-            echo "No hay cambios nuevos para publicar."
-            exit 0
-          fi
-
-          git push origin HEAD:develop
+          python scripts/publicar_generados.py

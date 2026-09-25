@@ -38,6 +38,7 @@ on:
       - "scripts/verificar_archivos_huerfanos.py"
       - "scripts/validar_publicacion_publica.py"
       - "scripts/validar_admin_analytics.py"
+      - "scripts/publicar_generados.py"
       - "scripts/auditar_duplicados.py"
       - "scripts/validar_presupuesto_frontend.py"
       - ".github/workflows/validar-lspedia.yml"
@@ -78,6 +79,7 @@ on:
       - "scripts/verificar_archivos_huerfanos.py"
       - "scripts/validar_publicacion_publica.py"
       - "scripts/validar_admin_analytics.py"
+      - "scripts/publicar_generados.py"
       - "scripts/auditar_duplicados.py"
       - "scripts/validar_presupuesto_frontend.py"
       - ".github/workflows/validar-lspedia.yml"
@@ -139,6 +141,8 @@ jobs:
           node --check sw.js
       - name: Probar prioridad y carga del buscador
         run: node --test tests/busqueda.test.cjs
+      - name: Probar publicación concurrente sin pérdida de datos
+        run: python -m unittest discover -s tests -p "test_*.py"
       - name: Validar JSON principales
         shell: bash
         run: |

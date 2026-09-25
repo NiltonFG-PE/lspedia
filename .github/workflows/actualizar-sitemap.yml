@@ -20,7 +20,10 @@ on:
       - "scripts/generar_traducciones_en.py"
       - "scripts/normalizar_categorias.py"
       - "scripts/validar_lspedia.py"
+      - "scripts/publicar_generados.py"
       - ".github/workflows/actualizar-sitemap.yml"
+  schedule:
+    - cron: "17 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -94,6 +97,8 @@ jobs:
       - name: Guardar cambios automáticos
         shell: bash
         run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/palabras.json data/vocabulario.json data/nuevas-palabras.json data/traducciones-en.json index.html js/script.js sitemap.xml scripts/generar_paginas_seo.py
           git add -A -- diccionario vocabulario
           if git diff --cached --quiet; then
@@ -104,8 +109,8 @@ jobs:
             git add data/palabras.json data/vocabulario.json data/nuevas-palabras.json data/traducciones-en.json index.html js/script.js sitemap.xml scripts/generar_paginas_seo.py
             git add -A -- diccionario vocabulario
             git commit -m "Actualizar páginas SEO canonicals y sitemap"
-            git push origin HEAD:develop
           fi
+          python scripts/publicar_generados.py
 
       - name: Publicar únicamente SEO en main
         shell: bash

@@ -300,6 +300,19 @@ def candidatos_fuente(
     return candidatos
 
 
+def conservar_fecha_si_no_cambio(salida: dict, destino: Path) -> None:
+    """Evita commits periódicos cuyo único cambio sería la hora de ejecución."""
+    try:
+        anterior = json.loads(destino.read_text(encoding="utf-8"))
+    except (FileNotFoundError, json.JSONDecodeError):
+        return
+    if not isinstance(anterior, dict):
+        return
+    sin_fecha = lambda d: {k: v for k, v in d.items() if k != "generadoEn"}
+    if sin_fecha(anterior) == sin_fecha(salida) and anterior.get("generadoEn"):
+        salida["generadoEn"] = anterior["generadoEn"]
+
+
 def main() -> int:
     diccionario = cargar_archivo(DICCIONARIO)
     vocabulario = cargar_archivo(VOCABULARIO)
@@ -325,6 +338,7 @@ def main() -> int:
         "items": items,
     }
 
+    conservar_fecha_si_no_cambio(salida, DESTINO)
     DESTINO.write_text(
         json.dumps(salida, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
