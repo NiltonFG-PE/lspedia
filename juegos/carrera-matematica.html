@@ -200,7 +200,13 @@
     .dots { display: grid; grid-template-columns: repeat(5, 8px); gap: 4px; }
     .dots i { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.85); display: block; }
     .opt.correct { background: linear-gradient(180deg, #4ade80, #16a34a); box-shadow: 0 6px 0 #14532d; }
+    .opt.correct-answer { background: linear-gradient(180deg, #72f59a, #16a34a) !important; outline: 5px solid #d9ffe5; box-shadow: 0 0 0 5px rgba(74,222,128,.35), 0 8px 0 #14532d, 0 0 28px rgba(74,222,128,.95) !important; animation: correctGlow .55s ease-in-out infinite alternate; transform: scale(1.045); }
     .opt.wrong { background: linear-gradient(180deg, #f87171, #b91c1c); box-shadow: 0 6px 0 #7f1d1d; animation: shake 0.4s; }
+    @keyframes correctGlow { from { filter:brightness(1); } to { filter:brightness(1.25); } }
+    .number-scene { width:100%; display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap; }
+    .number-chip { min-width:74px; padding:10px 14px; border-radius:16px; background:#344158; box-shadow:0 5px 0 #1d2635; font-size:clamp(1.7rem,7vw,2.5rem); font-weight:700; text-align:center; }
+    .number-chip.a { color:var(--ball-a); } .number-chip.b { color:var(--ball-b); }
+    .number-scene .op-big { min-width:32px; text-align:center; }
     #verdict { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; pointer-events: none; z-index: 22; }
     #verdict.show { display: flex; }
     #verdict svg { width: clamp(120px, 34vw, 200px); height: auto; animation: pop 0.45s cubic-bezier(.2,1.6,.4,1); filter: drop-shadow(0 12px 30px rgba(0,0,0,0.5)); }
@@ -421,9 +427,11 @@ const LEVELS = [];
 for (let n = 1; n <= 12; n++) {
   LEVELS.push({
     n, theme: THEME_ORDER[(n - 1) % THEME_ORDER.length],
-    length: 1250 + n * 310,                      // recorrido más largo para disfrutar mejor cada carrera
+    length: 1550 + n * 380,                      // carreras todavía más largas para disfrutar el recorrido
     ops: n <= 2 ? ['+'] : n <= 4 ? ['+', '-'] : n <= 7 ? ['+', '-', '×'] : ['+', '-', '×', '÷'],
-    top: Math.min(4 + n, 10), mul: Math.min(2 + Math.floor(n / 2), 5), div: Math.min(2 + Math.floor((n - 6) / 2), 4),
+    top: [0, 6, 10, 15, 20, 30, 50, 70, 100, 150, 200, 300, 500][n],
+    mul: n <= 4 ? 4 : n <= 6 ? 6 : n <= 8 ? 8 : n <= 10 ? 10 : 12,
+    div: n <= 7 ? 5 : n <= 9 ? 7 : n <= 10 ? 9 : 12,
     traffic: 10 + Math.round(n * 2.4), maxSpeed: 1 + n * 0.06
   });
 }
@@ -635,17 +643,46 @@ function vibrate(pattern) { try { if (navigator.vibrate) navigator.vibrate(patte
 function generateQuestion() {
   const L = currentLevel, op = L.ops[Math.floor(Math.random() * L.ops.length)];
   let a, b, answer;
-  if (op === '+') { a = rand(1, L.top); b = rand(1, L.top); answer = a + b; }
-  else if (op === '-') { a = rand(2, L.top); b = rand(1, a - 1); answer = a - b; }
-  else if (op === '×') { a = rand(2, L.mul); b = rand(2, L.mul); answer = a * b; }
-  else { b = rand(2, L.div); answer = rand(2, 5); a = b * answer; }
+  if (op === '+') {
+    const min = L.n >= 8 ? Math.max(10, Math.floor(L.top * 0.18)) : 1;
+    a = rand(min, L.top); b = rand(min, L.top); answer = a + b;
+  } else if (op === '-') {
+    const min = L.n >= 8 ? Math.max(10, Math.floor(L.top * 0.18)) : 2;
+    a = rand(min + 1, L.top); b = rand(Math.max(1, Math.floor(min / 2)), a - 1); answer = a - b;
+  } else if (op === '×') {
+    const minFactor = L.n >= 9 ? 3 : 2;
+    a = rand(minFactor, L.mul); b = rand(minFactor, L.mul); answer = a * b;
+  } else {
+    b = rand(2, L.div);
+    const maxQuotient = L.n <= 8 ? 6 : L.n <= 10 ? 9 : 12;
+    answer = rand(2, maxQuotient); a = b * answer;
+  }
+
   const options = new Set([answer]);
-  while (options.size < 4) { const w = answer + rand(-4, 4); if (w > 0 && w <= 25) options.add(w); }
+  const spread = Math.max(4, Math.ceil(Math.abs(answer) * 0.18));
+  let tries = 0;
+  while (options.size < 4 && tries++ < 50) {
+    const w = answer + rand(-spread, spread);
+    if (w > 0 && w !== answer) options.add(w);
+  }
+  let fallback = 1;
+  while (options.size < 4) {
+    const w = answer + fallback++;
+    if (w > 0) options.add(w);
+  }
   return { op, a, b, answer, options: Array.from(options).sort(() => Math.random() - 0.5) };
 }
 function ball(cls) { const s = document.createElement('span'); s.className = 'ball ' + cls; return s; }
 function buildScene(q) {
   const scene = document.getElementById('q-scene'); scene.innerHTML = '';
+  const visualLoad = q.op === '×' ? q.a * q.b : q.op === '÷' ? q.a : Math.max(q.a, q.b);
+  if (visualLoad > 25) {
+    const wrap = document.createElement('div'); wrap.className = 'number-scene';
+    const a = document.createElement('div'); a.className = 'number-chip a'; a.textContent = q.a;
+    const op = document.createElement('div'); op.className = 'op-big'; op.textContent = q.op;
+    const b = document.createElement('div'); b.className = 'number-chip b'; b.textContent = q.b;
+    wrap.append(a, op, b); scene.appendChild(wrap); return;
+  }
   if (q.op === '+') {
     const g1 = document.createElement('div'); g1.className = 'group'; for (let i = 0; i < q.a; i++) g1.appendChild(ball('a'));
     const g2 = document.createElement('div'); g2.className = 'group'; for (let i = 0; i < q.b; i++) g2.appendChild(ball('b'));
@@ -655,7 +692,7 @@ function buildScene(q) {
     for (let i = 0; i < q.a; i++) { const bl = ball('a'); if (i >= q.a - q.b) bl.classList.add('gone'); g.appendChild(bl); } scene.append(g);
   } else if (q.op === '×') {
     const rows = document.createElement('div'); rows.className = 'rows';
-    for (let r = 0; r < q.b; r++) { const row = document.createElement('div'); row.className = 'row'; for (let c = 0; c < q.a; c++) row.appendChild(ball(r % 2 ? 'b' : 'a')); rows.appendChild(row); } scene.append(rows);
+    for (let r = 0; r < q.b; r++) { const row = document.createElement('div'); row.className = 'row'; for (let cc = 0; cc < q.a; cc++) row.appendChild(ball(r % 2 ? 'b' : 'a')); rows.appendChild(row); } scene.append(rows);
   } else {
     for (let k = 0; k < q.b; k++) { const box = document.createElement('div'); box.className = 'box'; for (let i = 0; i < q.answer; i++) box.appendChild(ball('a')); scene.appendChild(box); }
   }
@@ -679,19 +716,23 @@ function showVerdict(ok) {
   v.classList.add('show');
 }
 function answerQuestion(chosen, btn) {
-  document.querySelectorAll('.opt').forEach(b => b.disabled = true);
+  const allOptions = [...document.querySelectorAll('.opt')];
+  allOptions.forEach(b => b.disabled = true);
   const modal = document.getElementById('math-modal');
+  const correctBtn = allOptions.find(b => parseInt(b.querySelector('b').textContent, 10) === currentQuestion.answer);
   if (chosen === currentQuestion.answer) {
-    btn.classList.add('correct'); modal.classList.add('ok'); showVerdict(true);
+    btn.classList.add('correct', 'correct-answer'); modal.classList.add('ok'); showVerdict(true);
+    document.querySelector('.q-eq .unknown').textContent = currentQuestion.answer;
     correctAnswers++; score += 50 + currentLevel.n * 10; invuln = 800;
-    sfx.correct(); vibrate([80, 40, 80]); spawnParticles(W / 2, H / 2, '#ffd166', 26);
-    setTimeout(closeMath, 950);
+    sfx.correct(); vibrate([80, 40, 80]); spawnParticles(W / 2, H / 2, '#4ade80', 30);
+    setTimeout(closeMath, 1200);
   } else {
     btn.classList.add('wrong'); modal.classList.add('bad'); showVerdict(false);
-    document.querySelectorAll('.opt').forEach(b => { if (parseInt(b.querySelector('b').textContent) === currentQuestion.answer) b.classList.add('correct'); });
-    wrongAnswers++; lives--; updateHearts(); invuln = 800;
+    if (correctBtn) correctBtn.classList.add('correct', 'correct-answer');
+    document.querySelector('.q-eq .unknown').textContent = currentQuestion.answer;
+    wrongAnswers++; lives = Math.max(0, lives - 1); updateHearts(); invuln = 800;
     sfx.wrong(); vibrate([250, 80, 250]);
-    if (lives <= 0) setTimeout(() => { closeMath(); endGame(); }, 1400); else setTimeout(closeMath, 1400);
+    if (lives <= 0) setTimeout(() => { closeMath(); endGame(); }, 1900); else setTimeout(closeMath, 1900);
   }
 }
 function closeMath() { document.getElementById('math-modal').classList.remove('active'); document.getElementById('verdict').classList.remove('show'); if (gameState === 'math') gameState = 'playing'; }
@@ -923,9 +964,44 @@ const TRAFFIC = ['#f4a261', '#2a9d8f', '#e9c46a', '#8d99ae', '#f1faee', '#6c757d
 const RIVAL_COLORS = ['#e63946', '#3fa9f5', '#2ecc71', '#9b5de5', '#ff7a1a', '#00b4d8', '#ffffff'];
 function resetCars() {
   cars = []; rivals = [];
-  for (let i = 0; i < currentLevel.traffic; i++) { const lane = rand(0, 2); const col = TRAFFIC[rand(0, TRAFFIC.length - 1)]; cars.push({ z: rand(40, segments.length - 300) * SEG_LEN, lane, offset: LANE_OFF[lane], speed: 0.28 + Math.random() * 0.22, v: Math.random() < 0.22 ? { type: 'moto', color: col } : { type: 'car', color: col }, wobble: (Math.random() - 0.5) * 0.02 }); }
-  for (let i = 0; i < RIVAL_COUNT; i++) { const lane = i % 3; rivals.push({ rival: true, num: i + 2, z: PLAYER_Z + (6 + i * 4) * SEG_LEN, lane, offset: LANE_OFF[lane], speed: currentLevel.maxSpeed * (0.5 + i * 0.05), v: { type: 'car', color: RIVAL_COLORS[i] }, wobble: (Math.random() - 0.5) * 0.02, jitter: 0, laneT: 0 }); }
+  for (let i = 0; i < currentLevel.traffic; i++) {
+    const lane = rand(0, 2), col = TRAFFIC[rand(0, TRAFFIC.length - 1)];
+    cars.push({ z: rand(40, segments.length - 300) * SEG_LEN, lane, offset: LANE_OFF[lane], speed: 0.28 + Math.random() * 0.22, v: Math.random() < 0.22 ? { type: 'moto', color: col } : { type: 'car', color: col }, wobble: (Math.random() - 0.5) * 0.02, crashed: false, crashT: 0, exitDir: 1 });
+  }
+  for (let i = 0; i < RIVAL_COUNT; i++) {
+    const lane = i % 3;
+    rivals.push({ rival: true, num: i + 2, z: PLAYER_Z + (6 + i * 4) * SEG_LEN, lane, offset: LANE_OFF[lane], speed: currentLevel.maxSpeed * (0.5 + i * 0.05), v: { type: 'car', color: RIVAL_COLORS[i] }, wobble: (Math.random() - 0.5) * 0.02, jitter: 0, laneT: 0, crashed: false, crashT: 0, exitDir: 1 });
+  }
 }
+function knockCarOut(car) {
+  if (!car || car.crashed) return;
+  car.crashed = true;
+  car.crashT = 1;
+  const side = car.offset - playerX;
+  car.exitDir = Math.abs(side) > 0.08 ? Math.sign(side) : (Math.random() < 0.5 ? -1 : 1);
+  car.wobble = 0;
+}
+function resetKnockedCar(car, playerZ) {
+  car.crashed = false; car.crashT = 0; car.wobble = (Math.random() - 0.5) * 0.02;
+  car.lane = rand(0, 2); car.offset = LANE_OFF[car.lane];
+  if (car.rival) {
+    car.z = Math.max(positionZ + 5 * SEG_LEN, playerZ - rand(8, 16) * SEG_LEN);
+    car.jitter = 0; car.laneT = 900;
+  } else {
+    const nz = positionZ + (DRAW_DIST + rand(25, 95)) * SEG_LEN;
+    car.z = nz < finishZ - 35 * SEG_LEN ? nz : -9e9;
+  }
+}
+function updateKnockedCar(car, dt, playerZ) {
+  if (!car.crashed) return false;
+  car.crashT += dt;
+  car.offset += car.exitDir * 0.0052 * dt;
+  car.wobble += car.exitDir * 0.018 * dt;
+  car.z += car.speed * 0.22 * SPEED_UNIT * dt;
+  if (car.crashT > 850 || Math.abs(car.offset) > 2.25) resetKnockedCar(car, playerZ);
+  return true;
+}
+
 function crash() {
   sfx.crash(); vibrate([400]); shake = 1; flashAlpha = 0.55; flashColor = '255,60,60';
   spawnParticles(W / 2 + playerX * W * 0.3, H - 90, '#ff6b6b', 20); spawnParticles(W / 2 + playerX * W * 0.3, H - 90, '#ffd166', 12);
@@ -933,7 +1009,7 @@ function crash() {
   setTimeout(() => {
     if (gameState === 'paused') pendingMathAfterPause = true;
     else triggerMathQuestion();
-  }, 350);
+  }, 650);
 }
 function launchRamp(ramp) {
   if (jumpActive || usedRamps.has(ramp.id)) return;
@@ -1015,14 +1091,21 @@ function update(dt) {
   // tráfico y rivales
   const playerZ = positionZ + PLAYER_Z;
   const othersSpeed = slowTime > 0 ? SLOW_FACTOR : 1;
-  cars.forEach(c => { c.z += c.speed * othersSpeed * SPEED_UNIT * dt; if (c.z < positionZ - 6 * SEG_LEN) { const nz = positionZ + (DRAW_DIST + rand(10, 80)) * SEG_LEN; if (nz < finishZ - 40 * SEG_LEN) { c.z = nz; c.lane = rand(0, 2); c.offset = LANE_OFF[c.lane]; } else c.z = -9e9; } });
+  cars.forEach(car => {
+    if (updateKnockedCar(car, dt, playerZ)) return;
+    car.z += car.speed * othersSpeed * SPEED_UNIT * dt;
+    if (car.z < positionZ - 6 * SEG_LEN) {
+      const nz = positionZ + (DRAW_DIST + rand(10, 80)) * SEG_LEN;
+      if (nz < finishZ - 40 * SEG_LEN) { car.z = nz; car.lane = rand(0, 2); car.offset = LANE_OFF[car.lane]; }
+      else car.z = -9e9;
+    }
+  });
   rivals.forEach(r => {
+    if (updateKnockedCar(r, dt, playerZ)) return;
     r.jitter += (Math.random() - 0.5) * 0.02; r.jitter = clamp(r.jitter, -0.12, 0.12);
     r.z += r.speed * (1 + r.jitter) * othersSpeed * SPEED_UNIT * dt;
-    // cambia de carril si viene sobre el jugador
     const dz = r.z - playerZ;
     if (dz < 0 && dz > -12 * SEG_LEN && Math.abs(r.offset - playerX) < 0.5) {
-      // viene por detrás en mi carril: esquiva si puede, si no frena hasta encontrar hueco
       if (r.laneT <= 0) { r.lane = playerLane === 1 ? (Math.random() < 0.5 ? 0 : 2) : 1; r.laneT = 1200; }
       if (dz > -4 * SEG_LEN) r.z -= (r.speed * (1 + r.jitter) * othersSpeed - speed * 0.95) * SPEED_UNIT * dt;
     }
@@ -1047,11 +1130,17 @@ function update(dt) {
     }
   }
 
-  // colisiones y estrellas
+  // colisiones: el auto golpeado gira, sale de la pista y luego se reinicia
   const hitZ = 2.6 * SEG_LEN;
-  if (!jumpActive && invuln <= 0 && shieldTime <= 0) for (const c of cars.concat(rivals)) {
-    if (Math.abs(c.z - playerZ) < hitZ && Math.abs(c.offset - playerX) < 0.45) {
-      if (c.rival) { c.z = playerZ - 6 * SEG_LEN; c.lane = c.lane === playerLane ? (playerLane === 1 ? 0 : 1) : c.lane; c.offset = LANE_OFF[c.lane]; } else c.z = positionZ - 30 * SEG_LEN;
+  if (!jumpActive && invuln <= 0) for (const other of cars.concat(rivals)) {
+    if (other.crashed) continue;
+    if (Math.abs(other.z - playerZ) < hitZ && Math.abs(other.offset - playerX) < 0.45) {
+      knockCarOut(other);
+      spawnParticles(W / 2 + playerX * W * 0.3, H - 105, shieldTime > 0 ? '#62e8ff' : '#ff8a65', 14);
+      if (shieldTime > 0) {
+        score += 15; vibrate(35); invuln = 180;
+        continue;
+      }
       crash(); return;
     }
   }
@@ -1145,6 +1234,9 @@ function render() {
         ctx.shadowColor = '#a78bfa'; ctx.shadowBlur = cw * 0.22;
         ctx.beginPath(); ctx.ellipse(sx, sy - cw * 0.38, cw * 0.64, cw * 0.48, 0, 0, Math.PI * 2); ctx.stroke();
         ctx.restore();
+      }
+      if (c.crashed) {
+        ctx.globalAlpha *= Math.max(0.35, 1 - c.crashT / 1400);
       }
       drawVehicle(ctx, c.v, sx, sy, cw, false, c.wobble);
       if (c.rival) { const rr2 = cw * 0.11; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(sx, sy - cw * 0.78 * 0.83, rr2, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#1b2230'; ctx.font = `700 ${rr2 * 1.5}px Fredoka, sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(c.num, sx, sy - cw * 0.78 * 0.83 + rr2 * 0.05); }
