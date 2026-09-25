@@ -697,6 +697,176 @@ function semanticDirectAnswer(user,turn){
   }
   return {valid:false,type:"",natural:"",ack:"",why:""};
 }
+
+const COMMON_ACCENTS = new Map([
+  ["tambien","también"],["todavia","todavía"],["manana","mañana"],["sabado","sábado"],
+  ["miercoles","miércoles"],["telefono","teléfono"],["direccion","dirección"],["informacion","información"],
+  ["numero","número"],["rapido","rápido"],["comodo","cómodo"],["facil","fácil"],["dificil","difícil"],
+  ["despues","después"],["aqui","aquí"],["alla","allá"],["proximo","próximo"],["medico","médico"],
+  ["farmacia","farmacia"],["tramite","trámite"],["curriculum","currículum"],["también","también"]
+]);
+
+const ARTICLE_FIXES = [
+  [/\ba banco\b/gi,"al banco"],[/\ben banco\b/gi,"en el banco"],
+  [/\ba hospital\b/gi,"al hospital"],[/\ben hospital\b/gi,"en el hospital"],
+  [/\ba mercado\b/gi,"al mercado"],[/\ben mercado\b/gi,"en el mercado"],
+  [/\ba centro\b/gi,"al centro"],[/\ben centro\b/gi,"en el centro"],
+  [/\ba universidad\b/gi,"a la universidad"],[/\ben universidad\b/gi,"en la universidad"],
+  [/\ba farmacia\b/gi,"a la farmacia"],[/\ben farmacia\b/gi,"en la farmacia"],
+  [/\ba plaza\b/gi,"a la plaza"],[/\ben plaza\b/gi,"en la plaza"],
+  [/\ba oficina\b/gi,"a la oficina"],[/\ben oficina\b/gi,"en la oficina"],
+  [/\ba escuela\b/gi,"a la escuela"],[/\ben escuela\b/gi,"en la escuela"],
+  [/\bel direccion\b/gi,"la dirección"],[/\bel tarea\b/gi,"la tarea"],[/\bla documento\b/gi,"el documento"],
+  [/\bel cita\b/gi,"la cita"],[/\bla pago\b/gi,"el pago"],[/\bel pregunta\b/gi,"la pregunta"],
+  [/\bun informacion\b/gi,"la información"],[/\buna problema\b/gi,"un problema"]
+];
+
+const TENSE_MAP_TO_FUTURE = new Map([
+  ["fui","iré"],["llegué","llegaré"],["llegue","llegaré"],["salí","saldré"],["sali","saldré"],
+  ["pagué","pagaré"],["pague","pagaré"],["hice","haré"],["terminé","terminaré"],["termine","terminaré"],
+  ["envié","enviaré"],["envie","enviaré"],["revisé","revisaré"],["revise","revisaré"],
+  ["compré","compraré"],["compre","compraré"],["estuve","estaré"],["tuve","tendré"]
+]);
+const TENSE_MAP_TO_PAST = new Map([
+  ["iré","fui"],["ire","fui"],["llegaré","llegué"],["llegare","llegué"],["saldré","salí"],["saldre","salí"],
+  ["pagaré","pagué"],["pagare","pagué"],["haré","hice"],["hare","hice"],["terminaré","terminé"],["terminare","terminé"],
+  ["enviaré","envié"],["enviare","envié"],["revisaré","revisé"],["revisare","revisé"],["estaré","estuve"],["estare","estuve"]
+]);
+
+function restoreWordCase(original,replacement){
+  if(!original)return replacement;
+  if(original===original.toLocaleUpperCase("es-PE"))return replacement.toLocaleUpperCase("es-PE");
+  if(original[0]===original[0].toLocaleUpperCase("es-PE"))return replacement[0].toLocaleUpperCase("es-PE")+replacement.slice(1);
+  return replacement;
+}
+function applyCommonAccents(text){
+  let changed=false;
+  const out=String(text).replace(/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+/g,w=>{
+    const key=normalize(w);
+    if(!COMMON_ACCENTS.has(key))return w;
+    const repl=restoreWordCase(w,COMMON_ACCENTS.get(key));
+    if(repl!==w)changed=true;
+    return repl;
+  });
+  return {text:out,changed};
+}
+function fixQuestionWords(text){
+  let s=String(text), changed=false;
+  const looksQuestion=s.trim().endsWith("?")||s.trim().startsWith("¿");
+  if(!looksQuestion)return {text:s,changed:false};
+  const pairs=[["que","qué"],["como","cómo"],["cuando","cuándo"],["donde","dónde"],["cual","cuál"],["cuanto","cuánto"],["cuanta","cuánta"]];
+  pairs.forEach(([plain,accent])=>{
+    const re=new RegExp("(^|[¿\\s])"+plain+"(?=\\s)","i");
+    if(re.test(s)){s=s.replace(re,(m,p1)=>p1+accent);changed=true}
+  });
+  return {text:s,changed};
+}
+function expectedTense(turn){
+  const p=normalize(turn?.prompt||""), m=normalize(turn?.model||"");
+  if(/ayer|anoche|la semana pasada|el mes pasado|desde cuando|desde cuándo|que paso|qué pasó|que hiciste|qué hiciste|tuvo|empezo|empezó|reinicio|reinició/.test(p))return "past";
+  if(/manana|mañana|proximo|próximo|despues|después|luego|mas tarde|más tarde|cuando llegues|cuando estes|cuando estés|que haras|qué harás|vas a|va a|piensas|planeas/.test(p))return "future";
+  if(/\b(?:ire|llegare|pagare|hare|estare|podre|terminare|enviare|revisare|viajare|saldré|tendré)\b/.test(m))return "future";
+  if(/\b(?:fui|tuve|hice|sali|llegue|pague|termine|envie|revise|estuve|empezo)\b/.test(m))return "past";
+  return "present";
+}
+function detectedTense(text){
+  const n=normalize(text);
+  if(/\b(?:fui|fue|tuve|hice|dije|sali|llegue|pague|compre|empezo|reinicie|revise|termine|trabaje|estuve|estaba|tenia|queria)\b/.test(n))return "past";
+  if(/\bvoy a\b|\bvamos a\b|\b(?:ire|llegare|pagare|hare|estare|podre|terminare|enviare|revisare|viajare|saldre|tendre)\b/.test(n))return "future";
+  return "present";
+}
+function transformTense(text,target){
+  const map=target==="future"?TENSE_MAP_TO_FUTURE:target==="past"?TENSE_MAP_TO_PAST:null;
+  if(!map)return {text:String(text),changed:false};
+  let changed=false;
+  const out=String(text).replace(/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+/g,w=>{
+    const key=w.toLocaleLowerCase("es-PE");
+    const plain=stripAccents(key);
+    let repl=map.get(key)||map.get(plain);
+    if(!repl)return w;
+    changed=true;return restoreWordCase(w,repl);
+  });
+  return {text:out,changed};
+}
+function fixArticles(text){
+  let s=String(text),changed=false;
+  ARTICLE_FIXES.forEach(([re,repl])=>{
+    if(re.test(s)){re.lastIndex=0;s=s.replace(re,repl);changed=true}else re.lastIndex=0;
+  });
+  return {text:s,changed};
+}
+function expectedConnector(turn,user){
+  const p=normalize(turn?.prompt||""), u=normalize(user);
+  if(detectConnector(user))return "";
+  if(/por que|por qué|razon|motivo/.test(p))return "porque";
+  if(/que haras despues|qué harás después|despues|después|siguiente paso|luego/.test(p)&&words(user).length>=3)return "después";
+  if(/algo mas|algo más|tambien|también/.test(p)&&words(user).length>=3)return "también";
+  if(/que paso despues|qué pasó después/.test(p))return "después";
+  if(/pero|aunque/.test(normalize(turn?.model||""))&&words(user).length>=6)return "pero";
+  return "";
+}
+function addConnectorToIdea(text,connector,turn){
+  let s=String(text).trim();
+  if(!connector||!s)return {text:s,changed:false};
+  const p=normalize(turn?.prompt||"");
+  if(connector==="porque" && /por que|por qué|razon|motivo/.test(p)){
+    const lower=s.charAt(0).toLocaleLowerCase("es-PE")+s.slice(1);
+    return {text:"Porque "+lower.replace(/[.!?]+$/,"")+".",changed:true};
+  }
+  if(connector==="después" && !normalize(s).startsWith("despues")){
+    return {text:"Después, "+s.charAt(0).toLocaleLowerCase("es-PE")+s.slice(1),changed:true};
+  }
+  if(connector==="también" && !normalize(s).startsWith("tambien")){
+    return {text:"También "+s.charAt(0).toLocaleLowerCase("es-PE")+s.slice(1),changed:true};
+  }
+  return {text:s,changed:false};
+}
+function smartPunctuation(text,turn){
+  let s=sentenceCase(text),changed=s!==String(text).trim();
+  const userAsks=/^(que|qué|como|cómo|cuando|cuándo|donde|dónde|cual|cuál|cuanto|cuánto|puedo|podria|podría|debo|tengo que|hay|acepta|se puede)\b/i.test(s);
+  if(userAsks){
+    if(!s.startsWith("¿")){s="¿"+s.replace(/^\?/,"");changed=true}
+    if(!s.endsWith("?")){s=s.replace(/[.!]+$/,"")+"?";changed=true}
+  }else if(!/[.!?]$/.test(s)){s+=".";changed=true}
+  const q=fixQuestionWords(s);return {text:q.text,changed:changed||q.changed};
+}
+function grammarCoach(user,turn,semantic){
+  const notes=[];
+  let improved=semantic?.valid && semantic.natural ? semantic.natural : String(user||"").trim();
+  const original=improved;
+
+  const accents=applyCommonAccents(improved);
+  improved=accents.text;
+  if(accents.changed)notes.push({kind:"orthography",icon:"🔤",label:"Ortografía",text:"Corregí una tilde o escritura frecuente."});
+
+  const articles=fixArticles(improved);
+  improved=articles.text;
+  if(articles.changed)notes.push({kind:"article",icon:"🧩",label:"Artículo",text:"Ajusté el artículo o la unión de preposición + artículo: por ejemplo, “al banco” o “en el hospital”."});
+
+  const expected=expectedTense(turn),actual=detectedTense(improved);
+  if((expected==="future"&&actual==="past")||(expected==="past"&&actual==="future")){
+    const tenseFix=transformTense(improved,expected);
+    if(tenseFix.changed){
+      improved=tenseFix.text;
+      notes.push({kind:"tense",icon:"⏱️",label:"Tiempo verbal",text:expected==="future"?"La pregunta mira al futuro; cambié el verbo para hablar de lo que harás.":"La pregunta mira al pasado; cambié el verbo para contar lo que ya ocurrió."});
+    }
+  }else if(expected==="future"&&actual==="present"&&/\b(?:mañana|manana|próximo|proximo)\b/.test(normalize(turn?.prompt||""))){
+    notes.push({kind:"tense",icon:"⏱️",label:"Tiempo verbal",text:"La pregunta habla del futuro. Tu forma puede ser válida en conversación, pero también puedes usar futuro: “iré”, “llegaré”, “haré”…"});
+  }
+
+  const connector=expectedConnector(turn,improved);
+  const conn=addConnectorToIdea(improved,connector,turn);
+  improved=conn.text;
+  if(conn.changed)notes.push({kind:"connector",icon:"🔗",label:"Conector",text:"Añadí “"+connector+"” para unir la respuesta con la intención de la pregunta."});
+
+  const punct=smartPunctuation(improved,turn);
+  improved=punct.text;
+  if(punct.changed && !notes.some(n=>n.kind==="orthography"))notes.push({kind:"orthography",icon:"✍️",label:"Escritura",text:"Ajusté mayúscula y puntuación para que la frase quede completa."});
+
+  const changed=normalize(improved)!==normalize(original)||improved.trim()!==original.trim();
+  return {improved,changed,notes,expectedTense:expected,actualTense:actual};
+}
+
 function spellingTips(user,model,semantic){
   const tips=[], raw=String(user||"").trim(), m=String(model||"").trim();
   if(raw && /^[a-záéíóúüñ]/.test(raw))tips.push("Empieza la oración con mayúscula.");
@@ -723,17 +893,16 @@ function evaluate(user,turn,usedWildcard=false){
   const matches=keys.filter(k=>k&&n.includes(k)).length;
   const keyRatio=keys.length?matches/Math.min(keys.length,3):0;
   const semantic=semanticDirectAnswer(user,turn);
+  const coach=grammarCoach(user,turn,semantic);
   let grade="improve";
   const userWordCount=words(user).length;
   if(semantic.valid)grade="excellent";
   else if(sim>=.86)grade="excellent";
   else if(sim>=.52||keyRatio>=.50||(userWordCount>=5&&matches>=1))grade="good";
-  const corrected=semantic.valid
-    ? (semantic.natural||sentenceCase(user))
-    : mechanicalCorrection(user,turn.model);
-  const mechanicalChanged=normalize(corrected)===normalize(user) && corrected.trim()!==String(user).trim();
+  const corrected=coach.improved||mechanicalCorrection(user,turn.model);
+  const mechanicalChanged=corrected.trim()!==String(user).trim();
   const points=usedWildcard?1:(grade==="excellent"?2:grade==="good"?2:1);
-  return {grade,sim,keyRatio,corrected,mechanicalChanged,points,matches,userWordCount,semantic};
+  return {grade,sim,keyRatio,corrected,mechanicalChanged,points,matches,userWordCount,semantic,coach};
 }
 function shuffle(arr){
   const a=arr.slice();
@@ -796,45 +965,36 @@ function addMessage(side,text){
 function addCorrection(result,turn,usedWildcard,userText){
   const note=document.createElement("div");
   const semantic=result.semantic||{valid:false};
+  const coach=result.coach||grammarCoach(userText,turn,semantic);
   note.className="ai-note "+(result.grade==="improve"?"improve":"good")+(semantic.valid?" concise":"");
-  let title="",modelLine="",why="";
-  if(usedWildcard){
-    title="🃏 Aprendiste con una ayuda";
-    modelLine="Esta respuesta funciona bien en la situación.";
-    why=turn.why;
-  }else if(semantic.valid){
-    title="✅ Respuesta adecuada";
-    const same=normalize(userText)===normalize(semantic.natural||userText);
-    modelLine=same
-      ? "Tu respuesta es suficiente para esta pregunta."
-      : "Tu respuesta es válida. Forma completa opcional: “"+semantic.natural+"”";
-    why=semantic.why;
-  }else if(result.grade==="excellent"){
-    title="✨ Tu mensaje funciona muy bien";
-    modelLine=result.corrected.trim()!==String(userText).trim()
-      ? "Con escritura cuidada: “"+result.corrected+"”"
-      : "La idea es clara, natural y adecuada para esta conversación.";
-    why=turn.why;
-  }else if(result.grade==="good"){
-    title="✨ Tu idea se entiende";
-    modelLine="Otra forma natural: “"+turn.model+"”";
-    why=turn.why;
-  }else{
-    title="✍️ Vamos a hacerlo más claro";
-    modelLine="Una forma útil: “"+turn.model+"”";
-    why=turn.why;
-  }
-  const tips=spellingTips(userText,turn.model,semantic);
-  const mapText=semantic.valid
-    ? (semantic.natural||userText)
-    : (result.grade==="excellent" ? (result.corrected||userText) : turn.model);
+
+  let title="";
+  if(usedWildcard) title="🃏 Aprende de esta respuesta";
+  else if(semantic.valid) title="✅ Tu respuesta funciona";
+  else if(result.grade==="excellent") title="✨ Muy bien";
+  else if(result.grade==="good") title="✨ Se entiende bien";
+  else title="✍️ Mejoremos tu mensaje";
+
+  const same=String(coach.improved||"").trim()===String(userText).trim();
+  const intro=same
+    ? "Tu mensaje ya está bien para esta situación."
+    : "Mejoré tu misma idea sin cambiar lo que quisiste decir.";
+
+  const grammarNotes=(coach.notes||[]).map(n=>
+    '<div class="grammar-note grammar-'+escapeHTML(n.kind)+'"><span class="grammar-note-icon">'+escapeHTML(n.icon)+'</span><div><b>'+escapeHTML(n.label)+'</b><span>'+escapeHTML(n.text)+'</span></div></div>'
+  ).join("");
+
   note.innerHTML=
     '<div class="ai-note-head">'+escapeHTML(title)+'</div>'+
-    '<div class="ai-note-model">'+escapeHTML(modelLine)+'</div>'+
-    (words(mapText).length>1?sentenceMapHTML(mapText):"")+
-    (tips.length?'<div class="correction-list">'+tips.map(t=>'<div class="correction-item"><span>👀</span><span>'+escapeHTML(t)+'</span></div>').join("")+'</div>':"")+
-    '<div class="ai-note-why">'+escapeHTML(why)+'</div>'+
-    (words(mapText).length>1?'<div class="ai-note-focus"><span>🎨</span><span>Los colores muestran cómo se organiza la frase.</span></div>':"");
+    '<div class="coach-intro">'+escapeHTML(intro)+'</div>'+
+    '<div class="coach-compare">'+
+      '<div class="coach-line coach-original"><small>TÚ ESCRIBISTE</small><span>'+escapeHTML(userText)+'</span></div>'+
+      (!same?'<div class="coach-arrow">↓</div><div class="coach-line coach-improved"><small>VERSIÓN MEJORADA</small><span>'+escapeHTML(coach.improved)+'</span></div>':"")+
+    '</div>'+
+    (words(coach.improved).length>1?sentenceMapHTML(coach.improved):"")+
+    (grammarNotes?'<div class="grammar-notes">'+grammarNotes+'</div>':"")+
+    (!grammarNotes&&semantic.valid?'<div class="correction-item"><span>✅</span><span>'+escapeHTML(semantic.why||"La respuesta es adecuada para la pregunta.")+'</span></div>':"")+
+    (words(coach.improved).length>1?'<div class="ai-note-focus"><span>🎨</span><span>Azul: quién · rojo: acción · verde: qué/dónde · morado: cuándo · amarillo: conector.</span></div>':"");
   $("messages").appendChild(note);scrollBottom();
 }
 function showTypingThen(fn,delay=650,token=state.runToken){
