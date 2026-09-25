@@ -358,7 +358,7 @@ const scenarios = [
 const state = {
   level:1, scenario:null, turn:0, score:0, possible:0, wildcardUsed:0,
   startedAt:0, sending:false, runToken:0, userMessages:0,
-  detour:null, detoursUsed:0, adaptiveSeen:[], closingOverride:"", progress:loadProgress()
+  detour:null, detoursUsed:0, adaptiveSeen:[], closingOverride:"", memory:{}, progress:loadProgress()
 };
 
 function loadProgress(){
@@ -396,7 +396,24 @@ function similarity(a,b){
   return m?1-levenshtein(aa,bb)/m:1;
 }
 function words(s){return normalize(s).split(" ").filter(Boolean)}
-function currentTurn(){return state.detour||state.scenario?.turns[state.turn]||null}
+function contextualizeTurn(sc,index,turn){
+  if(!sc||!turn)return turn;
+  if(sc.id==="bus-centro" && index===5 && state.memory.busStop==="farther"){
+    return {
+      prompt:"Ya pasamos la plaza. ¿Quieres que te avise cuando estemos cerca de tu paradero?",
+      model:"Sí, por favor. Avísame cuando estemos cerca.",
+      alternatives:["Sí, avísame por favor.","No, gracias. Yo estaré atento."],
+      keywords:["si","no","avisa","cerca","paradero"],
+      why:"Si cambiaste el lugar donde bajarás, la conversación también debe cambiar. Aquí puedes aceptar o rechazar la ayuda."
+    };
+  }
+  return turn;
+}
+function currentTurn(){
+  if(state.detour)return state.detour;
+  const base=state.scenario?.turns[state.turn]||null;
+  return contextualizeTurn(state.scenario,state.turn,base);
+}
 function nowTime(){
   const d=new Date(); return d.toLocaleTimeString("es-PE",{hour:"2-digit",minute:"2-digit",hour12:false});
 }
@@ -579,18 +596,77 @@ function structureHint(text){
 }
 
 function questionKind(prompt){
-  const n=normalize(prompt);
+  const raw=String(prompt||""), n=normalize(raw);
   if(/todos? los documentos|documentos.*falta|falta.*documentos/.test(n)) return "completeness";
   if(/cambio.*direccion.*(?:telefono|numero)|cambiaron.*direccion.*(?:telefono|numero)/.test(n)) return "changes";
   if(/(?:direccion|datos|telefono|numero).*(?:correct|igual)/.test(n)) return "confirm-data";
-  if(/\?/.test(String(prompt)) && /\b(?:si|no)\b/.test(n) && /\bo\b/.test(n)) return "choice";
-  if(/\?/.test(String(prompt)) && /^(?:.*?)(?:tiene|tienes|puede|puedes|desea|quieres|quiere|ya|es|esta|viaja|necesita|acepta|prefiere|lleva|hay|debo|podemos)\b/.test(n)) return "yesno";
+  if(/\?/.test(raw) && (n.includes(" o ") || (n.includes(",") && /\bo\b/.test(n)))) return "choice";
+  if(/\?/.test(raw) && /(?:tiene|tienes|puede|puedes|desea|quieres|quiere|ya|es|esta|viaja|necesita|acepta|prefiere|lleva|hay|debo|podemos|pagara|pagará|viaja solo)/.test(n)) return "yesno";
   return "open";
+}
+
+const CHOICE_STOPWORDS=new Set(("que cual cuales es son lo la los las el un una unos unas de del al a en por para con sin " +
+"te le se me tu su mi y o si no mas más muy este esta esto ese esa donde cuando como cuanto cuanta desea quieres quiere " +
+"prefieres prefiere vas va ir viajar bajar parte algo tambien también").split(/\s+/).map(normalize));
+
+function choiceContentWords(text){
+  return words(text).filter(w=>w.length>=3&&!CHOICE_STOPWORDS.has(w));
+}
+function inferChoiceNatural(prompt,user){
+  const p=normalize(prompt), u=normalize(user), raw=String(user).trim();
+  if(/mas adelante|adelante/.test(u) && /bajar/.test(p)) return "Voy a bajar más adelante.";
+  if(/plaza/.test(u) && /bajar/.test(p)) return "Voy a bajar en la plaza.";
+  if(/comod/.test(u) && /importa|prefier/.test(p)) return "Prefiero ir más cómodo.";
+  if(/rapid/.test(u) && /importa|prefier/.test(p)) return "Prefiero llegar rápido.";
+  if(/gastar menos|econom|barat|menos/.test(u) && /importa|prefier/.test(p)) return "Prefiero gastar menos.";
+  if(/delantera/.test(u) && /asiento|parte/.test(p)) return "Prefiero un asiento en la parte delantera.";
+  if(/posterior|atras|atrás/.test(u) && /asiento|parte/.test(p)) return "Prefiero un asiento en la parte posterior.";
+  if(/defensa/.test(u) && /jugar/.test(p)) return "Prefiero jugar de defensa.";
+  if(/adelante/.test(u) && /jugar/.test(p)) return "Prefiero jugar adelante.";
+  if(/tableta/.test(u)) return "Me indicaron tabletas.";
+  if(/jarabe/.test(u)) return "Me indicaron jarabe.";
+  if(/ensalada/.test(u)) return "Prefiero ensalada, por favor.";
+  if(/papa/.test(u) && /acompan/.test(p)) return "Prefiero papas, por favor.";
+  if(/efectivo/.test(u) && /pagar/.test(p)) return "Voy a pagar en efectivo.";
+  if(/tarjeta/.test(u) && /pagar/.test(p)) return "Voy a pagar con tarjeta.";
+  if(/yape/.test(u) && /pagar/.test(p)) return "Voy a pagar con Yape.";
+  if(/plin/.test(u) && /pagar/.test(p)) return "Voy a pagar con Plin.";
+  if(/transferencia/.test(u) && /pagar/.test(p)) return "Voy a pagar por transferencia.";
+  if(/grande/.test(u)) return "Prefiero la grande.";
+  if(/pequen|pequeñ/.test(u)) return "Prefiero la pequeña.";
+  const clean=sentenceCase(raw);
+  return /[.!?]$/.test(clean)?clean:clean+".";
+}
+function inferChoiceAck(prompt,user,natural){
+  const p=normalize(prompt), u=normalize(user);
+  if(/mas adelante|adelante/.test(u) && /bajar/.test(p)) return "Entiendo, vas a bajar más adelante.";
+  if(/plaza/.test(u) && /bajar/.test(p)) return "Entiendo, vas a bajar en la plaza.";
+  if(/comod/.test(u)) return "Entiendo, para ti es más importante ir cómodo.";
+  if(/rapid/.test(u)) return "Entiendo, para ti es más importante llegar rápido.";
+  if(/gastar menos|econom|barat|menos/.test(u)) return "Entiendo, prefieres gastar menos.";
+  if(/tarjeta|efectivo|yape|plin|transferencia/.test(u)) return "Perfecto, elegiste esa forma de pago.";
+  return "Entiendo, elegiste “"+String(user).trim()+"”.";
+}
+function semanticChoiceAnswer(user,turn){
+  const prompt=String(turn?.prompt||""), raw=String(user||"").trim();
+  if(questionKind(prompt)!=="choice"||!raw)return null;
+  const pWords=new Set(choiceContentWords(prompt));
+  const uWords=choiceContentWords(raw);
+  const overlap=uWords.filter(w=>pWords.has(w) || [...pWords].some(p=>p.includes(w)||w.includes(p)));
+  if(!overlap.length)return null;
+  const natural=inferChoiceNatural(prompt,raw);
+  return {
+    valid:true,type:"choice",choice:normalize(raw),natural,
+    ack:inferChoiceAck(prompt,raw,natural),
+    why:"Elegiste una de las opciones de la pregunta. Tu respuesta breve es válida; la frase completa es solo una forma de practicar español."
+  };
 }
 function semanticDirectAnswer(user,turn){
   const raw=String(user||"").trim(), n=normalize(raw), kind=questionKind(turn?.prompt||"");
   const yes=/^(si|sí|claro|correcto|de acuerdo|esta bien|está bien|por supuesto)\b/.test(raw.toLocaleLowerCase("es-PE"));
   const no=/^(no|ninguno|ninguna|nada)\b/.test(n);
+  const choice=semanticChoiceAnswer(raw,turn);
+  if(choice)return choice;
   if(kind==="completeness"){
     if(/tengo todo|ya tengo todo|tengo todos|todos los documentos|no me falta nada|no falta nada/.test(n)){
       return {valid:true,type:"complete",natural:"Tengo todos los documentos.",ack:"Perfecto, ya tienes todos los documentos.",why:"La pregunta era si te faltaba algún documento. “Tengo todo” responde directamente y es suficiente."};
@@ -703,7 +779,7 @@ function startScenario(id){
   state.runToken++;
   const token=state.runToken;
   state.scenario=sc;state.turn=0;state.score=0;state.possible=0;state.wildcardUsed=0;state.startedAt=Date.now();state.sending=false;
-  state.userMessages=0;state.detour=null;state.detoursUsed=0;state.adaptiveSeen=[];state.closingOverride="";
+  state.userMessages=0;state.detour=null;state.detoursUsed=0;state.adaptiveSeen=[];state.closingOverride="";state.memory={};
   $("screenHome").classList.add("hidden");$("screenChat").classList.remove("hidden");
   $("contactAvatar").textContent=sc.avatar;$("contactName").textContent=sc.name;
   $("contactStatus").textContent="Tutor inteligente · práctica simulada";
@@ -787,12 +863,36 @@ function setInputEnabled(enabled){
   $("messageInput").disabled=!enabled;$("btnSend").disabled=!enabled;state.sending=!enabled;
 }
 
+function rememberSemanticContext(sc,turn,semantic){
+  if(!sc||!turn||!semantic?.valid)return;
+  const p=normalize(turn.prompt||""), choice=semantic.choice||"";
+  if(sc.id==="bus-centro"){
+    if(/bajar.*plaza.*adelante/.test(p)){
+      if(/adelante/.test(choice))state.memory.busStop="farther";
+      else if(/plaza/.test(choice))state.memory.busStop="plaza";
+    }
+    if(/mas te importa|más te importa/.test(p)){
+      if(/comod/.test(choice))state.memory.travelPriority="comfort";
+      else if(/rapid/.test(choice))state.memory.travelPriority="fast";
+      else if(/menos|econom|barat/.test(choice))state.memory.travelPriority="cheap";
+    }
+  }
+}
+
 function applyContextualFlow(sc,sourceIndex,semantic){
   if(!sc||!semantic?.valid)return null;
 
   // Bodega: si no pide nada más, no preguntar por el tamaño de un producto no pedido.
   if(sc.id==="bodega-pan" && sourceIndex===1 && semantic.type==="no"){
     return {nextTurn:3};
+  }
+
+  // Bus: si eligió bajar más adelante y luego no necesita aviso, cerrar sin contradecirlo.
+  if(sc.id==="bus-centro" && sourceIndex===5 && state.memory.busStop==="farther" && semantic.type==="no"){
+    return {
+      nextTurn:sc.turns.length,
+      closing:"Está bien. Entonces sigue atento a tu paradero. Que tengas buen viaje."
+    };
   }
 
   // RENIEC: si el pago ya está hecho, saltar la explicación de canales de pago.
@@ -832,6 +932,7 @@ function sendMessage(text,usedWildcard=false){
   $("messageInput").value="";autoGrow();setInputEnabled(false);
 
   const result=evaluate(text,turn,usedWildcard);
+  rememberSemanticContext(state.scenario,turn,result.semantic);
   state.score+=result.points;state.possible+=2;state.userMessages++;
   if(usedWildcard)state.wildcardUsed++;
 
