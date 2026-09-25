@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="es-PE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<meta name="description" content="Caras y gestos de LSPedia: juego visual para expresar emociones, acciones y situaciones con el rostro, las manos y el cuerpo.">
+<title>Caras y gestos | LSPedia</title>
+<link rel="icon" href="../img/favicon.png">
+<link rel="stylesheet" href="../css/caras-gestos.css?v=1">
+<script defer src="../js/caras-gestos.js?v=1"></script>
+</head>
+<body>
+<main id="app">
+  <header class="topbar">
+    <a class="round-btn back" href="../?vista=herramientas-jugar" aria-label="Volver a Juegos">←</a>
+    <a class="brand" href="../"><img src="../img/favicon.png" width="32" height="32" alt=""> <strong>LSPedia</strong><span>JUEGOS</span></a>
+    <button id="help" class="round-btn" aria-label="Cómo jugar">?</button>
+  </header>
+
+  <section id="home" class="screen">
+    <div class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">MIRA · EXPRESA · ADIVINA</p>
+        <h1>Caras<br>y gestos<span>.</span></h1>
+        <p>Sin necesidad de hablar. Usa tu rostro, tus manos y tu cuerpo para dar la pista.</p>
+        <div class="hero-pills"><span>👀 100% visual</span><span>📳 Vibración</span><span>↔ Horizontal</span></div>
+      </div>
+      <div class="hero-stage" aria-hidden="true">
+        <div class="face-card face-a"><span>😲</span><b>¡Sorpresa!</b></div>
+        <div class="face-card face-b"><span>🤗</span><b>Abrazo</b></div>
+        <i class="spark s1">✦</i><i class="spark s2">✦</i>
+      </div>
+    </div>
+
+    <div class="section-head"><div><p class="eyebrow">1 · ELIGE</p><h2>¿Qué van a representar?</h2></div><span id="total-count">50 tarjetas</span></div>
+    <div id="decks" class="deck-grid" role="group" aria-label="Tipo de tarjetas">
+      <button class="deck selected" data-deck="Todas" aria-pressed="true"><span class="deck-icon">✦</span><strong>Todo mezclado</strong><small data-count="Todas">…</small></button>
+      <button class="deck" data-deck="Emociones" aria-pressed="false"><span class="deck-icon emotion">😊</span><strong>Emociones</strong><small data-count="Emociones">…</small></button>
+      <button class="deck" data-deck="Acciones" aria-pressed="false"><span class="deck-icon action">👏</span><strong>Acciones</strong><small data-count="Acciones">…</small></button>
+      <button class="deck" data-deck="Situaciones" aria-pressed="false"><span class="deck-icon situation">🎭</span><strong>Situaciones</strong><small data-count="Situaciones">…</small></button>
+    </div>
+
+    <div class="settings-card">
+      <div class="setting-block">
+        <div class="setting-copy"><strong>🌱 Dificultad</strong><small>Empieza simple y luego prueba situaciones más expresivas.</small></div>
+        <div id="levels" class="segmented" role="group" aria-label="Dificultad">
+          <button data-level="Fácil" class="selected" aria-pressed="true">Fácil</button>
+          <button data-level="Medio" aria-pressed="false">Medio</button>
+          <button data-level="Difícil" aria-pressed="false">Difícil</button>
+          <button data-level="Todos" aria-pressed="false">Todos</button>
+        </div>
+      </div>
+      <div class="setting-block">
+        <div class="setting-copy"><strong>⏱ Tiempo</strong><small>El tiempo también se muestra con una barra visual.</small></div>
+        <div id="durations" class="segmented" role="group" aria-label="Tiempo de ronda">
+          <button data-seconds="60" class="selected" aria-pressed="true">60 s</button>
+          <button data-seconds="90" aria-pressed="false">90 s</button>
+          <button data-seconds="120" aria-pressed="false">120 s</button>
+          <button data-seconds="0" aria-pressed="false">∞</button>
+        </div>
+      </div>
+      <div class="setting-block">
+        <div class="setting-copy"><strong>↔ Orientación</strong><small id="orientation-status">Vertical · puedes cambiarla antes de empezar.</small></div>
+        <div id="orientations" class="segmented orientation-buttons" role="group" aria-label="Orientación">
+          <button data-orientation="portrait" class="selected" aria-pressed="true">📱 Vertical</button>
+          <button data-orientation="landscape" aria-pressed="false">↔ Horizontal</button>
+        </div>
+      </div>
+      <div class="setting-block compact-setting">
+        <div class="setting-copy"><strong>📳 Vibración</strong><small>Refuerza aciertos, pases y final del turno sin depender del sonido.</small></div>
+        <button id="vibration" class="toggle" aria-pressed="true">✓ Activa</button>
+      </div>
+    </div>
+
+    <p id="notice" class="notice" role="status" hidden></p>
+    <button id="start" class="primary" disabled>Preparando tarjetas…</button>
+    <p class="footnote">Imágenes grandes · palabras de apoyo · ninguna instrucción importante depende del audio</p>
+  </section>
+
+  <section id="ready" class="screen ready" hidden>
+    <p class="eyebrow">2 · TU TURNO</p>
+    <h2>Mira la tarjeta y represéntala</h2>
+    <div class="ready-demo" aria-hidden="true">
+      <div class="ready-card"><span>😮</span><b>SORPRENDIDO</b></div>
+      <div class="ready-person">🙆</div>
+      <div class="ready-guess">💡</div>
+    </div>
+    <div class="steps">
+      <div><b>1</b><span>👀 Mira la imagen y la palabra.</span></div>
+      <div><b>2</b><span>🤟 Usa cara, manos y cuerpo. No necesitas hablar.</span></div>
+      <div><b>3</b><span>✅ Si adivinan, toca Acierto. Si no, Pasar.</span></div>
+    </div>
+    <p id="ready-info" class="ready-info"></p>
+    <button id="begin" class="primary">▶ Empezar turno</button>
+    <button id="cancel-ready" class="text-button">← Cambiar opciones</button>
+  </section>
+
+  <section id="play" class="screen play" hidden aria-label="Partida de Caras y gestos">
+    <div class="game-top">
+      <button id="pause" class="round-btn game-btn" aria-label="Pausar">Ⅱ</button>
+      <div class="score-box"><small>ACIERTOS</small><strong id="score">0</strong></div>
+      <div id="streak" class="streak" hidden>🔥 <b>2</b></div>
+      <div class="timer-box"><small>TIEMPO</small><strong id="time">60</strong></div>
+      <button id="fullscreen" class="round-btn game-btn" aria-label="Pantalla completa">⛶</button>
+    </div>
+    <div id="time-bar" class="time-bar" role="progressbar" aria-label="Tiempo restante" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><div></div></div>
+
+    <article id="gesture-card" class="gesture-card">
+      <div class="card-head"><span id="card-category">EMOCIÓN</span><span id="card-level">FÁCIL</span></div>
+      <div class="card-main">
+        <div class="image-shell"><img id="card-image" alt=""></div>
+        <div class="card-copy">
+          <h2 id="card-word"></h2>
+          <p id="card-hint"></p>
+          <div id="expression-tools" class="expression-tools" aria-label="Cómo expresarlo"></div>
+        </div>
+      </div>
+    </article>
+
+    <p class="play-tip" id="play-tip">Tu equipo mira tus gestos, no la pantalla.</p>
+    <div class="game-actions">
+      <button id="pass" class="pass"><span class="action-icon">↷</span><span><b>Pasar</b><small>Siguiente tarjeta</small></span></button>
+      <button id="correct" class="correct"><span class="action-icon">✓</span><span><b>¡Acierto!</b><small>Lo adivinaron</small></span></button>
+    </div>
+  </section>
+
+  <section id="results" class="screen results" hidden>
+    <div class="result-icon">🎭</div>
+    <p class="eyebrow">TURNO TERMINADO</p>
+    <h2 id="result-title">¡Muy bien!</h2>
+    <p id="end-reason"></p>
+    <div class="result-stats">
+      <div><strong id="final-correct">0</strong><span>✓ Aciertos</span></div>
+      <div><strong id="final-pass">0</strong><span>↷ Pases</span></div>
+      <div><strong id="final-best-streak">0</strong><span>🔥 Mejor racha</span></div>
+    </div>
+    <div id="review" class="review"></div>
+    <button id="again" class="primary">▶ Siguiente jugador</button>
+    <button id="menu" class="text-button">Cambiar tarjetas</button>
+  </section>
+
+  <div id="countdown" class="overlay countdown" hidden role="status" aria-live="assertive">
+    <span>Prepárate</span><strong id="count">3</strong><small>👀 Mira la pantalla</small>
+  </div>
+  <div id="feedback" class="overlay feedback" hidden role="status" aria-live="polite">
+    <strong></strong><span></span><small></small>
+  </div>
+
+  <dialog id="help-dialog">
+    <button class="round-btn close" data-close="help-dialog" aria-label="Cerrar">×</button>
+    <p class="eyebrow">CÓMO JUGAR</p>
+    <h2>La expresión es la pista</h2>
+    <div class="help-visual">😊 <span>+</span> 🙌 <span>+</span> 🧍</div>
+    <ol>
+      <li><b>Mira la tarjeta.</b> La imagen ayuda incluso si todavía lees poco español.</li>
+      <li><b>Representa la idea.</b> Usa expresión facial, manos y cuerpo. No necesitas hablar ni escuchar.</li>
+      <li><b>Tu equipo adivina.</b> Pueden responder en lengua de señas, escribiendo o señalando.</li>
+      <li><b>Marca el resultado.</b> Acierto suma un punto; Pasar cambia de tarjeta.</li>
+    </ol>
+    <p class="access-note">👁️ Todo lo importante se comunica con imagen, texto, color y movimiento. La vibración es opcional.</p>
+    <button class="primary" data-close="help-dialog">✓ Entendido</button>
+  </dialog>
+
+  <dialog id="pause-dialog">
+    <div class="pause-icon">Ⅱ</div><h2>Partida en pausa</h2><p>El reloj está detenido.</p>
+    <button id="resume" class="primary">▶ Continuar</button>
+    <button id="finish" class="text-button">Terminar turno</button>
+  </dialog>
+</main>
+</body>
+</html>
