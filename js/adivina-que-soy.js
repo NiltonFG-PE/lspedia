@@ -7,6 +7,13 @@
   let state = 'home', round = [], answers = [], position = 0, remaining = 0, deadline = 0;
   let ticker, transition, countdownTimer, motionTimer, loadGeneration = 0, prepareGeneration = 0;
   let audio, wakeLock, motionEnabled = false, latestSensor = 0;
+  let orientationMode = (() => {
+    try {
+      const saved = localStorage.getItem('adivina-orientation');
+      if (saved === 'landscape' || saved === 'portrait') return saved;
+    } catch {}
+    return innerWidth > innerHeight ? 'landscape' : 'portrait';
+  })();
   const imageCache = new Map();
   const cardColors = ['#e1d6fa','#ccebe1','#ffe1bc','#cfe5ff','#f9d8e7','#f4edb9','#d6e9c4'];
   let colorOffset = 0;
@@ -135,6 +142,40 @@
     } catch {disableMotion('Movimiento no disponible o sin permiso. Usa los botones.');}
     finally {$('motion').disabled = false;}
   }
+  function updateOrientationUI() {
+    document.body.dataset.orientationMode = orientationMode;
+    document.querySelectorAll('[data-orientation]').forEach(button => {
+      const active = button.dataset.orientation === orientationMode;
+      button.classList.toggle('selected', active);
+      button.setAttribute('aria-pressed', String(active));
+    });
+    const label = orientationMode === 'landscape' ? 'Horizontal' : 'Vertical';
+    $('orientation-status').textContent = label + ' · al iniciar intentaremos ajustar la pantalla automáticamente.';
+  }
+  function setOrientationMode(mode) {
+    if (mode !== 'portrait' && mode !== 'landscape') return;
+    orientationMode = mode;
+    try { localStorage.setItem('adivina-orientation', mode); } catch {}
+    updateOrientationUI();
+  }
+  async function requestPreferredOrientation() {
+    updateOrientationUI();
+    const coarse = matchMedia?.('(pointer: coarse)')?.matches ?? true;
+    if (!coarse) return;
+    try {
+      if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
+        await document.documentElement.requestFullscreen({navigationUI:'hide'}).catch(() => {});
+      }
+      if (screen.orientation?.lock) {
+        await screen.orientation.lock(orientationMode).catch(() => {});
+      }
+    } catch {}
+    gate.reset();
+    setTimeout(() => requestAnimationFrame(fitWord), 120);
+  }
+  function unlockOrientation() {
+    try { screen.orientation?.unlock?.(); } catch {}
+  }
   async function prepare() {
     if (state === 'loading') return;
     const generation = ++prepareGeneration;
@@ -160,8 +201,9 @@
     state = 'ready'; show('ready'); $('begin').focus({preventScroll:true});
   }
   function clearRoundTimers() {clearInterval(ticker);clearTimeout(transition);clearInterval(countdownTimer);}
-  function begin() {
+  async function begin() {
     if(state !== 'ready') return;
+    await requestPreferredOrientation();
     initAudio(); answers=[];position=0;colorOffset=Math.floor(Math.random()*cardColors.length);remaining=seconds*1000;gate.reset();
     state='countdown';show('play');$('card').style.visibility='hidden';$('countdown').hidden=false;
     $('score').textContent='✓ 0';$('time').textContent=seconds || '∞';$('time-bar').firstElementChild.style.width='100%';
@@ -228,7 +270,7 @@
   }
   function showMenu() {
     ++prepareGeneration;
-    clearRoundTimers();releaseWake();state='home';gate.reset();
+    clearRoundTimers();releaseWake();state='home';gate.reset();unlockOrientation();
     $('feedback').hidden=true;$('countdown').hidden=true;
     for (const id of ['pause-dialog','help-dialog']) if ($(id).open) $(id).close();
     $('again').disabled=false;
@@ -241,6 +283,11 @@
   document.querySelector('.topbar .back').addEventListener('click',e=>{if(state!=='home'){e.preventDefault();menu();}});
   $('decks').addEventListener('click',e=>{const button=e.target.closest('[data-deck]');if(!button || button.disabled)return;deck=button.dataset.deck;updateDecks();});
   $('category').addEventListener('change',updateDecks);
+  $('orientations').addEventListener('click',e=>{
+    const button=e.target.closest('[data-orientation]');
+    if(!button)return;
+    setOrientationMode(button.dataset.orientation);
+  });
   $('durations').addEventListener('click',e=>{const button=e.target.closest('[data-seconds]');if(!button)return;seconds=Number(button.dataset.seconds);document.querySelectorAll('[data-seconds]').forEach(b=>{b.setAttribute('aria-pressed',b===button);b.classList.toggle('selected',b===button);});});
   $('sound').onclick=()=>{sound=!sound;$('sound').setAttribute('aria-pressed',sound);if(sound){initAudio();cue('correct');}};
   if(!navigator.vibrate){vibration=false;$('vibration').setAttribute('aria-pressed','false');$('vibration').disabled=true;$('vibration').title='Este navegador no ofrece vibración';}
@@ -252,12 +299,35 @@
   $('help').onclick=()=>{$('help-dialog').showModal();};
   document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$(b.dataset.close).close());
   $('pause-dialog').addEventListener('cancel',e=>{e.preventDefault();menu();});
-  $('fullscreen').onclick=async()=>{try {if(document.fullscreenElement)await document.exitFullscreen();else if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();else $('motion-hint').textContent='Gira el celular horizontalmente.';} catch {$('motion-hint').textContent='Puedes jugar girando el celular horizontalmente.';}};
+  $('fullscreen').onclick=async()=>{
+    try {
+      if(document.fullscreenElement) {
+        unlockOrientation();
+        await document.exitFullscreen();
+      } else if(document.documentElement.requestFullscreen) {
+        await document.documentElement.requestFullscreen({navigationUI:'hide'});
+        if(screen.orientation?.lock) await screen.orientation.lock(orientationMode).catch(()=>{});
+      } else {
+        $('motion-hint').textContent=orientationMode==='landscape'?'Gira el celular horizontalmente.':'Mantén el celular en vertical.';
+      }
+    } catch {
+      $('motion-hint').textContent=orientationMode==='landscape'?'Puedes jugar girando el celular horizontalmente.':'Puedes jugar en vertical sin pantalla completa.';
+    }
+    gate.reset();requestAnimationFrame(fitWord);
+  };
   if(!document.documentElement.requestFullscreen){$('fullscreen').hidden=true;}
   document.addEventListener('keydown',e=>{if(state==='playing' && !e.repeat){if(e.key==='ArrowDown'){e.preventDefault();answer('correct');}if(e.key==='ArrowUp'){e.preventDefault();answer('pass');}if(e.key==='Escape'||e.key===' '){e.preventDefault();pause();}}});
   document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();});
   window.addEventListener('pagehide',()=>{pause();releaseWake();});
-  window.addEventListener('orientationchange',()=>gate.reset());
+  window.addEventListener('orientationchange',()=>{
+    gate.reset();
+    setTimeout(()=>{requestAnimationFrame(fitWord);},140);
+  });
+  screen.orientation?.addEventListener?.('change',()=>{
+    gate.reset();
+    setTimeout(()=>requestAnimationFrame(fitWord),80);
+  });
   $('card-image').addEventListener('error',()=>{if(state==='playing'){pause();$('pause-dialog').querySelector('p').textContent='No se pudo mostrar esta imagen. Termina el turno y vuelve a cargar las tarjetas.';}});
+  updateOrientationUI();
   loadBank();
 })();
