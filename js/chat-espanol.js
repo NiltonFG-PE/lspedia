@@ -306,9 +306,9 @@ function mechanicalCorrection(user,model){
 
 const CONNECTORS = ["porque","pero","aunque","entonces","por eso","para que","si","cuando","mientras","también","tambien","y"];
 const TIME_PATTERNS = [
-  /\\b(?:hoy|ayer|mañana|manana|esta tarde|esta noche|esta mañana|esta manana|por la mañana|por la manana|por la tarde|por la noche)\\b/i,
-  /\\b(?:lunes|martes|miércoles|miercoles|jueves|viernes|sábado|sabado|domingo)\\b/i,
-  /\\ba las?\\s+(?:\\d{1,2}|una|dos|tres|cuatro|cinco|seis|siete|ocho|nueve|diez|once|doce)(?:\\s+y\\s+(?:media|cuarto))?(?:\\s+de la\\s+(?:mañana|manana|tarde|noche))?/i
+  /\b(?:hoy|ayer|mañana|manana|esta tarde|esta noche|esta mañana|esta manana|por la mañana|por la manana|por la tarde|por la noche)\b/i,
+  /\b(?:lunes|martes|miércoles|miercoles|jueves|viernes|sábado|sabado|domingo)\b/i,
+  /\ba las?\s+(?:\d{1,2}|una|dos|tres|cuatro|cinco|seis|siete|ocho|nueve|diez|once|doce)(?:\s+y\s+(?:media|cuarto))?(?:\s+de la\s+(?:mañana|manana|tarde|noche))?/i
 ];
 function firstMatch(text,patterns){
   for(const re of patterns){const m=String(text).match(re);if(m)return m[0]}
@@ -321,12 +321,12 @@ function detectConnector(text){
 function extractDetails(text){
   const raw=String(text||"").trim(), n=normalize(raw);
   const time=firstMatch(raw,TIME_PATTERNS);
-  const transport=(n.match(/\\b(bus|taxi|moto|carro|auto|bicicleta|caminando|a pie|combi)\\b/)||[])[1]||"";
-  const payment=(n.match(/\\b(tarjeta|efectivo|transferencia|yape|plin)\\b/)||[])[1]||"";
-  const feeling=(n.match(/\\b(cansad[oa]|nervios[oa]|feliz|content[oa]|preocupad[oa]|tranquil[oa]|apurad[oa]|enfermo|enferma)\\b/)||[])[1]||"";
-  const reasonMatch=raw.match(/\\bporque\\s+([^.!?]{3,70})/i);
+  const transport=(n.match(/\b(bus|taxi|moto|carro|auto|bicicleta|caminando|a pie|combi)\b/)||[])[1]||"";
+  const payment=(n.match(/\b(tarjeta|efectivo|transferencia|yape|plin)\b/)||[])[1]||"";
+  const feeling=(n.match(/\b(cansad[oa]|nervios[oa]|feliz|content[oa]|preocupad[oa]|tranquil[oa]|apurad[oa]|enfermo|enferma)\b/)||[])[1]||"";
+  const reasonMatch=raw.match(/\bporque\s+([^.!?]{3,70})/i);
   const reason=reasonMatch?reasonMatch[1].trim():"";
-  return {time,transport,payment,feeling,reason,yes:/^(si|sí)\\b/i.test(raw),no:/^no\\b/i.test(raw)};
+  return {time,transport,payment,feeling,reason,yes:/^(si|sí)\b/i.test(raw),no:/^no\b/i.test(raw)};
 }
 function adaptiveAcknowledgement(user){
   const d=extractDetails(user);
@@ -375,6 +375,74 @@ function buildAdaptiveDetour(user,sc,sourceIndex){
   return Object.assign(base,{prompt:"Cuéntame un detalle más de lo que acabas de decir.",model:"Lo más importante para mí es que todo salga bien.",alternatives:["Hay un detalle que todavía quiero confirmar.","También quiero explicar una cosa más."],keywords:["importante","detalle","tambien","explicar"],why:"Agregar un detalle ayuda a pasar de respuestas cortas a una conversación más natural."});
 }
 
+
+const VERB_HINTS = new Set(("soy eres es somos son estoy estas está estamos estan voy vas va vamos van fui fue fueron iré ire " +
+"tengo tienes tiene tenemos tuve quiero quieres quiere quisiera necesito necesitas debe debo podemos puedo podré podre " +
+"llego llegas llega llegaré llegare salgo salí sali espero aviso avisa compro compra llevo pagar pago prefiero " +
+"acepto recibí recibi reviso revisé revise termino terminé termine estudio estudia trabajo trabaja escribo escribe " +
+"envío envio envia pregunto pregunta agradezco entiendo explico explica reuniremos vemos veré vere quedo queda firmo firmar " +
+"seguiré seguire haré hare hago hacemos elijo elegí elegi tomo tomé tome duele viajaré viajare viajo recogeré recogere").split(/\s+/));
+
+function findVerbWord(text){
+  const list=String(text).match(/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+/g)||[];
+  return list.find(w=>VERB_HINTS.has(normalize(w)))||"";
+}
+function removePiece(text,piece){
+  if(!piece)return text;
+  const source=String(text), low=source.toLocaleLowerCase("es-PE"), needle=String(piece).toLocaleLowerCase("es-PE");
+  const i=low.indexOf(needle);
+  return i<0?source:source.slice(0,i)+" "+source.slice(i+piece.length);
+}
+function mapSentenceParts(text){
+  const original=String(text||"").trim();
+  if(!original)return [];
+  const connector=detectConnector(original);
+  const time=firstMatch(original,TIME_PATTERNS);
+  const verb=findVerbWord(original);
+  let who="YO (implícito)";
+  if(verb){
+    const low=normalize(original), v=normalize(verb), idx=low.indexOf(v);
+    const before=original.slice(0,Math.max(0,idx)).replace(/[¿¡,.!?]+/g," ").trim();
+    if(before && before.length<=32 && !(time||"").toLocaleLowerCase("es-PE").startsWith(before.toLocaleLowerCase("es-PE"))) who=before;
+  }
+  let rest=original;
+  if(who!=="YO (implícito)")rest=removePiece(rest,who);
+  rest=removePiece(rest,verb);rest=removePiece(rest,time);rest=removePiece(rest,connector);
+  rest=rest.replace(/[¿¡,.!?;:]+/g," ").replace(/\s+/g," ").trim();
+  const parts=[];
+  parts.push({role:"who",label:"QUIÉN",text:who});
+  if(verb)parts.push({role:"action",label:"ACCIÓN",text:verb});
+  if(rest)parts.push({role:"what",label:"QUÉ / DÓNDE",text:rest.length>52?rest.slice(0,49)+"…":rest});
+  if(time)parts.push({role:"time",label:"CUÁNDO",text:time});
+  if(connector)parts.push({role:"link",label:"CONECTOR",text:connector});
+  return parts;
+}
+function sentenceMapHTML(text){
+  const parts=mapSentenceParts(text);
+  if(!parts.length)return "";
+  return '<div class="sentence-map">'+parts.map(p=>'<span class="map-part map-'+p.role+'"><small>'+escapeHTML(p.label)+'</small>'+escapeHTML(p.text)+'</span>').join("")+'</div>';
+}
+function structureHint(text){
+  const roles=mapSentenceParts(text).map(p=>p.label);
+  return roles.length?"Guía: "+roles.join(" + "):"Escribe una idea completa.";
+}
+function spellingTips(user,model){
+  const tips=[], raw=String(user||"").trim(), m=String(model||"").trim();
+  if(raw && /^[a-záéíóúüñ]/.test(raw))tips.push("Empieza la oración con mayúscula.");
+  const modelQuestion=m.startsWith("¿")||m.endsWith("?");
+  if(modelQuestion && raw.endsWith("?") && !raw.startsWith("¿"))tips.push("En español, una pregunta también lleva ¿ al inicio.");
+  if(!/[.!?]$/.test(raw) && raw.split(/\s+/).length>3)tips.push("Puedes cerrar la idea con punto.");
+  const modelWords=m.match(/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+/g)||[];
+  const userWords=raw.match(/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+/g)||[];
+  const userPlain=new Set(userWords.map(w=>normalize(w)));
+  const accentFix=modelWords.find(w=>w!==stripAccents(w) && userPlain.has(normalize(w)) && !userWords.some(u=>u.toLocaleLowerCase("es-PE")===w.toLocaleLowerCase("es-PE")));
+  if(accentFix)tips.push('Mira la tilde en “'+accentFix+'”.');
+  if(words(raw).length<=2 && words(m).length>=6)tips.push("Tu respuesta es muy corta: agrega qué, dónde, cuándo o por qué.");
+  const conn=detectConnector(m);
+  if(conn && !detectConnector(raw) && words(raw).length>=4)tips.push('Puedes unir mejor las ideas con “'+conn+'”.');
+  return tips.slice(0,2);
+}
+
 function evaluate(user,turn,usedWildcard=false){
   const variants=[turn.model,...(turn.alternatives||[])];
   let sim=0;
@@ -384,12 +452,13 @@ function evaluate(user,turn,usedWildcard=false){
   const matches=keys.filter(k=>k&&n.includes(k)).length;
   const keyRatio=keys.length?matches/Math.min(keys.length,3):0;
   let grade="improve";
-  if(sim>=.88)grade="excellent";
-  else if(sim>=.61||keyRatio>=.67)grade="good";
+  const userWordCount=words(user).length;
+  if(sim>=.86)grade="excellent";
+  else if(sim>=.52||keyRatio>=.50||(userWordCount>=5&&matches>=1))grade="good";
   const corrected=mechanicalCorrection(user,turn.model);
   const mechanicalChanged=normalize(corrected)===normalize(user) && corrected.trim()!==String(user).trim();
   const points=usedWildcard?1:(grade==="excellent"?2:grade==="good"?2:1);
-  return {grade,sim,keyRatio,corrected,mechanicalChanged,points};
+  return {grade,sim,keyRatio,corrected,mechanicalChanged,points,matches,userWordCount};
 }
 function shuffle(arr){
   const a=arr.slice();
