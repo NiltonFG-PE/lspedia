@@ -33,3 +33,36 @@ body.playing .play{grid-template-rows:40px 4px minmax(0,1fr) 15px 50px;gap:6px;m
 .game-card .eyebrow{color:#45405b}
 @media(max-width:600px){.game-card h2{font-size:clamp(40px,11vw,64px)}.game-card img{max-height:calc(100% - 110px)}}
 @media(orientation:landscape) and (max-height:600px){.game-card{grid-template-columns:minmax(0,46%) minmax(0,54%);column-gap:12px}.game-card h2{font-size:clamp(36px,7vw,68px);max-height:100%;overflow-wrap:anywhere}.game-card img{max-height:100%}}
+
+
+/* Premium visual layer — mobile-first, playful and image-led. */
+body{background:
+ radial-gradient(circle at 88% 7%,#e9ddff 0,transparent 25rem),
+ radial-gradient(circle at 4% 32%,#dff4ec 0,transparent 22rem),
+ linear-gradient(180deg,#fbfaf8 0%,#f5f1f8 100%);min-height:100dvh}
+.topbar{position:relative;z-index:3}.brand img{filter:drop-shadow(0 5px 10px #493e7530)}
+.hero{position:relative;overflow:hidden;border:1px solid #ffffffc7;border-radius:34px;background:linear-gradient(135deg,#ffffffc7,#f5efffc4);box-shadow:0 24px 70px #41345d12,inset 0 1px #fff;margin-bottom:30px}
+.hero:after{content:'';position:absolute;width:220px;height:220px;border-radius:50%;right:-70px;bottom:-110px;background:#a68ee61c;filter:blur(2px);pointer-events:none}
+.hero-copy,.hero-art{position:relative;z-index:1}.pill{background:#ffffffb8;box-shadow:0 8px 24px #44375d0b}
+.section-title h2{font-weight:850}.decks{gap:14px}
+.deck{overflow:hidden;min-height:154px;border-color:#ffffff;background:linear-gradient(145deg,#ffffff,#faf7fc);box-shadow:0 10px 30px #3c31570d,inset 0 1px #fff}
+.deck:before{content:'';position:absolute;width:90px;height:90px;border-radius:50%;right:-35px;top:-35px;background:#8b71d80d}
+.deck:hover{box-shadow:0 15px 34px #3c315715}.deck.selected{background:linear-gradient(145deg,#f4efff,#ebe3ff);box-shadow:0 14px 34px #6550b91b}
+.deck img,.deck-art{box-shadow:0 7px 16px #30274312}.primary{background:linear-gradient(135deg,#765fd0,#5740ad);box-shadow:0 12px 28px #6550b936, inset 0 1px #ffffff38;letter-spacing:.01em}
+.primary:active{transform:translateY(1px);box-shadow:0 6px 15px #6550b92d}
+.toggle,.segmented{box-shadow:0 7px 22px #3b31530a}.orientation-choice,.control-choice{border-color:#ded8e6}
+.game-top{background:#ffffffb8;border:1px solid #ffffffd6;border-radius:20px;padding:5px 8px;box-shadow:0 8px 26px #2c234817;backdrop-filter:blur(12px)}
+.game-card{position:relative;border:1px solid #ffffffbd;box-shadow:0 24px 70px #2f254929,inset 0 1px #fff;isolation:isolate}
+.game-card:before{content:'';position:absolute;inset:0;background:linear-gradient(145deg,#ffffff50,transparent 48%);pointer-events:none;z-index:-1}
+.game-card img{filter:drop-shadow(0 15px 18px #29213d22)}
+.game-card h2{text-shadow:0 2px #ffffff7d}.game-card .eyebrow{background:#ffffff82;padding:6px 11px;border-radius:999px;letter-spacing:.12em}
+.game-actions button{box-shadow:0 10px 25px #2c244b14;border:1px solid #ffffff70;transition:transform .12s,filter .12s}.game-actions button:active{transform:scale(.98);filter:saturate(1.12)}
+.correct{background:linear-gradient(135deg,#c8ead7,#b8e0c9)}.pass{background:linear-gradient(135deg,#f7e2cd,#efd1b5)}
+#pause{background:#fff3;border:2px solid #6b55bd;font-weight:900;color:#4f3b9c;box-shadow:0 5px 14px #4f3b9c18}
+.feedback{backdrop-filter:blur(8px)}.feedback strong{animation:premium-pop .28s cubic-bezier(.2,.8,.2,1.2)}
+.result-star{filter:drop-shadow(0 10px 18px #765fa638)}
+.review-item{box-shadow:0 8px 20px #352c4d0b;background:#ffffffc9}
+dialog{box-shadow:0 30px 100px #1711274a;border-color:#ffffff80}
+@keyframes premium-pop{0%{transform:scale(.72);opacity:.2}100%{transform:scale(1);opacity:1}}
+@media(max-width:600px){.hero{border-radius:26px;padding-left:14px;padding-right:8px}.decks{gap:10px}.deck{min-height:128px;border-radius:21px}.game-top{border-radius:17px}.game-card{border-radius:30px}.game-actions button{min-height:62px}}
+@media(orientation:landscape) and (max-height:600px){.game-card{border-radius:26px}.game-card img{filter:drop-shadow(0 10px 14px #29213d20)}.game-top{padding:2px 7px}.game-actions button{min-height:48px}}
