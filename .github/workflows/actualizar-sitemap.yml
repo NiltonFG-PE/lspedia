@@ -98,7 +98,11 @@ jobs:
           grep -q 'property="og:image"' categoria/vocabulario/colores/index.html
           grep -q '/categoria/vocabulario/colores/preview.jpg' categoria/vocabulario/colores/index.html
           test -s categoria/vocabulario/colores/preview.jpg
-          test "$(find categoria -mindepth 3 -name preview.jpg | wc -l)" -eq "$(find categoria -mindepth 3 -name index.html | wc -l)"
+          test "$(find categoria -mindepth 3 -maxdepth 3 -name preview.jpg | wc -l)" -eq "$(find categoria -mindepth 3 -maxdepth 3 -name index.html | wc -l)"
+          test -s categoria/vocabulario/colores/preview-20260925-3.jpg
+          test -f categoria/vocabulario/colores/compartir-20260925-3/index.html
+          grep -q 'og:url" content="https://lspedia.site/categoria/vocabulario/colores/compartir-20260925-3/' categoria/vocabulario/colores/compartir-20260925-3/index.html
+          grep -q '/categoria/vocabulario/colores/preview-20260925-3.jpg' categoria/vocabulario/colores/compartir-20260925-3/index.html
           ! grep -q '__LSPEDIA_CATEGORY_IMAGE__' categoria/vocabulario/colores/index.html
           test "$(find diccionario -mindepth 2 -name index.html | wc -l)" -gt 0
           test "$(find vocabulario -mindepth 2 -name index.html | wc -l)" -gt 0
