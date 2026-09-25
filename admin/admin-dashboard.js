@@ -71,24 +71,45 @@
     try{const u=new URL(value);return u.protocol==='https:'&&u.hostname==='script.google.com'&&/^\/macros\/s\/[^/]+\/exec\/?$/.test(u.pathname);}catch(_e){return false;}
   }
 
-  function requestJsonp(api,key,period){
+  function requestJsonp(api,key,period,mode='admin_analytics',timeoutMs=38000){
     return new Promise((resolve,reject)=>{
       let url;
       try{url=new URL(api);}catch(_e){reject(new Error('URL de Apps Script inválida.'));return;}
       const cb='lspAdminHome_'+Date.now()+'_'+Math.random().toString(36).slice(2,8);
-      const s=document.createElement('script');let done=false;
+      const s=document.createElement('script');let done=false,timer=0;
       const cleanup=()=>{try{delete window[cb];}catch(_e){}try{s.remove();}catch(_e){}clearTimeout(timer);};
-      window[cb]=payload=>{if(done)return;done=true;cleanup();if(payload&&payload.ok)resolve(payload);else reject(new Error(payload&&payload.error||'Respuesta inválida del Admin.'));};
-      url.searchParams.set('modo','admin_analytics');
+      window[cb]=payload=>{
+        if(done)return;done=true;cleanup();
+        if(payload&&payload.ok)resolve(payload);
+        else reject(new Error(payload&&payload.error||'Respuesta inválida del Admin.'));
+      };
+      url.searchParams.set('modo',mode);
       url.searchParams.set('key',key);
-      url.searchParams.set('periodo',period);
+      url.searchParams.set('periodo',period||'7');
       url.searchParams.set('callback',cb);
       url.searchParams.set('_',String(Date.now()));
       s.src=url.toString();s.async=true;
-      s.onerror=()=>{if(done)return;done=true;cleanup();reject(new Error('No se pudo conectar con Apps Script.'));};
-      const timer=setTimeout(()=>{if(done)return;done=true;cleanup();reject(new Error('La consulta tardó demasiado.'));},38000);
+      s.onerror=()=>{if(done)return;done=true;cleanup();reject(new Error('No se pudo conectar con Apps Script. Revisa tu conexión o la URL.'));};
+      timer=setTimeout(()=>{
+        if(done)return;done=true;cleanup();
+        reject(new Error(timeoutMs<=15000?'Apps Script está tardando demasiado en responder. Intenta otra vez.':'La consulta de Analytics tardó demasiado.'));
+      },timeoutMs);
       document.head.appendChild(s);
     });
+  }
+
+  async function probeAccess(api,key){
+    // Backend nuevo: validación casi instantánea, sin consultar GA4.
+    try{
+      return await requestJsonp(api,key,'7','admin_ping',6500);
+    }catch(e){
+      // Compatibilidad con implementaciones anteriores: una sola consulta de búsquedas,
+      // mucho más liviana que cargar todo el panel de Analytics.
+      if(/Modo no válido/i.test(String(e&&e.message||''))){
+        return requestJsonp(api,key,'7','admin_busquedas',12000);
+      }
+      throw e;
+    }
   }
 
   function cacheGet(period){
@@ -103,7 +124,7 @@
     let last;
     for(const delay of [0,1200]){
       if(delay)await sleep(delay);
-      try{const d=await requestJsonp(state.api,state.key,period);cacheSet(period,d);return d;}catch(e){last=e;}
+      try{const d=await requestJsonp(state.api,state.key,period,'admin_analytics',38000);cacheSet(period,d);return d;}catch(e){last=e;}
     }
     throw last||new Error('No se pudo consultar Analytics.');
   }
@@ -339,15 +360,38 @@
   function savePublisher(){const u=text($('publisherUrl').value);if(u&&!validApiUrl(u.split('?')[0])){alert('La URL debe ser una implementación /exec oficial de Google Apps Script.');return;}if(u)localStorage.setItem(STORE_PUBLISHER,u);else localStorage.removeItem(STORE_PUBLISHER);state.publisherUrl=u;closePublisherModal();setNotice(u?'URL privada del Publicador guardada solo en este navegador.':'Se quitó la URL del Publicador.','ok');}
 
   function lock(){state.locked=true;state.key='';try{sessionStorage.removeItem(SESSION_KEY);}catch(_e){};$('unlockKey').value='';$('lockScreen').classList.remove('d-none');}
-  async function unlock(){const key=text($('unlockKey').value);if(!key)return;const c=readCredentials();const api=state.api||c.api;if(!api){forgetCredentials();$('lockScreen').classList.add('d-none');return;}const btn=$('btnUnlock');btn.disabled=true;btn.textContent='Comprobando…';try{await requestJsonp(api,key,'7');state.api=api;state.key=key;state.locked=false;sessionStorage.setItem(SESSION_KEY,key);$('lockScreen').classList.add('d-none');btn.textContent='Desbloquear';btn.disabled=false;resetAutolock();}catch(e){btn.textContent='Clave incorrecta';btn.disabled=false;setTimeout(()=>btn.textContent='Desbloquear',1300);}}
+  async function unlock(){const key=text($('unlockKey').value);if(!key)return;const c=readCredentials();const api=state.api||c.api;if(!api){forgetCredentials();$('lockScreen').classList.add('d-none');return;}const btn=$('btnUnlock');btn.disabled=true;btn.textContent='Comprobando…';try{await probeAccess(api,key);state.api=api;state.key=key;state.locked=false;sessionStorage.setItem(SESSION_KEY,key);$('lockScreen').classList.add('d-none');btn.textContent='Desbloquear';btn.disabled=false;resetAutolock();}catch(e){btn.textContent='Clave incorrecta';btn.disabled=false;setTimeout(()=>btn.textContent='Desbloquear',1300);}}
   let lockTimer=null;function resetAutolock(){clearTimeout(lockTimer);if(!state.locked&&state.key)lockTimer=setTimeout(lock,AUTOLOCK_MS);}
 
   async function connect(){
     const api=text($('apiUrl').value),key=text($('adminKey').value),remember=$('rememberAccess').checked;
     if(!validApiUrl(api)){setNotice('La URL debe ser una implementación /exec oficial de Google Apps Script.','bad');return;}
     if(!key){setNotice('Escribe la clave privada del Admin.','bad');return;}
-    const btn=$('btnConnect');btn.disabled=true;btn.textContent='Conectando…';
-    try{await requestJsonp(api,key,'7');state.api=api;state.key=key;state.remember=remember;saveCredentials(api,key,remember);$('accessPanel').classList.add('d-none');$('dashboard').classList.remove('d-none');btn.textContent='Entrar';btn.disabled=false;await loadAll(true);}catch(e){btn.disabled=false;btn.textContent='Entrar';$('accessStatus').textContent='Error';setNotice(e.message,'bad');}
+    const btn=$('btnConnect');
+    btn.disabled=true;btn.textContent='Comprobando acceso…';
+    $('accessStatus').textContent='Comprobando';
+    setNotice('Validando la URL y la clave. Esto debe tomar solo unos segundos.','info');
+    try{
+      await probeAccess(api,key);
+      state.api=api;state.key=key;state.remember=remember;
+      saveCredentials(api,key,remember);
+      $('accessStatus').textContent='Conectado';
+      $('accessPanel').classList.add('d-none');
+      $('dashboard').classList.remove('d-none');
+      btn.textContent='Entrar';btn.disabled=false;
+      setNotice('Acceso correcto. Cargando primero los indicadores esenciales…','info');
+      // La carga pesada ocurre después de entrar y ya no bloquea el acceso.
+      loadAll(false).catch(e=>{
+        setNotice('El acceso es correcto, pero Analytics no pudo terminar de cargar: '+e.message,'bad');
+        $('btnRefresh').disabled=false;
+      });
+    }catch(e){
+      btn.disabled=false;btn.textContent='Entrar';
+      $('accessStatus').textContent='Sin conectar';
+      const msg=String(e&&e.message||'No se pudo conectar.');
+      if(/Clave incorrecta/i.test(msg))setNotice('La URL respondió, pero la clave privada no es correcta.','bad');
+      else setNotice(msg,'bad');
+    }
   }
 
   function progressMessage(){
@@ -398,8 +442,21 @@
     const c=readCredentials();state.api=c.api;state.key=c.key;state.remember=c.remember;
     $('apiUrl').value=c.api;$('adminKey').value=c.key;$('rememberAccess').checked=c.remember;
     if(c.api&&c.key&&validApiUrl(c.api)){
-      $('accessPanel').classList.add('d-none');$('dashboard').classList.remove('d-none');
-      try{await loadAll(false);}catch(e){$('accessPanel').classList.remove('d-none');$('dashboard').classList.add('d-none');setNotice(e.message,'bad');}
+      $('accessPanel').classList.remove('d-none');$('dashboard').classList.add('d-none');
+      $('accessStatus').textContent='Comprobando';
+      $('btnConnect').disabled=true;$('btnConnect').textContent='Comprobando acceso…';
+      try{
+        await probeAccess(c.api,c.key);
+        $('accessStatus').textContent='Conectado';
+        $('accessPanel').classList.add('d-none');$('dashboard').classList.remove('d-none');
+        $('btnConnect').disabled=false;$('btnConnect').textContent='Entrar';
+        loadAll(false).catch(e=>{setNotice('El acceso es correcto, pero Analytics no pudo terminar de cargar: '+e.message,'bad');$('btnRefresh').disabled=false;});
+      }catch(e){
+        $('btnConnect').disabled=false;$('btnConnect').textContent='Entrar';
+        $('accessStatus').textContent='Sin conectar';
+        $('accessPanel').classList.remove('d-none');$('dashboard').classList.add('d-none');
+        setNotice(String(e&&e.message||'No se pudo conectar.'),'bad');
+      }
     }else{
       $('accessPanel').classList.remove('d-none');$('dashboard').classList.add('d-none');
     }
