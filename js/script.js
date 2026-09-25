@@ -2555,8 +2555,7 @@ function restaurarDestinoVocabularioInicial(){
             sinScroll: true,
             animarEntrada: true
         });
-        const url = window.location.pathname
-            + '?vista=vocabulario&coleccion=' + encodeURIComponent(coleccion);
+        const url = '/?vista=vocabulario&coleccion=' + encodeURIComponent(coleccion);
         window.history.replaceState(
             { tipo: 'coleccionVocabulario', coleccion },
             '',
@@ -2574,8 +2573,7 @@ function restaurarDestinoVocabularioInicial(){
             sinScroll: true,
             animarEntrada: true
         });
-        const url = window.location.pathname
-            + '?vista=vocabulario&categoria=' + encodeURIComponent(categoria);
+        const url = '/?vista=vocabulario&categoria=' + encodeURIComponent(categoria);
         window.history.replaceState(
             { tipo: 'categoriaVocabulario', categoria },
             '',
