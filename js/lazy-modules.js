@@ -30,8 +30,8 @@
             global: 'OracionesV2'
         },
         subtitulos: {
-            js: 'js/subtitulos.js?v=' + VERSION,
-            css: 'css/subtitulos.css?v=' + VERSION,
+            js: 'js/subtitulos.js?v=20260925-1',
+            css: 'css/subtitulos.css?v=20260925-1',
             global: 'SubtitulosV2'
         }
     };

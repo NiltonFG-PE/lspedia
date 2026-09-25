@@ -65,6 +65,9 @@ const SubtitulosV2 = (function () {
     // ---------------------------------------------------------
     const estado = {
         reconocimiento: null,
+        _finalesProcesados: new Set(),
+        _solicitudMedidor: 0,
+        _seccionAbierta: false,
         activo: false,           // el usuario pidió escuchar (se mantiene true entre reinicios automáticos)
         idioma: CONFIG.IDIOMA_POR_DEFECTO,
         pantallaCompleta: false,
@@ -192,6 +195,22 @@ const SubtitulosV2 = (function () {
         }
 
         organizarIntroCompactaV5();
+        if (introCard && !el("subtitulosVistaPrevia")) {
+            const preview = document.createElement("div");
+            preview.id = "subtitulosVistaPrevia";
+            preview.innerHTML = '<span class="subtitulos-preview-label">ASÍ SE VERÁ EN PANTALLA · EJEMPLO</span><p>Una conversación.<br><strong>Más fácil de seguir.</strong></p><span class="subtitulos-preview-note">Texto grande · Alto contraste · Pantalla completa</span>';
+            introCard.querySelector(".subtitulos-intro-hero-v3").insertAdjacentElement("afterend", preview);
+        }
+        const copy = el("btnSubtitulosGuardar");
+        if (copy) copy.textContent = "Copiar texto";
+        const motor = el("subtitulosEstadoMotor");
+        if (motor) { motor.setAttribute("role", "status"); motor.setAttribute("aria-live", "polite"); }
+        if (introCard && !el("subtitulosNotaPrecision")) {
+            const note = document.createElement("p");
+            note.id = "subtitulosNotaPrecision";
+            note.textContent = "Transcripción automática: puede contener errores. El texto de color es provisional y se ajusta mientras hablas.";
+            introCard.appendChild(note);
+        }
     }
 
     // SUBTITULOS_V6_ICONO_AMARILLO_20260909
@@ -399,6 +418,7 @@ const SubtitulosV2 = (function () {
         actualizarUiOffline("comprobando", "Comprobando paquete de " + nombreIdioma(idioma) + "…");
         try {
             const info = await buscarCalidadLocal(idioma);
+            if (idioma !== idiomaSeleccionado() || estado.activo) return;
             if (!info) {
                 actualizarUiOffline("no-disponible", "No hay un paquete local compatible para " + nombreIdioma(idioma) + " en este navegador.");
                 return;
@@ -426,6 +446,7 @@ const SubtitulosV2 = (function () {
             actualizarUiOffline("instalando", "Descargando " + nombreIdioma(idioma) + " para usarlo sin internet…", info.calidad);
             const Ctor = obtenerConstructorLocal();
             const ok = await Ctor.install({ langs: [idioma], processLocally: true, quality: info.calidad });
+            if (idioma !== idiomaSeleccionado() || estado.activo) return;
             if (ok) {
                 estado.modoLocalDisponible = true;
                 estado.modoLocalActivo = true;
@@ -442,6 +463,7 @@ const SubtitulosV2 = (function () {
             actualizarUiOffline("error", "El navegador no pudo preparar el modo sin internet. LSPedia seguirá funcionando en línea.");
         } finally {
             estado._comprobandoLocal = false;
+            if (idioma !== idiomaSeleccionado() && estado._seccionAbierta && !estado.activo) comprobarDisponibilidadLocal(false);
         }
     }
 
@@ -473,24 +495,10 @@ const SubtitulosV2 = (function () {
 
     function elegirAlternativa(resultado) {
         if (!resultado || !resultado.length) return null;
-        let mejor = resultado[0];
-        if (!resultado.isFinal || resultado.length === 1 || !estado.frasesContextuales.length) return mejor;
-
-        const contexto = estado.frasesContextuales.map((f) => normalizar(f)).filter(Boolean);
-        let mejorPuntaje = -Infinity;
-        for (let i = 0; i < resultado.length; i++) {
-            const alt = resultado[i];
-            const texto = normalizar(alt.transcript || "");
-            let puntaje = Number.isFinite(alt.confidence) ? alt.confidence : 0;
-            contexto.forEach((frase) => {
-                if (frase && texto.includes(frase)) puntaje += 0.10;
-            });
-            if (puntaje > mejorPuntaje) {
-                mejorPuntaje = puntaje;
-                mejor = alt;
-            }
-        }
-        return mejor;
+        // Preserve the engine's ranking. Substring bonuses previously changed
+        // the transcript even when a contextual word was only part of a word.
+        // Native phrase biasing above remains available where supported.
+        return resultado[0];
     }
 
     // ---------------------------------------------------------
@@ -504,6 +512,7 @@ const SubtitulosV2 = (function () {
     // PUNTO DE ENTRADA / SALIDA (llamados desde script.js)
     // ---------------------------------------------------------
     function iniciar() {
+        estado._seccionAbierta = true;
         asegurarMejorasInterfaz();
         enlazarEventos();
         actualizarEstadoMotor(estado.activo ? (estado.pausado ? "pausado" : "escuchando") : "listo");
@@ -521,6 +530,7 @@ const SubtitulosV2 = (function () {
     }
 
     function salir() {
+        estado._seccionAbierta = false;
         // Por privacidad, siempre apagamos el micrófono al salir de la
         // sección, aunque el usuario no haya pulsado "Detener".
         detenerEscucha();
@@ -569,9 +579,15 @@ const SubtitulosV2 = (function () {
         }
         aplicarSesgoContextual(r);
 
-        r.onresult = manejarResultado;
-        r.onerror = manejarError;
-        r.onend = manejarFin;
+        r.onstart = () => {
+            if (estado.reconocimiento === r && estado.activo && !estado.pausado)
+                actualizarEstadoMotor("escuchando", estado.modoLocalActivo ? "Escuchando · sin internet" : "Escuchando");
+        };
+        r.onresult = (evento) => {
+            if (estado.reconocimiento === r && estado.activo && !estado.pausado) manejarResultado(evento);
+        };
+        r.onerror = (evento) => { if (estado.reconocimiento === r) manejarError(evento); };
+        r.onend = () => { if (estado.reconocimiento === r) manejarFin(); };
 
         return r;
     }
@@ -586,8 +602,9 @@ const SubtitulosV2 = (function () {
             return;
         }
 
+        estado._finalesProcesados.clear();
         estado.reconocimiento = reconocimiento;
-        actualizarEstadoMotor("escuchando", estado.modoLocalActivo ? "Escuchando · sin internet" : "Escuchando");
+        actualizarEstadoMotor("reconectando", "Conectando micrófono…");
         try {
             reconocimiento.start();
         } catch (err) {
@@ -599,6 +616,7 @@ const SubtitulosV2 = (function () {
     }
 
     function iniciarEscucha() {
+        if (estado.activo) return;
         detenerMedidorNivel();
 
         const selectIdioma = el("subtitulosSelectIdioma");
@@ -614,6 +632,7 @@ const SubtitulosV2 = (function () {
 
         clearTimeout(estado._timeoutReinicio);
         estado._timeoutReinicio = null;
+        estado._reinicioProgramado = false;
         estado.activo = true;
         estado.pausado = false;
         estado._ultimoError = "";
@@ -632,13 +651,16 @@ const SubtitulosV2 = (function () {
     }
 
     function detenerMotorActual() {
+        estado._reinicioProgramado = false;
         if (!estado.reconocimiento) return;
         const r = estado.reconocimiento;
         estado.reconocimiento = null;
         try {
             r.onend = null;
             r.onerror = null;
-            r.stop();
+            r.onresult = null;
+            r.onstart = null;
+            r.abort();
         } catch (e) { /* noop */ }
     }
 
@@ -714,7 +736,8 @@ const SubtitulosV2 = (function () {
     }
 
     function iniciarMedidorNivel() {
-        if (estado.medidor.activo) return;
+        if (estado.medidor.activo || estado.activo) return;
+        const solicitud = ++estado._solicitudMedidor;
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
             actualizarEtiquetaMedidor("Tu navegador no admite probar el nivel de audio aquí.", "bajo");
             return;
@@ -729,13 +752,15 @@ const SubtitulosV2 = (function () {
                 // El usuario pudo haber cambiado de pantalla mientras se
                 // esperaba el permiso; si ya no corresponde, cerramos el
                 // stream inmediatamente sin mostrar nada.
-                if (!el("subtitulosIntro") || el("subtitulosIntro").classList.contains("d-none")) {
+                if (solicitud !== estado._solicitudMedidor || !estado._seccionAbierta || estado.activo || !el("subtitulosIntro") || el("subtitulosIntro").classList.contains("d-none")) {
                     stream.getTracks().forEach((t) => t.stop());
                     return;
                 }
 
                 const Ctor = window.AudioContext || window.webkitAudioContext;
+                estado.medidor.stream = stream;
                 const audioContext = new Ctor();
+                estado.medidor.audioContext = audioContext;
                 const fuente = audioContext.createMediaStreamSource(stream);
                 const analyser = audioContext.createAnalyser();
                 analyser.fftSize = 512;
@@ -754,6 +779,8 @@ const SubtitulosV2 = (function () {
                 bucleMedidor();
             })
             .catch((err) => {
+                if (solicitud !== estado._solicitudMedidor) return;
+                detenerMedidorNivel();
                 console.warn("No se pudo abrir el micrófono para el medidor de nivel:", err);
                 if (btnProbar) { btnProbar.disabled = false; btnProbar.textContent = "🎚️ Probar nivel de audio"; }
                 actualizarEtiquetaMedidor("No se pudo acceder al micrófono. Revisa los permisos del navegador.", "bajo");
@@ -794,7 +821,7 @@ const SubtitulosV2 = (function () {
         const MENSAJES_NIVEL = {
             bajo: "🔴 Muy bajo — acerca más el celular al parlante o sube el volumen.",
             regular: "🟡 Regular — puede funcionar, pero mejor acércalo un poco más.",
-            bien: "🟢 ¡Bien! Este nivel debería transcribirse correctamente."
+            bien: "🟢 Volumen suficiente. Evita ruido y voces superpuestas."
         };
         actualizarEtiquetaMedidor(MENSAJES_NIVEL[nivel], nivel);
 
@@ -810,6 +837,7 @@ const SubtitulosV2 = (function () {
     }
 
     function detenerMedidorNivel() {
+        estado._solicitudMedidor += 1;
         if (estado.medidor.rafId) {
             cancelAnimationFrame(estado.medidor.rafId);
             estado.medidor.rafId = null;
@@ -838,14 +866,17 @@ const SubtitulosV2 = (function () {
 
     function manejarResultado(evento) {
         let interina = "";
-        for (let i = evento.resultIndex; i < evento.results.length; i++) {
+        for (let i = 0; i < evento.results.length; i++) {
             const resultado = evento.results[i];
             const alternativa = elegirAlternativa(resultado);
             const texto = alternativa ? alternativa.transcript : "";
             if (resultado.isFinal) {
-                agregarTextoFinal(texto.trim());
+                if (!estado._finalesProcesados.has(i)) {
+                    estado._finalesProcesados.add(i);
+                    agregarTextoFinal(texto.trim());
+                }
             } else {
-                interina += texto;
+                interina += (interina ? " " : "") + texto.trim();
             }
         }
         estado.textoInterino = interina;
@@ -867,28 +898,16 @@ const SubtitulosV2 = (function () {
             .trim();
     }
 
-    // Agrega una frase finalizada al texto corrido, evitando duplicados
-    // consecutivos: cuando el reconocimiento se reinicia solo (por
-    // silencio o límite de tiempo), a veces vuelve a "finalizar" la
-    // misma frase que ya se había mostrado justo antes.
+    // Agrega una frase confirmada. manejarResultado deduplica por índice
+    // de resultado, conservando las repeticiones que sí se pronunciaron.
     function agregarTextoFinal(texto) {
         if (!texto) return;
 
         const normalizado = normalizar(texto);
         if (!normalizado) return;
 
-        const normalizadoAnterior = normalizar(estado.ultimaFraseFinal);
-        if (normalizado === normalizadoAnterior) {
-            return; // repetición exacta de la frase anterior: se ignora
-        }
-        // También ignora el caso en que la nueva frase está totalmente
-        // contenida al final del texto ya acumulado (repetición parcial
-        // típica tras un reinicio del reconocimiento).
-        const acumuladoNormalizado = normalizar(estado.textoAcumulado);
-        if (normalizado.length > 2 && acumuladoNormalizado.endsWith(normalizado)) {
-            return;
-        }
-
+        // Deduplicate by result index within each recognition session, never
+        // by text: spoken repetitions and short answers must not disappear.
         estado.ultimaFraseFinal = texto;
         estado.textoAcumulado = (estado.textoAcumulado + " " + texto).trim();
         estado.textoCompleto = (estado.textoCompleto + " " + texto).trim();
@@ -998,6 +1017,10 @@ const SubtitulosV2 = (function () {
         if (estado.wakeLock) return;
         try {
             const lock = await navigator.wakeLock.request("screen");
+            if (!estado.activo || estado.pausado || document.visibilityState !== "visible" || estado.wakeLock) {
+                await lock.release();
+                return;
+            }
             estado.wakeLock = lock;
             lock.addEventListener("release", () => {
                 if (estado.wakeLock === lock) estado.wakeLock = null;
@@ -1119,7 +1142,7 @@ const SubtitulosV2 = (function () {
         textarea.focus();
         textarea.select();
         try {
-            document.execCommand("copy");
+            if (!document.execCommand("copy")) throw new Error("Clipboard unavailable");
             mostrarConfirmacionGuardado();
         } catch (e) {
             alert("No se pudo copiar automáticamente. Mantén presionado el texto de los subtítulos para copiarlo manualmente.");
@@ -1242,7 +1265,7 @@ const SubtitulosV2 = (function () {
 
         const salirFn = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
         if (elementoPantallaCompletaActivo() && salirFn) {
-            salirFn.call(document);
+            try { Promise.resolve(salirFn.call(document)).catch(() => {}); } catch (e) { /* already exited */ }
         }
     }
 

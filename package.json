@@ -2,9 +2,10 @@
   "name": "lspedia-validaciones",
   "private": true,
   "scripts": {
-    "test": "node --test tests/busqueda.test.cjs tests/adivina.test.cjs",
+    "test": "node --test tests/busqueda.test.cjs tests/adivina.test.cjs tests/subtitulos.test.cjs",
     "test:browser": "node tests/navegacion.cjs",
-    "test:adivina-browser": "node tests/adivina-browser.cjs"
+    "test:adivina-browser": "node tests/adivina-browser.cjs",
+    "test:subtitulos-browser": "node tests/subtitulos-browser.cjs"
   },
   "devDependencies": {
     "bootstrap": "5.3.7",
