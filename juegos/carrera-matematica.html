@@ -514,12 +514,34 @@ function buildTrack(L) {
   // estrellas
   for (let n = 80; n < segments.length - 300; n += rand(35, 60)) { const lane = rand(0, 2); for (let k = 0; k < 4; k++) segments[n + k * 3].sprites.push({ kind: 'star', offset: LANE_OFF[lane], lane, size: 1, id: n + '-' + k }); }
 
-  // rampas: separadas entre sí y siempre dentro de un carril jugable
+  // rampas: un poco más largas, ocupan varios segmentos y están separadas entre sí
   let rampN = 170 + rand(0, 60);
-  while (rampN < segments.length - 330) {
+  while (rampN < segments.length - 340) {
     const lane = rand(0, 2);
-    segments[rampN].sprites.push({ kind: 'ramp', offset: LANE_OFF[lane], lane, size: 1, id: 'ramp-' + rampN + '-' + lane });
-    rampN += rand(260, 380);
+    const rampId = 'ramp-' + rampN + '-' + lane;
+    [0, 2, 4].forEach((d, i) => {
+      const si = rampN + d;
+      if (segments[si]) segments[si].sprites.push({ kind: 'ramp', offset: LANE_OFF[lane], lane, size: 1.12 - i * 0.07, id: rampId });
+    });
+    rampN += rand(270, 390);
+  }
+
+  // premios flotantes: turbos y vidas, poco frecuentes para que se sientan especiales
+  let bonusN = 230 + rand(0, 90);
+  let bonusIndex = 0;
+  while (bonusN < segments.length - 300) {
+    const lane = rand(0, 2);
+    const life = bonusIndex % 3 === 2; // aproximadamente 1 vida por cada 2 turbos
+    const kind = life ? 'pickupLife' : 'pickupTurbo';
+    segments[bonusN].sprites.push({
+      kind,
+      offset: LANE_OFF[lane],
+      lane,
+      size: 1,
+      id: kind + '-' + bonusN + '-' + lane
+    });
+    bonusIndex++;
+    bonusN += rand(300, 470);
   }
 }
 function findSegment(z) { return segments[Math.floor(z / SEG_LEN) % segments.length]; }
@@ -752,20 +774,52 @@ const SPR = {
   chevron(x, y, w, d) { const h = w * 0.8; ctx.fillStyle = '#4a4a4a'; ctx.fillRect(x - w * 0.04, y - h, w * 0.08, h); poly([x - w * 0.5, y - h - w * 0.4, x + w * 0.5, y - h - w * 0.4, x + w * 0.5, y - h, x - w * 0.5, y - h], '#ffc93c'); for (let i = -1; i <= 1; i++) { const cx = x + i * w * 0.3 * (d || 1); poly([cx - w * 0.1 * d, y - h - w * 0.36, cx + w * 0.02 * d, y - h - w * 0.36, cx + w * 0.14 * d, y - h - w * 0.2, cx + w * 0.02 * d, y - h - w * 0.04, cx - w * 0.1 * d, y - h - w * 0.04, cx + w * 0.02 * d, y - h - w * 0.2], '#e63946'); } },
   star(x, y, w) { ctx.save(); ctx.translate(x, y - w * 0.5); ctx.rotate(Math.sin(time / 300) * 0.3); ctx.shadowColor = '#ffe58a'; ctx.shadowBlur = w * 0.5; ctx.fillStyle = '#ffd23f'; ctx.beginPath(); for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, r = i % 2 ? w * 0.22 : w * 0.5; ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r); } ctx.closePath(); ctx.fill(); ctx.restore(); },
   ramp(x, y, w) {
-    shadow(x, y + w * 0.02, w * 0.68);
-    const h = w * 0.38;
-    poly([x - w * 0.52, y, x + w * 0.52, y, x + w * 0.36, y - h, x - w * 0.36, y - h], '#f59e0b');
-    poly([x - w * 0.52, y, x - w * 0.36, y - h, x - w * 0.28, y - h, x - w * 0.39, y], '#a85f08');
-    poly([x + w * 0.39, y, x + w * 0.28, y - h, x + w * 0.36, y - h, x + w * 0.52, y], '#7c4707');
+    shadow(x, y + w * 0.025, w * 0.75);
+    const h = w * 0.52;
+    poly([x - w * 0.56, y, x + w * 0.56, y, x + w * 0.34, y - h, x - w * 0.34, y - h], '#f59e0b');
+    poly([x - w * 0.56, y, x - w * 0.34, y - h, x - w * 0.25, y - h, x - w * 0.42, y], '#a85f08');
+    poly([x + w * 0.42, y, x + w * 0.25, y - h, x + w * 0.34, y - h, x + w * 0.56, y], '#7c4707');
     for (let i = -1; i <= 1; i++) {
       const ax = x + i * w * 0.22;
-      poly([ax - w * 0.08, y - h * 0.42, ax, y - h * 0.68, ax + w * 0.08, y - h * 0.42, ax + w * 0.035, y - h * 0.42, ax + w * 0.035, y - h * 0.2, ax - w * 0.035, y - h * 0.2, ax - w * 0.035, y - h * 0.42], '#fff3b0');
+      poly([ax - w * 0.08, y - h * 0.42, ax, y - h * 0.68, ax + w * 0.08, y - h * 0.42, ax + w * 0.035, y - h * 0.42, ax + w * 0.035, y - h * 0.18, ax - w * 0.035, y - h * 0.18, ax - w * 0.035, y - h * 0.42], '#fff3b0');
     }
     ctx.strokeStyle = '#ffd966'; ctx.lineWidth = Math.max(1, w * 0.018);
-    ctx.beginPath(); ctx.moveTo(x - w * 0.35, y - h); ctx.lineTo(x + w * 0.35, y - h); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x - w * 0.34, y - h); ctx.lineTo(x + w * 0.34, y - h); ctx.stroke();
+  },
+  pickupTurbo(x, y, w) {
+    const bob = Math.sin(time / 260) * w * 0.1;
+    const cy = y - w * 0.85 + bob;
+    ctx.save();
+    ctx.translate(x, cy);
+    ctx.shadowColor = '#ffd23f'; ctx.shadowBlur = w * 0.35;
+    const g = ctx.createRadialGradient(-w * 0.12, -w * 0.15, w * 0.04, 0, 0, w * 0.55);
+    g.addColorStop(0, '#fff7b2'); g.addColorStop(0.42, '#ffd23f'); g.addColorStop(1, '#f97316');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, w * 0.5, 0, Math.PI * 2); ctx.fill();
+    ctx.shadowBlur = 0;
+    poly([-w*.06,-w*.34, -w*.3,w*.05, -w*.06,w*.05, -w*.16,w*.34, w*.28,-w*.08, w*.05,-w*.08], '#fff');
+    ctx.restore();
+  },
+  pickupLife(x, y, w) {
+    const bob = Math.sin(time / 280 + 1.4) * w * 0.1;
+    const cy = y - w * 0.85 + bob;
+    ctx.save();
+    ctx.translate(x, cy);
+    ctx.shadowColor = '#ff5d7a'; ctx.shadowBlur = w * 0.38;
+    const g = ctx.createRadialGradient(-w * 0.12, -w * 0.16, w * 0.03, 0, 0, w * 0.58);
+    g.addColorStop(0, '#ffd3dc'); g.addColorStop(0.45, '#ff5d7a'); g.addColorStop(1, '#b91c3b');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, w * 0.52, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    ctx.moveTo(0, w * 0.27);
+    ctx.bezierCurveTo(-w * 0.46, 0, -w * 0.34, -w * 0.34, -w * 0.12, -w * 0.34);
+    ctx.bezierCurveTo(0, -w * 0.34, 0, -w * 0.18, 0, -w * 0.18);
+    ctx.bezierCurveTo(0, -w * 0.18, 0, -w * 0.34, w * 0.12, -w * 0.34);
+    ctx.bezierCurveTo(w * 0.34, -w * 0.34, w * 0.46, 0, 0, w * 0.27);
+    ctx.fill();
+    ctx.restore();
   }
 };
-const SPR_W = { tree: 900, bush: 500, rock: 600, palm: 800, cactus: 500, pine: 800, lamp: 500, post: 220, chevron: 520, star: 330, ramp: 1300 };
+const SPR_W = { tree: 900, bush: 500, rock: 600, palm: 800, cactus: 500, pine: 800, lamp: 500, post: 220, chevron: 520, star: 330, ramp: 1500, pickupTurbo: 520, pickupLife: 520 };
 
 // ===================== VEHÍCULOS =====================
 function rr(c, x, y, w, h, r) { r = Math.min(r, w / 2, h / 2); c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
@@ -929,7 +983,7 @@ function update(dt) {
       if (si < 0 || si >= segments.length) continue;
       const seg = segments[si];
       for (const s of seg.sprites) {
-        if (s.kind === 'ramp' && !usedRamps.has(s.id) && Math.abs(s.offset - playerX) < 0.34 && Math.abs(seg.p1.world.z - playerZ) < SEG_LEN * 1.25) {
+        if (s.kind === 'ramp' && !usedRamps.has(s.id) && Math.abs(s.offset - playerX) < 0.34 && Math.abs(seg.p1.world.z - playerZ) < SEG_LEN * 1.7) {
           launchRamp(s);
           break;
         }
@@ -947,7 +1001,26 @@ function update(dt) {
   }
   for (let k = -2; k <= 2; k++) {
     const seg = findSegment(playerZ + k * SEG_LEN);
-    seg.sprites.forEach(s => { if (s.kind === 'star' && !collected.has(s.id) && Math.abs(s.offset - playerX) < 0.35) { collected.add(s.id); score += 10; starsTotal++; sfx.star(); vibrate(20); spawnParticles(W / 2 + playerX * W * 0.3, H - 130, '#ffd23f', 10); if (turbo <= 0) { turboMeter++; if (turboMeter >= TURBO_NEED) startTurbo(); } if (starsTotal % LIFE_EVERY === 0 && lives < MAX_LIVES) { lives++; updateHearts(); sfx.life(); vibrate([60, 40, 60]); flashAlpha = 0.3; flashColor = '255,80,120'; } } });
+    seg.sprites.forEach(s => {
+      if (collected.has(s.id) || Math.abs(s.offset - playerX) >= 0.35) return;
+      if (s.kind === 'star') {
+        collected.add(s.id); score += 10; starsTotal++; sfx.star(); vibrate(20);
+        spawnParticles(W / 2 + playerX * W * 0.3, H - 130, '#ffd23f', 10);
+        if (turbo <= 0) { turboMeter++; if (turboMeter >= TURBO_NEED) startTurbo(); }
+        if (starsTotal % LIFE_EVERY === 0 && lives < MAX_LIVES) { lives++; updateHearts(); sfx.life(); vibrate([60, 40, 60]); flashAlpha = 0.3; flashColor = '255,80,120'; }
+      } else if (s.kind === 'pickupTurbo') {
+        collected.add(s.id);
+        turbo = Math.max(turbo, 5000); turboMeter = 0; score += 40;
+        sfx.boost(); vibrate([70, 35, 100]); flashAlpha = 0.28; flashColor = '255,210,60';
+        spawnParticles(W / 2 + playerX * W * 0.3, H - 145, '#ffd23f', 22);
+      } else if (s.kind === 'pickupLife') {
+        collected.add(s.id);
+        if (lives < MAX_LIVES) { lives++; updateHearts(); sfx.life(); }
+        else score += 60;
+        vibrate([70, 35, 70]); flashAlpha = 0.25; flashColor = '255,80,120';
+        spawnParticles(W / 2 + playerX * W * 0.3, H - 145, '#ff5d7a', 22);
+      }
+    });
   }
   if (playerZ > finishZ) { winLevel(); return; }
   updateEngineSound(speed); updateHud();
@@ -989,7 +1062,7 @@ function render() {
     if (seg.finish) drawFinishGate(p.x - p.w * 1.15, p.x + p.w * 1.15, p.y, p.w * 2.3);
     ctx.globalAlpha = 1;
     seg.sprites.forEach(s => {
-      if (s.kind === 'star' && collected.has(s.id)) return;
+      if ((s.kind === 'star' || s.kind === 'pickupTurbo' || s.kind === 'pickupLife') && collected.has(s.id)) return;
       const sw = p.scale * SPR_W[s.kind] * s.size * SX, sx = p.x + p.scale * s.offset * ROAD_W * SX;
       if (sw < 1.5) return;
       ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, seg.clip); ctx.clip();
@@ -1313,7 +1386,8 @@ if (pauseBtn) {
   pauseBtn.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pauseGame(); } });
 }
 if (resumeBtn) resumeBtn.addEventListener('click', resumeGame);
-document.addEventListener('visibilitychange', () => { if (document.hidden && gameState === 'playing') pauseGame(); });
+// No pausamos automáticamente con visibilitychange: algunos móviles lo disparan
+// durante fullscreen/orientation y podía parecer que el juego se congelaba.
 
 const muteBtn = document.getElementById('muteBtn');
 function toggleMute() { isMuted = !isMuted; document.getElementById('snd-on').style.display = isMuted ? 'none' : ''; document.getElementById('snd-off').style.display = isMuted ? '' : 'none'; if (engineGain && audioCtx) engineGain.gain.setTargetAtTime(isMuted ? 0 : 0.07, audioCtx.currentTime, 0.1); }
@@ -1343,12 +1417,19 @@ if (lspediaBack) lspediaBack.addEventListener('click', () => {
 // ===================== BUCLE (dt fijo con acumulador para movimiento fluido) =====================
 const STEP = 1000 / 120; let acc = 0, lastTime = 0;
 function loop(ts) {
+  // Programamos primero el siguiente frame: una excepción puntual no mata para siempre el bucle.
+  requestAnimationFrame(loop);
   let frame = Math.min(ts - (lastTime || ts), 100); lastTime = ts;
   acc += frame; let steps = 0;
-  while (acc >= STEP && steps < 12) { update(STEP); acc -= STEP; steps++; }
-  render();
-  if (!document.getElementById('garage-screen').hidden) { previewT += frame; drawPreview(); }
-  requestAnimationFrame(loop);
+  try {
+    while (acc >= STEP && steps < 12) { update(STEP); acc -= STEP; steps++; }
+    if (steps >= 12 && acc > STEP * 12) acc = 0;
+    render();
+    if (!document.getElementById('garage-screen').hidden) { previewT += frame; drawPreview(); }
+  } catch (err) {
+    console.error('[Carrera Matemática] Error de fotograma:', err);
+    acc = 0;
+  }
 }
 resize();
 theme = THEMES.campo; buildTrack(600); resetCars();
