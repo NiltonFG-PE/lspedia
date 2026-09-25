@@ -911,7 +911,53 @@ const SPR = {
   palm(x, y, w) { shadow(x, y, w * 0.8); const h = w * 1.8; poly([x - w * 0.06, y, x + w * 0.06, y, x + w * 0.16, y - h, x + w * 0.06, y - h], '#a5713a'); poly([x - w * 0.06, y, x + w * 0.06, y - h * 0.5, x + w * 0.11, y - h, x - w * 0.02, y - h * 0.5], '#7a4f24'); const tx = x + w * 0.11, ty = y - h; [[-1, -0.3], [-0.7, -0.75], [0, -1], [0.7, -0.75], [1, -0.3], [-1.05, 0.1], [1.05, 0.1]].forEach(([dx, dy], i) => { poly([tx, ty, tx + dx * w * 0.35, ty + dy * w * 0.35 - w * 0.1, tx + dx * w * 0.7, ty + dy * w * 0.5 + w * 0.15, tx + dx * w * 0.3, ty + dy * w * 0.15 + w * 0.1], i % 2 ? '#4fae3c' : '#6fc94e'); }); },
   cactus(x, y, w) { shadow(x, y, w * 0.7); const h = w * 1.6; poly([x - w * 0.16, y, x - w * 0.16, y - h, x + w * 0.16, y - h, x + w * 0.16, y], '#3f8f3f'); poly([x, y, x, y - h, x + w * 0.16, y - h, x + w * 0.16, y], '#2e6e2e'); poly([x - w * 0.45, y - h * 0.4, x - w * 0.45, y - h * 0.75, x - w * 0.25, y - h * 0.75, x - w * 0.25, y - h * 0.55, x - w * 0.16, y - h * 0.55, x - w * 0.16, y - h * 0.4], '#3f8f3f'); poly([x + w * 0.45, y - h * 0.5, x + w * 0.45, y - h * 0.85, x + w * 0.25, y - h * 0.85, x + w * 0.25, y - h * 0.65, x + w * 0.16, y - h * 0.65, x + w * 0.16, y - h * 0.5], '#2e6e2e'); },
   pine(x, y, w) { shadow(x, y, w); const h = w * 1.9; poly([x - w * 0.06, y, x + w * 0.06, y, x + w * 0.04, y - h * 0.3, x - w * 0.04, y - h * 0.3], '#4a2f18'); [[0.25, 0.55, 0.5], [0.45, 0.42, 0.8], [0.65, 0.3, 1]].forEach(([b, hw, t]) => { poly([x, y - h * t, x + w * hw, y - h * b, x - w * hw, y - h * b], '#2f6b3a'); poly([x, y - h * t, x + w * hw, y - h * b, x, y - h * b], '#245530'); poly([x, y - h * t, x + w * hw * 0.5, y - h * (b + (t - b) * 0.5), x - w * hw * 0.5, y - h * (b + (t - b) * 0.5)], '#f4f8fb'); }); },
-  lamp(x, y, w) { const h = w * 2.4; ctx.fillStyle = '#6c757d'; ctx.fillRect(x - w * 0.04, y - h, w * 0.08, h); ctx.fillRect(x - w * 0.04, y - h, w * 0.4, w * 0.07); ctx.shadowColor = '#ffe08a'; ctx.shadowBlur = w * 0.4; ctx.fillStyle = '#fff2b0'; ctx.beginPath(); ctx.arc(x + w * 0.36, y - h + w * 0.1, w * 0.1, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0; const g = ctx.createRadialGradient(x + w * 0.36, y, w * 0.05, x + w * 0.36, y, w * 0.9); g.addColorStop(0, 'rgba(255,225,140,0.35)'); g.addColorStop(1, 'rgba(255,225,140,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(x + w * 0.36, y, w * 0.9, w * 0.3, 0, 0, Math.PI * 2); ctx.fill(); },
+  lamp(x, y, w) {
+    const h = w * 2.4;
+    // poste metálico con volumen
+    const pg = ctx.createLinearGradient(x-w*.06,0,x+w*.06,0);
+    pg.addColorStop(0,'#30363d'); pg.addColorStop(.35,'#8b949e'); pg.addColorStop(.55,'#c2c8ce'); pg.addColorStop(1,'#464d55');
+    ctx.fillStyle=pg;
+    ctx.fillRect(x-w*.045,y-h,w*.09,h);
+    ctx.fillRect(x-w*.045,y-h,w*.42,w*.075);
+    ctx.fillStyle='rgba(255,255,255,.34)';
+    ctx.fillRect(x-w*.025,y-h,w*.014,h*.92);
+
+    // carcasa de luminaria
+    ctx.fillStyle='#22272d';
+    rr(ctx,x+w*.28,y-h+w*.025,w*.20,w*.12,w*.025); ctx.fill();
+
+    const bulbX=x+w*.37, bulbY=y-h+w*.105;
+    const nightBoost=theme.night?1:.35;
+    ctx.save();
+    ctx.shadowColor='#ffe39a';
+    ctx.shadowBlur=w*(theme.night?.55:.18);
+    ctx.fillStyle=theme.night?'#fff0a8':'#f3e5b5';
+    ctx.beginPath(); ctx.ellipse(bulbX,bulbY,w*.085,w*.055,0,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+
+    if (visualQuality>.80) {
+      const groundG=ctx.createRadialGradient(bulbX,y,w*.04,bulbX,y,w*1.12);
+      groundG.addColorStop(0,`rgba(255,224,135,${.30*nightBoost})`);
+      groundG.addColorStop(.45,`rgba(255,218,120,${.12*nightBoost})`);
+      groundG.addColorStop(1,'rgba(255,218,120,0)');
+      ctx.fillStyle=groundG;
+      ctx.beginPath(); ctx.ellipse(bulbX,y,w*1.12,w*.34,0,0,Math.PI*2); ctx.fill();
+
+      if (theme.night) {
+        // cono de luz sutil entre la lámpara y el suelo
+        const cone=ctx.createLinearGradient(0,bulbY,0,y);
+        cone.addColorStop(0,'rgba(255,235,170,.15)');
+        cone.addColorStop(1,'rgba(255,225,135,.015)');
+        ctx.fillStyle=cone;
+        ctx.beginPath();
+        ctx.moveTo(bulbX-w*.05,bulbY+w*.03);
+        ctx.lineTo(bulbX+w*.05,bulbY+w*.03);
+        ctx.lineTo(bulbX+w*.64,y);
+        ctx.lineTo(bulbX-w*.48,y);
+        ctx.closePath(); ctx.fill();
+      }
+    }
+  },
   post(x, y, w) { const h = w * 0.9; ctx.fillStyle = '#ececec'; ctx.fillRect(x - w * 0.05, y - h, w * 0.1, h); ctx.fillStyle = '#e63946'; ctx.fillRect(x - w * 0.05, y - h, w * 0.1, h * 0.25); ctx.fillStyle = '#fff'; ctx.shadowColor = '#fff'; ctx.shadowBlur = w * 0.15; ctx.fillRect(x - w * 0.06, y - h * 0.7, w * 0.12, h * 0.12); ctx.shadowBlur = 0; },
   chevron(x, y, w, d) { const h = w * 0.8; ctx.fillStyle = '#4a4a4a'; ctx.fillRect(x - w * 0.04, y - h, w * 0.08, h); poly([x - w * 0.5, y - h - w * 0.4, x + w * 0.5, y - h - w * 0.4, x + w * 0.5, y - h, x - w * 0.5, y - h], '#ffc93c'); for (let i = -1; i <= 1; i++) { const cx = x + i * w * 0.3 * (d || 1); poly([cx - w * 0.1 * d, y - h - w * 0.36, cx + w * 0.02 * d, y - h - w * 0.36, cx + w * 0.14 * d, y - h - w * 0.2, cx + w * 0.02 * d, y - h - w * 0.04, cx - w * 0.1 * d, y - h - w * 0.04, cx + w * 0.02 * d, y - h - w * 0.2], '#e63946'); } },
   star(x, y, w) { ctx.save(); ctx.translate(x, y - w * 0.5); ctx.rotate(Math.sin(time / 300) * 0.3); ctx.shadowColor = '#ffe58a'; ctx.shadowBlur = w * 0.5; ctx.fillStyle = '#ffd23f'; ctx.beginPath(); for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, r = i % 2 ? w * 0.22 : w * 0.5; ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r); } ctx.closePath(); ctx.fill(); ctx.restore(); },
@@ -1736,6 +1782,16 @@ function render() {
     ctx.restore();
   }
   ctx.restore();
+
+  // color grading suave: conserva colores vivos pero unifica luces y sombras
+  if (visualQuality > .80) {
+    const grade=ctx.createLinearGradient(0,0,0,H);
+    grade.addColorStop(0,theme.night?'rgba(50,75,135,.055)':'rgba(255,220,170,.025)');
+    grade.addColorStop(.52,'rgba(255,255,255,0)');
+    grade.addColorStop(1,theme.night?'rgba(5,10,22,.10)':'rgba(15,20,28,.055)');
+    ctx.fillStyle=grade; ctx.fillRect(0,0,W,H);
+  }
+
   const vg = ctx.createRadialGradient(W / 2, H * 0.6, H * 0.35, W / 2, H * 0.6, H * 0.85); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, `rgba(0,0,0,${theme.night ? 0.5 : 0.28})`); ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
   if (flashAlpha > 0) { ctx.fillStyle = `rgba(${flashColor},${flashAlpha})`; ctx.fillRect(0, 0, W, H); }
 }
@@ -1757,6 +1813,21 @@ function renderSegment(seg) {
     ctx.globalAlpha = 0.12;
     poly([p1.x - p1.w, p1.y + 1, p1.x - p1.w * 0.82, p1.y + 1, p2.x - p2.w * 0.80, p2.y, p2.x - p2.w, p2.y], '#000000');
     poly([p1.x + p1.w * 0.82, p1.y + 1, p1.x + p1.w, p1.y + 1, p2.x + p2.w, p2.y, p2.x + p2.w * 0.80, p2.y], '#000000');
+    ctx.restore();
+  }
+
+  // iluminación lateral de curva: el exterior recibe algo más de luz y el interior más sombra
+  if (visualQuality > .84 && Math.abs(seg.curve) > 1.2 && p1.w > 28) {
+    const curveN=clamp(seg.curve/6,-1,1);
+    ctx.save();
+    ctx.globalAlpha=.045*Math.abs(curveN);
+    if (curveN>0) {
+      poly([p1.x-p1.w,p1.y+1,p1.x,p1.y+1,p2.x,p2.y,p2.x-p2.w,p2.y],'#000000');
+      poly([p1.x,p1.y+1,p1.x+p1.w,p1.y+1,p2.x+p2.w,p2.y,p2.x,p2.y],theme.night?'#8098c4':'#ffffff');
+    } else {
+      poly([p1.x,p1.y+1,p1.x+p1.w,p1.y+1,p2.x+p2.w,p2.y,p2.x,p2.y],'#000000');
+      poly([p1.x-p1.w,p1.y+1,p1.x,p1.y+1,p2.x,p2.y,p2.x-p2.w,p2.y],theme.night?'#8098c4':'#ffffff');
+    }
     ctx.restore();
   }
 
@@ -1799,6 +1870,14 @@ function renderSegment(seg) {
       }
       poly([lx1 - l1 / 2, p1.y + 1, lx1 + l1 / 2, p1.y + 1, lx2 + l2 / 2, p2.y, lx2 - l2 / 2, p2.y], theme.lane);
     }
+  }
+  // sombra de contacto entre asfalto, piano y terreno
+  if (p1.w > 20) {
+    ctx.save();
+    ctx.globalAlpha=.17;
+    poly([p1.x-p1.w-r1*.18,p1.y+2,p1.x-p1.w+r1*.10,p1.y+2,p2.x-p2.w+r2*.10,p2.y+1,p2.x-p2.w-r2*.18,p2.y+1],'#000000');
+    poly([p1.x+p1.w-r1*.10,p1.y+2,p1.x+p1.w+r1*.18,p1.y+2,p2.x+p2.w+r2*.18,p2.y+1,p2.x+p2.w-r2*.10,p2.y+1],'#000000');
+    ctx.restore();
   }
   // línea de borde y guardarraíl
   ctx.save();
@@ -2188,12 +2267,26 @@ document.addEventListener('visibilitychange', () => {
   if (document.hidden) {
     acc = 0;
     lastTime = 0;
+    try {
+      if (engineGain && audioCtx) engineGain.gain.setTargetAtTime(0, audioCtx.currentTime, .05);
+    } catch (e) {}
   } else {
     recoverFromSystemInterruption(1900);
+    if (gameState === 'playing') startEngine();
   }
 });
+window.addEventListener('blur', () => { acc = 0; lastTime = 0; });
 window.addEventListener('focus', () => recoverFromSystemInterruption(1400));
+window.addEventListener('pagehide', () => { acc = 0; lastTime = 0; });
 window.addEventListener('pageshow', () => recoverFromSystemInterruption(1600));
+document.addEventListener('freeze', () => {
+  acc = 0; lastTime = 0;
+  try { stopEngine(); } catch (e) {}
+});
+document.addEventListener('resume', () => {
+  recoverFromSystemInterruption(1900);
+  if (gameState === 'playing') startEngine();
+});
 resize();
 theme = THEMES.campo; buildTrack(600); resetCars();
 showScreen('start-screen');
