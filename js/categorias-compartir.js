@@ -5,7 +5,7 @@
     'use strict';
 
     const CLASE_BOTON = 'btn-compartir-categoria-lspedia';
-    const VERSION_PREVIEW_SOCIAL = '20260925-2';
+    const VERSION_PREVIEW_SOCIAL = '20260925-3';
     let restauracionVocabularioRegistrada = false;
     let ultimaRestauracionConfirmada = '';
 
@@ -101,12 +101,13 @@
         // interactiva y conserva una miniatura propia.
         const seccion = tipo === 'vocabulario' ? 'vocabulario' : 'diccionario';
         const ref = slugCategoria(nombre);
-        const url = new URL('/categoria/' + seccion + '/' + encodeURIComponent(ref) + '/index.html', window.location.origin);
-        // WhatsApp conserva vistas previas durante bastante tiempo. Versionar
-        // solo el enlace compartido fuerza una lectura nueva cuando cambia
-        // Open Graph, sin alterar la canonical limpia de la categoría.
-        url.searchParams.set('v', VERSION_PREVIEW_SOCIAL);
-        return url.href;
+        // URL física y versionada. No usamos query string porque algunos
+        // rastreadores sociales canonizan/ignoran parámetros y reutilizan una
+        // vista previa antigua. La propia página declara og:url idéntico.
+        return new URL(
+            '/categoria/' + seccion + '/' + encodeURIComponent(ref) + '/compartir-' + VERSION_PREVIEW_SOCIAL + '/',
+            window.location.origin
+        ).href;
     }
 
     function construirUrlCategoriaApp(tipo, nombre){
