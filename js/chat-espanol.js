@@ -504,6 +504,7 @@ function startScenario(id){
   state.runToken++;
   const token=state.runToken;
   state.scenario=sc;state.turn=0;state.score=0;state.possible=0;state.wildcardUsed=0;state.startedAt=Date.now();state.sending=false;
+  state.userMessages=0;state.detour=null;state.detoursUsed=0;state.adaptiveSeen=[];
   $("screenHome").classList.add("hidden");$("screenChat").classList.remove("hidden");
   $("contactAvatar").textContent=sc.avatar;$("contactName").textContent=sc.name;
   $("contactStatus").textContent="Tutor inteligente · práctica simulada";
@@ -517,29 +518,38 @@ function addMessage(side,text){
   row.innerHTML=`<div class="msg-bubble">${escapeHTML(text)}<span class="msg-time">${nowTime()}${side==="me"?'<span class="msg-check">✓✓</span>':""}</span></div>`;
   $("messages").appendChild(row);scrollBottom();
 }
-function addCorrection(result,turn,usedWildcard){
+function addCorrection(result,turn,usedWildcard,userText){
   const note=document.createElement("div");
   note.className="ai-note "+(result.grade==="improve"?"improve":"good");
   let title="",modelLine="",why="";
   if(usedWildcard){
-    title="🃏 Respuesta con comodín";
-    modelLine=`Buena forma: “${turn.model}”`;
+    title="🃏 Aprendiste con una ayuda";
+    modelLine="Esta respuesta funciona bien en la situación.";
     why=turn.why;
   }else if(result.grade==="excellent"){
-    title="✨ Muy bien escrito";
-    if(result.corrected.trim()!==$("messageInput").dataset.lastSent?.trim())modelLine=`Con puntuación: “${result.corrected}”`;
-    else modelLine="Tu mensaje es claro y natural.";
+    title="✨ Tu mensaje funciona muy bien";
+    modelLine=result.corrected.trim()!==String(userText).trim()
+      ? "Con escritura cuidada: “"+result.corrected+"”"
+      : "La idea es clara, natural y adecuada para esta conversación.";
     why=turn.why;
   }else if(result.grade==="good"){
-    title="✨ Tu idea se entiende bien";
-    modelLine=`Una forma natural: “${turn.model}”`;
+    title="✨ Tu idea se entiende";
+    modelLine="Otra forma natural: “"+turn.model+"”";
     why=turn.why;
   }else{
-    title="✍️ Puedes expresarlo más claro";
-    modelLine=`Prueba así: “${turn.model}”`;
+    title="✍️ Vamos a hacerlo más claro";
+    modelLine="Una forma útil: “"+turn.model+"”";
     why=turn.why;
   }
-  note.innerHTML=`<div class="ai-note-head">${title}</div><div class="ai-note-model">${escapeHTML(modelLine)}</div><div class="ai-note-why">${escapeHTML(why)}</div>`;
+  const tips=spellingTips(userText,turn.model);
+  const mapText=result.grade==="excellent" ? (result.corrected||userText) : turn.model;
+  note.innerHTML=
+    '<div class="ai-note-head">'+escapeHTML(title)+'</div>'+
+    '<div class="ai-note-model">'+escapeHTML(modelLine)+'</div>'+
+    sentenceMapHTML(mapText)+
+    (tips.length?'<div class="correction-list">'+tips.map(t=>'<div class="correction-item"><span>👀</span><span>'+escapeHTML(t)+'</span></div>').join("")+'</div>':"")+
+    '<div class="ai-note-why">'+escapeHTML(why)+'</div>'+
+    '<div class="ai-note-focus"><span>🎨</span><span>Los colores muestran cómo se organiza la frase.</span></div>';
   $("messages").appendChild(note);scrollBottom();
 }
 function showTypingThen(fn,delay=650,token=state.runToken){
@@ -555,11 +565,11 @@ function showTypingThen(fn,delay=650,token=state.runToken){
 function scrollBottom(){requestAnimationFrame(()=>$("messages").scrollTo({top:$("messages").scrollHeight,behavior:"smooth"}))}
 function updateChatHud(){
   const total=state.scenario?.turns.length||1;
-  $("turnCounter").textContent=`${Math.min(state.turn+1,total)}/${total}`;
-  $("lessonProgress").style.width=`${state.turn/total*100}%`;
+  $("turnCounter").textContent=state.detour?"↪ extra":`${Math.min(state.turn+1,total)}/${total}`;
+  $("lessonProgress").style.width=`${Math.min(state.turn,total)/total*100}%`;
   $("lessonScore").textContent=`✍️ ${state.score}`;
   const t=currentTurn();
-  $("smartTipText").textContent=t?(t.why||"Escribe como tú responderías."):"Conversación completada.";
+  $("smartTipText").textContent=t?structureHint(t.model):"Conversación completada.";
 }
 function autoGrow(){
   const el=$("messageInput");el.style.height="auto";el.style.height=Math.min(el.scrollHeight,118)+"px";
@@ -569,6 +579,8 @@ function setInputEnabled(enabled){
 }
 function sendMessage(text,usedWildcard=false){
   const turn=currentTurn();
+  const wasDetour=!!state.detour;
+  const sourceIndex=state.turn;
   const token=state.runToken;
   text=String(text||"").trim();
   if(!turn||!text||state.sending)return;
@@ -576,22 +588,49 @@ function sendMessage(text,usedWildcard=false){
   $("messageInput").dataset.lastSent=text;
   addMessage("me",text);
   $("messageInput").value="";autoGrow();setInputEnabled(false);
+
   const result=evaluate(text,turn,usedWildcard);
-  state.score+=result.points;state.possible+=2;if(usedWildcard)state.wildcardUsed++;
-  setTimeout(()=>{if(token===state.runToken)addCorrection(result,turn,usedWildcard)},220);
-  state.turn++;updateChatHud();
+  state.score+=result.points;state.possible+=2;state.userMessages++;
+  if(usedWildcard)state.wildcardUsed++;
+
+  setTimeout(()=>{if(token===state.runToken)addCorrection(result,turn,usedWildcard,text)},220);
+
+  if(wasDetour)state.detour=null;
+  else state.turn++;
+  updateChatHud();
+
   setTimeout(()=>{
     if(token!==state.runToken||!state.scenario)return;
-    if(state.turn>=state.scenario.turns.length){
+    const ack=adaptiveAcknowledgement(text);
+
+    // Después de una respuesta principal, el chat puede tomar un detalle del usuario
+    // y abrir una pequeña rama antes de volver al objetivo de la situación.
+    if(!wasDetour && state.turn<state.scenario.turns.length){
+      const branch=buildAdaptiveDetour(text,state.scenario,sourceIndex);
+      if(branch){
+        state.detour=branch;state.detoursUsed++;updateChatHud();
+        showTypingThen(()=>{
+          addMessage("them",ack+" "+branch.prompt);
+          setInputEnabled(true);updateChatHud();$("messageInput").focus();
+        },650,token);
+        return;
+      }
+    }
+
+    if(state.turn>=state.scenario.turns.length && !state.detour){
       showTypingThen(()=>{
-        addMessage("them",state.scenario.closing);
+        addMessage("them",ack+" "+state.scenario.closing);
         $("lessonProgress").style.width="100%";
         setTimeout(()=>{if(token===state.runToken)finishScenario()},850);
-      },500,token);
+      },520,token);
     }else{
-      showTypingThen(()=>{addMessage("them",currentTurn().prompt);setInputEnabled(true);updateChatHud();$("messageInput").focus()},620,token);
+      const next=currentTurn();
+      showTypingThen(()=>{
+        addMessage("them",ack+" "+next.prompt);
+        setInputEnabled(true);updateChatHud();$("messageInput").focus();
+      },620,token);
     }
-  },760);
+  },780);
 }
 function openWildcard(){
   const turn=currentTurn();if(!turn||state.sending)return;
@@ -612,7 +651,7 @@ function finishScenario(){
     <div class="result-score">${percent}%</div>
     <p>Terminaste una conversación completa de <strong>${escapeHTML(state.scenario.situation)}</strong>.</p>
     <div class="result-grid">
-      <div class="result-box"><strong>${state.scenario.turns.length}</strong><span>mensajes tuyos</span></div>
+      <div class="result-box"><strong>${state.userMessages}</strong><span>mensajes tuyos</span></div>
       <div class="result-box"><strong>${state.wildcardUsed}</strong><span>comodines</span></div>
       <div class="result-box"><strong>${mins} min</strong><span>práctica</span></div>
     </div>
