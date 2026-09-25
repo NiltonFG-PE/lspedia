@@ -457,6 +457,9 @@
 .menu-juego-col:nth-child(2) { animation-delay: 0.10s; }
 .menu-juego-col:nth-child(3) { animation-delay: 0.18s; }
 .menu-juego-col:nth-child(4) { animation-delay: 0.26s; }
+.menu-juego-col:nth-child(5) { animation-delay: 0.34s; }
+.menu-juego-col:nth-child(6) { animation-delay: 0.42s; }
+.menu-juego-col:nth-child(7) { animation-delay: 0.50s; }
 
 @keyframes menuJuegoEntrada {
     from { opacity: 0; transform: translateY(24px) scale(0.9); }
@@ -600,6 +603,21 @@
 @keyframes jpQuizQV3{0%,48%{opacity:1;transform:rotateY(0)}60%,100%{opacity:0;transform:rotateY(90deg)}}@keyframes jpQuizOkV3{0%,52%{opacity:0;transform:scale(.6)}70%,100%{opacity:1;transform:scale(1)}}
 .jp-estrellas{font-size:.62rem;color:#f59e0b;letter-spacing:3px}
 .preview-matematicas{flex-direction:column;gap:2px}.jp-math{display:flex;gap:5px;align-items:center;font-weight:950;color:#172033}.jp-math i{font-style:normal;color:#2563eb;font-size:1.25rem}.jp-math em{font-style:normal;color:#64748b}.jp-math strong{color:#16a34a}.jp-dots{font-size:.62rem;color:#2563eb;letter-spacing:1px}.menu-juego-anim .jp-math i{animation:jpMasV3 .85s .25s ease both}@keyframes jpMasV3{50%{transform:scale(1.45) rotate(-8deg)}}
+.preview-chat-espanol{background:linear-gradient(160deg,#e7f8f2,#d9efe8)}
+.jp-chat-phone{position:relative;width:62px;height:58px;border-radius:12px;background:#efeae2;border:3px solid #163b3a;box-shadow:0 5px 11px rgba(12,66,59,.18);overflow:hidden}
+.jp-chat-top{position:absolute;left:0;right:0;top:0;height:13px;background:#075e54}
+.jp-chat-top:after{content:"";position:absolute;left:6px;top:4px;width:5px;height:5px;border-radius:50%;background:#d9fdd3}
+.jp-chat-msg{position:absolute;font-style:normal;font-size:.45rem;font-weight:900;line-height:1;padding:4px 5px;border-radius:6px;white-space:nowrap;box-shadow:0 1px 2px rgba(0,0,0,.1)}
+.jp-chat-msg-a{left:5px;top:19px;background:#fff;color:#334155}
+.jp-chat-msg-b{right:5px;top:34px;background:#d9fdd3;color:#214039}
+.jp-chat-cursor{position:absolute;right:4px;bottom:2px;width:15px;height:15px;border-radius:50%;display:grid;place-items:center;background:#00a884;color:#fff;font-style:normal;font-size:.56rem}
+.menu-juego-anim .jp-chat-msg-a{animation:jpChatA .8s .08s both}
+.menu-juego-anim .jp-chat-msg-b{animation:jpChatB .9s .48s both}
+.menu-juego-anim .jp-chat-cursor{animation:jpChatCursor 1.4s .25s ease-in-out both}
+@keyframes jpChatA{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:none}}
+@keyframes jpChatB{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:none}}
+@keyframes jpChatCursor{0%,35%{transform:scale(.75);opacity:.4}55%,100%{transform:scale(1);opacity:1}}
+
 .preview-oraciones{gap:4px;align-items:flex-end;padding-bottom:12px}.preview-oraciones .jp-chip{font-size:.57rem;font-weight:950;color:#fff;border-radius:7px;padding:5px 4px}.jp-chip-1{background:#2563eb}.jp-chip-2{background:#e5484d}.jp-chip-3{background:#16a34a}.menu-juego-anim .jp-chip-1{animation:jpChipV3 .45s .12s both}.menu-juego-anim .jp-chip-2{animation:jpChipV3 .45s .24s both}.menu-juego-anim .jp-chip-3{animation:jpChipV3 .45s .36s both}@keyframes jpChipV3{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 .quiz-inicio-rapido{display:grid;grid-template-columns:1fr 1fr;gap:9px;max-width:480px;margin-left:auto;margin-right:auto}.quiz-btn-jugar-rapido,.quiz-btn-configurar{border:0;border-radius:16px;padding:13px 10px;font-weight:900}.quiz-btn-jugar-rapido{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#111827;box-shadow:0 8px 18px rgba(245,158,11,.25)}.quiz-btn-configurar{background:#eef2ff;color:#4338ca;border:2px solid #c7d2fe}.quiz-configuracion{margin-top:12px;padding:14px;border-radius:18px;background:#f8fafc;border:1px solid #e2e8f0;animation:quizFadeIn .25s ease}
 .lsp-game-flash-ok,.lsp-game-flash-error,.lsp-game-reaccion,.lsp-game-confeti{position:fixed;inset:0;pointer-events:none}.lsp-game-flash-ok{z-index:12050;background:radial-gradient(circle,rgba(255,255,255,.96),rgba(220,252,231,.78) 45%,transparent 76%);animation:lspGameFlashV3 .72s ease-out forwards}.lsp-game-flash-error{z-index:12050;background:rgba(220,38,38,.54);animation:lspGameFlashV3 .48s ease-out forwards}@keyframes lspGameFlashV3{0%{opacity:0}18%{opacity:1}100%{opacity:0}}.lsp-game-reaccion{z-index:12052;display:grid;place-items:center}.lsp-game-reaccion>div{font-size:3.1rem;background:rgba(255,255,255,.94);border-radius:24px;padding:12px 18px;box-shadow:0 14px 38px rgba(15,23,42,.25);animation:jpPreviewInV3 .42s ease}.lsp-game-confeti{z-index:12051;overflow:hidden}.lsp-game-confeti i{position:absolute;top:-28px;width:9px;height:18px;border-radius:3px;animation:lspGameCaerV3 1.45s linear forwards}@keyframes lspGameCaerV3{to{transform:translateY(112vh) rotate(640deg)}}
