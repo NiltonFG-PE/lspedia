@@ -37,7 +37,7 @@ const scenarios = [
     ]
   },
   {
-    id:"bodega-pan", level:1, avatar:"👩‍店", name:"Rosa", situation:"Comprar en una bodega", place:"Compras", duration:"3–4 min",
+    id:"bodega-pan", level:1, avatar:"👩", name:"Rosa", situation:"Comprar en una bodega", place:"Compras", duration:"3–4 min",
     goal:"Practica saludos, cantidades y cortesía.", closing:"Gracias. Que tenga una buena tarde. 🙂",
     turns:[
       {prompt:"Buenas tardes. ¿Qué va a llevar?", model:"Buenas tardes. Quisiera dos panes y una botella de agua, por favor.", alternatives:["Buenas tardes. Deme dos panes y una botella de agua, por favor.","Quiero dos panes y una botella de agua, por favor."], keywords:["pan","agua","favor"], why:"“Quisiera” es una forma amable de pedir algo en una tienda."},
@@ -222,7 +222,7 @@ const scenarios = [
 
 const state = {
   level:1, scenario:null, turn:0, score:0, possible:0, wildcardUsed:0,
-  startedAt:0, sending:false, progress:loadProgress()
+  startedAt:0, sending:false, runToken:0, progress:loadProgress()
 };
 
 function loadProgress(){
@@ -359,14 +359,16 @@ function renderScenarios(){
 
 function startScenario(id){
   const sc=scenarios.find(s=>s.id===id); if(!sc)return;
+  state.runToken++;
+  const token=state.runToken;
   state.scenario=sc;state.turn=0;state.score=0;state.possible=0;state.wildcardUsed=0;state.startedAt=Date.now();state.sending=false;
   $("screenHome").classList.add("hidden");$("screenChat").classList.remove("hidden");
   $("contactAvatar").textContent=sc.avatar;$("contactName").textContent=sc.name;
-  $("contactStatus").textContent="IA educativa · práctica simulada";
+  $("contactStatus").textContent="Tutor inteligente · práctica simulada";
   $("lessonSituation").textContent=sc.place+" · "+sc.situation;
   $("messages").innerHTML='<div class="day-chip">Hoy · práctica de escritura</div>';
   closeWildcard();updateChatHud();setInputEnabled(false);
-  showTypingThen(()=>{addMessage("them",sc.turns[0].prompt);setInputEnabled(true);$("messageInput").focus();},520);
+  showTypingThen(()=>{addMessage("them",sc.turns[0].prompt);setInputEnabled(true);$("messageInput").focus();},520,token);
 }
 function addMessage(side,text){
   const row=document.createElement("div");row.className="msg-row "+side;
@@ -398,11 +400,15 @@ function addCorrection(result,turn,usedWildcard){
   note.innerHTML=`<div class="ai-note-head">${title}</div><div class="ai-note-model">${escapeHTML(modelLine)}</div><div class="ai-note-why">${escapeHTML(why)}</div>`;
   $("messages").appendChild(note);scrollBottom();
 }
-function showTypingThen(fn,delay=650){
+function showTypingThen(fn,delay=650,token=state.runToken){
   const row=document.createElement("div");row.className="msg-row them";row.dataset.typing="1";
   row.innerHTML='<div class="typing-msg"><i></i><i></i><i></i></div>';
   $("messages").appendChild(row);scrollBottom();
-  setTimeout(()=>{row.remove();fn&&fn()},delay);
+  setTimeout(()=>{
+    row.remove();
+    if(token!==state.runToken)return;
+    fn&&fn();
+  },delay);
 }
 function scrollBottom(){requestAnimationFrame(()=>$("messages").scrollTo({top:$("messages").scrollHeight,behavior:"smooth"}))}
 function updateChatHud(){
@@ -421,6 +427,7 @@ function setInputEnabled(enabled){
 }
 function sendMessage(text,usedWildcard=false){
   const turn=currentTurn();
+  const token=state.runToken;
   text=String(text||"").trim();
   if(!turn||!text||state.sending)return;
   closeWildcard();
@@ -429,13 +436,18 @@ function sendMessage(text,usedWildcard=false){
   $("messageInput").value="";autoGrow();setInputEnabled(false);
   const result=evaluate(text,turn,usedWildcard);
   state.score+=result.points;state.possible+=2;if(usedWildcard)state.wildcardUsed++;
-  setTimeout(()=>addCorrection(result,turn,usedWildcard),220);
+  setTimeout(()=>{if(token===state.runToken)addCorrection(result,turn,usedWildcard)},220);
   state.turn++;updateChatHud();
   setTimeout(()=>{
+    if(token!==state.runToken||!state.scenario)return;
     if(state.turn>=state.scenario.turns.length){
-      showTypingThen(()=>{addMessage("them",state.scenario.closing);$("lessonProgress").style.width="100%";setTimeout(finishScenario,850)},500);
+      showTypingThen(()=>{
+        addMessage("them",state.scenario.closing);
+        $("lessonProgress").style.width="100%";
+        setTimeout(()=>{if(token===state.runToken)finishScenario()},850);
+      },500,token);
     }else{
-      showTypingThen(()=>{addMessage("them",currentTurn().prompt);setInputEnabled(true);updateChatHud();$("messageInput").focus()},620);
+      showTypingThen(()=>{addMessage("them",currentTurn().prompt);setInputEnabled(true);updateChatHud();$("messageInput").focus()},620,token);
     }
   },760);
 }
@@ -469,6 +481,7 @@ function finishScenario(){
   ]);
 }
 function backHome(close=true){
+  state.runToken++;
   if(close)hideModal();
   closeWildcard();state.scenario=null;
   $("screenChat").classList.add("hidden");$("screenHome").classList.remove("hidden");
