@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="es-PE">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#075e54">
+  <meta name="description" content="Chat en Español de LSPedia: practica conversaciones reales y aprende a escribir mejor en español del Perú.">
+  <title>Chat en Español | LSPedia</title>
+  <link rel="icon" href="../img/favicon.png">
+  <link rel="stylesheet" href="../css/chat-espanol.css?v=20260925-1">
+</head>
+<body>
+  <main id="chatGame" class="chat-game">
+    <section id="screenHome" class="screen screen-home">
+      <header class="home-topbar">
+        <button id="btnBackLspedia" class="back-lspedia" type="button" aria-label="Volver a LSPedia">‹</button>
+        <div class="brand-mini">
+          <img src="../img/favicon.png" alt="" width="38" height="38">
+          <div><strong>LSPedia</strong><span>Juego de escritura</span></div>
+        </div>
+        <button id="btnHelp" class="icon-soft" type="button" aria-label="Cómo jugar">?</button>
+      </header>
+
+      <div class="home-scroll">
+        <section class="hero-card">
+          <div class="hero-orb" aria-hidden="true">
+            <span class="bubble-demo bubble-demo-a">Hola 👋</span>
+            <span class="bubble-demo bubble-demo-b">¡Hola! ¿Cómo estás?</span>
+            <span class="hero-pencil">✎</span>
+          </div>
+          <div class="hero-copy">
+            <span class="eyebrow">🇵🇪 Español del Perú</span>
+            <h1>Chat en Español</h1>
+            <p>Conversa en situaciones reales. Escribe con tus propias palabras y el tutor te ayuda a mejorar tu español.</p>
+            <div class="hero-chips">
+              <span>💬 Conversaciones largas</span>
+              <span>✨ Corrección visual</span>
+              <span>🃏 Comodín de respuestas</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="home-section">
+          <div class="section-heading">
+            <div><span class="section-kicker">Paso 1</span><h2>Elige un nivel</h2></div>
+            <div id="homeProgress" class="mini-progress">0 completadas</div>
+          </div>
+          <div id="levelGrid" class="level-grid"></div>
+        </section>
+
+        <section id="scenarioSection" class="home-section scenario-section">
+          <div class="section-heading">
+            <div><span class="section-kicker">Paso 2</span><h2 id="scenarioTitle">Elige una conversación</h2></div>
+            <span id="levelBadge" class="level-badge">Nivel 1</span>
+          </div>
+          <div id="scenarioGrid" class="scenario-grid"></div>
+        </section>
+      </div>
+    </section>
+
+    <section id="screenChat" class="screen screen-chat hidden" aria-label="Conversación">
+      <header class="chat-topbar">
+        <button id="btnChatBack" class="chat-back" type="button" aria-label="Volver">‹</button>
+        <div id="contactAvatar" class="contact-avatar">🙂</div>
+        <div class="contact-main">
+          <strong id="contactName">Contacto</strong>
+          <span><i class="online-dot"></i><span id="contactStatus">IA educativa · en línea</span></span>
+        </div>
+        <div class="chat-actions">
+          <span id="turnCounter" class="turn-counter">1/6</span>
+          <button id="btnChatMenu" class="chat-menu" type="button" aria-label="Información de la práctica">⋮</button>
+        </div>
+      </header>
+
+      <div class="lesson-strip">
+        <div class="lesson-progress"><div id="lessonProgress"></div></div>
+        <div class="lesson-meta">
+          <span id="lessonSituation">Situación</span>
+          <span id="lessonScore">✍️ 0</span>
+        </div>
+      </div>
+
+      <div id="messages" class="messages" role="log" aria-live="polite" aria-relevant="additions"></div>
+
+      <div id="smartBar" class="smart-bar">
+        <button id="btnWildcard" class="wildcard-btn" type="button"><span>🃏</span><b>Comodín</b><small>Ver respuestas</small></button>
+        <div class="smart-tip"><span>✨</span><span id="smartTipText">Escribe como tú responderías.</span></div>
+      </div>
+
+      <div id="wildcardPanel" class="wildcard-panel hidden" aria-live="polite">
+        <div class="wildcard-head"><strong>Elige una forma de responder</strong><button id="btnCloseWildcard" type="button" aria-label="Cerrar">×</button></div>
+        <div id="wildcardOptions" class="wildcard-options"></div>
+      </div>
+
+      <footer class="composer-wrap">
+        <div class="composer">
+          <textarea id="messageInput" rows="1" maxlength="260" placeholder="Escribe un mensaje…" autocomplete="off" autocapitalize="sentences" spellcheck="true" aria-label="Escribe tu respuesta"></textarea>
+          <button id="btnSend" class="send-btn" type="button" aria-label="Enviar mensaje">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20.5 21 12 3 3.5v6.6l12 1.9-12 1.9z"/></svg>
+          </button>
+        </div>
+        <div class="composer-note">No necesitas escribir exactamente igual: se valora que tu mensaje sea claro y natural.</div>
+      </footer>
+    </section>
+
+    <div id="typingOverlay" class="typing-overlay hidden" aria-hidden="true">
+      <span></span><span></span><span></span>
+    </div>
+
+    <div id="modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-card">
+        <button id="modalClose" class="modal-close" type="button" aria-label="Cerrar">×</button>
+        <div id="modalIcon" class="modal-icon">💬</div>
+        <h2 id="modalTitle">Cómo jugar</h2>
+        <div id="modalBody" class="modal-body"></div>
+        <div id="modalActions" class="modal-actions"></div>
+      </div>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </main>
+  <script src="../js/chat-espanol.js?v=20260925-1"></script>
+</body>
+</html>
