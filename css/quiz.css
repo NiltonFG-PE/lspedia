@@ -752,3 +752,66 @@
     .quiz-confirm-overlay,
     .quiz-confirm-card { animation: none; }
 }
+
+
+/* ===== PREVIEW CARRERA MATEMÁTICA ===== */
+.preview-carrera{
+    flex-direction:column;
+    gap:3px;
+    background:linear-gradient(180deg,#e0f2fe 0 47%,#64748b 47% 100%);
+}
+.jp-carrera-road{
+    position:relative;
+    display:block;
+    width:88px;
+    height:36px;
+    overflow:hidden;
+    border-radius:8px 8px 13px 13px;
+    background:linear-gradient(90deg,#525a66,#414854);
+}
+.jp-carrera-road::before{
+    content:"";
+    position:absolute;
+    left:50%;
+    top:-8px;
+    width:3px;
+    height:52px;
+    transform:translateX(-50%);
+    background:repeating-linear-gradient(to bottom,#fff 0 7px,transparent 7px 14px);
+    opacity:.9;
+}
+.jp-carrera-car{
+    position:absolute;
+    z-index:2;
+    left:50%;
+    bottom:2px;
+    transform:translateX(-50%);
+    font-size:1.35rem;
+    line-height:1;
+    font-style:normal;
+    filter:drop-shadow(0 2px 2px rgba(15,23,42,.28));
+}
+.jp-carrera-eq{
+    position:absolute;
+    top:5px;
+    right:7px;
+    z-index:3;
+    padding:2px 5px;
+    border-radius:7px;
+    background:rgba(255,255,255,.92);
+    color:#0f172a;
+    font-size:.58rem;
+    font-weight:950;
+    box-shadow:0 2px 6px rgba(15,23,42,.12);
+}
+.menu-juego-anim .jp-carrera-car{
+    animation:jpCarreraV1 1.15s .18s cubic-bezier(.22,.9,.28,1) both;
+}
+@keyframes jpCarreraV1{
+    0%{transform:translate(-50%,12px) scale(.86)}
+    55%{transform:translate(-68%,-5px) scale(1.03)}
+    100%{transform:translate(-35%,-11px) scale(1)}
+}
+@media(prefers-reduced-motion:reduce){
+    .menu-juego-anim .jp-carrera-car{animation:none!important}
+}
