@@ -9,6 +9,7 @@ on:
     paths:
       - "data/palabras.json"
       - "data/vocabulario.json"
+      - "js/categorias-compartir.js"
       - "js/script.js"
       - "scripts/migrar_ids_palabras.py"
       - "scripts/migrar_ruta_diccionario_seo.py"
@@ -89,6 +90,8 @@ jobs:
           node --check js/script.js
           test -f diccionario/.lspedia-seo-generated
           test -f vocabulario/.lspedia-seo-generated
+          test -f categoria/.lspedia-seo-generated
+          test "$(find categoria -mindepth 3 -name index.html | wc -l)" -gt 0
           test "$(find diccionario -mindepth 2 -name index.html | wc -l)" -gt 0
           test "$(find vocabulario -mindepth 2 -name index.html | wc -l)" -gt 0
           test ! -d palabra
@@ -100,7 +103,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/palabras.json data/vocabulario.json data/nuevas-palabras.json data/traducciones-en.json index.html js/script.js sitemap.xml scripts/generar_paginas_seo.py
-          git add -A -- diccionario vocabulario
+          git add -A -- diccionario vocabulario categoria
           if git diff --cached --quiet; then
             echo "IDs, SEO, traducciones, Lo nuevo y sitemap ya estaban actualizados."
           else
@@ -133,6 +136,7 @@ jobs:
 
           proteger_y_borrar diccionario
           proteger_y_borrar vocabulario
+          proteger_y_borrar categoria
 
           if [ -d "$WORKTREE/palabra" ]; then
             if [ ! -f "$WORKTREE/palabra/.lspedia-seo-generated" ]; then
@@ -144,6 +148,7 @@ jobs:
 
           cp -R diccionario "$WORKTREE/diccionario"
           cp -R vocabulario "$WORKTREE/vocabulario"
+          cp -R categoria "$WORKTREE/categoria"
           cp sitemap.xml "$WORKTREE/sitemap.xml"
 
           cp scripts/aplicar_canonicas_seo.py "$WORKTREE/scripts/.aplicar_canonicas_seo_tmp.py"
@@ -152,7 +157,7 @@ jobs:
 
           git -C "$WORKTREE" config user.name "github-actions[bot]"
           git -C "$WORKTREE" config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git -C "$WORKTREE" add -A -- diccionario vocabulario sitemap.xml index.html js/script.js
+          git -C "$WORKTREE" add -A -- diccionario vocabulario categoria sitemap.xml index.html js/script.js
           if [ -n "$(git -C "$WORKTREE" ls-files -- palavra)" ]; then
             git -C "$WORKTREE" add -A -- palavra
           fi
