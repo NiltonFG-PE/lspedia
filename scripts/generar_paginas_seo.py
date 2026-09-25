@@ -27,7 +27,7 @@ MARCADOR = ".lspedia-seo-generated"
 IMAGEN_RE = re.compile(r"\.(?:avif|gif|jpe?g|png|svg|webp)(?:[?#].*)?$", re.I)
 PREFIJO_RE = re.compile(r"^(?:https?://|/|\.\.?/|img/)", re.I)
 YOUTUBE_ID_RE = re.compile(r"^[A-Za-z0-9_-]{11}$")
-SOCIAL_PREVIEW_VERSION = "20260925-6"
+SOCIAL_PREVIEW_VERSION = "20260925-7"
 
 
 def texto(valor: object) -> str:
@@ -462,7 +462,7 @@ def generar_colecciones(repo: Path, filas_voc: list[dict]) -> int:
     for ref, items in sorted(grupos.items()):
         nombre = nombres[ref]
         canonical = f"{BASE_URL}/coleccion/vocabulario/{quote(ref, safe='')}/"
-        app_url = f"{BASE_URL}/?vista=vocabulario&coleccion={quote(nombre, safe='')}"
+        app_url = f"{BASE_URL}/index.html?vista=vocabulario&coleccion={quote(nombre, safe='')}"
         destino = raiz / "vocabulario" / ref
         destino.mkdir(parents=True, exist_ok=True)
         crear_preview_categoria(repo, items, destino)
@@ -598,10 +598,10 @@ def generar_categorias(repo: Path, filas_dic: list[dict], filas_voc: list[dict])
             nombre = nombres[ref]
             canonical = f"{BASE_URL}/categoria/{tipo}/{quote(ref, safe='')}/"
             if tipo == "vocabulario":
-                app_url = f"{BASE_URL}/?vista=vocabulario&categoria={quote(nombre, safe='')}"
+                app_url = f"{BASE_URL}/index.html?vista=vocabulario&categoria={quote(nombre, safe='')}"
                 seccion = "Vocabulario"
             else:
-                app_url = f"{BASE_URL}/?categoriaDiccionario={quote(nombre, safe='')}"
+                app_url = f"{BASE_URL}/index.html?categoriaDiccionario={quote(nombre, safe='')}"
                 seccion = "Diccionario"
 
             destino = raiz / tipo / ref
