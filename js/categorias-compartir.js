@@ -89,8 +89,22 @@
         return url.href;
     }
 
+    function slugCategoria(valor){
+        return String(valor || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    }
+
     function construirUrlCategoria(tipo, nombre){
-        const url = new URL(window.location.origin + window.location.pathname);
+        // URL estática compartible: WhatsApp/Facebook pueden leer Open Graph
+        // sin ejecutar JavaScript. La página SEO ofrece acceso a la categoría
+        // interactiva y conserva una miniatura propia.
+        const seccion = tipo === 'vocabulario' ? 'vocabulario' : 'diccionario';
+        const ref = slugCategoria(nombre);
+        return new URL('/categoria/' + seccion + '/' + encodeURIComponent(ref) + '/', window.location.origin).href;
+    }
+
+    function construirUrlCategoriaApp(tipo, nombre){
+        const url = new URL(window.location.origin + '/');
         if(tipo === 'vocabulario'){
             url.searchParams.set('vista', 'vocabulario');
             url.searchParams.set('categoria', nombre);
@@ -188,7 +202,7 @@
     }
 
     function confirmarUrlCategoria(datos){
-        const objetivo = new URL(construirUrlCategoria(datos.tipo, datos.nombre));
+        const objetivo = new URL(construirUrlCategoriaApp(datos.tipo, datos.nombre));
         const relativaObjetivo = objetivo.pathname + objetivo.search;
         const relativaActual = window.location.pathname + window.location.search;
         if(relativaActual !== relativaObjetivo){
