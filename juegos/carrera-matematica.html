@@ -39,9 +39,25 @@
     #orientation-toast { position:absolute; left:50%; bottom:calc(env(safe-area-inset-bottom,0px) + 102px); transform:translateX(-50%) translateY(10px); z-index:50; width:min(92%,480px); padding:10px 14px; border-radius:14px; background:rgba(17,24,39,.93); color:#fff; font-size:.82rem; font-weight:700; text-align:center; opacity:0; pointer-events:none; transition:opacity .2s ease,transform .2s ease; box-shadow:0 10px 30px rgba(0,0,0,.3); }
     #orientation-toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
-    #pauseBtn { cursor:pointer; pointer-events:auto; min-width:42px; justify-content:center; }
-    #pauseBtn svg { width:1.2em; height:1.2em; }
-    #pauseBtn:active { transform:scale(.95); }
+    #pauseBtn {
+      cursor:pointer; pointer-events:auto; min-width:92px; min-height:46px; justify-content:center; gap:7px;
+      color:#172238;
+      background:linear-gradient(180deg,rgba(255,225,113,.98),rgba(255,185,37,.96)) !important;
+      border:1px solid rgba(255,255,255,.86);
+      box-shadow:0 5px 0 #9b680f,0 10px 24px rgba(255,191,39,.30),inset 0 1px 0 rgba(255,255,255,.72);
+      text-transform:uppercase; letter-spacing:.04em;
+      animation:pausePremiumGlow 2.4s ease-in-out infinite;
+    }
+    #pauseBtn svg { width:1.32em; height:1.32em; filter:drop-shadow(0 1px 0 rgba(255,255,255,.5)); }
+    #pauseBtn svg rect { fill:#172238; }
+    #pauseBtn .pause-label { font-size:.72rem; font-weight:900; line-height:1; }
+    #pauseBtn:hover { filter:brightness(1.06); }
+    #pauseBtn:focus-visible { outline:3px solid #fff; outline-offset:3px; }
+    #pauseBtn:active { transform:translateY(3px) scale(.98); box-shadow:0 2px 0 #9b680f,0 5px 14px rgba(255,191,39,.24); }
+    @keyframes pausePremiumGlow {
+      0%,100% { box-shadow:0 5px 0 #9b680f,0 8px 20px rgba(255,191,39,.22),inset 0 1px 0 rgba(255,255,255,.72); }
+      50% { box-shadow:0 5px 0 #9b680f,0 10px 30px rgba(255,201,60,.44),inset 0 1px 0 rgba(255,255,255,.82); }
+    }
     #pause-overlay { position:absolute; inset:0; z-index:46; display:none; align-items:center; justify-content:center; padding:20px; background:rgba(10,14,22,.72); backdrop-filter:blur(5px); }
     #pause-overlay.active { display:flex; }
     .pause-card { width:min(90%,340px); padding:24px 20px; border-radius:26px; background:rgba(35,43,58,.97); border:1px solid rgba(255,255,255,.12); box-shadow:0 22px 70px rgba(0,0,0,.5); display:flex; flex-direction:column; align-items:center; gap:16px; }
@@ -55,6 +71,8 @@
       #hud { top:calc(env(safe-area-inset-top,0px) + 6px); left:8px; right:8px; gap:5px; }
       .hud-row { gap:4px; }
       .hud-box { padding:4px 7px; border-radius:10px; font-size:clamp(.78rem,2.4vw,1rem); gap:4px; }
+      #pauseBtn { min-width:76px; min-height:38px; gap:5px; }
+      #pauseBtn .pause-label { font-size:.62rem; }
       #hearts svg { width:1.15em; height:1.15em; }
       #turbo-meter { width:40px; height:8px; }
       #gauge { width:2.1em; height:1.15em; }
@@ -87,7 +105,16 @@
     #hud { position: absolute; top: calc(env(safe-area-inset-top, 0px) + 10px); left: 10px; right: 10px; display: none; flex-direction: column; gap: 8px; pointer-events: none; z-index: 5; }
     #hud.on { display: flex; }
     .hud-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
-    .hud-box { display: flex; align-items: center; gap: 6px; background: rgba(27,34,48,0.78); border-radius: 14px; padding: 6px 10px; backdrop-filter: blur(6px); font-size: clamp(1rem, 4vw, 1.3rem); font-weight: 700; line-height: 1; }
+    .hud-box {
+      display:flex; align-items:center; gap:6px;
+      background:linear-gradient(180deg,rgba(39,50,69,.88),rgba(20,27,39,.84));
+      border:1px solid rgba(255,255,255,.13);
+      border-radius:14px; padding:6px 10px;
+      backdrop-filter:blur(8px) saturate(1.15);
+      -webkit-backdrop-filter:blur(8px) saturate(1.15);
+      box-shadow:0 7px 20px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.08);
+      font-size:clamp(1rem,4vw,1.3rem); font-weight:700; line-height:1;
+    }
     .hud-box svg { width: 1.35em; height: 1.35em; flex: none; }
     #hearts svg { width: 1.45em; height: 1.45em; margin: 0 -1px; }
     #hearts svg.off { opacity: 0.25; filter: grayscale(1); }
@@ -99,8 +126,19 @@
     #turbo-meter { width: 52px; height: 10px; background: #3b4658; border-radius: 6px; overflow: hidden; }
     #turbo-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #ffd23f, #ff7a1a); transition: width 0.2s; }
     #turbo-box.ready { animation: pulse 0.5s ease-in-out infinite; box-shadow: 0 0 16px #ffd23f; }
-    #progress { flex: 1; height: 16px; background: rgba(27,34,48,0.78); border-radius: 10px; position: relative; overflow: visible; }
-    #progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #3fa9f5, #2ecc71); border-radius: 10px; transition: width 0.3s; }
+    #progress {
+      flex:1; height:16px;
+      background:linear-gradient(180deg,rgba(34,44,61,.90),rgba(16,23,34,.90));
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:10px; position:relative; overflow:visible;
+      box-shadow:0 6px 18px rgba(0,0,0,.22),inset 0 1px 2px rgba(0,0,0,.35);
+    }
+    #progress-fill {
+      height:100%; width:0%;
+      background:linear-gradient(90deg,#268ee5,#2fd68e 62%,#82efb8);
+      border-radius:10px; transition:width .3s;
+      box-shadow:0 0 14px rgba(47,214,142,.34),inset 0 1px 0 rgba(255,255,255,.35);
+    }
     #progress-car { position: absolute; top: -8px; left: 0; width: 30px; height: 30px; transform: translateX(-50%); transition: left 0.3s; }
     #progress { margin-right: 10px; }
     #progress-flag { position: absolute; right: -6px; top: -10px; width: 34px; height: 34px; }
@@ -253,7 +291,8 @@
       </div>
       <div class="hud-row">
         <div class="hud-box" id="pauseBtn" role="button" tabindex="0" title="Pausar" aria-label="Pausar juego">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1" fill="#f7f9fc"/><rect x="14" y="5" width="4" height="14" rx="1" fill="#f7f9fc"/></svg>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+          <span class="pause-label">Pausa</span>
         </div>
         <div class="hud-box" id="tiltCenterBtn" role="button" tabindex="0" title="Recentrar inclinación" aria-label="Recentrar inclinación">◎</div>
         <div class="hud-box" id="score-box">
@@ -955,8 +994,16 @@ const SPR = {
     ctx.translate(dir * w * .03, -postH - bh*.62);
     ctx.transform(1, 0, dir * -0.08, 1, 0, 0);
 
-    ctx.fillStyle='#15191f';
+    const frameG=ctx.createLinearGradient(-bw*.52,-bh*.52,bw*.52,bh*.52);
+    frameG.addColorStop(0,'#4e555e');
+    frameG.addColorStop(.18,'#171b20');
+    frameG.addColorStop(.60,'#30363d');
+    frameG.addColorStop(1,'#0f1216');
+    ctx.fillStyle=frameG;
     rr(ctx,-bw*.52,-bh*.52,bw*1.04,bh*1.04,w*.035); ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,.28)';
+    ctx.lineWidth=Math.max(.4,w*.009);
+    rr(ctx,-bw*.50,-bh*.50,bw,bh,w*.03); ctx.stroke();
 
     const face=ctx.createLinearGradient(0,-bh*.48,0,bh*.48);
     face.addColorStop(0,'#ffffff');
@@ -965,27 +1012,50 @@ const SPR = {
     ctx.fillStyle=face;
     rr(ctx,-bw*.485,-bh*.465,bw*.97,bh*.93,w*.028); ctx.fill();
 
-    // Solo la marca LSPedia, como en el logo: LSP azul + edia amarillo
+    // Contenido del panel recortado: nunca puede sobresalir del cartel.
+    ctx.save();
+    rr(ctx,-bw*.455,-bh*.425,bw*.91,bh*.85,w*.022);
+    ctx.clip();
+
+    // Solo la marca LSPedia, como en el logo: LSP azul + edia amarillo.
+    // El tamaño depende 100% de la perspectiva; no hay un mínimo fijo que rompa a distancia.
     ctx.textBaseline='middle';
     ctx.textAlign='left';
-    ctx.font=`900 ${Math.max(10,bh*.43)}px Arial, sans-serif`;
-
     const blueText='LSP', yellowText='edia';
-    const blueW=ctx.measureText(blueText).width;
-    const yellowW=ctx.measureText(yellowText).width;
-    const totalW=blueW+yellowW;
-    const tx=-totalW/2;
+    let fontSize=Math.max(.8,bh*.43);
+    ctx.font=`900 ${fontSize}px Arial, sans-serif`;
 
-    // sombra muy suave para dar volumen sin añadir más contenido
-    ctx.save();
-    ctx.shadowColor='rgba(0,0,0,.16)';
-    ctx.shadowBlur=Math.max(1,w*.025);
-    ctx.shadowOffsetY=Math.max(1,w*.012);
-    ctx.fillStyle='#063b79';
-    ctx.fillText(blueText,tx,0);
-    ctx.fillStyle='#ffc400';
-    ctx.fillText(yellowText,tx+blueW,0);
-    ctx.restore();
+    let blueW=ctx.measureText(blueText).width;
+    let yellowW=ctx.measureText(yellowText).width;
+    let totalW=blueW+yellowW;
+    const availableW=bw*.76;
+
+    // Ajuste adicional por ancho real medido para mantener márgenes consistentes.
+    if (totalW>availableW) {
+      fontSize*=availableW/totalW;
+      ctx.font=`900 ${fontSize}px Arial, sans-serif`;
+      blueW=ctx.measureText(blueText).width;
+      yellowW=ctx.measureText(yellowText).width;
+      totalW=blueW+yellowW;
+    }
+
+    const tx=-totalW/2;
+    if (fontSize>=1.25) {
+      ctx.save();
+      ctx.shadowColor='rgba(0,0,0,.16)';
+      ctx.shadowBlur=Math.max(.2,w*.025);
+      ctx.shadowOffsetY=Math.max(.2,w*.012);
+      ctx.fillStyle='#063b79';
+      ctx.fillText(blueText,tx,0);
+      ctx.fillStyle='#ffc400';
+      ctx.fillText(yellowText,tx+blueW,0);
+      ctx.restore();
+    } else {
+      // LOD lejano: conserva la firma cromática dentro del panel y evita texto ilegible.
+      const markW=bw*.36, markH=Math.max(.5,bh*.12);
+      ctx.fillStyle='#063b79'; ctx.fillRect(-markW*.5,-markH*.5,markW*.48,markH);
+      ctx.fillStyle='#ffc400'; ctx.fillRect(-markW*.02,-markH*.5,markW*.52,markH);
+    }
 
     // brillo sutil del panel
     const gloss=ctx.createLinearGradient(0,-bh*.46,0,bh*.02);
@@ -993,6 +1063,7 @@ const SPR = {
     gloss.addColorStop(1,'rgba(255,255,255,0)');
     ctx.fillStyle=gloss;
     rr(ctx,-bw*.46,-bh*.43,bw*.92,bh*.28,w*.02); ctx.fill();
+    ctx.restore();
 
     ctx.restore();
   }
@@ -1535,6 +1606,16 @@ function render() {
   const groundPy = H - H * 0.06 + bounce;
   const airPx = jumpActive ? Math.min(H * 0.24, pw * 1.7) * jumpLift : 0;
   const py = groundPy - airPx;
+  if (!jumpActive && theme.night) {
+    ctx.save();
+    const tailGlow=ctx.createRadialGradient(px,groundPy-pw*.02,pw*.05,px,groundPy+pw*.08,pw*.95);
+    tailGlow.addColorStop(0,'rgba(255,45,45,.24)');
+    tailGlow.addColorStop(.32,'rgba(255,40,40,.10)');
+    tailGlow.addColorStop(1,'rgba(255,20,20,0)');
+    ctx.fillStyle=tailGlow;
+    ctx.beginPath(); ctx.ellipse(px,groundPy+pw*.06,pw*.78,pw*.16,0,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
   if (!jumpActive) {
     ctx.save();
     const pg = ctx.createRadialGradient(px, groundPy + 2, pw * 0.08, px, groundPy + 2, pw * 0.72);
@@ -1657,6 +1738,19 @@ function renderSegment(seg) {
   ctx.restore();
   poly([p1.x - p1.w - r1 - l1, p1.y + 1, p1.x - p1.w - r1, p1.y + 1, p2.x - p2.w - r2, p2.y, p2.x - p2.w - r2 - l2, p2.y], '#e9ecef');
   poly([p1.x + p1.w + r1, p1.y + 1, p1.x + p1.w + r1 + l1, p1.y + 1, p2.x + p2.w + r2 + l2, p2.y, p2.x + p2.w + r2, p2.y], '#e9ecef');
+  // reflectores de borde: dan profundidad nocturna y lectura de velocidad
+  if (seg.index % 10 === 0 && p1.w > 22) {
+    const rs=clamp(p1.w*.009,.65,4.2);
+    [-1,1].forEach(d=>{
+      const rx=p1.x+d*(p1.w+r1*.52), ry=p1.y-rs*.8;
+      ctx.save();
+      ctx.shadowColor=theme.night?'rgba(255,210,90,.9)':'rgba(255,255,255,.55)';
+      ctx.shadowBlur=theme.night?rs*3:rs;
+      ctx.fillStyle=theme.night?'#ffd86b':'rgba(255,255,255,.78)';
+      ctx.beginPath(); ctx.arc(rx,ry,rs,0,Math.PI*2); ctx.fill();
+      ctx.restore();
+    });
+  }
   if (seg.fog < 1) { ctx.globalAlpha = 1 - seg.fog; ctx.fillStyle = theme.fog; ctx.fillRect(0, p2.y, W, p1.y - p2.y + 1); ctx.globalAlpha = 1; }
 }
 
