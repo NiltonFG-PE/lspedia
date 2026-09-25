@@ -420,9 +420,12 @@ def generar_categorias(repo: Path, filas_dic: list[dict], filas_voc: list[dict])
 
         for ref, items in sorted(grupos.items()):
             nombre = nombres[ref]
-            # Usa una imagen real de la propia categoría; si alguna fila futura
-            # carece de imagen, imagen_absoluta conserva el fallback de LSPedia.
-            imagen = imagen_absoluta(items[0].get("imagen"))
+            # Para compartir, prioriza la miniatura pública de YouTube. Las
+            # imágenes nuevas del vocabulario pueden existir aún solo en develop
+            # mientras main publica únicamente SEO; WhatsApp necesita una URL que
+            # exista realmente en producción.
+            video_id = next((texto(x.get("video")) for x in items if texto(x.get("video"))), "")
+            imagen = f"https://i.ytimg.com/vi/{quote(video_id, safe='')}/hqdefault.jpg" if video_id else FALLBACK_IMAGE
             canonical = f"{BASE_URL}/categoria/{tipo}/{quote(ref, safe='')}/"
             if tipo == "vocabulario":
                 app_url = f"{BASE_URL}/?vista=vocabulario&categoria={quote(nombre, safe='')}"
@@ -465,6 +468,10 @@ def generar_categorias(repo: Path, filas_dic: list[dict], filas_voc: list[dict])
   <meta property="og:title" content="{escape(titulo, quote=True)}">
   <meta property="og:description" content="{escape(descripcion, quote=True)}">
   <meta property="og:image" content="{escape(imagen, quote=True)}">
+  <meta property="og:image:secure_url" content="{escape(imagen, quote=True)}">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="480">
+  <meta property="og:image:height" content="360">
   <meta property="og:image:alt" content="Imagen de la categoría {escape(nombre, quote=True)} en LSPedia">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{escape(titulo, quote=True)}">
