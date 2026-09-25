@@ -110,7 +110,7 @@ jobs:
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add data/palabras.json data/vocabulario.json data/nuevas-palabras.json data/traducciones-en.json index.html js/script.js sitemap.xml scripts/generar_paginas_seo.py
-            git add -A -- diccionario vocabulario
+            git add -A -- diccionario vocabulario categoria
             git commit -m "Actualizar páginas SEO canonicals y sitemap"
           fi
           python scripts/publicar_generados.py
