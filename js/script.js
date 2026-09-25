@@ -1746,7 +1746,11 @@ function mostrarSeccionHerramientas(){
         ocultarQuiz();
         ocultarAlfabetizacion();
         menuMovil.classList.remove("d-none");
-        menuMovil.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // El selector de Herramientas debe quedar centrado dentro del área
+        // realmente visible (entre la barra superior y la navegación inferior),
+        // igual que cuando se vuelve desde una herramienta. scrollIntoView()
+        // lo dejaba pegado arriba y visualmente descentrado.
+        centrarHerramientasEnPantalla(menuMovil);
 
         // Precarga en segundo plano de "Alfabeto y números": a diferencia
         // de Subtítulos (pide permiso de micrófono) y Jugar (solo abre un
