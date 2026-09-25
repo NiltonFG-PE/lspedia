@@ -13,9 +13,10 @@ import shutil
 MARCADOR = ".lspedia-seo-generated"
 
 
-def reemplazar(ruta: Path, anterior: str, nuevo: str, etiqueta: str) -> bool:
+def reemplazar(ruta: Path, anterior: str, nuevo: str, etiqueta: str, ya_migrado=None) -> bool:
     contenido = ruta.read_text(encoding="utf-8")
-    if nuevo in contenido and anterior not in contenido:
+    marcadores = tuple(ya_migrado or (nuevo,))
+    if anterior not in contenido and any(m in contenido for m in marcadores):
         print(f"{etiqueta}: ya estaba migrado.")
         return False
     cantidad = contenido.count(anterior)
@@ -53,6 +54,7 @@ def main() -> int:
         "- palabra/<id>/index.html       (Diccionario)",
         "- diccionario/<id>/index.html   (Diccionario)",
         "documentación del generador",
+        ya_migrado=("- diccionario/<id>/index.html",),
     )
     reemplazar(
         generador,
