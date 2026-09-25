@@ -519,7 +519,7 @@ def generar_categorias(repo: Path, filas_dic: list[dict], filas_voc: list[dict])
             # WhatsApp es más fiable cuando og:image vive en el mismo dominio
             # que la página compartida. Guardamos una copia JPEG de la miniatura
             # dentro de la propia página SEO, en vez de depender de ytimg.com.
-            imagen = FALLBACK_IMAGE
+            imagen = f"{BASE_URL}/img/lspedia.png"
             preview = destino / "preview.jpg"
             if video_id:
                 try:
