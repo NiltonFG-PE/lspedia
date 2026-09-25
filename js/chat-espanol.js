@@ -707,6 +707,10 @@ const COMMON_ACCENTS = new Map([
 ]);
 
 const ARTICLE_FIXES = [
+  [/\bvoy banco\b/gi,"voy al banco"],[/\bestoy banco\b/gi,"estoy en el banco"],
+  [/\bvoy hospital\b/gi,"voy al hospital"],[/\bestoy hospital\b/gi,"estoy en el hospital"],
+  [/\bvoy mercado\b/gi,"voy al mercado"],[/\bestoy mercado\b/gi,"estoy en el mercado"],
+  [/\bvoy universidad\b/gi,"voy a la universidad"],[/\bestoy universidad\b/gi,"estoy en la universidad"],
   [/\ba banco\b/gi,"al banco"],[/\ben banco\b/gi,"en el banco"],
   [/\ba hospital\b/gi,"al hospital"],[/\ben hospital\b/gi,"en el hospital"],
   [/\ba mercado\b/gi,"al mercado"],[/\ben mercado\b/gi,"en el mercado"],
@@ -764,8 +768,9 @@ function fixQuestionWords(text){
 function expectedTense(turn){
   const p=normalize(turn?.prompt||""), m=normalize(turn?.model||"");
   if(/ayer|anoche|la semana pasada|el mes pasado|desde cuando|desde cuándo|que paso|qué pasó|que hiciste|qué hiciste|tuvo|empezo|empezó|reinicio|reinició/.test(p))return "past";
-  if(/manana|mañana|proximo|próximo|despues|después|luego|mas tarde|más tarde|cuando llegues|cuando estes|cuando estés|que haras|qué harás|vas a|va a|piensas|planeas/.test(p))return "future";
-  if(/\b(?:ire|llegare|pagare|hare|estare|podre|terminare|enviare|revisare|viajare|saldré|tendré)\b/.test(m))return "future";
+  if(/manana|mañana|proximo|próximo|despues|después|luego|mas tarde|más tarde|cuando llegues|cuando estes|cuando estés|que haras|qué harás|vas a|va a|piensas|planeas|a que hora llegas|a qué hora llegas|cuando llegas|cuándo llegas|cuando terminan|cuándo terminan|cuando terminamos|cuándo terminamos/.test(p))return "future";
+  if(/manana|mañana|proximo|próximo|esta tarde|esta noche/.test(m))return "future";
+  if(/\b(?:ire|llegare|pagare|hare|estare|podre|terminare|enviare|revisare|viajare|saldre|tendre)\b/.test(m))return "future";
   if(/\b(?:fui|tuve|hice|sali|llegue|pague|termine|envie|revise|estuve|empezo)\b/.test(m))return "past";
   return "present";
 }
@@ -823,7 +828,8 @@ function addConnectorToIdea(text,connector,turn){
 }
 function smartPunctuation(text,turn){
   let s=sentenceCase(text),changed=s!==String(text).trim();
-  const userAsks=/^(que|qué|como|cómo|cuando|cuándo|donde|dónde|cual|cuál|cuanto|cuánto|puedo|podria|podría|debo|tengo que|hay|acepta|se puede)\b/i.test(s);
+  const alreadyQuestion=s.trim().endsWith("?")||s.trim().startsWith("¿");
+  const userAsks=alreadyQuestion||/^(qué|cuándo|dónde|cuál|cuánto|cuánta|cómo|puedo|podría|debo|tengo que|hay|acepta|se puede)\b/i.test(s);
   if(userAsks){
     if(!s.startsWith("¿")){s="¿"+s.replace(/^\?/,"");changed=true}
     if(!s.endsWith("?")){s=s.replace(/[.!]+$/,"")+"?";changed=true}
@@ -838,8 +844,9 @@ function grammarCoach(user,turn,semantic){
   const original=improved;
 
   // “si” afirmativo al inicio lleva tilde; no se cambia el “si” condicional.
-  if(/^si\b/i.test(improved) && !/^si\s+(?:tengo|puedo|quiero|voy|estoy|soy|me|lo|la|el|un|una).*\b(?:entonces|,)/i.test(improved)){
-    improved=improved.replace(/^si\b/i,m=>m[0]===m[0].toUpperCase()?"SÍ":m[0]==="S"?"Sí":"sí");
+  const initialSiConditional=/^si\b[^,]{1,50},/i.test(improved);
+  if(/^si\b/i.test(improved) && !initialSiConditional){
+    improved=improved.replace(/^si\b/i,m=>m[0]===m[0].toUpperCase()?"SÍ":m[0][0]===m[0][0].toUpperCase()?"Sí":"sí");
     notes.push({kind:"orthography",icon:"🔤",label:"Ortografía",text:"“Sí” lleva tilde cuando significa afirmación."});
   }
 
@@ -866,6 +873,11 @@ function grammarCoach(user,turn,semantic){
   const conn=addConnectorToIdea(improved,connector,turn);
   improved=conn.text;
   if(conn.changed)notes.push({kind:"connector",icon:"🔗",label:"Conector",text:"Añadí “"+connector+"” para unir la respuesta con la intención de la pregunta."});
+
+  if(!detectConnector(improved) && /,[^,]{2,45}$/.test(improved) && (improved.match(/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+/g)||[]).length>=5){
+    improved=improved.replace(/,\s*([^,]+)$/," y $1");
+    notes.push({kind:"connector",icon:"🔗",label:"Conector",text:"Usé “y” para unir dos ideas relacionadas en una sola oración."});
+  }
 
   const punct=smartPunctuation(improved,turn);
   improved=punct.text;
