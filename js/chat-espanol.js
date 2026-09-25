@@ -87,7 +87,7 @@ const scenarios = [
     ]
   },
   {
-    id:"salud-cita", level:3, avatar:"👩‍⚕️", name:"Dra. Vega", situation:"Explicar un malestar", place:"Salud", duration:"5–6 min",
+    id:"salud-cita", level:3, avatar:"🏥", name:"Dra. Vega", situation:"Atenderse en el hospital por un malestar", place:"Hospital", duration:"5–6 min",
     goal:"Practica describir síntomas y responder preguntas.", closing:"Muy bien. Sigue las indicaciones y vuelve si no mejoras. Que te recuperes pronto.",
     turns:[
       {prompt:"Buenos días. Cuénteme, ¿qué le pasa?", model:"Buenos días. Me duele la garganta desde ayer.", alternatives:["Tengo dolor de garganta desde ayer.","Desde ayer me duele bastante la garganta."], keywords:["garganta","ayer","duele","dolor"], why:"Para explicar un síntoma incluye qué te duele y desde cuándo."},
@@ -101,7 +101,7 @@ const scenarios = [
     ]
   },
   {
-    id:"banco-dni", level:3, avatar:"👨‍💼", name:"Asesor", situation:"Hacer una consulta en el banco", place:"Trámite", duration:"5–6 min",
+    id:"banco-dni", level:3, avatar:"🏦", name:"Asesor del banco", situation:"Hacer una consulta en el banco", place:"Banco", duration:"5–6 min",
     goal:"Practica explicar una necesidad y pedir información.", closing:"Eso sería todo. Guarde su constancia, por favor. Que tenga buen día.",
     turns:[
       {prompt:"Buenos días. ¿En qué puedo ayudarlo?", model:"Buenos días. Quiero actualizar mis datos personales.", alternatives:["Buenos días. Necesito actualizar mis datos.","Quisiera hacer una actualización de mis datos personales."], keywords:["actualiz","datos"], why:"En un trámite explica tu objetivo desde el primer mensaje."},
@@ -219,15 +219,16 @@ const scenarios = [
     ]
   },
   {
-    id:"cumple-prima", level:1, avatar:"🎂", name:"Valeria", situation:"Responder una invitación de cumpleaños", place:"Amigos", duration:"3–4 min",
-    goal:"Practica aceptar una invitación, preguntar hora y confirmar un plan.", closing:"¡Genial! Entonces nos vemos el sábado. Me alegra que puedas venir. 🎉",
+    id:"tarea-companero", level:1, avatar:"📝", name:"Andrea", situation:"Hacer una tarea con un compañero", place:"Tareas", duration:"3–4 min",
+    goal:"Practica preguntar, repartir una tarea y confirmar qué hará cada persona.", closing:"Perfecto. Entonces cada uno hace su parte y mañana juntamos todo. 👍",
     turns:[
-      {prompt:"Hola 🙂. El sábado es mi cumpleaños. ¿Puedes venir?",model:"Sí, puedo ir. Gracias por invitarme.",alternatives:["Sí, gracias por la invitación.","Claro, me gustaría ir."],keywords:["si","gracias","invit"],why:"Primero responde si puedes ir y luego agradece la invitación."},
-      {prompt:"¡Qué bueno! Empezamos a las seis.",model:"Perfecto. Llegaré a las seis.",alternatives:["Está bien, estaré allí a las seis.","Perfecto, nos vemos a las seis."],keywords:["seis","lleg","vemos"],why:"Repetir la hora ayuda a confirmar que entendiste."},
-      {prompt:"¿Quieres que te mande la ubicación?",model:"Sí, por favor. Envíame la ubicación.",alternatives:["Sí, mándamela por favor.","Sí, así podré llegar sin problema."],keywords:["si","ubicacion","favor"],why:"En una petición breve puedes usar “por favor” para sonar amable."},
-      {prompt:"Te la envío ahora. ¿Vienes solo?",model:"Sí, voy solo.",alternatives:["Sí, esta vez iré solo.","Voy a ir solo."],keywords:["si","solo"],why:"Una respuesta corta es suficiente cuando la pregunta es directa."},
-      {prompt:"Habrá comida y música. ¿Hay algo que no comas?",model:"No, como de todo. Gracias por preguntar.",alternatives:["No tengo problema con la comida.","No, puedo comer de todo."],keywords:["no","com","gracias"],why:"Puedes responder y agregar un agradecimiento por la consideración."},
-      {prompt:"Perfecto. Nos vemos entonces.",model:"Sí, nos vemos el sábado. ¡Feliz cumpleaños por adelantado!",alternatives:["Nos vemos el sábado. Gracias otra vez.","Perfecto. Que tengas un bonito cumpleaños."],keywords:["sabado","vemos","cumple"],why:"Un cierre puede confirmar el día y añadir un mensaje amable."}
+      {prompt:"Hola. ¿Ya viste la tarea que dejó la profesora?",model:"Hola, Andrea. Sí, ya vi la tarea.",alternatives:["Sí, ya la revisé.","Hola. Sí, ya sé qué tenemos que hacer."],keywords:["si","tarea","vi","revis"],why:"Primero confirma que conoces la tarea."},
+      {prompt:"Tenemos que hacerla entre los dos. ¿Cómo nos organizamos?",model:"Podemos dividir la tarea en dos partes.",alternatives:["Hagamos una parte cada uno.","Podemos repartir el trabajo."],keywords:["dividir","partes","repart"],why:"Para organizarse usa verbos como dividir, repartir o hacer."},
+      {prompt:"Está bien. ¿Qué parte quieres hacer tú?",model:"Yo puedo buscar la información.",alternatives:["Prefiero buscar la información.","Yo me encargo de investigar."],keywords:["buscar","informacion","investig"],why:"“Yo puedo…” o “me encargo de…” sirven para asumir una tarea."},
+      {prompt:"Entonces yo escribo las respuestas.",model:"Perfecto. Después juntamos las dos partes.",alternatives:["Está bien. Luego unimos todo.","De acuerdo. Después revisamos las dos partes."],keywords:["despues","junt","partes","revis"],why:"“Después” ayuda a ordenar lo que harán primero y lo que harán luego."},
+      {prompt:"¿Cuándo terminamos?",model:"Podemos terminar mañana por la tarde.",alternatives:["Mañana en la tarde estaría bien.","Propongo terminar mañana."],keywords:["mañana","tarde","termin"],why:"Una tarea necesita una fecha clara para terminar."},
+      {prompt:"¿Te envío mi parte por el grupo?",model:"Sí, envíamela por el grupo, por favor.",alternatives:["Sí, mándamela por el grupo.","Sí, así puedo revisarla."],keywords:["si","grupo","envia","revis"],why:"En una petición breve, “por favor” mantiene un tono amable."},
+      {prompt:"Listo. Te la mando cuando termine.",model:"Gracias. Yo también te enviaré mi parte cuando esté lista.",alternatives:["Perfecto. Yo haré lo mismo.","Gracias. Te envío mi parte al terminar."],keywords:["gracias","envio","parte","termin"],why:"Confirma tu propio compromiso para cerrar la coordinación."}
     ]
   },
   {
@@ -282,16 +283,17 @@ const scenarios = [
     ]
   },
   {
-    id:"alquiler-cuarto", level:3, avatar:"🏠", name:"Propietaria", situation:"Consultar por un cuarto en alquiler", place:"Vivienda", duration:"5–6 min",
-    goal:"Practica preguntas sobre precio, servicios, reglas y disponibilidad.", closing:"Perfecto. Si decides verlo, escríbeme y coordinamos una visita.",
+    id:"reniec-dni", level:3, avatar:"🪪", name:"Orientador de RENIEC", situation:"Hacer un trámite de DNI en RENIEC", place:"RENIEC", duration:"5–6 min",
+    goal:"Practica explicar qué trámite necesitas, preguntar requisitos y confirmar los pasos.", closing:"Muy bien. Con esos pasos podrás continuar el trámite. Revisa tu constancia y guarda la información de seguimiento.",
     turns:[
-      {prompt:"Hola. Vi que preguntaste por el cuarto en alquiler.",model:"Hola. Sí, quisiera saber si todavía está disponible.",alternatives:["Hola. ¿El cuarto sigue disponible?","Sí, estoy interesado en el alquiler."],keywords:["disponible","cuarto","alquiler"],why:"Primero confirma qué vivienda te interesa y si sigue disponible."},
-      {prompt:"Sí, todavía está disponible.",model:"¿Cuánto cuesta al mes?",alternatives:["¿Cuál es el precio mensual?","¿Cuánto es el alquiler mensual?"],keywords:["cuanto","mes","precio","alquiler"],why:"“¿Cuánto cuesta?” es una forma directa de preguntar el precio."},
-      {prompt:"Son setecientos soles mensuales.",model:"¿El precio incluye agua y luz?",alternatives:["¿Los servicios están incluidos?","¿Agua y luz se pagan aparte?"],keywords:["agua","luz","inclu"],why:"Pregunta qué servicios están incluidos antes de comparar precios."},
-      {prompt:"El agua está incluida; la luz se paga aparte.",model:"Entiendo. ¿Tiene internet disponible?",alternatives:["¿Hay conexión a internet?","¿El cuarto cuenta con internet?"],keywords:["internet"],why:"Puedes usar “tiene”, “hay” o “cuenta con” para preguntar por servicios."},
-      {prompt:"Sí, hay wifi compartido.",model:"Perfecto. ¿Se puede usar la cocina?",alternatives:["¿La cocina es de uso compartido?","¿Tengo acceso a la cocina?"],keywords:["cocina","usar"],why:"Pregunta por espacios comunes usando “se puede” o “tengo acceso”."},
-      {prompt:"Sí, la cocina es compartida.",model:"Está bien. ¿Cuándo podría ir a ver el cuarto?",alternatives:["¿Podría visitarlo mañana?","¿Qué día puedo pasar a verlo?"],keywords:["cuando","ver","visitar"],why:"Después de aclarar condiciones, puedes proponer una visita."},
-      {prompt:"Mañana después de las cinco.",model:"Mañana a las seis me queda bien.",alternatives:["Puedo ir mañana a las seis.","Perfecto, pasaré a las seis."],keywords:["mañana","seis"],why:"Confirma una hora concreta para cerrar la coordinación."}
+      {prompt:"Buenos días. ¿Qué trámite desea realizar?",model:"Buenos días. Quiero renovar mi DNI.",alternatives:["Buenos días. Necesito renovar mi DNI.","Quisiera hacer la renovación de mi DNI."],keywords:["renovar","dni"],why:"En RENIEC conviene decir claramente qué trámite necesitas desde el inicio."},
+      {prompt:"¿Su DNI está vencido o está por vencer?",model:"Está por vencer el próximo mes.",alternatives:["Todavía no vence, pero vence el próximo mes.","Mi DNI está cerca de vencer."],keywords:["vencer","mes"],why:"“Está por…” sirve para decir que algo sucederá pronto."},
+      {prompt:"De acuerdo. Necesita seguir el procedimiento de renovación. ¿Ya realizó el pago correspondiente?",model:"Todavía no. ¿Dónde puedo realizar el pago?",alternatives:["No todavía. ¿Cómo puedo pagar?","Aún no he pagado. ¿Dónde se realiza el pago?"],keywords:["no","pago","donde"],why:"Si te falta un paso, dilo claramente y pregunta cómo realizarlo."},
+      {prompt:"Puede revisar los canales de pago disponibles antes de continuar.",model:"Entiendo. Después de pagar, ¿qué debo hacer?",alternatives:["De acuerdo. ¿Cuál es el siguiente paso?","Perfecto. Cuando pague, ¿cómo continúo?"],keywords:["despues","pagar","siguiente","paso"],why:"“Después de…” ayuda a preguntar por el orden correcto de un trámite."},
+      {prompt:"Luego debe continuar con el registro de la solicitud y verificar sus datos.",model:"¿Debo revisar mi dirección y mis nombres antes de confirmar?",alternatives:["¿Tengo que verificar todos mis datos?","¿Debo comprobar que mi información esté correcta?"],keywords:["revis","datos","direccion","nombres"],why:"Antes de confirmar un trámite, es útil preguntar qué información debes verificar."},
+      {prompt:"Sí. Revise cuidadosamente sus datos personales.",model:"De acuerdo. Si encuentro un error, ¿puedo corregirlo antes de continuar?",alternatives:["¿Qué hago si un dato está incorrecto?","¿Puedo corregir un dato antes de confirmar la solicitud?"],keywords:["error","correg","dato"],why:"Una pregunta con “si” permite plantear una situación posible y pedir una solución."},
+      {prompt:"Debe corregir cualquier dato que corresponda antes de finalizar el proceso.",model:"Entiendo. ¿Cómo sabré cuándo mi DNI esté listo?",alternatives:["¿Me avisarán cuando esté listo?","¿Cómo puedo revisar el estado del trámite?"],keywords:["listo","avis","estado","tramite"],why:"Al final de un trámite, pregunta cómo recibirás o consultarás la confirmación."},
+      {prompt:"Podrá revisar el estado del trámite y seguir las indicaciones de entrega.",model:"Perfecto. Muchas gracias por explicarme los pasos.",alternatives:["Gracias. Ahora entiendo mejor el trámite.","Muchas gracias por la orientación."],keywords:["gracias","pasos","tramite"],why:"Cerrar agradeciendo y confirmando que entendiste ayuda a terminar una atención formal."}
     ]
   },
   {
@@ -487,12 +489,12 @@ function adaptiveAcknowledgement(user){
 }
 function scenarioDomain(sc){
   const p=normalize(sc?.place||"");
-  if(/salud|farmacia/.test(p))return "health";
+  if(/salud|farmacia|hospital/.test(p))return "health";
   if(/trabajo/.test(p))return "work";
-  if(/colegio|universidad|estudio/.test(p))return "study";
+  if(/colegio|universidad|estudio|tareas/.test(p))return "study";
   if(/transporte|viaje/.test(p))return "transport";
   if(/mercado|compras|tienda|delivery/.test(p))return "shopping";
-  if(/tramite|banco|municip|accesibilidad|vivienda/.test(p))return "admin";
+  if(/tramite|banco|municip|accesibilidad|vivienda|reniec/.test(p))return "admin";
   if(/familia|amigos|vecindario|social|deporte/.test(p))return "social";
   if(/tecnologia|internet/.test(p))return "tech";
   return "daily";
