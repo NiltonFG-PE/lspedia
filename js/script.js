@@ -1111,7 +1111,16 @@ document.getElementById("btnCategorias").addEventListener("click", (e) => {
     mostrarCategorias();
     mostrarPantallaHistorialYFavoritos();
     actualizarVistaUrl("vocabulario");
-    if (saltarScrollAlAbrirVocabulario) {
+
+    // Si venimos de un enlace profundo a una categoría/colección, no hacemos
+    // NINGÚN scroll preliminar aquí. Antes scrollArribaEstable() seguía
+    // vigilando durante ~1.2 s y deshacía el centrado que se ejecutaba unos
+    // instantes después cuando llegaban los datos; por eso el resultado sí se
+    // pintaba pero la página terminaba otra vez arriba.
+    const hayDestinoProfundoPendiente = !!destinoVocabularioInicialPendiente;
+    if (hayDestinoProfundoPendiente) {
+        saltarScrollAlAbrirVocabulario = false;
+    } else if (saltarScrollAlAbrirVocabulario) {
         // Carga directa en "?vista=vocabulario": se deja la pantalla arriba
         // del todo, como una visita normal a la página, en vez de saltar a
         // mitad de camino.
@@ -5374,10 +5383,7 @@ function centrarResultadoCompartidoSuave(el){
     const reducirMovimiento = window.matchMedia
         && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // Espera a que el resultado exista y a que el layout principal termine
-    // de acomodarse. El scroll ocurre mientras el splash aún se está
-    // retirando, por lo que la persona ve el destino ya centrado y sin saltos.
-    requestAnimationFrame(() => requestAnimationFrame(() => {
+    function calcularDestino(){
         const navbarEl = document.querySelector("nav.navbar");
         const altoNavbarFijo = (navbarEl && getComputedStyle(navbarEl).position === "fixed")
             ? navbarEl.getBoundingClientRect().height
@@ -5391,17 +5397,35 @@ function centrarResultadoCompartidoSuave(el){
             : window.innerHeight;
         const espacioVisible = Math.max(220, altoViewport - altoNavbarFijo - 24);
 
-        // Si el bloque cabe en pantalla, lo centra visualmente. Si es más
-        // alto, deja su encabezado justo debajo de la barra fija para que se
-        // vea el nombre de la colección/categoría y las primeras tarjetas.
-        const destino = rect.height <= espacioVisible
-            ? yAbsoluto - altoNavbarFijo - Math.max(16, (espacioVisible - rect.height) / 2)
-            : yAbsoluto - altoNavbarFijo - 16;
+        return Math.max(
+            0,
+            rect.height <= espacioVisible
+                ? yAbsoluto - altoNavbarFijo - Math.max(16, (espacioVisible - rect.height) / 2)
+                : yAbsoluto - altoNavbarFijo - 16
+        );
+    }
 
+    // Dos frames: el grid ya existe y el navegador ya conoce su altura.
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+        const destino = calcularDestino();
         window.scrollTo({
-            top: Math.max(0, destino),
+            top: destino,
             behavior: reducirMovimiento ? "auto" : "smooth"
         });
+
+        // Imágenes/fuentes pueden modificar unos píxeles el layout después del
+        // primer scroll. Al terminar la transición verificamos la posición y
+        // solo corregimos si realmente quedó lejos del destino.
+        setTimeout(() => {
+            const finalEsperado = calcularDestino();
+            const actual = window.pageYOffset || document.documentElement.scrollTop || 0;
+            if(Math.abs(actual - finalEsperado) > 24){
+                window.scrollTo({
+                    top: finalEsperado,
+                    behavior: reducirMovimiento ? "auto" : "smooth"
+                });
+            }
+        }, 520);
     }));
 }
 
