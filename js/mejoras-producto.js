@@ -228,7 +228,7 @@
                     cargar('js/i18n-restaurar.js?v=20260925-3', function(){
                         cargar('js/i18n-auto.js?v=20260925-3', function(){
                             cargar('js/i18n-nosotros.js?v=20260925-2', function(){
-                                cargar('js/i18n-completo.js?v=20260925-1', function(){
+                                cargar('js/i18n-completo.js?v=20260925-2', function(){
                                     agregarFacebookRedesSociales();
                                     cargar('js/buscador-visual.js?v=20260914');
                                 });
