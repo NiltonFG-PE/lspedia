@@ -30,12 +30,15 @@ const server=http.createServer((req,res)=>{const file=path.resolve(root,'.'+new 
   await page.locator('#resume').click();await page.clock.runFor(61000);await page.locator('#results').waitFor({state:'visible'});
   assert.equal(await page.locator('#final-correct').innerText(),'1');assert.equal(await page.locator('#final-pass').innerText(),'1');
   console.log('PASS: mobile vocabulary category, real images, correct/pass, pause freezes timer, timeout results');
-  await page.locator('#menu').click();await page.locator('[data-deck="Animales"]').click();await page.locator('[data-seconds="0"]').click();await page.locator('#start').click();await page.locator('#begin').click();await page.clock.runFor(3100);
+  await page.locator('#menu').click();
+  await page.locator('[data-orientation="landscape"]').click();
+  assert.equal(await page.locator('[data-orientation="landscape"]').getAttribute('aria-pressed'),'true');
+  await page.locator('[data-deck="Profesiones"]').click();await page.locator('[data-seconds="0"]').click();await page.locator('#start').click();await page.locator('#begin').click();await page.clock.runFor(3100);
   await page.setViewportSize({width:844,height:390});
-  for(let i=0;i<6;i++){assert.ok(await page.locator('#card-image').evaluate(i=>i.naturalWidth>0));await page.locator('#correct').click();await page.clock.runFor(900);}
-  assert.equal(await page.locator('#final-correct').innerText(),'6');assert.match(await page.locator('#end-reason').innerText(),/todas/);
-  assert.equal(new Set(await page.locator('.review-item').allTextContents()).size,6);
-  console.log('PASS: landscape, unlimited round, six unique animal illustrations, deck exhaustion');
+  for(let i=0;i<4;i++){assert.ok(await page.locator('#card-image').evaluate(i=>i.naturalWidth>0));await page.locator('#correct').click();await page.clock.runFor(900);}
+  assert.equal(await page.locator('#final-correct').innerText(),'4');assert.match(await page.locator('#end-reason').innerText(),/todas/);
+  assert.equal(new Set(await page.locator('.review-item').allTextContents()).size,4);
+  console.log('PASS: explicit landscape mode, unlimited round, unique profession illustrations, deck exhaustion');
   await page.locator('#menu').click();await page.locator('#motion').click();await page.clock.runFor(4100);assert.match(await page.locator('#sensor-status').innerText(),/No llegan datos/);
   // Send orientation readings as a real device would; verify gate through the UI.
   await page.locator('#motion').click();
@@ -62,9 +65,12 @@ const server=http.createServer((req,res)=>{const file=path.resolve(root,'.'+new 
   await context.close();
   const failed=await browser.newContext({viewport:{width:360,height:740}}),p=await failed.newPage();
   await p.route('**/data/vocabulario.json',r=>r.abort());
-  await p.goto(base+'/juegos/adivina-que-soy.html');await p.waitForFunction(()=>!document.getElementById('start').disabled);assert.match(await p.locator('#notice').innerText(),/No se pudo cargar Vocabulario/);assert.match(await p.locator('#total').innerText(),/14/);
-  await p.route('**/img/adivina/*.svg',r=>r.abort());await p.locator('#start').click();await p.waitForFunction(()=>document.getElementById('notice').textContent.includes('No pudimos cargar'));assert.equal(await p.locator('#play').isVisible(),false);
-  await p.unroute('**/img/adivina/*.svg');await p.locator('#start').click();await p.locator('#begin').waitFor({state:'visible'});
+  await p.goto(base+'/juegos/adivina-que-soy.html');await p.waitForFunction(()=>!document.getElementById('start').disabled);assert.match(await p.locator('#notice').innerText(),/No se pudo cargar Vocabulario/);assert.match(await p.locator('#total').innerText(),/77/);
+  await p.route('**/img/adivina/**',r=>r.abort());
+  await p.route('**/img/alfabetizacion/ejemplos/**',r=>r.abort());
+  await p.locator('#start').click();await p.waitForFunction(()=>document.getElementById('notice').textContent.includes('No pudimos cargar'));assert.equal(await p.locator('#play').isVisible(),false);
+  await p.unroute('**/img/adivina/**');await p.unroute('**/img/alfabetizacion/ejemplos/**');
+  await p.locator('#start').click();await p.locator('#begin').waitFor({state:'visible'});
   console.log('PASS: vocabulary network failure, no blank image round, image retry recovers');
   await p.goBack();await p.locator('#home').waitFor({state:'visible'});
   await failed.close();
