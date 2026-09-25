@@ -478,6 +478,12 @@ def generar_categorias(repo: Path, filas_dic: list[dict], filas_voc: list[dict])
   <meta name="twitter:description" content="{escape(descripcion, quote=True)}">
   <meta name="twitter:image" content="{escape(imagen, quote=True)}">
   <script type="application/ld+json">{json.dumps(ld, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")}</script>
+  <script>
+    // Los rastreadores sociales leen el Open Graph anterior. Un navegador
+    // humano entra inmediatamente a la aplicación completa y conserva la
+    // categoría solicitada.
+    window.location.replace({json.dumps(app_url, ensure_ascii=False)});
+  </script>
   <style>
     body{{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#f5f8fc;color:#172033;line-height:1.6}}
     header{{background:#0f1c35;padding:18px 20px}} header img{{width:150px;height:auto}}
