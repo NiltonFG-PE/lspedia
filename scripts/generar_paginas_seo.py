@@ -27,7 +27,7 @@ MARCADOR = ".lspedia-seo-generated"
 IMAGEN_RE = re.compile(r"\.(?:avif|gif|jpe?g|png|svg|webp)(?:[?#].*)?$", re.I)
 PREFIJO_RE = re.compile(r"^(?:https?://|/|\.\.?/|img/)", re.I)
 YOUTUBE_ID_RE = re.compile(r"^[A-Za-z0-9_-]{11}$")
-SOCIAL_PREVIEW_VERSION = "20260925-4"
+SOCIAL_PREVIEW_VERSION = "20260925-5"
 
 
 def texto(valor: object) -> str:
@@ -470,6 +470,21 @@ def generar_colecciones(repo: Path, filas_voc: list[dict]) -> int:
 
         palabras = [texto(x.get("palabra")) for x in items if texto(x.get("palabra"))]
         muestra = ", ".join(palabras[:12])
+        tarjetas = []
+        for item in items:
+            palabra = texto(item.get("palabra"))
+            if not palabra:
+                continue
+            referencia = referencia_vocabulario(item)
+            url_palabra = f"{BASE_URL}/vocabulario/{quote(referencia, safe='')}/"
+            imagen_palabra = imagen_absoluta(item.get("imagen"))
+            tarjetas.append(
+                '<a class="palabra-card" href="' + escape(url_palabra, quote=True) + '">'
+                '<img src="' + escape(imagen_palabra, quote=True) + '" alt="' + escape(palabra, quote=True) + '" loading="lazy">'
+                '<span>' + escape(palabra) + '</span>'
+                '</a>'
+            )
+        tarjetas_html = "".join(tarjetas)
         descripcion = limpiar_texto_meta(
             f"Explora la colección {nombre} del Vocabulario de LSPedia con {len(palabras)} palabras y apoyo visual en Lengua de Señas Peruana (LSP)."
         )
@@ -511,21 +526,23 @@ def generar_colecciones(repo: Path, filas_voc: list[dict]) -> int:
   <meta name="twitter:description" content="{escape(descripcion, quote=True)}">
   <meta name="twitter:image" content="{escape(imagen, quote=True)}">
   <script type="application/ld+json">{json.dumps(ld, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")}</script>
-  <script>window.location.replace({json.dumps(app_url, ensure_ascii=False)});</script>
   <style>
     body{{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#f5f8fc;color:#172033;line-height:1.6}}
     main{{max-width:900px;margin:32px auto;padding:0 18px 48px}}
     article{{background:#fff;border:1px solid #dbe5f0;border-radius:24px;padding:clamp(22px,4vw,40px)}}
-    h1{{color:#1265d8}} .imagen{{width:100%;max-width:520px;border-radius:18px}}
+    h1{{color:#1265d8;margin:.2em 0}} .resumen{{color:#475467}}
+    .palabras-grid{{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-top:24px}}
+    .palabra-card{{display:flex;flex-direction:column;gap:8px;text-decoration:none;color:#172033;font-weight:800;background:#fff;border:1px solid #dbe5f0;border-radius:16px;padding:10px;box-shadow:0 5px 16px rgba(15,28,53,.06)}}
+    .palabra-card img{{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px;background:#eef3f8}}
+    .cta{{display:inline-flex;margin-top:24px;background:#1265d8;color:#fff;text-decoration:none;font-weight:800;border-radius:14px;padding:12px 16px}}
   </style>
 </head>
 <body><main><article>
   <div>Vocabulario · Colección</div>
   <h1>{escape(nombre)}</h1>
-  <p>{escape(descripcion)}</p>
-  <p><strong>Incluye:</strong> {escape(muestra)}{("…" if len(palabras) > 12 else "")}</p>
-  <img class="imagen" src="{escape(imagen, quote=True)}" alt="Colección {escape(nombre, quote=True)}" loading="eager">
-  <p><a href="{escape(app_url, quote=True)}">Abrir colección en LSPedia</a></p>
+  <p class="resumen">{escape(descripcion)}</p>
+  <div class="palabras-grid">{tarjetas_html}</div>
+  <a class="cta" href="{escape(app_url, quote=True)}">Abrir esta colección en LSPedia</a>
 </article></main></body></html>
 """
         (destino / "index.html").write_text(html, encoding="utf-8", newline="\n")
