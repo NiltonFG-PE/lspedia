@@ -3165,15 +3165,16 @@ function compartirCategoriaLSPedia(nombre, fuente){
     if(!categoria) return;
 
     const esVocabulario = fuente === "vocabulario";
-    const params = new URLSearchParams();
-    if(esVocabulario){
-        params.set("vista", "vocabulario");
-        params.set("categoria", categoria);
-    } else {
-        params.set("categoriaDiccionario", categoria);
-    }
-
-    const url = window.location.origin + window.location.pathname + "?" + params.toString();
+    const referenciaCategoria = categoria.normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+    // Compartimos la página SEO estática para que WhatsApp y otras redes
+    // reciban título, descripción e imagen de esta categoría sin ejecutar JS.
+    const url = window.location.origin
+        + "/categoria/" + (esVocabulario ? "vocabulario" : "diccionario")
+        + "/" + encodeURIComponent(referenciaCategoria) + "/";
     const titulo = categoria + " | LSPedia";
     const texto = esVocabulario
         ? `Explora la categoría "${categoria}" en el Vocabulario de LSPedia.`
