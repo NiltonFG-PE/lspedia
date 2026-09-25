@@ -3682,6 +3682,21 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
             animation: lspSeccionPrincipalEntrada 180ms cubic-bezier(0.22, 1, 0.36, 1) both;
         }
 
+        #resultadoCategorias.lsp-destino-suave {
+            animation: lspDestinoSuave 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        @keyframes lspDestinoSuave {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         @keyframes lspSeccionPrincipalEntrada {
             from {
                 opacity: 0.46;
@@ -3700,7 +3715,8 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                 transition: none;
             }
 
-            #contenidoPrincipalApp.lsp-seccion-entrando {
+            #contenidoPrincipalApp.lsp-seccion-entrando,
+            #resultadoCategorias.lsp-destino-suave {
                 animation: none;
             }
         }
@@ -4592,8 +4608,15 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
         const inicio = Date.now();
         const MINIMO_MS = 250;
         const MAXIMO_MS = 8000;
+        const paramsIniciales = new URLSearchParams(window.location.search);
+        const vistaInicial = String(paramsIniciales.get("vista") || "").toLowerCase();
+        const requiereDestinoVocabulario =
+            (vistaInicial === "vocabulario" || vistaInicial === "temas")
+            && !!(paramsIniciales.get("categoria") || paramsIniciales.get("coleccion"));
+
         let paginaCargada = false;
         let datosListos = false;
+        let destinoListo = !requiereDestinoVocabulario;
         let yaOculto = false;
 
         function ocultarSplash() {
@@ -4606,7 +4629,7 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
         }
 
         function intentarOcultar() {
-            if (!paginaCargada || !datosListos) return;
+            if (!paginaCargada || !datosListos || !destinoListo) return;
             const transcurrido = Date.now() - inicio;
             const espera = Math.max(0, MINIMO_MS - transcurrido);
             setTimeout(ocultarSplash, espera);
@@ -4614,6 +4637,10 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
 
         window.addEventListener("load", () => { paginaCargada = true; intentarOcultar(); });
         document.addEventListener("lspedia:datosListos", () => { datosListos = true; intentarOcultar(); });
+        document.addEventListener("lspedia:destinoInicialListo", () => {
+            destinoListo = true;
+            intentarOcultar();
+        }, { once: true });
         setTimeout(ocultarSplash, MAXIMO_MS); // respaldo de seguridad: nunca se queda trabado
     })();
 </script>
@@ -6140,8 +6167,8 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
     <script src="js/lspedia-media.js?v=20260917-1"></script>
     <script src="js/lspedia-core.js?v=20260925-1"></script>
     <script src="js/busqueda-core.js?v=20260925-1"></script>
-    <script src="js/script.js?v=20260925-2"></script>
-    <script src="js/vocabulario-publico.js?v=20260925-2"></script>
+    <script src="js/script.js?v=20260925-3"></script>
+    <script src="js/vocabulario-publico.js?v=20260925-3"></script>
     <script src="js/buscador-predictivo.js?v=20260925-1"></script>
     <script>
     if ("serviceWorker" in navigator && (!window.LSPediaSecurity || window.LSPediaSecurity.permitirPWA())) {
