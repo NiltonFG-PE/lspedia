@@ -5,7 +5,7 @@
     'use strict';
 
     const CLASE_BOTON = 'btn-compartir-categoria-lspedia';
-    const VERSION_PREVIEW_SOCIAL = '20260925-1';
+    const VERSION_PREVIEW_SOCIAL = '20260925-2';
     let restauracionVocabularioRegistrada = false;
     let ultimaRestauracionConfirmada = '';
 
@@ -101,7 +101,7 @@
         // interactiva y conserva una miniatura propia.
         const seccion = tipo === 'vocabulario' ? 'vocabulario' : 'diccionario';
         const ref = slugCategoria(nombre);
-        const url = new URL('/categoria/' + seccion + '/' + encodeURIComponent(ref) + '/', window.location.origin);
+        const url = new URL('/categoria/' + seccion + '/' + encodeURIComponent(ref) + '/index.html', window.location.origin);
         // WhatsApp conserva vistas previas durante bastante tiempo. Versionar
         // solo el enlace compartido fuerza una lectura nueva cuando cambia
         // Open Graph, sin alterar la canonical limpia de la categoría.
