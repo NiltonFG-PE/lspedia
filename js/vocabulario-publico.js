@@ -16,7 +16,7 @@
 
     if (window.LSPediaVocabularioPublico && window.LSPediaVocabularioPublico.version) return;
 
-    const VERSION = '2026.09.17.1';
+    const VERSION = '2026.09.25.1';
     const DATA_URL = 'data/vocabulario.json';
     const DEFINICIONES_URL = 'data/vocabulario-definiciones.json';
     const getterAnterior = typeof window.obtenerBancoHoja2 === 'function'
@@ -167,51 +167,59 @@
         });
     }
 
+    let promesaCarga = null;
     function cargar() {
-        if (estado.cargando || estado.listo) return;
+        if (estado.cargando || estado.listo || estado.error) return promesaCarga || Promise.resolve();
         estado.cargando = true;
         estado.error = null;
 
         const marca = Date.now();
-        const promesaDefiniciones = leerDatos(DEFINICIONES_URL + '?_def=' + marca)
+        // La definición de apoyo no bloquea la disponibilidad de las palabras.
+        leerDatos(DEFINICIONES_URL + '?_def=' + marca)
             .then(function (data) {
                 estado.definiciones = normalizarDefiniciones(data);
+                if (estado.listo) {
+                    estado.datos = estado.datos.map(enriquecerDefinicion);
+                    refrescarConsumidores();
+                }
             })
             .catch(function (error) {
-                estado.definiciones = Object.create(null);
-                console.warn('[LSPedia] Definiciones de apoyo no disponibles; Vocabulario continuará sin bloquearse.', error);
+                console.warn('[LSPedia] Definiciones de apoyo no disponibles.', error);
             });
-
-        promesaDefiniciones
-            .then(function () {
-                return leerDatos(DATA_URL + '?_publico=' + marca);
-            })
+        promesaCarga = leerDatos(DATA_URL + '?_publico=' + marca)
             .then(function (data) {
+                if (!Array.isArray(data) && !(data && Array.isArray(data.preguntas))) {
+                    throw new Error('Formato de Vocabulario no válido');
+                }
                 estado.datos = normalizarLista(data);
-                estado.listo = true;
+                estado.listo = true; // Una colección vacía también terminó de cargar.
                 refrescarConsumidores();
             })
             .catch(function (error) {
                 estado.error = error;
-                console.warn('[LSPedia] No se pudo cargar Vocabulario público; se conserva el respaldo disponible.', error);
+                console.warn('[LSPedia] No se pudo cargar Vocabulario público.', error);
+                document.dispatchEvent(new CustomEvent('lspedia:vocabularioPublicoError'));
             })
-            .finally(function () {
-                estado.cargando = false;
-            });
+            .finally(function () { estado.cargando = false; });
+        return promesaCarga;
     }
 
     const api = Object.freeze({
         version: VERSION,
         obtener: function () { return estado.datos.slice(); },
         listo: function () { return estado.listo; },
+        cargar: cargar,
+        estado: function () { return estado.listo ? 'listo' : (estado.error ? 'error' : 'cargando'); },
         total: function () { return estado.datos.length; },
         totalConDefinicion: function () {
             return estado.datos.filter(function (item) { return texto(item && item.definicion); }).length;
         },
         esPublicable: esPublicable,
         recargar: function () {
+            if (estado.cargando) return promesaCarga;
             estado.listo = false;
-            cargar();
+            estado.error = null;
+            return cargar();
         }
     });
 

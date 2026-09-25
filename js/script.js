@@ -1898,6 +1898,7 @@ if(btnAlfabSalir){
 // --- CARGA DE DATOS CENTRALIZADA ---
 const App = {
     datos: [],
+    estadoDatos: "cargando",
     iniciar: function() {
         // Precarga en segundo plano el banco del Quiz (Vocabulario) desde el
         // primer instante, sin esperar a que el usuario busque algo o
@@ -2023,6 +2024,7 @@ function aplicarPalabrasActualizadasEnSesion(data) {
     if (!datosPalabrasValidos(data)) return;
 
     App.datos = obtenerDatosDiccionarioPublicables(data);
+    App.estadoDatos = "listo";
 
     migrarFavoritosEHistorialAIds();
     // Estas zonas dependen directamente de App.datos y pueden refrescarse
@@ -2070,6 +2072,7 @@ function aplicarPalabrasActualizadasEnSesion(data) {
 // sabe si hay datos para mostrar o no, sea porque llegaron de la red, de
 // la copia guardada, o porque definitivamente no se pudo conseguir ninguna.
 function avisarDatosListos() {
+    if(App.estadoDatos !== "listo") App.estadoDatos = "error";
     document.dispatchEvent(new Event("lspedia:datosListos"));
 }
 
@@ -2214,6 +2217,7 @@ function procesarDatosApp(data) {
             // Regla pública del Diccionario: palabra + definición + categoría + imagen real.
             // El video es opcional; una descripción de imagen o placeholder NO cuenta como imagen.
             App.datos = obtenerDatosDiccionarioPublicables(data);
+            App.estadoDatos = "listo";
             migrarFavoritosEHistorialAIds();
             // Las categorías reales del diccionario (Diccionario, columna C)
             // recién están disponibles acá, así que se pintan las tarjetas
@@ -2449,64 +2453,49 @@ if(indiceAlfabetico){
 // ahora NUNCA se fusiona con App.datos (Diccionario): que ambas fuentes
 // tengan una palabra con el mismo nombre es válido y cada ficha conserva
 // su propio video, categoría y navegación.
-let bancoVocabularioBusquedaLocal = [];
-let cargaVocabularioBusquedaLocal = false;
-let vocabularioBusquedaLocalListo = false;
-
+// Una sola fuente pública para búsqueda, independiente del banco de Quiz.
 function obtenerBancoHoja2() {
-    // Para el buscador, la fuente de verdad es el archivo local
-    // data/vocabulario.json que cargamos específicamente para búsqueda.
-    // QuizV2 puede conservar temporalmente un banco antiguo en localStorage;
-    // no debemos dejar que ese caché oculte palabras que sí existen en el
-    // archivo actual (por ejemplo "Barato").
-    if (Array.isArray(bancoVocabularioBusquedaLocal) && bancoVocabularioBusquedaLocal.length) {
-        return bancoVocabularioBusquedaLocal;
-    }
-
-    const bancoQuiz = (window.QuizV2 && typeof QuizV2.obtenerBanco === "function")
-        ? QuizV2.obtenerBanco()
-        : [];
-
-    return Array.isArray(bancoQuiz) ? bancoQuiz : [];
+    return window.LSPediaVocabularioPublico ? window.LSPediaVocabularioPublico.obtener() : [];
 }
-
-// Respaldo independiente para el buscador. Aunque QuizV2 todavía esté
-// cargando, el buscador debe poder comprobar inmediatamente palabras que
-// existen en Vocabulario (por ejemplo "Barato"). Esto evita que una
-// sugerencia ortográfica del Diccionario aparezca antes de que termine la
-// carga de Vocabulario.
-function asegurarBancoVocabularioParaBusqueda(){
-    if(vocabularioBusquedaLocalListo || cargaVocabularioBusquedaLocal) return;
-
-    cargaVocabularioBusquedaLocal = true;
-    const url = "data/vocabulario.json?_lspedia_busqueda=" + Date.now();
-
-    fetch(url, { cache: "no-store" })
-        .then(res => {
-            if(!res.ok) throw new Error("HTTP " + res.status);
-            return res.json();
-        })
-        .then(data => {
-            const lista = Array.isArray(data)
-                ? data
-                : (data && Array.isArray(data.preguntas) ? data.preguntas : []);
-
-            bancoVocabularioBusquedaLocal = lista
-                .filter(p => p && p.palabra && p.video)
-                .map(p => ({ ...p, nivel: p.nivel || "" }));
-
-            vocabularioBusquedaLocalListo = bancoVocabularioBusquedaLocal.length > 0;
-            if(vocabularioBusquedaLocalListo && buscar && buscar.value && buscar.value.trim()){
-                buscarPalabras();
-            }
-        })
-        .catch(error => {
-            console.warn("No se pudo cargar Vocabulario para el buscador:", error);
-        })
-        .finally(() => {
-            cargaVocabularioBusquedaLocal = false;
-        });
+function asegurarBancoVocabularioParaBusqueda() {
+    const api = window.LSPediaVocabularioPublico;
+    return api ? api.cargar() : Promise.resolve();
 }
+function resolverPrioridadBusqueda(consulta) {
+    if(App.estadoDatos !== 'listo') return { tipo: App.estadoDatos, fuente: 'diccionario' };
+    const api = window.LSPediaVocabularioPublico;
+    const estado = api ? api.estado() : 'cargando';
+    return window.LSPediaBusquedaCore.resolver(consulta, App.datos, obtenerBancoHoja2(), estado);
+}
+function mostrarEstadoBusqueda(tipo) {
+    const faltaDiccionario = App.estadoDatos !== 'listo';
+    sugerencias.style.display = 'block';
+    sugerencias.innerHTML = tipo === 'error'
+        ? '<div class="list-group-item" role="status">No pudimos completar la búsqueda. <button type="button" class="btn btn-sm btn-primary" id="reintentarBusqueda">Reintentar</button></div>'
+        : '<div class="list-group-item" role="status">Buscando también en Vocabulario…</div>';
+    if(tipo === 'cargando' && faltaDiccionario) sugerencias.textContent = 'Cargando Diccionario…';
+    const boton = document.getElementById('reintentarBusqueda');
+    if (boton) boton.onclick = (evento) => {
+        evento.preventDefault();
+        evento.stopPropagation();
+        if(faltaDiccionario) { App.estadoDatos = 'cargando'; cargarPalabrasJson(); }
+        window.LSPediaVocabularioPublico.recargar();
+        buscarPalabras();
+    };
+}
+// Refrescar solo una consulta que sigue abierta: no reabrir la lista sobre una ficha.
+document.addEventListener('lspedia:vocabularioPublicoListo', () => {
+    if (buscar.value.trim() && sugerencias.style.display !== 'none') buscarPalabras();
+    if (categoriaActualMostrada && !new URLSearchParams(location.search).get('p')) {
+        mostrarCategoria(categoriaActualMostrada, { noActualizarHistorial: true });
+    } else if (document.body.classList.contains('vista-temas-movil')) mostrarCategorias();
+});
+document.addEventListener('lspedia:datosListos', () => {
+    if (buscar.value.trim() && sugerencias.style.display !== 'none') buscarPalabras();
+});
+document.addEventListener('lspedia:vocabularioPublicoError', () => {
+    if (buscar.value.trim() && sugerencias.style.display !== 'none') buscarPalabras();
+});
 
 // Busca una palabra en Vocabulario sin mezclar sus resultados con el
 // Diccionario. La prioridad es estricta:
@@ -2516,29 +2505,7 @@ function asegurarBancoVocabularioParaBusqueda(){
 //   2 = coincidencia por forma relacionada muy cercana
 // No usamos coincidencias parciales aquí: una palabra del Vocabulario solo
 // se ofrece como alternativa cuando existe una relación lingüística clara.
-function generarConjugacionesRegulares(infinitivo){
-    const verbo = norm(String(infinitivo || "").trim());
-    if(!/^[a-záéíóúñ]+(ar|er|ir)$/.test(verbo)) return [];
-    const terminacion = verbo.slice(-2);
-    const raiz = verbo.slice(0, -2);
-    const formas = new Set();
-
-    if(terminacion === "ar"){
-        ["o","as","a","amos","áis","an","é","aste","ó","amos","asteis","aron",
-         "aba","abas","aba","ábamos","abais","aban","aré","arás","ará","aremos","aréis","arán",
-         "ando","ado"].forEach(x => formas.add(raiz + x));
-    } else if(terminacion === "er"){
-        ["o","es","e","emos","éis","en","í","iste","ió","imos","isteis","ieron",
-         "ía","ías","ía","íamos","íais","ían","eré","erás","erá","eremos","eréis","erán",
-         "iendo","ido"].forEach(x => formas.add(raiz + x));
-    } else {
-        ["o","es","e","imos","ís","en","í","iste","ió","imos","isteis","ieron",
-         "ía","ías","ía","íamos","íais","ían","iré","irás","irá","iremos","iréis","irán",
-         "iendo","ido"].forEach(x => formas.add(raiz + x));
-    }
-
-    return Array.from(formas);
-}
+function generarConjugacionesRegulares(...args) { return window.LSPediaBusquedaCore.generarConjugacionesRegulares(...args); }
 
 // Busca una palabra en Vocabulario sin mezclar sus resultados con el
 // Diccionario. Prioridad:
@@ -2556,13 +2523,10 @@ function buscarCoincidenciaEnVocabulario(texto, opciones = {}){
     const banco = obtenerBancoHoja2();
     if(!Array.isArray(banco) || banco.length === 0) return null;
 
+    const exacta = banco.find(registro => registro && norm(registro.palabra) === consulta);
+    if(exacta) return { registro: exacta, tipo: "exacta", forma: exacta.palabra };
     for(const registro of banco){
         if(!registro) continue;
-
-        if(norm(registro.palabra) === consulta){
-            return { registro, tipo: "exacta", forma: registro.palabra };
-        }
-
         const variantes = String(registro.variantes || "")
             .split(",")
             .map(v => v.trim())
@@ -2656,126 +2620,14 @@ buscar.addEventListener("input", buscarPalabras);
 // también funcione si el usuario escribe sin tilde de la eñe (ano ~ año).
 // Se usa en ambos lados de cada comparación para que el buscador tolere
 // errores comunes de escritura.
-const norm = (s) => (s || "").toLowerCase()
-    .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+const norm = window.LSPediaBusquedaCore.norm;
+function normalizarFormaBusqueda(...args) { return window.LSPediaBusquedaCore.normalizarFormaBusqueda(...args); }
+function formasInglesBusqueda(...args) { return window.LSPediaBusquedaCore.formasInglesBusqueda(...args); }
+function obtenerVarianteQueCoincide(...args) { return window.LSPediaBusquedaCore.obtenerVarianteQueCoincide(...args); }
+function clasificarCoincidencia(...args) { return window.LSPediaBusquedaCore.clasificarCoincidencia(...args); }
+function ordenarYLimitarCoincidencias(...args) { return window.LSPediaBusquedaCore.ordenarYLimitarCoincidencias(...args); }
+function levenshtein(...args) { return window.LSPediaBusquedaCore.levenshtein(...args); }
 
-// Formas alternativas de búsqueda que ayudan con plurales sencillos y
-// traducciones al inglés. La palabra canónica en la ficha sigue siendo
-// siempre la de LSPedia.
-function normalizarFormaBusqueda(valor){
-    return norm(String(valor || ""))
-        .replace(/^(los|las|unos|unas|un|una|el|la)\s+/, "")
-        .replace(/es$/, "")
-        .replace(/s$/, "");
-}
-
-function formasInglesBusqueda(p){
-    return [
-        p && p.ingles,
-        p && p.word,
-        p && p.english,
-        p && p.traduccionIngles,
-        p && p.traduccioningles
-    ].map(v => String(v || "").trim()).filter(Boolean);
-}
-
-// Dado el texto de variantes tal como está en los datos (con tildes/ñ
-// originales) y el texto normalizado que escribió el usuario, devuelve
-// la variante ORIGINAL que hizo match (para mostrarla tal cual, no la
-// versión normalizada de lo que escribió el usuario).
-function obtenerVarianteQueCoincide(variantesStr, textoNormalizado) {
-    if (!variantesStr) return null;
-    const variantesOriginales = variantesStr.split(',').map(v => v.trim());
-    const encontrada = variantesOriginales.find(v => norm(v).includes(textoNormalizado));
-    return encontrada || null;
-}
-
-// Clasifica qué tan buena es la coincidencia de "p" contra "texto"
-// (ya normalizado). Menor número = más relevante. -1 = no hay match.
-// Se usa para que los resultados se ordenen SIEMPRE de lo más exacto
-// a lo más aproximado, sin importar el orden alfabético.
-function clasificarCoincidencia(p, texto) {
-    const palabraNorm = norm(p.palabra);
-    const variantesNorm = p.variantes ? p.variantes.split(',').map(v => norm(v.trim())).filter(Boolean) : [];
-    const inglesNorm = formasInglesBusqueda(p).map(v => norm(v)).filter(Boolean);
-
-    if (palabraNorm === texto) return 0;                                  // palabra exacta
-    if (variantesNorm.includes(texto)) return 1;                          // variante exacta
-
-    // Singular/plural o artículo delante: conserva la ficha canónica.
-    if (texto.length >= 4 && normalizarFormaBusqueda(palabraNorm) === normalizarFormaBusqueda(texto)) return 2;
-
-    // También permite encontrar una entrada española por su equivalente en inglés.
-    if (inglesNorm.includes(texto)) return 3;
-
-    if (palabraNorm.startsWith(texto)) return 4;                          // prefijo
-    if (variantesNorm.some(v => v.startsWith(texto))) return 5;           // prefijo de variante
-    if (inglesNorm.some(v => v.startsWith(texto))) return 5;              // prefijo en inglés
-    if (palabraNorm.includes(texto)) return 6;                            // contiene
-    if (variantesNorm.some(v => v.includes(texto))) return 7;             // contiene en variante
-    if (inglesNorm.some(v => v.includes(texto))) return 7;                // contiene en inglés
-
-    // Si el nombre no coincide, también buscamos dentro del significado y
-    // del ejemplo. Esto ayuda a quien conoce la idea pero no recuerda la
-    // palabra exacta. Se exige un mínimo de 4 caracteres para evitar ruido
-    // con consultas demasiado cortas.
-    if (texto.length >= 4) {
-        const contenido = norm(`${p.definicion || ""} ${p.ejemplo || ""}`);
-        if (contenido.includes(texto)) return 6;
-
-        // Para consultas de varias palabras aceptamos que todas aparezcan
-        // en el significado/ejemplo aunque no estén juntas en el mismo orden.
-        const terminos = texto.split(/\s+/).filter(t => t.length >= 3);
-        if (terminos.length >= 2 && terminos.every(t => contenido.includes(t))) return 7;
-    }
-
-    return -1;
-}
-
-// Ordena una lista de {p, rango} de más exacto a más aproximado, y
-// dentro de cada nivel de exactitud, alfabéticamente. Los niveles 0-3
-// (coincidencias exactas o que empiezan con el texto) NUNCA se recortan;
-// solo se limita cuántos resultados "de relleno" (nivel 4-5, que solo
-// contienen el texto en otra parte) se agregan al final, hasta el tope.
-function ordenarYLimitarCoincidencias(coincidencias, tope) {
-    const ordenarAlfabetico = (a, b) => a.p.palabra.localeCompare(b.p.palabra, "es");
-    const prioritarios = coincidencias.filter(c => c.rango <= 3).sort((a, b) => a.rango - b.rango || ordenarAlfabetico(a, b));
-    const secundarios = coincidencias.filter(c => c.rango >= 4).sort((a, b) => a.rango - b.rango || ordenarAlfabetico(a, b));
-    const cupoRestante = Math.max(0, tope - prioritarios.length);
-    return prioritarios.concat(secundarios.slice(0, cupoRestante)).map(c => c.p);
-}
-
-// Distancia de Levenshtein: cuántas ediciones (insertar/borrar/cambiar una
-// letra) hacen falta para convertir "a" en "b". Se usa para detectar
-// errores de escritura (ej. "adioz" está a 1 edición de "adios") y poder
-// ofrecer "¿Quisiste decir...?" cuando la búsqueda normal no encuentra nada.
-function levenshtein(a, b) {
-    if (a === b) return 0;
-    const la = a.length, lb = b.length;
-    if (la === 0) return lb;
-    if (lb === 0) return la;
-    let prev = new Array(lb + 1);
-    let curr = new Array(lb + 1);
-    for (let j = 0; j <= lb; j++) prev[j] = j;
-    for (let i = 1; i <= la; i++) {
-        curr[0] = i;
-        for (let j = 1; j <= lb; j++) {
-            const costo = a[i - 1] === b[j - 1] ? 0 : 1;
-            curr[j] = Math.min(
-                prev[j] + 1,      // borrar
-                curr[j - 1] + 1,  // insertar
-                prev[j - 1] + costo // cambiar (o igual)
-            );
-        }
-        [prev, curr] = [curr, prev];
-    }
-    return prev[lb];
-}
-
-// Busca en "datos" palabras (o variantes) que estén a exactamente 1 error
-// de "texto". Solo tiene sentido cuando el texto ya tiene al menos 3
-// letras (con 1-2 letras casi cualquier palabra "cabe" a distancia 1 y el
-// resultado sería puro ruido). Devuelve como máximo 3 candidatas.
 function buscarCercanosVocabulario(texto){
     if(texto.length < 3) return [];
     const banco = obtenerBancoHoja2();
@@ -2929,12 +2781,6 @@ function registrarBusquedaGA4(termino, origen){
 }
 
 function buscarPalabras(){
-    // La Vocabulario se carga en paralelo. Si la persona ya está buscando,
-    // forzamos la precarga y el listener de QuizV2 volverá a ejecutar esta
-    // búsqueda cuando el banco esté disponible.
-    if(window.QuizV2 && typeof QuizV2.asegurarBancoCargado === "function"){
-        QuizV2.asegurarBancoCargado();
-    }
     asegurarBancoVocabularioParaBusqueda();
 
     const texto = norm(buscar.value.trim());
@@ -2974,21 +2820,15 @@ function buscarPalabras(){
 
     sugerencias.style.display = "block";
 
-    const bancoVocabularioDisponible = obtenerBancoHoja2();
-    const coincidenciaVocabulario = (!encontrados.some(p => clasificarCoincidencia(p, texto) <= 5))
-        ? buscarCoincidenciaEnVocabulario(texto)
-        : null;
-
-    // No mostramos una "posible corrección" del Diccionario mientras
-    // Vocabulario todavía está cargando. De lo contrario una palabra válida
-    // de Vocabulario (por ejemplo "Barato") puede quedar temporalmente
-    // reemplazada por una coincidencia irrelevante como "Felicitaciones".
-    if(encontrados.length === 0 && bancoVocabularioDisponible.length === 0){
-        sugerencias.innerHTML = '<div class="list-group-item text-center py-3" style="background-color: #343a40; border: none;">' +
-            '<span class="text-white small">Buscando también en Vocabulario…</span>' +
-            '</div>';
+    const prioridad = resolverPrioridadBusqueda(texto);
+    if(prioridad.tipo === 'cargando' || prioridad.tipo === 'error') {
+        mostrarEstadoBusqueda(prioridad.tipo);
         return;
     }
+    const coincidenciaVocabulario = prioridad.tipo === 'vocabulario'
+        ? { registro: prioridad.registro, tipo: 'exacta', forma: prioridad.forma }
+        : (prioridad.tipo === 'aproximada' && !encontrados.some(p => clasificarCoincidencia(p, texto) <= 5)
+            ? buscarCoincidenciaEnVocabulario(texto) : null);
 
     if(encontrados.length===0 || coincidenciaVocabulario){
         if(coincidenciaVocabulario){
@@ -3104,10 +2944,24 @@ if(buscar){
     actualizarBotonLimpiarBuscar();
 }
 
-function ejecutarBusquedaDirecta() {
+async function ejecutarBusquedaDirecta() {
     const consultaOriginal = buscar.value.trim();
     const texto = norm(consultaOriginal);
     if(texto === "") return;
+    let prioridad = resolverPrioridadBusqueda(texto);
+    if(prioridad.tipo === 'cargando') {
+        mostrarEstadoBusqueda('cargando');
+        if(App.estadoDatos === 'cargando') {
+            await new Promise(resolve => document.addEventListener('lspedia:datosListos', resolve, {once:true}));
+        }
+        await asegurarBancoVocabularioParaBusqueda();
+        if(buscar.value.trim() !== consultaOriginal || sugerencias.style.display === 'none') return;
+        prioridad = resolverPrioridadBusqueda(texto);
+    }
+    if(prioridad.tipo === 'error' || prioridad.tipo === 'cargando') {
+        mostrarEstadoBusqueda(prioridad.tipo);
+        return;
+    }
     registrarBusquedaGA4(consultaOriginal, "diccionario");
     sugerencias.innerHTML = "";
     sugerencias.style.display = "none";
@@ -3122,7 +2976,7 @@ function ejecutarBusquedaDirecta() {
         if (rango >= 0) coincidencias.push({ p, rango });
     });
 
-    if(coincidencias.length > 0 && coincidencias.some(c => c.rango <= 5)) {
+    if(prioridad.tipo !== "vocabulario" && coincidencias.length > 0 && coincidencias.some(c => c.rango <= 5)) {
         const mejorRango = Math.min(...coincidencias.map(c => c.rango));
         if(mejorRango <= 5) {
             const ordenadas = ordenarYLimitarCoincidencias(coincidencias, 15);
@@ -6469,7 +6323,7 @@ function mostrarPantallaHistorialYFavoritos(){
     seccionHistorial.classList.remove("d-none");
     renderizarListaHistorial();
 }
-document.addEventListener("click",(e)=>{ if(!buscar.contains(e.target) && !sugerencias.contains(e.target)) sugerencias.style.display="none"; });  
+document.addEventListener("click",(e)=>{ if(!buscar.contains(e.target) && !sugerencias.contains(e.target) && !(btnBuscar && btnBuscar.contains(e.target))) sugerencias.style.display="none"; });
 let offsetSenalDelDia = 0;
 
 function mostrarSenalDelDia(offset = offsetSenalDelDia){

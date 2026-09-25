@@ -342,7 +342,7 @@ def generar_diccionario(repo: Path, filas: list[dict]) -> int:
                 video=texto(fila.get("video")),
                 canonical=canonical,
                 app_url=app_url,
-            ),
+            ).replace("        \n", "\n"),
             encoding="utf-8",
             newline="\n",
         )
@@ -386,7 +386,7 @@ def generar_vocabulario(repo: Path, filas: list[dict]) -> int:
                 video=texto(fila.get("video")),
                 canonical=canonical,
                 app_url=app_url,
-            ),
+            ).replace("        \n", "\n"),
             encoding="utf-8",
             newline="\n",
         )

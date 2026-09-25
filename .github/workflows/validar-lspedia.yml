@@ -8,6 +8,9 @@ on:
       - "img/**"
       - "css/**"
       - "js/**"
+      - "tests/**"
+      - "package.json"
+      - "package-lock.json"
       - "admin/**"
       - "apps-script/**"
       - "index.html"
@@ -45,6 +48,9 @@ on:
       - "img/**"
       - "css/**"
       - "js/**"
+      - "tests/**"
+      - "package.json"
+      - "package-lock.json"
       - "admin/**"
       - "apps-script/**"
       - "index.html"
@@ -131,6 +137,8 @@ jobs:
           cp js/lab-senas-ia.js /tmp/lab-senas-ia.mjs
           node --check /tmp/lab-senas-ia.mjs
           node --check sw.js
+      - name: Probar prioridad y carga del buscador
+        run: node --test tests/busqueda.test.cjs
       - name: Validar JSON principales
         shell: bash
         run: |
@@ -164,3 +172,18 @@ jobs:
           git diff --check
           test -f 'video/lspedia_transparente anterior.webm'
           test "$(git hash-object 'video/lspedia_transparente anterior.webm')" = 'ca9a110b75384b534f8ebdcae45406fb178df083'
+
+  navegador:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || 'develop' }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium --only-shell
+      - name: Comprobar búsqueda en escritorio y móvil
+        run: npm run test:browser

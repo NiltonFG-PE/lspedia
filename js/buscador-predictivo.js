@@ -153,7 +153,7 @@
         // Singular/plural sencillo del español. Solo se usa como señal de
         // relevancia; nunca reemplaza una coincidencia exacta.
         return q
-            .replace(/^(los|las|unos|unas|un|una|el|la)\\s+/,'')
+            .replace(/^(los|las|unos|unas|un|una|el|la)\s+/,'')
             .replace(/es$/,'')
             .replace(/s$/,'');
     }
@@ -250,7 +250,7 @@
             const contenido=normal((p&&p.definicion||'')+' '+(p&&p.ejemplo||'')+' '+(p&&p.definicioningles||'')+' '+(p&&p.definicionIngles||''));
             if(contenido.includes(q)) return {score:110,tipo:'significado',detalle:t('Coincide con el significado','Matches the meaning')};
 
-            const tokens=q.split(/\\s+/).filter(x=>x.length>=3);
+            const tokens=q.split(/\s+/).filter(x=>x.length>=3);
             if(tokens.length>=2 && tokens.every(token=>contenido.includes(token))){
                 return {score:116,tipo:'significado',detalle:t('Coincide con el significado','Matches the meaning')};
             }
@@ -320,42 +320,6 @@
         }catch(_e){}
     }
 
-    // Comprueba una coincidencia EXACTA en Vocabulario sin depender de que
-    // script.js haya expuesto sus funciones auxiliares. Esto evita que una
-    // palabra que existe solo en Vocabulario termine convertida en una
-    // "Posible corrección" del Diccionario.
-    function vocabularioTieneCoincidenciaExacta(q){
-        try{
-            if(typeof window.buscarCoincidenciaEnVocabulario==='function'){
-                if(window.buscarCoincidenciaEnVocabulario(q)) return true;
-            }
-
-            if(typeof window.obtenerBancoHoja2!=='function') return false;
-            const banco=window.obtenerBancoHoja2();
-            if(!Array.isArray(banco)||!banco.length) return false;
-
-            const campos=['palabra','word','termino','término','nombre','titulo','título'];
-            return banco.some(item=>{
-                if(typeof item==='string') return normal(item)===q;
-                if(!item||typeof item!=='object') return false;
-                return campos.some(c=>normal(item[c])===q);
-            });
-        }catch(_e){
-            return false;
-        }
-    }
-
-    function diccionarioTieneCoincidenciaFuerte(q){
-        const datos=window.App&&Array.isArray(window.App.datos)?window.App.datos:[];
-        return datos.some(p=>{
-            if(!p) return false;
-            if(normal(p.palabra)===q) return true;
-            if(variantes(p).some(v=>normal(v)===q)) return true;
-            if(formasIngles(p).some(v=>normal(v)===q)) return true;
-            return false;
-        });
-    }
-
     function renderizar(){
         const input=document.getElementById('buscar');
         const cont=document.getElementById('sugerencias');
@@ -366,24 +330,10 @@
         indiceActivo=-1;
         if(!q) return;
 
-        // El buscador principal tiene una prioridad estricta: una coincidencia
-        // exacta en Vocabulario debe ganar a cualquier corrección del Diccionario.
-        // Este módulo se ejecuta con setTimeout(0), después de script.js, y antes
-        // podía reemplazar "Barato" por una sugerencia como "Felicitaciones".
-        // Si Vocabulario aún está cargando, tampoco debemos pintar predicciones:
-        // dejamos visible el estado de carga de script.js hasta que el banco llegue.
-        try {
-            // Si la consulta existe exactamente en Vocabulario y NO existe
-            // exactamente en Diccionario, dejamos intacto el resultado que
-            // muestra script.js para Vocabulario. Nunca lo reemplazamos por
-            // una sugerencia como "Felicitaciones".
-            const hayCoincidenciaDiccionario = diccionarioTieneCoincidenciaFuerte(q);
-            const hayCoincidenciaVocabulario = vocabularioTieneCoincidenciaExacta(q);
-
-            if (!hayCoincidenciaDiccionario && hayCoincidenciaVocabulario) {
-                return;
-            }
-        } catch (_e) {}
+        // El motor común es dueño de las coincidencias exactas y del estado de carga.
+        // Las predicciones solo complementan la etapa aproximada.
+        const prioridad = window.resolverPrioridadBusqueda(q);
+        if (prioridad.tipo !== 'aproximada') return;
 
         const candidatos=obtenerCandidatos(crudo);
         if(!candidatos.length) return; // conserva el mensaje original de script.js
@@ -463,6 +413,7 @@
     function registrarBusquedaConfirmada(){
         const input=document.getElementById('buscar');
         if(!input) return;
+        if(window.resolverPrioridadBusqueda(input.value).tipo !== 'aproximada') return;
         const lista=obtenerCandidatos(input.value);
         // Solo aprende automáticamente cuando el primer candidato es fuerte.
         // Una coincidencia puramente por significado no debe sesgar el ranking.
@@ -499,6 +450,10 @@
             if(normal(input.value)===ultimoTexto&&normal(input.value)) programarRender();
         });
         document.addEventListener('lspedia:idiomaCambiado',programarRender);
+        document.addEventListener('lspedia:vocabularioPublicoListo', () => {
+            const panel = document.getElementById('sugerencias');
+            if(panel && panel.style.display !== 'none') programarRender();
+        });
     }
 
     if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',iniciar,{once:true});

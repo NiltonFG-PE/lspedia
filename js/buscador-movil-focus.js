@@ -164,9 +164,43 @@
             }
         });
 
+        // Un arrastre o una cancelación del navegador nunca es una selección.
+        let gesto = null;
+        let ignorarClickHasta = 0;
+        let ultimaSeleccionTactil = 0;
+        function comenzarGesto(x, y) {
+            gesto = { x, y, movido: false, scroll: resultados.scrollTop };
+            ignorarClickHasta = 0;
+        }
+        function moverGesto(x, y) {
+            if(gesto && Math.hypot(x - gesto.x, y - gesto.y) > 10) gesto.movido = true;
+        }
+        function cancelarGesto() {
+            if(gesto) gesto.movido = true;
+            ignorarClickHasta = Date.now() + 700;
+        }
+        function esToque(x, y) {
+            moverGesto(x, y);
+            const valido = gesto && !gesto.movido && resultados.scrollTop === gesto.scroll;
+            if(!valido) ignorarClickHasta = Date.now() + 700;
+            return valido;
+        }
+        resultados.addEventListener('pointermove', e => moverGesto(e.clientX, e.clientY), {passive:true});
+        resultados.addEventListener('pointercancel', cancelarGesto, {passive:true});
+        resultados.addEventListener('touchstart', e => {
+            const t = e.touches[0];
+            if(t) comenzarGesto(t.clientX, t.clientY);
+        }, {passive:true});
+        resultados.addEventListener('touchmove', e => {
+            const t = e.touches[0];
+            if(t) moverGesto(t.clientX, t.clientY);
+        }, {passive:true});
+        resultados.addEventListener('touchcancel', cancelarGesto, {passive:true});
+
         /* Marcar desde pointerdown evita confundir la desaparición del teclado
            al tocar un resultado con una pulsación del botón Atrás. */
         resultados.addEventListener('pointerdown', function(e){
+            comenzarGesto(e.clientX, e.clientY);
             const item = e.target && e.target.closest && e.target.closest('.list-group-item, [data-pred-index]');
             if(!item || !estado) return;
             estado.seleccionandoResultado = true;
@@ -243,16 +277,28 @@
         resultados.addEventListener('pointerup', function(e){
             const item = e.target && e.target.closest && e.target.closest('.list-group-item, [data-pred-index]');
             if(!item || e.pointerType === 'mouse') return;
-            ejecutarSeleccionResultadoMovil(item, e);
+            if(!esToque(e.clientX, e.clientY)) return;
+            if(ejecutarSeleccionResultadoMovil(item, e)) {
+                ultimaSeleccionTactil = Date.now();
+                ignorarClickHasta = Date.now() + 700;
+            }
         }, true);
 
         resultados.addEventListener('touchend', function(e){
+            if(Date.now() - ultimaSeleccionTactil < 700) return;
+            const t = e.changedTouches[0];
+            if(!t || !esToque(t.clientX, t.clientY)) return;
             const item = e.target && e.target.closest && e.target.closest('.list-group-item, [data-pred-index]');
             if(!item) return;
             ejecutarSeleccionResultadoMovil(item, e);
         }, true);
 
         resultados.addEventListener('click', function(e){
+            if(Date.now() < ignorarClickHasta) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                return;
+            }
             const item = e.target && e.target.closest && e.target.closest('.list-group-item, [data-pred-index]');
             if(!item) return;
             if(!estado) return;

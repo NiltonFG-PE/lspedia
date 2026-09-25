@@ -130,8 +130,8 @@ def validar_integracion_frontend():
     if faltantes:
         raise AssertionError("vocabulario-publico.js incompleto: " + ", ".join(faltantes))
 
-    if "js/vocabulario-publico.js" not in texto_cargador:
-        raise AssertionError("mejoras-producto.js no carga vocabulario-publico.js")
+    if "js/vocabulario-publico.js" not in (ROOT / "index.html").read_text(encoding="utf-8"):
+        raise AssertionError("index.html no carga la fuente pública esencial vocabulario-publico.js")
     if '"js/vocabulario-publico.js"' not in texto_sw:
         raise AssertionError("sw.js no cachea vocabulario-publico.js")
 

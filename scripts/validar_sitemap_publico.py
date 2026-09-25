@@ -33,6 +33,15 @@ def main() -> int:
         )
         return 1
 
+    # Un sitemap correcto no basta: cada URL debe tener su página real.
+    for carpeta, refs in (("diccionario", refs_dic), ("vocabulario", refs_voc)):
+        for ref in refs:
+            pagina = ROOT / carpeta / ref / "index.html"
+            canonical = f'https://lspedia.site/{carpeta}/{ref}/'
+            if not pagina.is_file() or f'rel="canonical" href="{canonical}"' not in pagina.read_text(encoding="utf-8"):
+                print(f"ERROR sitemap público: falta página o canonical coherente: {carpeta}/{ref}/", file=sys.stderr)
+                return 1
+
     total = 2 + len(refs_dic) + len(refs_voc)
     print(
         "Sitemap público validado: "

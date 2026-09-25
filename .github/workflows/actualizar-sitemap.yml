@@ -82,6 +82,7 @@ jobs:
           python -m json.tool data/traducciones-en.json > /dev/null
           python scripts/validar_lspedia.py --fuente diccionario
           python scripts/validar_lspedia.py --fuente vocabulario
+          python scripts/validar_sitemap_publico.py
           node --check js/script.js
           test -f diccionario/.lspedia-seo-generated
           test -f vocabulario/.lspedia-seo-generated
@@ -93,7 +94,9 @@ jobs:
       - name: Guardar cambios automáticos
         shell: bash
         run: |
-          if git diff --quiet -- data/palabras.json data/vocabulario.json data/nuevas-palabras.json data/traducciones-en.json index.html js/script.js sitemap.xml scripts/generar_paginas_seo.py diccionario vocabulario; then
+          git add data/palabras.json data/vocabulario.json data/nuevas-palabras.json data/traducciones-en.json index.html js/script.js sitemap.xml scripts/generar_paginas_seo.py
+          git add -A -- diccionario vocabulario
+          if git diff --cached --quiet; then
             echo "IDs, SEO, traducciones, Lo nuevo y sitemap ya estaban actualizados."
           else
             git config user.name "github-actions[bot]"

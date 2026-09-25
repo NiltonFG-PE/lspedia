@@ -85,12 +85,19 @@ jobs:
               print('OK: Lo nuevo incluye contenido reciente de Vocabulario.')
           PY
 
+      - name: Generar y validar páginas públicas en la misma publicación
+        run: |
+          python scripts/generar_paginas_seo.py
+          python scripts/generar_sitemap.py
+          python scripts/validar_sitemap_publico.py
+
       - name: Guardar Lo nuevo y publicar cambios
         shell: bash
         run: |
-          if ! git diff --quiet -- data/nuevas-palabras.json; then
-            git add data/nuevas-palabras.json
-            git commit -m "Actualizar Lo nuevo desde Diccionario y Vocabulario"
+          git add data/nuevas-palabras.json sitemap.xml
+          git add -A -- diccionario vocabulario
+          if ! git diff --cached --quiet; then
+            git commit -m "Actualizar Lo nuevo y páginas públicas junto a Vocabulario"
           fi
 
           if git rev-list --count origin/develop..HEAD | grep -q '^0$'; then

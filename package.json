@@ -1,0 +1,12 @@
+{
+  "name": "lspedia-validaciones",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/busqueda.test.cjs",
+    "test:browser": "node tests/navegacion.cjs"
+  },
+  "devDependencies": {
+    "bootstrap": "5.3.7",
+    "playwright": "1.51.1"
+  }
+}
