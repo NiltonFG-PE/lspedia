@@ -1,17 +1,20 @@
-name: Actualizar vocabulario desde Hoja 2
+name: Actualizar vocabulario desde Vocabulario
 
 on:
   push:
     branches: [develop]
     paths:
+      - "data/vocabulario.json"
       - "js/quiz.js"
       - "scripts/generar_vocabulario.py"
+      - "scripts/actualizar_nuevas_palabras.py"
       - "scripts/migrar_quiz_vocabulario_local.py"
       - "scripts/normalizar_categorias.py"
       - "scripts/validar_lspedia.py"
+      - "scripts/publicar_generados.py"
       - ".github/workflows/actualizar-vocabulario.yml"
   schedule:
-    - cron: "*/15 * * * *"
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -40,7 +43,7 @@ jobs:
       - name: Migrar Quiz a vocabulario local
         run: python scripts/migrar_quiz_vocabulario_local.py
 
-      - name: Descargar Hoja 2 y generar vocabulario.json
+      - name: Descargar Vocabulario y generar vocabulario.json
         run: python scripts/generar_vocabulario.py
 
       - name: Validar Vocabulario antes de guardar
@@ -50,16 +53,52 @@ jobs:
           python scripts/validar_lspedia.py --fuente vocabulario
           node --check js/quiz.js
 
-      - name: Guardar cambios si hubo actualización
+      - name: Preparar historial local de Vocabulario
         shell: bash
         run: |
-          if git diff --quiet -- js/quiz.js data/vocabulario.json; then
-            echo "Quiz y vocabulario ya estaban actualizados."
-            exit 0
-          fi
-
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add js/quiz.js data/vocabulario.json
-          git commit -m "Usar vocabulario local para Vocabulario y Quiz"
-          git push origin HEAD:develop
+
+          if git diff --quiet -- js/quiz.js data/vocabulario.json; then
+            echo "Quiz y vocabulario ya estaban actualizados."
+          else
+            git add js/quiz.js data/vocabulario.json
+            git commit -m "Usar vocabulario local para Vocabulario y Quiz"
+          fi
+
+      - name: Regenerar Lo nuevo después de actualizar Vocabulario
+        run: python scripts/actualizar_nuevas_palabras.py
+
+      - name: Validar Lo nuevo
+        shell: bash
+        run: |
+          python -m json.tool data/nuevas-palabras.json > /dev/null
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data = json.loads(Path('data/nuevas-palabras.json').read_text(encoding='utf-8'))
+          items = data.get('items', []) if isinstance(data, dict) else []
+          if not isinstance(items, list):
+              raise SystemExit('data/nuevas-palabras.json no contiene items válidos')
+          if not any(str(x.get('fuente', '')).strip().lower() == 'vocabulario' for x in items if isinstance(x, dict)):
+              print('AVISO: Lo nuevo no tiene Vocabulario entre los 12 más recientes en este momento.')
+          else:
+              print('OK: Lo nuevo incluye contenido reciente de Vocabulario.')
+          PY
+
+      - name: Generar y validar páginas públicas en la misma publicación
+        run: |
+          python scripts/generar_paginas_seo.py
+          python scripts/generar_sitemap.py
+          python scripts/validar_sitemap_publico.py
+
+      - name: Guardar Lo nuevo y publicar cambios
+        shell: bash
+        run: |
+          git add data/nuevas-palabras.json sitemap.xml
+          git add -A -- diccionario vocabulario
+          if ! git diff --cached --quiet; then
+            git commit -m "Actualizar Lo nuevo y páginas públicas junto a Vocabulario"
+          fi
+
+          python scripts/publicar_generados.py

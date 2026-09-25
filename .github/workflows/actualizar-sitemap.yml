@@ -1,31 +1,41 @@
-name: Actualizar IDs y sitemap
+name: Actualizar IDs, SEO y sitemap
 
+# Este workflow mantiene sincronizados los datos públicos, las páginas SEO
+# estáticas, las canonicals y el sitemap de LSPedia.
 on:
   push:
     branches:
       - develop
     paths:
       - "data/palabras.json"
+      - "data/vocabulario.json"
       - "js/script.js"
       - "scripts/migrar_ids_palabras.py"
+      - "scripts/migrar_ruta_diccionario_seo.py"
       - "scripts/separar_diccionario_vocabulario.py"
       - "scripts/generar_sitemap.py"
+      - "scripts/generar_paginas_seo.py"
+      - "scripts/aplicar_canonicas_seo.py"
+      - "scripts/actualizar_nuevas_palabras.py"
+      - "scripts/generar_traducciones_en.py"
       - "scripts/normalizar_categorias.py"
       - "scripts/validar_lspedia.py"
+      - "scripts/publicar_generados.py"
       - ".github/workflows/actualizar-sitemap.yml"
+  schedule:
+    - cron: "17 * * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: actualizar-ids-sitemap-develop
+  group: actualizar-ids-seo-sitemap-develop
   cancel-in-progress: true
 
 jobs:
   actualizar-datos:
     runs-on: ubuntu-latest
-
     steps:
       - name: Descargar repositorio
         uses: actions/checkout@v4
@@ -44,26 +54,113 @@ jobs:
       - name: Separar Diccionario y Vocabulario
         run: python scripts/separar_diccionario_vocabulario.py
 
+      - name: Normalizar categorías antes de validar
+        run: python scripts/normalizar_categorias.py
+
+      - name: Migrar ruta SEO del Diccionario
+        run: python scripts/migrar_ruta_diccionario_seo.py
+
+      - name: Alinear canonicals con las páginas SEO
+        run: python scripts/aplicar_canonicas_seo.py
+
+      - name: Generar páginas SEO estáticas
+        run: python scripts/generar_paginas_seo.py
+
       - name: Generar sitemap.xml
         run: python scripts/generar_sitemap.py
 
-      - name: Validar Diccionario antes de guardar
+      - name: Generar Lo nuevo
+        run: python scripts/actualizar_nuevas_palabras.py
+
+      - name: Generar traducciones EN del Diccionario
+        run: python scripts/generar_traducciones_en.py
+
+      - name: Validar datos y SEO antes de guardar
         shell: bash
         run: |
+          python -m py_compile scripts/generar_paginas_seo.py scripts/aplicar_canonicas_seo.py scripts/generar_sitemap.py scripts/migrar_ruta_diccionario_seo.py
           python -m json.tool data/palabras.json > /dev/null
+          python -m json.tool data/vocabulario.json > /dev/null
+          python -m json.tool data/nuevas-palabras.json > /dev/null
+          python -m json.tool data/traducciones-en.json > /dev/null
           python scripts/validar_lspedia.py --fuente diccionario
+          python scripts/validar_lspedia.py --fuente vocabulario
+          python scripts/validar_sitemap_publico.py
           node --check js/script.js
+          test -f diccionario/.lspedia-seo-generated
+          test -f vocabulario/.lspedia-seo-generated
+          test "$(find diccionario -mindepth 2 -name index.html | wc -l)" -gt 0
+          test "$(find vocabulario -mindepth 2 -name index.html | wc -l)" -gt 0
+          test ! -d palabra
+          git diff --check
 
       - name: Guardar cambios automáticos
         shell: bash
         run: |
-          if git diff --quiet -- data/palabras.json js/script.js sitemap.xml; then
-            echo "IDs, separación de fuentes y sitemap ya estaban actualizados."
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/palabras.json data/vocabulario.json data/nuevas-palabras.json data/traducciones-en.json index.html js/script.js sitemap.xml scripts/generar_paginas_seo.py
+          git add -A -- diccionario vocabulario
+          if git diff --cached --quiet; then
+            echo "IDs, SEO, traducciones, Lo nuevo y sitemap ya estaban actualizados."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add data/palabras.json data/vocabulario.json data/nuevas-palabras.json data/traducciones-en.json index.html js/script.js sitemap.xml scripts/generar_paginas_seo.py
+            git add -A -- diccionario vocabulario
+            git commit -m "Actualizar páginas SEO canonicals y sitemap"
+          fi
+          python scripts/publicar_generados.py
+
+      - name: Publicar únicamente SEO en main
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          WORKTREE="$(mktemp -d)/main"
+          git worktree add --detach "$WORKTREE" origin/main
+
+          proteger_y_borrar() {
+            local dir="$1"
+            if [ -d "$WORKTREE/$dir" ]; then
+              if [ ! -f "$WORKTREE/$dir/.lspedia-seo-generated" ]; then
+                echo "ERROR: $dir/ existe en main y no parece generado por LSPedia SEO."
+                exit 1
+              fi
+              rm -rf "$WORKTREE/$dir"
+            fi
+          }
+
+          proteger_y_borrar diccionario
+          proteger_y_borrar vocabulario
+
+          if [ -d "$WORKTREE/palabra" ]; then
+            if [ ! -f "$WORKTREE/palabra/.lspedia-seo-generated" ]; then
+              echo "ERROR: palabra/ existe en main y no parece generado por LSPedia SEO."
+              exit 1
+            fi
+            rm -rf "$WORKTREE/palabra"
+          fi
+
+          cp -R diccionario "$WORKTREE/diccionario"
+          cp -R vocabulario "$WORKTREE/vocabulario"
+          cp sitemap.xml "$WORKTREE/sitemap.xml"
+
+          cp scripts/aplicar_canonicas_seo.py "$WORKTREE/scripts/.aplicar_canonicas_seo_tmp.py"
+          python "$WORKTREE/scripts/.aplicar_canonicas_seo_tmp.py"
+          rm "$WORKTREE/scripts/.aplicar_canonicas_seo_tmp.py"
+
+          git -C "$WORKTREE" config user.name "github-actions[bot]"
+          git -C "$WORKTREE" config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C "$WORKTREE" add -A -- diccionario vocabulario sitemap.xml index.html js/script.js
+          if [ -n "$(git -C "$WORKTREE" ls-files -- palavra)" ]; then
+            git -C "$WORKTREE" add -A -- palavra
+          fi
+
+          if git -C "$WORKTREE" diff --cached --quiet; then
+            echo "SEO de main ya estaba actualizado."
             exit 0
           fi
 
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/palabras.json js/script.js sitemap.xml
-          git commit -m "Separar Diccionario y Vocabulario automáticamente"
-          git push origin HEAD:develop
+          git -C "$WORKTREE" commit -m "Publicar SEO con rutas /diccionario/ y /vocabulario/"
+          git -C "$WORKTREE" push origin HEAD:main
