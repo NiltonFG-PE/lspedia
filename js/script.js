@@ -2303,9 +2303,21 @@ function procesarDatosApp(data) {
                     // refresco manual normal del navegador, ej. F5).
                     const textoBusquedaUrl = urlParams.get("buscar");
                     const categoriaUrl = urlParams.get("categoria");
+                    const coleccionUrl = urlParams.get("coleccion");
                     if (textoBusquedaUrl && buscarCategorias) {
                         buscarCategorias.value = textoBusquedaUrl;
                         buscarEnCategorias();
+                    } else if (coleccionUrl && typeof mostrarEtiquetaVocabulario === "function") {
+                        // La colección se restaura UNA sola vez desde la carga
+                        // principal. Si QuizV2 todavía no llegó, la variable
+                        // coleccionActualMostrada permite repintarla al quedar
+                        // listo el banco, sin volver a abrir Vocabulario ni
+                        // disparar varios clics/scrolls.
+                        coleccionActualMostrada = coleccionUrl;
+                        mostrarEtiquetaVocabulario(coleccionUrl, {
+                            noActualizarHistorial: true,
+                            sinScroll: true
+                        });
                     } else if (categoriaUrl && typeof mostrarCategoria === "function") {
                         // La categoría puede pedirse antes de que QuizV2 termine
                         // de cargar. Conservamos el destino y la repintamos en
@@ -2599,7 +2611,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (coleccionActualMostrada && !new URLSearchParams(window.location.search).get("p")) {
                 // Las colecciones también pueden haberse solicitado antes de
                 // que llegue QuizV2. Las repintamos con el banco ya cargado.
-                mostrarEtiquetaVocabulario(coleccionActualMostrada, { noActualizarHistorial: true });
+                mostrarEtiquetaVocabulario(coleccionActualMostrada, { noActualizarHistorial: true, sinScroll: true });
             } else if (categoriaActualMostrada && !new URLSearchParams(window.location.search).get("p")) {
                 // Es un refresco silencioso de los datos de la categoría, no
                 // una navegación nueva: conserva la URL y el historial.
@@ -5790,7 +5802,7 @@ function mostrarEtiquetaVocabulario(nombre, opciones = {}){
 
     html += '</div>';
     resultadoCategorias.innerHTML = html;
-    scrollAlPrimerResultado(resultadoCategorias);
+    if(!opciones.sinScroll) scrollAlPrimerResultado(resultadoCategorias);
 }
 window.mostrarEtiquetaVocabulario = mostrarEtiquetaVocabulario;
 
