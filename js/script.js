@@ -277,6 +277,7 @@ window.addEventListener("load", actualizarPanelProgresoPersonal, { once: true })
 // Recuerda qué categoría está abierta (si hay alguna) para poder
 // refrescarla automáticamente si llegan datos nuevos del banco del Quiz.
 let categoriaActualMostrada = null;
+let coleccionActualMostrada = null;
 
 // Mismas 7 velocidades que tenía el selector anterior, ahora con
 // control tortuga 🐢 / conejo 🐇 igual que en el módulo Alfabetización.
@@ -893,6 +894,7 @@ function irAlBuscador(opciones = {}){
     // visibles al volver al Diccionario.
     if(ultimasPalabrasCategorias) ultimasPalabrasCategorias.innerHTML = "";
     categoriaActualMostrada = null;
+    coleccionActualMostrada = null;
     document.body.classList.remove("vista-temas-movil");
     actualizarTituloPrincipal("diccionario");
     activarBotonMenu("btnInicio");
@@ -1622,6 +1624,7 @@ function mostrarSeccionHerramientas(){
     resultadoCategorias.innerHTML = "";
     resultadoCategoriasDiccionario.innerHTML = "";
     categoriaActualMostrada = null;
+    coleccionActualMostrada = null;
     ultimasPalabras.innerHTML = "";
     // Bug: faltaba limpiar también #ultimasPalabrasCategorias (donde se
     // pintan las tarjetas de "Puede que también te interese" cuando se
@@ -1749,6 +1752,7 @@ function mostrarSeccionNosotros(){
     resultadoCategorias.innerHTML = "";
     resultadoCategoriasDiccionario.innerHTML = "";
     categoriaActualMostrada = null;
+    coleccionActualMostrada = null;
     ultimasPalabras.innerHTML = "";
     // Mismo bug que en mostrarSeccionHerramientas(): faltaba limpiar
     // #ultimasPalabrasCategorias.
@@ -1802,6 +1806,7 @@ function abrirJugarDirecto(){
     resultadoCategorias.innerHTML = "";
     resultadoCategoriasDiccionario.innerHTML = "";
     categoriaActualMostrada = null;
+    coleccionActualMostrada = null;
     ultimasPalabras.innerHTML = "";
     ocultarPanelesGuardados();
     ocultarBloqueInicio();
@@ -2591,7 +2596,11 @@ document.addEventListener("DOMContentLoaded", () => {
             // visible antes de que llegaran los datos de la Vocabulario, se
             // refresca solo para que las palabras del Quiz aparezcan sin
             // que el usuario tenga que volver a hacer clic.
-            if (categoriaActualMostrada && !new URLSearchParams(window.location.search).get("p")) {
+            if (coleccionActualMostrada && !new URLSearchParams(window.location.search).get("p")) {
+                // Las colecciones también pueden haberse solicitado antes de
+                // que llegue QuizV2. Las repintamos con el banco ya cargado.
+                mostrarEtiquetaVocabulario(coleccionActualMostrada, { noActualizarHistorial: true });
+            } else if (categoriaActualMostrada && !new URLSearchParams(window.location.search).get("p")) {
                 // Es un refresco silencioso de los datos de la categoría, no
                 // una navegación nueva: conserva la URL y el historial.
                 mostrarCategoria(categoriaActualMostrada, { noActualizarHistorial: true });
@@ -2796,6 +2805,7 @@ function buscarPalabras(){
     //ultimasPalabras.innerHTML = ""; 
     //panelCategorias.innerHTML = "";
     categoriaActualMostrada = null;
+    coleccionActualMostrada = null;
     ocultarPanelesGuardados(); 
 
     if(texto === "") {
@@ -3008,6 +3018,7 @@ async function ejecutarBusquedaDirecta() {
         panelCategorias.innerHTML = "";
         resultadoCategoriasDiccionario.innerHTML = "";
         categoriaActualMostrada = null;
+    coleccionActualMostrada = null;
         ultimasPalabras.innerHTML = "";
         ocultarPanelesGuardados();
         const filaCategoriasDiccVocab = document.getElementById("filaCategoriasDiccionario");
@@ -3075,6 +3086,7 @@ async function ejecutarBusquedaDirecta() {
     panelCategorias.innerHTML = "";
     resultadoCategoriasDiccionario.innerHTML = "";
     categoriaActualMostrada = null;
+    coleccionActualMostrada = null;
     ultimasPalabras.innerHTML = "";
     ocultarPanelesGuardados();
     const filaCategoriasDiccBusq = document.getElementById("filaCategoriasDiccionario");
@@ -3341,6 +3353,7 @@ function mostrarPalabra(p, opciones = {}){
         sugerencias.style.display = "none";
         panelCategorias.innerHTML = ""; 
         categoriaActualMostrada = null;
+    coleccionActualMostrada = null;
         resultado.innerHTML = "";
         ultimasPalabras.innerHTML = "";
         // Al mostrar el resultado de una palabra (búsqueda o categoría)
@@ -3553,6 +3566,7 @@ function mostrarPalabraSimplificada(p, opciones = {}){
         sugerencias.style.display = "none";
         panelCategorias.innerHTML = "";
         categoriaActualMostrada = null;
+    coleccionActualMostrada = null;
         ultimasPalabras.innerHTML = "";
         resultado.innerHTML = "";
     } else {
@@ -4867,6 +4881,7 @@ function filtrarPorLetra(letra, opciones = {}) {
     panelCategorias.innerHTML = "";
     resultadoCategoriasDiccionario.innerHTML = "";
     categoriaActualMostrada = null;
+    coleccionActualMostrada = null;
     ultimasPalabras.innerHTML = ""; 
     ocultarPanelesGuardados();
     // Igual que al elegir una tarjeta de Categoría: la sección
@@ -5449,6 +5464,7 @@ function filtrarPorCategoriaDiccionario(nombre, opciones = {}){
     resultadoCategorias.innerHTML = "";
     resultadoCategoriasDiccionario.innerHTML = "";
     categoriaActualMostrada = null;
+    coleccionActualMostrada = null;
     ultimasPalabras.innerHTML = "";
     ocultarPanelesGuardados();
     // Antes acá se ocultaba también #filaCategoriasDiccionario (las
@@ -5552,6 +5568,7 @@ function mostrarCategorias(){
         observarEntradaAnimada(card.querySelector(".categoria-card"));
     });
     categoriaActualMostrada = null;
+    coleccionActualMostrada = null;
 }
 
 // --- BUSCADOR EXCLUSIVO DE "VOCABULARIO" (antes "Temas orden") ---
@@ -5653,6 +5670,7 @@ function limpiarResultadoCategorias(opciones = {}){
     // palabra se quedaban pegadas debajo de las tarjetas.
     if(ultimasPalabrasCategorias) ultimasPalabrasCategorias.innerHTML = "";
     categoriaActualMostrada = null;
+    coleccionActualMostrada = null;
     if(!opciones.noActualizarHistorial){
         actualizarVistaUrl("vocabulario");
     }
@@ -5695,10 +5713,14 @@ function obtenerEtiquetaExactaVocabulario(datos, texto){
 function compartirColeccionVocabulario(nombre){
     const coleccion = String(nombre || "").trim();
     if(!coleccion) return;
-    const params = new URLSearchParams();
-    params.set("vista", "vocabulario");
-    params.set("coleccion", coleccion);
-    const url = window.location.origin + window.location.pathname + "?" + params.toString();
+    const refColeccion = coleccion.normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+    const url = window.location.origin
+        + "/coleccion/vocabulario/" + encodeURIComponent(refColeccion)
+        + "/compartir-20260925-4/";
     const titulo = coleccion + " | LSPedia";
     const texto = `Explora la colección "${coleccion}" del Vocabulario de LSPedia.`;
     if (navigator.share) {
@@ -5713,6 +5735,8 @@ function compartirColeccionVocabulario(nombre){
 }
 
 function mostrarEtiquetaVocabulario(nombre, opciones = {}){
+    coleccionActualMostrada = String(nombre || "").trim() || null;
+    categoriaActualMostrada = null;
     const datos = obtenerDatosVocabulario();
     const clave = norm(nombre);
     const filtradas = datos
@@ -5930,6 +5954,7 @@ function filtrarVocabularioPorLetra(letra){
     if(!letraBuscada || !resultadoCategorias) return;
 
     categoriaActualMostrada = null;
+    coleccionActualMostrada = null;
     if(buscarCategorias) buscarCategorias.value = "";
     if(sugerenciasCategorias){
         sugerenciasCategorias.innerHTML = "";
@@ -5975,6 +6000,7 @@ window.filtrarVocabularioPorLetra = filtrarVocabularioPorLetra;
 
 function mostrarCategoria(nombre, opciones = {}){
     categoriaActualMostrada = nombre;
+    coleccionActualMostrada = null;
     if(!opciones.noActualizarHistorial){
         const urlCategoria = window.location.pathname
             + "?vista=vocabulario&categoria=" + encodeURIComponent(nombre);
