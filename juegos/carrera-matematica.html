@@ -816,7 +816,16 @@ function closeMath() { document.getElementById('math-modal').classList.remove('a
 // ===================== PARTÍCULAS =====================
 function spawnParticles(x, y, color, count = 12) { for (let i = 0; i < count; i++) particles.push({ x, y, vx: (Math.random() - 0.5) * 6, vy: (Math.random() - 0.5) * 6 - 2, life: 1, decay: 0.02 + Math.random() * 0.03, size: 2 + Math.random() * 4, color }); }
 function updateParticles(dt) { const k = dt / 16.7; for (let i = particles.length - 1; i >= 0; i--) { const p = particles[i]; p.x += p.vx * k; p.y += p.vy * k; p.vy += (p.g ?? 0.12) * k; p.life -= p.decay * k; if (p.life <= 0) particles.splice(i, 1); } }
-function drawParticles() { particles.forEach(p => { ctx.globalAlpha = Math.max(0, p.life); ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2); ctx.fill(); }); ctx.globalAlpha = 1; }
+function drawParticles() {
+  const stride = visualQuality < 0.78 ? 2 : 1;
+  for (let i = 0; i < particles.length; i += stride) {
+    const p = particles[i];
+    ctx.globalAlpha = Math.max(0, p.life);
+    ctx.fillStyle = p.color;
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+}
 
 // ===================== FONDO =====================
 function initClouds() { clouds = []; for (let i = 0; i < 7; i++) clouds.push({ x: Math.random() * W * 2, y: H * (0.05 + Math.random() * 0.22), s: 0.35 + Math.random() * 0.6, v: 0.01 + Math.random() * 0.02 }); skyStars = []; for (let i = 0; i < 80; i++) skyStars.push({ x: Math.random() * W * 2, y: Math.random() * H * 0.4, r: 0.5 + Math.random() * 1.4, t: Math.random() * 6 }); birds = []; for (let i = 0; i < 5; i++) birds.push({ x: Math.random() * W, y: H * (0.08 + Math.random() * 0.2), v: 0.02 + Math.random() * 0.02, f: Math.random() * 6, s: 0.6 + Math.random() * 0.6 }); }
@@ -836,6 +845,20 @@ function drawBackground(horizonY, dt) {
   ctx.fillStyle = halo; ctx.fillRect(0, 0, W, horizonY);
   if (!theme.night) { ctx.save(); ctx.globalAlpha = 0.14; ctx.fillStyle = theme.sun; for (let i = 0; i < 7; i++) { const a = i * 0.9 + time / 12000; poly([sx, sy, sx + Math.cos(a) * H, sy + Math.sin(a) * H, sx + Math.cos(a + 0.1) * H, sy + Math.sin(a + 0.1) * H], theme.sun); } ctx.restore(); }
   ctx.fillStyle = theme.sun; ctx.beginPath(); ctx.arc(sx, sy, sr, 0, Math.PI * 2); ctx.fill();
+  if (!theme.night && visualQuality > 0.9 && sx > -sr && sx < W + sr) {
+    // flare óptico discreto para dar profundidad sin tapar la pista
+    ctx.save();
+    const fx = W * 0.5, fy = horizonY * 0.72;
+    const vx = fx - sx, vy = fy - sy;
+    [[.22,.10,.085],[.43,.065,.055],[.67,.035,.038]].forEach(([t,a,r]) => {
+      const cx = sx + vx * t, cy = sy + vy * t;
+      const fg = ctx.createRadialGradient(cx,cy,0,cx,cy,horizonY*r);
+      fg.addColorStop(0,`rgba(255,232,175,${a})`);
+      fg.addColorStop(1,'rgba(255,225,160,0)');
+      ctx.fillStyle=fg; ctx.beginPath(); ctx.arc(cx,cy,horizonY*r,0,Math.PI*2); ctx.fill();
+    });
+    ctx.restore();
+  }
   if (theme.night) { ctx.fillStyle = 'rgba(0,0,0,0.12)'; [[-0.3, -0.2, 0.25], [0.25, 0.2, 0.18], [0.1, -0.35, 0.12]].forEach(([dx, dy, r]) => { ctx.beginPath(); ctx.arc(sx + dx * sr, sy + dy * sr, r * sr, 0, Math.PI * 2); ctx.fill(); }); }
   if (theme.clouds) clouds.forEach(c => { c.x += c.v * dt; const x = ((c.x - skyOffset * 0.25) % (W * 2) + W * 2) % (W * 2) - W / 2; drawCloud(x, c.y, c.s); });
   if (!theme.night) birds.forEach(b => { b.x -= b.v * dt; b.f += 0.01 * dt; if (b.x < -20) { b.x = W + 20; } const fl = Math.sin(b.f) * 3 * b.s; ctx.strokeStyle = 'rgba(30,30,40,0.55)'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(b.x - 6 * b.s, b.y + fl); ctx.quadraticCurveTo(b.x - 2 * b.s, b.y - 2 * b.s, b.x, b.y); ctx.quadraticCurveTo(b.x + 2 * b.s, b.y - 2 * b.s, b.x + 6 * b.s, b.y + fl); ctx.stroke(); });
@@ -1516,17 +1539,26 @@ function render() {
   const playerSeg = findSegment(positionZ + PLAYER_Z), playerPct = ((positionZ + PLAYER_Z) % SEG_LEN) / SEG_LEN;
   const playerY = lerp(playerSeg.p1.world.y, playerSeg.p2.world.y, playerPct);
   const camX = playerX * ROAD_W * 0.6, camY = playerY + CAM_H, camZ = positionZ;
+  const renderDist = visualQuality < 0.76 ? Math.min(DRAW_DIST, 108) : visualQuality < 0.94 ? Math.min(DRAW_DIST, 142) : DRAW_DIST;
   let x = 0, dx = -(baseSeg.curve * basePct), maxy = H;
   ctx.save();
+
+  // cámara con una inclinación muy leve en curvas: más sensación de volumen/velocidad
+  if (gameState === 'playing') {
+    const roadRoll = clamp(-playerTilt * 0.055 - baseSeg.curve * speed * 0.0018, -0.032, 0.032);
+    const camBob = Math.sin(time / 155) * Math.min(1.15, speed * 0.58);
+    ctx.translate(W * 0.5, H * 0.56 + camBob);
+    ctx.rotate(roadRoll);
+    ctx.translate(-W * 0.5, -H * 0.56);
+  }
   if (shake > 0) ctx.translate((Math.random() - 0.5) * 14 * shake, (Math.random() - 0.5) * 10 * shake);
 
   // primera pasada: proyectar y dibujar la carretera de cerca a lejos
-  let firstSeg = null, lastDrawn = null;
   const drawn = [];
-  for (let n = 0; n < DRAW_DIST; n++) {
+  for (let n = 0; n < renderDist; n++) {
     const seg = segments[(baseSeg.index + n) % segments.length];
     seg.looped = seg.index < baseSeg.index;
-    seg.fog = 1 / Math.exp(Math.pow(n / DRAW_DIST, 2) * 4);
+    seg.fog = 1 / Math.exp(Math.pow(n / renderDist, 2) * 4);
     seg.clip = maxy;
     project(seg.p1, camX - x, camY, camZ - (seg.looped ? trackLen : 0));
     project(seg.p2, camX - x - dx, camY, camZ - (seg.looped ? trackLen : 0));
@@ -1586,7 +1618,7 @@ function render() {
       if (c.crashed) {
         ctx.globalAlpha *= Math.max(0.35, 1 - c.crashT / 1400);
       }
-      if (cw > 10) {
+      if (visualQuality > 0.78 && cw > 10) {
         ctx.save();
         const rg = ctx.createRadialGradient(sx, sy + cw * 0.03, 1, sx, sy + cw * 0.03, cw * 0.62);
         rg.addColorStop(0, theme.night ? 'rgba(255,55,55,.15)' : 'rgba(0,0,0,.18)');
@@ -1596,6 +1628,15 @@ function render() {
         ctx.restore();
       }
       drawVehicle(ctx, c.v, sx, sy, cw, false, c.wobble);
+      if (theme.night && visualQuality > .82 && cw > 12) {
+        ctx.save();
+        ctx.globalCompositeOperation='screen';
+        const lg=ctx.createRadialGradient(sx,sy-cw*.34,0,sx,sy-cw*.34,cw*.48);
+        lg.addColorStop(0,'rgba(255,45,45,.15)');
+        lg.addColorStop(1,'rgba(255,30,30,0)');
+        ctx.fillStyle=lg; ctx.beginPath(); ctx.ellipse(sx,sy-cw*.32,cw*.46,cw*.19,0,0,Math.PI*2); ctx.fill();
+        ctx.restore();
+      }
       if (c.rival) { const rr2 = cw * 0.11; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(sx, sy - cw * 0.78 * 0.83, rr2, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#1b2230'; ctx.font = `700 ${rr2 * 1.5}px Fredoka, sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(c.num, sx, sy - cw * 0.78 * 0.83 + rr2 * 0.05); }
       ctx.restore();
     });
@@ -1662,7 +1703,16 @@ function render() {
   ctx.restore();
   ctx.globalAlpha = 1;
   if (turbo > 0 && Math.random() > 0.3) particles.push({ x: px + (Math.random() - 0.5) * pw * 0.5, y: py - 4, vx: (Math.random() - 0.5) * 1.2, vy: 2 + Math.random() * 2, life: 0.7, decay: 0.05, size: 4 + Math.random() * 5, color: Math.random() > 0.5 ? '#ff7a1a' : '#ffd166', g: -0.05 });
-  if (speed > 0.6) { ctx.strokeStyle = turbo > 0 ? 'rgba(255,220,120,0.4)' : 'rgba(255,255,255,0.15)'; ctx.lineWidth = 1.5; for (let i = 0; i < 10; i++) { const lx = Math.random() < 0.5 ? Math.random() * W * 0.18 : W - Math.random() * W * 0.18, ly = horizonY + Math.random() * (H - horizonY); ctx.beginPath(); ctx.moveTo(lx, ly); ctx.lineTo(lx, ly + 20 + speed * 60); ctx.stroke(); } }
+  if (speed > 0.6) {
+    ctx.strokeStyle = turbo > 0 ? 'rgba(255,220,120,0.4)' : 'rgba(255,255,255,0.15)';
+    ctx.lineWidth = 1.5;
+    const speedLineCount = visualQuality < .78 ? 4 : 10;
+    for (let i = 0; i < speedLineCount; i++) {
+      const lx = Math.random() < 0.5 ? Math.random() * W * 0.18 : W - Math.random() * W * 0.18;
+      const ly = horizonY + Math.random() * (H - horizonY);
+      ctx.beginPath(); ctx.moveTo(lx, ly); ctx.lineTo(lx, ly + 20 + speed * 60); ctx.stroke();
+    }
+  }
   drawParticles();
 
   // Capa atmosférica: profundidad, luz de horizonte y contraste cinematográfico suave.
@@ -1672,7 +1722,7 @@ function render() {
   haze.addColorStop(1, 'rgba(0,0,0,.10)');
   ctx.fillStyle = haze; ctx.fillRect(0, horizonY, W, H - horizonY);
 
-  if (speed > 0.85 && turbo <= 0) {
+  if (visualQuality > 0.82 && speed > 0.85 && turbo <= 0) {
     ctx.save();
     ctx.globalAlpha = Math.min(0.18, (speed - 0.85) * 0.13);
     ctx.strokeStyle = '#ffffff';
@@ -1711,7 +1761,7 @@ function renderSegment(seg) {
   }
 
   // Textura ligera del asfalto solo en segmentos cercanos: no parpadea y cuesta poco en móvil.
-  if (p1.w > W * 0.42 && seg.index % 3 === 0) {
+  if (visualQuality > 0.78 && p1.w > W * 0.42 && seg.index % 3 === 0) {
     const seed = ((seg.index * 37) % 97) / 97;
     const ty = lerp(p2.y, p1.y, 0.42 + seed * 0.22);
     const tx = lerp(p2.x, p1.x, 0.48 + (seed - 0.5) * 0.14);
@@ -1729,7 +1779,27 @@ function renderSegment(seg) {
   // huellas de neumático
   ctx.fillStyle = 'rgba(0,0,0,0.12)';
   LANE_OFF.forEach(o => [-0.16, 0.16].forEach(d => poly([p1.x + (o + d) * p1.w - p1.w * 0.05, p1.y + 1, p1.x + (o + d) * p1.w + p1.w * 0.05, p1.y + 1, p2.x + (o + d) * p2.w + p2.w * 0.05, p2.y, p2.x + (o + d) * p2.w - p2.w * 0.05, p2.y], 'rgba(0,0,0,0.1)')));
-  if (dark) { const lw1 = p1.w * 2 / 3, lw2 = p2.w * 2 / 3; for (let i = 1; i < 3; i++) { const lx1 = p1.x - p1.w + lw1 * i, lx2 = p2.x - p2.w + lw2 * i; poly([lx1 - l1 / 2, p1.y + 1, lx1 + l1 / 2, p1.y + 1, lx2 + l2 / 2, p2.y, lx2 - l2 / 2, p2.y], theme.lane); } }
+  if (visualQuality > 0.84 && p1.w > W * 0.30) {
+    // reflejo longitudinal del asfalto: muy sutil, como luz rasante
+    ctx.save();
+    ctx.globalAlpha = theme.night ? 0.045 : 0.032;
+    const sheenColor = theme.night ? '#b8cef2' : '#ffffff';
+    poly([
+      p1.x-p1.w*.23,p1.y+1, p1.x+p1.w*.23,p1.y+1,
+      p2.x+p2.w*.13,p2.y, p2.x-p2.w*.13,p2.y
+    ], sheenColor);
+    ctx.restore();
+  }
+  if (dark) {
+    const lw1 = p1.w * 2 / 3, lw2 = p2.w * 2 / 3;
+    for (let i = 1; i < 3; i++) {
+      const lx1 = p1.x - p1.w + lw1 * i, lx2 = p2.x - p2.w + lw2 * i;
+      if (p1.w > 24) {
+        poly([lx1-l1*.62,p1.y+2,lx1+l1*.62,p1.y+2,lx2+l2*.62,p2.y+1,lx2-l2*.62,p2.y+1], 'rgba(0,0,0,.18)');
+      }
+      poly([lx1 - l1 / 2, p1.y + 1, lx1 + l1 / 2, p1.y + 1, lx2 + l2 / 2, p2.y, lx2 - l2 / 2, p2.y], theme.lane);
+    }
+  }
   // línea de borde y guardarraíl
   ctx.save();
   ctx.globalAlpha = 0.28;
@@ -1739,7 +1809,7 @@ function renderSegment(seg) {
   poly([p1.x - p1.w - r1 - l1, p1.y + 1, p1.x - p1.w - r1, p1.y + 1, p2.x - p2.w - r2, p2.y, p2.x - p2.w - r2 - l2, p2.y], '#e9ecef');
   poly([p1.x + p1.w + r1, p1.y + 1, p1.x + p1.w + r1 + l1, p1.y + 1, p2.x + p2.w + r2 + l2, p2.y, p2.x + p2.w + r2, p2.y], '#e9ecef');
   // reflectores de borde: dan profundidad nocturna y lectura de velocidad
-  if (seg.index % 10 === 0 && p1.w > 22) {
+  if (visualQuality > 0.78 && seg.index % 10 === 0 && p1.w > 22) {
     const rs=clamp(p1.w*.009,.65,4.2);
     [-1,1].forEach(d=>{
       const rx=p1.x+d*(p1.w+r1*.52), ry=p1.y-rs*.8;
@@ -2040,23 +2110,90 @@ if (lspediaBack) lspediaBack.addEventListener('click', () => {
   } catch (e) { location.href = volver; }
 });
 
-// ===================== BUCLE (dt fijo con acumulador para movimiento fluido) =====================
-const STEP = 1000 / 120; let acc = 0, lastTime = 0;
+// ===================== BUCLE ROBUSTO + CALIDAD ADAPTATIVA =====================
+// 60 Hz es suficiente para la física y reduce notablemente CPU/batería en móvil.
+const STEP = 1000 / 60;
+let acc = 0, lastTime = 0;
+let visualQuality = 1;
+let recoveryUntil = 0;
+let frameEMA = 16.7;
+
+function recoverFromSystemInterruption(duration = 1700) {
+  const now = performance.now();
+  acc = 0;
+  lastTime = now;
+  frameEMA = 16.7;
+  recoveryUntil = Math.max(recoveryUntil, now + duration);
+  if (gameState === 'playing') {
+    resetTiltCalibration();
+    try {
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
+    } catch (e) {}
+  }
+}
+
+function updateAdaptiveQuality(ts, rawFrame) {
+  if (rawFrame > 70) recoveryUntil = Math.max(recoveryUntil, ts + 1500);
+  const sample = Math.min(Math.max(rawFrame || 16.7, 4), 55);
+  frameEMA = frameEMA * .94 + sample * .06;
+  if (ts < recoveryUntil) visualQuality = .68;
+  else if (frameEMA > 25) visualQuality = .78;
+  else if (frameEMA > 20.5) visualQuality = .90;
+  else visualQuality = 1;
+}
+
 function loop(ts) {
-  // Programamos primero el siguiente frame: una excepción puntual no mata para siempre el bucle.
+  // Se agenda primero para que una excepción puntual nunca mate el juego.
   requestAnimationFrame(loop);
-  let frame = Math.min(ts - (lastTime || ts), 100); lastTime = ts;
-  acc += frame; let steps = 0;
+
+  const rawFrame = ts - (lastTime || ts);
+  lastTime = ts;
+  updateAdaptiveQuality(ts, rawFrame);
+
+  // Si Android/iOS suspendió el navegador (notificación, cambio de app, llamada, etc.),
+  // descartamos ese hueco temporal en lugar de intentar simularlo al volver.
+  if (rawFrame > 180) {
+    acc = 0;
+    recoveryUntil = Math.max(recoveryUntil, ts + 1800);
+    try {
+      render();
+      if (!document.getElementById('garage-screen').hidden) drawPreview();
+    } catch (err) {
+      console.error('[Carrera Matemática] Recuperación de interrupción:', err);
+    }
+    return;
+  }
+
+  const frame = Math.min(Math.max(rawFrame, 0), 50);
+  acc += frame;
+  let steps = 0;
   try {
-    while (acc >= STEP && steps < 12) { update(STEP); acc -= STEP; steps++; }
-    if (steps >= 12 && acc > STEP * 12) acc = 0;
+    while (acc >= STEP && steps < 4) {
+      update(STEP);
+      acc -= STEP;
+      steps++;
+    }
+    if (steps >= 4 && acc > STEP * 4) acc = 0;
     render();
     if (!document.getElementById('garage-screen').hidden) { previewT += frame; drawPreview(); }
   } catch (err) {
     console.error('[Carrera Matemática] Error de fotograma:', err);
     acc = 0;
+    recoveryUntil = Math.max(recoveryUntil, ts + 1000);
   }
 }
+
+// Las interrupciones del sistema no pausan la partida; solo resincronizan el reloj del juego.
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    acc = 0;
+    lastTime = 0;
+  } else {
+    recoverFromSystemInterruption(1900);
+  }
+});
+window.addEventListener('focus', () => recoverFromSystemInterruption(1400));
+window.addEventListener('pageshow', () => recoverFromSystemInterruption(1600));
 resize();
 theme = THEMES.campo; buildTrack(600); resetCars();
 showScreen('start-screen');
