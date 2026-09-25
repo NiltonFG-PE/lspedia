@@ -100,6 +100,35 @@ const server = http.createServer((req, res) => {
         await page.waitForFunction(() => new URL(location.href).searchParams.has('p'));
         console.log('PASS: deslizar y tocar en móvil son acciones distintas');
         await context.close();
+
+        // Experiencia EN: navegación, buscadores y Vocabulario deben cambiar
+        // de idioma sin recargar, y volver limpiamente a ES.
+        ({context, page} = await pagina());
+        await page.goto(base, {waitUntil:'domcontentloaded'});
+        await page.waitForFunction(() =>
+            window.App?.estadoDatos === 'listo'
+            && window.LSPediaVocabularioPublico?.listo()
+            && document.querySelector('.lspedia-idioma-btn[data-idioma="en"]')
+        );
+        await page.locator('.lspedia-idioma-btn[data-idioma="en"]').click();
+        await page.waitForFunction(() => document.documentElement.lang === 'en');
+        assert.equal(await page.locator('#buscar').getAttribute('placeholder'), 'Search a Spanish word or type in English');
+        assert.match(await page.locator('nav.navbar').innerText(), /Vocabulary/);
+
+        await page.locator('#btnCategorias').click();
+        await page.waitForFunction(() => /Colors/.test(document.getElementById('panelCategorias')?.innerText || ''));
+        const cardColors = page.locator('#panelCategorias .categoria-card').filter({hasText:'Colors'}).first();
+        await cardColors.click();
+        await page.waitForFunction(() => /Yellow/.test(document.getElementById('resultadoCategorias')?.innerText || ''));
+        assert.match(await page.locator('#resultadoCategorias').innerText(), /Category:\s*Colors/);
+        assert.match(await page.locator('#resultadoCategorias').innerText(), /Yellow/);
+
+        await page.locator('.lspedia-idioma-btn[data-idioma="es"]').click();
+        await page.waitForFunction(() => document.documentElement.lang === 'es');
+        assert.equal(await page.locator('#buscar').getAttribute('placeholder'), 'Buscar palabra y significado');
+        console.log('PASS: experiencia ES/EN completa en interfaz y Vocabulario');
+        await context.close();
+
         assert.deepEqual(errores, [], 'Errores JavaScript en la página');
     } finally {await browser.close();}
 })().catch(e => {console.error(e); process.exitCode=1;}).finally(() => server.close());
