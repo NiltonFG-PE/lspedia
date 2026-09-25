@@ -5,7 +5,7 @@
     'use strict';
 
     const CLASE_BOTON = 'btn-compartir-categoria-lspedia';
-    const VERSION_PREVIEW_SOCIAL = '20260925-7';
+    const VERSION_PREVIEW_SOCIAL = 'v8';
     let restauracionVocabularioRegistrada = false;
     let ultimaRestauracionConfirmada = '';
 
