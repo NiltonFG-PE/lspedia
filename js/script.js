@@ -279,6 +279,22 @@ window.addEventListener("load", actualizarPanelProgresoPersonal, { once: true })
 let categoriaActualMostrada = null;
 let coleccionActualMostrada = null;
 
+// Conserva el destino original de una apertura directa antes de que cualquier
+// clic simulado de Vocabulario cambie la URL. Es la referencia estable para
+// categorías/colecciones compartidas.
+let destinoVocabularioInicialPendiente = (() => {
+    try {
+        const params = new URLSearchParams(window.location.search);
+        const vista = String(params.get("vista") || "").toLowerCase();
+        if(vista !== "vocabulario" && vista !== "temas") return null;
+        const coleccion = String(params.get("coleccion") || "").trim();
+        const categoria = String(params.get("categoria") || "").trim();
+        if(coleccion) return { tipo: "coleccion", nombre: coleccion };
+        if(categoria) return { tipo: "categoria", nombre: categoria };
+    } catch(_error){}
+    return null;
+})();
+
 // Mismas 7 velocidades que tenía el selector anterior, ahora con
 // control tortuga 🐢 / conejo 🐇 igual que en el módulo Alfabetización.
 const VELOCIDADES_PALABRA = [0.6, 0.8, 0.9, 1, 1.2, 1.6, 2];
@@ -2290,11 +2306,10 @@ function procesarDatosApp(data) {
                     filtrarPorCategoriaDiccionario(categoriaDiccionarioEnUrl, { noActualizarHistorial: true });
                 } else if (vistaEnUrl === "vocabulario" || vistaEnUrl === "temas") {
                     const btnCategorias = document.getElementById("btnCategorias");
-                    // Evita que el clic simulado dispare el scroll que centra
-                    // el panel de categorías: acá se está restaurando la
-                    // vista tras cargar la página directo, así que debe verse
-                    // desde arriba (ver bandera "saltarScrollAlAbrirVocabulario").
+                    // Apertura por enlace directo: no mostrar el aviso modal ni
+                    // disparar animaciones/scrolls de una entrada manual.
                     saltarScrollAlAbrirVocabulario = true;
+                    omitirAvisoVocabularioUnaVez = true;
                     if (btnCategorias) btnCategorias.click();
                     // (antes, un segundo toque en "Vocabulario" desde la barra
                     // inferior forzaba un refresco real de la página y acá se
@@ -2302,8 +2317,12 @@ function procesarDatosApp(data) {
                     // existe, pero esta restauración sigue sirviendo para un
                     // refresco manual normal del navegador, ej. F5).
                     const textoBusquedaUrl = urlParams.get("buscar");
-                    const categoriaUrl = urlParams.get("categoria");
-                    const coleccionUrl = urlParams.get("coleccion");
+                    const categoriaUrl = destinoVocabularioInicialPendiente && destinoVocabularioInicialPendiente.tipo === "categoria"
+                        ? destinoVocabularioInicialPendiente.nombre
+                        : urlParams.get("categoria");
+                    const coleccionUrl = destinoVocabularioInicialPendiente && destinoVocabularioInicialPendiente.tipo === "coleccion"
+                        ? destinoVocabularioInicialPendiente.nombre
+                        : urlParams.get("coleccion");
                     if (textoBusquedaUrl && buscarCategorias) {
                         buscarCategorias.value = textoBusquedaUrl;
                         buscarEnCategorias();
@@ -2317,11 +2336,7 @@ function procesarDatosApp(data) {
                             apiVocabulario.cargar();
                         }
                         if(apiVocabulario && typeof apiVocabulario.listo === "function" && apiVocabulario.listo()){
-                            mostrarEtiquetaVocabulario(coleccionUrl, {
-                                noActualizarHistorial: true,
-                                sinScroll: true,
-                                animarEntrada: true
-                            });
+                            restaurarDestinoVocabularioInicial();
                         }
                     } else if (categoriaUrl && typeof mostrarCategoria === "function") {
                         // La categoría puede pedirse antes de que QuizV2 termine
@@ -2416,6 +2431,16 @@ window.App = App;
 
 document.addEventListener("DOMContentLoaded", () => {
     App.iniciar();
+    setTimeout(() => {
+        try {
+            const api = window.LSPediaVocabularioPublico;
+            if(destinoVocabularioInicialPendiente && api && typeof api.cargar === "function"){
+                Promise.resolve(api.cargar()).then(() => restaurarDestinoVocabularioInicial());
+            }
+        } catch(error){
+            console.warn("No se pudo restaurar el destino inicial de Vocabulario:", error);
+        }
+    }, 0);
 });
 
 // --- TARJETAS DE ESTADÍSTICAS CLICABLES ---
@@ -2510,9 +2535,63 @@ function mostrarEstadoBusqueda(tipo) {
     };
 }
 // Refrescar solo una consulta que sigue abierta: no reabrir la lista sobre una ficha.
+function restaurarDestinoVocabularioInicial(){
+    const api = window.LSPediaVocabularioPublico;
+    if(!api || typeof api.listo !== 'function' || !api.listo()) return false;
+
+    const destino = destinoVocabularioInicialPendiente;
+    const coleccion = destino && destino.tipo === 'coleccion'
+        ? destino.nombre
+        : coleccionActualMostrada;
+    const categoria = destino && destino.tipo === 'categoria'
+        ? destino.nombre
+        : categoriaActualMostrada;
+
+    if(coleccion){
+        coleccionActualMostrada = coleccion;
+        categoriaActualMostrada = null;
+        mostrarEtiquetaVocabulario(coleccion, {
+            noActualizarHistorial: true,
+            sinScroll: true,
+            animarEntrada: true
+        });
+        const url = window.location.pathname
+            + '?vista=vocabulario&coleccion=' + encodeURIComponent(coleccion);
+        window.history.replaceState(
+            { tipo: 'coleccionVocabulario', coleccion },
+            '',
+            url
+        );
+        destinoVocabularioInicialPendiente = null;
+        return true;
+    }
+
+    if(categoria){
+        categoriaActualMostrada = categoria;
+        coleccionActualMostrada = null;
+        mostrarCategoria(categoria, {
+            noActualizarHistorial: true,
+            sinScroll: true,
+            animarEntrada: true
+        });
+        const url = window.location.pathname
+            + '?vista=vocabulario&categoria=' + encodeURIComponent(categoria);
+        window.history.replaceState(
+            { tipo: 'categoriaVocabulario', categoria },
+            '',
+            url
+        );
+        destinoVocabularioInicialPendiente = null;
+        return true;
+    }
+    return false;
+}
+
 document.addEventListener('lspedia:vocabularioPublicoListo', () => {
     if (buscar.value.trim() && sugerencias.style.display !== 'none') buscarPalabras();
     if (new URLSearchParams(location.search).get('p')) return;
+
+    if(restaurarDestinoVocabularioInicial()) return;
 
     if (coleccionActualMostrada) {
         const claveColeccion = norm(coleccionActualMostrada);
@@ -2522,8 +2601,7 @@ document.addEventListener('lspedia:vocabularioPublicoListo', () => {
         if(!yaPintada){
             mostrarEtiquetaVocabulario(coleccionActualMostrada, {
                 noActualizarHistorial: true,
-                sinScroll: true,
-                animarEntrada: true
+                sinScroll: true
             });
         }
     } else if (categoriaActualMostrada) {
@@ -2534,14 +2612,14 @@ document.addEventListener('lspedia:vocabularioPublicoListo', () => {
         if(!yaPintada){
             mostrarCategoria(categoriaActualMostrada, {
                 noActualizarHistorial: true,
-                sinScroll: true,
-                animarEntrada: true
+                sinScroll: true
             });
         }
     } else if (document.body.classList.contains('vista-temas-movil')) {
         mostrarCategorias();
     }
 });
+
 document.addEventListener('lspedia:datosListos', () => {
     if (buscar.value.trim() && sugerencias.style.display !== 'none') buscarPalabras();
 });
