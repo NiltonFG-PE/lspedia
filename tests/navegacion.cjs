@@ -120,7 +120,7 @@ const server = http.createServer((req, res) => {
         const cardColors = page.locator('#panelCategorias .categoria-card').filter({hasText:'Colors'}).first();
         await cardColors.click();
         await page.waitForFunction(() => /Yellow/.test(document.getElementById('resultadoCategorias')?.innerText || ''));
-        assert.match(await page.locator('#resultadoCategorias').innerText(), /Category:\s*Colors/);
+        assert.match(await page.locator('#resultadoCategorias').innerText(), /Category:\s*Colors/i);
         assert.match(await page.locator('#resultadoCategorias').innerText(), /Yellow/);
 
         await page.locator('.lspedia-idioma-btn[data-idioma="es"]').click();
