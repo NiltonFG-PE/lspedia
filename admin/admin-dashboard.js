@@ -127,12 +127,14 @@
 
   async function analytics(period,force){
     if(!force){const c=cacheGet(period);if(c)return c;}
-    let last;
-    for(const delay of [0,1200]){
-      if(delay)await sleep(delay);
-      try{const d=await requestJsonp(state.api,state.key,period,'admin_analytics',38000);cacheSet(period,d);return d;}catch(e){last=e;}
+    // Evita dos consultas largas idénticas: en móvil podían encadenarse hasta
+    // ~77 s por período y hacer parecer que el panel había dejado de cargar.
+    try{
+      const d=await requestJsonp(state.api,state.key,period,'admin_analytics',45000);
+      cacheSet(period,d);return d;
+    }catch(e){
+      throw e||new Error('No se pudo consultar Analytics.');
     }
-    throw last||new Error('No se pudo consultar Analytics.');
   }
 
   async function fetchJson(url){const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status+' · '+url);return r.json();}
@@ -409,24 +411,42 @@
 
   async function loadAll(force){
     const token=++state.loadToken;state.lastLoaded=Date.now();resetAutolock();
-    $('btnRefresh').disabled=true;$('freshness').textContent='Actualizando…';setNotice(progressMessage(),'info');
+    $('btnRefresh').disabled=true;$('freshness').textContent='Actualizando…';setNotice('Cargando el panel…','info');
     state.alerts=[];renderKpis();
 
+    // Contenido y estado del repositorio nunca deben depender de Analytics.
     const contentP=loadContent().then(c=>{if(token!==state.loadToken)return;state.content=c;state.audit=auditContent(c);renderContent();renderAudit();computeAlerts();renderAlerts();renderKpis();}).catch(()=>{});
     const repoP=Promise.all([loadRepo(),loadWorkflows()]).then(([r,w])=>{if(token!==state.loadToken)return;state.repo=r;state.workflows=w;renderDeploy();computeAlerts();renderAlerts();renderKpis();}).catch(()=>{});
 
-    try{
-      state.data7=await analytics('7',force);if(token!==state.loadToken)return;renderKpis();computeAlerts();renderAlerts();setNotice(progressMessage(),'info');
-    }catch(e){setNotice('Analytics no pudo cargar los datos esenciales: '+e.message,'bad');$('btnRefresh').disabled=false;return;}
+    // Los tres períodos son independientes. Antes se ejecutaban uno detrás de
+    // otro: si 7 días tardaba/fallaba, 30 días y el historial nunca aparecían.
+    // En paralelo, cada bloque se muestra apenas su consulta termina.
+    const p7=analytics('7',force).then(d=>{
+      if(token!==state.loadToken)return;state.data7=d;renderKpis();computeAlerts();renderAlerts();
+    }).catch(e=>{
+      if(token!==state.loadToken)return;
+      setNotice('No se pudieron cargar los indicadores de 7 días: '+e.message,'warn');
+    });
+    const p30=analytics('30',force).then(d=>{
+      if(token!==state.loadToken)return;state.data30=d;renderTrends();renderContent();renderFunnel();
+    }).catch(e=>{
+      if(token!==state.loadToken)return;
+      $('trendGrid').innerHTML='<div class="notice notice-warn" style="grid-column:1/-1">No se pudo cargar el análisis de 30 días: '+esc(e.message)+'</div>';
+    });
+    const pAll=analytics('todo',force).then(d=>{
+      if(token!==state.loadToken)return;state.dataAll=d;renderPending();
+    }).catch(e=>{
+      if(token!==state.loadToken)return;
+      $('pendingTable').innerHTML='<div class="notice notice-warn">No se pudo cargar el historial completo: '+esc(e.message)+'</div>';
+    });
 
-    await sleep(120);
-    try{state.data30=await analytics('30',force);if(token!==state.loadToken)return;renderTrends();renderContent();renderFunnel();setNotice(progressMessage(),'info');}catch(e){setNotice('Los indicadores de 7 días están disponibles, pero el análisis de 30 días falló: '+e.message,'warn');}
-
-    await sleep(350);
-    try{state.dataAll=await analytics('todo',force);if(token!==state.loadToken)return;renderPending();setNotice(progressMessage(),'ok');}catch(e){$('pendingTable').innerHTML='<div class="notice notice-warn">No se pudo cargar el historial completo: '+esc(e.message)+'</div>';}
-
-    await Promise.allSettled([contentP,repoP]);
-    computeAlerts();renderAlerts();renderKpis();
+    await Promise.allSettled([p7,p30,pAll,contentP,repoP]);
+    if(token!==state.loadToken)return;
+    computeAlerts();renderAlerts();renderKpis();renderContent();
+    const analyticsOk=[state.data7,state.data30,state.dataAll].filter(Boolean).length;
+    if(analyticsOk===3)setNotice('✅ Panel actualizado. Todos los períodos de Analytics están disponibles.','ok');
+    else if(analyticsOk)setNotice('El panel cargó parcialmente: '+analyticsOk+' de 3 períodos de Analytics respondieron. Puedes pulsar Actualizar para reintentar lo que falta.','warn');
+    else setNotice('El contenido del Admin cargó, pero Analytics no respondió. Pulsa Actualizar para reintentar.','bad');
     $('freshness').textContent='Actualizado '+new Intl.DateTimeFormat('es-PE',{hour:'2-digit',minute:'2-digit'}).format(new Date());
     $('btnRefresh').disabled=false;
   }
