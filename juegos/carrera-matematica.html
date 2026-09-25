@@ -27,6 +27,50 @@
     .lspedia-back:active { transform: scale(.96); }
     .lspedia-back:focus-visible { outline: 3px solid #ffc93c; outline-offset: 3px; }
 
+    .display-mode-wrap { width:min(100%,520px); display:flex; flex-direction:column; align-items:center; gap:8px; padding:10px 12px; border-radius:18px; background:rgba(35,43,58,.9); border:1px solid rgba(255,255,255,.12); box-shadow:0 8px 24px rgba(0,0,0,.24); }
+    .display-mode-label { font-size:.85rem; font-weight:700; color:#dbe7f7; text-align:center; }
+    .display-mode-actions { width:100%; display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .display-mode-btn { min-height:46px; border:2px solid #53627a; border-radius:14px; background:#2d3749; color:#fff; font:700 .92rem var(--font); cursor:pointer; }
+    .display-mode-btn.active { border-color:var(--sign); background:#3b4658; box-shadow:0 0 0 3px rgba(255,201,60,.15); color:var(--sign); }
+    .display-mode-btn:active { transform:scale(.98); }
+    .display-mode-help { min-height:1.25em; font-size:.72rem; line-height:1.25; color:#aebdd2; text-align:center; }
+    #tiltCenterBtn { cursor:pointer; pointer-events:auto; min-width:42px; justify-content:center; color:var(--sign); }
+    #tiltCenterBtn:active { transform:scale(.95); }
+    #orientation-toast { position:absolute; left:50%; bottom:calc(env(safe-area-inset-bottom,0px) + 102px); transform:translateX(-50%) translateY(10px); z-index:50; width:min(92%,480px); padding:10px 14px; border-radius:14px; background:rgba(17,24,39,.93); color:#fff; font-size:.82rem; font-weight:700; text-align:center; opacity:0; pointer-events:none; transition:opacity .2s ease,transform .2s ease; box-shadow:0 10px 30px rgba(0,0,0,.3); }
+    #orientation-toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+    @media (orientation: landscape) and (max-height: 520px) {
+      #hud { top:calc(env(safe-area-inset-top,0px) + 6px); left:8px; right:8px; gap:5px; }
+      .hud-row { gap:4px; }
+      .hud-box { padding:4px 7px; border-radius:10px; font-size:clamp(.78rem,2.4vw,1rem); gap:4px; }
+      #hearts svg { width:1.15em; height:1.15em; }
+      #turbo-meter { width:40px; height:8px; }
+      #gauge { width:2.1em; height:1.15em; }
+      #progress { height:12px; }
+      #progress-car { width:24px; height:24px; top:-6px; }
+      #progress-flag { width:27px; height:27px; top:-8px; }
+      #mobile-controls { bottom:calc(env(safe-area-inset-bottom,0px) + 7px); padding:0 10px; }
+      .mobile-btn { width:60px; height:60px; border-width:2px; }
+      .mobile-btn svg { width:32px; height:32px; }
+      #lights { padding-top:calc(env(safe-area-inset-top,0px) + 55px); }
+      .light-bar { padding:8px 12px; gap:9px; border-width:3px; }
+      .lamp { width:34px; }
+      .screen { gap:8px; padding:calc(env(safe-area-inset-top,0px) + 8px) 12px calc(env(safe-area-inset-bottom,0px) + 8px); }
+      .tutorial { flex-wrap:nowrap; gap:8px; max-width:620px; }
+      .tut-card { width:min(112px,20vw); padding:8px; border-radius:16px; }
+      .display-mode-wrap { max-width:460px; padding:7px 9px; gap:5px; }
+      .display-mode-btn { min-height:38px; font-size:.78rem; }
+      .display-mode-label { font-size:.74rem; }
+      .display-mode-help { font-size:.64rem; }
+      .icon-btn { width:64px; height:64px; }
+      .q-card { width:min(680px,96%); padding:9px 11px; gap:7px; border-radius:18px; }
+      .q-scene { min-height:56px; padding:7px; }
+      .q-eq { font-size:clamp(1.5rem,5vw,2.2rem); }
+      .q-options { gap:7px; }
+      .opt { min-height:54px; padding:6px; }
+      .opt b { font-size:clamp(1.45rem,5vw,2rem); }
+    }
+
     /* ---------- HUD ---------- */
     #hud { position: absolute; top: calc(env(safe-area-inset-top, 0px) + 10px); left: 10px; right: 10px; display: none; flex-direction: column; gap: 8px; pointer-events: none; z-index: 5; }
     #hud.on { display: flex; }
@@ -190,6 +234,7 @@
         </div>
       </div>
       <div class="hud-row">
+        <div class="hud-box" id="tiltCenterBtn" role="button" tabindex="0" title="Recentrar inclinación" aria-label="Recentrar inclinación">◎</div>
         <div class="hud-box" id="score-box">
           <svg viewBox="0 0 24 24"><path fill="#ffc93c" d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
           <span id="score">0</span>
@@ -252,6 +297,14 @@
           </svg>
         </div>
       </div>
+      <div class="display-mode-wrap" aria-label="Modo de pantalla">
+        <div class="display-mode-label">Pantalla completa</div>
+        <div class="display-mode-actions">
+          <button type="button" class="display-mode-btn" id="modePortrait">📱 Vertical</button>
+          <button type="button" class="display-mode-btn" id="modeLandscape">↔ Horizontal</button>
+        </div>
+        <div class="display-mode-help" id="displayModeHelp">Elige la orientación. La inclinación se ajustará automáticamente.</div>
+      </div>
       <button class="icon-btn" id="startBtn" aria-label="Jugar"><svg viewBox="0 0 24 24"><path fill="#1b2230" d="M7 4l13 8-13 8z"/></svg></button>
     </div>
 
@@ -308,6 +361,8 @@
       </div>
     </div>
 
+    <div id="orientation-toast" role="status" aria-live="polite"></div>
+
     <div id="mobile-controls">
       <div class="mobile-btn" id="btnLeft"><svg viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7"/></svg></div>
       <div class="mobile-btn" id="btnRight"><svg viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></div>
@@ -362,15 +417,28 @@ let W = 390, H = 700, dpr = 1;
 function resize() {
   const rect = document.getElementById('game-container').getBoundingClientRect();
   dpr = Math.min(window.devicePixelRatio || 1, 2);
-  W = Math.max(280, Math.floor(rect.width)); H = Math.max(400, Math.floor(rect.height));
+  W = Math.max(280, Math.floor(rect.width)); H = Math.max(240, Math.floor(rect.height));
   canvas.width = W * dpr; canvas.height = H * dpr;
   canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  SX = Math.min(W, H * 0.85) / 2; HORIZ = H * 0.40;
+  const apaisado = W > H;
+  SX = apaisado ? Math.min(W * 0.62, H * 1.35) / 2 : Math.min(W, H * 0.85) / 2;
+  HORIZ = H * (apaisado ? 0.34 : 0.40);
   initClouds();
 }
-window.addEventListener('resize', resize);
-window.addEventListener('orientationchange', () => setTimeout(resize, 200));
+window.addEventListener('resize', () => setTimeout(resize, 30));
+window.addEventListener('orientationchange', () => {
+  resetTiltCalibration();
+  setTimeout(resize, 180);
+});
+if (screen.orientation && typeof screen.orientation.addEventListener === 'function') {
+  screen.orientation.addEventListener('change', () => {
+    resetTiltCalibration();
+    setTimeout(resize, 120);
+  });
+}
+document.addEventListener('fullscreenchange', () => setTimeout(resize, 80));
+document.addEventListener('webkitfullscreenchange', () => setTimeout(resize, 80));
 
 // ===================== MOTOR DE PISTA (pseudo-3D con curvas y colinas) =====================
 const SEG_LEN = 200, ROAD_W = 2000, CAM_H = 1500, DRAW_DIST = 170, RUMBLE_LEN = 3, FOV = 95;
@@ -442,6 +510,9 @@ let playerLane = 1, playerX = 0, playerTilt = 0, skyOffset = 0, bounce = 0;
 let cars = [], rivals = [], particles = [], clouds = [], skyStars = [], birds = [], collected = new Set();
 let correctAnswers = 0, wrongAnswers = 0;
 let tiltEnabled = false, tiltGamma = 0, lastLaneChange = 0;
+let tiltNeutral = 0, tiltFilter = 0, tiltCalibrating = true, tiltCalibSum = 0, tiltCalibCount = 0;
+let preferredDisplayMode = (() => { try { return localStorage.getItem('carrera-matematica-display-mode') || ''; } catch(e) { return ''; } })();
+let orientationToastTimer = null;
 let shake = 0, flashAlpha = 0, flashColor = '255,60,60', time = 0;
 const SPEED_UNIT = 9;   // unidades de mundo por ms a velocidad 1
 
@@ -747,7 +818,13 @@ function update(dt) {
   playerTilt += (((targetX - playerX) * 0.25 - playerSeg.curve * 0.012 * speed) - playerTilt) * clamp(0.01 * dt, 0, 1);
   bounce = Math.sin(time / 60) * speed * 1.2;
 
-  if (tiltEnabled) { const now = performance.now(); if (now - lastLaneChange > 280) { if (tiltGamma < -12 && playerLane > 0) { playerLane--; lastLaneChange = now; } else if (tiltGamma > 12 && playerLane < 2) { playerLane++; lastLaneChange = now; } } }
+  if (tiltEnabled && !tiltCalibrating) {
+    const now = performance.now();
+    if (now - lastLaneChange > 330) {
+      if (tiltGamma < -11 && playerLane > 0) { playerLane--; lastLaneChange = now; }
+      else if (tiltGamma > 11 && playerLane < 2) { playerLane++; lastLaneChange = now; }
+    }
+  }
 
   // tráfico y rivales
   const playerZ = positionZ + PLAYER_Z;
@@ -956,12 +1033,119 @@ function buildMap() {
 }
 
 // ===================== ENTRADA =====================
-async function enableTilt() {
-  if (tiltEnabled) return;
-  if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') { try { const perm = await DeviceOrientationEvent.requestPermission(); if (perm === 'granted') { window.addEventListener('deviceorientation', onTilt); tiltEnabled = true; } } catch (e) {} }
-  else if (window.DeviceOrientationEvent) { window.addEventListener('deviceorientation', onTilt); tiltEnabled = true; }
+function getScreenAngle() {
+  let angle = 0;
+  if (screen.orientation && Number.isFinite(Number(screen.orientation.angle))) angle = Number(screen.orientation.angle);
+  else if (Number.isFinite(Number(window.orientation))) angle = Number(window.orientation);
+  angle = ((angle % 360) + 360) % 360;
+  return angle;
 }
-function onTilt(e) { if (e.gamma != null) tiltGamma = screen.orientation && Math.abs(screen.orientation.angle) === 90 ? -e.beta : e.gamma; }
+function screenRelativeTilt(e) {
+  if (!Number.isFinite(e.beta) || !Number.isFinite(e.gamma)) return null;
+  const b = e.beta * Math.PI / 180;
+  const g = e.gamma * Math.PI / 180;
+  const d = -getScreenAngle() * Math.PI / 180;
+  // Componente izquierda/derecha respecto de la pantalla actual.
+  // En vertical equivale a gamma; en los dos paisajes usa beta con signo opuesto.
+  const s = Math.cos(b) * Math.sin(g) * Math.cos(d) - Math.sin(b) * Math.sin(d);
+  return Math.asin(clamp(s, -1, 1)) * 180 / Math.PI;
+}
+function resetTiltCalibration() {
+  tiltNeutral = 0; tiltFilter = 0; tiltGamma = 0;
+  tiltCalibrating = true; tiltCalibSum = 0; tiltCalibCount = 0;
+  lastLaneChange = performance.now();
+}
+function showOrientationToast(msg) {
+  const el = document.getElementById('orientation-toast');
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(orientationToastTimer);
+  orientationToastTimer = setTimeout(() => el.classList.remove('show'), 2400);
+}
+function updateDisplayModeUI() {
+  const p = document.getElementById('modePortrait');
+  const l = document.getElementById('modeLandscape');
+  if (p) p.classList.toggle('active', preferredDisplayMode === 'portrait');
+  if (l) l.classList.toggle('active', preferredDisplayMode === 'landscape');
+}
+async function requestGameFullscreen() {
+  const target = document.getElementById('game-container');
+  if (document.fullscreenElement || document.webkitFullscreenElement) return true;
+  try {
+    if (target.requestFullscreen) {
+      await target.requestFullscreen({ navigationUI: 'hide' });
+      return true;
+    }
+    if (target.webkitRequestFullscreen) {
+      target.webkitRequestFullscreen();
+      return true;
+    }
+  } catch (e) {}
+  return false;
+}
+async function lockGameOrientation(mode) {
+  try {
+    if (screen.orientation && typeof screen.orientation.lock === 'function') {
+      await screen.orientation.lock(mode);
+      return true;
+    }
+  } catch (e) {}
+  return false;
+}
+async function activateDisplayMode(mode) {
+  preferredDisplayMode = mode;
+  try { localStorage.setItem('carrera-matematica-display-mode', mode); } catch (e) {}
+  updateDisplayModeUI();
+  // Se solicita desde el toque del usuario: necesario para fullscreen y,
+  // en iPhone/iPad compatibles, para autorizar el sensor de orientación.
+  await enableTilt();
+  const full = await requestGameFullscreen();
+  const locked = await lockGameOrientation(mode);
+  resetTiltCalibration();
+  setTimeout(resize, 180);
+  const nombre = mode === 'landscape' ? 'horizontal' : 'vertical';
+  const help = document.getElementById('displayModeHelp');
+  if (locked) {
+    if (help) help.textContent = 'Modo ' + nombre + ' activo. Mantén el teléfono centrado un instante.';
+    showOrientationToast('Pantalla completa ' + nombre + ' · inclinación recalibrada');
+  } else {
+    if (help) help.textContent = 'Si no gira solo, gira el teléfono manualmente. La inclinación se adapta.';
+    showOrientationToast((full ? 'Pantalla completa activa. ' : '') + 'Gira el teléfono a ' + nombre + ' si es necesario.');
+  }
+}
+async function enableTilt() {
+  if (tiltEnabled) return true;
+  if (typeof DeviceOrientationEvent === 'undefined') return false;
+  if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+    try {
+      const perm = await DeviceOrientationEvent.requestPermission();
+      if (perm !== 'granted') return false;
+    } catch (e) { return false; }
+  }
+  window.addEventListener('deviceorientation', onTilt, true);
+  tiltEnabled = true;
+  resetTiltCalibration();
+  return true;
+}
+function onTilt(e) {
+  const raw = screenRelativeTilt(e);
+  if (!Number.isFinite(raw)) return;
+  if (tiltCalibrating) {
+    tiltCalibSum += raw; tiltCalibCount++;
+    if (tiltCalibCount >= 8) {
+      tiltNeutral = tiltCalibSum / tiltCalibCount;
+      tiltFilter = 0; tiltGamma = 0; tiltCalibrating = false;
+    }
+    return;
+  }
+  let delta = raw - tiltNeutral;
+  while (delta > 180) delta -= 360;
+  while (delta < -180) delta += 360;
+  delta = clamp(delta, -45, 45);
+  tiltFilter += (delta - tiltFilter) * 0.24;
+  tiltGamma = Math.abs(tiltFilter) < 4 ? 0 : tiltFilter;
+}
 function moveLane(dir) { if (gameState !== 'playing') return; playerLane = clamp(playerLane + dir, 0, 2); vibrate(15); }
 window.addEventListener('keydown', e => { if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') moveLane(-1); if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') moveLane(1); if (e.key === 'm' || e.key === 'M') toggleMute(); });
 let touchStartX = null;
@@ -970,10 +1154,31 @@ canvas.addEventListener('touchend', e => { if (touchStartX === null) return; con
 canvas.addEventListener('mousedown', e => moveLane(e.clientX < W / 2 ? -1 : 1));
 function bindMobile(btn, dir) { const go = e => { e.preventDefault(); e.stopPropagation(); moveLane(dir); }; btn.addEventListener('touchstart', go, { passive: false }); btn.addEventListener('mousedown', go); }
 bindMobile(document.getElementById('btnLeft'), -1); bindMobile(document.getElementById('btnRight'), 1);
+const modePortrait = document.getElementById('modePortrait');
+const modeLandscape = document.getElementById('modeLandscape');
+if (modePortrait) modePortrait.addEventListener('click', () => activateDisplayMode('portrait'));
+if (modeLandscape) modeLandscape.addEventListener('click', () => activateDisplayMode('landscape'));
+const tiltCenterBtn = document.getElementById('tiltCenterBtn');
+if (tiltCenterBtn) {
+  const recenter = async () => {
+    await enableTilt();
+    resetTiltCalibration();
+    showOrientationToast('Inclinación recentrada. Mantén el teléfono recto un instante.');
+  };
+  tiltCenterBtn.addEventListener('click', recenter);
+  tiltCenterBtn.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') recenter(); });
+}
+updateDisplayModeUI();
+
 const muteBtn = document.getElementById('muteBtn');
 function toggleMute() { isMuted = !isMuted; document.getElementById('snd-on').style.display = isMuted ? 'none' : ''; document.getElementById('snd-off').style.display = isMuted ? '' : 'none'; if (engineGain && audioCtx) engineGain.gain.setTargetAtTime(isMuted ? 0 : 0.07, audioCtx.currentTime, 0.1); }
 muteBtn.addEventListener('click', toggleMute); muteBtn.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') toggleMute(); });
-document.getElementById('startBtn').onclick = () => { initAudio(); sfx.click(); buildGarage(); showScreen('garage-screen'); };
+document.getElementById('startBtn').onclick = async () => {
+  initAudio(); sfx.click();
+  if (preferredDisplayMode) await activateDisplayMode(preferredDisplayMode);
+  else await enableTilt();
+  buildGarage(); showScreen('garage-screen');
+};
 document.getElementById('garageNext').onclick = () => { sfx.click(); buildMap(); showScreen('map-screen'); };
 document.getElementById('mapGarage').onclick = () => { sfx.click(); buildGarage(); showScreen('garage-screen'); };
 document.getElementById('winMap').onclick = () => { buildMap(); showScreen('map-screen'); };
