@@ -27,7 +27,7 @@ MARCADOR = ".lspedia-seo-generated"
 IMAGEN_RE = re.compile(r"\.(?:avif|gif|jpe?g|png|svg|webp)(?:[?#].*)?$", re.I)
 PREFIJO_RE = re.compile(r"^(?:https?://|/|\.\.?/|img/)", re.I)
 YOUTUBE_ID_RE = re.compile(r"^[A-Za-z0-9_-]{11}$")
-SOCIAL_PREVIEW_VERSION = "v9"
+SOCIAL_PREVIEW_VERSION = "v10"
 
 
 def texto(valor: object) -> str:
@@ -640,7 +640,12 @@ def generar_categorias(repo: Path, filas_dic: list[dict], filas_voc: list[dict])
 
             destino = raiz / tipo / ref
             destino.mkdir(parents=True, exist_ok=True)
-            crear_preview_categoria(repo, items, destino)
+            crear_preview_categoria(
+                repo,
+                items,
+                destino,
+                preferida=buscar_imagen_categoria(repo, ref),
+            )
             imagen = f"{canonical}preview.jpg"
 
             palabras = [texto(x.get("palabra")) for x in items if texto(x.get("palabra"))]
