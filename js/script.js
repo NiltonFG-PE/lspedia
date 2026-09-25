@@ -2302,7 +2302,11 @@ function procesarDatosApp(data) {
                         buscarCategorias.value = textoBusquedaUrl;
                         buscarEnCategorias();
                     } else if (categoriaUrl && typeof mostrarCategoria === "function") {
-                        mostrarCategoria(categoriaUrl);
+                        // La categoría puede pedirse antes de que QuizV2 termine
+                        // de cargar. Conservamos el destino y la repintamos en
+                        // cuanto llegue el banco, evitando una grilla vacía.
+                        categoriaActualMostrada = categoriaUrl;
+                        mostrarCategoria(categoriaUrl, { noActualizarHistorial: true });
                     }
                 } else if (vistaEnUrl === "nosotros") {
                     const btnSobreNosotros = document.getElementById("btnSobreNosotros");
