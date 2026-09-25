@@ -711,6 +711,10 @@ const ARTICLE_FIXES = [
   [/\bvoy hospital\b/gi,"voy al hospital"],[/\bestoy hospital\b/gi,"estoy en el hospital"],
   [/\bvoy mercado\b/gi,"voy al mercado"],[/\bestoy mercado\b/gi,"estoy en el mercado"],
   [/\bvoy universidad\b/gi,"voy a la universidad"],[/\bestoy universidad\b/gi,"estoy en la universidad"],
+  [/\ba la banco\b/gi,"al banco"],[/\ben la banco\b/gi,"en el banco"],
+  [/\bal universidad\b/gi,"a la universidad"],[/\ben el universidad\b/gi,"en la universidad"],
+  [/\bal farmacia\b/gi,"a la farmacia"],[/\ben el farmacia\b/gi,"en la farmacia"],
+  [/\bal plaza\b/gi,"a la plaza"],[/\ben el plaza\b/gi,"en la plaza"],
   [/\ba banco\b/gi,"al banco"],[/\ben banco\b/gi,"en el banco"],
   [/\ba hospital\b/gi,"al hospital"],[/\ben hospital\b/gi,"en el hospital"],
   [/\ba mercado\b/gi,"al mercado"],[/\ben mercado\b/gi,"en el mercado"],
@@ -732,9 +736,16 @@ const TENSE_MAP_TO_FUTURE = new Map([
   ["compré","compraré"],["compre","compraré"],["estuve","estaré"],["tuve","tendré"]
 ]);
 const TENSE_MAP_TO_PAST = new Map([
-  ["iré","fui"],["ire","fui"],["llegaré","llegué"],["llegare","llegué"],["saldré","salí"],["saldre","salí"],
-  ["pagaré","pagué"],["pagare","pagué"],["haré","hice"],["hare","hice"],["terminaré","terminé"],["terminare","terminé"],
-  ["enviaré","envié"],["enviare","envié"],["revisaré","revisé"],["revisare","revisé"],["estaré","estuve"],["estare","estuve"]
+  ["iré","fui"],["ire","fui"],["voy","fui"],
+  ["llegaré","llegué"],["llegare","llegué"],["llego","llegué"],
+  ["saldré","salí"],["saldre","salí"],["salgo","salí"],
+  ["pagaré","pagué"],["pagare","pagué"],["pago","pagué"],
+  ["haré","hice"],["hare","hice"],["hago","hice"],
+  ["terminaré","terminé"],["terminare","terminé"],["termino","terminé"],
+  ["enviaré","envié"],["enviare","envié"],["envio","envié"],["envío","envié"],
+  ["revisaré","revisé"],["revisare","revisé"],["reviso","revisé"],
+  ["estaré","estuve"],["estare","estuve"],["estoy","estuve"],
+  ["tengo","tuve"],["compro","compré"]
 ]);
 
 function restoreWordCase(original,replacement){
@@ -829,7 +840,10 @@ function addConnectorToIdea(text,connector,turn){
 function smartPunctuation(text,turn){
   let s=sentenceCase(text),changed=s!==String(text).trim();
   const alreadyQuestion=s.trim().endsWith("?")||s.trim().startsWith("¿");
-  const userAsks=alreadyQuestion||/^(qué|cuándo|dónde|cuál|cuánto|cuánta|cómo|puedo|podría|debo|tengo que|hay|acepta|se puede)\b/i.test(s);
+  const modelQuestion=String(turn?.model||"").trim().startsWith("¿")||String(turn?.model||"").trim().endsWith("?");
+  const explicitInterrogative=/^(qué|cuándo|dónde|cuál|cuánto|cuánta|cómo)\b/i.test(s);
+  const auxiliaryQuestion=modelQuestion&&/^(puedo|podría|debo|tengo que|hay|acepta|se puede)\b/i.test(s);
+  const userAsks=alreadyQuestion||explicitInterrogative||auxiliaryQuestion;
   if(userAsks){
     if(!s.startsWith("¿")){s="¿"+s.replace(/^\?/,"");changed=true}
     if(!s.endsWith("?")){s=s.replace(/[.!]+$/,"")+"?";changed=true}
@@ -864,6 +878,12 @@ function grammarCoach(user,turn,semantic){
     if(tenseFix.changed){
       improved=tenseFix.text;
       notes.push({kind:"tense",icon:"⏱️",label:"Tiempo verbal",text:expected==="future"?"La pregunta mira al futuro; cambié el verbo para hablar de lo que harás.":"La pregunta mira al pasado; cambié el verbo para contar lo que ya ocurrió."});
+    }
+  }else if(expected==="past"&&actual==="present"&&/\b(?:ayer|anoche|pasado|pasada)\b/.test(normalize(improved+" "+(turn?.prompt||"")))){
+    const tenseFix=transformTense(improved,"past");
+    if(tenseFix.changed){
+      improved=tenseFix.text;
+      notes.push({kind:"tense",icon:"⏱️",label:"Tiempo verbal",text:"Aquí hablas de algo que ya ocurrió; pasé el verbo al pasado."});
     }
   }else if(expected==="future"&&actual==="present"&&/\b(?:mañana|manana|próximo|proximo)\b/.test(normalize(turn?.prompt||""))){
     notes.push({kind:"tense",icon:"⏱️",label:"Tiempo verbal",text:"La pregunta habla del futuro. Tu forma puede ser válida en conversación, pero también puedes usar futuro: “iré”, “llegaré”, “haré”…"});
