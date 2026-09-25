@@ -448,8 +448,8 @@ function firstMatch(text,patterns){
   return "";
 }
 function detectConnector(text){
-  const n=normalize(text);
-  return CONNECTORS.find(x=>n.includes(normalize(x)))||"";
+  const n=" "+normalize(text)+" ";
+  return CONNECTORS.find(x=>n.includes(" "+normalize(x)+" "))||"";
 }
 function extractDetails(text){
   const raw=String(text||"").trim(), n=normalize(raw);
@@ -461,6 +461,13 @@ function extractDetails(text){
   const reason=reasonMatch?reasonMatch[1].trim():"";
   return {time,transport,payment,feeling,reason,yes:/^(si|sí)\b/i.test(raw),no:/^no\b/i.test(raw)};
 }
+const TOPIC_STOPWORDS=new Set(("hola gracias favor si no que como para por con sin una uno unos unas este esta esto ese esa mi tu su me te le lo la los las " +
+"del al de el en y o pero porque entonces muy mas más ya aun aún todavía todavia aqui aquí alli allí bien claro perfecto acuerdo " +
+"quiero quisiera puedo podria podría voy vamos tengo tiene hay hacer hizo ser estar es son soy estoy").split(/\s+/).map(normalize));
+function salientWord(text){
+  const ws=(String(text).match(/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+/g)||[]).filter(w=>w.length>=4&&!TOPIC_STOPWORDS.has(normalize(w))&&!VERB_HINTS.has(normalize(w)));
+  return ws.length?ws[ws.length-1]:"";
+}
 function adaptiveAcknowledgement(user){
   const d=extractDetails(user);
   if(d.reason)return "Entiendo; dices que "+d.reason.replace(/[.!?]+$/,"")+".";
@@ -468,6 +475,12 @@ function adaptiveAcknowledgement(user){
   if(d.transport)return (d.transport==="caminando"||d.transport==="a pie")?"Ah, irás "+d.transport+".":"Ah, irás en "+d.transport+".";
   if(d.payment)return "De acuerdo, prefieres pagar con "+d.payment+".";
   if(d.feeling)return "Entiendo, te sientes "+d.feeling+".";
+  const topic=salientWord(user);
+  if(topic && !state.adaptiveSeen.includes(normalize(topic))){
+    state.adaptiveSeen.push(normalize(topic));
+    if(state.adaptiveSeen.length>6)state.adaptiveSeen.shift();
+    return "Entiendo. Mencionas “"+topic+"”.";
+  }
   if(d.yes)return "Perfecto.";
   if(d.no)return "Entiendo.";
   return "Te entiendo.";
@@ -503,9 +516,11 @@ function buildAdaptiveDetour(user,sc,sourceIndex){
   if(domain==="tech")return Object.assign(base,{prompt:"¿Ese problema ocurre siempre o solo en algunos momentos?",model:"Ocurre varias veces al día, sobre todo por la noche.",alternatives:["Solo ocurre a veces.","Me pasa casi siempre cuando uso esa función."],keywords:["siempre","veces","noche","cuando"],why:"Las expresiones de frecuencia ayudan a describir un problema con precisión."});
   if(domain==="social"){
     if(d.time)return Object.assign(base,{prompt:"¿Por qué te conviene "+d.time+"?",model:"Porque antes tengo otras cosas que hacer.",alternatives:["Porque a esa hora ya estoy libre.","Porque así todos pueden llegar con tiempo."],keywords:["porque","hora","tiempo","libre"],why:"Una conversación real suele continuar preguntando la razón de una hora o plan."});
-    return Object.assign(base,{prompt:"Y tú, ¿qué prefieres que pase en ese plan?",model:"Prefiero que sea tranquilo y que podamos conversar.",alternatives:["Prefiero algo sencillo.","Me gustaría que todos podamos participar."],keywords:["prefiero","gustaria","tranquilo","particip"],why:"“Prefiero…” y “me gustaría…” ayudan a expresar gustos con claridad."});
+    const topic=salientWord(user);
+    return Object.assign(base,{prompt:topic?"Mencionaste “"+topic+"”. ¿Qué te gustaría que pase con eso?":"Y tú, ¿qué prefieres que pase en ese plan?",model:"Prefiero que sea tranquilo y que podamos conversar.",alternatives:["Prefiero algo sencillo.","Me gustaría que todos podamos participar."],keywords:["prefiero","gustaria","tranquilo","particip"],why:"“Prefiero…” y “me gustaría…” ayudan a expresar gustos con claridad."});
   }
-  return Object.assign(base,{prompt:"Cuéntame un detalle más de lo que acabas de decir.",model:"Lo más importante para mí es que todo salga bien.",alternatives:["Hay un detalle que todavía quiero confirmar.","También quiero explicar una cosa más."],keywords:["importante","detalle","tambien","explicar"],why:"Agregar un detalle ayuda a pasar de respuestas cortas a una conversación más natural."});
+  const topic=salientWord(user);
+  return Object.assign(base,{prompt:topic?"Cuéntame un poco más sobre “"+topic+"”.":"Cuéntame un detalle más de lo que acabas de decir.",model:"Lo más importante para mí es que todo salga bien.",alternatives:["Hay un detalle que todavía quiero confirmar.","También quiero explicar una cosa más."],keywords:["importante","detalle","tambien","explicar"],why:"Agregar un detalle ayuda a pasar de respuestas cortas a una conversación más natural."});
 }
 
 
@@ -806,6 +821,8 @@ function showHelp(){
     <p><strong>Chat en Español</strong> es una práctica visual de conversación para aprender a escribir mejor en español del Perú.</p>
     <p>La persona del chat es una <strong>simulación educativa</strong>. Puedes escribir con tus propias palabras: no necesitas copiar una frase exacta.</p>
     <p>Después de enviar, el tutor revisa claridad, palabras importantes, acentos y puntuación. Si tu idea es válida, la reconoce; si puede mejorar, te muestra una forma más natural.</p>
+    <p><strong>La conversación puede cambiar según lo que escribas.</strong> Si mencionas una hora, un medio de transporte, una razón, una forma de pago, un problema o un tema nuevo, el interlocutor puede tomar ese detalle y preguntarte algo relacionado antes de continuar.</p>
+    <p>🎨 <strong>Guía de colores:</strong> azul = quién, rojo = acción/verbo, verde = qué o dónde, morado = cuándo y amarillo = conector. El texto acompaña siempre al color para que la guía no dependa solo de distinguir colores.</p>
     <p>🃏 <strong>Comodín:</strong> abre tres respuestas posibles cuando no sabes qué escribir. Todas están redactadas para que puedas aprender de ellas.</p>
     <p>La información importante siempre aparece por escrito y no necesitas escuchar audio para jugar.</p>
   `,[{label:"Entendido",cls:"modal-primary",action:hideModal}]);
