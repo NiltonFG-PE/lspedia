@@ -164,7 +164,46 @@
         'Formulario para sugerir una nueva palabra':'Form to suggest a new word','Formulario para enviar una idea':'Form to send an idea',
         'Alejar':'Zoom out','Acercar':'Zoom in','Restablecer zoom':'Reset zoom'
     };
-    Object.assign(UI_EN, CATEGORIAS_EN, COLECCIONES_EN);
+    const UI_EN_EXTRA = {
+        'Índice alfabético':'Alphabetical index','Cerrar índice alfabético A a Z':'Close A–Z alphabetical index',
+        'Cerrar índice alfabético':'Close alphabetical index','Cerrar índice alfabético de Vocabulario A a Z':'Close Vocabulary A–Z index',
+        'Cerrar índice alfabético de Vocabulario':'Close Vocabulary alphabetical index',
+        'Puede que también te interese':'You may also be interested in','Imagen próximamente':'Image coming soon',
+        'Ver todas las categorías':'View all categories','Ver menos categorías':'View fewer categories',
+        '⬅ Atrás':'⬅ Back','No enseñamos lengua de señas':'We do not teach sign language',
+        'Sin conexión':'Offline','Revisa tu conexión a internet e inténtalo de nuevo.':'Check your internet connection and try again.',
+        'No se pudieron cargar las categorías.':'Categories could not be loaded.','No pudimos completar la búsqueda.':'We could not complete the search.',
+        'Alfabetización':'Literacy','Matemáticas Visuales':'Visual Math','Elige a qué quieres jugar':'Choose what you want to play',
+        '¿A qué quieres jugar?':'What would you like to play?','Mostrar índice':'Show index',
+        'Seña del número':'Number sign','Seña de la letra':'Letter sign','3, 2, 1, ¡fin!':'3, 2, 1, time!',
+        'Cantidades pequeñas · más apoyo visual':'Small quantities · more visual support','Más números · menos apoyo':'More numbers · less support',
+        'Primero mira la mano guía. Después haz la operación y elige el resultado.':'First watch the guide hand. Then solve the operation and choose the result.',
+        '👀 Guía visual':'👀 Visual guide','✋ Ahora tú':'✋ Your turn',
+        'Mira cómo la mano lleva la cantidad azul a la cesta. Después hazlo tú.':'Watch how the hand moves the blue quantity to the basket. Then do it yourself.',
+        'Junta rápido la cantidad azul con la cantidad inicial.':'Quickly combine the blue quantity with the starting quantity.',
+        'León hambriento':'Hungry lion','Mira la mano. Luego alimenta al león hasta que se calme.':'Watch the hand. Then feed the lion until it calms down.',
+        'Alimenta al león con la cantidad correcta antes de que termine el tiempo.':'Feed the lion the correct amount before time runs out.',
+        'La mano mueve un grupo completo a cada vagón. Después hazlo tú.':'The hand moves a complete group to each car. Then do it yourself.',
+        'Coloca un grupo igual en cada vagón.':'Place an equal group in each car.',
+        'La mano reparte paquetes iguales. Después da uno a cada pingüino.':'The hand distributes equal packs. Then give one to each penguin.',
+        'Volver al menú':'Back to menu','Cómo usar Subtítulos':'How to use Captions',
+        'Pausar temporalmente el micrófono':'Temporarily pause the microphone',
+        'Toca aquí para comenzar a convertir voz en texto.':'Tap here to start converting speech to text.',
+        'Revisa el micrófono':'Check the microphone','Reanudar los subtítulos':'Resume captions',
+        'Tu navegador no admite probar el nivel de audio aquí.':'Your browser does not support audio-level testing here.',
+        '🎚️ Conectando micrófono…':'🎚️ Connecting microphone…',
+        'No se pudo acceder al micrófono. Revisa los permisos del navegador.':'Could not access the microphone. Check your browser permissions.',
+        '🔴 Muy bajo — acerca más el celular al parlante o sube el volumen.':'🔴 Very low — move the phone closer to the speaker or raise the volume.',
+        '🟡 Regular — puede funcionar, pero mejor acércalo un poco más.':'🟡 Fair — it may work, but moving a little closer is better.',
+        '🟢 ¡Bien! Este nivel debería transcribirse correctamente.':'🟢 Good! This level should transcribe correctly.',
+        'Micrófono bloqueado':'Microphone blocked','No se detecta micrófono':'No microphone detected',
+        'Conexión inestable…':'Unstable connection…','Todavía no se ha transcrito ningún subtítulo para copiar.':'No captions have been transcribed yet.',
+        'No se pudo copiar automáticamente. Mantén presionado el texto de los subtítulos para copiarlo manualmente.':'Could not copy automatically. Press and hold the caption text to copy it manually.',
+        'Chrome recomendado · Micrófono necesario · La pantalla se mantendrá activa durante la sesión cuando el dispositivo lo permita.':'Chrome recommended · Microphone required · The screen will stay awake during the session when supported.',
+        '✅ ¡Correcto!':'✅ Correct!','Seña':'Sign','Señas':'Signs','Video → Palabra':'Video → Word','Palabra → Video':'Word → Video',
+        'No se pudo cargar el juego.':'The game could not be loaded.'
+    };
+    Object.assign(UI_EN, CATEGORIAS_EN, COLECCIONES_EN, UI_EN_EXTRA);
 
 
     function crearMapa(lista){
@@ -414,6 +453,30 @@
         if(m) return 'Round ' + m[1];
         m = limpio.match(/^Intentos:\s*(\d+)$/i);
         if(m) return 'Attempts: ' + m[1];
+
+        m = limpio.match(/^Pregunta\s+(\d+)\s+de\s+(\d+)$/i);
+        if(m) return 'Question ' + m[1] + ' of ' + m[2];
+
+        m = limpio.match(/^⭐\s*(\d+)\s*·\s*Pregunta\s+(\d+)\s+de\s+(\d+)$/i);
+        if(m) return '⭐ ' + m[1] + ' · Question ' + m[2] + ' of ' + m[3];
+
+        m = limpio.match(/^Seña de\s+(.+)$/i);
+        if(m){
+            const nombre = m[1].trim();
+            return 'Sign for ' + (traduccionConcepto(nombre) || nombre);
+        }
+
+        m = limpio.match(/^Continúa desde:\s*(.+)$/i);
+        if(m){
+            const nombre = m[1].trim();
+            return 'Continue from: ' + (traduccionConcepto(nombre) || nombre);
+        }
+
+        m = limpio.match(/^Imagen de apoyo visual\s+(\d+)\s+de\s+(\d+)\s+para\s+(.+)$/i);
+        if(m){
+            const nombre = m[3].trim();
+            return 'Visual support image ' + m[1] + ' of ' + m[2] + ' for ' + (traduccionConcepto(nombre) || nombre);
+        }
 
         return '';
     }
