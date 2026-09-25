@@ -19,7 +19,7 @@ import shutil
 import unicodedata
 from pathlib import Path
 from urllib.parse import quote
-from urllib.request import Request, urlopen
+from urllib.request import Request, urlopen.request import Request, urlopen
 
 BASE_URL = "https://lspedia.site"
 MARCADOR = ".lspedia-seo-generated"
