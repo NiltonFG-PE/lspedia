@@ -151,6 +151,11 @@
         <priority>0.8</priority>
     </url>
     <url>
+        <loc>https://lspedia.site/diccionario/facilitador/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
         <loc>https://lspedia.site/vocabulario/adulto-adjetivos/</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-09-26T16:14:58.640Z",
+  "actualizado": "2026-09-26T16:15:19Z",
   "traducciones": [
     {
       "fuente": "diccionario",
@@ -356,22 +356,6 @@
     },
     {
       "fuente": "diccionario",
-      "palabra": "Análisis",
-      "categoria": "Educación",
-      "ingles": "Analysis",
-      "aliases": [],
-      "definicionIngles": "To break something down into smaller parts to understand it better. It is to examine something carefully and in detail."
-    },
-    {
-      "fuente": "diccionario",
-      "palabra": "Análisis",
-      "categoria": "Salud",
-      "ingles": "Analysis",
-      "aliases": [],
-      "definicionIngles": "It's a medical test, like a blood test, to find out about a person's health.\n\nExample: I had a blood test last week."
-    },
-    {
-      "fuente": "diccionario",
       "palabra": "Analítica digital",
       "categoria": "Trabajo",
       "ingles": "Digital analytics",
@@ -468,6 +452,22 @@
     },
     {
       "fuente": "diccionario",
+      "palabra": "Análisis",
+      "categoria": "Educación",
+      "ingles": "Analysis",
+      "aliases": [],
+      "definicionIngles": "To break something down into smaller parts to understand it better. It is to examine something carefully and in detail."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Análisis",
+      "categoria": "Salud",
+      "ingles": "Analysis",
+      "aliases": [],
+      "definicionIngles": "It's a medical test, like a blood test, to find out about a person's health.\n\nExample: I had a blood test last week."
+    },
+    {
+      "fuente": "diccionario",
       "palabra": "Apelación",
       "categoria": "Trámites",
       "ingles": "Appeal",
@@ -545,46 +545,6 @@
       "ingles": "Arbitration",
       "aliases": [],
       "definicionIngles": "Mechanism in which one or more arbitrators resolve a conflict outside the judicial system."
-    },
-    {
-      "fuente": "diccionario",
-      "palabra": "Árbitro",
-      "categoria": "Deportes",
-      "ingles": "Referee",
-      "aliases": [],
-      "definicionIngles": "This is the person who officiates a match and decides whether something is allowed or not.\n\nExample: The referee called a foul in the match."
-    },
-    {
-      "fuente": "diccionario",
-      "palabra": "Árbol",
-      "categoria": "Naturaleza",
-      "ingles": "Tree",
-      "aliases": [],
-      "definicionIngles": "It's a large plant with a trunk, branches, and leaves.\n\nExample: We planted a tree in my backyard."
-    },
-    {
-      "fuente": "diccionario",
-      "palabra": "Área administrativa",
-      "categoria": "Trabajo",
-      "ingles": "Administrative area",
-      "aliases": [],
-      "definicionIngles": "Part of an organization responsible for coordination, documents, resources, and administrative processes."
-    },
-    {
-      "fuente": "diccionario",
-      "palabra": "Área construida",
-      "categoria": "Ciudad",
-      "ingles": "Built area",
-      "aliases": [],
-      "definicionIngles": "Area occupied by a building."
-    },
-    {
-      "fuente": "diccionario",
-      "palabra": "Área libre",
-      "categoria": "Ciudad",
-      "ingles": "Free area",
-      "aliases": [],
-      "definicionIngles": "Part of a plot of land that is not occupied by a building."
     },
     {
       "fuente": "diccionario",
@@ -876,14 +836,6 @@
     },
     {
       "fuente": "diccionario",
-      "palabra": "Baño",
-      "categoria": "Casa",
-      "ingles": "Bathroom",
-      "aliases": [],
-      "definicionIngles": "It's the place in the house where you shower and use the toilet.\n\nExample: I'm going to clean the bathroom this afternoon."
-    },
-    {
-      "fuente": "diccionario",
       "palabra": "Barrera de aprendizaje",
       "categoria": "Educación",
       "ingles": "Learning barrier",
@@ -921,6 +873,14 @@
       "ingles": "Automotive battery",
       "aliases": [],
       "definicionIngles": "Battery that stores electrical energy to start the vehicle and power its electrical systems."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Baño",
+      "categoria": "Casa",
+      "ingles": "Bathroom",
+      "aliases": [],
+      "definicionIngles": "It's the place in the house where you shower and use the toilet.\n\nExample: I'm going to clean the bathroom this afternoon."
     },
     {
       "fuente": "diccionario",
@@ -1072,7 +1032,7 @@
       "categoria": "Tecnología",
       "ingles": "Bug",
       "aliases": [],
-      "definicionIngles": "A bug in a program that causes something to work incorrectly or unexpectedly."
+      "definicionIngles": "A bug in a program that causes something to malfunction or malfunction unexpectedly."
     },
     {
       "fuente": "diccionario",
@@ -1140,14 +1100,6 @@
     },
     {
       "fuente": "diccionario",
-      "palabra": "Cámara Gesell",
-      "categoria": "Legal",
-      "ingles": "Gesell Chamber",
-      "aliases": [],
-      "definicionIngles": "It is a specially prepared environment for conducting and recording an interview safely and privately. It generally has two rooms separated by a one-way mirror: one room contains the interviewee and the psychology professional; the other allows judges, prosecutors, lawyers, or other authorized professionals to observe. The interview can be recorded via audio and video. Government of Peru\nIn Peru, this type of interview room is used especially for taking statements from children and adolescents who are victims or witnesses, for example, in investigations related to domestic or sexual violence. One of its main objectives is to prevent revictimization, that is, to prevent the person from having to repeatedly recount a traumatic experience to different authorities."
-    },
-    {
-      "fuente": "diccionario",
       "palabra": "Camilla",
       "categoria": "Salud",
       "ingles": "Stretcher",
@@ -1193,14 +1145,6 @@
       "ingles": "Capital",
       "aliases": [],
       "definicionIngles": "Economic resources used to start, maintain, or expand an activity or business."
-    },
-    {
-      "fuente": "diccionario",
-      "palabra": "Cápsula",
-      "categoria": "Salud",
-      "ingles": "Capsule",
-      "aliases": [],
-      "definicionIngles": "Small capsule containing powdered, liquid, or granulated medication to be taken by mouth."
     },
     {
       "fuente": "diccionario",
@@ -1300,19 +1244,19 @@
     },
     {
       "fuente": "diccionario",
-      "palabra": "Catálogo",
-      "categoria": "Trabajo",
-      "ingles": "Catalog",
-      "aliases": [],
-      "definicionIngles": "Organized list of products or items with their characteristics and prices."
-    },
-    {
-      "fuente": "diccionario",
       "palabra": "Catastro",
       "categoria": "Trámites",
       "ingles": "Cadastre",
       "aliases": [],
       "definicionIngles": "Organized record of properties, land and their characteristics."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Catálogo",
+      "categoria": "Trabajo",
+      "ingles": "Catalog",
+      "aliases": [],
+      "definicionIngles": "Organized list of products or items with their characteristics and prices."
     },
     {
       "fuente": "diccionario",
@@ -1452,19 +1396,19 @@
     },
     {
       "fuente": "diccionario",
-      "palabra": "Cláusula",
-      "categoria": "Trámites",
-      "ingles": "Clause",
-      "aliases": [],
-      "definicionIngles": "Specific part of a contract that establishes a condition, obligation, or right."
-    },
-    {
-      "fuente": "diccionario",
       "palabra": "Cliente potencial",
       "categoria": "Trabajo",
       "ingles": "Potential client",
       "aliases": [],
       "definicionIngles": "A person who could become a customer because they have an interest or need related to an offer."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Cláusula",
+      "categoria": "Trámites",
+      "ingles": "Clause",
+      "aliases": [],
+      "definicionIngles": "Specific part of a contract that establishes a condition, obligation, or right."
     },
     {
       "fuente": "diccionario",
@@ -1497,38 +1441,6 @@
       "ingles": "Cook",
       "aliases": [],
       "definicionIngles": "It is preparing food using fire or other means so that it is ready to eat.\n\nExample: I like to cook on Sundays with my family."
-    },
-    {
-      "fuente": "diccionario",
-      "palabra": "Código Civil",
-      "categoria": "Política",
-      "ingles": "Civil code",
-      "aliases": [],
-      "definicionIngles": "A set of rules concerning people, family, contracts, property, and other civil matters."
-    },
-    {
-      "fuente": "diccionario",
-      "palabra": "Código fuente",
-      "categoria": "Tecnología",
-      "ingles": "Source code",
-      "aliases": [],
-      "definicionIngles": "Text with instructions written by programmers to create a program or system."
-    },
-    {
-      "fuente": "diccionario",
-      "palabra": "Código Penal",
-      "categoria": "Política",
-      "ingles": "Penal Code",
-      "aliases": [],
-      "definicionIngles": "Set of rules that defines crimes and punishments."
-    },
-    {
-      "fuente": "diccionario",
-      "palabra": "Código QR",
-      "categoria": "Tecnología",
-      "ingles": "QR Code",
-      "aliases": [],
-      "definicionIngles": "Square image that can be scanned with a camera to open information, links, or actions."
     },
     {
       "fuente": "diccionario",
@@ -2084,6 +1996,14 @@
     },
     {
       "fuente": "diccionario",
+      "palabra": "Croquis",
+      "categoria": "Ciudad",
+      "ingles": "Sketch",
+      "aliases": [],
+      "definicionIngles": "A quick and simplified drawing that represents an idea, place, or space."
+    },
+    {
+      "fuente": "diccionario",
       "palabra": "Crítica",
       "categoria": "Educación",
       "ingles": "Criticism",
@@ -2097,14 +2017,6 @@
       "ingles": "Journalistic chronicle",
       "aliases": [],
       "definicionIngles": "A journalistic account that tells real events in a specific order and provides details of the context."
-    },
-    {
-      "fuente": "diccionario",
-      "palabra": "Croquis",
-      "categoria": "Ciudad",
-      "ingles": "Sketch",
-      "aliases": [],
-      "definicionIngles": "A quick and simplified drawing that represents an idea, place, or space."
     },
     {
       "fuente": "diccionario",
@@ -2164,14 +2076,6 @@
     },
     {
       "fuente": "diccionario",
-      "palabra": "Cuñado",
-      "categoria": "Familia",
-      "ingles": "Brother in law",
-      "aliases": [],
-      "definicionIngles": "It's your husband's or wife's brother or sister, or your brother's or sister's partner. Example: My brother-in-law invited us to his house."
-    },
-    {
-      "fuente": "diccionario",
       "palabra": "Curación de herida",
       "categoria": "Salud",
       "ingles": "Wound healing",
@@ -2209,6 +2113,62 @@
       "ingles": "Custody",
       "aliases": [],
       "definicionIngles": "Responsibility to care for and live with a minor child according to agreement or legal decision."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Cuñado",
+      "categoria": "Familia",
+      "ingles": "Brother in law",
+      "aliases": [],
+      "definicionIngles": "It's your husband's or wife's brother or sister, or your brother's or sister's partner. Example: My brother-in-law invited us to his house."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Cámara Gesell",
+      "categoria": "Legal",
+      "ingles": "Gesell Chamber",
+      "aliases": [],
+      "definicionIngles": "It is a specially prepared environment for conducting and recording an interview safely and privately. It generally has two rooms separated by a one-way mirror: one room contains the interviewee and the psychology professional; the other allows judges, prosecutors, lawyers, or other authorized professionals to observe. The interview can be recorded via audio and video. Government of Peru\nIn Peru, this type of interview room is used especially for taking statements from children and adolescents who are victims or witnesses, for example, in investigations related to domestic or sexual violence. One of its main objectives is to prevent revictimization, that is, to prevent the person from having to repeatedly recount a traumatic experience to different authorities."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Cápsula",
+      "categoria": "Salud",
+      "ingles": "Capsule",
+      "aliases": [],
+      "definicionIngles": "Small capsule containing powdered, liquid, or granulated medication to be taken by mouth."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Código Civil",
+      "categoria": "Política",
+      "ingles": "Civil code",
+      "aliases": [],
+      "definicionIngles": "A set of rules concerning people, family, contracts, property, and other civil matters."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Código fuente",
+      "categoria": "Tecnología",
+      "ingles": "Source code",
+      "aliases": [],
+      "definicionIngles": "Text with instructions written by programmers to create a program or system."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Código Penal",
+      "categoria": "Política",
+      "ingles": "Penal Code",
+      "aliases": [],
+      "definicionIngles": "Set of rules that defines crimes and punishments."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Código QR",
+      "categoria": "Tecnología",
+      "ingles": "QR Code",
+      "aliases": [],
+      "definicionIngles": "Square image that can be scanned with a camera to open information, links, or actions."
     },
     {
       "fuente": "diccionario",
@@ -2516,14 +2476,6 @@
     },
     {
       "fuente": "diccionario",
-      "palabra": "Diálogo",
-      "categoria": "Comunicación",
-      "ingles": "Dialogue",
-      "aliases": [],
-      "definicionIngles": "Conversation between two or more people where they exchange ideas and opinions."
-    },
-    {
-      "fuente": "diccionario",
       "palabra": "Diccionario",
       "categoria": "Comunicación",
       "ingles": "Dictionary",
@@ -2761,6 +2713,14 @@
       "ingles": "Divorce",
       "aliases": [],
       "definicionIngles": "Legal process that ends a marriage."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Diálogo",
+      "categoria": "Comunicación",
+      "ingles": "Dialogue",
+      "aliases": [],
+      "definicionIngles": "Conversation between two or more people where they exchange ideas and opinions."
     },
     {
       "fuente": "diccionario",
@@ -3100,14 +3060,6 @@
     },
     {
       "fuente": "diccionario",
-      "palabra": "Encía",
-      "categoria": "Salud",
-      "ingles": "Gum",
-      "aliases": [],
-      "definicionIngles": "Tissue that surrounds and protects the base of the teeth."
-    },
-    {
-      "fuente": "diccionario",
       "palabra": "Encriptación",
       "categoria": "Tecnología",
       "ingles": "Encryption",
@@ -3121,6 +3073,14 @@
       "ingles": "Survey",
       "aliases": [],
       "definicionIngles": "Technique for gathering information by asking questions to several people."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Encía",
+      "categoria": "Salud",
+      "ingles": "Gum",
+      "aliases": [],
+      "definicionIngles": "Tissue that surrounds and protects the base of the teeth."
     },
     {
       "fuente": "diccionario",
@@ -3284,19 +3244,19 @@
     },
     {
       "fuente": "diccionario",
-      "palabra": "Errático",
-      "categoria": "Descripción",
-      "ingles": "Erratic",
-      "aliases": [],
-      "definicionIngles": "Unpredictable behavior with no clear pattern. That changes for no reason."
-    },
-    {
-      "fuente": "diccionario",
       "palabra": "Error",
       "categoria": "Educación",
       "ingles": "Mistake",
       "aliases": [],
       "definicionIngles": "A mistake or error committed unintentionally."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Errático",
+      "categoria": "Descripción",
+      "ingles": "Erratic",
+      "aliases": [],
+      "definicionIngles": "Unpredictable behavior with no clear pattern. That changes for no reason."
     },
     {
       "fuente": "diccionario",
@@ -3313,22 +3273,6 @@
       "ingles": "Scalability",
       "aliases": [],
       "definicionIngles": "A system's ability to grow and handle more volume without losing quality."
-    },
-    {
-      "fuente": "diccionario",
-      "palabra": "Escáner",
-      "categoria": "Tecnología",
-      "ingles": "Scanner",
-      "aliases": [],
-      "definicionIngles": "Equipment or function that converts a physical document or image into a digital file."
-    },
-    {
-      "fuente": "diccionario",
-      "palabra": "Escáner automotriz",
-      "categoria": "Transporte",
-      "ingles": "Automotive scanner",
-      "aliases": [],
-      "definicionIngles": "Electronic equipment that reads information and fault codes from a vehicle's systems."
     },
     {
       "fuente": "diccionario",
@@ -3372,6 +3316,22 @@
     },
     {
       "fuente": "diccionario",
+      "palabra": "Escáner",
+      "categoria": "Tecnología",
+      "ingles": "Scanner",
+      "aliases": [],
+      "definicionIngles": "Equipment or function that converts a physical document or image into a digital file."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Escáner automotriz",
+      "categoria": "Transporte",
+      "ingles": "Automotive scanner",
+      "aliases": [],
+      "definicionIngles": "Electronic equipment that reads information and fault codes from a vehicle's systems."
+    },
+    {
+      "fuente": "diccionario",
       "palabra": "Esencia",
       "categoria": "Filosofía",
       "ingles": "Essence",
@@ -3412,19 +3372,19 @@
     },
     {
       "fuente": "diccionario",
-      "palabra": "Específico",
-      "categoria": "Descripción",
-      "ingles": "Specific",
-      "aliases": [],
-      "definicionIngles": "That which is exact and precise. Not general or vague."
-    },
-    {
-      "fuente": "diccionario",
       "palabra": "Espectro",
       "categoria": "Ciencia",
       "ingles": "Spectrum",
       "aliases": [],
       "definicionIngles": "The full range of something. In science, it is the decomposition of light into its colors."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Específico",
+      "categoria": "Descripción",
+      "ingles": "Specific",
+      "aliases": [],
+      "definicionIngles": "That which is exact and precise. Not general or vague."
     },
     {
       "fuente": "diccionario",
@@ -3484,14 +3444,6 @@
     },
     {
       "fuente": "diccionario",
-      "palabra": "Estándar",
-      "categoria": "Trabajo",
-      "ingles": "Standard",
-      "aliases": [],
-      "definicionIngles": "Level of quality or characteristics that something must meet."
-    },
-    {
-      "fuente": "diccionario",
       "palabra": "Estar",
       "categoria": "Verbos",
       "ingles": "Be",
@@ -3521,14 +3473,6 @@
       "ingles": "Early stimulation",
       "aliases": [],
       "definicionIngles": "Activities that support the development of babies and young children through play, movement, and communication."
-    },
-    {
-      "fuente": "diccionario",
-      "palabra": "Estímulo",
-      "categoria": "Psicología",
-      "ingles": "Stimulus",
-      "aliases": [],
-      "definicionIngles": "A situation, object, or change that can provoke a response in a person or animal."
     },
     {
       "fuente": "diccionario",
@@ -3580,11 +3524,19 @@
     },
     {
       "fuente": "diccionario",
-      "palabra": "Ética",
-      "categoria": "Filosofía",
-      "ingles": "Ethics",
+      "palabra": "Estándar",
+      "categoria": "Trabajo",
+      "ingles": "Standard",
       "aliases": [],
-      "definicionIngles": "A set of principles about what is right and wrong."
+      "definicionIngles": "Level of quality or characteristics that something must meet."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Estímulo",
+      "categoria": "Psicología",
+      "ingles": "Stimulus",
+      "aliases": [],
+      "definicionIngles": "A situation, object, or change that can provoke a response in a person or animal."
     },
     {
       "fuente": "diccionario",
@@ -3598,7 +3550,7 @@
       "fuente": "diccionario",
       "palabra": "Evaluación diagnóstica",
       "categoria": "Educación",
-      "ingles": "Diagnostic assessment",
+      "ingles": "Diagnostic evaluation",
       "aliases": [],
       "definicionIngles": "An assessment done at the beginning to find out what the student already knows or needs to learn."
     },
@@ -3776,8 +3728,7 @@
       "categoria": "Educación",
       "ingles": "Facilitator",
       "aliases": [],
-      "definicionIngles": "A facilitator is someone who guides, orients, or assists during an activity, meeting, training session, workshop, or process. Their role is to enable people to participate, understand what they need to do, and move toward a goal.\nTypically, the facilitator doesn't do everything for others. They help organize, explain, answer questions, promote participation, and keep the activity running smoothly.\n\nA facilitator is not necessarily the same as a teacher.\n\nA teacher primarily teaches content.\n\nA facilitator primarily helps an activity or process function effectively and enables people to participate.\nNor is a facilitator necessarily the same as an interpreter. An interpreter conveys information between two languages; a facilitator helps develop an activity.",
-      "actualizado": "2026-09-26T16:14:58.640Z"
+      "definicionIngles": "A facilitator is someone who guides, orients, or assists during an activity, meeting, training session, workshop, or process. Their role is to enable people to participate, understand what they need to do, and move toward a goal.\nTypically, the facilitator doesn't do everything for others. They help organize, explain, answer questions, promote participation, and keep the activity running smoothly.\n\nA facilitator is not necessarily the same as a teacher.\n\nA teacher primarily teaches content.\n\nA facilitator primarily helps an activity or process function effectively and enables people to participate.\nNor is a facilitator necessarily the same as an interpreter. An interpreter conveys information between two languages; a facilitator helps develop an activity."
     },
     {
       "fuente": "diccionario",
@@ -4045,14 +3996,6 @@
     },
     {
       "fuente": "diccionario",
-      "palabra": "Fórmula",
-      "categoria": "Ciencia",
-      "ingles": "Formula",
-      "aliases": [],
-      "definicionIngles": "A sequence of symbols that expresses a mathematical or scientific rule."
-    },
-    {
-      "fuente": "diccionario",
       "palabra": "Franquicia",
       "categoria": "Trabajo",
       "ingles": "Franchise",
@@ -4101,14 +4044,6 @@
     },
     {
       "fuente": "diccionario",
-      "palabra": "Frío",
-      "categoria": "Naturaleza",
-      "ingles": "Cold",
-      "aliases": [],
-      "definicionIngles": "It's when the temperature is very low.\n\nExample: I'm cold, I'm going to put on a sweater."
-    },
-    {
-      "fuente": "diccionario",
       "palabra": "Frustración",
       "categoria": "Emociones",
       "ingles": "Frustration",
@@ -4130,6 +4065,14 @@
       "ingles": "Fruit",
       "aliases": [],
       "definicionIngles": "It's a sweet food that grows on plants, like an apple or a banana.\n\nExample: I eat a piece of fruit every day after lunch."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Frío",
+      "categoria": "Naturaleza",
+      "ingles": "Cold",
+      "aliases": [],
+      "definicionIngles": "It's when the temperature is very low.\n\nExample: I'm cold, I'm going to put on a sweater."
     },
     {
       "fuente": "diccionario",
@@ -4173,19 +4116,19 @@
     },
     {
       "fuente": "diccionario",
-      "palabra": "Función",
-      "categoria": "Educación",
-      "ingles": "Function",
-      "aliases": [],
-      "definicionIngles": "Purpose or use of something. Action that something performs."
-    },
-    {
-      "fuente": "diccionario",
       "palabra": "Funcionamiento",
       "categoria": "Educación",
       "ingles": "Operation",
       "aliases": [],
       "definicionIngles": "The way in which something works or operates."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Función",
+      "categoria": "Educación",
+      "ingles": "Function",
+      "aliases": [],
+      "definicionIngles": "Purpose or use of something. Action that something performs."
     },
     {
       "fuente": "diccionario",
@@ -4218,6 +4161,14 @@
       "ingles": "Fuse",
       "aliases": [],
       "definicionIngles": "Protective device that melts and opens a circuit when the current exceeds a safe value."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Fórmula",
+      "categoria": "Ciencia",
+      "ingles": "Formula",
+      "aliases": [],
+      "definicionIngles": "A sequence of symbols that expresses a mathematical or scientific rule."
     },
     {
       "fuente": "diccionario",
@@ -4453,14 +4404,6 @@
     },
     {
       "fuente": "diccionario",
-      "palabra": "Hábeas corpus",
-      "categoria": "Trámites",
-      "ingles": "Habeas corpus",
-      "aliases": [],
-      "definicionIngles": "Constitutional process that protects personal freedom and related rights."
-    },
-    {
-      "fuente": "diccionario",
       "palabra": "Haber",
       "categoria": "Verbos",
       "ingles": "Have",
@@ -4677,6 +4620,14 @@
     },
     {
       "fuente": "diccionario",
+      "palabra": "Hábeas corpus",
+      "categoria": "Trámites",
+      "ingles": "Habeas corpus",
+      "aliases": [],
+      "definicionIngles": "Constitutional process that protects personal freedom and related rights."
+    },
+    {
+      "fuente": "diccionario",
       "palabra": "Identidad visual",
       "categoria": "Tecnología",
       "ingles": "Visual identity",
@@ -4813,6 +4764,14 @@
     },
     {
       "fuente": "diccionario",
+      "palabra": "Ingeniero",
+      "categoria": "Trabajo",
+      "ingles": "Engineer",
+      "aliases": [],
+      "definicionIngles": "A professional who applies scientific and technical knowledge to design, build, or improve systems and solutions."
+    },
+    {
+      "fuente": "diccionario",
       "palabra": "Ingeniería",
       "categoria": "Ciencia",
       "ingles": "Engineering",
@@ -4850,14 +4809,6 @@
       "ingles": "Industrial Engineering",
       "aliases": [],
       "definicionIngles": "Branch that improves processes, resources, quality and productivity in organizations."
-    },
-    {
-      "fuente": "diccionario",
-      "palabra": "Ingeniero",
-      "categoria": "Trabajo",
-      "ingles": "Engineer",
-      "aliases": [],
-      "definicionIngles": "A professional who applies scientific and technical knowledge to design, build, or improve systems and solutions."
     },
     {
       "fuente": "diccionario",
@@ -4949,22 +4900,6 @@
     },
     {
       "fuente": "diccionario",
-      "palabra": "Intérprete",
-      "categoria": "Comunicación",
-      "ingles": "Interpreter",
-      "aliases": [],
-      "definicionIngles": "An interpreter is someone who interprets between sign language and spoken language to facilitate communication. For example: A sign language interpreter helped everyone understand the talk."
-    },
-    {
-      "fuente": "diccionario",
-      "palabra": "Intérprete educativo",
-      "categoria": "Educación",
-      "ingles": "Educational interpreter",
-      "aliases": [],
-      "definicionIngles": "Interpreter who facilitates communication within an educational context."
-    },
-    {
-      "fuente": "diccionario",
       "palabra": "Interruptor termomagnético",
       "categoria": "Tecnología",
       "ingles": "Thermomagnetic circuit breaker",
@@ -4994,6 +4929,22 @@
       "ingles": "Conjunction",
       "aliases": [],
       "definicionIngles": "In grammar, a conjunction is a word that joins words, ideas or sentences. Examples include y, o, pero, porque and aunque."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Intérprete",
+      "categoria": "Comunicación",
+      "ingles": "Interpreter",
+      "aliases": [],
+      "definicionIngles": "An interpreter is someone who interprets between sign language and spoken language to facilitate communication. For example: A sign language interpreter helped everyone understand the talk."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Intérprete educativo",
+      "categoria": "Educación",
+      "ingles": "Educational interpreter",
+      "aliases": [],
+      "definicionIngles": "Interpreter who facilitates communication within an educational context."
     },
     {
       "fuente": "diccionario",
@@ -5277,14 +5228,6 @@
     },
     {
       "fuente": "diccionario",
-      "palabra": "Logística",
-      "categoria": "Trabajo",
-      "ingles": "Logistics",
-      "aliases": [],
-      "definicionIngles": "Organization of the movement, storage and delivery of products or materials."
-    },
-    {
-      "fuente": "diccionario",
       "palabra": "Logotipo",
       "categoria": "Tecnología",
       "ingles": "Logo",
@@ -5298,6 +5241,14 @@
       "ingles": "Learning achievement",
       "aliases": [],
       "definicionIngles": "A result that demonstrates what a student has learned and can do."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Logística",
+      "categoria": "Trabajo",
+      "ingles": "Logistics",
+      "aliases": [],
+      "definicionIngles": "Organization of the movement, storage and delivery of products or materials."
     },
     {
       "fuente": "diccionario",
@@ -5397,14 +5348,6 @@
     },
     {
       "fuente": "diccionario",
-      "palabra": "Máquina",
-      "categoria": "Tecnología",
-      "ingles": "Machine",
-      "aliases": [],
-      "definicionIngles": "A set of parts that uses energy to perform work."
-    },
-    {
-      "fuente": "diccionario",
       "palabra": "Mar",
       "categoria": "Naturaleza",
       "ingles": "Sea",
@@ -5442,14 +5385,6 @@
       "ingles": "Digital marketing",
       "aliases": [],
       "definicionIngles": "Use of the internet, social media, and other digital tools to promote products, services, or brands."
-    },
-    {
-      "fuente": "diccionario",
-      "palabra": "Máscara de capa",
-      "categoria": "Tecnología",
-      "ingles": "Layer mask",
-      "aliases": [],
-      "definicionIngles": "A tool that allows you to hide or show parts of a layer without deleting the original content."
     },
     {
       "fuente": "diccionario",
@@ -5813,6 +5748,22 @@
     },
     {
       "fuente": "diccionario",
+      "palabra": "Máquina",
+      "categoria": "Tecnología",
+      "ingles": "Machine",
+      "aliases": [],
+      "definicionIngles": "A set of parts that uses energy to perform work."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Máscara de capa",
+      "categoria": "Tecnología",
+      "ingles": "Layer mask",
+      "aliases": [],
+      "definicionIngles": "A tool that allows you to hide or show parts of a layer without deleting the original content."
+    },
+    {
+      "fuente": "diccionario",
       "palabra": "Música",
       "categoria": "Ocio",
       "ingles": "Music",
@@ -6073,7 +6024,7 @@
       "categoria": "Psicología",
       "ingles": "Vocational guidance",
       "aliases": [],
-      "definicionIngles": "A process that helps a person understand their interests and abilities in order to choose studies or an occupation."
+      "definicionIngles": "A process that helps a person understand their interests and abilities in order to choose their studies or occupation."
     },
     {
       "fuente": "diccionario",
@@ -6109,14 +6060,6 @@
     },
     {
       "fuente": "diccionario",
-      "palabra": "Página web",
-      "categoria": "Tecnología",
-      "ingles": "Web page",
-      "aliases": [],
-      "definicionIngles": "Individual page within a website that opens in a browser."
-    },
-    {
-      "fuente": "diccionario",
       "palabra": "Paleta de colores",
       "categoria": "Tecnología",
       "ingles": "Color palette",
@@ -6141,14 +6084,6 @@
     },
     {
       "fuente": "diccionario",
-      "palabra": "Paráfrasis",
-      "categoria": "Universidad",
-      "ingles": "Paraphrase",
-      "aliases": [],
-      "definicionIngles": "To explain an idea from another source using your own words without changing its meaning."
-    },
-    {
-      "fuente": "diccionario",
       "palabra": "Parque",
       "categoria": "Ciudad",
       "ingles": "Park",
@@ -6162,6 +6097,14 @@
       "ingles": "Game",
       "aliases": [],
       "definicionIngles": "It's a game between two teams or people in a sport.\n\nExample: We watched the soccer game on television."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Paráfrasis",
+      "categoria": "Universidad",
+      "ingles": "Paraphrase",
+      "aliases": [],
+      "definicionIngles": "To explain an idea from another source using your own words without changing its meaning."
     },
     {
       "fuente": "diccionario",
@@ -6207,7 +6150,7 @@
       "fuente": "diccionario",
       "palabra": "Patrimonio contable",
       "categoria": "Economía",
-      "ingles": "Accounting equity",
+      "ingles": "accounting equity",
       "aliases": [],
       "definicionIngles": "Economic value resulting from assets less liabilities."
     },
@@ -6285,14 +6228,6 @@
     },
     {
       "fuente": "diccionario",
-      "palabra": "Perímetro",
-      "categoria": "Ciencia",
-      "ingles": "Perimeter",
-      "aliases": [],
-      "definicionIngles": "Total length of the edge of a figure, lot, or space."
-    },
-    {
-      "fuente": "diccionario",
       "palabra": "Periodismo",
       "categoria": "Comunicación",
       "ingles": "Journalism",
@@ -6349,6 +6284,14 @@
     },
     {
       "fuente": "diccionario",
+      "palabra": "Perímetro",
+      "categoria": "Ciencia",
+      "ingles": "Perimeter",
+      "aliases": [],
+      "definicionIngles": "Total length of the edge of a figure, lot, or space."
+    },
+    {
+      "fuente": "diccionario",
       "palabra": "Pescado",
       "categoria": "Comida",
       "ingles": "Fish",
@@ -6370,14 +6313,6 @@
       "ingles": "Pictogram",
       "aliases": [],
       "definicionIngles": "A simple drawing or symbol that visually communicates an idea, object, or action."
-    },
-    {
-      "fuente": "diccionario",
-      "palabra": "Píxel",
-      "categoria": "Tecnología",
-      "ingles": "Pixel",
-      "aliases": [],
-      "definicionIngles": "A very small dot of color that is part of a digital image on a screen."
     },
     {
       "fuente": "diccionario",
@@ -6415,7 +6350,7 @@
       "fuente": "diccionario",
       "palabra": "Plan contable",
       "categoria": "Economía",
-      "ingles": "accounting plan",
+      "ingles": "Accounting plan",
       "aliases": [],
       "definicionIngles": "Organized list of accounts used to record economic transactions."
     },
@@ -6605,14 +6540,6 @@
     },
     {
       "fuente": "diccionario",
-      "palabra": "Práctica pre-profesional",
-      "categoria": "Universidad",
-      "ingles": "Pre-professional practice",
-      "aliases": [],
-      "definicionIngles": "It's the time a student spends working at a company to learn about their field of study before finishing their degree.\n\nExample: I'm starting my pre-professional internship at a hospital next month."
-    },
-    {
-      "fuente": "diccionario",
       "palabra": "Practicante",
       "categoria": "Trabajo",
       "ingles": "Practicing",
@@ -6658,14 +6585,6 @@
       "ingles": "Blood pressure",
       "aliases": [],
       "definicionIngles": "It's the force with which blood moves within the body; it's monitored to protect the heart.\n\nExample: My grandmother checks her blood pressure every month."
-    },
-    {
-      "fuente": "diccionario",
-      "palabra": "Préstamo",
-      "categoria": "Economía",
-      "ingles": "Loan",
-      "aliases": [],
-      "definicionIngles": "It's money that a bank or someone else gives you, and that you have to pay back later.\n\nExample: I took out a loan to fix up my house."
     },
     {
       "fuente": "diccionario",
@@ -6861,14 +6780,6 @@
     },
     {
       "fuente": "diccionario",
-      "palabra": "Prótesis dental",
-      "categoria": "Salud",
-      "ingles": "Dental prosthesis",
-      "aliases": [],
-      "definicionIngles": "Artificial piece that replaces one or more missing teeth."
-    },
-    {
-      "fuente": "diccionario",
       "palabra": "Prototipo",
       "categoria": "Tecnología",
       "ingles": "Prototype",
@@ -6893,6 +6804,30 @@
     },
     {
       "fuente": "diccionario",
+      "palabra": "Práctica pre-profesional",
+      "categoria": "Universidad",
+      "ingles": "Pre-professional practice",
+      "aliases": [],
+      "definicionIngles": "It's the time a student spends working at a company to learn about their field of study before graduating.\n\nExample: I'm starting my pre-professional internship at a hospital next month."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Préstamo",
+      "categoria": "Economía",
+      "ingles": "Loan",
+      "aliases": [],
+      "definicionIngles": "It's money that a bank or someone else gives you, and that you have to pay back later.\n\nExample: I took out a loan to fix up my house."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Prótesis dental",
+      "categoria": "Salud",
+      "ingles": "Dental prosthesis",
+      "aliases": [],
+      "definicionIngles": "Artificial piece that replaces one or more missing teeth."
+    },
+    {
+      "fuente": "diccionario",
       "palabra": "Psicología clínica",
       "categoria": "Psicología",
       "ingles": "Clinical Psychology",
@@ -6914,14 +6849,6 @@
       "ingles": "Organizational Psychology",
       "aliases": [],
       "definicionIngles": "Area of ​​psychology that studies the behavior of people at work and in organizations."
-    },
-    {
-      "fuente": "diccionario",
-      "palabra": "Psicólogo",
-      "categoria": "Psicología",
-      "ingles": "Psychologist",
-      "aliases": [],
-      "definicionIngles": "A professional who studies behavior, thoughts, and emotions and can assess, guide, or provide therapy."
     },
     {
       "fuente": "diccionario",
@@ -6965,6 +6892,14 @@
     },
     {
       "fuente": "diccionario",
+      "palabra": "Psicólogo",
+      "categoria": "Psicología",
+      "ingles": "Psychologist",
+      "aliases": [],
+      "definicionIngles": "A professional who studies behavior, thoughts, and emotions and can assess, guide, or provide therapy."
+    },
+    {
+      "fuente": "diccionario",
       "palabra": "Publicidad",
       "categoria": "Trabajo",
       "ingles": "Advertising",
@@ -6994,6 +6929,22 @@
       "ingles": "Break-even point",
       "aliases": [],
       "definicionIngles": "Level at which revenues cover costs without generating profit or loss."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Página web",
+      "categoria": "Tecnología",
+      "ingles": "Web page",
+      "aliases": [],
+      "definicionIngles": "Individual page within a website that opens in a browser."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Píxel",
+      "categoria": "Tecnología",
+      "ingles": "Pixel",
+      "aliases": [],
+      "definicionIngles": "A very small dot of color that is part of a digital image on a screen."
     },
     {
       "fuente": "diccionario",
@@ -7162,14 +7113,6 @@
       "ingles": "Positive reinforcement",
       "aliases": [],
       "definicionIngles": "A pleasant consequence that increases the likelihood of a behavior occurring again."
-    },
-    {
-      "fuente": "diccionario",
-      "palabra": "Régimen tributario",
-      "categoria": "Economía",
-      "ingles": "Tax system",
-      "aliases": [],
-      "definicionIngles": "Set of tax rules that apply to a taxpayer."
     },
     {
       "fuente": "diccionario",
@@ -7349,14 +7292,6 @@
     },
     {
       "fuente": "diccionario",
-      "palabra": "Retícula de diseño",
-      "categoria": "Tecnología",
-      "ingles": "Design grid",
-      "aliases": [],
-      "definicionIngles": "A set of guide lines that helps to arrange elements uniformly in a design."
-    },
-    {
-      "fuente": "diccionario",
       "palabra": "Retiro de curso",
       "categoria": "Universidad",
       "ingles": "Course withdrawal",
@@ -7386,6 +7321,14 @@
       "ingles": "Feedback",
       "aliases": [],
       "definicionIngles": "Information that a student receives about what they did well and what they can improve."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Retícula de diseño",
+      "categoria": "Tecnología",
+      "ingles": "Design grid",
+      "aliases": [],
+      "definicionIngles": "A set of guide lines that helps to arrange elements uniformly in a design."
     },
     {
       "fuente": "diccionario",
@@ -7421,22 +7364,6 @@
     },
     {
       "fuente": "diccionario",
-      "palabra": "Río",
-      "categoria": "Naturaleza",
-      "ingles": "River",
-      "aliases": [],
-      "definicionIngles": "It's a stream of water that flows from the mountains to the sea.\n\nExample: We camped near a river in the mountains."
-    },
-    {
-      "fuente": "diccionario",
-      "palabra": "Rúbrica",
-      "categoria": "Educación",
-      "ingles": "Rubric",
-      "aliases": [],
-      "definicionIngles": "Table with criteria and levels used to evaluate a job or performance."
-    },
-    {
-      "fuente": "diccionario",
       "palabra": "RUC",
       "categoria": "Trámites",
       "ingles": "RUC",
@@ -7450,6 +7377,30 @@
       "ingles": "Rumination",
       "aliases": [],
       "definicionIngles": "Thinking repeatedly about a problem, mistake, or negative situation without arriving at a solution."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Régimen tributario",
+      "categoria": "Economía",
+      "ingles": "Tax system",
+      "aliases": [],
+      "definicionIngles": "Set of tax rules that apply to a taxpayer."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Río",
+      "categoria": "Naturaleza",
+      "ingles": "River",
+      "aliases": [],
+      "definicionIngles": "It's a stream of water that flows from the mountains to the sea.\n\nExample: We camped near a river in the mountains."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Rúbrica",
+      "categoria": "Educación",
+      "ingles": "Rubric",
+      "aliases": [],
+      "definicionIngles": "Table with criteria and levels used to evaluate a job or performance."
     },
     {
       "fuente": "diccionario",
@@ -7541,19 +7492,11 @@
     },
     {
       "fuente": "diccionario",
-      "palabra": "Semáforo",
-      "categoria": "Transporte",
-      "ingles": "Traffic light",
-      "aliases": [],
-      "definicionIngles": "It's a signal with colored lights (red, yellow, and green) that indicates when cars and pedestrians can cross or must wait.\n\nExample: Wait for the green light to cross the street."
-    },
-    {
-      "fuente": "diccionario",
       "palabra": "Semestre",
       "categoria": "Universidad",
       "ingles": "Semester",
       "aliases": [],
-      "definicionIngles": "It's one of the two parts into which a university academic year is divided.\n\nExample: This semester I'm taking five courses."
+      "definicionIngles": "It's one of the two parts into which a university year is divided.\n\nExample: This semester I'm taking five courses."
     },
     {
       "fuente": "diccionario",
@@ -7562,6 +7505,14 @@
       "ingles": "Seminar",
       "aliases": [],
       "definicionIngles": "Academic activity in which a topic is studied and discussed in a specialized manner."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Semáforo",
+      "categoria": "Transporte",
+      "ingles": "Traffic light",
+      "aliases": [],
+      "definicionIngles": "It's a signal with colored lights (red, yellow, and green) that indicates when cars and pedestrians can cross or must wait.\n\nExample: Wait for the green light to cross the street."
     },
     {
       "fuente": "diccionario",
@@ -7925,14 +7876,6 @@
     },
     {
       "fuente": "diccionario",
-      "palabra": "Técnico profesional",
-      "categoria": "Universidad",
-      "ingles": "Professional Technician",
-      "aliases": [],
-      "definicionIngles": "A person who studied and prepared to perform specialized tasks in a technical profession."
-    },
-    {
-      "fuente": "diccionario",
       "palabra": "Tecnología asistiva",
       "categoria": "Tecnología",
       "ingles": "Assistive technology",
@@ -8045,19 +7988,11 @@
     },
     {
       "fuente": "diccionario",
-      "palabra": "Tía",
-      "categoria": "Familia",
-      "ingles": "Aunt",
-      "aliases": [],
-      "definicionIngles": "She's your dad's or mom's sister.\n\nExample: My aunt gave me a book for my birthday."
-    },
-    {
-      "fuente": "diccionario",
       "palabra": "Tiempo completo",
       "categoria": "Trabajo",
       "ingles": "Full-time",
       "aliases": [],
-      "definicionIngles": "I work that fulfills the full workday established by the company or the law."
+      "definicionIngles": "Work that fulfills the full workday established by the company or the law."
     },
     {
       "fuente": "diccionario",
@@ -8066,14 +8001,6 @@
       "ingles": "Store",
       "aliases": [],
       "definicionIngles": "It's a small shop where products like food, school supplies, or other things are sold.\n\nExample: I went to the corner store to buy bread."
-    },
-    {
-      "fuente": "diccionario",
-      "palabra": "Tío",
-      "categoria": "Familia",
-      "ingles": "Uncle",
-      "aliases": [],
-      "definicionIngles": "It's your dad's or mom's brother.\n\nExample: My uncle came to visit us over the weekend."
     },
     {
       "fuente": "diccionario",
@@ -8098,14 +8025,6 @@
       "ingles": "Newspaper headline",
       "aliases": [],
       "definicionIngles": "A short text that presents the main idea of ​​a news story and aims to inform quickly."
-    },
-    {
-      "fuente": "diccionario",
-      "palabra": "Título profesional",
-      "categoria": "Universidad",
-      "ingles": "Professional title",
-      "aliases": [],
-      "definicionIngles": "Document and recognition that certifies that a person is academically qualified in a profession."
     },
     {
       "fuente": "diccionario",
@@ -8178,14 +8097,6 @@
       "ingles": "Social work",
       "aliases": [],
       "definicionIngles": "A profession that supports individuals, families, and communities in addressing social problems and accessing rights and services."
-    },
-    {
-      "fuente": "diccionario",
-      "palabra": "Trámite",
-      "categoria": "Trámites",
-      "ingles": "Procedure",
-      "aliases": [],
-      "definicionIngles": "It's a process involving paperwork or steps done in an office to obtain something.\n\nExample: I completed a procedure at the municipality for my business."
     },
     {
       "fuente": "diccionario",
@@ -8333,6 +8244,14 @@
     },
     {
       "fuente": "diccionario",
+      "palabra": "Trámite",
+      "categoria": "Trámites",
+      "ingles": "Procedure",
+      "aliases": [],
+      "definicionIngles": "It's a process involving paperwork or steps done in an office to obtain something.\n\nExample: I completed a procedure at the municipality for my business."
+    },
+    {
+      "fuente": "diccionario",
       "palabra": "Tutela legal",
       "categoria": "Trámites",
       "ingles": "Legal protection",
@@ -8341,19 +8260,43 @@
     },
     {
       "fuente": "diccionario",
+      "palabra": "Técnico profesional",
+      "categoria": "Universidad",
+      "ingles": "Professional Technician",
+      "aliases": [],
+      "definicionIngles": "A person who studied and prepared to perform specialized tasks in a technical profession."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Tía",
+      "categoria": "Familia",
+      "ingles": "Aunt",
+      "aliases": [],
+      "definicionIngles": "She's your dad's or mom's sister.\n\nExample: My aunt gave me a book for my birthday."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Tío",
+      "categoria": "Familia",
+      "ingles": "Uncle",
+      "aliases": [],
+      "definicionIngles": "It's your dad's or mom's brother.\n\nExample: My uncle came to visit us over the weekend."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Título profesional",
+      "categoria": "Universidad",
+      "ingles": "Professional title",
+      "aliases": [],
+      "definicionIngles": "Document and recognition that certifies that a person is academically qualified in a profession."
+    },
+    {
+      "fuente": "diccionario",
       "palabra": "UGEL",
       "categoria": "Educación",
       "ingles": "UGEL",
       "aliases": [],
       "definicionIngles": "Office of the Peruvian education system that manages and supervises educational institutions in an area."
-    },
-    {
-      "fuente": "diccionario",
-      "palabra": "Último",
-      "categoria": "Cantidad",
-      "ingles": "Last",
-      "aliases": [],
-      "definicionIngles": "Indicate the final position in a sequence.\n\nExample: I was the last to leave the office."
     },
     {
       "fuente": "diccionario",
@@ -8517,38 +8460,6 @@
     },
     {
       "fuente": "diccionario",
-      "palabra": "Vía intramuscular",
-      "categoria": "Salud",
-      "ingles": "Intramuscular route",
-      "aliases": [],
-      "definicionIngles": "A way of administering a medication by injecting it into a muscle."
-    },
-    {
-      "fuente": "diccionario",
-      "palabra": "Vía intravenosa",
-      "categoria": "Salud",
-      "ingles": "Intravenous route",
-      "aliases": [],
-      "definicionIngles": "Access to a vein that allows the administration of fluids or medications."
-    },
-    {
-      "fuente": "diccionario",
-      "palabra": "Vía oral",
-      "categoria": "Salud",
-      "ingles": "Oral route",
-      "aliases": [],
-      "definicionIngles": "Method of administering medication by mouth to be swallowed."
-    },
-    {
-      "fuente": "diccionario",
-      "palabra": "Víctima",
-      "categoria": "Sociedad",
-      "ingles": "Victim",
-      "aliases": [],
-      "definicionIngles": "Person affected by a crime, violence or damage."
-    },
-    {
-      "fuente": "diccionario",
       "palabra": "Videollamada",
       "categoria": "Tecnología",
       "ingles": "Video call",
@@ -8621,14 +8532,6 @@
     },
     {
       "fuente": "diccionario",
-      "palabra": "Vóley",
-      "categoria": "Deportes",
-      "ingles": "Volleyball",
-      "aliases": [],
-      "definicionIngles": "It's a sport where two teams hit a ball over a net without letting it drop.\n\nExample: My sister plays volleyball at her school."
-    },
-    {
-      "fuente": "diccionario",
       "palabra": "Voltaje",
       "categoria": "Tecnología",
       "ingles": "Voltage",
@@ -8653,6 +8556,46 @@
     },
     {
       "fuente": "diccionario",
+      "palabra": "Vía intramuscular",
+      "categoria": "Salud",
+      "ingles": "Intramuscular route",
+      "aliases": [],
+      "definicionIngles": "A way of administering a medication by injecting it into a muscle."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Vía intravenosa",
+      "categoria": "Salud",
+      "ingles": "Intravenous route",
+      "aliases": [],
+      "definicionIngles": "Access to a vein that allows the administration of fluids or medications."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Vía oral",
+      "categoria": "Salud",
+      "ingles": "Oral route",
+      "aliases": [],
+      "definicionIngles": "Method of administering medication by mouth to be swallowed."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Víctima",
+      "categoria": "Sociedad",
+      "ingles": "Victim",
+      "aliases": [],
+      "definicionIngles": "Person affected by a crime, violence or damage."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Vóley",
+      "categoria": "Deportes",
+      "ingles": "Volleyball",
+      "aliases": [],
+      "definicionIngles": "It's a sport where two teams hit a ball over a net without letting it drop.\n\nExample: My sister plays volleyball at her school."
+    },
+    {
+      "fuente": "diccionario",
       "palabra": "Webcam",
       "categoria": "Tecnología",
       "ingles": "Webcam",
@@ -8674,6 +8617,62 @@
       "ingles": "Zoning",
       "aliases": [],
       "definicionIngles": "Rules that indicate what uses and characteristics are allowed in different areas of a city."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Árbitro",
+      "categoria": "Deportes",
+      "ingles": "Referee",
+      "aliases": [],
+      "definicionIngles": "This is the person who officiates a match and decides whether something is allowed or not.\n\nExample: The referee called a foul in the match."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Árbol",
+      "categoria": "Naturaleza",
+      "ingles": "Tree",
+      "aliases": [],
+      "definicionIngles": "It's a large plant with a trunk, branches, and leaves.\n\nExample: We planted a tree in my backyard."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Área administrativa",
+      "categoria": "Trabajo",
+      "ingles": "Administrative area",
+      "aliases": [],
+      "definicionIngles": "Part of an organization responsible for coordination, documents, resources, and administrative processes."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Área construida",
+      "categoria": "Ciudad",
+      "ingles": "Built area",
+      "aliases": [],
+      "definicionIngles": "Area occupied by a building."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Área libre",
+      "categoria": "Ciudad",
+      "ingles": "Free area",
+      "aliases": [],
+      "definicionIngles": "Part of a plot of land that is not occupied by a building."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Ética",
+      "categoria": "Filosofía",
+      "ingles": "Ethics",
+      "aliases": [],
+      "definicionIngles": "A set of principles about what is right and wrong."
+    },
+    {
+      "fuente": "diccionario",
+      "palabra": "Último",
+      "categoria": "Cantidad",
+      "ingles": "Last",
+      "aliases": [],
+      "definicionIngles": "Indicate the final position in a sequence.\n\nExample: I was the last to leave the office."
     }
   ]
 }
