@@ -4,7 +4,7 @@
 
   if (window.LSPediaCore && window.LSPediaCore.version) return;
 
-  const VERSION = '2026.09.14-3';
+  const VERSION = '2026.09.26-1';
   const URL_OFICIAL = 'https://lspedia.site/';
   const HOSTS_OFICIALES = new Set(['lspedia.site', 'www.lspedia.site']);
   const HOSTS_DESARROLLO = new Set(['localhost', '127.0.0.1', '::1', '[::1]']);
@@ -266,12 +266,25 @@
     });
   }
 
+  function cargarConfiguracionWeb() {
+    if (document.querySelector('script[data-lspedia-web-config]')) return;
+    const script = document.createElement('script');
+    script.src = 'js/web-config.js?v=20260926-1';
+    script.async = true;
+    script.dataset.lspediaWebConfig = '1';
+    script.onerror = function () {
+      console.warn('[LSPedia] No se pudo cargar el módulo de configuración WEB. Se conserva el contenido integrado.');
+    };
+    document.head.appendChild(script);
+  }
+
   function activarIdentidad() {
     document.documentElement.dataset.lspediaOficial = esOficial ? '1' : '0';
     document.documentElement.dataset.lspediaOrigen = esOficial ? 'oficial' : (esDesarrollo ? 'desarrollo' : 'copia');
     asegurarCanonicalOficial();
     reforzarMetadatosOficiales();
     vigilarUrlsPeligrosas();
+    cargarConfiguracionWeb();
     if (!esOficial && !esDesarrollo) {
       asegurarMetaRobotsNoIndex();
       bloquearInstalacionClon();
@@ -293,7 +306,8 @@
     deduplicarPorPalabra: deduplicarPorPalabra,
     fetchConTimeout: fetchConTimeout,
     leerJsonSeguro: leerJsonSeguro,
-    atributoUrlPeligroso: atributoUrlPeligroso
+    atributoUrlPeligroso: atributoUrlPeligroso,
+    cargarConfiguracionWeb: cargarConfiguracionWeb
   });
 
   Object.defineProperty(window, 'LSPediaCore', {
