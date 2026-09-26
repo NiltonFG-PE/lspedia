@@ -30,8 +30,32 @@ function contenido(c,t){t=ml(t);if(!c||!t)return;c.textContent='';let par=[],ul=
 function nuevoBloque(){let r=q('#nosotrosApoyoRow');if(!r||!r.parentNode)return null;let h=document.createElement('h4'),b=document.createElement('div');h.className='nosotros-titulo-clicable fw-bold mb-3';b.className='nosotros-bloque-clicable';[h,b].forEach(e=>{e.setAttribute('role','button');e.setAttribute('tabindex','0');r.parentNode.insertBefore(e,r)});return[h,b];}
 function aplicarNosotros(){let s=at(CFG,['nosotros','secciones']);if(!Array.isArray(s)||!s.length)return;let r=q('#nosotrosTextoBajoVideo');if(!r)return;let hs=qa(':scope > .nosotros-titulo-clicable[data-tiempo-nosotros]',r);while(hs.length<s.length){let z=nuevoBloque();if(!z)break;hs.push(z[0])}hs.forEach((h,i)=>{let x=s[i],b=h.nextElementSibling;if(!x){h.style.display='none';if(b&&b.classList.contains('nosotros-bloque-clicable'))b.style.display='none';return}let sec=String(Math.max(0,Math.round(Number(x.tiempo)||0)));h.style.display='';h.dataset.tiempoNosotros=sec;h.textContent=tx(x.titulo)||'Sección';if(!b||!b.classList.contains('nosotros-bloque-clicable')){b=document.createElement('div');b.className='nosotros-bloque-clicable';h.after(b)}b.style.display='';b.dataset.tiempoNosotros=sec;b.setAttribute('role','button');b.setAttribute('tabindex','0');contenido(b,x.contenido)})}
 function cambiarVideoNosotros(intentos=50){let id=yt(at(CFG,['nosotros','video']));if(!id)return;try{if(typeof ytPlayerNosotros!=='undefined'&&ytPlayerNosotros&&typeof ytPlayerNosotros.getVideoData==='function'){let a=(ytPlayerNosotros.getVideoData()||{}).video_id||'';if(a!==id&&typeof ytPlayerNosotros.loadVideoById==='function')ytPlayerNosotros.loadVideoById(id);return}}catch(e){}if(intentos>0)setTimeout(()=>cambiarVideoNosotros(intentos-1),120);}
-function aplicar(){if(!CFG)return;aplicarLogo();aplicarMenu();aplicarRedes();aplicarAcciones();aplicarNosotros();aplicarHero();document.documentElement.dataset.webConfigLspedia='1';}
+function asegurarEstilosPrivacidad(){if(q('#lspedia-privacidad-form-style'))return;let s=document.createElement('style');s.id='lspedia-privacidad-form-style';s.textContent='.lsp-privacy-form-notice{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:#eff6ff;border-bottom:1px solid #bfdbfe;color:#334155;font-size:12.5px;line-height:1.45}.lsp-privacy-form-notice strong{color:#0f172a}.lsp-privacy-form-notice a{color:#0b6fdc;font-weight:700;text-decoration:underline}.lsp-privacy-form-icon{font-size:18px;line-height:1.2;flex:0 0 auto}';document.head.appendChild(s);}
+function aplicarLegalPrivacidad(){
+    let a=q('.footer-link-licencia');
+    if(a){
+        a.href='licencia.html';
+        a.setAttribute('aria-label','Legal y privacidad de LSPedia');
+        let cambiado=false;
+        Array.from(a.childNodes).forEach(n=>{if(n.nodeType===3&&String(n.textContent||'').trim()){n.textContent=' Legal y privacidad ';cambiado=true;}});
+        if(!cambiado){let t=document.createElement('span');t.textContent='Legal y privacidad';a.insertBefore(t,a.firstChild);}
+    }
+    asegurarEstilosPrivacidad();
+    [
+        ['#modalSugerencia','Sugerir palabra'],
+        ['#modalEnviarIdea','Enviar una idea']
+    ].forEach(([sel,nombre])=>{
+        let body=q(sel+' .modal-body'),iframe=body?q('iframe',body):null;
+        if(!body||!iframe||q('.lsp-privacy-form-notice',body))return;
+        let n=document.createElement('div');
+        n.className='lsp-privacy-form-notice';
+        n.innerHTML='<span class="lsp-privacy-form-icon" aria-hidden="true">🛡️</span><div><strong>Privacidad antes de enviar.</strong> Este formulario puede guardar tus respuestas mediante Google Forms/Sheets. Evita datos sensibles que no sean necesarios. <a href="licencia.html#formularios" target="_blank" rel="noopener">Ver Legal y privacidad</a>.</div>';
+        body.insertBefore(n,iframe);
+        iframe.setAttribute('title','Formulario de '+nombre+' de LSPedia');
+    });
+}
+function aplicar(){aplicarLegalPrivacidad();if(!CFG)return;aplicarLogo();aplicarMenu();aplicarRedes();aplicarAcciones();aplicarNosotros();aplicarHero();document.documentElement.dataset.webConfigLspedia='1';}
 function navegacion(){['btnInicio','btnCategorias'].forEach(id=>{let e=document.getElementById(id);if(e&&!e.dataset.webHeroListener){e.dataset.webHeroListener='1';e.addEventListener('click',()=>{let t=id==='btnCategorias'?'vocabulario':'diccionario';setTimeout(()=>aplicarHero(t),80);setTimeout(()=>aplicarHero(t),350)})}});let n=q('#btnSobreNosotros');if(n&&!n.dataset.webVideoListener){n.dataset.webVideoListener='1';n.addEventListener('click',()=>setTimeout(()=>cambiarVideoNosotros(),250))}window.addEventListener('popstate',()=>setTimeout(()=>{aplicarHero();cambiarVideoNosotros()},200),{passive:true});}
-async function cargar(){try{let u='data/web-config.json?v='+Date.now(),d;if(window.LSPediaCore&&LSPediaCore.leerJsonSeguro)d=await LSPediaCore.leerJsonSeguro(u,{timeoutMs:5000,reintentos:0,fetch:{cache:'no-store',credentials:'same-origin'}});else{let r=await fetch(u,{cache:'no-store'});if(!r.ok)return;d=await r.json()}if(!d||typeof d!=='object')return;CFG=d;window.LSPediaWebConfig=d;aplicar();navegacion();setTimeout(aplicar,500);setTimeout(()=>{aplicar();cambiarVideoNosotros()},1500)}catch(e){if(!e||e.status!==404)console.warn('[LSPedia] Configuración WEB no disponible; se conserva el contenido integrado.',e)}}
+async function cargar(){aplicarLegalPrivacidad();try{let u='data/web-config.json?v='+Date.now(),d;if(window.LSPediaCore&&LSPediaCore.leerJsonSeguro)d=await LSPediaCore.leerJsonSeguro(u,{timeoutMs:5000,reintentos:0,fetch:{cache:'no-store',credentials:'same-origin'}});else{let r=await fetch(u,{cache:'no-store'});if(!r.ok)return;d=await r.json()}if(!d||typeof d!=='object')return;CFG=d;window.LSPediaWebConfig=d;aplicar();navegacion();setTimeout(aplicar,500);setTimeout(()=>{aplicar();cambiarVideoNosotros()},1500)}catch(e){if(!e||e.status!==404)console.warn('[LSPedia] Configuración WEB no disponible; se conserva el contenido integrado.',e)}}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',cargar,{once:true});else cargar();
 })();
