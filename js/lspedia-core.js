@@ -4,7 +4,7 @@
 
   if (window.LSPediaCore && window.LSPediaCore.version) return;
 
-  const VERSION = '2026.09.26-1';
+  const VERSION = '2026.09.26-2';
   const URL_OFICIAL = 'https://lspedia.site/';
   const HOSTS_OFICIALES = new Set(['lspedia.site', 'www.lspedia.site']);
   const HOSTS_DESARROLLO = new Set(['localhost', '127.0.0.1', '::1', '[::1]']);
@@ -269,7 +269,7 @@
   function cargarConfiguracionWeb() {
     if (document.querySelector('script[data-lspedia-web-config]')) return;
     const script = document.createElement('script');
-    script.src = 'js/web-config.js?v=20260926-1';
+    script.src = 'js/web-config.js?v=20260926-2';
     script.async = true;
     script.dataset.lspediaWebConfig = '1';
     script.onerror = function () {
