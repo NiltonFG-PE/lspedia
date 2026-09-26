@@ -11,7 +11,7 @@ function fixture(){
  class Recognition{constructor(){instances.push(this);}start(){this.onstart?.();}abort(){this.aborted=true;}}
  const context={console,Set,Promise,window:{SpeechRecognition:Recognition},navigator:{},document:{getElementById:get,createElement:node,visibilityState:'visible'},setTimeout(fn){timers.set(++tick,fn);return tick;},clearTimeout(id){timers.delete(id);},alert(){},requestAnimationFrame(){},cancelAnimationFrame(){}};
  let source=fs.readFileSync(require('node:path').join(__dirname,'../js/subtitulos.js'),'utf8');
- source=source.replace('return { iniciar, salir };','return { iniciar, salir, estado, iniciarEscucha, alternarPausa, detenerEscucha, borrarTexto, elegirAlternativa, iniciarMedidorNivel, detenerMedidorNivel, solicitarWakeLock };');
+ source=source.replace('return { iniciar, salir };','return { iniciar, salir, estado, iniciarEscucha, alternarPausa, detenerEscucha, borrarTexto, elegirAlternativa, iniciarMedidorNivel, detenerMedidorNivel, solicitarWakeLock, cargarAjustes, guardarAjustes, editarTranscripcion, nuevaSesion };');
  vm.runInNewContext(source,context);
  const api=context.window.SubtitulosV2;
  const emit=(r,items,index=0)=>r.onresult?.({resultIndex:index,results:items.map(([transcript,isFinal=true])=>Object.assign([{transcript,confidence:.9}],{isFinal}))});
@@ -54,4 +54,29 @@ test('wake lock granted after stop is released',async()=>{
  const f=fixture();let resolve,released=0;f.context.navigator.wakeLock={request:()=>new Promise(r=>resolve=r)};
  f.api.estado.activo=true;const pending=f.api.solicitarWakeLock();f.api.estado.activo=false;
  resolve({release(){released++;return Promise.resolve();}});await pending;assert.equal(released,1);assert.equal(f.api.estado.wakeLock,null);
+});
+
+test('stop, edit and continue preserve the complete transcript, excluding interim text',()=>{
+ const f=fixture();f.api.iniciarEscucha();f.emit(f.instances[0],[['Hola Perú'],['provisional',false]]);
+ f.api.detenerEscucha();assert.equal(f.get('subtitulosEditor').value,'Hola Perú');
+ f.get('subtitulosEditor').value='Hola, Perú.\nTexto corregido.';f.api.editarTranscripcion();f.api.iniciarEscucha();
+ f.emit(f.instances[1],[['Continuamos']]);assert.equal(f.api.estado.textoCompleto,'Hola, Perú.\nTexto corregido. Continuamos');
+});
+test('new session requires confirmation before discarding text',()=>{
+ const f=fixture();f.api.estado.textoCompleto='Conservar';f.context.window.confirm=()=>false;f.api.nuevaSesion();assert.equal(f.api.estado.textoCompleto,'Conservar');
+ f.context.window.confirm=()=>true;f.api.nuevaSesion();assert.equal(f.api.estado.textoCompleto,'');
+});
+test('preferences validate values, tolerate blocked storage and never save transcript',()=>{
+ const f=fixture();let saved;
+ f.context.window.localStorage={getItem:()=>JSON.stringify({idioma:'en-US',tamanoIndex:3,colorResaltado:'amarillo',caraACara:true}),setItem:(k,v)=>saved=JSON.parse(v)};
+ f.api.cargarAjustes();assert.equal(f.get('subtitulosSelectIdioma').value,'en-US');assert.equal(f.api.estado.tamanoIndex,3);assert.equal(f.api.estado.caraACara,true);
+ f.api.estado.textoCompleto='Privado';f.api.guardarAjustes();assert.equal(Object.hasOwn(saved,'textoCompleto'),false);assert.equal(JSON.stringify(saved).includes('Privado'),false);
+ const bad=fixture();bad.context.window.localStorage={getItem:()=>'{"idioma":"__proto__","tamanoIndex":500,"colorResaltado":"red","caraACara":"yes"}',setItem:()=>{throw Error('blocked');}};
+ bad.api.cargarAjustes();assert.equal(bad.api.estado.idioma,'es-PE');assert.equal(bad.api.estado.tamanoIndex,1);assert.equal(bad.api.estado.caraACara,false);assert.doesNotThrow(()=>bad.api.guardarAjustes());
+});
+test('silence clears on recognition and permission failure preserves text',()=>{
+ const f=fixture();f.api.iniciarEscucha();f.flush();assert.equal(f.api.estado._silencio,true);
+ f.emit(f.instances[0],[['Texto conservado']]);assert.equal(f.api.estado._silencio,false);
+ f.instances[0].onerror({error:'not-allowed'});assert.equal(f.api.estado.activo,false);assert.equal(f.api.estado.textoCompleto,'Texto conservado');assert.match(f.get('subtitulosAvisoMotor').textContent,/permiso/);
+ f.flush();assert.equal(f.instances.length,1);
 });

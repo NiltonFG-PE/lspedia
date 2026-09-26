@@ -193,5 +193,7 @@ jobs:
       - run: npx playwright install --with-deps chromium --only-shell
       - name: Comprobar búsqueda en escritorio y móvil
         run: npm run test:browser
+      - name: Comprobar transcripción y controles de Subtítulos
+        run: npm run test:subtitulos-browser
       - name: Comprobar Adivina qué soy en móvil
         run: npm run test:adivina-browser

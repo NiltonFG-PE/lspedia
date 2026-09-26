@@ -1267,3 +1267,52 @@ html[data-lsp-tema="dark"] #seccionSubtitulos .subtitulos-precision-card-v4 {
     background: #1c3048 !important; border-color: #344b65 !important; color: #dce8f5 !important;
 }
 html[data-lsp-tema="dark"] #seccionSubtitulos .subtitulos-details-contenido-v5 { border-color: #344b65; }
+
+/* Session review and face-to-face reading. */
+#seccionSubtitulos .subtitulos-resumen {
+    margin: 0 0 24px; padding: 20px; border: 1px solid #bfd1e7;
+    border-radius: 20px; background: #f2f7fd; text-align: left;
+}
+.subtitulos-resumen-cabecera { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+#subtitulosResumen h3 { font-size: 1.25rem; font-weight: 800; margin: 0; color: #142b47; }
+#subtitulosCuentaPalabras { font-size: .75rem; color: #52647b; }
+#subtitulosResumen label { margin: 14px 0 8px; font-size: .85rem; color: #43566e; }
+#subtitulosEditor { display: block; width: 100%; min-height: 150px; resize: vertical; border: 1px solid #b8cbe0; border-radius: 12px; padding: 14px; background: #fff; color: #142b47; font-size: 1rem; line-height: 1.6; }
+.subtitulos-resumen-acciones { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+#subtitulosResumen .btn { min-height: 44px; border-radius: 12px; }
+#subtitulosResumen .subtitulos-resumen-nota { font-size: .75rem; color: #52647b; line-height: 1.6; margin: 12px 0 0; }
+#subtitulosAccionEstado { margin: 8px 0 0; font-size: .85rem; color: #166534; }
+#subtitulosAccionEstado:empty { display: none; }
+#subtitulosAvisoMotor { padding: 14px; margin: 0 0 20px; background: #fff5da; border: 1px solid #e5bc5f; border-radius: 14px; color: #694400; font-size: .9rem; line-height: 1.5; text-align: left; }
+#subtitulosTextoOpuesto { display: none; }
+#seccionSubtitulos .subtitulos-cara-a-cara {
+    display: grid; grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+    height: 65vh; min-height: 340px; padding: 62px 16px; gap: 28px;
+}
+#seccionSubtitulos .subtitulos-cara-a-cara::after {
+    content: ''; position: absolute; top: 50%; left: 5%; right: 5%; height: 1px; background: #586579;
+}
+#seccionSubtitulos .subtitulos-cara-a-cara .subtitulos-texto {
+    display: block; width: 100%; max-height: 100%; min-height: 0;
+    align-self: center; margin: 0; padding: 0 8px; line-height: 1.35;
+}
+#seccionSubtitulos .subtitulos-cara-a-cara #subtitulosTextoOpuesto { transform: rotate(180deg); }
+#seccionSubtitulos .subtitulos-cara-a-cara .subtitulos-texto.tam-sm { font-size: 1rem; }
+#seccionSubtitulos .subtitulos-cara-a-cara .subtitulos-texto.tam-md { font-size: 1.3rem; }
+#seccionSubtitulos .subtitulos-cara-a-cara .subtitulos-texto.tam-lg { font-size: 1.65rem; }
+#seccionSubtitulos .subtitulos-cara-a-cara .subtitulos-texto.tam-xl { font-size: 2rem; }
+#seccionSubtitulos.quiz-fullscreen .subtitulos-cara-a-cara { min-height: 0; height: auto; }
+html[data-lsp-tema="dark"] #seccionSubtitulos .subtitulos-resumen { background: #1c3048; border-color: #45607f; }
+html[data-lsp-tema="dark"] #subtitulosEditor { background: #101e30; color: #edf5ff; border-color: #45607f; }
+html[data-lsp-tema="dark"] #subtitulosCuentaPalabras { color: #bfcee0; }
+html[data-lsp-tema="dark"] #subtitulosIntro #subtitulosAvisoMotor { color: #ffe5a6 !important; background: #3c311d; border-color: #8a6b31; }
+html[data-lsp-tema="dark"] #subtitulosIntro #subtitulosAccionEstado { color: #95e5b8 !important; }
+@media (max-width: 480px) {
+    #seccionSubtitulos .subtitulos-resumen { padding: 14px; }
+    #subtitulosResumen .btn { flex: 1 1 120px; font-size: .85rem; }
+}
+#subtitulosIntro.subtitulos-con-resumen .subtitulos-intro-hero-v3,
+#subtitulosIntro.subtitulos-con-resumen #subtitulosVistaPrevia { display: none; }
+html[data-lsp-tema="dark"] #subtitulosResumen .btn-outline-primary { color: #acd0ff; border-color: #7eafea; }
+html[data-lsp-tema="dark"] #subtitulosResumen .btn-outline-secondary { color: #dce8f5; border-color: #9aabc0; }
+html[data-lsp-tema="dark"] #subtitulosResumen .btn:hover { color: #fff; }

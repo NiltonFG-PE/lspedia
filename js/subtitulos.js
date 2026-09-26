@@ -68,6 +68,10 @@ const SubtitulosV2 = (function () {
         _finalesProcesados: new Set(),
         _solicitudMedidor: 0,
         _seccionAbierta: false,
+        _ajustesCargados: false,
+        caraACara: false,
+        _timeoutSilencio: null,
+        _silencio: false,
         activo: false,           // el usuario pidió escuchar (se mantiene true entre reinicios automáticos)
         idioma: CONFIG.IDIOMA_POR_DEFECTO,
         pantallaCompleta: false,
@@ -201,6 +205,7 @@ const SubtitulosV2 = (function () {
             preview.innerHTML = '<span class="subtitulos-preview-label">ASÍ SE VERÁ EN PANTALLA · EJEMPLO</span><p>Una conversación.<br><strong>Más fácil de seguir.</strong></p><span class="subtitulos-preview-note">Texto grande · Alto contraste · Pantalla completa</span>';
             introCard.querySelector(".subtitulos-intro-hero-v3").insertAdjacentElement("afterend", preview);
         }
+        asegurarSesionInterfaz();
         const copy = el("btnSubtitulosGuardar");
         if (copy) copy.textContent = "Copiar texto";
         const motor = el("subtitulosEstadoMotor");
@@ -211,6 +216,181 @@ const SubtitulosV2 = (function () {
             note.textContent = "Transcripción automática: puede contener errores. El texto de color es provisional y se ajusta mientras hablas.";
             introCard.appendChild(note);
         }
+    }
+
+    // Solo se recuerdan preferencias visuales. La conversación permanece
+    // en memoria hasta cerrar/recargar la página o iniciar una nueva sesión.
+    function cargarAjustes() {
+        if (estado._ajustesCargados) return;
+        estado._ajustesCargados = true;
+        try {
+            const a = JSON.parse(window.localStorage.getItem("lspedia-subtitulos-ajustes-v1") || "{}");
+            if (!a || typeof a !== "object") return;
+            if (Object.prototype.hasOwnProperty.call(NOMBRES_IDIOMA, a.idioma)) estado.idioma = a.idioma;
+            if (Number.isInteger(a.tamanoIndex) && a.tamanoIndex >= 0 && a.tamanoIndex < CONFIG.TAMANOS.length) estado.tamanoIndex = a.tamanoIndex;
+            if (CONFIG.COLORES_RESALTADO.includes(a.colorResaltado)) estado.colorResaltado = a.colorResaltado;
+            estado.caraACara = a.caraACara === true;
+        } catch (e) { /* almacenamiento bloqueado o preferencias inválidas */ }
+        const select = el("subtitulosSelectIdioma");
+        if (select) select.value = estado.idioma;
+    }
+
+    function guardarAjustes() {
+        try {
+            window.localStorage.setItem("lspedia-subtitulos-ajustes-v1", JSON.stringify({
+                idioma: idiomaSeleccionado(), tamanoIndex: estado.tamanoIndex,
+                colorResaltado: estado.colorResaltado, caraACara: estado.caraACara
+            }));
+        } catch (e) { /* la herramienta sigue funcionando sin almacenamiento */ }
+    }
+
+    function asegurarSesionInterfaz() {
+        const introCard = document.querySelector("#subtitulosIntro .card");
+        if (introCard && !el("subtitulosResumen")) {
+            const resumen = document.createElement("div");
+            resumen.id = "subtitulosResumen";
+            resumen.className = "subtitulos-resumen d-none";
+            resumen.innerHTML = `<div class="subtitulos-resumen-cabecera"><h3>Tu transcripción</h3><span id="subtitulosCuentaPalabras"></span></div>
+                <label for="subtitulosEditor">Revisa y corrige el texto confirmado</label>
+                <textarea id="subtitulosEditor" rows="6" spellcheck="true" placeholder="Tu transcripción aparecerá aquí"></textarea>
+                <div class="subtitulos-resumen-acciones">
+                    <button type="button" id="btnSubtitulosCopiarResumen" class="btn btn-outline-primary">Copiar texto</button>
+                    <button type="button" id="btnSubtitulosDescargar" class="btn btn-primary">Descargar .txt</button>
+                    <button type="button" id="btnSubtitulosNuevaSesion" class="btn btn-outline-secondary">Nueva sesión</button>
+                </div>
+                <p class="subtitulos-resumen-nota">Puedes continuar con el botón de abajo. El texto se conserva mientras esta página siga abierta; descárgalo antes de cerrarla o recargarla. Los fragmentos de color todavía provisionales no se incluyen.</p>
+                <p id="subtitulosAccionEstado" role="status" aria-live="polite"></p>`;
+            introCard.prepend(resumen);
+        }
+        if (introCard && !el("subtitulosAvisoMotor")) {
+            const aviso = document.createElement("p");
+            aviso.id = "subtitulosAvisoMotor";
+            aviso.className = "subtitulos-aviso-motor d-none";
+            aviso.setAttribute("role", "status");
+            introCard.prepend(aviso);
+        }
+        const barra = el("subtitulosBarraControles");
+        if (barra && !el("btnSubtitulosCaraACara")) {
+            const btn = document.createElement("button");
+            btn.id = "btnSubtitulosCaraACara";
+            btn.type = "button";
+            btn.className = "btn btn-sm btn-outline-primary";
+            btn.textContent = "Cara a cara";
+            btn.title = "Muestra el mismo texto en dos sentidos para leer frente a frente";
+            barra.appendChild(btn);
+        }
+        const pantalla = el("subtitulosPantalla");
+        if (pantalla && !el("subtitulosTextoOpuesto")) {
+            const opuesto = document.createElement("div");
+            opuesto.id = "subtitulosTextoOpuesto";
+            opuesto.className = "subtitulos-texto subtitulos-texto-opuesto";
+            opuesto.setAttribute("aria-hidden", "true");
+            pantalla.insertBefore(opuesto, el("subtitulosTexto"));
+        }
+        aplicarCaraACara();
+        actualizarResumen();
+    }
+
+    function actualizarResumen() {
+        const texto = estado.textoCompleto;
+        const intro = el("subtitulosIntro");
+        if (intro) intro.classList.toggle("subtitulos-con-resumen", !!texto.trim());
+        const resumen = el("subtitulosResumen");
+        if (resumen) resumen.classList.toggle("d-none", !texto.trim());
+        const editor = el("subtitulosEditor");
+        if (editor) editor.value = texto;
+        actualizarCuentaPalabras();
+        const iniciar = el("btnSubtitulosIniciar");
+        if (iniciar) iniciar.textContent = texto.trim() ? "Continuar subtítulos" : "Iniciar subtítulos";
+    }
+
+    function actualizarCuentaPalabras() {
+        const cantidad = estado.textoCompleto.trim().split(/\s+/).filter(Boolean).length;
+        const etiqueta = el("subtitulosCuentaPalabras");
+        if (etiqueta) etiqueta.textContent = cantidad + (cantidad === 1 ? " palabra" : " palabras");
+        for (const id of ["btnSubtitulosDescargar", "btnSubtitulosCopiarResumen"]) {
+            const btn = el(id);
+            if (btn) btn.disabled = !cantidad;
+        }
+    }
+
+    function editarTranscripcion() {
+        if (estado.activo) return;
+        const editor = el("subtitulosEditor");
+        if (!editor) return;
+        estado.textoCompleto = editor.value;
+        estado.textoAcumulado = editor.value.slice(-CONFIG.MAX_CARACTERES_TEXTO);
+        estado.textoInterino = "";
+        actualizarCuentaPalabras();
+        renderizarTexto();
+    }
+
+    function nuevaSesion() {
+        if (estado.textoCompleto.trim() && !window.confirm("¿Iniciar una sesión nueva? El texto actual se borrará. Puedes descargarlo antes de continuar.")) return;
+        borrarTexto();
+        actualizarResumen();
+        const mensaje = el("subtitulosAccionEstado");
+        if (mensaje) mensaje.textContent = "";
+    }
+
+    function descargarTranscripcion() {
+        const texto = estado.textoCompleto.trim();
+        if (!texto) return;
+        const blob = new Blob(["\uFEFF" + texto + "\n"], {type: "text/plain;charset=utf-8"});
+        const url = URL.createObjectURL(blob);
+        const enlace = document.createElement("a");
+        enlace.href = url;
+        enlace.download = "LSPedia-subtitulos-" + new Date().toISOString().replace(/[:.]/g, "-") + ".txt";
+        document.body.appendChild(enlace);
+        enlace.click();
+        enlace.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 30000);
+        const mensaje = el("subtitulosAccionEstado");
+        if (mensaje) mensaje.textContent = "Descarga solicitada. Revisa las descargas de tu navegador.";
+    }
+
+    function aplicarCaraACara() {
+        const pantalla = el("subtitulosPantalla");
+        if (pantalla) pantalla.classList.toggle("subtitulos-cara-a-cara", estado.caraACara);
+        const btn = el("btnSubtitulosCaraACara");
+        if (btn) {
+            btn.setAttribute("aria-pressed", String(estado.caraACara));
+            btn.classList.toggle("active", estado.caraACara);
+        }
+        sincronizarTextoOpuesto();
+    }
+
+    function sincronizarTextoOpuesto() {
+        const principal = el("subtitulosTexto");
+        const opuesto = el("subtitulosTextoOpuesto");
+        if (!principal || !opuesto) return;
+        opuesto.innerHTML = principal.innerHTML;
+        CONFIG.TAMANOS.forEach(t => opuesto.classList.remove("tam-" + t));
+        opuesto.classList.add("tam-" + CONFIG.TAMANOS[estado.tamanoIndex]);
+        opuesto.scrollTop = opuesto.scrollHeight;
+    }
+
+    function cancelarAvisoSilencio() {
+        clearTimeout(estado._timeoutSilencio);
+        estado._timeoutSilencio = null;
+        estado._silencio = false;
+    }
+
+    function programarAvisoSilencio() {
+        if (estado._timeoutSilencio || estado._silencio) return;
+        estado._timeoutSilencio = setTimeout(() => {
+            estado._timeoutSilencio = null;
+            if (!estado.activo || estado.pausado || estado._ultimoError === "network") return;
+            estado._silencio = true;
+            actualizarEstadoMotor("silencio");
+        }, 8000);
+    }
+
+    function mostrarErrorRecuperable(mensaje) {
+        detenerEscucha();
+        const aviso = el("subtitulosAvisoMotor");
+        if (aviso) { aviso.textContent = mensaje; aviso.classList.remove("d-none"); }
+        actualizarEstadoMotor("error");
     }
 
     // SUBTITULOS_V6_ICONO_AMARILLO_20260909
@@ -329,6 +509,7 @@ const SubtitulosV2 = (function () {
         const info = {
             listo: ["Listo", "estado-listo"],
             escuchando: ["Escuchando", "estado-escuchando"],
+            silencio: ["Sin voz detectada · acerca el micrófono", "estado-pausado"],
             reconectando: ["Reconectando…", "estado-reconectando"],
             pausado: ["Pausado", "estado-pausado"],
             error: ["Revisa el micrófono", "estado-error"]
@@ -513,6 +694,7 @@ const SubtitulosV2 = (function () {
     // ---------------------------------------------------------
     function iniciar() {
         estado._seccionAbierta = true;
+        cargarAjustes();
         asegurarMejorasInterfaz();
         enlazarEventos();
         actualizarEstadoMotor(estado.activo ? (estado.pausado ? "pausado" : "escuchando") : "listo");
@@ -580,8 +762,9 @@ const SubtitulosV2 = (function () {
         aplicarSesgoContextual(r);
 
         r.onstart = () => {
-            if (estado.reconocimiento === r && estado.activo && !estado.pausado)
-                actualizarEstadoMotor("escuchando", estado.modoLocalActivo ? "Escuchando · sin internet" : "Escuchando");
+            if (estado.reconocimiento !== r || !estado.activo || estado.pausado) return;
+            actualizarEstadoMotor(estado._silencio ? "silencio" : "escuchando", estado._silencio ? null : (estado.modoLocalActivo ? "Escuchando · sin internet" : "Escuchando"));
+            programarAvisoSilencio();
         };
         r.onresult = (evento) => {
             if (estado.reconocimiento === r && estado.activo && !estado.pausado) manejarResultado(evento);
@@ -618,6 +801,10 @@ const SubtitulosV2 = (function () {
     function iniciarEscucha() {
         if (estado.activo) return;
         detenerMedidorNivel();
+        cancelarAvisoSilencio();
+        const aviso = el("subtitulosAvisoMotor");
+        if (aviso) aviso.classList.add("d-none");
+        guardarAjustes();
 
         const selectIdioma = el("subtitulosSelectIdioma");
         if (selectIdioma) estado.idioma = selectIdioma.value || CONFIG.IDIOMA_POR_DEFECTO;
@@ -637,8 +824,7 @@ const SubtitulosV2 = (function () {
         estado.pausado = false;
         estado._ultimoError = "";
         estado._intentosReinicio = 0;
-        estado.textoAcumulado = "";
-        estado.textoCompleto = "";
+        estado.textoAcumulado = estado.textoCompleto.slice(-CONFIG.MAX_CARACTERES_TEXTO);
         estado.ultimaFraseFinal = "";
         estado.textoInterino = "";
         renderizarTexto();
@@ -665,6 +851,7 @@ const SubtitulosV2 = (function () {
     }
 
     function detenerEscucha() {
+        cancelarAvisoSilencio();
         estado.activo = false;
         estado.pausado = false;
         estado._ultimoError = "";
@@ -675,6 +862,9 @@ const SubtitulosV2 = (function () {
         liberarWakeLock();
         actualizarBotonPausa();
         actualizarEstadoMotor("listo");
+        estado.textoInterino = "";
+        actualizarResumen();
+        if (estado.pantallaCompleta) salirDePantallaCompleta();
         mostrarPantalla("intro");
     }
 
@@ -682,6 +872,7 @@ const SubtitulosV2 = (function () {
         if (!estado.activo) return;
         if (!estado.pausado) {
             estado.pausado = true;
+            cancelarAvisoSilencio();
             clearTimeout(estado._timeoutReinicio);
             estado._timeoutReinicio = null;
             detenerMotorActual();
@@ -865,6 +1056,8 @@ const SubtitulosV2 = (function () {
     }
 
     function manejarResultado(evento) {
+        cancelarAvisoSilencio();
+        programarAvisoSilencio();
         let interina = "";
         for (let i = 0; i < evento.results.length; i++) {
             const resultado = evento.results[i];
@@ -936,11 +1129,7 @@ const SubtitulosV2 = (function () {
         console.warn("Error de reconocimiento de voz:", error);
 
         if (error === "not-allowed" || error === "service-not-allowed") {
-            estado.activo = false;
-            actualizarEstadoMotor("error", "Micrófono bloqueado");
-            liberarWakeLock();
-            alert("LSPedia necesita permiso para usar el micrófono. Permite el acceso desde el navegador e inténtalo de nuevo.");
-            mostrarPantalla("intro");
+            mostrarErrorRecuperable("LSPedia necesita permiso de micrófono. Permítelo en la configuración del sitio y toca Iniciar o Continuar.");
             return;
         }
 
@@ -954,24 +1143,22 @@ const SubtitulosV2 = (function () {
         }
 
         if (error === "language-unavailable" || error === "language-not-supported") {
-            estado.activo = false;
-            actualizarEstadoMotor("error", "Idioma no disponible");
-            liberarWakeLock();
-            alert("El idioma seleccionado no está disponible en el motor de voz de este celular. Prueba con 'Español (Perú)' o 'Español (España)'.");
-            mostrarPantalla("intro");
+            mostrarErrorRecuperable("Este idioma no está disponible. Selecciona otro idioma y vuelve a iniciar. Si usabas el modo sin internet, revisa su paquete en Opciones avanzadas.");
             return;
         }
 
         if (error === "audio-capture") {
-            estado.activo = false;
-            actualizarEstadoMotor("error", "No se detecta micrófono");
-            liberarWakeLock();
-            alert("No se pudo usar el micrófono. Comprueba que no esté siendo usado por otra aplicación y vuelve a intentarlo.");
-            mostrarPantalla("intro");
+            mostrarErrorRecuperable("No se pudo abrir el micrófono. Cierra otras aplicaciones que lo estén usando y toca Iniciar o Continuar.");
             return;
         }
 
+        if (error === "no-speech") {
+            cancelarAvisoSilencio();
+            estado._silencio = true;
+            actualizarEstadoMotor("silencio");
+        }
         if (error === "network") {
+            cancelarAvisoSilencio();
             actualizarEstadoMotor("reconectando", "Conexión inestable…");
         } else if (error !== "no-speech" && estado.activo && !estado.pausado) {
             actualizarEstadoMotor("reconectando");
@@ -1055,7 +1242,8 @@ const SubtitulosV2 = (function () {
         if (!contenedor) return;
 
         if (!estado.textoAcumulado && !estado.textoInterino) {
-            contenedor.innerHTML = '<span class="subtitulos-placeholder">Escuchando… acerca el celular al parlante de la película o de quien esté hablando.</span>';
+            contenedor.innerHTML = '<span class="subtitulos-placeholder">' + (estado.pausado ? 'Pausado. Toca Reanudar para seguir.' : 'Acerca el celular a quien habla. El texto aparecerá aquí.') + '</span>';
+            sincronizarTextoOpuesto();
             return;
         }
 
@@ -1072,6 +1260,7 @@ const SubtitulosV2 = (function () {
         // reciente quede visible y lo más viejo se "recorte" solo por
         // arriba, sin que el usuario tenga que deslizar nada a mano.
         contenedor.scrollTop = contenedor.scrollHeight;
+        sincronizarTextoOpuesto();
 
         // Pequeño "destello" de entrada cuando se confirma una frase nueva
         // (ver .subtitulos-texto-nuevo en subtitulos.css): se reinicia la
@@ -1102,6 +1291,7 @@ const SubtitulosV2 = (function () {
     function ajustarTamano(delta) {
         estado.tamanoIndex = Math.min(CONFIG.TAMANOS.length - 1, Math.max(0, estado.tamanoIndex + delta));
         aplicarTamano();
+        guardarAjustes();
     }
 
     function aplicarTamano() {
@@ -1109,6 +1299,7 @@ const SubtitulosV2 = (function () {
         if (!contenedor) return;
         CONFIG.TAMANOS.forEach((t) => contenedor.classList.remove("tam-" + t));
         contenedor.classList.add("tam-" + CONFIG.TAMANOS[estado.tamanoIndex]);
+        sincronizarTextoOpuesto();
     }
 
     // ---------------------------------------------------------
@@ -1151,6 +1342,8 @@ const SubtitulosV2 = (function () {
     }
 
     function mostrarConfirmacionGuardado() {
+        const mensaje = el("subtitulosAccionEstado");
+        if (mensaje) mensaje.textContent = "Texto copiado.";
         const btn = el("btnSubtitulosGuardar");
         if (!btn) return;
         const original = btn.innerHTML;
@@ -1197,6 +1390,7 @@ const SubtitulosV2 = (function () {
         const idx = lista.indexOf(estado.colorResaltado);
         estado.colorResaltado = lista[(idx + 1) % lista.length];
         actualizarBotonColor();
+        guardarAjustes();
         renderizarTexto();
     }
 
@@ -1347,6 +1541,8 @@ const SubtitulosV2 = (function () {
 
         const selectIdioma = el("subtitulosSelectIdioma");
         if (selectIdioma) selectIdioma.addEventListener("change", () => {
+            estado.idioma = selectIdioma.value;
+            guardarAjustes();
             estado.modoLocalActivo = false;
             estado.modoLocalDisponible = false;
             estado.idiomaLocal = "";
@@ -1354,6 +1550,23 @@ const SubtitulosV2 = (function () {
             if (toggle) { toggle.checked = false; toggle.disabled = true; delete toggle.dataset.usuarioCambio; }
             comprobarDisponibilidadLocal(false);
         });
+
+        const acciones = {
+            btnSubtitulosCopiarResumen: copiarTranscripcion,
+            btnSubtitulosDescargar: descargarTranscripcion,
+            btnSubtitulosNuevaSesion: nuevaSesion,
+            btnSubtitulosCaraACara: () => {
+                estado.caraACara = !estado.caraACara;
+                aplicarCaraACara();
+                guardarAjustes();
+            }
+        };
+        Object.entries(acciones).forEach(([id, accion]) => {
+            const btn = el(id);
+            if (btn) btn.addEventListener("click", accion);
+        });
+        const editor = el("subtitulosEditor");
+        if (editor) editor.addEventListener("input", editarTranscripcion);
 
         const btnDetener = el("btnSubtitulosDetener");
         if (btnDetener) btnDetener.addEventListener("click", detenerEscucha);
