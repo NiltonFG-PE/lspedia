@@ -146,6 +146,11 @@
         <priority>0.8</priority>
     </url>
     <url>
+        <loc>https://lspedia.site/diccionario/camara-gesell/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
         <loc>https://lspedia.site/vocabulario/adulto-adjetivos/</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
@@ -762,6 +767,11 @@
     </url>
     <url>
         <loc>https://lspedia.site/categoria/diccionario/habilidades/</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/categoria/diccionario/legal/</loc>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
     </url>
