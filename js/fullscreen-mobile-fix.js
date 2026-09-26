@@ -71,12 +71,11 @@
         window.removeEventListener('resize', mostrarControles);
         wrap.classList.remove('lsp-controles-ocultos');
         if (estado.botonGirar) estado.botonGirar.remove();
+        if (estado.capaMostrar) estado.capaMostrar.remove();
         if (estado.mostrarAlTocar) wrap.removeEventListener('click', estado.mostrarAlTocar, true);
         if (screen.orientation && screen.orientation.unlock) {
             try { screen.orientation.unlock(); } catch (_error) {}
         }
-
-
 
         if (btn && interceptarCierre) {
             btn.removeEventListener('click', interceptarCierre, true);
@@ -219,6 +218,17 @@
             });
             estado.botonGirar = botonGirar;
         }
+        // Los toques dentro del iframe de YouTube no llegan al documento padre.
+        // Solo mientras los controles están ocultos, esta capa recibe el primer
+        // toque en toda la pantalla. Al mostrarlos, la línea de tiempo vuelve
+        // a recibir los gestos directamente.
+        const capaMostrar = document.createElement('button');
+        capaMostrar.type = 'button';
+        capaMostrar.className = 'lsp-video-mostrar-controles';
+        capaMostrar.setAttribute('aria-label', 'Mostrar controles del video');
+        wrap.appendChild(capaMostrar);
+        estado.capaMostrar = capaMostrar;
+
         estado.mostrarAlTocar = function (evento) {
             if (wrap.classList.contains('lsp-controles-ocultos')) {
                 evento.preventDefault();

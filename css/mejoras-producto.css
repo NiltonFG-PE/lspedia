@@ -1222,3 +1222,90 @@ body.video-palabra-pantalla-completa-activa {
     }
     .lsp-video-girar { color: #fff !important; background: #17345f !important; }
 }
+
+/* Fullscreen: prioridad sobre la cuadrícula de la ficha (#resultado).
+   El aviso nativo del navegador no pertenece a la página: en vertical,
+   colocamos los controles junto al video y reservamos la zona inferior. */
+@media (pointer: coarse) {
+    :is(#reproductorPalabraWrap, #reproductorSugeridaWrap).video-palabra-pantalla-completa > .controles-video {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 4px !important;
+        width: max-content !important;
+        max-width: calc(100vw - 16px) !important;
+    }
+    :is(#reproductorPalabraWrap, #reproductorSugeridaWrap).video-palabra-pantalla-completa > .controles-video > .btn {
+        flex: 0 0 auto !important;
+        grid-column: auto !important;
+        width: auto !important;
+        min-width: 42px !important;
+        min-height: 42px !important;
+        height: 42px !important;
+        padding: 4px 8px !important;
+        font-size: .82rem !important;
+    }
+    :is(#reproductorPalabraWrap, #reproductorSugeridaWrap).video-palabra-pantalla-completa .controles-video-velocidad {
+        display: flex !important;
+        flex: 0 0 auto !important;
+        grid-column: auto !important;
+        box-sizing: border-box !important;
+        width: auto !important;
+        min-width: max-content !important;
+        min-height: 42px !important;
+        padding: 2px 4px !important;
+        gap: 3px !important;
+        justify-content: center !important;
+    }
+    :is(#reproductorPalabraWrap, #reproductorSugeridaWrap).video-palabra-pantalla-completa .controles-video-velocidad .btn {
+        flex: 0 0 36px !important;
+        width: 36px !important;
+        min-width: 36px !important;
+        height: 36px !important;
+        min-height: 36px !important;
+        padding: 2px !important;
+    }
+    :is(#reproductorPalabraWrap, #reproductorSugeridaWrap).video-palabra-pantalla-completa .controles-video-velocidad > span {
+        flex: 0 0 auto !important;
+        min-width: 30px !important;
+        width: auto !important;
+        font-size: .9rem !important;
+        text-align: center !important;
+    }
+    .video-palabra-pantalla-completa > .lsp-video-mostrar-controles {
+        display: none !important;
+        position: absolute !important;
+        inset: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+        z-index: 2147483645 !important;
+        touch-action: manipulation;
+    }
+    .video-palabra-pantalla-completa.lsp-controles-ocultos > .lsp-video-mostrar-controles {
+        display: block !important;
+        pointer-events: auto !important;
+    }
+}
+@media (pointer: coarse) and (orientation: portrait) {
+    :is(#reproductorPalabraWrap, #reproductorSugeridaWrap).video-palabra-pantalla-completa > .controles-video {
+        display: grid !important;
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        width: calc(100vw - 24px) !important;
+        max-width: 440px !important;
+        bottom: max(calc(112px + env(safe-area-inset-bottom, 0px)), calc((100dvh - 56.25vw) / 2 - 112px)) !important;
+    }
+    :is(#reproductorPalabraWrap, #reproductorSugeridaWrap).video-palabra-pantalla-completa .controles-video-velocidad {
+        grid-column: 1 / span 2 !important;
+        min-width: 0 !important;
+        width: 100% !important;
+    }
+    :is(#reproductorPalabraWrap, #reproductorSugeridaWrap).video-palabra-pantalla-completa > .controles-video > .btn {
+        width: 100% !important;
+        min-width: 0 !important;
+        padding-inline: 3px !important;
+    }
+}

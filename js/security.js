@@ -274,7 +274,7 @@
         if (window.LSPediaSecurity && window.LSPediaSecurity.esCopiaPublica()) return;
         if (document.querySelector('script[data-lspedia-fullscreen-mobile-fix]')) return;
         const script = document.createElement('script');
-        script.src = 'js/fullscreen-mobile-fix.js?v=20260926-video-2';
+        script.src = 'js/fullscreen-mobile-fix.js?v=20260926-video-3';
         script.async = false;
         script.dataset.lspediaFullscreenMobileFix = '1';
         document.head.appendChild(script);
