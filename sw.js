@@ -7,12 +7,12 @@
    - Actualizar recursos en segundo plano sin bloquear al usuario.
    - Reintentar una vez las lecturas de red del cascarón ante fallos breves.
    - No precargar módulos pesados que ahora se cargan bajo demanda.
-   - Mantener palabras.json y busqueda-ayudas.json fuera del SW; otras
-     fuentes pueden formar parte del cascarón según su estrategia de carga.
+   - Mantener palabras.json, busqueda-ayudas.json y web-config.json fuera del SW;
+     otras fuentes pueden formar parte del cascarón según su estrategia de carga.
    - El panel /admin/ y los laboratorios quedan fuera del fallback público.
    ============================================================ */
 
-const VERSION_APP = "v218";
+const VERSION_APP = "v219";
 const PREFIJO_CACHE = "lspedia-shell-";
 const PREFIJO_RUNTIME = "lspedia-runtime-";
 const CACHE_NOMBRE = PREFIJO_CACHE + VERSION_APP;
@@ -146,7 +146,11 @@ self.addEventListener("fetch", (event) => {
         return;
     }
 
-    if (url.pathname.includes("/data/palabras.json") || url.pathname.includes("/data/busqueda-ayudas.json")) return;
+    if (
+        url.pathname.includes("/data/palabras.json") ||
+        url.pathname.includes("/data/busqueda-ayudas.json") ||
+        url.pathname.includes("/data/web-config.json")
+    ) return;
 
     // Las páginas SEO reales deben llegar desde su URL exacta. Antes, cualquier
     // navegación devolvía primero index.html desde caché; al abrir por segunda
