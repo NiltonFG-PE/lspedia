@@ -1,152 +1,182 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Licencia — LSPedia</title>
-    <meta name="description" content="Términos de licencia y derechos reservados de LSPedia, diccionario digital de Lengua de Señas Peruana (LSP).">
-
+    <title>Legal y privacidad — LSPedia</title>
+    <meta name="description" content="Centro legal y de privacidad de LSPedia: tratamiento de datos personales, formularios, derechos ARCO, cookies, términos de uso y propiedad intelectual.">
+    <link rel="canonical" href="https://lspedia.site/licencia.html">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="img/favicon.png">
     <meta name="theme-color" content="#0f172a">
-
     <style>
-        body {
-            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: #f8f9fb;
-            color: #212529;
-        }
-        .licencia-header {
-            background-color: #0f172a;
-            padding: 22px 0;
-        }
-        .licencia-header img {
-            height: 42px;
-        }
-        .licencia-volver {
-            color: #ffffff;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .licencia-volver:hover {
-            color: #ffc107;
-        }
-        .licencia-card {
-            background-color: #ffffff;
-            border-radius: 16px;
-            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
-            padding: 32px 28px;
-            max-width: 780px;
-            margin: 40px auto 60px;
-        }
-        .licencia-titulo {
-            font-weight: 700;
-            color: #0f172a;
-            margin-bottom: 6px;
-        }
-        .licencia-raya {
-            display: block;
-            width: 46px;
-            height: 4px;
-            border-radius: 4px;
-            background-color: #ffc107;
-            margin-bottom: 24px;
-        }
-        .licencia-texto {
-            white-space: pre-wrap;
-            font-size: 15px;
-            line-height: 1.7;
-            color: #333;
-        }
-        .licencia-separador {
-            border: none;
-            border-top: 1px solid #e5e7eb;
-            margin: 28px 0;
-        }
-        .licencia-idioma-label {
-            display: inline-block;
-            background-color: #eef4ff;
-            color: #268bff;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 4px 12px;
-            border-radius: 999px;
-            margin-bottom: 14px;
-        }
+        :root{--navy:#0f172a;--blue:#268bff;--yellow:#ffc107;--bg:#f6f8fc;--card:#fff;--muted:#64748b;--line:#e2e8f0;--green:#15803d;--radius:20px}
+        *{box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{margin:0;font-family:'Poppins',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:#1e293b;line-height:1.7}
+        a{color:#0b6fdc}
+        .topbar{position:sticky;top:0;z-index:20;background:rgba(15,23,42,.96);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08)}
+        .topbar-inner{max-width:1120px;margin:auto;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+        .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:#fff;font-weight:800}.brand img{height:48px;width:auto}.volver{color:#fff;text-decoration:none;font-weight:700;padding:10px 16px;border:1px solid rgba(255,255,255,.2);border-radius:999px}.volver:hover{background:rgba(255,255,255,.1);color:var(--yellow)}
+        .hero{background:linear-gradient(135deg,#0f172a 0%,#172554 58%,#0f3b72 100%);color:#fff;padding:58px 22px 84px}.hero-inner{max-width:1000px;margin:auto}.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;background:rgba(255,193,7,.14);border:1px solid rgba(255,193,7,.38);color:#ffe08a;font-size:.82rem;font-weight:700}.hero h1{font-size:clamp(2rem,5vw,3.6rem);line-height:1.08;margin:18px 0 14px}.hero p{max-width:800px;color:#dbeafe;font-size:1.04rem;margin:0}.updated{margin-top:18px;color:#94a3b8;font-size:.86rem}
+        .wrap{max-width:1120px;margin:-48px auto 70px;padding:0 22px}.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}.summary-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 10px 30px rgba(15,23,42,.07)}.summary-icon{font-size:1.45rem;margin-bottom:10px}.summary-card strong{display:block;color:var(--navy);font-size:.96rem}.summary-card span{display:block;color:var(--muted);font-size:.82rem;margin-top:4px}
+        .layout{display:grid;grid-template-columns:260px minmax(0,1fr);gap:22px;align-items:start}.toc{position:sticky;top:92px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 8px 24px rgba(15,23,42,.05)}.toc-title{font-weight:800;color:var(--navy);font-size:.86rem;padding:4px 8px 10px}.toc a{display:block;text-decoration:none;color:#475569;padding:9px 10px;border-radius:10px;font-size:.84rem;font-weight:600}.toc a:hover{background:#eff6ff;color:#1d4ed8}
+        .content{display:flex;flex-direction:column;gap:18px}.section{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:28px;box-shadow:0 8px 25px rgba(15,23,42,.05);scroll-margin-top:94px}.section h2{margin:0 0 14px;color:var(--navy);font-size:1.28rem;line-height:1.3;display:flex;align-items:center;gap:10px}.section h3{color:#1e3a8a;font-size:1rem;margin:22px 0 8px}.section p{margin:9px 0;color:#475569}.section ul{margin:10px 0 0;padding-left:22px;color:#475569}.section li{margin:7px 0}.note{background:#eff6ff;border:1px solid #bfdbfe;border-left:4px solid #3b82f6;border-radius:14px;padding:15px 17px;margin:16px 0;color:#334155}.note.warning{background:#fffbeb;border-color:#fde68a;border-left-color:#f59e0b}.note.success{background:#f0fdf4;border-color:#bbf7d0;border-left-color:#22c55e}.data-table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:14px;font-size:.88rem}.data-table th,.data-table td{padding:13px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}.data-table tr:last-child td{border-bottom:0}.data-table th{background:#f8fafc;color:var(--navy);font-weight:800}.pill{display:inline-block;padding:4px 9px;border-radius:999px;font-size:.76rem;font-weight:700;background:#e0f2fe;color:#075985}.contact-card{display:flex;align-items:flex-start;gap:13px;background:#f8fafc;border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:14px}.contact-icon{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#dbeafe;flex:0 0 auto}.contact-card a{font-weight:700;word-break:break-word}
+        .legal-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}.legal-links a{display:inline-flex;text-decoration:none;padding:9px 12px;border-radius:999px;background:#f1f5f9;border:1px solid var(--line);font-size:.8rem;font-weight:700;color:#334155}.legal-links a:hover{background:#e0f2fe;color:#075985}
+        footer{max-width:1120px;margin:0 auto 40px;padding:0 22px;color:#64748b;text-align:center;font-size:.8rem}.footer-box{border-top:1px solid var(--line);padding-top:22px}
+        @media(max-width:900px){.summary{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}.toc{position:relative;top:auto}.toc-links{display:grid;grid-template-columns:repeat(2,1fr)}}
+        @media(max-width:560px){.topbar-inner{padding:10px 14px}.brand img{height:40px}.brand span{display:none}.volver{font-size:.8rem;padding:8px 11px}.hero{padding:38px 16px 70px}.wrap{padding:0 14px}.summary{grid-template-columns:1fr}.section{padding:20px 17px;border-radius:16px}.toc-links{grid-template-columns:1fr}.data-table{display:block;overflow-x:auto;white-space:normal}.hero h1{font-size:2rem}}
     </style>
 </head>
-
 <body>
+<header class="topbar">
+    <div class="topbar-inner">
+        <a href="index.html" class="brand"><img src="img/lspedia.png" alt="Logo LSPedia"><span>LSPedia</span></a>
+        <a href="index.html" class="volver">← Volver a LSPedia</a>
+    </div>
+</header>
+<section class="hero">
+    <div class="hero-inner">
+        <span class="eyebrow">🛡️ Centro de confianza</span>
+        <h1>Legal y privacidad</h1>
+        <p>Información clara sobre el uso de LSPedia, el tratamiento de datos personales, los formularios de sugerencias, los servicios de terceros y la propiedad intelectual del proyecto.</p>
+        <div class="updated">Última actualización: 26 de septiembre de 2026</div>
+    </div>
+</section>
+<main class="wrap">
+    <div class="summary" aria-label="Resumen de privacidad">
+        <div class="summary-card"><div class="summary-icon">📝</div><strong>Datos mínimos</strong><span>Los formularios se usan para recibir propuestas, ideas y responder cuando corresponde.</span></div>
+        <div class="summary-card"><div class="summary-icon">🚫</div><strong>No vendemos datos</strong><span>LSPedia no comercializa la información personal recibida mediante sus formularios.</span></div>
+        <div class="summary-card"><div class="summary-icon">🔐</div><strong>Acceso restringido</strong><span>Las respuestas de formularios no se publican automáticamente en la web.</span></div>
+        <div class="summary-card"><div class="summary-icon">✉️</div><strong>Puedes solicitar cambios</strong><span>Existe un canal para acceso, rectificación, cancelación u oposición.</span></div>
+    </div>
 
-    <header class="licencia-header">
-        <div class="container d-flex align-items-center justify-content-between flex-wrap gap-2">
-            <a href="index.html" class="d-flex align-items-center gap-2 text-decoration-none">
-                <img src="img/lspedia.png" alt="Logo LSPedia">
-            </a>
-            <a href="index.html" class="licencia-volver">← Volver a LSPedia</a>
+    <div class="layout">
+        <nav class="toc" aria-label="Contenido de Legal y privacidad">
+            <div class="toc-title">CONTENIDO</div>
+            <div class="toc-links">
+                <a href="#responsable">1. Responsable</a>
+                <a href="#datos">2. Datos personales</a>
+                <a href="#formularios">3. Formularios</a>
+                <a href="#conservacion">4. Conservación</a>
+                <a href="#arco">5. Derechos ARCO</a>
+                <a href="#terceros">6. Servicios externos</a>
+                <a href="#cookies">7. Analítica y almacenamiento</a>
+                <a href="#menores">8. Menores de edad</a>
+                <a href="#terminos">9. Términos de uso</a>
+                <a href="#licencia">10. Propiedad intelectual</a>
+                <a href="#cambios">11. Cambios</a>
+            </div>
+        </nav>
+
+        <div class="content">
+            <section class="section" id="responsable">
+                <h2>👤 1. Responsable de LSPedia</h2>
+                <p><strong>LSPedia</strong> es un proyecto independiente administrado por <strong>Nilton L. F. G.</strong> La presente información se aplica al sitio oficial <strong>lspedia.site</strong> y a los formularios enlazados o incrustados desde este sitio cuando son gestionados por LSPedia.</p>
+                <div class="contact-card"><div class="contact-icon">✉️</div><div><strong>Contacto para privacidad y datos personales</strong><br><a href="mailto:proyectolspedia@gmail.com?subject=Privacidad%20-%20Datos%20personales">proyectolspedia@gmail.com</a><br><small>Asunto recomendado: “Privacidad - Datos personales”.</small></div></div>
+            </section>
+
+            <section class="section" id="datos">
+                <h2>🧾 2. Qué datos personales podemos recibir</h2>
+                <p>LSPedia procura solicitar únicamente la información necesaria para atender una propuesta, sugerencia o comunicación. Dependiendo del formulario, se pueden recibir:</p>
+                <ul>
+                    <li><strong>Nombre</strong>, cuando la persona lo proporciona o el formulario lo solicita.</li>
+                    <li><strong>Correo electrónico</strong>, principalmente si la persona desea recibir una respuesta.</li>
+                    <li><strong>Contenido de la sugerencia, idea o mensaje</strong> enviado voluntariamente.</li>
+                    <li><strong>Fecha y hora de envío</strong> u otros datos técnicos generados por la plataforma utilizada para recibir el formulario.</li>
+                </ul>
+                <div class="note success"><strong>LSPedia no necesita DNI, dirección domiciliaria, información bancaria, datos de salud ni otros datos sensibles para un buzón ordinario de sugerencias.</strong> Evita incluir información sensible en el campo de mensaje si no es necesaria.</div>
+            </section>
+
+            <section class="section" id="formularios">
+                <h2>📨 3. Buzón de sugerencias y formularios</h2>
+                <p>Los formularios de <strong>Sugerir palabra</strong> y <strong>Enviar una idea</strong> pueden utilizar Google Forms. Las respuestas son administradas por LSPedia y pueden almacenarse en Google Sheets.</p>
+                <table class="data-table">
+                    <thead><tr><th>Dato</th><th>Finalidad</th></tr></thead>
+                    <tbody>
+                        <tr><td>Nombre</td><td>Identificar a la persona que envía una propuesta cuando sea necesario.</td></tr>
+                        <tr><td>Correo electrónico</td><td>Responder a la consulta o sugerencia cuando la persona desea una respuesta.</td></tr>
+                        <tr><td>Sugerencia / idea</td><td>Evaluar mejoras de LSPedia, nuevas palabras o propuestas relacionadas con el proyecto.</td></tr>
+                    </tbody>
+                </table>
+                <p>Los datos recibidos por estos formularios <strong>no se utilizarán para enviar publicidad ni campañas comerciales</strong> sin una autorización separada. Tampoco se venderán a terceros.</p>
+                <div class="note warning"><strong>Importante:</strong> el envío de una propuesta autoriza a LSPedia a evaluar y, si resulta útil, incorporar la idea o palabra sugerida al proyecto. Esto no autoriza a publicar el nombre, correo u otros datos personales del remitente.</div>
+            </section>
+
+            <section class="section" id="conservacion">
+                <h2>🗂️ 4. Conservación y eliminación</h2>
+                <p>Los datos identificativos recibidos mediante formularios se conservarán solamente durante el tiempo razonablemente necesario para revisar la solicitud, responderla y mantener un registro operativo. Como criterio interno, LSPedia procurará eliminar o anonimizar <strong>nombre y correo electrónico dentro de los 12 meses posteriores a la última interacción</strong>, salvo que exista una solicitud en trámite, una controversia o una obligación legal que justifique conservarlos por más tiempo.</p>
+                <p>El contenido no identificativo de una sugerencia puede conservarse después de anonimizarlo para mejorar el proyecto.</p>
+            </section>
+
+            <section class="section" id="arco">
+                <h2>🧑‍⚖️ 5. Derechos sobre tus datos personales</h2>
+                <p>De acuerdo con la Ley N.º 29733, Ley de Protección de Datos Personales, puedes solicitar información sobre el tratamiento de tus datos y ejercer, según corresponda, tus derechos de <strong>acceso, rectificación, cancelación y oposición (ARCO)</strong>, así como revocar el consentimiento cuando sea aplicable.</p>
+                <p>Para presentar una solicitud escribe a <a href="mailto:proyectolspedia@gmail.com?subject=Privacidad%20-%20Datos%20personales">proyectolspedia@gmail.com</a> indicando qué derecho deseas ejercer y la información necesaria para localizar tu registro. LSPedia puede solicitar información razonable para verificar que la solicitud corresponde al titular de los datos antes de revelar, modificar o eliminar información.</p>
+                <p>Si consideras que tu solicitud no fue atendida adecuadamente, puedes recurrir a la <strong>Autoridad Nacional de Protección de Datos Personales del Perú</strong> conforme a la normativa vigente.</p>
+                <div class="legal-links">
+                    <a href="https://www.gob.pe/institucion/anpd" target="_blank" rel="noopener noreferrer">Autoridad Nacional de Protección de Datos Personales ↗</a>
+                    <a href="https://www.gob.pe/9270" target="_blank" rel="noopener noreferrer">Información sobre derechos ARCO ↗</a>
+                </div>
+            </section>
+
+            <section class="section" id="terceros">
+                <h2>🌐 6. Servicios y plataformas de terceros</h2>
+                <p>Para operar LSPedia pueden utilizarse servicios externos. Entre ellos:</p>
+                <ul>
+                    <li><strong>Google Forms y Google Sheets</strong>, para recibir y administrar formularios.</li>
+                    <li><strong>YouTube</strong>, para reproducir videos.</li>
+                    <li><strong>Google Analytics</strong>, para obtener estadísticas de uso del sitio oficial.</li>
+                    <li>Redes sociales y enlaces externos mostrados en LSPedia.</li>
+                </ul>
+                <p>Estos proveedores tienen sus propias políticas y pueden procesar información técnica en su propia infraestructura, incluso fuera del Perú, de acuerdo con sus condiciones de servicio y políticas de privacidad. LSPedia no controla la ubicación física de los servidores de esos proveedores.</p>
+                <p>Los datos escritos en los formularios de Google no se publican automáticamente en LSPedia ni se envían intencionalmente a Google Analytics como contenido del formulario.</p>
+            </section>
+
+            <section class="section" id="cookies">
+                <h2>🍪 7. Analítica, cookies y almacenamiento local</h2>
+                <p>LSPedia puede utilizar tecnologías necesarias para el funcionamiento del sitio, por ejemplo almacenamiento local del navegador para recordar preferencias, favoritos, historial, progreso o funcionamiento de la aplicación instalable (PWA).</p>
+                <p>En el dominio oficial también se utiliza Google Analytics para conocer de forma estadística cómo se usa LSPedia y detectar oportunidades de mejora. Esta herramienta puede recibir información técnica del navegador o dispositivo conforme a la configuración del servicio y a las políticas de Google.</p>
+                <p>Puedes limitar cookies y almacenamiento desde la configuración de tu navegador. Algunas funciones locales de LSPedia pueden dejar de recordar tus preferencias si eliminas esos datos.</p>
+            </section>
+
+            <section class="section" id="menores">
+                <h2>🧒 8. Menores de edad</h2>
+                <p>LSPedia es un proyecto educativo y puede ser visitado por familias y estudiantes. Los formularios de contacto no están diseñados para solicitar deliberadamente datos sensibles de menores.</p>
+                <p>Si una persona es menor de 14 años, se recomienda que complete cualquier formulario con la participación y autorización de su padre, madre o tutor. No debe incluir datos personales innecesarios en el mensaje.</p>
+            </section>
+
+            <section class="section" id="terminos">
+                <h2>📘 9. Términos de uso</h2>
+                <p>LSPedia es una herramienta educativa y de accesibilidad. Su contenido busca facilitar la comprensión de palabras y conceptos con apoyo visual y en Lengua de Señas Peruana. <strong>No sustituye asesoramiento médico, psicológico, legal, financiero ni profesional especializado.</strong></p>
+                <p>Se realizan esfuerzos para mantener el contenido correcto y actualizado; sin embargo, pueden existir errores, diferencias regionales en las señas, cambios de información o enlaces externos que dejen de estar disponibles.</p>
+                <p>El usuario se compromete a utilizar el sitio de manera lícita y a no intentar dañar, interferir, copiar masivamente, vulnerar o explotar técnicamente la plataforma.</p>
+            </section>
+
+            <section class="section" id="licencia">
+                <h2>©️ 10. Derechos de autor y propiedad intelectual</h2>
+                <p><strong>Copyright © 2026 Nilton L. F. G. Todos los derechos reservados.</strong></p>
+                <p>El diseño original de LSPedia, su interfaz, estructura, código fuente propio, textos originales, ilustraciones propias, iconografía propia, grabaciones y demás materiales creados específicamente para el proyecto están protegidos por la normativa aplicable de propiedad intelectual.</p>
+                <p>Salvo autorización expresa del titular, no está permitido copiar, reproducir, redistribuir, vender o crear una copia sustancial de los materiales propios de LSPedia para otro proyecto.</p>
+                <p>Esta protección se entiende <strong>sin perjuicio de los derechos de terceros</strong> sobre marcas, plataformas, servicios, bibliotecas, videos, recursos o contenidos que estén identificados como pertenecientes a sus respectivos titulares.</p>
+                <p>El acceso público al sitio no concede automáticamente una licencia de explotación comercial del contenido propio de LSPedia.</p>
+            </section>
+
+            <section class="section" id="cambios">
+                <h2>🔄 11. Cambios en esta información</h2>
+                <p>LSPedia puede actualizar este Centro Legal y de Privacidad cuando cambien sus formularios, proveedores, funciones o requisitos normativos. La fecha de la última actualización se mostrará al inicio de esta página.</p>
+                <p>La protección de datos personales en Perú se rige, entre otras normas aplicables, por la <strong>Ley N.º 29733</strong> y su Reglamento aprobado por el <strong>Decreto Supremo N.º 016-2024-JUS</strong>.</p>
+                <div class="legal-links">
+                    <a href="https://www3.congreso.gob.pe/Docs/DGP/DIDP/files/ds_016-2024-jus.pdf" target="_blank" rel="noopener noreferrer">Reglamento de la Ley 29733 ↗</a>
+                    <a href="https://www.gob.pe/institucion/anpd" target="_blank" rel="noopener noreferrer">ANPD Perú ↗</a>
+                </div>
+                <div class="note"><strong>Sobre el banco de datos:</strong> si LSPedia mantiene de forma organizada respuestas con datos personales en Google Sheets u otro sistema, el responsable debe revisar y cumplir las obligaciones aplicables sobre bancos de datos personales, incluida su inscripción cuando corresponda.</div>
+            </section>
         </div>
-    </header>
-
-    <main class="container">
-        <div class="licencia-card">
-            <h1 class="licencia-titulo">Aviso de derechos de autor y propiedad intelectual</h1>
-            <span class="licencia-raya" aria-hidden="true"></span>
-
-            <span class="licencia-idioma-label">Español</span>
-            <p class="licencia-texto">Copyright © 2026 Nilton L. F. G. Todos los derechos reservados.
-
-LSPedia y todo su contenido constituyen una obra protegida por las leyes de propiedad intelectual.
-
-La autoría intelectual, el desarrollo del proyecto, el diseño de la interfaz, el código fuente, la estructura del sitio web, los textos, definiciones, ilustraciones, iconografía, material gráfico, grabaciones de video, contenido educativo y cualquier otro elemento publicado en esta plataforma son propiedad exclusiva de Nilton L. F. G.
-
-Salvo autorización expresa y por escrito del titular de los derechos, no está permitido:
-- Copiar, reproducir o distribuir total o parcialmente el contenido.
-- Modificar, adaptar o crear obras derivadas.
-- Utilizar el diseño, código, recursos gráficos o audiovisuales en otros proyectos.
-- Publicar, comercializar o redistribuir cualquier parte de este material por cualquier medio.
-- Eliminar o modificar los avisos de derechos de autor o de propiedad intelectual.
-
-El acceso público al sitio web no implica la concesión de ninguna licencia de uso, reproducción, distribución o explotación del contenido.
-
-Cualquier uso no autorizado podrá dar lugar a las acciones legales correspondientes conforme a la legislación vigente sobre propiedad intelectual.
-
-Para solicitar autorización de uso o realizar consultas, comuníquese con el titular de los derechos.</p>
-
-            <hr class="licencia-separador">
-
-            <span class="licencia-idioma-label">English</span>
-            <p class="licencia-texto">Copyright © 2026 Nilton L. F. G. All rights reserved.
-
-LSPedia and all of its contents are protected by applicable intellectual property and copyright laws.
-
-The intellectual creation, project development, user interface design, source code, website structure, texts, definitions, illustrations, icons, graphic resources, video recordings, educational materials, and all other content published on this platform are the exclusive property of Nilton L. F. G.
-
-Unless prior written permission is granted by the copyright owner, it is prohibited to:
-- Copy, reproduce, or distribute any part of this content.
-- Modify, adapt, or create derivative works.
-- Use the design, source code, graphic resources, or audiovisual materials in other projects.
-- Publish, sell, license, or redistribute any portion of this material by any means.
-- Remove or alter copyright or proprietary notices.
-
-Public access to this website does not grant any license or right to use, reproduce, distribute, or exploit its contents.
-
-Any unauthorized use may result in legal action under applicable intellectual property laws.
-
-For permission requests or licensing inquiries, please contact the copyright owner.</p>
-        </div>
-    </main>
-
+    </div>
+</main>
+<footer><div class="footer-box">© 2026 LSPedia — Nilton L. F. G. · <a href="mailto:proyectolspedia@gmail.com">proyectolspedia@gmail.com</a></div></footer>
 </body>
 </html>
