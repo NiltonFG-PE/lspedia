@@ -12,7 +12,7 @@
    - El panel /admin/ y los laboratorios quedan fuera del fallback público.
    ============================================================ */
 
-const VERSION_APP = "v219";
+const VERSION_APP = "v220";
 const PREFIJO_CACHE = "lspedia-shell-";
 const PREFIJO_RUNTIME = "lspedia-runtime-";
 const CACHE_NOMBRE = PREFIJO_CACHE + VERSION_APP;
@@ -44,6 +44,7 @@ const ARCHIVOS_CASCARON = [
     "js/security.js",
     "js/lspedia-core.js",
     "js/web-config.js",
+    "js/web-config-v27.js",
     "js/lspedia-media.js",
     "js/accesibilidad-segura.js",
     "js/seo-institucional.js",
