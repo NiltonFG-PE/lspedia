@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-09-26T05:22:13Z",
+  "generadoEn": "2026-09-26T05:22:47Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
@@ -9,7 +9,7 @@
       "palabra": "Cámara Gesell",
       "categoria": "Legal",
       "imagen": "img/diccionario/camara-gesell.webp",
-      "fecha": "2026-09-26T05:21:50Z",
+      "fecha": "2026-09-26T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
