@@ -92,6 +92,49 @@
     #seccionNosotros {
         scroll-margin-top: 108px !important;
     }
+
+    /* Varias imágenes de apoyo: en móvil usamos desplazamiento horizontal
+       nativo y scroll-snap. Así todas las imágenes quedan accesibles con el
+       dedo aunque el gesto táctil del carrusel de Bootstrap falle en algún
+       navegador/WebView. Escritorio conserva el carrusel de Bootstrap. */
+    .carrusel-apoyo-visual .carousel-inner {
+        display: flex !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        scroll-snap-type: x mandatory !important;
+        scroll-behavior: smooth !important;
+        -webkit-overflow-scrolling: touch !important;
+        overscroll-behavior-x: contain !important;
+        touch-action: pan-x pan-y !important;
+        scrollbar-width: none !important;
+    }
+
+    .carrusel-apoyo-visual .carousel-inner::-webkit-scrollbar {
+        display: none !important;
+    }
+
+    .carrusel-apoyo-visual .carousel-item,
+    .carrusel-apoyo-visual .carousel-item.active,
+    .carrusel-apoyo-visual .carousel-item-next,
+    .carrusel-apoyo-visual .carousel-item-prev {
+        display: block !important;
+        flex: 0 0 100% !important;
+        width: 100% !important;
+        margin-right: 0 !important;
+        transform: none !important;
+        transition: none !important;
+        scroll-snap-align: center !important;
+        scroll-snap-stop: always !important;
+    }
+
+    .carrusel-apoyo-visual .carousel-control-prev,
+    .carrusel-apoyo-visual .carousel-control-next {
+        display: none !important;
+    }
+
+    .carrusel-apoyo-visual-indicadores {
+        pointer-events: none !important;
+    }
 }
 
 html.modo-movil-real nav.navbar {
@@ -162,6 +205,33 @@ html.modo-movil-real nav.navbar [data-language-switcher] {
 html.modo-movil-real body {
     padding-top: 92px !important;
 }
+
+/* El modo móvil real también puede superar 1200px al girar una tablet.
+   Repetimos el comportamiento táctil para que siga funcionando en horizontal. */
+html.modo-movil-real .carrusel-apoyo-visual .carousel-inner {
+    display: flex !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-x pan-y !important;
+    scrollbar-width: none !important;
+}
+html.modo-movil-real .carrusel-apoyo-visual .carousel-inner::-webkit-scrollbar { display: none !important; }
+html.modo-movil-real .carrusel-apoyo-visual .carousel-item,
+html.modo-movil-real .carrusel-apoyo-visual .carousel-item.active,
+html.modo-movil-real .carrusel-apoyo-visual .carousel-item-next,
+html.modo-movil-real .carrusel-apoyo-visual .carousel-item-prev {
+    display: block !important;
+    flex: 0 0 100% !important;
+    width: 100% !important;
+    margin-right: 0 !important;
+    transform: none !important;
+    transition: none !important;
+    scroll-snap-align: center !important;
+}
+html.modo-movil-real .carrusel-apoyo-visual .carousel-control-prev,
+html.modo-movil-real .carrusel-apoyo-visual .carousel-control-next { display: none !important; }
 
 @media (min-width: 1200px) {
     nav.navbar { min-height: 94px; }
