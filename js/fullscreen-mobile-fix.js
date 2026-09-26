@@ -55,15 +55,6 @@
     function restaurarVisual() {
         if (!estado || cerrando) return;
         cerrando = true;
-        window.clearTimeout(temporizadorControles);
-        window.removeEventListener('orientationchange', mostrarControles);
-        wrap.classList.remove('lsp-controles-ocultos');
-        if (estado.botonGirar) estado.botonGirar.remove();
-        if (estado.mostrarAlTocar) wrap.removeEventListener('pointerdown', estado.mostrarAlTocar, true);
-        if (screen.orientation && screen.orientation.unlock) {
-            try { screen.orientation.unlock(); } catch (_error) {}
-        }
-
         const {
             wrap,
             controles,
@@ -74,6 +65,18 @@
             styleBtn,
             interceptarCierre
         } = estado;
+
+        window.clearTimeout(temporizadorControles);
+        window.removeEventListener('orientationchange', mostrarControles);
+        window.removeEventListener('resize', mostrarControles);
+        wrap.classList.remove('lsp-controles-ocultos');
+        if (estado.botonGirar) estado.botonGirar.remove();
+        if (estado.mostrarAlTocar) wrap.removeEventListener('click', estado.mostrarAlTocar, true);
+        if (screen.orientation && screen.orientation.unlock) {
+            try { screen.orientation.unlock(); } catch (_error) {}
+        }
+
+
 
         if (btn && interceptarCierre) {
             btn.removeEventListener('click', interceptarCierre, true);
@@ -209,7 +212,7 @@
             botonGirar.addEventListener('click', async function () {
                 mostrarControles();
                 if (screen.orientation && screen.orientation.lock) {
-                    try { await screen.orientation.lock('landscape'); return; }
+                    try { await screen.orientation.lock('landscape'); mostrarControles(); return; }
                     catch (_error) { /* Algunos navegadores no permiten bloquear el giro. */ }
                 }
                 botonGirar.textContent = '↻ Gira el celular';
@@ -225,8 +228,9 @@
                 mostrarControles();
             }
         };
-        wrap.addEventListener('pointerdown', estado.mostrarAlTocar, true);
+        wrap.addEventListener('click', estado.mostrarAlTocar, true);
         window.addEventListener('orientationchange', mostrarControles);
+        window.addEventListener('resize', mostrarControles);
         mostrarControles();
 
         const solicitar = wrap.requestFullscreen ||
@@ -264,6 +268,8 @@
         const actual = elementoFullscreenActual();
         if (!actual || actual !== estado.wrap) {
             restaurarVisual();
+        } else {
+            mostrarControles();
         }
     }
 
