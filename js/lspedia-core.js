@@ -4,7 +4,7 @@
 
   if (window.LSPediaCore && window.LSPediaCore.version) return;
 
-  const VERSION = '2026.09.26-2';
+  const VERSION = '2026.09.26-3';
   const URL_OFICIAL = 'https://lspedia.site/';
   const HOSTS_OFICIALES = new Set(['lspedia.site', 'www.lspedia.site']);
   const HOSTS_DESARROLLO = new Set(['localhost', '127.0.0.1', '::1', '[::1]']);
@@ -267,15 +267,27 @@
   }
 
   function cargarConfiguracionWeb() {
-    if (document.querySelector('script[data-lspedia-web-config]')) return;
-    const script = document.createElement('script');
-    script.src = 'js/web-config.js?v=20260926-2';
-    script.async = true;
-    script.dataset.lspediaWebConfig = '1';
-    script.onerror = function () {
-      console.warn('[LSPedia] No se pudo cargar el módulo de configuración WEB. Se conserva el contenido integrado.');
-    };
-    document.head.appendChild(script);
+    if (!document.querySelector('script[data-lspedia-web-config]')) {
+      const script = document.createElement('script');
+      script.src = 'js/web-config.js?v=20260926-3';
+      script.async = true;
+      script.dataset.lspediaWebConfig = '1';
+      script.onerror = function () {
+        console.warn('[LSPedia] No se pudo cargar el módulo de configuración WEB. Se conserva el contenido integrado.');
+      };
+      document.head.appendChild(script);
+    }
+
+    if (!document.querySelector('script[data-lspedia-web-v27]')) {
+      const avanzado = document.createElement('script');
+      avanzado.src = 'js/web-config-v27.js?v=20260926-1';
+      avanzado.async = true;
+      avanzado.dataset.lspediaWebV27 = '1';
+      avanzado.onerror = function () {
+        console.warn('[LSPedia] No se pudo cargar la configuración WEB avanzada. Se conservan los valores base.');
+      };
+      document.head.appendChild(avanzado);
+    }
   }
 
   function activarIdentidad() {
