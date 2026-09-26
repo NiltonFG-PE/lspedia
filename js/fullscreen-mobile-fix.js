@@ -26,6 +26,18 @@
     let toggleOriginal = null;
     let cerrarOriginal = null;
     let cerrando = false;
+    let temporizadorControles = null;
+
+    function mostrarControles() {
+        if (!estado) return;
+        estado.wrap.classList.remove('lsp-controles-ocultos');
+        window.clearTimeout(temporizadorControles);
+        if (window.matchMedia('(orientation: landscape)').matches) {
+            temporizadorControles = window.setTimeout(function () {
+                if (estado) estado.wrap.classList.add('lsp-controles-ocultos');
+            }, 3500);
+        }
+    }
 
     function elementoFullscreenActual() {
         return document.fullscreenElement ||
@@ -43,6 +55,14 @@
     function restaurarVisual() {
         if (!estado || cerrando) return;
         cerrando = true;
+        window.clearTimeout(temporizadorControles);
+        window.removeEventListener('orientationchange', mostrarControles);
+        wrap.classList.remove('lsp-controles-ocultos');
+        if (estado.botonGirar) estado.botonGirar.remove();
+        if (estado.mostrarAlTocar) wrap.removeEventListener('pointerdown', estado.mostrarAlTocar, true);
+        if (screen.orientation && screen.orientation.unlock) {
+            try { screen.orientation.unlock(); } catch (_error) {}
+        }
 
         const {
             wrap,
@@ -177,6 +197,37 @@
             styleBtn,
             interceptarCierre
         };
+
+        if (controles && btn) {
+            const botonGirar = document.createElement('button');
+            botonGirar.type = 'button';
+            botonGirar.className = 'btn lsp-video-girar';
+            botonGirar.textContent = '↻ Horizontal';
+            botonGirar.title = 'Abrir video en horizontal';
+            botonGirar.setAttribute('aria-label', 'Abrir video en horizontal');
+            controles.insertBefore(botonGirar, btn);
+            botonGirar.addEventListener('click', async function () {
+                mostrarControles();
+                if (screen.orientation && screen.orientation.lock) {
+                    try { await screen.orientation.lock('landscape'); return; }
+                    catch (_error) { /* Algunos navegadores no permiten bloquear el giro. */ }
+                }
+                botonGirar.textContent = '↻ Gira el celular';
+            });
+            estado.botonGirar = botonGirar;
+        }
+        estado.mostrarAlTocar = function (evento) {
+            if (wrap.classList.contains('lsp-controles-ocultos')) {
+                evento.preventDefault();
+                evento.stopPropagation();
+                mostrarControles();
+            } else {
+                mostrarControles();
+            }
+        };
+        wrap.addEventListener('pointerdown', estado.mostrarAlTocar, true);
+        window.addEventListener('orientationchange', mostrarControles);
+        mostrarControles();
 
         const solicitar = wrap.requestFullscreen ||
             wrap.webkitRequestFullscreen ||
