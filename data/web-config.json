@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "actualizadoEn": "2026-09-27T03:41:36.603Z",
+  "actualizadoEn": "2026-09-27T20:10:11.445Z",
   "header": {
     "logo": "video/lspedia_transparente.webm",
     "logoOscuro": "",
@@ -57,7 +57,7 @@
       "titulo": "Vocabulario de Lengua de Señas Peruana (LSP)",
       "subtitulo": "Las palabras en español sirven como referencia para facilitar las búsquedas.\nLas señas representan conceptos, no solo palabras.\nLas variantes regionales enriquecen la Lengua de señas.\nEl aprendizaje también requiere contacto con personas sordas.",
       "avatar": "img/avatar_lupa.webm",
-      "buscadorPlaceholder": "Buscar palabra del vocabulario",
+      "buscadorPlaceholder": "Buscar palabra",
       "categoriasOrden": [],
       "categoriasOcultas": []
     }
