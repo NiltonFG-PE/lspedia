@@ -166,3 +166,20 @@
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',cargar,{once:true});else cargar();
 })();
+
+/* Acciones premium de ficha: corazón de Favoritos + Compartir compacto.
+   El módulo es idempotente y observa solo los contenedores de resultados. */
+(function(){
+  'use strict';
+  if(document.querySelector('script[data-lspedia-acciones-ficha]'))return;
+  function cargar(){
+    if(document.querySelector('script[data-lspedia-acciones-ficha]'))return;
+    const s=document.createElement('script');
+    s.src='js/acciones-ficha-premium.js?v=20260927-1';
+    s.async=true;
+    s.dataset.lspediaAccionesFicha='1';
+    s.onerror=function(){console.warn('[LSPedia] No se pudieron cargar las acciones premium de ficha. Se conservan los botones base.');};
+    document.head.appendChild(s);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',cargar,{once:true});else cargar();
+})();
