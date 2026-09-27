@@ -4,7 +4,7 @@
 
   if (window.LSPediaCore && window.LSPediaCore.version) return;
 
-  const VERSION = '2026.09.27-2';
+  const VERSION = '2026.09.27-3';
   const URL_OFICIAL = 'https://lspedia.site/';
   const HOSTS_OFICIALES = new Set(['lspedia.site', 'www.lspedia.site']);
   const HOSTS_DESARROLLO = new Set(['localhost', '127.0.0.1', '::1', '[::1]']);
@@ -229,7 +229,6 @@
       const rel = new Set(String(el.getAttribute('rel') || '').split(/\s+/).filter(Boolean));
       rel.add('noopener');
       rel.add('noreferrer');
-      // Writing even the same value triggers the attribute observer again.
       const seguro = Array.from(rel).join(' ');
       if (el.getAttribute('rel') !== seguro) el.setAttribute('rel', seguro);
     } catch (_e) {}
@@ -300,6 +299,17 @@
         console.warn('[LSPedia] No se pudo cargar la corrección de ampliación de Alfabetización.');
       };
       document.head.appendChild(fixAlfabetizacion);
+    }
+
+    if (!document.querySelector('script[data-lspedia-web-premium-extras]')) {
+      const premium = document.createElement('script');
+      premium.src = 'js/web-premium-extras.js?v=20260927-1';
+      premium.async = true;
+      premium.dataset.lspediaWebPremiumExtras = '1';
+      premium.onerror = function () {
+        console.warn('[LSPedia] No se pudieron cargar las mejoras WEB premium. Se conserva la interfaz base.');
+      };
+      document.head.appendChild(premium);
     }
   }
 
