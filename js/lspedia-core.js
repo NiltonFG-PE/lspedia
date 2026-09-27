@@ -282,7 +282,7 @@
 
     if (!document.querySelector('script[data-lspedia-web-v27]')) {
       const avanzado = document.createElement('script');
-      avanzado.src = 'js/web-config-v27.js?v=20260927-2';
+      avanzado.src = 'js/web-config-v27.js?v=20260927-3';
       avanzado.async = true;
       avanzado.dataset.lspediaWebV27 = '1';
       avanzado.onerror = function () {
