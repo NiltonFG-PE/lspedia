@@ -1,0 +1,355 @@
+{
+  "version": 2,
+  "actualizadoEn": "2026-09-27T20:10:11.445Z",
+  "header": {
+    "logo": "video/lspedia_transparente.webm",
+    "logoOscuro": "",
+    "logoEscala": 100,
+    "orden": [
+      "diccionario",
+      "vocabulario",
+      "herramientas",
+      "nosotros"
+    ],
+    "menu": {
+      "diccionario": {
+        "texto": "Diccionario",
+        "icono": "img/icons/nav/icono-diccionario.webp",
+        "visible": true
+      },
+      "vocabulario": {
+        "texto": "Vocabulario",
+        "icono": "img/icons/nav/icono-vocabulario.webp",
+        "visible": true
+      },
+      "herramientas": {
+        "texto": "Herramientas",
+        "icono": "img/icons/nav/icono-herramientas.webp",
+        "visible": true
+      },
+      "nosotros": {
+        "texto": "Sobre Nosotros",
+        "icono": "img/icons/nav/icono-nosotros.png",
+        "visible": true
+      }
+    }
+  },
+  "heroes": {
+    "diccionario": {
+      "titulo": "Diccionario visual de español con apoyo en Lengua de Señas Peruana (LSP)",
+      "subtitulo": "Diccionario visual de español con apoyo en Lengua de Señas Peruana.\nSu función es facilitar la comprensión de palabras y significados.\nNo es un curso, ni enseñamos LSP.",
+      "avatar": "img/avatar_lupa.webm",
+      "buscadorPlaceholder": "Buscar palabra y significado",
+      "sugerenciasLabel": "⭐ Palabras sugeridas",
+      "sugerencias": [
+        "Hola",
+        "Digno",
+        "Felicitaciones",
+        "Inteligencia artificial",
+        "De nada"
+      ],
+      "mostrarSugerencias": true,
+      "mostrarSenalDia": true,
+      "mostrarProgreso": true,
+      "mostrarEstadisticas": true
+    },
+    "vocabulario": {
+      "titulo": "Vocabulario de Lengua de Señas Peruana (LSP)",
+      "subtitulo": "Las palabras en español sirven como referencia para facilitar las búsquedas.\nLas señas representan conceptos, no solo palabras.\nLas variantes regionales enriquecen la Lengua de señas.\nEl aprendizaje también requiere contacto con personas sordas.",
+      "avatar": "img/avatar_lupa.webm",
+      "buscadorPlaceholder": "Buscar palabra",
+      "categoriasOrden": [],
+      "categoriasOcultas": []
+    }
+  },
+  "contacto": {
+    "correo": "proyectolspedia@gmail.com",
+    "whatsapp": "51928789623"
+  },
+  "footer": {
+    "copyright": "© 2026 LSPedia — Nilton F. G. Todos los derechos reservados.",
+    "legalTexto": "Legal y privacidad",
+    "anioAutomatico": true
+  },
+  "social": {
+    "tiktok": "https://www.tiktok.com/@lspedia",
+    "instagram": "https://www.instagram.com/lspedia_sign",
+    "youtube": "https://www.youtube.com/@LSPedia-sign",
+    "facebook": "https://www.facebook.com/lspedia.sign",
+    "orden": [
+      "tiktok",
+      "instagram",
+      "youtube",
+      "facebook"
+    ],
+    "visible": {
+      "tiktok": true,
+      "instagram": true,
+      "youtube": true,
+      "facebook": true
+    }
+  },
+  "acciones": {
+    "sugerir": {
+      "nombre": "Sugerir palabra",
+      "contenido": "¿Falta un término? Envíanos tu propuesta.",
+      "url": "",
+      "icono": "💡",
+      "visible": true,
+      "nuevaPestana": true
+    },
+    "idea": {
+      "nombre": "Enviar una idea",
+      "contenido": "Comparte sugerencias para mejorar LSPedia.",
+      "url": "",
+      "icono": "💬",
+      "visible": true,
+      "nuevaPestana": true
+    },
+    "apoyar": {
+      "nombre": "Apoyar LSPedia",
+      "contenido": "Ayuda a mantener el proyecto gratuito y en crecimiento.",
+      "url": "",
+      "icono": "❤️",
+      "visible": true,
+      "nuevaPestana": true
+    },
+    "interprete": {
+      "nombre": "Contratar un intérprete",
+      "contenido": "Solicita servicios de interpretación en LSP.",
+      "url": "",
+      "icono": "🎤",
+      "visible": true,
+      "nuevaPestana": true
+    }
+  },
+  "aviso": {
+    "activo": false,
+    "tipo": "info",
+    "titulo": "",
+    "mensaje": "",
+    "botonTexto": "",
+    "url": "",
+    "inicio": "",
+    "fin": "",
+    "frecuencia": "siempre"
+  },
+  "novedades": {
+    "activo": false,
+    "titulo": "Lo nuevo en LSPedia",
+    "items": []
+  },
+  "herramientas": {
+    "alfabeto": {
+      "nombre": "Alfabeto y números",
+      "descripcion": "Mira, reconoce y practica letras y números",
+      "icono": "🔤",
+      "orden": 1,
+      "activo": true
+    },
+    "jugar": {
+      "nombre": "Jugar",
+      "descripcion": "Aprende tocando, ordenando y resolviendo",
+      "icono": "🎮",
+      "orden": 2,
+      "activo": true
+    },
+    "subtitulos": {
+      "nombre": "Subtítulos",
+      "descripcion": "Convierte la voz en texto en tiempo real",
+      "icono": "CC",
+      "orden": 3,
+      "activo": true
+    }
+  },
+  "juegos": {
+    "adivina": {
+      "nombre": "Adivina qué soy",
+      "descripcion": "Mira las señas y mueve el celular",
+      "icono": "🎭",
+      "orden": 1,
+      "etiqueta": "",
+      "activo": true
+    },
+    "caras": {
+      "nombre": "Caras y gestos",
+      "descripcion": "Mira, expresa y adivina",
+      "icono": "😀",
+      "orden": 2,
+      "etiqueta": "",
+      "activo": true
+    },
+    "chat": {
+      "nombre": "Chat en Español",
+      "descripcion": "Conversa, escribe y mejora",
+      "icono": "💬",
+      "orden": 3,
+      "etiqueta": "",
+      "activo": true
+    },
+    "completar": {
+      "nombre": "Completar la palabra",
+      "descripcion": "Lleva la letra al espacio",
+      "icono": "🔤",
+      "orden": 4,
+      "etiqueta": "",
+      "activo": true
+    },
+    "unir": {
+      "nombre": "Unir con flechas",
+      "descripcion": "Arrastra y conecta",
+      "icono": "🔗",
+      "orden": 5,
+      "etiqueta": "",
+      "activo": true
+    },
+    "quiz": {
+      "nombre": "Quiz",
+      "descripcion": "Mira, piensa y elige",
+      "icono": "❓",
+      "orden": 6,
+      "etiqueta": "",
+      "activo": true
+    },
+    "matematicas": {
+      "nombre": "Matemáticas",
+      "descripcion": "Junta, quita, agrupa y reparte",
+      "icono": "➗",
+      "orden": 7,
+      "etiqueta": "",
+      "activo": true
+    },
+    "carrera": {
+      "nombre": "Carrera matemática",
+      "descripcion": "Corre, esquiva y resuelve",
+      "icono": "🏎️",
+      "orden": 8,
+      "etiqueta": "",
+      "activo": true
+    },
+    "oraciones": {
+      "nombre": "Oraciones",
+      "descripcion": "Ordena y escribe ideas",
+      "icono": "📝",
+      "orden": 9,
+      "etiqueta": "",
+      "activo": true
+    }
+  },
+  "seo": {
+    "titulo": "LSPedia - Diccionario visual de español con apoyo en Lengua de Señas Peruana",
+    "descripcion": "Diccionario visual gratuito para aprender y comprender palabras en español con apoyo de videos en Lengua de Señas Peruana (LSP).",
+    "sitio": "LSPedia",
+    "imagenCompartir": "https://lspedia.site/img/lspedia.png"
+  },
+  "pwa": {
+    "activo": true,
+    "titulo": "Instalar LSPedia",
+    "subtitulo": "Usar como app",
+    "ayuda": "Si no aparece la ventana de instalación, abre el menú del navegador y elige Instalar aplicación o Agregar a pantalla de inicio."
+  },
+  "mantenimiento": {
+    "modo": "normal",
+    "titulo": "Estamos mejorando LSPedia",
+    "mensaje": "Estamos realizando mejoras. Vuelve a intentarlo en unos minutos."
+  },
+  "experimentos": {
+    "senasIA": {
+      "activo": true,
+      "etiqueta": "Beta"
+    }
+  },
+  "legal": {
+    "responsable": "Nilton L. F. G.",
+    "correo": "proyectolspedia@gmail.com",
+    "intro": "Información clara sobre el uso de LSPedia, el tratamiento de datos personales, los formularios, los servicios externos y la propiedad intelectual.",
+    "secciones": [
+      {
+        "clave": "responsable",
+        "titulo": "👤 Responsable de LSPedia",
+        "contenido": "LSPedia es un proyecto independiente administrado por Nilton L. F. G. Esta información se aplica al sitio oficial lspedia.site y a los formularios gestionados por LSPedia."
+      },
+      {
+        "clave": "datos",
+        "titulo": "🔐 Datos personales",
+        "contenido": "LSPedia procura recopilar únicamente los datos necesarios.\n\n- No vendemos datos personales.\n- Las respuestas no se publican automáticamente.\n- No envíes datos sensibles innecesarios."
+      },
+      {
+        "clave": "formularios",
+        "titulo": "📝 Formularios de sugerencias",
+        "contenido": "Los formularios pueden recibir nombre, correo electrónico, tipo de propuesta y el contenido de la sugerencia. Se utilizan para revisar la propuesta, gestionar la comunicación y responder cuando corresponda. Las respuestas pueden almacenarse mediante Google Forms y Google Sheets."
+      },
+      {
+        "clave": "conservacion",
+        "titulo": "🗂️ Conservación de la información",
+        "contenido": "Los datos se conservan solo durante el tiempo razonablemente necesario para gestionar la sugerencia y responder. Cuando dejan de ser necesarios, pueden eliminarse o anonimizarse. Como criterio interno, LSPedia procura revisar los datos identificativos dentro de los 12 meses posteriores a la última interacción."
+      },
+      {
+        "clave": "arco",
+        "titulo": "✉️ Derechos sobre tus datos (ARCO)",
+        "contenido": "Puedes solicitar acceso, rectificación, cancelación u oposición respecto de tus datos personales escribiendo al correo de privacidad."
+      },
+      {
+        "clave": "terceros",
+        "titulo": "🌐 Servicios externos",
+        "contenido": "LSPedia puede utilizar Google Forms, Google Sheets, YouTube, GitHub y otros proveedores técnicos. Cada proveedor puede aplicar sus propias condiciones y políticas."
+      },
+      {
+        "clave": "cookies",
+        "titulo": "📊 Analítica y almacenamiento local",
+        "contenido": "LSPedia puede utilizar herramientas de medición como Google Analytics y almacenamiento local del dispositivo para mejorar la experiencia y conocer de forma estadística el uso del sitio."
+      },
+      {
+        "clave": "menores",
+        "titulo": "🧒 Menores de edad",
+        "contenido": "LSPedia no necesita que un menor entregue datos personales innecesarios. Si eres menor y un formulario solicita información personal, pide ayuda a tu padre, madre o tutor cuando corresponda."
+      },
+      {
+        "clave": "terminos",
+        "titulo": "📘 Términos de uso",
+        "contenido": "LSPedia ofrece contenido educativo e informativo. El uso del sitio debe ser lícito y respetuoso. No se permite intentar dañar, interferir o acceder sin autorización a los sistemas del proyecto."
+      },
+      {
+        "clave": "licencia",
+        "titulo": "©️ Propiedad intelectual y licencia",
+        "contenido": "LSPedia, su diseño, código y materiales propios están protegidos por las normas aplicables de propiedad intelectual. El contenido de terceros conserva la titularidad y condiciones de sus respectivos autores o proveedores."
+      },
+      {
+        "clave": "cambios",
+        "titulo": "🔄 Cambios en esta información",
+        "contenido": "Esta información puede actualizarse cuando cambien las funciones de LSPedia, sus formularios, los proveedores tecnológicos o las obligaciones aplicables."
+      }
+    ]
+  },
+  "nosotros": {
+    "titulo": "Sobre nosotros",
+    "visible": true,
+    "video": "https://youtu.be/4tQBIrxA5gQ",
+    "secciones": [
+      {
+        "tiempo": 0,
+        "titulo": "⚠️ Un punto importante",
+        "imagen": "",
+        "contenido": ""
+      },
+      {
+        "tiempo": 85,
+        "titulo": "❓ ¿Qué es LSPedia?",
+        "imagen": "",
+        "contenido": ""
+      },
+      {
+        "tiempo": 185,
+        "titulo": "🌱 Un proyecto que crece gracias a tu apoyo",
+        "imagen": "",
+        "contenido": ""
+      },
+      {
+        "tiempo": 396,
+        "titulo": "💌 Tus ideas, opiniones, consejos o cualquier otra forma de ayudar y apoyar son muy bienvenidos",
+        "imagen": "",
+        "contenido": ""
+      }
+    ]
+  }
+}
