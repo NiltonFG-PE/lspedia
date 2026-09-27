@@ -1,15 +1,355 @@
 {
   "version": 2,
-  "actualizadoEn": "2026-09-27T03:20:00.000Z",
+  "actualizadoEn": "2026-09-27T03:23:31.320Z",
+  "header": {
+    "logo": "video/lspedia_transparente.webm",
+    "logoOscuro": "",
+    "logoEscala": 100,
+    "orden": [
+      "diccionario",
+      "vocabulario",
+      "herramientas",
+      "nosotros"
+    ],
+    "menu": {
+      "diccionario": {
+        "texto": "Diccionario",
+        "icono": "img/icons/nav/icono-diccionario.webp",
+        "visible": true
+      },
+      "vocabulario": {
+        "texto": "Vocabulario",
+        "icono": "img/icons/nav/icono-vocabulario.webp",
+        "visible": true
+      },
+      "herramientas": {
+        "texto": "Herramientas",
+        "icono": "img/icons/nav/icono-herramientas.webp",
+        "visible": true
+      },
+      "nosotros": {
+        "texto": "Sobre VOSOTROS",
+        "icono": "img/icons/nav/icono-nosotros.png",
+        "visible": true
+      }
+    }
+  },
+  "heroes": {
+    "diccionario": {
+      "titulo": "Diccionario visual de español con apoyo en Lengua de Señas Peruana (LSP)",
+      "subtitulo": "Diccionario visual de español con apoyo en Lengua de Señas Peruana.\nSu función es facilitar la comprensión de palabras y significados.\nNo es un curso, ni enseñamos LSP.",
+      "avatar": "img/avatar_lupa.webm",
+      "buscadorPlaceholder": "Buscar palabra y significado",
+      "sugerenciasLabel": "⭐ Palabras sugeridas",
+      "sugerencias": [
+        "Hola",
+        "Digno",
+        "Felicitaciones",
+        "Inteligencia artificial",
+        "De nada"
+      ],
+      "mostrarSugerencias": true,
+      "mostrarSenalDia": true,
+      "mostrarProgreso": true,
+      "mostrarEstadisticas": true
+    },
+    "vocabulario": {
+      "titulo": "Vocabulario de Lengua de Señas Peruana (LSP)",
+      "subtitulo": "Las palabras en español sirven como referencia para facilitar las búsquedas.\nLas señas representan conceptos, no solo palabras.\nLas variantes regionales enriquecen la Lengua de señas.\nEl aprendizaje también requiere contacto con personas sordas.",
+      "avatar": "img/avatar_lupa.webm",
+      "buscadorPlaceholder": "Buscar palabra del vocabulario",
+      "categoriasOrden": [],
+      "categoriasOcultas": []
+    }
+  },
+  "contacto": {
+    "correo": "proyectolspedia@gmail.com",
+    "whatsapp": "51928789623"
+  },
+  "footer": {
+    "copyright": "© 2026 LSPedia — Nilton F. G. Todos los derechos reservados.",
+    "legalTexto": "Legal y privacidad",
+    "anioAutomatico": true
+  },
+  "social": {
+    "tiktok": "https://www.tiktok.com/@lspedia",
+    "instagram": "https://www.instagram.com/lspedia_sign",
+    "youtube": "https://www.youtube.com/@LSPedia-sign",
+    "facebook": "https://www.facebook.com/lspedia.sign",
+    "orden": [
+      "tiktok",
+      "instagram",
+      "youtube",
+      "facebook"
+    ],
+    "visible": {
+      "tiktok": true,
+      "instagram": true,
+      "youtube": true,
+      "facebook": true
+    }
+  },
+  "acciones": {
+    "sugerir": {
+      "nombre": "Sugerir palabra",
+      "contenido": "¿Falta un término? Envíanos tu propuesta.",
+      "url": "",
+      "icono": "💡",
+      "visible": true,
+      "nuevaPestana": true
+    },
+    "idea": {
+      "nombre": "Enviar una idea",
+      "contenido": "Comparte sugerencias para mejorar LSPedia.",
+      "url": "",
+      "icono": "💬",
+      "visible": true,
+      "nuevaPestana": true
+    },
+    "apoyar": {
+      "nombre": "Apoyar LSPedia",
+      "contenido": "Ayuda a mantener el proyecto gratuito y en crecimiento.",
+      "url": "",
+      "icono": "❤️",
+      "visible": true,
+      "nuevaPestana": true
+    },
+    "interprete": {
+      "nombre": "Contratar un intérprete",
+      "contenido": "Solicita servicios de interpretación en LSP.",
+      "url": "",
+      "icono": "🎤",
+      "visible": true,
+      "nuevaPestana": true
+    }
+  },
   "aviso": {
     "activo": false,
-    "tipo": "info",
-    "titulo": "",
+    "tipo": "nuevo",
+    "titulo": "Tres nuevos videos",
     "mensaje": "",
-    "botonTexto": "",
+    "botonTexto": "Ver más",
     "url": "",
-    "inicio": "",
-    "fin": "",
+    "inicio": "2026-09-27T03:15",
+    "fin": "2026-09-27T03:16",
     "frecuencia": "siempre"
+  },
+  "novedades": {
+    "activo": false,
+    "titulo": "Lo nuevo en LSPedia",
+    "items": []
+  },
+  "herramientas": {
+    "alfabeto": {
+      "nombre": "Alfabeto y números",
+      "descripcion": "Mira, reconoce y practica letras y números",
+      "icono": "🔤",
+      "orden": 1,
+      "activo": true
+    },
+    "jugar": {
+      "nombre": "Jugar",
+      "descripcion": "Aprende tocando, ordenando y resolviendo",
+      "icono": "🎮",
+      "orden": 2,
+      "activo": true
+    },
+    "subtitulos": {
+      "nombre": "Subtítulos",
+      "descripcion": "Convierte la voz en texto en tiempo real",
+      "icono": "CC",
+      "orden": 3,
+      "activo": true
+    }
+  },
+  "juegos": {
+    "adivina": {
+      "nombre": "Adivina qué soy",
+      "descripcion": "Mira las señas y mueve el celular",
+      "icono": "🎭",
+      "orden": 1,
+      "etiqueta": "",
+      "activo": true
+    },
+    "caras": {
+      "nombre": "Caras y gestos",
+      "descripcion": "Mira, expresa y adivina",
+      "icono": "😀",
+      "orden": 2,
+      "etiqueta": "",
+      "activo": true
+    },
+    "chat": {
+      "nombre": "Chat en Español",
+      "descripcion": "Conversa, escribe y mejora",
+      "icono": "💬",
+      "orden": 3,
+      "etiqueta": "",
+      "activo": true
+    },
+    "completar": {
+      "nombre": "Completar la palabra",
+      "descripcion": "Lleva la letra al espacio",
+      "icono": "🔤",
+      "orden": 4,
+      "etiqueta": "",
+      "activo": true
+    },
+    "unir": {
+      "nombre": "Unir con flechas",
+      "descripcion": "Arrastra y conecta",
+      "icono": "🔗",
+      "orden": 5,
+      "etiqueta": "",
+      "activo": true
+    },
+    "quiz": {
+      "nombre": "Quiz",
+      "descripcion": "Mira, piensa y elige",
+      "icono": "❓",
+      "orden": 6,
+      "etiqueta": "",
+      "activo": true
+    },
+    "matematicas": {
+      "nombre": "Matemáticas",
+      "descripcion": "Junta, quita, agrupa y reparte",
+      "icono": "➗",
+      "orden": 7,
+      "etiqueta": "",
+      "activo": true
+    },
+    "carrera": {
+      "nombre": "Carrera matemática",
+      "descripcion": "Corre, esquiva y resuelve",
+      "icono": "🏎️",
+      "orden": 8,
+      "etiqueta": "",
+      "activo": true
+    },
+    "oraciones": {
+      "nombre": "Oraciones",
+      "descripcion": "Ordena y escribe ideas",
+      "icono": "📝",
+      "orden": 9,
+      "etiqueta": "",
+      "activo": true
+    }
+  },
+  "seo": {
+    "titulo": "LSPedia - Diccionario visual de español con apoyo en Lengua de Señas Peruana",
+    "descripcion": "Diccionario visual gratuito para aprender y comprender palabras en español con apoyo de videos en Lengua de Señas Peruana (LSP).",
+    "sitio": "LSPedia",
+    "imagenCompartir": "https://lspedia.site/img/lspedia.png"
+  },
+  "pwa": {
+    "activo": true,
+    "titulo": "Instalar LSPedia",
+    "subtitulo": "Usar como app",
+    "ayuda": "Si no aparece la ventana de instalación, abre el menú del navegador y elige Instalar aplicación o Agregar a pantalla de inicio."
+  },
+  "mantenimiento": {
+    "modo": "normal",
+    "titulo": "Estamos mejorando LSPedia",
+    "mensaje": "Estamos realizando mejoras. Vuelve a intentarlo en unos minutos."
+  },
+  "experimentos": {
+    "senasIA": {
+      "activo": true,
+      "etiqueta": "Beta"
+    }
+  },
+  "legal": {
+    "responsable": "Nilton L. F. G.",
+    "correo": "proyectolspedia@gmail.com",
+    "intro": "Información clara sobre el uso de LSPedia, el tratamiento de datos personales, los formularios, los servicios externos y la propiedad intelectual.",
+    "secciones": [
+      {
+        "clave": "responsable",
+        "titulo": "👤 Responsable de LSPedia",
+        "contenido": "LSPedia es un proyecto independiente administrado por Nilton L. F. G. Esta información se aplica al sitio oficial lspedia.site y a los formularios gestionados por LSPedia."
+      },
+      {
+        "clave": "datos",
+        "titulo": "🔐 Datos personales",
+        "contenido": "LSPedia procura recopilar únicamente los datos necesarios.\n\n- No vendemos datos personales.\n- Las respuestas no se publican automáticamente.\n- No envíes datos sensibles innecesarios."
+      },
+      {
+        "clave": "formularios",
+        "titulo": "📝 Formularios de sugerencias",
+        "contenido": "Los formularios pueden recibir nombre, correo electrónico, tipo de propuesta y el contenido de la sugerencia. Se utilizan para revisar la propuesta, gestionar la comunicación y responder cuando corresponda. Las respuestas pueden almacenarse mediante Google Forms y Google Sheets."
+      },
+      {
+        "clave": "conservacion",
+        "titulo": "🗂️ Conservación de la información",
+        "contenido": "Los datos se conservan solo durante el tiempo razonablemente necesario para gestionar la sugerencia y responder. Cuando dejan de ser necesarios, pueden eliminarse o anonimizarse. Como criterio interno, LSPedia procura revisar los datos identificativos dentro de los 12 meses posteriores a la última interacción."
+      },
+      {
+        "clave": "arco",
+        "titulo": "✉️ Derechos sobre tus datos (ARCO)",
+        "contenido": "Puedes solicitar acceso, rectificación, cancelación u oposición respecto de tus datos personales escribiendo al correo de privacidad."
+      },
+      {
+        "clave": "terceros",
+        "titulo": "🌐 Servicios externos",
+        "contenido": "LSPedia puede utilizar Google Forms, Google Sheets, YouTube, GitHub y otros proveedores técnicos. Cada proveedor puede aplicar sus propias condiciones y políticas."
+      },
+      {
+        "clave": "cookies",
+        "titulo": "📊 Analítica y almacenamiento local",
+        "contenido": "LSPedia puede utilizar herramientas de medición como Google Analytics y almacenamiento local del dispositivo para mejorar la experiencia y conocer de forma estadística el uso del sitio."
+      },
+      {
+        "clave": "menores",
+        "titulo": "🧒 Menores de edad",
+        "contenido": "LSPedia no necesita que un menor entregue datos personales innecesarios. Si eres menor y un formulario solicita información personal, pide ayuda a tu padre, madre o tutor cuando corresponda."
+      },
+      {
+        "clave": "terminos",
+        "titulo": "📘 Términos de uso",
+        "contenido": "LSPedia ofrece contenido educativo e informativo. El uso del sitio debe ser lícito y respetuoso. No se permite intentar dañar, interferir o acceder sin autorización a los sistemas del proyecto."
+      },
+      {
+        "clave": "licencia",
+        "titulo": "©️ Propiedad intelectual y licencia",
+        "contenido": "LSPedia, su diseño, código y materiales propios están protegidos por las normas aplicables de propiedad intelectual. El contenido de terceros conserva la titularidad y condiciones de sus respectivos autores o proveedores."
+      },
+      {
+        "clave": "cambios",
+        "titulo": "🔄 Cambios en esta información",
+        "contenido": "Esta información puede actualizarse cuando cambien las funciones de LSPedia, sus formularios, los proveedores tecnológicos o las obligaciones aplicables."
+      }
+    ]
+  },
+  "nosotros": {
+    "titulo": "Sobre nosotros",
+    "visible": true,
+    "video": "https://youtu.be/4tQBIrxA5gQ",
+    "secciones": [
+      {
+        "tiempo": 0,
+        "titulo": "⚠️ Un punto importante",
+        "imagen": "",
+        "contenido": "Algunas personas podrían pensar que LSPedia tiene \"viveza\", que se aprovecha de la comunidad sorda haciendo apropiación cultural y que luego usa eso para enseñarle señas a personas oyentes.\n\n❌ Eso no es cierto de ninguna manera. ¿Por qué? Sabemos que la comunidad sorda tiene el derecho de enseñar su propio idioma, la lengua de señas. Conocemos a personas sordas cuya labor es ayudar a otros sordos: algunos trabajan como intérpretes 🧏, otros como modelos lingüísticos, y otros como profesores que dan clases porque han sido capacitados y formados para eso — y eso lo aplaudimos 👏.\n\nLSPedia no es un enemigo, al contrario, busca ayudar 🤝. Sabemos que la información disponible está hablada en español, y para ayudar a los sordos, una persona oyente que conozca el español y la lengua de señas puede aportar interpretando y haciendo disponibles esos videos 🎥.\n\nEl sordo, al ver los videos, recibe una ayuda real, puede entenderlos. Después, cuando vea información en internet o en publicaciones, al encontrarse con esas palabras, ya podrá entenderlas, y eso le será de gran ayuda en su trabajo y en sus distintas labores 💼."
+      },
+      {
+        "tiempo": 85,
+        "titulo": "❓ ¿Qué es LSPedia?",
+        "imagen": "",
+        "contenido": "Tú puedes ver en internet, en tu computadora 💻 o en tu celular 📱 muchísima información: libros 📚, noticias 📰, redes sociales, Facebook, WhatsApp, YouTube y mucho más. En Perú toda esa información está en español y hablada.\n\nTe pregunto: ¿para una persona sorda es fácil acceder a esa información? La verdad, no 🚫, porque una persona sorda tiene como idioma materno la lengua de señas. Esa información está hablada, y el sordo ve una multitud de palabras escritas que le resulta difícil entender. Esto es como un muro 🧱 que impide la accesibilidad. Es un problema real.\n\nPor eso nació LSPedia. ✨ ¿Qué es? Es un diccionario 📖 al que puedes acceder mediante un enlace web 🔗. Le das clic, lo abres, y es una web visual. Ahí ves el significado de las palabras con ejemplos, todo en video 🎬 y en lengua de señas. Puedes aprenderlo, y es como descubrir algo nuevo 💡.\n\nEsos videos están acompañados de ilustraciones 🖼️ que ayudan a imaginar y llegar a tener un mejor entendimiento. Es una sensación de ayuda real que impulsa tu progreso personal al tener más conocimiento 📈.\n\nEsto está disponible para que cualquier persona sorda aprenda palabras nuevas que le serán útiles, y así la información mencionada al principio puede ser accesible para ti. ✅"
+      },
+      {
+        "tiempo": 185,
+        "titulo": "🌱 Un proyecto que crece gracias a tu apoyo",
+        "imagen": "",
+        "contenido": "Para producir LSPedia se ha trabajado en varias cosas: el diseño para web y móviles 🖥️📱, la grabación y la edición de videos 🎞️. Es un trabajo grande con muchas tareas distintas, y eso implica gastos 💸.\n\n¿Cómo se está financiando? De manera personal, con fondos propios 👤. ¿Alguna organización o el Estado está aportando dinero? No. Quizás en el futuro, tal vez.\n\nLSPedia sí necesita apoyo. ¿Tú quieres hacerlo? 🙌 Muy bien, muchas gracias. ¿Cómo lo harías? De varias maneras. Aquí te explico cinco 👇\n\n- 1️⃣ Proponer una palabra nueva: en la página web encuentras el diccionario de palabras. Si notas que falta una (de repente en tu trabajo, instituto o universidad un profesor mencionó una palabra que no entiendes), puedes proponerla con el botón de la izquierda ⬅️: se abre un formulario 📝 donde pones tu nombre, te identificas (sordo, oyente o intérprete) y escribes la palabra. Al enviarlo, se interpreta y se sube el video como una palabra nueva. 📤\n\n- 💭 2- Compartir ideas o grabar vocabulario: en ese mismo botón puedes dejar una idea o sugerencia de mejora. Si eres una persona sorda, también puedes grabarte tú mismo en tu casa 🏠 y enviar el video como aporte al vocabulario. Recuerda que LSPedia es un proyecto gratuito, así que la colaboración es voluntaria 💛 (no se puede pagar por ello 🚫💰).\n\n- 🗣️ 3- Compartir tu experiencia: si eres sordo, intérprete, o representas a un instituto, universidad o asociación, o tienes contacto con la comunidad sorda, tu experiencia puede ayudar mucho. Compártela con nosotros.\n\n- 💬 4- Apoyo económico (opcional): el mantenimiento de la web, la grabación y la edición de video necesitan dinero. Si quieres apoyar, puedes hacerlo de forma voluntaria escribiendo al WhatsApp que está en la página, de manera privada.\n\n- 🧏‍♂️ 5- Interpretación y traducción: si tienes un documento que quieres interpretar o traducir a lengua de señas, o algún trabajo en el que se pueda participar, puedes coordinar los detalles directamente. También si eres sordo y en un hospital 🏥 o banco 🏦 no hay intérprete disponible, se puede ofrecer apoyo como intérprete por videollamada 📹."
+      },
+      {
+        "tiempo": 396,
+        "titulo": "💌 Tus ideas, opiniones, consejos o cualquier otra forma de ayudar y apoyar son muy bienvenidos",
+        "imagen": "",
+        "contenido": "Gracias por tu apoyo 🙏, porque gracias a eso LSPedia sigue progresando, y la inclusión y el aprendizaje de los sordos siguen impulsándose. 🤟💙"
+      }
+    ]
   }
 }
