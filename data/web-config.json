@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "actualizadoEn": "2026-09-27T03:23:31.320Z",
+  "actualizadoEn": "2026-09-27T03:25:22.414Z",
   "header": {
     "logo": "video/lspedia_transparente.webm",
     "logoOscuro": "",
@@ -28,7 +28,7 @@
         "visible": true
       },
       "nosotros": {
-        "texto": "Sobre VOSOTROS",
+        "texto": "Sobre Nosotros",
         "icono": "img/icons/nav/icono-nosotros.png",
         "visible": true
       }
@@ -125,13 +125,13 @@
   },
   "aviso": {
     "activo": false,
-    "tipo": "nuevo",
-    "titulo": "Tres nuevos videos",
+    "tipo": "info",
+    "titulo": "",
     "mensaje": "",
-    "botonTexto": "Ver más",
+    "botonTexto": "",
     "url": "",
-    "inicio": "2026-09-27T03:15",
-    "fin": "2026-09-27T03:16",
+    "inicio": "",
+    "fin": "",
     "frecuencia": "siempre"
   },
   "novedades": {
@@ -330,25 +330,25 @@
         "tiempo": 0,
         "titulo": "⚠️ Un punto importante",
         "imagen": "",
-        "contenido": "Algunas personas podrían pensar que LSPedia tiene \"viveza\", que se aprovecha de la comunidad sorda haciendo apropiación cultural y que luego usa eso para enseñarle señas a personas oyentes.\n\n❌ Eso no es cierto de ninguna manera. ¿Por qué? Sabemos que la comunidad sorda tiene el derecho de enseñar su propio idioma, la lengua de señas. Conocemos a personas sordas cuya labor es ayudar a otros sordos: algunos trabajan como intérpretes 🧏, otros como modelos lingüísticos, y otros como profesores que dan clases porque han sido capacitados y formados para eso — y eso lo aplaudimos 👏.\n\nLSPedia no es un enemigo, al contrario, busca ayudar 🤝. Sabemos que la información disponible está hablada en español, y para ayudar a los sordos, una persona oyente que conozca el español y la lengua de señas puede aportar interpretando y haciendo disponibles esos videos 🎥.\n\nEl sordo, al ver los videos, recibe una ayuda real, puede entenderlos. Después, cuando vea información en internet o en publicaciones, al encontrarse con esas palabras, ya podrá entenderlas, y eso le será de gran ayuda en su trabajo y en sus distintas labores 💼."
+        "contenido": ""
       },
       {
         "tiempo": 85,
         "titulo": "❓ ¿Qué es LSPedia?",
         "imagen": "",
-        "contenido": "Tú puedes ver en internet, en tu computadora 💻 o en tu celular 📱 muchísima información: libros 📚, noticias 📰, redes sociales, Facebook, WhatsApp, YouTube y mucho más. En Perú toda esa información está en español y hablada.\n\nTe pregunto: ¿para una persona sorda es fácil acceder a esa información? La verdad, no 🚫, porque una persona sorda tiene como idioma materno la lengua de señas. Esa información está hablada, y el sordo ve una multitud de palabras escritas que le resulta difícil entender. Esto es como un muro 🧱 que impide la accesibilidad. Es un problema real.\n\nPor eso nació LSPedia. ✨ ¿Qué es? Es un diccionario 📖 al que puedes acceder mediante un enlace web 🔗. Le das clic, lo abres, y es una web visual. Ahí ves el significado de las palabras con ejemplos, todo en video 🎬 y en lengua de señas. Puedes aprenderlo, y es como descubrir algo nuevo 💡.\n\nEsos videos están acompañados de ilustraciones 🖼️ que ayudan a imaginar y llegar a tener un mejor entendimiento. Es una sensación de ayuda real que impulsa tu progreso personal al tener más conocimiento 📈.\n\nEsto está disponible para que cualquier persona sorda aprenda palabras nuevas que le serán útiles, y así la información mencionada al principio puede ser accesible para ti. ✅"
+        "contenido": ""
       },
       {
         "tiempo": 185,
         "titulo": "🌱 Un proyecto que crece gracias a tu apoyo",
         "imagen": "",
-        "contenido": "Para producir LSPedia se ha trabajado en varias cosas: el diseño para web y móviles 🖥️📱, la grabación y la edición de videos 🎞️. Es un trabajo grande con muchas tareas distintas, y eso implica gastos 💸.\n\n¿Cómo se está financiando? De manera personal, con fondos propios 👤. ¿Alguna organización o el Estado está aportando dinero? No. Quizás en el futuro, tal vez.\n\nLSPedia sí necesita apoyo. ¿Tú quieres hacerlo? 🙌 Muy bien, muchas gracias. ¿Cómo lo harías? De varias maneras. Aquí te explico cinco 👇\n\n- 1️⃣ Proponer una palabra nueva: en la página web encuentras el diccionario de palabras. Si notas que falta una (de repente en tu trabajo, instituto o universidad un profesor mencionó una palabra que no entiendes), puedes proponerla con el botón de la izquierda ⬅️: se abre un formulario 📝 donde pones tu nombre, te identificas (sordo, oyente o intérprete) y escribes la palabra. Al enviarlo, se interpreta y se sube el video como una palabra nueva. 📤\n\n- 💭 2- Compartir ideas o grabar vocabulario: en ese mismo botón puedes dejar una idea o sugerencia de mejora. Si eres una persona sorda, también puedes grabarte tú mismo en tu casa 🏠 y enviar el video como aporte al vocabulario. Recuerda que LSPedia es un proyecto gratuito, así que la colaboración es voluntaria 💛 (no se puede pagar por ello 🚫💰).\n\n- 🗣️ 3- Compartir tu experiencia: si eres sordo, intérprete, o representas a un instituto, universidad o asociación, o tienes contacto con la comunidad sorda, tu experiencia puede ayudar mucho. Compártela con nosotros.\n\n- 💬 4- Apoyo económico (opcional): el mantenimiento de la web, la grabación y la edición de video necesitan dinero. Si quieres apoyar, puedes hacerlo de forma voluntaria escribiendo al WhatsApp que está en la página, de manera privada.\n\n- 🧏‍♂️ 5- Interpretación y traducción: si tienes un documento que quieres interpretar o traducir a lengua de señas, o algún trabajo en el que se pueda participar, puedes coordinar los detalles directamente. También si eres sordo y en un hospital 🏥 o banco 🏦 no hay intérprete disponible, se puede ofrecer apoyo como intérprete por videollamada 📹."
+        "contenido": ""
       },
       {
         "tiempo": 396,
         "titulo": "💌 Tus ideas, opiniones, consejos o cualquier otra forma de ayudar y apoyar son muy bienvenidos",
         "imagen": "",
-        "contenido": "Gracias por tu apoyo 🙏, porque gracias a eso LSPedia sigue progresando, y la inclusión y el aprendizaje de los sordos siguen impulsándose. 🤟💙"
+        "contenido": ""
       }
     ]
   }
