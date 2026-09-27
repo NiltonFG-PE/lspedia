@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "actualizadoEn": "2026-09-27T21:18:18.739Z",
+  "actualizadoEn": "2026-09-27T21:20:36.291Z",
   "header": {
     "logo": "video/lspedia_transparente.webm",
     "logoOscuro": "",
@@ -137,7 +137,7 @@
   },
   "aviso": {
     "activo": true,
-    "tipo": "nuevo",
+    "tipo": "info",
     "titulo": "Hay 3 nuevos videos",
     "mensaje": "REVISA AHORA",
     "estilo": {
@@ -148,8 +148,8 @@
     },
     "botonTexto": "",
     "url": "",
-    "inicio": "2026-09-27T16:19",
-    "fin": "2026-09-27T16:24",
+    "inicio": "2026-09-27T16:20",
+    "fin": "2026-09-27T16:25",
     "frecuencia": "siempre"
   },
   "novedades": {
