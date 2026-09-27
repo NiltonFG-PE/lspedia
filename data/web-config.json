@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "actualizadoEn": "2026-09-27T20:11:10.933Z",
+  "actualizadoEn": "2026-09-27T20:48:08.875Z",
   "header": {
     "logo": "video/lspedia_transparente.webm",
     "logoOscuro": "",
@@ -41,17 +41,19 @@
       "avatar": "img/avatar_lupa.webm",
       "buscadorPlaceholder": "Buscar palabra",
       "sugerenciasLabel": "⭐ Palabras sugeridas",
-      "sugerencias": [
-        "Hola",
-        "Digno",
-        "Felicitaciones",
-        "Inteligencia artificial",
-        "De nada"
-      ],
+      "sugerencias": [],
       "mostrarSugerencias": true,
       "mostrarSenalDia": true,
       "mostrarProgreso": true,
-      "mostrarEstadisticas": true
+      "mostrarEstadisticas": true,
+      "estilo": {
+        "fuente": "inherit",
+        "emoji": "",
+        "tituloColor": "#000000",
+        "acentoColor": "#000000",
+        "subtituloColor": "#000000",
+        "negrita": []
+      }
     },
     "vocabulario": {
       "titulo": "Vocabulario de Lengua de Señas Peruana (LSP)",
@@ -59,7 +61,15 @@
       "avatar": "img/avatar_lupa.webm",
       "buscadorPlaceholder": "Buscar palabra",
       "categoriasOrden": [],
-      "categoriasOcultas": []
+      "categoriasOcultas": [],
+      "estilo": {
+        "fuente": "inherit",
+        "emoji": "",
+        "tituloColor": "#000000",
+        "acentoColor": "#000000",
+        "subtituloColor": "#000000",
+        "negrita": []
+      }
     }
   },
   "contacto": {
@@ -124,14 +134,14 @@
     }
   },
   "aviso": {
-    "activo": false,
+    "activo": true,
     "tipo": "info",
-    "titulo": "",
-    "mensaje": "",
+    "titulo": "3 nuevos videos",
+    "mensaje": "REVISA",
     "botonTexto": "",
     "url": "",
-    "inicio": "",
-    "fin": "",
+    "inicio": "2026-09-27T15:47",
+    "fin": "2026-09-27T15:49",
     "frecuencia": "siempre"
   },
   "novedades": {
