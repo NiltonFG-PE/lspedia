@@ -149,3 +149,20 @@
 `;
   document.head.appendChild(style);
 })();
+
+/* Carga aislada de Mi LSPedia. Si falla, Favoritos/Historial originales
+   siguen disponibles porque el módulo nuevo solo los oculta tras iniciar bien. */
+(function(){
+  'use strict';
+  if(document.querySelector('script[data-lspedia-mi]'))return;
+  function cargar(){
+    if(document.querySelector('script[data-lspedia-mi]'))return;
+    const s=document.createElement('script');
+    s.src='js/mi-lspedia.js?v=20260927-1';
+    s.async=true;
+    s.dataset.lspediaMi='1';
+    s.onerror=function(){console.warn('[LSPedia] No se pudo cargar Mi LSPedia. Se conservan Favoritos e Historial originales.');};
+    document.head.appendChild(s);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',cargar,{once:true});else cargar();
+})();
