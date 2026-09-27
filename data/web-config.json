@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "actualizadoEn": "2026-09-27T21:17:49.090Z",
+  "actualizadoEn": "2026-09-27T21:18:18.739Z",
   "header": {
     "logo": "video/lspedia_transparente.webm",
     "logoOscuro": "",
@@ -148,8 +148,8 @@
     },
     "botonTexto": "",
     "url": "",
-    "inicio": "2026-09-27T17:18",
-    "fin": "2026-09-27T17:24",
+    "inicio": "2026-09-27T16:19",
+    "fin": "2026-09-27T16:24",
     "frecuencia": "siempre"
   },
   "novedades": {
