@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "actualizadoEn": "2026-09-27T20:50:16.786Z",
+  "actualizadoEn": "2026-09-27T21:17:49.090Z",
   "header": {
     "logo": "video/lspedia_transparente.webm",
     "logoOscuro": "",
@@ -38,30 +38,27 @@
     "diccionario": {
       "titulo": "Diccionario visual de español con apoyo en Lengua de Señas Peruana (LSP)",
       "subtitulo": "Diccionario visual de español con apoyo en Lengua de Señas Peruana.\nSu función es facilitar la comprensión de palabras y significados.\nNo es un curso, ni enseñamos LSP.",
+      "estilo": {
+        "fuente": "inherit",
+        "emoji": "",
+        "tituloColor": "#000000",
+        "acentoColor": "#000000",
+        "subtituloColor": "#000000",
+        "negrita": []
+      },
       "avatar": "img/avatar_lupa.webm",
       "buscadorPlaceholder": "Buscar palabra",
+      "categoriasIniciales": 10,
       "sugerenciasLabel": "⭐ Palabras sugeridas",
       "sugerencias": [],
       "mostrarSugerencias": true,
       "mostrarSenalDia": true,
       "mostrarProgreso": true,
-      "mostrarEstadisticas": true,
-      "estilo": {
-        "fuente": "inherit",
-        "emoji": "",
-        "tituloColor": "#000000",
-        "acentoColor": "#000000",
-        "subtituloColor": "#000000",
-        "negrita": []
-      }
+      "mostrarEstadisticas": true
     },
     "vocabulario": {
       "titulo": "Vocabulario de Lengua de Señas Peruana (LSP)",
       "subtitulo": "Las palabras en español sirven como referencia para facilitar las búsquedas.\nLas señas representan conceptos, no solo palabras.\nLas variantes regionales enriquecen la Lengua de señas.\nEl aprendizaje también requiere contacto con personas sordas.",
-      "avatar": "img/avatar_lupa.webm",
-      "buscadorPlaceholder": "Buscar palabra",
-      "categoriasOrden": [],
-      "categoriasOcultas": [],
       "estilo": {
         "fuente": "inherit",
         "emoji": "",
@@ -69,7 +66,12 @@
         "acentoColor": "#000000",
         "subtituloColor": "#000000",
         "negrita": []
-      }
+      },
+      "avatar": "img/avatar_lupa.webm",
+      "buscadorPlaceholder": "Buscar palabra",
+      "categoriasIniciales": 10,
+      "categoriasOrden": [],
+      "categoriasOcultas": []
     }
   },
   "contacto": {
@@ -135,13 +137,19 @@
   },
   "aviso": {
     "activo": true,
-    "tipo": "info",
-    "titulo": "3 nuevos videos",
-    "mensaje": "REVISA",
+    "tipo": "nuevo",
+    "titulo": "Hay 3 nuevos videos",
+    "mensaje": "REVISA AHORA",
+    "estilo": {
+      "tituloNegrita": true,
+      "tituloCursiva": false,
+      "mensajeNegrita": false,
+      "mensajeCursiva": true
+    },
     "botonTexto": "",
     "url": "",
-    "inicio": "2026-09-27T15:50",
-    "fin": "2026-09-27T15:54",
+    "inicio": "2026-09-27T17:18",
+    "fin": "2026-09-27T17:24",
     "frecuencia": "siempre"
   },
   "novedades": {
