@@ -137,21 +137,44 @@
     }
   }
 
+  function alinearCabecera(zona){
+    if(!zona)return;
+    const fila=zona.parentElement;
+    if(!fila)return;
+    const titulo=Array.from(fila.children).find(n=>n&&n.tagName==='H3')||fila.querySelector('h3');
+    if(!titulo)return;
+    fila.classList.add('lsp-ficha-title-row');
+    titulo.classList.add('lsp-ficha-title');
+  }
+
   function decorar(root){
     const scope=root&&root.querySelectorAll?root:document;
     let share=scope.querySelector('#btnCompartir');
     if(!share&&scope.matches&&scope.matches('#btnCompartir'))share=scope;
     if(!share)return;
-    const zona=share.parentElement;if(zona)zona.classList.add('lsp-ficha-acciones');
+    const zona=share.parentElement;
+    if(zona){zona.classList.add('lsp-ficha-acciones');alinearCabecera(zona);}
     decorarCompartir(share);
     const nuevo=asegurarFavoritoVocabulario(share);
     const fav=nuevo||(zona&&zona.querySelector('#btnFavorito'))||document.getElementById('btnFavorito');
     if(fav)decorarFavoritoExistente(fav);
   }
 
+  function cargarMiVisual(){
+    if(document.querySelector('script[data-lspedia-mi-visual]'))return;
+    const s=document.createElement('script');
+    s.src='js/mi-lspedia-visual.js?v=20260927-1';
+    s.async=true;s.dataset.lspediaMiVisual='1';
+    s.onerror=function(){console.warn('[LSPedia] No se pudo cargar la mejora visual de Mi LSPedia.');};
+    document.head.appendChild(s);
+  }
+
   function estilos(){
     if(document.getElementById('lspAccionesFichaPremiumCss'))return;
     const s=document.createElement('style');s.id='lspAccionesFichaPremiumCss';s.textContent=`
+      .lsp-ficha-title-row{width:100%!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:12px!important;flex-wrap:wrap!important}
+      .lsp-ficha-title-row>.lsp-ficha-title{margin-left:0!important;margin-right:auto!important;text-align:left!important;order:0!important;min-width:0!important}
+      .lsp-ficha-title-row>.lsp-ficha-acciones{margin-left:auto!important;order:1!important}
       .lsp-ficha-acciones{display:flex!important;align-items:center!important;gap:8px!important;flex-wrap:wrap!important;justify-content:flex-end!important}
       .lsp-accion-premium{--lsp-accent:#2563eb;position:relative!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;height:42px!important;min-height:42px!important;padding:0 14px!important;border-radius:999px!important;border:1px solid rgba(148,163,184,.32)!important;background:linear-gradient(180deg,#fff,rgba(248,250,252,.94))!important;color:#334155!important;font:700 12px/1 Poppins,system-ui,sans-serif!important;letter-spacing:0!important;box-shadow:0 7px 18px rgba(15,23,42,.07),inset 0 1px 0 #fff!important;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,background .18s ease,color .18s ease!important;overflow:hidden!important;isolation:isolate!important;white-space:nowrap!important}
       .lsp-accion-premium::after{content:"";position:absolute;inset:-40%;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.75),transparent 58%);opacity:0;transform:scale(.45);pointer-events:none;z-index:-1}
@@ -172,12 +195,16 @@
       .lsp-action-toast.show{opacity:1;transform:translate(-50%,0) scale(1)}
       .lsp-action-toast>span{font-size:17px;color:#fb7185}
       @media(max-width:767.98px){
+        .lsp-ficha-title-row{align-items:flex-start!important;gap:8px!important}
+        .lsp-ficha-title-row>.lsp-ficha-title{font-size:1.55rem!important;line-height:1.15!important;max-width:calc(100% - 104px)!important}
+        .lsp-ficha-title-row>.lsp-ficha-acciones{margin-left:auto!important;flex-wrap:nowrap!important}
         .lsp-ficha-acciones{gap:7px!important}
         .lsp-accion-premium{width:44px!important;min-width:44px!important;height:44px!important;min-height:44px!important;padding:0!important;border-radius:15px!important}
         .lsp-accion-premium .lsp-action-label{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
         .lsp-action-svg{width:20px;height:20px}
         .lsp-action-toast{bottom:92px;max-width:calc(100vw - 28px);font-size:11px}
       }
+      @media(max-width:430px){.lsp-ficha-title-row>.lsp-ficha-title{max-width:100%!important;width:100%!important}.lsp-ficha-title-row>.lsp-ficha-acciones{margin-left:0!important}}
       @media(prefers-reduced-motion:reduce){.lsp-accion-premium,.lsp-action-toast{animation:none!important;transition:none!important}}
     `;document.head.appendChild(s);
   }
@@ -192,8 +219,7 @@
   }
 
   function iniciar(){
-    estilos();
-    observar();
+    estilos();observar();cargarMiVisual();
     window.addEventListener('popstate',function(){setTimeout(()=>decorar(document),0);});
     window.addEventListener('lspedia:favoritosActualizados',function(){setTimeout(()=>decorar(document),0);});
   }
