@@ -4,7 +4,7 @@
 
   if (window.LSPediaCore && window.LSPediaCore.version) return;
 
-  const VERSION = '2026.09.27-1';
+  const VERSION = '2026.09.27-2';
   const URL_OFICIAL = 'https://lspedia.site/';
   const HOSTS_OFICIALES = new Set(['lspedia.site', 'www.lspedia.site']);
   const HOSTS_DESARROLLO = new Set(['localhost', '127.0.0.1', '::1', '[::1]']);
@@ -289,6 +289,17 @@
         console.warn('[LSPedia] No se pudo cargar la configuración WEB avanzada. Se conservan los valores base.');
       };
       document.head.appendChild(avanzado);
+    }
+
+    if (!document.querySelector('script[data-lspedia-alfab-ampliar-fix]')) {
+      const fixAlfabetizacion = document.createElement('script');
+      fixAlfabetizacion.src = 'js/alfabetizacion-ampliar-fix.js?v=20260927-1';
+      fixAlfabetizacion.async = true;
+      fixAlfabetizacion.dataset.lspediaAlfabAmpliarFix = '1';
+      fixAlfabetizacion.onerror = function () {
+        console.warn('[LSPedia] No se pudo cargar la corrección de ampliación de Alfabetización.');
+      };
+      document.head.appendChild(fixAlfabetizacion);
     }
   }
 
