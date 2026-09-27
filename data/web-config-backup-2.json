@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "actualizadoEn": "2026-09-27T20:10:11.445Z",
+  "actualizadoEn": "2026-09-27T20:11:10.933Z",
   "header": {
     "logo": "video/lspedia_transparente.webm",
     "logoOscuro": "",
@@ -39,7 +39,7 @@
       "titulo": "Diccionario visual de español con apoyo en Lengua de Señas Peruana (LSP)",
       "subtitulo": "Diccionario visual de español con apoyo en Lengua de Señas Peruana.\nSu función es facilitar la comprensión de palabras y significados.\nNo es un curso, ni enseñamos LSP.",
       "avatar": "img/avatar_lupa.webm",
-      "buscadorPlaceholder": "Buscar palabra y significado",
+      "buscadorPlaceholder": "Buscar palabra",
       "sugerenciasLabel": "⭐ Palabras sugeridas",
       "sugerencias": [
         "Hola",
