@@ -62,12 +62,20 @@
   function renderEstadoFavorito(btn,ref){
     if(!btn||!ref)return;
     const activo=estaFavorito(ref);
+    const estado=activo?'1':'0';
+    const etiqueta=activo?'Guardado':'Favorito';
     btn.classList.add('lsp-accion-premium','lsp-accion-favorito');
     btn.classList.toggle('is-active',activo);
     btn.setAttribute('aria-pressed',activo?'true':'false');
     btn.setAttribute('aria-label',activo?'Quitar de favoritos':'Agregar a favoritos');
     btn.setAttribute('title',activo?'Quitar de favoritos':'Agregar a favoritos');
-    btn.innerHTML=iconoCorazon()+'<span class="lsp-action-label">'+(activo?'Guardado':'Favorito')+'</span>';
+    if(btn.dataset.lspFavoriteState!==estado||!btn.querySelector('.lsp-heart-svg')||!btn.querySelector('.lsp-action-label')){
+      btn.dataset.lspFavoriteState=estado;
+      btn.innerHTML=iconoCorazon()+'<span class="lsp-action-label">'+etiqueta+'</span>';
+    }else{
+      const label=btn.querySelector('.lsp-action-label');
+      if(label&&label.textContent!==etiqueta)label.textContent=etiqueta;
+    }
   }
 
   function asegurarFavoritoVocabulario(share){
@@ -115,7 +123,12 @@
     btn.classList.add('lsp-accion-premium','lsp-accion-compartir');
     btn.setAttribute('title','Compartir palabra');
     btn.setAttribute('aria-label','Compartir palabra');
-    btn.innerHTML=iconoCompartir()+'<span class="lsp-action-label">Compartir</span>';
+    if(!btn.querySelector('.lsp-action-svg')||!btn.querySelector('.lsp-action-label')){
+      btn.innerHTML=iconoCompartir()+'<span class="lsp-action-label">Compartir</span>';
+    }else{
+      const label=btn.querySelector('.lsp-action-label');
+      if(label&&label.textContent!=='Compartir')label.textContent='Compartir';
+    }
     if(!btn.dataset.lspPremiumShareHook){
       btn.dataset.lspPremiumShareHook='1';
       btn.addEventListener('click',function(){
@@ -178,6 +191,11 @@
     decorar(document);
   }
 
-  function iniciar(){estilos();observar();window.addEventListener('popstate',function(){setTimeout(()=>decorar(document),0);});window.addEventListener('lspedia:favoritosActualizados',function(){setTimeout(()=>decorar(document),0);});}
+  function iniciar(){
+    estilos();
+    observar();
+    window.addEventListener('popstate',function(){setTimeout(()=>decorar(document),0);});
+    window.addEventListener('lspedia:favoritosActualizados',function(){setTimeout(()=>decorar(document),0);});
+  }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',iniciar,{once:true});else iniciar();
 })();
