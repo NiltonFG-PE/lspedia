@@ -12,7 +12,7 @@
    - El panel /admin/ y los laboratorios quedan fuera del fallback público.
    ============================================================ */
 
-const VERSION_APP = "v224";
+const VERSION_APP = "v225";
 const PREFIJO_CACHE = "lspedia-shell-";
 const PREFIJO_RUNTIME = "lspedia-runtime-";
 const CACHE_NOMBRE = PREFIJO_CACHE + VERSION_APP;
@@ -153,11 +153,6 @@ self.addEventListener("fetch", (event) => {
         url.pathname.includes("/data/web-config.json")
     ) return;
 
-    // Las páginas SEO reales deben llegar desde su URL exacta. Antes, cualquier
-    // navegación devolvía primero index.html desde caché; al abrir por segunda
-    // vez /categoria/... eso dejaba el navegador en la URL profunda pero con
-    // el HTML de Inicio, y sus rutas relativas de CSS/JS quedaban rotas.
-    // Estas rutas se sirven siempre desde red y nunca usan el fallback SPA.
     const esRutaSeoEstatica = /^\/(?:categoria|coleccion|diccionario|vocabulario)\//.test(url.pathname);
     if (request.mode === "navigate" && esRutaSeoEstatica) {
         event.respondWith(fetchConReintento(request, { timeoutMs: 10000, reintentos: 1 })
