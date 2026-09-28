@@ -282,3 +282,72 @@
 })();
 
 /* Publicación y estadísticas viven en script.js y vocabulario-publico.js. */
+
+/* HOTFIX 2026-09-27: ficha Vocabulario + Descubre.
+   - Mantiene el nombre/subtema de la palabra arriba de la ficha, justo después
+     de las etiquetas, incluso si otro ajuste visual intenta reubicarlo.
+   - Si Descubre se pulsa después de haber estado en Vocabulario, restaura
+     primero el contexto de Diccionario para que el botón y la miniatura abran
+     la palabra correctamente y no hereden la vista anterior. */
+(function hotfixFichaVocabularioYDescubre() {
+    'use strict';
+
+    function corregirCabeceraVocabulario() {
+        const contenedor = document.getElementById('resultadoCategorias');
+        if (!contenedor) return;
+        const cuerpo = contenedor.querySelector('.card > .card-body');
+        if (!cuerpo) return;
+        const cabecera = Array.from(cuerpo.children).find((el) =>
+            el.classList && el.classList.contains('d-flex') && el.querySelector('h3')
+        );
+        if (!cabecera) return;
+
+        const hijos = Array.from(cuerpo.children);
+        let ultimoBadge = null;
+        for (const el of hijos) {
+            if (el === cabecera) continue;
+            if (el.matches && el.matches('span.badge')) ultimoBadge = el;
+            else if (ultimoBadge) break;
+        }
+        const destino = ultimoBadge ? ultimoBadge.nextSibling : cuerpo.firstChild;
+        if (destino !== cabecera) cuerpo.insertBefore(cabecera, destino);
+    }
+
+    function prepararDescubre() {
+        const prepararContexto = () => {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const vieneDeVocabulario = params.get('vista') === 'vocabulario' || params.get('fuente') === 'vocabulario';
+                if (vieneDeVocabulario && typeof window.irAlBuscador === 'function') {
+                    window.irAlBuscador({ sinEnfoque: true, irArriba: true });
+                }
+            } catch (_error) {}
+        };
+
+        ['btnVerDelDia', 'miniaturaDelDiaWrap'].forEach((id) => {
+            const el = document.getElementById(id);
+            if (!el || el.dataset.lspDescubreFix === '1') return;
+            el.dataset.lspDescubreFix = '1';
+            el.addEventListener('click', prepararContexto, true);
+            el.addEventListener('keydown', (evento) => {
+                if (evento.key === 'Enter' || evento.key === ' ') prepararContexto();
+            }, true);
+        });
+    }
+
+    function iniciar() {
+        prepararDescubre();
+        corregirCabeceraVocabulario();
+        const contenedor = document.getElementById('resultadoCategorias');
+        if (contenedor && 'MutationObserver' in window) {
+            const observer = new MutationObserver(() => requestAnimationFrame(corregirCabeceraVocabulario));
+            observer.observe(contenedor, { childList: true, subtree: true });
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', iniciar, { once: true });
+    } else {
+        iniciar();
+    }
+})();
