@@ -1,22 +1,45 @@
 /* ============================================================
    LSPedia — fuente pública de Vocabulario
-   ------------------------------------------------------------
-   Separa dos conceptos que antes compartían el mismo arreglo:
-   - Quiz: necesita video y mantiene su banco interno en QuizV2.
-   - Vocabulario público/buscador/juegos: necesita IMAGEN REAL; el video
-     es opcional, igual que la regla pública vigente de LSPedia.
-
-   Desde 2026-09-17 también combina, sin sobrescribir datos editoriales,
-   las definiciones de apoyo de data/vocabulario-definiciones.json.
-   Así el JSON sincronizado desde Sheets puede seguir siendo la fuente
-   principal y las definiciones editoriales se mantienen separadas.
    ============================================================ */
 (function () {
     'use strict';
 
+    /* La ficha de Vocabulario comparte estilos globales con otros bloques.
+       En móvil una regla de layout estaba mandando la fila del título al final
+       de la tarjeta. Este ajuste es deliberadamente específico para la ficha:
+       mantiene el nombre inmediatamente después de las insignias y alineado
+       a la izquierda, sin alterar Diccionario ni las tarjetas de categorías. */
+    (function instalarAjusteTituloFichaVocabulario(){
+        if (document.getElementById('lsp-vocab-titulo-ficha-fix-20260927')) return;
+        const estilo = document.createElement('style');
+        estilo.id = 'lsp-vocab-titulo-ficha-fix-20260927';
+        estilo.textContent = `
+            #resultadoCategorias .card-body > .d-flex:has(> h3),
+            #resultado .card-body > .d-flex:has(> h3) {
+                order: -1 !important;
+                width: 100% !important;
+                align-self: stretch !important;
+                justify-content: flex-start !important;
+                text-align: left !important;
+            }
+            #resultadoCategorias .card-body > .d-flex:has(> h3) > h3,
+            #resultado .card-body > .d-flex:has(> h3) > h3 {
+                margin-left: 0 !important;
+                margin-right: auto !important;
+                text-align: left !important;
+                flex: 1 1 auto !important;
+            }
+            #resultadoCategorias .card-body > .d-flex:has(> h3) > #btnCompartir,
+            #resultado .card-body > .d-flex:has(> h3) > #btnCompartir {
+                flex: 0 0 auto !important;
+            }
+        `;
+        document.head.appendChild(estilo);
+    })();
+
     if (window.LSPediaVocabularioPublico && window.LSPediaVocabularioPublico.version) return;
 
-    const VERSION = '2026.09.25.1';
+    const VERSION = '2026.09.27.2';
     const DATA_URL = 'data/vocabulario.json';
     const DEFINICIONES_URL = 'data/vocabulario-definiciones.json';
     const getterAnterior = typeof window.obtenerBancoHoja2 === 'function'
@@ -115,9 +138,6 @@
         }
     }
 
-    // script.js resuelve este identificador en el entorno global. Al sustituir
-    // la propiedad global, sus búsquedas, Vocabulario y estadísticas pasan a
-    // usar la colección pública por imagen; QuizV2 conserva su propio banco.
     try {
         window.obtenerBancoHoja2 = obtener;
     } catch (error) {
@@ -174,7 +194,6 @@
         estado.error = null;
 
         const marca = Date.now();
-        // La definición de apoyo no bloquea la disponibilidad de las palabras.
         leerDatos(DEFINICIONES_URL + '?_def=' + marca)
             .then(function (data) {
                 estado.definiciones = normalizarDefiniciones(data);
@@ -192,7 +211,7 @@
                     throw new Error('Formato de Vocabulario no válido');
                 }
                 estado.datos = normalizarLista(data);
-                estado.listo = true; // Una colección vacía también terminó de cargar.
+                estado.listo = true;
                 refrescarConsumidores();
             })
             .catch(function (error) {
