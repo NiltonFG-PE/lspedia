@@ -4,7 +4,7 @@
 
   if (window.LSPediaCore && window.LSPediaCore.version) return;
 
-  const VERSION = '2026.09.27-4';
+  const VERSION = '2026.09.28-1';
   const URL_OFICIAL = 'https://lspedia.site/';
   const HOSTS_OFICIALES = new Set(['lspedia.site', 'www.lspedia.site']);
   const HOSTS_DESARROLLO = new Set(['localhost', '127.0.0.1', '::1', '[::1]']);
@@ -310,6 +310,17 @@
         console.warn('[LSPedia] No se pudieron cargar las mejoras WEB premium. Se conserva la interfaz base.');
       };
       document.head.appendChild(premium);
+    }
+
+    if (!document.querySelector('script[data-lspedia-ultimos30-fix]')) {
+      const ultimos30Fix = document.createElement('script');
+      ultimos30Fix.src = 'js/ultimos30-fix.js?v=20260928-1';
+      ultimos30Fix.async = true;
+      ultimos30Fix.dataset.lspediaUltimos30Fix = '1';
+      ultimos30Fix.onerror = function () {
+        console.warn('[LSPedia] No se pudo cargar la corrección de Últimos 30 días.');
+      };
+      document.head.appendChild(ultimos30Fix);
     }
 
     if (!document.querySelector('script[data-lspedia-header-premium-fix]')) {
