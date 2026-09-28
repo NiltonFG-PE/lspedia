@@ -1,12 +1,20 @@
-/* LSPedia — corrección aislada para las tarjetas de “Últimos 30 días”.
-   V2: las tarjetas de Vocabulario abren la ficha directamente en la SPA,
-   sin recargar la página ni depender de idQuiz o de la restauración por URL. */
+/* LSPedia — apertura directa de tarjetas de “Últimos 30 días”.
+   V3: Diccionario y Vocabulario abren dentro de la SPA, sin location.href.
+   Reutiliza los mismos renderizadores internos que usa el buscador normal. */
 (function(){
   'use strict';
-  if(window.__LSPediaUltimos30Fix)return;
-  window.__LSPediaUltimos30Fix=true;
+  if(window.__LSPediaUltimos30FixV3)return;
+  window.__LSPediaUltimos30FixV3=true;
 
   function texto(v){return String(v==null?'':v).trim();}
+  function clave(v){
+    return texto(v)
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g,'')
+      .toLowerCase()
+      .replace(/\s+/g,' ')
+      .trim();
+  }
 
   function cerrarModal30(){
     const overlay=document.getElementById('lsp30dOverlay');
@@ -16,84 +24,140 @@
       try{cerrar.click();return;}catch(_e){}
     }
     overlay.hidden=true;
+    overlay.setAttribute('aria-hidden','true');
     document.body.style.overflow='';
+  }
+
+  function subirAlResultado(){
+    requestAnimationFrame(function(){
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+  }
+
+  function buscarItemVocabulario(palabra){
+    try{
+      const api=window.LSPediaVocabularioPublico;
+      const lista=api&&typeof api.obtener==='function'?api.obtener():[];
+      const objetivo=clave(palabra);
+      return (Array.isArray(lista)?lista:[]).find(function(item){
+        return clave(item&&item.palabra)===objetivo;
+      })||null;
+    }catch(_e){
+      return null;
+    }
+  }
+
+  function pintarVocabulario(item){
+    if(!item)return false;
+
+    /* Es exactamente el flujo usado cuando el buscador del Diccionario
+       ofrece un resultado procedente de Vocabulario. */
+    if(typeof window.abrirResultadoVocabularioDesdeBusqueda==='function'){
+      try{
+        window.abrirResultadoVocabularioDesdeBusqueda(item);
+        subirAlResultado();
+        return true;
+      }catch(error){
+        console.warn('[LSPedia] Falló abrirResultadoVocabularioDesdeBusqueda.',error);
+      }
+    }
+
+    if(typeof window.mostrarPalabraSimplificada==='function'){
+      try{
+        window.mostrarPalabraSimplificada(item,{
+          fuente:'vocabulario',
+          enCategorias:false
+        });
+        subirAlResultado();
+        return true;
+      }catch(error){
+        console.warn('[LSPedia] Falló mostrarPalabraSimplificada.',error);
+      }
+    }
+    return false;
   }
 
   function abrirVocabularioDirecto(palabra){
     cerrarModal30();
 
-    /* Primero entramos a la vista de Vocabulario para que el contenedor
-       correcto esté visible. Este es el mismo botón que usa la navegación. */
-    const btnVocabulario=document.getElementById('btnCategorias');
-    if(btnVocabulario){
-      try{btnVocabulario.click();}catch(_e){}
+    const inmediato=buscarItemVocabulario(palabra);
+    if(pintarVocabulario(inmediato))return true;
+
+    /* Si el banco público todavía está terminando de cargar, esperamos esa
+       misma carga y pintamos después. No se recarga la página. */
+    const api=window.LSPediaVocabularioPublico;
+    if(api&&typeof api.cargar==='function'){
+      Promise.resolve(api.cargar()).then(function(){
+        const item=buscarItemVocabulario(palabra);
+        if(!pintarVocabulario(item)){
+          console.warn('[LSPedia] No se encontró en Vocabulario:',palabra);
+        }
+      }).catch(function(error){
+        console.warn('[LSPedia] No se pudo cargar Vocabulario para abrir:',palabra,error);
+      });
+      return true;
     }
 
-    const abrir=function(){
-      /* Ruta principal: reutiliza exactamente la función del buscador de
-         Vocabulario. Acepta tanto id como el nombre visible de la palabra. */
-      if(typeof window.mostrarPalabraVocabularioPorReferencia==='function'){
-        try{
-          window.mostrarPalabraVocabularioPorReferencia(palabra);
-          return;
-        }catch(error){
-          console.warn('[LSPedia] No se pudo abrir la ficha de Vocabulario directamente.',error);
-        }
-      }
+    console.warn('[LSPedia] Vocabulario no está disponible para abrir:',palabra);
+    return true;
+  }
 
-      /* Segundo respaldo: busca el registro ya cargado y pinta la misma ficha
-         simplificada que usa Vocabulario, sin recargar la página. */
+  function abrirDiccionarioDirecto(palabra){
+    cerrarModal30();
+
+    /* restaurarPalabraDesdeUrl no recarga: localiza la ficha en App.datos
+       y llama al mismo mostrarPalabra() del buscador. */
+    if(typeof window.restaurarPalabraDesdeUrl==='function'){
       try{
-        const api=window.LSPediaVocabularioPublico;
-        const lista=api&&typeof api.obtener==='function'?api.obtener():[];
-        const clave=texto(palabra).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
-        const item=(Array.isArray(lista)?lista:[]).find(function(p){
-          return texto(p&&p.palabra).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()===clave;
+        window.restaurarPalabraDesdeUrl(palabra,{
+          fuente:'diccionario',
+          enCategorias:false
         });
-        if(item&&typeof window.mostrarPalabraSimplificada==='function'){
-          window.mostrarPalabraSimplificada(item,{enCategorias:true});
-          window.scrollTo({top:0,behavior:'smooth'});
-          return;
+        subirAlResultado();
+        return true;
+      }catch(error){
+        console.warn('[LSPedia] No se pudo abrir Diccionario directamente.',error);
+      }
+    }
+
+    /* Respaldo sin navegación si mostrarPalabra/buscarPalabraPorReferencia
+       están expuestos por el script principal. */
+    if(typeof window.buscarPalabraPorReferencia==='function'&&typeof window.mostrarPalabra==='function'){
+      try{
+        const item=window.buscarPalabraPorReferencia(palabra);
+        if(item){
+          window.mostrarPalabra(item,{enCategorias:false,fuente:'diccionario'});
+          subirAlResultado();
+          return true;
         }
       }catch(error){
-        console.warn('[LSPedia] No se pudo usar el respaldo directo de Vocabulario.',error);
+        console.warn('[LSPedia] Falló el respaldo directo de Diccionario.',error);
       }
+    }
 
-      /* Último respaldo únicamente si faltaran las funciones internas. */
-      const base=location.pathname||'/';
-      location.href=base+'?vista=vocabulario&p='+encodeURIComponent(palabra)+'&fuente=vocabulario';
-    };
-
-    /* El cambio de vista es síncrono en condiciones normales; un frame de
-       espera evita que el render de la navegación y el de la ficha compitan. */
-    if(typeof requestAnimationFrame==='function')requestAnimationFrame(abrir);
-    else setTimeout(abrir,0);
+    console.warn('[LSPedia] No se encontró en Diccionario:',palabra);
     return true;
   }
 
   function abrirTarjeta(card){
     if(!card)return false;
-    const palabra=texto(card.querySelector('strong')&&card.querySelector('strong').textContent);
+    const titulo=card.querySelector('strong');
+    const palabra=texto(titulo&&titulo.textContent);
     if(!palabra)return false;
 
     const meta=texto(card.querySelector('.lsp-30d-meta')&&card.querySelector('.lsp-30d-meta').textContent);
-    const esVocabulario=/vocabulario/i.test(meta);
-
-    if(esVocabulario)return abrirVocabularioDirecto(palabra);
-
-    /* Diccionario ya funcionaba correctamente; se conserva su ruta actual. */
-    const base=location.pathname||'/';
-    location.href=base+'?p='+encodeURIComponent(palabra);
-    return true;
+    return /vocabulario/i.test(meta)
+      ? abrirVocabularioDirecto(palabra)
+      : abrirDiccionarioDirecto(palabra);
   }
 
   document.addEventListener('click',function(e){
     const objetivo=e.target&&e.target.closest?e.target.closest('.lsp-30d-card'):null;
     if(!objetivo)return;
-    if(abrirTarjeta(objetivo)){
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-    }
+
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    abrirTarjeta(objetivo);
   },true);
 })();
