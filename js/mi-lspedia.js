@@ -35,7 +35,10 @@
   }
   function refItem(x,fuente){
     if(!x)return '';
-    if(fuente==='vocabulario')return String(x.idQuiz||x.id||x.referencia||x.palabra||'').trim();
+    // Importante: el visor público de Vocabulario abre por id/referencia/palabra.
+    // idQuiz sirve para otros flujos, pero no debe ser la referencia principal
+    // de navegación porque mostrarPalabraVocabularioPorReferencia no lo usa.
+    if(fuente==='vocabulario')return String(x.id||x.referencia||x.palabra||x.idQuiz||'').trim();
     return String(x.id||x.referencia||x.palabra||'').trim();
   }
   function coincideRef(x,ref,fuente){
@@ -65,8 +68,15 @@
   function abrir(item){
     if(!item)return;
     if(item.fuente==='vocabulario'){
-      if(typeof window.mostrarPalabraVocabularioPorReferencia==='function'){window.mostrarPalabraVocabularioPorReferencia(item.referencia||item.palabra);return;}
-      location.href=location.pathname+'?vista=vocabulario&p='+encodeURIComponent(item.referencia||item.palabra)+'&fuente=vocabulario';return;
+      const palabra=String(item.palabra||'').trim();
+      const referencia=String(item.referencia||palabra||'').trim();
+      if(typeof window.mostrarPalabraVocabularioPorReferencia==='function'){
+        // La palabra es el respaldo más estable: la función pública siempre
+        // compara también por p.palabra, aunque el id interno cambie.
+        window.mostrarPalabraVocabularioPorReferencia(palabra||referencia);
+        return;
+      }
+      location.href=location.pathname+'?vista=vocabulario&p='+encodeURIComponent(palabra||referencia)+'&fuente=vocabulario';return;
     }
     if(item.raw&&typeof window.mostrarPalabra==='function'){window.mostrarPalabra(item.raw);window.scrollTo({top:0,behavior:'smooth'});return;}
     location.href=location.pathname+'?p='+encodeURIComponent(item.referencia||item.palabra);
