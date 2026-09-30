@@ -66,7 +66,7 @@
     }
 
     function restaurar(el){
-        if(el && originales.has(el)) el.textContent = originales.get(el);
+        if(el && originales.has(el)) originales.get(el) !== undefined && (el.textContent = originales.get(el));
     }
 
     function aplicarSobreNosotros(idioma){
@@ -131,6 +131,25 @@
         }, true);
     }
 
-    if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar, { once: true });
-    else iniciar();
+    function cargarPresentacionPremium(){
+        if(window.LSPediaNosotrosPremium){
+            iniciar();
+            return;
+        }
+        const existente = document.querySelector('script[data-lspedia-nosotros-premium]');
+        if(existente){
+            existente.addEventListener('load', iniciar, { once:true });
+            return;
+        }
+        const script = document.createElement('script');
+        script.src = 'js/nosotros-premium.js?v=20260930-1';
+        script.async = false;
+        script.dataset.lspediaNosotrosPremium = '1';
+        script.onload = iniciar;
+        script.onerror = iniciar;
+        document.head.appendChild(script);
+    }
+
+    if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', cargarPresentacionPremium, { once: true });
+    else cargarPresentacionPremium();
 })();
