@@ -79,7 +79,7 @@
 
         mostrarDescubreSoloConVideo.__lspediaSoloVideos = true;
         window.mostrarSenalDelDia = mostrarDescubreSoloConVideo;
-        if(window.App && Array.isArray(app.datos) && window.App.datos.length) mostrarDescubreSoloConVideo();
+        if(window.App && Array.isArray(window.App.datos) && window.App.datos.length) mostrarDescubreSoloConVideo();
     }
 
     function activarAutoScrollIndiceDiccionario(){
