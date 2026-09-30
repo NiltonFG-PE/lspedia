@@ -79,7 +79,7 @@
 
         mostrarDescubreSoloConVideo.__lspediaSoloVideos = true;
         window.mostrarSenalDelDia = mostrarDescubreSoloConVideo;
-        if(window.App && Array.isArray(window.App.datos) && window.App.datos.length) mostrarDescubreSoloConVideo();
+        if(window.App && Array.isArray(app.datos) && window.App.datos.length) mostrarDescubreSoloConVideo();
     }
 
     function activarAutoScrollIndiceDiccionario(){
@@ -192,6 +192,7 @@
     cargar('js/buscador-movil-focus.js?v=20260925-1');
     cargarCss('css/lo-nuevo-premium.css?v=20260919-1');
     cargar('js/modo-oscuro.js?v=20260916-2');
+    cargar('js/mi-lspedia-secciones.js?v=20260930-1');
 
     function cargarMejorasConCore(){
         cargar('js/accesibilidad-segura.js?v=20260914-1');
