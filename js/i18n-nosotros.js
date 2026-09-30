@@ -6,46 +6,46 @@
 
     const TRADUCCIONES = {
         titulos: {
-            '0': '⚠️ An important point',
-            '85': '❓ What is LSPedia?',
-            '185': '🌱 A project that grows thanks to your support',
-            '396': '💌 Your ideas, opinions, advice, and any other form of help or support are very welcome'
+            '0': 'An important point',
+            '85': 'What is LSPedia?',
+            '185': 'A project that grows with support',
+            '396': 'Your ideas and contributions are welcome'
         },
         bloques: {
             '0': [
-                'Some people might think that LSPedia is trying to take advantage of the Deaf community through cultural appropriation and then use that to teach signs to hearing people.',
-                '❌ That is not true at all. Why? We know that the Deaf community has the right to teach its own language: sign language. We know Deaf people whose work is to help other Deaf people: some work as interpreters 🧏, others as language models, and others as teachers who give classes because they have been trained and prepared for that — and we applaud that 👏.',
-                'LSPedia is not an enemy; on the contrary, it seeks to help 🤝. We know that much of the available information is spoken in Spanish. To help Deaf people, a hearing person who knows Spanish and sign language can contribute by interpreting and making those videos available 🎥.',
-                'When a Deaf person watches the videos, they receive real help and can understand the information. Later, when they see information on the internet or in publications and come across those words again, they will already be able to understand them. That can be very useful in their work and in many other activities 💼.'
+                'Some people may think that LSPedia is trying to appropriate the work of the Deaf community or teach signs to hearing people. That is not the purpose of the project.',
+                'We recognize that the Deaf community has the right to teach its own language. We also value the work of Deaf people who participate as language models, teachers, and in other roles connected with sign language.',
+                'LSPedia aims to support accessibility. Much of the information available in Peru is expressed in Spanish. A hearing person who knows Spanish and sign language can contribute through interpreting and the production of accessible content.',
+                'When a Deaf person accesses these videos, they can better understand certain terms and recognize them later in documents, publications, studies, work, and other everyday contexts.'
             ],
             '85': [
-                'On the internet, on your computer 💻 or your phone 📱, you can find a huge amount of information: books 📚, news 📰, social media, Facebook, WhatsApp, YouTube, and much more. In Peru, most of that information is in spoken Spanish.',
-                'Let me ask you: is it easy for a Deaf person to access all that information? The truth is, no 🚫. A Deaf person may use sign language as their first language, while much of that information is spoken, and they may also see many written words that are difficult to understand. This can become like a wall 🧱 that blocks accessibility. It is a real problem.',
-                'That is why LSPedia was created. ✨ What is it? It is a dictionary 📖 that you can access through a web link 🔗. You open it and find a visual website. There you can see the meaning of words with examples, presented in videos 🎬 and sign language. You can learn from them, and it can feel like discovering something new 💡.',
-                'Those videos are accompanied by illustrations 🖼️ that help you imagine the idea and understand it better. It is practical support that can help your personal progress by increasing your knowledge 📈.',
-                'This is available so that any Deaf person can learn new and useful words, making the kinds of information mentioned at the beginning more accessible to you. ✅'
+                'The internet offers a vast amount of information through computers and phones: books, news, social media, videos, and many other resources. In Peru, much of this content is available primarily in Spanish.',
+                'For many Deaf people, accessing all that information is not always simple. Sign language may be their first language, while some terms in written Spanish can be difficult to understand. That difference can become a barrier to accessing information.',
+                'LSPedia was created to help reduce that barrier. It is a visual dictionary available on the web that presents words, meanings, and examples through videos supported by Peruvian Sign Language.',
+                'The videos are complemented by illustrations that help represent ideas clearly. The goal is to make concepts easier to understand and progressively expand vocabulary and knowledge.',
+                'LSPedia is available so that more Deaf people can understand useful words and access information from different areas with greater independence.'
             ],
             '185': [
-                'Creating LSPedia involves many kinds of work: designing the website for computers and phones 🖥️📱, recording videos, and editing them 🎞️. It is a large project with many different tasks, and that also involves expenses 💸.',
-                'How is it being funded? Personally, with my own resources 👤. Is an organization or the government providing money? No. Maybe in the future, perhaps.',
-                'LSPedia does need support. Would you like to help? 🙌 Thank you very much. How can you do it? In several ways. Here are five 👇'
+                'Creating and maintaining LSPedia involves designing and improving the website, adapting it for computers and phones, recording videos, editing them, and preparing new content. It is a project with many tasks and ongoing maintenance costs.',
+                'The project is currently funded with personal resources. It does not receive funding from an organization or from the government.',
+                'LSPedia can continue to grow with voluntary support. There are several ways to contribute:'
             ],
             '396': [
-                'Thank you for your support 🙏. Because of it, LSPedia keeps moving forward, helping promote inclusion and learning for Deaf people. 🤟💙'
+                'Thank you for your support. Every contribution helps LSPedia continue to grow as a resource focused on accessibility, inclusion, and learning for Deaf people.'
             ]
         },
         lista185: [
-            '1️⃣ Suggest a new word: on the website you will find the word dictionary. If you notice that a word is missing — perhaps at work, at an institute, or at university a teacher mentioned a word you do not understand — you can suggest it with the button on the left ⬅️. A form 📝 will open where you enter your name, identify yourself (Deaf, hearing, or interpreter), and write the word. After you send it, the word can be interpreted and a new video can be added. 📤',
-            '💭 2- Share ideas or record vocabulary: using that same button, you can leave an idea or suggestion for improving LSPedia. If you are Deaf, you can also record yourself at home 🏠 and send the video as a contribution to the vocabulary. Remember that LSPedia is a free project, so collaboration is voluntary 💛 (payment cannot be offered for it 🚫💰).',
-            '🗣️ 3- Share your experience: if you are Deaf, an interpreter, or represent an institute, university, or association, or if you have contact with the Deaf community, your experience can be very helpful. Share it with us.',
-            '💬 4- Financial support (optional): maintaining the website and recording and editing videos cost money. If you would like to help, you can do so voluntarily by writing privately to the WhatsApp number shown on the website.',
-            '🧏‍♂️ 5- Interpreting and translation: if you have a document that you would like interpreted or translated into sign language, or another project where interpretation support is needed, you can coordinate the details directly. Also, if you are Deaf and there is no interpreter available at a hospital 🏥 or bank 🏦, support may be provided by video call 📹.'
+            'Suggest a new word. If you find a term that is missing from the dictionary — for example, a word used at work, at an institute, or at university — you can send it through the suggestion form. After review, its interpretation can be prepared and a new video may be added.',
+            'Share ideas or contribute vocabulary. You can send proposals for improving LSPedia. If you are Deaf, you can also record a video and offer it as a contribution to the vocabulary. LSPedia is a free project, so these contributions are voluntary.',
+            'Share your experience. If you are Deaf, an interpreter, or part of an institute, university, association, or the Deaf community, your experience can provide valuable information for improving the project.',
+            'Financial support, on an optional basis. Maintaining the website and producing new videos requires resources. Anyone who wishes to contribute voluntarily can get in touch privately through the WhatsApp number shown on the website.',
+            'Interpreting and translation. If you need a document interpreted or translated into sign language, or require interpreting support for another project, the details can be coordinated directly. Video-call support may also be considered when a Deaf person needs to communicate in a service and no interpreter is available.'
         ],
         apoyo: {
             'Sugerir palabra': 'Suggest a word',
             '¿Falta un término? Envíanos tu propuesta.': 'Is a term missing? Send us your suggestion.',
             'Enviar una idea': 'Send an idea',
-            'Comparte sugerencias para mejorar LSPedia.': 'Share suggestions to improve LSPedia.',
+            'Comparte sugerencias para mejorar LSPedia.': 'Share suggestions for improving LSPedia.',
             'Apoyar LSPedia': 'Support LSPedia',
             'Ayuda a mantener el proyecto gratuito y en crecimiento.': 'Help keep the project free and growing.',
             'Contratar un intérprete': 'Hire an interpreter',
@@ -126,9 +126,6 @@
             aplicarSobreNosotros(idioma);
         });
 
-        // i18n.js vuelve a recorrer la interfaz después de algunos clics.
-        // Reaplicamos nuestro texto al final del mismo ciclo para que el
-        // contenido largo de Sobre Nosotros permanezca en el idioma elegido.
         document.addEventListener('click', () => {
             setTimeout(() => aplicarSobreNosotros(idiomaActual()), 0);
         }, true);
