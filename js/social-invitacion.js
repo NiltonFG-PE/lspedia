@@ -11,6 +11,10 @@
 (function(){
     'use strict';
 
+    // Evita inicializar dos veces si el módulo llega por más de una ruta de carga.
+    if(window.__LSPEDIA_SOCIAL_INVITE_RUNNING__) return;
+    window.__LSPEDIA_SOCIAL_INVITE_RUNNING__=true;
+
     const VERSION = '1';
     const SESSION_KEY = 'lsp_social_invite_session_v' + VERSION;
     const NEXT_KEY = 'lsp_social_invite_next_v' + VERSION;
@@ -117,13 +121,37 @@
         }catch(_e){}
     }
 
+    function elementoVisible(el){
+        if(!el) return false;
+        try{
+            const estilo=window.getComputedStyle(el);
+            if(!estilo || estilo.display==='none' || estilo.visibility==='hidden' || estilo.opacity==='0') return false;
+            return !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
+        }catch(_e){ return false; }
+    }
+
+    function tecladoVirtualVisible(){
+        const activo=document.activeElement;
+        if(!activo || !/^(INPUT|TEXTAREA|SELECT)$/.test(activo.tagName)) return false;
+        // Un input puede seguir enfocado después de abrir una ficha. Eso no significa
+        // que el teclado siga visible. Solo bloqueamos si el viewport realmente se redujo.
+        const vv=window.visualViewport;
+        if(!vv) return false;
+        const diferencia=Math.max(0,(window.innerHeight||0)-vv.height);
+        return diferencia>Math.max(120,(window.innerHeight||0)*0.16);
+    }
+
     function bloqueadoTemporalmente(){
         if(document.hidden || document.fullscreenElement) return true;
-        if(document.getElementById('splashScreen') && !document.getElementById('splashScreen').classList.contains('splash-oculto')) return true;
-        if(document.body.classList.contains('modal-open')) return true;
-        if(document.querySelector('.modal.show,.offcanvas.show,[aria-modal="true"]:not(.lsp-social-invite)')) return true;
-        const activo=document.activeElement;
-        if(activo && /^(INPUT|TEXTAREA|SELECT)$/.test(activo.tagName)) return true;
+        const splash=document.getElementById('splashScreen');
+        if(splash && !splash.classList.contains('splash-oculto') && elementoVisible(splash)) return true;
+        if(document.body.classList.contains('modal-open')){
+            const modalVisible=document.querySelector('.modal.show,.offcanvas.show');
+            if(modalVisible && elementoVisible(modalVisible)) return true;
+        }
+        const overlays=Array.from(document.querySelectorAll('.modal.show,.offcanvas.show,[aria-modal="true"]'));
+        if(overlays.some(function(el){ return !el.classList.contains('lsp-social-invite') && elementoVisible(el); })) return true;
+        if(tecladoVirtualVisible()) return true;
         return false;
     }
 
@@ -133,8 +161,8 @@
         if(!MODO_PRUEBA && leerLocalNumero(NEXT_KEY)>ahora()) return false;
         if(bloqueadoTemporalmente()) return false;
         const transcurrido=ahora()-INICIO;
-        // Caso normal: 12 s + dos señales de interés. Respaldo: 30 s + una.
-        return (transcurrido>=12000 && puntos>=2) || (transcurrido>=30000 && puntos>=1);
+        // 12 s si ya hubo interés real. A los 30 s el respaldo es garantizado.
+        return (transcurrido>=12000 && puntos>=2) || transcurrido>=30000;
     }
 
     function actualizarTextos(){
@@ -209,7 +237,6 @@
         });
         cont.querySelector('.lsp-social-invite-close').addEventListener('click',function(){ cerrar('close'); });
         cont.querySelector('.lsp-social-later').addEventListener('click',function(){ cerrar('later'); });
-        actualizarTextos();
         document.body.appendChild(cont);
         tarjeta=cont;
         actualizarTextos();
@@ -286,6 +313,9 @@
         document.addEventListener('visibilitychange',function(){ if(!document.hidden) evaluar(); });
         document.addEventListener('lspedia:idiomaCambiado',actualizarTextos);
         document.addEventListener('keydown',function(e){ if(e.key==='Escape' && tarjeta && tarjeta.classList.contains('is-visible')) cerrar('escape'); });
+        if(window.visualViewport){
+            window.visualViewport.addEventListener('resize',function(){ if(!tecladoVirtualVisible()) evaluar(); },{passive:true});
+        }
     }
 
     function iniciar(){
@@ -294,16 +324,17 @@
             if(yaEnSesion() || leerLocalNumero(NEXT_KEY)>ahora()) return;
         }
         observarInteres();
-        // A los 12 s damos un punto base por permanencia; aún hace falta otra señal
-        // para mostrar pronto la invitación y una lectura pasiva puede esperar hasta 30 s.
+        // A los 12 s damos un punto base por permanencia; a los 30 s existe
+        // además un respaldo absoluto aunque ninguna otra señal haya sido contada.
         setTimeout(function(){ puntos=Math.max(puntos,1); evaluar(); },12000);
         temporizador=setTimeout(evaluar,14000);
+        setTimeout(evaluar,30000);
     }
 
     window.LSPediaSocialInvite={
         mostrar:function(){ puntos=5; return mostrar(); },
         cerrar:cerrar,
-        estado:function(){ return {puntos:puntos,mostrado:mostrado,proxima:leerLocalNumero(NEXT_KEY),prueba:MODO_PRUEBA}; }
+        estado:function(){ return {puntos:puntos,mostrado:mostrado,proxima:leerLocalNumero(NEXT_KEY),prueba:MODO_PRUEBA,bloqueado:bloqueadoTemporalmente()}; }
     };
 
     if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',iniciar,{once:true});
