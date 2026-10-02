@@ -2,9 +2,9 @@
    Mantiene intacto el control PWA original y solo coordina una segunda
    aparición por sesión:
    - 1.ª aparición: comportamiento normal del control existente.
-   - Tras desaparecer, espera 60 s.
+   - Tras desaparecer, espera 80 s.
    - 2.ª aparición: se vuelve a cargar el mismo control.
-   - Cada aparición conserva su autoocultado de 15 s y la desintegración.
+   - Cada aparición conserva su autoocultado de 30 s y la desintegración.
 */
 (function(){
     'use strict';
@@ -17,7 +17,7 @@
     const COUNT_KEY='lspedia_pwa_instalar_apariciones_sesion_v2';
     const NEXT_KEY='lspedia_pwa_instalar_segunda_desde_v2';
     const MAX=2;
-    const ESPERA=60*1000;
+    const ESPERA=80*1000;
     let timer=0;
     let recargando=false;
     let vistoActual=null;
@@ -45,8 +45,8 @@
         guardarSesion(COUNT_KEY,n);
         if(n===1){
             // Respaldo si la página se recarga mientras la primera aparición
-            // sigue visible: la segunda no podrá aparecer inmediatamente.
-            guardarSesion(NEXT_KEY,Date.now()+75000);
+            // sigue visible: 30 s visible + 80 s antes de la segunda.
+            guardarSesion(NEXT_KEY,Date.now()+110000);
         }else{
             borrarSesion(NEXT_KEY);
         }
@@ -69,13 +69,11 @@
     function cargarSegundoControl(){
         if(recargando||instalada()||apariciones()>=MAX||document.getElementById(ID))return;
         recargando=true;
-        // El control original usa esta marca para no reaparecer en la misma sesión.
-        // La quitamos únicamente para permitir la segunda y última aparición.
         borrarSesion(LEGACY_HIDE_KEY);
         const anterior=document.querySelector('script[data-lspedia-pwa-repeat-load]');
         if(anterior)anterior.remove();
         const s=document.createElement('script');
-        s.src='js/pwa-install.js?v=20261001-3&repeat=2';
+        s.src='js/pwa-install.js?v=20261002-1&repeat=2';
         s.async=false;
         s.dataset.lspediaPwaRepeatLoad='1';
         s.onload=function(){recargando=false;setTimeout(function(){
@@ -131,8 +129,6 @@
         const n=apariciones();
         if(n>=MAX)return;
 
-        // Si este módulo llega después de que el control anterior ya se ocultó,
-        // recupera esa primera aparición a partir de la marca histórica.
         let legacy=false;
         try{legacy=sessionStorage.getItem(LEGACY_HIDE_KEY)==='1';}catch(_e){}
         if(n===0&&legacy&&!document.getElementById(ID)){
