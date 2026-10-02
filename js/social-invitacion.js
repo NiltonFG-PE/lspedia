@@ -4,7 +4,7 @@
    - Nunca aparece al entrar de inmediato.
    - Espera señales reales de interés (tiempo + navegación/scroll/interacción).
    - Máximo una vez por sesión.
-   - Si se cierra, descansa 10 días; si se visita una red, 45 días.
+   - Si se cierra, descansa 5 días; si se visita una red, 21 días.
    - No aparece sobre modales, teclado, pantalla completa ni splash.
 */
 (function(){
@@ -14,8 +14,11 @@
     const SESSION_KEY = 'lsp_social_invite_session_v' + VERSION;
     const NEXT_KEY = 'lsp_social_invite_next_v' + VERSION;
     const VISIT_KEY = 'lsp_social_invite_social_visit_v' + VERSION;
-    const DIEZ_DIAS = 10 * 24 * 60 * 60 * 1000;
-    const CUARENTA_CINCO_DIAS = 45 * 24 * 60 * 60 * 1000;
+    const MIGRATION_KEY = 'lsp_social_invite_cooldown_20261001';
+    const CINCO_DIAS = 5 * 24 * 60 * 60 * 1000;
+    const VEINTIUN_DIAS = 21 * 24 * 60 * 60 * 1000;
+    const DIEZ_DIAS_ANTERIOR = 10 * 24 * 60 * 60 * 1000;
+    const CUARENTA_CINCO_DIAS_ANTERIOR = 45 * 24 * 60 * 60 * 1000;
     const INICIO = Date.now();
 
     let puntos = 0;
@@ -84,6 +87,28 @@
 
     function aplazar(ms){ guardarLocal(NEXT_KEY,ahora()+ms); }
 
+    function migrarFrecuenciaAnterior(){
+        try{
+            if(localStorage.getItem(MIGRATION_KEY)==='1') return;
+            const proxima=leerLocalNumero(NEXT_KEY);
+            const visita=leerLocalNumero(VISIT_KEY);
+            const ahoraMs=ahora();
+            if(proxima>ahoraMs){
+                const proximaSocialAnterior=visita ? visita+CUARENTA_CINCO_DIAS_ANTERIOR : 0;
+                const pareceVisitaSocial=visita>0 && Math.abs(proxima-proximaSocialAnterior)<(24*60*60*1000);
+                let nuevaProxima=proxima;
+                if(pareceVisitaSocial){
+                    nuevaProxima=Math.min(proxima,visita+VEINTIUN_DIAS);
+                }else{
+                    const cierreEstimado=proxima-DIEZ_DIAS_ANTERIOR;
+                    nuevaProxima=Math.min(proxima,cierreEstimado+CINCO_DIAS);
+                }
+                guardarLocal(NEXT_KEY,Math.max(ahoraMs,nuevaProxima));
+            }
+            localStorage.setItem(MIGRATION_KEY,'1');
+        }catch(_e){}
+    }
+
     function registrarGA(nombre, parametros){
         try{
             if(typeof window.gtag === 'function'){
@@ -107,8 +132,8 @@
         if(leerLocalNumero(NEXT_KEY)>ahora()) return false;
         if(bloqueadoTemporalmente()) return false;
         const transcurrido=ahora()-INICIO;
-        // Caso normal: 25 s + dos señales de interés. Respaldo: 60 s + una.
-        return (transcurrido>=25000 && puntos>=2) || (transcurrido>=60000 && puntos>=1);
+        // Caso normal: 15 s + dos señales de interés. Respaldo: 35 s + una.
+        return (transcurrido>=15000 && puntos>=2) || (transcurrido>=35000 && puntos>=1);
     }
 
     function actualizarTextos(){
@@ -134,9 +159,9 @@
         marcarSesion();
         if(motivo==='social'){
             guardarLocal(VISIT_KEY,ahora());
-            aplazar(CUARENTA_CINCO_DIAS);
+            aplazar(VEINTIUN_DIAS);
         }else{
-            aplazar(DIEZ_DIAS);
+            aplazar(CINCO_DIAS);
         }
         registrarGA('social_invite_close',{reason:motivo||'dismiss'});
         setTimeout(function(){ if(tarjeta){ tarjeta.remove(); tarjeta=null; } },420);
@@ -202,7 +227,7 @@
         clearTimeout(temporizador);
         if(mostrar()) return;
         if(!mostrado && !yaEnSesion() && leerLocalNumero(NEXT_KEY)<=ahora()){
-            temporizador=setTimeout(evaluar,8000);
+            temporizador=setTimeout(evaluar,4000);
         }
     }
 
@@ -250,7 +275,7 @@
             if(social){
                 marcarSesion();
                 guardarLocal(VISIT_KEY,ahora());
-                aplazar(CUARENTA_CINCO_DIAS);
+                aplazar(VEINTIUN_DIAS);
             }
         },true);
 
@@ -260,12 +285,13 @@
     }
 
     function iniciar(){
+        migrarFrecuenciaAnterior();
         if(yaEnSesion() || leerLocalNumero(NEXT_KEY)>ahora()) return;
         observarInteres();
-        // A los 25 s damos un punto base por permanencia; aún hace falta otra señal
-        // para mostrar pronto la invitación y una lectura pasiva puede esperar hasta 60 s.
-        setTimeout(function(){ puntos=Math.max(puntos,1); evaluar(); },25000);
-        temporizador=setTimeout(evaluar,30000);
+        // A los 15 s damos un punto base por permanencia; aún hace falta otra señal
+        // para mostrar pronto la invitación y una lectura pasiva puede esperar hasta 35 s.
+        setTimeout(function(){ puntos=Math.max(puntos,1); evaluar(); },15000);
+        temporizador=setTimeout(evaluar,20000);
     }
 
     window.LSPediaSocialInvite={
