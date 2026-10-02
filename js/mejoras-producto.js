@@ -6,10 +6,6 @@
 
     function abrirDescubreEnDiccionario(palabra){
         if(!palabra) return;
-        // Descubre pertenece al Inicio/Diccionario. Antes abría la ficha
-        // directamente y podía heredar el título/estado visual de Vocabulario
-        // si el usuario venía de esa sección. Primero reconstruimos la pantalla
-        // madre correcta y después abrimos la ficha, sin recargar la página.
         if(typeof window.irAlBuscador === 'function'){
             window.irAlBuscador({ sinEnfoque: true, irArriba: false });
         }
@@ -53,7 +49,6 @@
         function mostrarDescubreSoloConVideo(){
             const app = window.App;
             if(!app || !Array.isArray(app.datos)) return original.apply(this, arguments);
-
             const datosCompletos = app.datos;
             const palabrasConVideo = datosCompletos.filter(function(palabra){
                 const video = String((palabra && palabra.video) || '').trim();
@@ -61,13 +56,11 @@
                 if(typeof window.extraerIdYouTube === 'function') return !!window.extraerIdYouTube(video);
                 return true;
             });
-
             if(!palabrasConVideo.length){
                 const tarjeta = document.getElementById('senalDelDia');
                 if(tarjeta) tarjeta.style.display = 'none';
                 return;
             }
-
             app.datos = palabrasConVideo;
             try {
                 const resultado = original.apply(this, arguments);
@@ -194,7 +187,7 @@
     cargar('js/modo-oscuro.js?v=20260916-2');
     cargar('js/mi-lspedia-secciones.js?v=20260930-1');
     cargarCss('css/social-invitacion.css?v=20261001-3');
-    cargar('js/social-invitacion.js?v=20261001-4');
+    cargar('js/social-invitacion.js?v=20261002-1');
 
     function cargarMejorasConCore(){
         cargar('js/accesibilidad-segura.js?v=20260914-1');
