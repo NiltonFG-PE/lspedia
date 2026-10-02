@@ -260,7 +260,7 @@
         if (window.LSPediaSecurity && !window.LSPediaSecurity.permitirPWA()) return;
         if (document.querySelector('script[data-lspedia-pwa-install]')) return;
         const script = document.createElement('script');
-        script.src = 'js/pwa-install.js?v=20260914-1';
+        script.src = 'js/pwa-install.js?v=20261001-2';
         script.async = false;
         script.dataset.lspediaPwaInstall = '1';
         document.head.appendChild(script);
