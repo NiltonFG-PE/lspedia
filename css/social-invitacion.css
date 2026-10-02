@@ -87,6 +87,56 @@
 .lsp-social-later{border:0;background:transparent;color:#5f6e82;font-size:11.5px;font-weight:700;padding:6px 4px;cursor:pointer;white-space:nowrap}
 .lsp-social-later:hover{color:#1e5fb5}
 
+/* Desintegración para cierre manual: X / “Ahora no”. */
+.lsp-social-invite.lsp-social-desintegrando{
+    pointer-events:none!important;
+    overflow:visible!important;
+    animation:lspSocialDesintegrarBase 1.08s cubic-bezier(.22,.61,.36,1) forwards!important;
+    will-change:opacity,transform,filter;
+}
+.lsp-social-invite.lsp-social-desintegrando .lsp-social-invite-card{
+    overflow:visible!important;
+    animation:lspSocialContenidoPolvo .92s ease-out forwards!important;
+    will-change:opacity,filter,transform;
+}
+.lsp-social-invite.lsp-social-desintegrando .lsp-social-invite-inner,
+.lsp-social-invite.lsp-social-desintegrando .lsp-social-invite-close{
+    animation:lspSocialContenidoPolvo .88s ease-out forwards!important;
+}
+.lsp-social-polvo{
+    position:absolute;
+    z-index:2147483640;
+    left:var(--px);
+    top:var(--py);
+    width:var(--ps);
+    height:var(--ps);
+    border-radius:42% 58% 55% 45%;
+    background:var(--pc);
+    box-shadow:0 0 8px color-mix(in srgb,var(--pc) 72%,transparent);
+    pointer-events:none;
+    opacity:0;
+    transform:translate3d(0,0,0) rotate(0deg) scale(1);
+    animation:lspSocialPolvoSalir var(--pd) cubic-bezier(.18,.7,.2,1) var(--pdelay) forwards;
+    will-change:transform,opacity,filter;
+}
+@keyframes lspSocialDesintegrarBase{
+    0%{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}
+    38%{opacity:.92;transform:translate3d(4px,-1px,0) scale(.995);filter:blur(.15px)}
+    68%{opacity:.64;transform:translate3d(12px,-3px,0) scale(.98);filter:blur(1.2px)}
+    100%{opacity:0;transform:translate3d(30px,-8px,0) scale(.93);filter:blur(4.5px)}
+}
+@keyframes lspSocialContenidoPolvo{
+    0%{opacity:1;filter:blur(0);transform:translateX(0)}
+    34%{opacity:.91}
+    100%{opacity:0;filter:blur(3.2px);transform:translateX(18px)}
+}
+@keyframes lspSocialPolvoSalir{
+    0%{opacity:0;transform:translate3d(0,0,0) rotate(0deg) scale(.72);filter:blur(0)}
+    13%{opacity:.98}
+    68%{opacity:.74}
+    100%{opacity:0;transform:translate3d(var(--pdx),var(--pdy),0) rotate(var(--prot)) scale(.10);filter:blur(1.9px)}
+}
+
 html[data-theme='dark'] .lsp-social-invite-card,
 body.modo-oscuro .lsp-social-invite-card{background:rgba(14,25,43,.96);border-color:rgba(148,163,184,.2);color:#e5edf8}
 html[data-theme='dark'] .lsp-social-invite-title,
@@ -124,4 +174,5 @@ body.modo-oscuro .lsp-social-invite-foot{border-top-color:#27384f}
 }
 @media(prefers-reduced-motion:reduce){
     .lsp-social-invite,.lsp-social-link,.lsp-social-invite-close{transition:none!important}
+    .lsp-social-invite.lsp-social-desintegrando,.lsp-social-polvo{animation:none!important}
 }
