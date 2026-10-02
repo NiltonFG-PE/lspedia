@@ -5,6 +5,8 @@
    - Espera señales reales de interés (tiempo + navegación/scroll/interacción).
    - Máximo una vez por sesión.
    - Si se cierra, descansa 5 días; si se visita una red, 15 días.
+   - Tocar una red NO cierra la invitación: permanece visible para poder abrir otras.
+   - Se cierra con “Ahora no”, con la X o automáticamente 30 s después de mostrarse.
    - No aparece sobre modales, teclado, pantalla completa ni splash.
    - ?socialtest=1 permite probar los tiempos sin alterar descansos reales.
 */
@@ -22,6 +24,7 @@
     const MIGRATION_KEY = 'lsp_social_invite_cooldown_20261001b';
     const CINCO_DIAS = 5 * 24 * 60 * 60 * 1000;
     const QUINCE_DIAS = 15 * 24 * 60 * 60 * 1000;
+    const TIEMPO_VISIBLE = 30 * 1000;
     const INICIO = Date.now();
     const MODO_PRUEBA = (function(){
         try{ return new URLSearchParams(window.location.search).get('socialtest') === '1'; }
@@ -34,7 +37,9 @@
     let navegacionContada = false;
     let mostrado = false;
     let temporizador = 0;
+    let temporizadorCierre = 0;
     let tarjeta = null;
+    let visitoRed = false;
 
     const REDES = [
         {
@@ -182,14 +187,25 @@
         if(close) close.setAttribute('aria-label',t.close);
     }
 
+    function registrarVisitaRed(redId){
+        visitoRed=true;
+        registrarGA('social_invite_click',{network:redId});
+        if(MODO_PRUEBA) return;
+        guardarLocal(VISIT_KEY,ahora());
+        aplazar(QUINCE_DIAS);
+    }
+
     function cerrar(motivo){
         if(!tarjeta) return;
+        clearTimeout(temporizadorCierre);
         tarjeta.classList.remove('is-visible');
         if(!MODO_PRUEBA){
             marcarSesion();
-            if(motivo==='social'){
-                guardarLocal(VISIT_KEY,ahora());
-                aplazar(QUINCE_DIAS);
+            // Si ya visitó una red, conservamos el descanso largo de 15 días.
+            // Cerrar después con X, “Ahora no” o por tiempo no debe reducirlo a 5.
+            if(visitoRed){
+                const visita=leerLocalNumero(VISIT_KEY) || ahora();
+                guardarLocal(NEXT_KEY,Math.max(leerLocalNumero(NEXT_KEY),visita+QUINCE_DIAS));
             }else{
                 aplazar(CINCO_DIAS);
             }
@@ -230,8 +246,9 @@
             a.dataset.red=red.id;
             a.innerHTML='<span class="lsp-social-link-icon">'+red.svg+'</span><span>'+red.nombre+'</span>';
             a.addEventListener('click',function(){
-                registrarGA('social_invite_click',{network:red.id});
-                cerrar('social');
+                // Abrir una red no cierra la tarjeta. Así el usuario puede volver
+                // y visitar otra red sin tener que esperar una nueva invitación.
+                registrarVisitaRed(red.id);
             });
             grid.appendChild(a);
         });
@@ -249,6 +266,8 @@
         if(!MODO_PRUEBA) marcarSesion();
         const el=crear();
         requestAnimationFrame(function(){ requestAnimationFrame(function(){ el.classList.add('is-visible'); }); });
+        clearTimeout(temporizadorCierre);
+        temporizadorCierre=setTimeout(function(){ cerrar('auto'); },TIEMPO_VISIBLE);
         registrarGA('social_invite_view',{points:puntos,seconds:Math.round((ahora()-INICIO)/1000)});
         return true;
     }
@@ -312,7 +331,6 @@
 
         document.addEventListener('visibilitychange',function(){ if(!document.hidden) evaluar(); });
         document.addEventListener('lspedia:idiomaCambiado',actualizarTextos);
-        document.addEventListener('keydown',function(e){ if(e.key==='Escape' && tarjeta && tarjeta.classList.contains('is-visible')) cerrar('escape'); });
         if(window.visualViewport){
             window.visualViewport.addEventListener('resize',function(){ if(!tecladoVirtualVisible()) evaluar(); },{passive:true});
         }
@@ -334,7 +352,7 @@
     window.LSPediaSocialInvite={
         mostrar:function(){ puntos=5; return mostrar(); },
         cerrar:cerrar,
-        estado:function(){ return {puntos:puntos,mostrado:mostrado,proxima:leerLocalNumero(NEXT_KEY),prueba:MODO_PRUEBA,bloqueado:bloqueadoTemporalmente()}; }
+        estado:function(){ return {puntos:puntos,mostrado:mostrado,proxima:leerLocalNumero(NEXT_KEY),prueba:MODO_PRUEBA,bloqueado:bloqueadoTemporalmente(),visitoRed:visitoRed}; }
     };
 
     if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',iniciar,{once:true});
