@@ -61,9 +61,10 @@
 .lsp-social-invite-title{margin:0;font-size:19px;line-height:1.25;font-weight:800;color:#102a54}
 .lsp-social-invite-text{margin:10px 0 16px;font-size:13.5px;line-height:1.55;color:#56657a}
 .lsp-social-invite-close{
-    position:absolute;right:12px;top:13px;width:36px;height:36px;border:0;border-radius:50%;
+    position:absolute;right:12px;top:13px;z-index:10;width:36px;height:36px;border:0;border-radius:50%;
     display:grid;place-items:center;background:#f4f7fb;color:#64748b;font-size:21px;line-height:1;
-    cursor:pointer;transition:background .18s ease,transform .18s ease,color .18s ease;
+    cursor:pointer;pointer-events:auto;touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+    transition:background .18s ease,transform .18s ease,color .18s ease;
 }
 .lsp-social-invite-close:hover,.lsp-social-invite-close:focus-visible{background:#e8eef7;color:#17233b;transform:scale(1.04)}
 .lsp-social-invite-close:focus-visible,.lsp-social-link:focus-visible,.lsp-social-later:focus-visible{outline:3px solid rgba(37,99,235,.25);outline-offset:2px}
@@ -115,6 +116,7 @@ body.modo-oscuro .lsp-social-invite-foot{border-top-color:#27384f}
     .lsp-social-link{padding:9px 3px 8px;border-radius:14px;font-size:9.5px}
     .lsp-social-link-icon{width:32px;height:32px}
     .lsp-social-invite-note{max-width:190px}
+    .lsp-social-invite-close{right:8px;top:9px;width:40px;height:40px}
 }
 @media(max-width:380px){
     .lsp-social-invite-grid{grid-template-columns:repeat(2,1fr)}
