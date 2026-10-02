@@ -5,7 +5,7 @@
    - En Chromium usa beforeinstallprompt cuando está disponible.
    - Si el navegador no expone el prompt, muestra una instrucción breve.
    - Se oculta dentro de la app instalada (display-mode: standalone).
-   - Se oculta automáticamente a los 15 s con una desintegración ligera.
+   - Se oculta automáticamente a los 30 s con una desintegración ligera.
    - No se habilita en copias públicas de otro dominio.
    ============================================================ */
 (function () {
@@ -14,7 +14,7 @@
     const ID_CONTENEDOR = 'lspPwaInstalar';
     const CLAVE_INSTALADA = 'lspedia_pwa_instalada_v1';
     const CLAVE_OCULTA_SESION = 'lspedia_pwa_instalar_oculta_sesion';
-    const TIEMPO_AUTO_OCULTAR = 15000;
+    const TIEMPO_AUTO_OCULTAR = 30000;
     const INICIO_NAVEGACION = Date.now();
     let eventoInstalacion = null;
     let temporizadorAutoOcultar = 0;
@@ -446,9 +446,6 @@
             const p = document.createElement('span');
             p.className = 'lsp-pwa-polvo';
 
-            // La mayor parte del polvo nace hacia el lado derecho, como si la tarjeta
-            // se fuera deshaciendo en esa dirección, pero algunas partículas salen
-            // también del icono y del centro para que el efecto no parezca un simple fade.
             const sesgo = Math.pow(Math.random(), .55);
             const x = Math.round(ancho * (0.12 + sesgo * 0.86));
             const y = Math.round(alto * (0.08 + Math.random() * 0.84));
@@ -545,7 +542,7 @@
             return;
         }
 
-        // Si ya pasaron los 15 s de esta navegación, no dejamos que un
+        // Si ya pasaron los 30 s de esta navegación, no dejamos que un
         // beforeinstallprompt tardío vuelva a mostrar el control.
         if (Date.now() - INICIO_NAVEGACION >= TIEMPO_AUTO_OCULTAR) {
             ocultarEnSesion();
@@ -553,8 +550,6 @@
             return;
         }
 
-        // En Android siempre ofrecemos el acceso. En escritorio solo aparece
-        // si Chromium confirmó que la PWA se puede instalar.
         if (!esAndroid() && !eventoInstalacion) return;
         if (document.getElementById(ID_CONTENEDOR)) return;
 
