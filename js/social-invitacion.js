@@ -107,8 +107,8 @@
         if(leerLocalNumero(NEXT_KEY)>ahora()) return false;
         if(bloqueadoTemporalmente()) return false;
         const transcurrido=ahora()-INICIO;
-        // Caso normal: 55 s + dos señales de interés. Respaldo: 110 s + una.
-        return (transcurrido>=55000 && puntos>=2) || (transcurrido>=110000 && puntos>=1);
+        // Caso normal: 25 s + dos señales de interés. Respaldo: 60 s + una.
+        return (transcurrido>=25000 && puntos>=2) || (transcurrido>=60000 && puntos>=1);
     }
 
     function actualizarTextos(){
@@ -262,10 +262,10 @@
     function iniciar(){
         if(yaEnSesion() || leerLocalNumero(NEXT_KEY)>ahora()) return;
         observarInteres();
-        // Un usuario que permanece navegando más de un minuto ya mostró interés,
-        // pero todavía pedimos al menos otra señal para no interrumpir una lectura pasiva.
-        setTimeout(function(){ puntos=Math.max(puntos,1); evaluar(); },55000);
-        temporizador=setTimeout(evaluar,60000);
+        // A los 25 s damos un punto base por permanencia; aún hace falta otra señal
+        // para mostrar pronto la invitación y una lectura pasiva puede esperar hasta 60 s.
+        setTimeout(function(){ puntos=Math.max(puntos,1); evaluar(); },25000);
+        temporizador=setTimeout(evaluar,30000);
     }
 
     window.LSPediaSocialInvite={
