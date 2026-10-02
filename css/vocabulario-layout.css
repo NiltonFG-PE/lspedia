@@ -174,3 +174,39 @@
         transition: none !important;
     }
 }
+
+/* ============================================================
+   Ficha abierta de Vocabulario — restauración de layout en escritorio
+   2026-10-01
+   ------------------------------------------------------------
+   La ficha está construida como bloques normales y, dentro de ella, la zona
+   multimedia usa la cuadrícula Bootstrap 7/5. Un ajuste pensado para móvil
+   podía dejar .card-body comportándose como flex también en escritorio; en
+   ese estado cada hijo tomaba solo su ancho de contenido y la fila de video +
+   ejemplo quedaba comprimida a la izquierda. En escritorio devolvemos
+   explícitamente el flujo de bloques original. No afecta móvil ni las tarjetas
+   de categorías.
+   ============================================================ */
+@media (min-width: 992px) {
+    #resultadoCategorias > .card > .card-body,
+    #resultadoCategorias > .ficha-palabra-visual > .card-body {
+        display: block !important;
+        width: 100% !important;
+        flex-direction: initial !important;
+        flex-wrap: initial !important;
+        align-items: initial !important;
+        justify-content: initial !important;
+    }
+
+    #resultadoCategorias > .card > .card-body > .row,
+    #resultadoCategorias > .ficha-palabra-visual > .card-body > .row {
+        width: auto !important;
+        max-width: none !important;
+    }
+
+    #resultadoCategorias > .card > .card-body > p,
+    #resultadoCategorias > .ficha-palabra-visual > .card-body > p {
+        width: auto !important;
+        max-width: none !important;
+    }
+}
