@@ -5,6 +5,7 @@
    - En Chromium usa beforeinstallprompt cuando está disponible.
    - Si el navegador no expone el prompt, muestra una instrucción breve.
    - Se oculta dentro de la app instalada (display-mode: standalone).
+   - Se oculta automáticamente a los 15 s con una desintegración ligera.
    - No se habilita en copias públicas de otro dominio.
    ============================================================ */
 (function () {
@@ -13,7 +14,11 @@
     const ID_CONTENEDOR = 'lspPwaInstalar';
     const CLAVE_INSTALADA = 'lspedia_pwa_instalada_v1';
     const CLAVE_OCULTA_SESION = 'lspedia_pwa_instalar_oculta_sesion';
+    const TIEMPO_AUTO_OCULTAR = 15000;
+    const INICIO_NAVEGACION = Date.now();
     let eventoInstalacion = null;
+    let temporizadorAutoOcultar = 0;
+    let desintegrando = false;
 
     function permitido() {
         try {
@@ -258,6 +263,63 @@
                 display: block;
             }
 
+            #${ID_CONTENEDOR}.lsp-pwa-desintegrando {
+                overflow: visible;
+                pointer-events: none;
+                animation: lspPwaDesintegrarBase 1.05s cubic-bezier(.22,.61,.36,1) forwards !important;
+                will-change: opacity, transform, filter;
+            }
+
+            #${ID_CONTENEDOR}.lsp-pwa-desintegrando .lsp-pwa-instalar-btn,
+            #${ID_CONTENEDOR}.lsp-pwa-desintegrando .lsp-pwa-instalar-cerrar,
+            #${ID_CONTENEDOR}.lsp-pwa-desintegrando .lsp-pwa-instalar-ayuda {
+                animation: lspPwaContenidoPolvo .88s ease-out forwards !important;
+            }
+
+            .lsp-pwa-polvo {
+                position: absolute;
+                z-index: 12;
+                left: var(--px);
+                top: var(--py);
+                width: var(--ps);
+                height: var(--ps);
+                border-radius: 42% 58% 55% 45%;
+                background: var(--pc);
+                box-shadow: 0 0 8px color-mix(in srgb, var(--pc) 72%, transparent);
+                pointer-events: none;
+                opacity: 0;
+                transform: translate3d(0,0,0) rotate(0deg) scale(1);
+                animation: lspPwaPolvoSalir var(--pd) cubic-bezier(.18,.7,.2,1) var(--pdelay) forwards;
+                will-change: transform, opacity, filter;
+            }
+
+            @keyframes lspPwaDesintegrarBase {
+                0% { opacity: 1; transform: translate3d(0,0,0) scale(1); filter: blur(0); }
+                42% { opacity: .84; transform: translate3d(4px,-1px,0) scale(.992); filter: blur(.25px); }
+                100% { opacity: 0; transform: translate3d(24px,-7px,0) scale(.94); filter: blur(4px); }
+            }
+
+            @keyframes lspPwaContenidoPolvo {
+                0% { opacity: 1; filter: blur(0); transform: translateX(0); }
+                32% { opacity: .88; }
+                100% { opacity: 0; filter: blur(3px); transform: translateX(15px); }
+            }
+
+            @keyframes lspPwaPolvoSalir {
+                0% {
+                    opacity: 0;
+                    transform: translate3d(0,0,0) rotate(0deg) scale(.7);
+                    filter: blur(0);
+                }
+                14% { opacity: .95; }
+                70% { opacity: .72; }
+                100% {
+                    opacity: 0;
+                    transform: translate3d(var(--pdx),var(--pdy),0) rotate(var(--prot)) scale(.12);
+                    filter: blur(1.8px);
+                }
+            }
+
             @keyframes lspPwaEntrada {
                 from {
                     opacity: 0;
@@ -358,7 +420,9 @@
             @media (prefers-reduced-motion: reduce) {
                 #${ID_CONTENEDOR},
                 #${ID_CONTENEDOR} .lsp-pwa-instalar-icono,
-                #${ID_CONTENEDOR} .lsp-pwa-instalar-btn::after {
+                #${ID_CONTENEDOR} .lsp-pwa-instalar-btn::after,
+                #${ID_CONTENEDOR}.lsp-pwa-desintegrando,
+                .lsp-pwa-polvo {
                     animation: none !important;
                 }
 
@@ -369,6 +433,73 @@
             }
         `;
         document.head.appendChild(estilo);
+    }
+
+    function crearParticulasDesintegracion(caja) {
+        if (!caja || caja.querySelector('.lsp-pwa-polvo')) return;
+        const ancho = Math.max(180, caja.offsetWidth || 260);
+        const alto = Math.max(56, caja.offsetHeight || 64);
+        const colores = ['#0f172a','#13264e','#1b3567','#ffffff','#ffd84f','#f5b914','#93a4bf'];
+        const cantidad = ancho < 240 ? 34 : 44;
+
+        for (let i = 0; i < cantidad; i += 1) {
+            const p = document.createElement('span');
+            p.className = 'lsp-pwa-polvo';
+
+            // La mayor parte del polvo nace hacia el lado derecho, como si la tarjeta
+            // se fuera deshaciendo en esa dirección, pero algunas partículas salen
+            // también del icono y del centro para que el efecto no parezca un simple fade.
+            const sesgo = Math.pow(Math.random(), .55);
+            const x = Math.round(ancho * (0.12 + sesgo * 0.86));
+            const y = Math.round(alto * (0.08 + Math.random() * 0.84));
+            const size = (2.2 + Math.random() * 5.4).toFixed(1) + 'px';
+            const dx = Math.round(24 + Math.random() * 66) + 'px';
+            const dy = Math.round(-34 + Math.random() * 64) + 'px';
+            const rot = Math.round(-140 + Math.random() * 280) + 'deg';
+            const delay = (Math.random() * .28).toFixed(2) + 's';
+            const dur = (.72 + Math.random() * .52).toFixed(2) + 's';
+
+            p.style.setProperty('--px', x + 'px');
+            p.style.setProperty('--py', y + 'px');
+            p.style.setProperty('--ps', size);
+            p.style.setProperty('--pdx', dx);
+            p.style.setProperty('--pdy', dy);
+            p.style.setProperty('--prot', rot);
+            p.style.setProperty('--pdelay', delay);
+            p.style.setProperty('--pd', dur);
+            p.style.setProperty('--pc', colores[Math.floor(Math.random() * colores.length)]);
+            caja.appendChild(p);
+        }
+    }
+
+    function desintegrarYQuitar() {
+        if (desintegrando) return;
+        desintegrando = true;
+        ocultarEnSesion();
+        clearTimeout(temporizadorAutoOcultar);
+
+        const caja = document.getElementById(ID_CONTENEDOR);
+        if (!caja) return;
+
+        const reducirMovimiento = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reducirMovimiento) {
+            caja.style.opacity = '0';
+            setTimeout(quitarControl, 120);
+            return;
+        }
+
+        crearParticulasDesintegracion(caja);
+        caja.classList.add('lsp-pwa-desintegrando');
+        setTimeout(quitarControl, 1450);
+    }
+
+    function programarAutoOcultado() {
+        clearTimeout(temporizadorAutoOcultar);
+        const restante = Math.max(0, TIEMPO_AUTO_OCULTAR - (Date.now() - INICIO_NAVEGACION));
+        temporizadorAutoOcultar = setTimeout(function () {
+            if (estaInstalada()) return;
+            desintegrarYQuitar();
+        }, restante);
     }
 
     function mostrarAyudaManual() {
@@ -383,6 +514,7 @@
     }
 
     async function solicitarInstalacion() {
+        clearTimeout(temporizadorAutoOcultar);
         if (eventoInstalacion) {
             const evento = eventoInstalacion;
             eventoInstalacion = null;
@@ -395,17 +527,28 @@
                     return;
                 }
                 mostrarAyudaManual();
+                programarAutoOcultado();
             } catch (_e) {
                 mostrarAyudaManual();
+                programarAutoOcultado();
             }
             return;
         }
 
         mostrarAyudaManual();
+        programarAutoOcultado();
     }
 
     function crearControl() {
         if (!permitido() || estaInstalada() || estaOcultoEnSesion()) {
+            quitarControl();
+            return;
+        }
+
+        // Si ya pasaron los 15 s de esta navegación, no dejamos que un
+        // beforeinstallprompt tardío vuelva a mostrar el control.
+        if (Date.now() - INICIO_NAVEGACION >= TIEMPO_AUTO_OCULTAR) {
+            ocultarEnSesion();
             quitarControl();
             return;
         }
@@ -446,10 +589,12 @@
         if (instalar) instalar.addEventListener('click', solicitarInstalacion);
         if (cerrar) cerrar.addEventListener('click', function () {
             ocultarEnSesion();
+            clearTimeout(temporizadorAutoOcultar);
             quitarControl();
         });
 
         document.body.appendChild(caja);
+        programarAutoOcultado();
     }
 
     window.addEventListener('beforeinstallprompt', function (evento) {
@@ -462,6 +607,7 @@
     window.addEventListener('appinstalled', function () {
         guardarLocal(CLAVE_INSTALADA, '1');
         eventoInstalacion = null;
+        clearTimeout(temporizadorAutoOcultar);
         quitarControl();
     });
 
@@ -470,6 +616,7 @@
         mediaStandalone.addEventListener('change', function (evento) {
             if (evento.matches) {
                 guardarLocal(CLAVE_INSTALADA, '1');
+                clearTimeout(temporizadorAutoOcultar);
                 quitarControl();
             }
         });
@@ -481,6 +628,7 @@
             return;
         }
         crearControl();
+        programarAutoOcultado();
     }
 
     if (document.readyState === 'loading') {
