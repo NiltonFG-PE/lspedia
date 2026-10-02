@@ -1,11 +1,11 @@
 /* LSPedia — invitación inteligente a redes sociales.
-   - 1.ª aparición: desde 12 s con interés o respaldo a los 30 s.
+   - 1.ª aparición: desde 15 s con interés o respaldo a los 25 s.
    - Máximo 2 apariciones por sesión; la 2.ª espera 90 s tras cerrar la 1.ª.
-   - Cada aparición permanece hasta 30 s.
+   - Cada aparición permanece hasta 60 s.
    - Tocar una red NO cierra la invitación.
    - X y “Ahora no” cierran con desintegración de partículas.
    - El autocierre conserva una salida breve y discreta.
-   - Sin visitar redes: descanso 5 días. Tras visitar una red: 15 días.
+   - Sin visitar redes: descanso 3 días. Tras visitar una red: 7 días.
 */
 (function(){
     'use strict';
@@ -18,10 +18,10 @@
     const SECOND_AT_KEY='lsp_social_invite_second_at_v'+VERSION;
     const NEXT_KEY='lsp_social_invite_next_v'+VERSION;
     const VISIT_KEY='lsp_social_invite_social_visit_v'+VERSION;
-    const MIGRATION_KEY='lsp_social_invite_cooldown_20261001b';
-    const CINCO_DIAS=5*24*60*60*1000;
-    const QUINCE_DIAS=15*24*60*60*1000;
-    const TIEMPO_VISIBLE=30*1000;
+    const MIGRATION_KEY='lsp_social_invite_cooldown_20261002c';
+    const TRES_DIAS=3*24*60*60*1000;
+    const SIETE_DIAS=7*24*60*60*1000;
+    const TIEMPO_VISIBLE=60*1000;
     const ESPERA_SEGUNDA=90*1000;
     const MAX_SESION=2;
     const INICIO=Date.now();
@@ -75,8 +75,8 @@
             const proxima=leerLocalNumero(NEXT_KEY),visita=leerLocalNumero(VISIT_KEY),ahoraMs=ahora();
             if(proxima>ahoraMs){
                 let nuevaProxima=proxima;
-                if(visita>0)nuevaProxima=Math.min(proxima,visita+QUINCE_DIAS);
-                else nuevaProxima=Math.min(proxima,ahoraMs+CINCO_DIAS);
+                if(visita>0)nuevaProxima=Math.min(proxima,visita+SIETE_DIAS);
+                else nuevaProxima=Math.min(proxima,ahoraMs+TRES_DIAS);
                 guardarLocal(NEXT_KEY,Math.max(ahoraMs,nuevaProxima));
             }
             localStorage.setItem(MIGRATION_KEY,'1');
@@ -117,7 +117,7 @@
         if(apariciones===0){
             if(!MODO_PRUEBA&&leerLocalNumero(NEXT_KEY)>ahora())return false;
             const transcurrido=ahora()-INICIO;
-            return(transcurrido>=12000&&puntos>=2)||transcurrido>=30000;
+            return(transcurrido>=15000&&puntos>=2)||transcurrido>=25000;
         }
         const segundaDesde=leerSesionNumero(SECOND_AT_KEY);
         return segundaDesde>0&&ahora()>=segundaDesde;
@@ -136,7 +136,7 @@
         registrarGA('social_invite_click',{network:redId,appearance:aparicionesSesion()});
         if(MODO_PRUEBA)return;
         guardarLocal(VISIT_KEY,ahora());
-        aplazar(QUINCE_DIAS);
+        aplazar(SIETE_DIAS);
     }
 
     function programarSegunda(){
@@ -151,8 +151,8 @@
         if(MODO_PRUEBA)return;
         if(visitoRed){
             const visita=leerLocalNumero(VISIT_KEY)||ahora();
-            guardarLocal(NEXT_KEY,Math.max(leerLocalNumero(NEXT_KEY),visita+QUINCE_DIAS));
-        }else aplazar(CINCO_DIAS);
+            guardarLocal(NEXT_KEY,Math.max(leerLocalNumero(NEXT_KEY),visita+SIETE_DIAS));
+        }else aplazar(TRES_DIAS);
     }
 
     function finalizarCierre(cerrada,espera){
@@ -315,7 +315,7 @@
             if(social&&!MODO_PRUEBA){
                 guardarSesion(SESSION_KEY,MAX_SESION);
                 guardarLocal(VISIT_KEY,ahora());
-                aplazar(QUINCE_DIAS);
+                aplazar(SIETE_DIAS);
             }
         },true);
         document.addEventListener('visibilitychange',function(){if(!document.hidden)evaluar();});
@@ -326,7 +326,7 @@
     function cargarRepeticionInstalacion(){
         if(document.querySelector('script[data-lspedia-pwa-repeat]'))return;
         const s=document.createElement('script');
-        s.src='js/pwa-repeat.js?v=20261001-1';
+        s.src='js/pwa-repeat.js?v=20261002-1';
         s.async=true;
         s.dataset.lspediaPwaRepeat='1';
         document.head.appendChild(s);
@@ -344,9 +344,9 @@
             evaluar();
             return;
         }
-        setTimeout(function(){puntos=Math.max(puntos,1);evaluar();},12000);
-        temporizador=setTimeout(evaluar,14000);
-        setTimeout(evaluar,30000);
+        setTimeout(function(){puntos=Math.max(puntos,1);evaluar();},15000);
+        temporizador=setTimeout(evaluar,17000);
+        setTimeout(evaluar,25000);
     }
 
     window.LSPediaSocialInvite={
