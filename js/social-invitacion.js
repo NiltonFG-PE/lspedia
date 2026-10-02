@@ -6,6 +6,7 @@
    - Máximo una vez por sesión.
    - Si se cierra, descansa 5 días; si se visita una red, 15 días.
    - No aparece sobre modales, teclado, pantalla completa ni splash.
+   - ?socialtest=1 permite probar los tiempos sin alterar descansos reales.
 */
 (function(){
     'use strict';
@@ -18,6 +19,10 @@
     const CINCO_DIAS = 5 * 24 * 60 * 60 * 1000;
     const QUINCE_DIAS = 15 * 24 * 60 * 60 * 1000;
     const INICIO = Date.now();
+    const MODO_PRUEBA = (function(){
+        try{ return new URLSearchParams(window.location.search).get('socialtest') === '1'; }
+        catch(_e){ return false; }
+    })();
 
     let puntos = 0;
     let scrollContado = false;
@@ -107,7 +112,7 @@
     function registrarGA(nombre, parametros){
         try{
             if(typeof window.gtag === 'function'){
-                window.gtag('event',nombre,Object.assign({feature:'social_invite'},parametros||{}));
+                window.gtag('event',nombre,Object.assign({feature:'social_invite',test:MODO_PRUEBA?1:0},parametros||{}));
             }
         }catch(_e){}
     }
@@ -123,8 +128,9 @@
     }
 
     function elegible(){
-        if(mostrado || yaEnSesion()) return false;
-        if(leerLocalNumero(NEXT_KEY)>ahora()) return false;
+        if(mostrado) return false;
+        if(!MODO_PRUEBA && yaEnSesion()) return false;
+        if(!MODO_PRUEBA && leerLocalNumero(NEXT_KEY)>ahora()) return false;
         if(bloqueadoTemporalmente()) return false;
         const transcurrido=ahora()-INICIO;
         // Caso normal: 12 s + dos señales de interés. Respaldo: 30 s + una.
@@ -151,12 +157,14 @@
     function cerrar(motivo){
         if(!tarjeta) return;
         tarjeta.classList.remove('is-visible');
-        marcarSesion();
-        if(motivo==='social'){
-            guardarLocal(VISIT_KEY,ahora());
-            aplazar(QUINCE_DIAS);
-        }else{
-            aplazar(CINCO_DIAS);
+        if(!MODO_PRUEBA){
+            marcarSesion();
+            if(motivo==='social'){
+                guardarLocal(VISIT_KEY,ahora());
+                aplazar(QUINCE_DIAS);
+            }else{
+                aplazar(CINCO_DIAS);
+            }
         }
         registrarGA('social_invite_close',{reason:motivo||'dismiss'});
         setTimeout(function(){ if(tarjeta){ tarjeta.remove(); tarjeta=null; } },420);
@@ -211,7 +219,7 @@
     function mostrar(){
         if(!elegible()) return false;
         mostrado=true;
-        marcarSesion();
+        if(!MODO_PRUEBA) marcarSesion();
         const el=crear();
         requestAnimationFrame(function(){ requestAnimationFrame(function(){ el.classList.add('is-visible'); }); });
         registrarGA('social_invite_view',{points:puntos,seconds:Math.round((ahora()-INICIO)/1000)});
@@ -221,7 +229,8 @@
     function evaluar(){
         clearTimeout(temporizador);
         if(mostrar()) return;
-        if(!mostrado && !yaEnSesion() && leerLocalNumero(NEXT_KEY)<=ahora()){
+        const puedeSeguir=MODO_PRUEBA || (!mostrado && !yaEnSesion() && leerLocalNumero(NEXT_KEY)<=ahora());
+        if(!mostrado && puedeSeguir){
             temporizador=setTimeout(evaluar,2000);
         }
     }
@@ -267,7 +276,7 @@
             const social=e.target.closest && e.target.closest(
                 '.footer-red-tiktok,.footer-red-instagram,.footer-red-youtube,.footer-red-facebook,.stat2-red-tiktok,.stat2-red-instagram,.stat2-red-youtube,.stat2-red-facebook'
             );
-            if(social){
+            if(social && !MODO_PRUEBA){
                 marcarSesion();
                 guardarLocal(VISIT_KEY,ahora());
                 aplazar(QUINCE_DIAS);
@@ -280,8 +289,10 @@
     }
 
     function iniciar(){
-        migrarFrecuenciaAnterior();
-        if(yaEnSesion() || leerLocalNumero(NEXT_KEY)>ahora()) return;
+        if(!MODO_PRUEBA){
+            migrarFrecuenciaAnterior();
+            if(yaEnSesion() || leerLocalNumero(NEXT_KEY)>ahora()) return;
+        }
         observarInteres();
         // A los 12 s damos un punto base por permanencia; aún hace falta otra señal
         // para mostrar pronto la invitación y una lectura pasiva puede esperar hasta 30 s.
@@ -292,7 +303,7 @@
     window.LSPediaSocialInvite={
         mostrar:function(){ puntos=5; return mostrar(); },
         cerrar:cerrar,
-        estado:function(){ return {puntos:puntos,mostrado:mostrado,proxima:leerLocalNumero(NEXT_KEY)}; }
+        estado:function(){ return {puntos:puntos,mostrado:mostrado,proxima:leerLocalNumero(NEXT_KEY),prueba:MODO_PRUEBA}; }
     };
 
     if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',iniciar,{once:true});
