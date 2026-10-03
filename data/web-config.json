@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "actualizadoEn": "2026-10-03T17:30:54.691Z",
+  "actualizadoEn": "2026-10-03T17:40:03.164Z",
   "header": {
     "logo": "video/lspedia_transparente.webm",
     "logoOscuro": "",
@@ -58,7 +58,7 @@
     },
     "vocabulario": {
       "titulo": "Vocabulario de Lengua de Señas Peruana (LSP)",
-      "subtitulo": "🔎 Busca una palabra y entiende su significado con videos en Lengua de Señas.\n🧏🏻‍♂️🧏🏻‍♀️ Para personas sordas y para quienes quieren comunicarse mejor con ellas.\nℹ️ Diccionario de apoyo, no un curso de LSP.",
+      "subtitulo": "Las palabras en español sirven como referencia para facilitar las búsquedas.\nLas señas representan conceptos, no solo palabras.\nLas variantes regionales enriquecen la Lengua de señas.\nEl aprendizaje también requiere contacto con personas sordas.",
       "estilo": {
         "fuente": "inherit",
         "emoji": "",
