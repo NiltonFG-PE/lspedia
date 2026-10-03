@@ -1,0 +1,63 @@
+name: Actualizar texto informativo Diccionario
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - '.github/workflows/actualizar-texto-diccionario-20261003.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: develop
+      - name: Reemplazar texto informativo
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          old = '''                    <div class="aviso-mision" id="subtituloPrincipal">
+                        <span class="aviso-mision-icono" aria-hidden="true">🤟</span>
+                        <div class="aviso-mision-texto">
+                            <p class="aviso-mision-linea1">
+                                <span style="color:#42a5f5;font-weight:700;">Diccionario visual de español</span> con apoyo en Lengua de Señas Peruana.<br>
+                                Su función es facilitar la comprensión de palabras y significados,
+                            </p>
+                            <p class="aviso-mision-linea2">
+                                <span style="color:#a66a00;font-weight:700;">🪧No es un curso, ni enseñamos LSP.</span>
+                            </p>
+                        </div>
+                    </div>'''
+          new = '''                    <div class="aviso-mision" id="subtituloPrincipal">
+                        <div class="aviso-mision-texto">
+                            <p class="aviso-mision-linea1">
+                                🔎 Busca una palabra y entiende su significado con videos en Lengua de Señas.<br>
+                                🧏🏻‍♂️🧏🏻‍♀️ Para personas sordas y para quienes quieren comunicarse mejor con ellas.
+                            </p>
+                            <p class="aviso-mision-linea2">
+                                <span style="color:#a66a00;font-weight:700;">ℹ️ Diccionario de apoyo, no un curso de LSP.</span>
+                            </p>
+                        </div>
+                    </div>'''
+          if old not in s:
+              raise SystemExit('No se encontró el bloque esperado; no se modificó nada.')
+          p.write_text(s.replace(old, new, 1), encoding='utf-8')
+          PY
+      - name: Validar cambio
+        run: |
+          grep -Fq '🔎 Busca una palabra y entiende su significado con videos en Lengua de Señas.' index.html
+          grep -Fq 'ℹ️ Diccionario de apoyo, no un curso de LSP.' index.html
+      - name: Commit del cambio y retirar workflow temporal
+        run: |
+          rm .github/workflows/actualizar-texto-diccionario-20261003.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html .github/workflows/actualizar-texto-diccionario-20261003.yml
+          git commit -m 'Actualizar texto informativo del Diccionario'
+          git push origin develop
