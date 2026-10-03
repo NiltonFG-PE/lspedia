@@ -270,7 +270,7 @@
   function cargarConfiguracionWeb() {
     if (!document.querySelector('script[data-lspedia-web-config]')) {
       const script = document.createElement('script');
-      script.src = 'js/web-config.js?v=20260927-4';
+      script.src = 'js/web-config.js?v=20261003-mision-2';
       script.async = true;
       script.dataset.lspediaWebConfig = '1';
       script.onerror = function () {

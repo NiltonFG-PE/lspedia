@@ -19,7 +19,7 @@
         }
 
         if(subtitulo && !vocabActivo){
-            subtitulo.innerHTML = '<div class="aviso-mision-texto"><p class="aviso-mision-linea1">🔎 Busca una palabra y entiende su significado con videos en Lengua de Señas.<br>🧏🏻‍♂️🧏🏻‍♀️ Para personas sordas y para quienes quieren comunicarse mejor con ellas.</p><p class="aviso-mision-linea2">ℹ️ Diccionario de apoyo, no un curso de LSP.</p></div>';
+            subtitulo.innerHTML = window.LSPediaMision ? window.LSPediaMision.html('es') : '<div class="aviso-mision-texto"><p class="aviso-mision-linea1">🔎 Busca una palabra y entiende su significado con videos en Lengua de Señas.<br>🧏🏻‍♂️🧏🏻‍♀️ Para personas sordas y para quienes quieren comunicarse mejor con ellas.</p><p class="aviso-mision-linea2">ℹ️ Diccionario de apoyo, no un curso de LSP.</p></div>';
         }
 
         if(intro && vocabActivo){

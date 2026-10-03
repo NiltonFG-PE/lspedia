@@ -753,7 +753,7 @@ function actualizarTituloPrincipal(vista){
     // porque tiene su propio ícono + 2 párrafos, no es texto plano.
     if(subtitulo) subtitulo.classList.toggle("d-none", esVocabulario);
     if(listaVocab) listaVocab.classList.toggle("d-none", !esVocabulario);
-    if(subtitulo && !esVocabulario && datos.subtituloHtml) subtitulo.innerHTML = datos.subtituloHtml;
+    if(subtitulo && !esVocabulario && datos.subtituloHtml) subtitulo.innerHTML = window.LSPediaMision ? window.LSPediaMision.html() : datos.subtituloHtml;
 }
 
 // TRANSICION_SECCIONES_PRINCIPALES_JS_V1_20260909

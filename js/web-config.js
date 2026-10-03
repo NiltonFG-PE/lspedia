@@ -63,25 +63,19 @@ function agregarResaltado(el,texto,frase,color){
 
 function subDic(t){
   const c=q('#subtituloPrincipal');if(!c||!t)return;
-  let ls=t.split('\n').map(x=>x.trim()).filter(Boolean);
-  if(!ls.length)return;
-  // Compatibilidad con el texto que V27 había convertido a plano.
-  if(ls[1]==='Su función es facilitar la comprensión de palabras y significados.')ls[1]='Su función es facilitar la comprensión de palabras y significados,';
-  if(ls.length<3)ls.push('No es un curso, ni enseñamos LSP.');
-  let cierre=ls.slice(2).join(' ');
-  cierre=cierre.replace(/^[🪧\s]+/u,'').trim();
-  const firma=[ls[0],ls[1]||'',cierre].join('|');
-  if(c.dataset.webRichFirma===firma)return;
-
-  c.textContent='';c.classList.remove('d-none');
-  const icono=document.createElement('span');icono.className='aviso-mision-icono';icono.setAttribute('aria-hidden','true');icono.textContent='🤟';
+  if(window.LSPediaMision){
+    const html=window.LSPediaMision.html(null,t);
+    if(c.innerHTML!==html)c.innerHTML=html;
+    return;
+  }
+  // Respaldo para páginas sin el renderizador compartido, siempre como texto seguro.
   const d=document.createElement('div');d.className='aviso-mision-texto';
-  const p1=document.createElement('p');p1.className='aviso-mision-linea1';
-  agregarResaltado(p1,ls[0],'Diccionario visual de español','#42a5f5');
-  if(ls[1]){p1.appendChild(document.createElement('br'));p1.appendChild(document.createTextNode(ls[1]));}
-  const p2=document.createElement('p');p2.className='aviso-mision-linea2';
-  const destacado=document.createElement('span');destacado.style.color='#a66a00';destacado.style.fontWeight='700';destacado.textContent='🪧 '+cierre;p2.appendChild(destacado);
-  d.append(p1,p2);c.append(icono,d);c.dataset.webRichFirma=firma;
+  t.split('\n').map(x=>x.trim()).filter(Boolean).forEach((linea,i)=>{
+    const p=document.createElement('p');
+    p.className=i===0?'aviso-mision-linea1':/^ℹ/.test(linea)?'aviso-mision-linea2':'aviso-mision-publico';
+    p.textContent=linea;d.appendChild(p);
+  });
+  c.replaceChildren(d);
 }
 
 function subVoc(t){
