@@ -729,11 +729,7 @@ function actualizarVistaUrl(vista){
 const TITULOS_PRINCIPALES = {
     diccionario: {
         titulo: '<span class="titulo-acento">Diccionario</span> de Lengua de Señas Peruana (LSP) y Español',
-        subtituloHtml: '<span class="aviso-mision-icono" aria-hidden="true">🤟</span>'
-            + '<div class="aviso-mision-texto">'
-            + '<p class="aviso-mision-linea1"><span style="color:#42a5f5;font-weight:700;">Diccionario visual de español</span> con apoyo en Lengua de Señas Peruana.<br>Su función es facilitar la comprensión de palabras y significados,</p>'
-            + '<p class="aviso-mision-linea2"><span style="color:#a66a00;font-weight:700;">🪧No es un curso, ni enseñamos LSP.</span></p>'
-            + '</div>'
+        subtituloHtml: '<div class="aviso-mision-texto"><p class="aviso-mision-linea1">🔎 Busca una palabra y entiende su significado con videos en Lengua de Señas.<br>🧏🏻‍♂️🧏🏻‍♀️ Para personas sordas y para quienes quieren comunicarse mejor con ellas.</p><p class="aviso-mision-linea2">ℹ️ Diccionario de apoyo, no un curso de LSP.</p></div>'
     },
     vocabulario: {
         titulo: '<span class="titulo-acento">Vocabulario</span> de Lengua de Señas Peruana (LSP)',

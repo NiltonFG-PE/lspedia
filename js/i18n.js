@@ -575,7 +575,7 @@
                 ? '<span class="titulo-acento">Vocabulary</span> in Peruvian Sign Language (LSP)'
                 : '<span class="titulo-acento">Spanish Dictionary</span> with Peruvian Sign Language (LSP) support';
             if(subtitulo && !vocabActivo){
-                subtitulo.innerHTML = '<span class="aviso-mision-icono" aria-hidden="true">🤟</span><div class="aviso-mision-texto"><p class="aviso-mision-linea1"><span style="color:#42a5f5;font-weight:700;">Visual Spanish dictionary</span> supported by Peruvian Sign Language.<br>Its purpose is to make Spanish words and meanings easier to understand.</p><p class="aviso-mision-linea2"><span style="color:#a66a00;font-weight:700;">🪧 It is not an LSP course and does not teach or impose signs.</span></p></div>';
+                subtitulo.innerHTML = '<div class="aviso-mision-texto"><p class="aviso-mision-linea1">🔎 Search for a word and understand its meaning with videos in Sign Language.<br>🧏🏻‍♂️🧏🏻‍♀️ For Deaf people and anyone who wants to communicate better with them.</p><p class="aviso-mision-linea2">ℹ️ A supporting dictionary, not an LSP course.</p></div>';
             }
             if(intro && vocabActivo){
                 const textos = intro.querySelectorAll('.vocab-intro-texto');
