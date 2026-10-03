@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-10-03T17:15:10Z",
+  "actualizado": "2026-10-03T17:55:59Z",
   "traducciones": [
     {
       "fuente": "diccionario",
@@ -848,7 +848,7 @@
       "categoria": "Ciudad",
       "ingles": "Neighborhood",
       "aliases": [],
-      "definicionIngles": "It's the part of the city where a person lives, along with their neighbors.\n\nExample: Everyone knows each other in my neighborhood."
+      "definicionIngles": "It's the part of the city where a person lives, along with their neighbors.\n\nExample: In my neighborhood, everyone knows each other."
     },
     {
       "fuente": "diccionario",
@@ -2144,7 +2144,7 @@
       "categoria": "Política",
       "ingles": "Civil code",
       "aliases": [],
-      "definicionIngles": "A set of rules concerning people, family, contracts, property, and other civil matters."
+      "definicionIngles": "Set of rules on people, family, contracts, property and other civil matters."
     },
     {
       "fuente": "diccionario",
@@ -6504,7 +6504,7 @@
       "categoria": "Cortesía",
       "ingles": "Please",
       "aliases": [],
-      "definicionIngles": "Basic formula for requesting something respectfully and without imposing."
+      "definicionIngles": "Basic formula for requesting something respectfully and without imposing your will."
     },
     {
       "fuente": "diccionario",
@@ -6768,7 +6768,7 @@
       "categoria": "Economía",
       "ingles": "Tip",
       "aliases": [],
-      "definicionIngles": "Additional money that a person voluntarily gives as a thank you for a service."
+      "definicionIngles": "Additional money that a person voluntarily gives as thanks for a service."
     },
     {
       "fuente": "diccionario",
