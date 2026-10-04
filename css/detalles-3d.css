@@ -1,0 +1,178 @@
+/* ============================================================
+   LSPedia — detalles 3D de interfaz
+   - Microvolumen en controles pequeños.
+   - Sin animar contenedores grandes ni reproductores.
+   - Sin sensores ni movimiento continuo.
+   ============================================================ */
+
+/* Chips de palabras sugeridas y variantes tipográficas. */
+.ejemplo-chip,
+.alfab-chip-tipo {
+    position: relative;
+    transform: translateZ(0);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.75),
+        0 2px 0 rgba(15,23,42,.08),
+        0 6px 12px rgba(15,23,42,.08);
+    transition: transform .14s ease, box-shadow .16s ease, filter .16s ease, background-color .16s ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.ejemplo-chip:active,
+.alfab-chip-tipo:active {
+    transform: translateY(1px) !important;
+    box-shadow: inset 0 1px 2px rgba(15,23,42,.10), 0 1px 0 rgba(15,23,42,.08), 0 3px 6px rgba(15,23,42,.07);
+}
+
+.alfab-chip-tipo.active {
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.82),
+        0 3px 0 rgba(13,110,253,.20),
+        0 9px 18px rgba(13,110,253,.14);
+}
+
+/* Badges/píldoras: relieve estático para conservar legibilidad. */
+.dia-rect-badge,
+.lsp-nueva-badge,
+.stat2-pill,
+#sugerencias .badge,
+#sugerenciasCategorias .badge {
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.52),
+        0 2px 0 rgba(15,23,42,.08),
+        0 5px 10px rgba(15,23,42,.08);
+}
+
+/* Limpiar búsqueda y cierres: botón pequeño pero claramente presionable. */
+.btn-limpiar-busqueda,
+#btnLimpiarBuscar,
+.modal .btn-close,
+.lsp-share-close {
+    transition: transform .13s ease, box-shadow .15s ease, background-color .15s ease, filter .15s ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.btn-limpiar-busqueda,
+#btnLimpiarBuscar {
+    border-radius: 999px !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.72), 0 3px 7px rgba(15,23,42,.08);
+}
+
+.btn-limpiar-busqueda:active,
+#btnLimpiarBuscar:active,
+.modal .btn-close:active,
+.lsp-share-close:active {
+    transform: translateY(1px) !important;
+}
+
+/* Flechas y navegación pequeña: respuesta local, nunca mueve su sección. */
+.dia-rect-nav-btn,
+.alfab-nav-flecha,
+.alfab-btn-control,
+.alfab-btn-reiniciar {
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.45),
+        0 2px 0 rgba(15,23,42,.10),
+        0 5px 9px rgba(15,23,42,.09);
+    transition: transform .13s ease, box-shadow .15s ease, filter .15s ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.dia-rect-nav-btn:active,
+.alfab-nav-flecha:active,
+.alfab-btn-control:active,
+.alfab-btn-reiniciar:active {
+    transform: translateY(1px) !important;
+    box-shadow: inset 0 1px 2px rgba(15,23,42,.12), 0 1px 0 rgba(15,23,42,.08), 0 3px 6px rgba(15,23,42,.07);
+}
+
+/* Control de velocidad: la píldora gana volumen; solo sus botones se mueven. */
+.controles-video-velocidad {
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.72),
+        0 2px 0 rgba(15,23,42,.07),
+        0 6px 12px rgba(15,23,42,.08);
+}
+
+.controles-video-velocidad .btn,
+.controles-video #selectVelocidad {
+    transition: transform .13s ease, box-shadow .15s ease, filter .15s ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.controles-video-velocidad .btn:active {
+    transform: translateY(1px) !important;
+}
+
+.controles-video #selectVelocidad {
+    box-shadow: inset 0 1px 2px rgba(15,23,42,.06), 0 2px 6px rgba(15,23,42,.06);
+}
+
+/* Indicador de ampliar imagen como píldora elevada. */
+.apoyo-visual-lupa {
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.38), 0 4px 10px rgba(15,23,42,.12);
+}
+
+/* Desktop: elevación mínima, sin rotaciones. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .ejemplo-chip:hover,
+    .alfab-chip-tipo:hover,
+    .dia-rect-nav-btn:hover,
+    .alfab-nav-flecha:hover,
+    .alfab-btn-control:hover,
+    .alfab-btn-reiniciar:hover {
+        transform: translateY(-1px);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.72), 0 3px 0 rgba(15,23,42,.08), 0 8px 15px rgba(15,23,42,.11);
+    }
+
+    .btn-limpiar-busqueda:hover,
+    #btnLimpiarBuscar:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.03);
+    }
+}
+
+/* Táctil: evita estados hover pegados. */
+@media (hover: none), (pointer: coarse) {
+    .ejemplo-chip:hover,
+    .alfab-chip-tipo:hover,
+    .dia-rect-nav-btn:hover,
+    .alfab-nav-flecha:hover,
+    .alfab-btn-control:hover,
+    .alfab-btn-reiniciar:hover,
+    .btn-limpiar-busqueda:hover,
+    #btnLimpiarBuscar:hover {
+        transform: none !important;
+    }
+}
+
+/* Tema oscuro. */
+html[data-lsp-tema="dark"] .ejemplo-chip,
+html[data-lsp-tema="dark"] .alfab-chip-tipo,
+html[data-lsp-tema="dark"] .controles-video-velocidad,
+html[data-lsp-tema="dark"] .dia-rect-nav-btn,
+html[data-lsp-tema="dark"] .alfab-nav-flecha,
+html[data-lsp-tema="dark"] .alfab-btn-control,
+html[data-lsp-tema="dark"] .alfab-btn-reiniciar {
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.09), 0 2px 0 rgba(0,0,0,.20), 0 7px 14px rgba(0,0,0,.22);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ejemplo-chip,
+    .alfab-chip-tipo,
+    .btn-limpiar-busqueda,
+    #btnLimpiarBuscar,
+    .dia-rect-nav-btn,
+    .alfab-nav-flecha,
+    .alfab-btn-control,
+    .alfab-btn-reiniciar,
+    .controles-video-velocidad .btn,
+    .controles-video #selectVelocidad {
+        transition: none !important;
+        transform: none !important;
+    }
+}
