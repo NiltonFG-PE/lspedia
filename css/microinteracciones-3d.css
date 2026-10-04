@@ -96,6 +96,178 @@
     }
 }
 
+/* ============================================================
+   CAPA 3 — elementos flotantes y paneles locales
+   ============================================================ */
+
+/* Modales: solo la tarjeta del modal gana volumen. El backdrop/página no se mueve. */
+.modal .modal-content {
+    border: 1px solid rgba(148, 163, 184, .22);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.72),
+        0 7px 0 rgba(15,23,42,.07),
+        0 28px 60px rgba(15,23,42,.24);
+}
+
+.modal.show .modal-content {
+    animation: lspModalLocal .24s cubic-bezier(.2,.8,.2,1) both;
+}
+
+@keyframes lspModalLocal {
+    from { opacity: .72; transform: translateY(7px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.modal .btn-close,
+.modal .modal-footer .btn,
+.modal .modal-body .btn {
+    -webkit-tap-highlight-color: transparent;
+    transition: transform .14s ease, box-shadow .16s ease, filter .16s ease;
+}
+
+.modal .btn-close:active,
+.modal .modal-footer .btn:active:not(:disabled),
+.modal .modal-body .btn:active:not(:disabled) {
+    transform: translateY(1px);
+}
+
+/* Hoja Compartir: más profundidad sin cambiar su lógica ni su animación existente. */
+.lsp-share-sheet {
+    border: 1px solid rgba(148,163,184,.20);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.76),
+        0 -2px 0 rgba(15,23,42,.04),
+        0 26px 64px rgba(0,0,0,.30) !important;
+}
+
+.lsp-share-action,
+.lsp-share-close {
+    transition: transform .14s ease, box-shadow .16s ease, filter .16s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.lsp-share-action {
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.75), 0 4px 9px rgba(15,23,42,.07);
+}
+
+.lsp-share-action:active,
+.lsp-share-close:active {
+    transform: translateY(1px);
+    box-shadow: inset 0 1px 2px rgba(15,23,42,.08), 0 2px 5px rgba(15,23,42,.06);
+}
+
+.lsp-share-toast.show {
+    box-shadow: 0 10px 28px rgba(15,23,42,.24);
+}
+
+/* FAB / accesos rápidos: botones apilados como pequeñas capas. */
+#fabMenuAccesos,
+.fab-menu-accesos {
+    perspective: 800px;
+}
+
+#btnToggleAccesos,
+.fab-item-btn {
+    transform-style: preserve-3d;
+    transition: transform .16s ease, box-shadow .18s ease, filter .18s ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+#btnToggleAccesos {
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.28),
+        0 4px 0 rgba(15,23,42,.16),
+        0 12px 22px rgba(15,23,42,.16);
+}
+
+.fab-item-btn {
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.55),
+        0 3px 0 rgba(15,23,42,.09),
+        0 9px 18px rgba(15,23,42,.11);
+}
+
+#btnToggleAccesos:active,
+.fab-item-btn:active {
+    transform: translateY(2px) !important;
+    box-shadow: inset 0 1px 3px rgba(15,23,42,.10), 0 1px 0 rgba(15,23,42,.10), 0 4px 8px rgba(15,23,42,.08);
+}
+
+/* Acordeones/colapsables: la cabecera se siente como botón físico; solo el cuerpo entra. */
+.accordion-item {
+    border-color: rgba(148,163,184,.22);
+    box-shadow: 0 5px 13px rgba(15,23,42,.055);
+}
+
+.accordion-button {
+    transition: box-shadow .18s ease, background-color .18s ease, transform .14s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.accordion-button:not(.collapsed) {
+    box-shadow: inset 0 -1px 0 rgba(148,163,184,.16), inset 0 1px 0 rgba(255,255,255,.55);
+}
+
+.accordion-button:active {
+    transform: translateY(1px);
+}
+
+.accordion-collapse.show > .accordion-body {
+    animation: lspAccordionLocal .22s ease-out both;
+}
+
+@keyframes lspAccordionLocal {
+    from { opacity: .55; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Navegación superior: el activo conserva una pequeña base de profundidad. */
+@media (min-width: 1200px) {
+    #menuPrincipal .nav-link.active,
+    .navbar-nav .nav-link.active {
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.42),
+            0 3px 0 rgba(137,97,7,.32),
+            0 9px 18px rgba(15,23,42,.13) !important;
+    }
+
+    #menuPrincipal .nav-link:active,
+    .navbar-nav .nav-link:active {
+        transform: translateY(1px) !important;
+    }
+}
+
+/* Footer: únicamente profundidad estática; no agregamos más movimiento continuo. */
+.footer-lspedia .footer-bottom {
+    transform-style: preserve-3d;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.62),
+        0 4px 0 rgba(71,85,105,.07),
+        0 14px 30px rgba(71,85,105,.13);
+}
+
+.footer-lspedia .footer-link-boton,
+.footer-lspedia .footer-red-icono {
+    -webkit-tap-highlight-color: transparent;
+}
+
+.footer-lspedia .footer-link-boton:active,
+.footer-lspedia .footer-red-icono:active {
+    transform: translateY(1px) scale(.97);
+}
+
+/* Tema oscuro para las nuevas superficies. */
+html[data-lsp-tema="dark"] .modal .modal-content,
+html[data-lsp-tema="dark"] .lsp-share-sheet {
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 8px 0 rgba(0,0,0,.18), 0 30px 64px rgba(0,0,0,.42) !important;
+}
+
+html[data-lsp-tema="dark"] .accordion-item,
+html[data-lsp-tema="dark"] .fab-item-btn {
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 3px 0 rgba(0,0,0,.20), 0 10px 20px rgba(0,0,0,.22);
+}
+
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
     .navbar-brand:hover img,
     .navbar-brand:hover video {
@@ -112,6 +284,17 @@
         transform: translateY(-1px);
         box-shadow: 0 6px 14px rgba(15,23,42,.08);
     }
+
+    .lsp-share-action:hover,
+    .fab-item-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.68), 0 5px 0 rgba(15,23,42,.07), 0 13px 24px rgba(15,23,42,.13);
+    }
+
+    #btnToggleAccesos:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.04);
+    }
 }
 
 /* En pantallas táctiles quitamos cualquier hover heredado que pueda quedarse pegado. */
@@ -119,7 +302,10 @@
     .navbar-brand img,
     .navbar-brand video,
     #sugerencias .list-group-item:hover,
-    #sugerenciasCategorias .list-group-item:hover {
+    #sugerenciasCategorias .list-group-item:hover,
+    .lsp-share-action:hover,
+    .fab-item-btn:hover,
+    #btnToggleAccesos:hover {
         transform: none !important;
     }
 }
@@ -132,6 +318,12 @@
     .navbar-brand video,
     #sugerencias .list-group-item,
     #sugerenciasCategorias .list-group-item,
+    .modal.show .modal-content,
+    .accordion-collapse.show > .accordion-body,
+    #btnToggleAccesos,
+    .fab-item-btn,
+    .lsp-share-action,
+    .lsp-share-close,
     :is(.btn-abc, .indice-compacto-btn, .indice-compacto-btn-vocabulario, .lsp-aprender-btn, .lsp-aprender-nav, .lsp-nueva-palabra) {
         animation: none !important;
         transition: none !important;
