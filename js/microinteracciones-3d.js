@@ -25,13 +25,22 @@
         return estilo.display !== 'none' && estilo.visibility !== 'hidden' && elemento.getClientRects().length > 0;
     }
 
+    function completarReveal(elemento){
+        if(!elemento) return;
+        elemento.classList.add('lsp-reveal-visible');
+        window.setTimeout(function(){
+            elemento.classList.remove('lsp-reveal-item', 'lsp-reveal-visible');
+            elemento.style.removeProperty('--lsp-reveal-delay');
+        }, 520);
+    }
+
     function obtenerObservador(){
         if(observadorReveal || reducirMovimiento || !('IntersectionObserver' in window)) return observadorReveal;
         observadorReveal = new IntersectionObserver(function(entradas){
             entradas.forEach(function(entrada){
                 if(!entrada.isIntersecting) return;
                 const elemento = entrada.target;
-                elemento.classList.add('lsp-reveal-visible');
+                completarReveal(elemento);
                 observadorReveal.unobserve(elemento);
             });
         }, {root:null, rootMargin:'0px 0px -7% 0px', threshold:.08});
@@ -49,23 +58,17 @@
             if(elemento.dataset.lspRevealPreparado === '1') return;
             elemento.dataset.lspRevealPreparado = '1';
 
-            if(reducirMovimiento || !estaVisible(elemento)){
-                elemento.classList.add('lsp-reveal-visible');
-                return;
-            }
+            if(reducirMovimiento || !estaVisible(elemento)) return;
 
             const rect = elemento.getBoundingClientRect();
             /* Lo que ya está visible al cargar no se oculta ni parpadea. */
-            if(rect.top < alto * .9 || rect.bottom < 0){
-                elemento.classList.add('lsp-reveal-visible');
-                return;
-            }
+            if(rect.top < alto * .9 || rect.bottom < 0) return;
 
             elemento.style.setProperty('--lsp-reveal-delay', Math.min(retraso, 180) + 'ms');
             retraso += 35;
             elemento.classList.add('lsp-reveal-item');
             if(observador) observador.observe(elemento);
-            else elemento.classList.add('lsp-reveal-visible');
+            else completarReveal(elemento);
         });
     }
 
