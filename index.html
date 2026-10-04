@@ -4351,6 +4351,73 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
     };
 })();
 </script>
+
+    <style id="lspedia-relieve-3d">
+        /* Relieve ligero: sin sensores ni listeners de gestos.
+           Conserva los colores, dimensiones y acciones existentes. */
+        html body :is(.categoria-card, .categoria-dicc-card, .herr-movil-btn, .menu-juego-btn) {
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.38),
+                        0 4px 0 rgba(15,23,42,.16), 0 10px 20px rgba(15,23,42,.10) !important;
+            transition: transform .18s ease, box-shadow .18s ease;
+        }
+        html body :is(.categoria-card, .categoria-dicc-card, .herr-movil-btn) {
+            animation: none;
+            opacity: 1;
+            transform: none !important;
+        }
+        html body :is(.herr-movil-icono, .stat2-icono-wrap) {
+            background-image: linear-gradient(145deg, rgba(255,255,255,.30), transparent 65%);
+            box-shadow: inset 0 1px 1px rgba(255,255,255,.55),
+                        inset 0 -2px 3px rgba(15,23,42,.10), 0 4px 7px rgba(15,23,42,.12) !important;
+        }
+        html body .categoria-card img,
+        html body .categoria-dicc-icono-img,
+        html body .herr-movil-icono img {
+            filter: drop-shadow(0 3px 2px rgba(15,23,42,.18));
+        }
+        html body .herr-movil-icono img { animation: none; }
+        html body :is(#btnBuscar, #btnBuscarCategorias) {
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.28),
+                        0 3px 0 rgba(15,23,42,.28), 0 6px 10px rgba(15,23,42,.12) !important;
+            transition: transform .16s ease, box-shadow .16s ease;
+        }
+        html body :is(.categoria-card, .categoria-dicc-card, .herr-movil-btn, .menu-juego-btn,
+                     #btnBuscar, #btnBuscarCategorias):focus-visible {
+            outline: 3px solid #268bff;
+            outline-offset: 4px;
+        }
+        @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+            html body :is(.categoria-card, .categoria-dicc-card, .herr-movil-btn, .menu-juego-btn):hover {
+                transform: perspective(900px) translateY(-3px) rotateX(1.5deg) !important;
+                box-shadow: inset 0 1px 0 rgba(255,255,255,.45),
+                            0 6px 0 rgba(15,23,42,.14), 0 14px 24px rgba(15,23,42,.15) !important;
+            }
+        }
+        @media (hover: none), (pointer: coarse) {
+            html body :is(.categoria-card, .categoria-dicc-card, .herr-movil-btn, .menu-juego-btn):hover {
+                transform: none !important;
+                filter: none;
+            }
+            html body .herr-movil-btn:hover .herr-movil-icono { transform: none !important; }
+        }
+        html body :is(.categoria-card, .categoria-dicc-card, .herr-movil-btn, .menu-juego-btn,
+                     #btnBuscar, #btnBuscarCategorias):active:not(:disabled):not([aria-disabled="true"]) {
+            transform: translateY(2px) !important;
+            box-shadow: inset 0 1px 3px rgba(15,23,42,.10),
+                        0 1px 0 rgba(15,23,42,.16), 0 3px 6px rgba(15,23,42,.10) !important;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            html body :is(.categoria-card, .categoria-dicc-card, .herr-movil-btn, .menu-juego-btn,
+                         #btnBuscar, #btnBuscarCategorias),
+            html body .herr-movil-icono,
+            html body .herr-movil-icono img {
+                animation: none !important;
+                transition: none !important;
+                transform: none !important;
+            }
+        }
+    </style>
+
 </head>
 
 <body>
