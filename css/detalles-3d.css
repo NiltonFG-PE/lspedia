@@ -85,7 +85,7 @@
 .alfab-nav-flecha:active,
 .alfab-btn-control:active,
 .alfab-btn-reiniciar:active {
-    transform: translateY(1px) !important;
+    transform: translateY(1px);
     box-shadow: inset 0 1px 2px rgba(15,23,42,.12), 0 1px 0 rgba(15,23,42,.08), 0 3px 6px rgba(15,23,42,.07);
 }
 
@@ -110,6 +110,26 @@
 
 .controles-video #selectVelocidad {
     box-shadow: inset 0 1px 2px rgba(15,23,42,.06), 0 2px 6px rgba(15,23,42,.06);
+}
+
+/* Foco de teclado explícito. Algunos estilos anteriores eliminaban outline;
+   lo restauramos solo con :focus-visible para no molestar al uso táctil. */
+.ejemplo-chip:focus-visible,
+.alfab-chip-tipo:focus-visible,
+.btn-limpiar-busqueda:focus-visible,
+#btnLimpiarBuscar:focus-visible,
+.dia-rect-nav-btn:focus-visible,
+.alfab-nav-flecha:focus-visible,
+.alfab-btn-control:focus-visible,
+.alfab-btn-reiniciar:focus-visible,
+.controles-video-velocidad .btn:focus-visible,
+.controles-video #selectVelocidad:focus-visible,
+.lsp-share-action:focus-visible,
+.lsp-share-close:focus-visible,
+#btnToggleAccesos:focus-visible,
+.fab-item-btn:focus-visible {
+    outline: 3px solid #2563eb !important;
+    outline-offset: 3px;
 }
 
 /* Indicador de ampliar imagen como píldora elevada. */
@@ -159,6 +179,21 @@ html[data-lsp-tema="dark"] .alfab-nav-flecha,
 html[data-lsp-tema="dark"] .alfab-btn-control,
 html[data-lsp-tema="dark"] .alfab-btn-reiniciar {
     box-shadow: inset 0 1px 0 rgba(255,255,255,.09), 0 2px 0 rgba(0,0,0,.20), 0 7px 14px rgba(0,0,0,.22);
+}
+
+html[data-lsp-tema="dark"] :is(
+    .ejemplo-chip,
+    .alfab-chip-tipo,
+    .btn-limpiar-busqueda,
+    .dia-rect-nav-btn,
+    .alfab-nav-flecha,
+    .alfab-btn-control,
+    .alfab-btn-reiniciar,
+    .lsp-share-action,
+    .lsp-share-close,
+    .fab-item-btn
+):focus-visible {
+    outline-color: #93c5fd !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
