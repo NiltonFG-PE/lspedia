@@ -1,0 +1,122 @@
+/* ============================================================
+   LSPedia — compatibilidad de captura/compartir pantalla en móvil
+   ------------------------------------------------------------
+   Objetivo:
+   - Evitar superficies negras durante MediaProjection/compartir pantalla
+     en Android reduciendo composición GPU innecesaria.
+   - Mantener sombras, colores y jerarquía visual.
+   - No afecta escritorio con mouse/trackpad.
+   ============================================================ */
+
+@media (hover: none), (pointer: coarse) {
+    /* Evita contextos 3D y capas compuestas grandes en móviles. */
+    #filaHeroPrincipal,
+    #bloqueBuscador,
+    #bloqueBuscadorCategorias,
+    #resultado,
+    #resultadoCategorias,
+    .stat2-card,
+    .nosotros-apoyo-card,
+    .lsp-mejora-card,
+    .mobile-bottom-nav {
+        perspective: none !important;
+        transform-style: flat !important;
+    }
+
+    /* Backdrop blur es uno de los efectos que más fuerza composición aparte. */
+    #menuPrincipal.show,
+    #menuPrincipal.collapsing,
+    .mobile-bottom-nav {
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+    }
+
+    /* Mantiene un fondo sólido para que la barra siga viéndose premium. */
+    .mobile-bottom-nav {
+        background-color: rgba(255,255,255,.98) !important;
+    }
+
+    html[data-lsp-tema="dark"] .mobile-bottom-nav {
+        background-color: rgba(15,23,42,.98) !important;
+    }
+
+    /* El buscador tenía animaciones continuas con scale/destellos.
+       En móvil conservamos su sombra, pero sin promoverlo a capa GPU. */
+    #bloqueBuscador .input-group,
+    #bloqueBuscadorCategorias .input-group,
+    #bloqueBuscador .input-group::after,
+    #bloqueBuscadorCategorias .input-group::after,
+    #btnBuscar span,
+    #btnBuscarCategorias span {
+        animation: none !important;
+    }
+
+    #bloqueBuscador .input-group::after,
+    #bloqueBuscadorCategorias .input-group::after {
+        opacity: 0 !important;
+    }
+
+    /* Nada de translateZ/perspective durante captura móvil. */
+    #senalDelDia,
+    #colAvatarHero,
+    #colAvatarHero .avatar-hero-img,
+    #bloqueBuscador .buscador-indice-linea,
+    #bloqueBuscadorCategorias .buscador-indice-linea,
+    #bloqueBuscador .input-group,
+    #bloqueBuscadorCategorias .input-group,
+    #bloqueBuscador #sugerencias,
+    #bloqueBuscadorCategorias #sugerenciasCategorias,
+    #filaIndiceAlfabetico .indice-alfabetico,
+    #filaIndiceAlfabeticoVocabulario .indice-alfabetico,
+    #resultado .lsp-video-marco-3d,
+    #resultadoCategorias .lsp-video-marco-3d,
+    #nosotrosVideoRatio.lsp-video-marco-3d,
+    #resultado .controles-video,
+    #resultadoCategorias .controles-video,
+    #nosotrosVideoWrap .controles-video,
+    .stat2-icono-wrap,
+    .nosotros-apoyo-icono,
+    .lsp-mejora-icono,
+    .mobile-bottom-nav .mbn-item,
+    .mobile-bottom-nav .mbn-item.active,
+    .mobile-bottom-nav .mbn-item:active {
+        transform: none !important;
+        will-change: auto !important;
+    }
+
+    /* Evita filtros que suelen disparar renderizado fuera de la capa principal. */
+    #filaHeroPrincipal::before,
+    #colAvatarHero .avatar-hero-img {
+        filter: none !important;
+    }
+
+    /* Entradas 3D: en táctil priorizamos estabilidad de captura. */
+    #resultado.lsp-resultado-3d-enter,
+    #resultadoCategorias.lsp-resultado-3d-enter,
+    #menuPrincipal.show,
+    .lsp-seccion-enter,
+    .lsp-reveal-item,
+    .lsp-reveal-item.lsp-reveal-visible,
+    .modal.show .modal-content,
+    .accordion-collapse.show > .accordion-body {
+        animation: none !important;
+        transform: none !important;
+    }
+
+    .lsp-reveal-item,
+    .lsp-reveal-item.lsp-reveal-visible {
+        opacity: 1 !important;
+        transition: none !important;
+    }
+
+    /* Asegura que el reproductor no herede aceleraciones visuales nuestras. */
+    #resultado video,
+    #resultado iframe,
+    #resultadoCategorias video,
+    #resultadoCategorias iframe,
+    #nosotrosVideoWrap video,
+    #nosotrosVideoWrap iframe {
+        filter: none !important;
+        backface-visibility: visible !important;
+    }
+}
