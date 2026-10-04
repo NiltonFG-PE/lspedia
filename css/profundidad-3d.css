@@ -38,7 +38,6 @@
 #colAvatarHero {
     position: relative;
     transform-style: preserve-3d;
-    will-change: transform;
 }
 
 #senalDelDia {
@@ -58,11 +57,11 @@
     transform-origin: 50% 75%;
     filter: drop-shadow(0 14px 14px rgba(var(--lsp-3d-tinta), .16));
     transition: transform .18s ease-out, filter .22s ease;
-    will-change: transform;
 }
 
+/* Descubre ya posee su propia animación transform en index.html. Aquí solo
+   reforzamos volumen por sombra para no competir con esa animación. */
 #senalDelDia .dia-rect-card {
-    transform: translateZ(10px);
     box-shadow:
         inset 0 1px 0 rgba(255,255,255,.55),
         0 5px 0 rgba(var(--lsp-3d-tinta), .10),
@@ -228,6 +227,12 @@
 
 /* ---------- Hover premium SOLO donde existe cursor real ---------- */
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    #senalDelDia,
+    #colAvatarHero,
+    #colAvatarHero .avatar-hero-img {
+        will-change: transform;
+    }
+
     .stat2-card:hover,
     .nosotros-apoyo-card:hover,
     .lsp-mejora-card:hover {
@@ -239,7 +244,10 @@
     }
 
     #senalDelDia .dia-rect-card:hover {
-        transform: translateZ(15px) translateY(-2px);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.58),
+            0 6px 0 rgba(var(--lsp-3d-tinta), .09),
+            0 20px 36px rgba(var(--lsp-3d-tinta), .16) !important;
     }
 }
 
@@ -262,17 +270,32 @@ html[data-lsp-tema="dark"] .lsp-mejora-card {
     box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 4px 0 rgba(0,0,0,.24), 0 15px 30px rgba(0,0,0,.28);
 }
 
-/* ---------- Móvil: menos movimiento, misma profundidad ---------- */
+/* ---------- Móvil: menos capas GPU, misma profundidad visual ---------- */
 @media (hover: none), (pointer: coarse) {
     #filaHeroPrincipal::before { filter: none; opacity: .72; }
 
     #colAvatarHero .avatar-hero-img {
-        transform: translateZ(10px);
+        transform: none;
         filter: drop-shadow(0 9px 9px rgba(var(--lsp-3d-tinta), .13));
     }
 
     #senalDelDia,
-    #colAvatarHero {
+    #colAvatarHero,
+    #bloqueBuscador .input-group:focus-within,
+    #bloqueBuscadorCategorias .input-group:focus-within,
+    #bloqueBuscador #sugerencias,
+    #bloqueBuscadorCategorias #sugerenciasCategorias,
+    #filaIndiceAlfabetico .indice-alfabetico,
+    #filaIndiceAlfabeticoVocabulario .indice-alfabetico,
+    #resultado .lsp-video-marco-3d,
+    #resultadoCategorias .lsp-video-marco-3d,
+    #nosotrosVideoRatio.lsp-video-marco-3d,
+    #resultado .controles-video,
+    #resultadoCategorias .controles-video,
+    #nosotrosVideoWrap .controles-video,
+    .stat2-icono-wrap,
+    .nosotros-apoyo-icono,
+    .lsp-mejora-icono {
         transform: none;
     }
 
