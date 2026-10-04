@@ -87,17 +87,20 @@
             animarResultado(contenedor);
             let pendiente = 0;
             const observador = new MutationObserver(function(mutations){
-                const cambioVisible = mutations.some(function(m){ return m.type === 'childList'; });
-                if(!cambioVisible) return;
+                /* Solo se anima si cambian los hijos DIRECTOS del resultado,
+                   es decir, cuando se abre/reemplaza una ficha. Cambios internos
+                   del reproductor o de Play/Pausa no deben mover toda la ficha. */
+                const cambioDeFicha = mutations.some(function(m){
+                    return m.type === 'childList' && m.target === contenedor;
+                });
+                if(!cambioDeFicha) return;
                 if(pendiente) window.clearTimeout(pendiente);
                 pendiente = window.setTimeout(function(){
                     pendiente = 0;
                     animarResultado(contenedor);
                 }, 60);
             });
-            /* Solo cambios de nodos. Observar class/style causaría que la
-               propia clase de entrada volviera a disparar el observador. */
-            observador.observe(contenedor, {childList:true, subtree:true});
+            observador.observe(contenedor, {childList:true, subtree:false});
         });
     }
 
