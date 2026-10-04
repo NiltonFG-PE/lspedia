@@ -128,7 +128,7 @@
 
 #resultado .lsp-video-marco-3d,
 #resultadoCategorias .lsp-video-marco-3d,
-#nosotrosVideoWrap.lsp-video-marco-3d {
+#nosotrosVideoRatio.lsp-video-marco-3d {
     position: relative;
     border-radius: 20px;
     transform: translateZ(14px);
@@ -139,7 +139,7 @@
 
 #resultado .lsp-video-marco-3d::after,
 #resultadoCategorias .lsp-video-marco-3d::after,
-#nosotrosVideoWrap.lsp-video-marco-3d::after {
+#nosotrosVideoRatio.lsp-video-marco-3d::after {
     content: "";
     position: absolute;
     inset: 0;
