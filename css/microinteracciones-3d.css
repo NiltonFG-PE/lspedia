@@ -1,0 +1,140 @@
+/* ============================================================
+   LSPedia — microinteracciones 3D estables
+   - No anima la pantalla completa.
+   - No usa scale en transiciones de sección.
+   - Las apariciones por scroll ocurren una sola vez.
+   - Respeta prefers-reduced-motion.
+   ============================================================ */
+
+/* Entrada local de una sección recién abierta. */
+.lsp-seccion-enter {
+    animation: lspSeccionEntrada .28s cubic-bezier(.2,.8,.2,1) both;
+}
+
+@keyframes lspSeccionEntrada {
+    from { opacity: .35; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Aparición progresiva de tarjetas al entrar al viewport. */
+.lsp-reveal-item {
+    opacity: .01;
+    transform: translateY(12px);
+    transition:
+        opacity .38s ease var(--lsp-reveal-delay, 0ms),
+        transform .38s cubic-bezier(.2,.8,.2,1) var(--lsp-reveal-delay, 0ms);
+}
+
+.lsp-reveal-item.lsp-reveal-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Los iconos internos ganan profundidad sin flotar continuamente. */
+:is(.stat2-card, .nosotros-apoyo-card, .lsp-mejora-card, .categoria-card, .categoria-dicc-card) :is(img, .stat2-icono-wrap, .nosotros-apoyo-icono, .lsp-mejora-icono) {
+    transition: transform .18s ease, filter .18s ease;
+}
+
+/* A-Z, accesos y sugerencias: respuesta táctil local. */
+:is(.btn-abc, .indice-compacto-btn, .indice-compacto-btn-vocabulario, .lsp-aprender-btn, .lsp-aprender-nav, .lsp-nueva-palabra) {
+    transition: transform .15s ease, box-shadow .18s ease, filter .18s ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+:is(.btn-abc, .indice-compacto-btn, .indice-compacto-btn-vocabulario, .lsp-aprender-btn, .lsp-aprender-nav, .lsp-nueva-palabra):active:not(:disabled) {
+    transform: translateY(1px) !important;
+}
+
+/* Sugerencias del buscador: solo se mueve la fila tocada. */
+#sugerencias .list-group-item,
+#sugerenciasCategorias .list-group-item {
+    transition: transform .14s ease, background-color .14s ease, box-shadow .14s ease;
+    transform-origin: center;
+}
+
+#sugerencias .list-group-item:active,
+#sugerenciasCategorias .list-group-item:active {
+    transform: translateY(1px);
+}
+
+/* Logo superior: profundidad únicamente con cursor real. */
+.navbar-brand {
+    perspective: 700px;
+}
+
+.navbar-brand img,
+.navbar-brand video {
+    transition: transform .22s ease, filter .22s ease;
+    transform-origin: center;
+}
+
+/* Barra inferior: indicador activo con elevación, sin rebote global. */
+@media (max-width: 1199.98px) {
+    .mobile-bottom-nav .mbn-item {
+        position: relative;
+    }
+
+    .mobile-bottom-nav .mbn-item::after {
+        content: "";
+        position: absolute;
+        left: 24%;
+        right: 24%;
+        bottom: 2px;
+        height: 3px;
+        border-radius: 999px;
+        background: currentColor;
+        opacity: 0;
+        transform: scaleX(.45);
+        transition: opacity .18s ease, transform .18s ease;
+        pointer-events: none;
+    }
+
+    .mobile-bottom-nav .mbn-item.active::after {
+        opacity: .48;
+        transform: scaleX(1);
+    }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .navbar-brand:hover img,
+    .navbar-brand:hover video {
+        transform: perspective(700px) translateY(-2px) rotateX(2deg);
+        filter: drop-shadow(0 7px 10px rgba(15,23,42,.15));
+    }
+
+    :is(.stat2-card, .nosotros-apoyo-card, .lsp-mejora-card):hover :is(.stat2-icono-wrap, .nosotros-apoyo-icono, .lsp-mejora-icono) {
+        transform: translateZ(20px) translateY(-1px);
+    }
+
+    #sugerencias .list-group-item:hover,
+    #sugerenciasCategorias .list-group-item:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 14px rgba(15,23,42,.08);
+    }
+}
+
+/* En pantallas táctiles quitamos cualquier hover heredado que pueda quedarse pegado. */
+@media (hover: none), (pointer: coarse) {
+    .navbar-brand img,
+    .navbar-brand video,
+    #sugerencias .list-group-item:hover,
+    #sugerenciasCategorias .list-group-item:hover {
+        transform: none !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .lsp-seccion-enter,
+    .lsp-reveal-item,
+    .lsp-reveal-item.lsp-reveal-visible,
+    .navbar-brand img,
+    .navbar-brand video,
+    #sugerencias .list-group-item,
+    #sugerenciasCategorias .list-group-item,
+    :is(.btn-abc, .indice-compacto-btn, .indice-compacto-btn-vocabulario, .lsp-aprender-btn, .lsp-aprender-nav, .lsp-nueva-palabra) {
+        animation: none !important;
+        transition: none !important;
+        transform: none !important;
+    }
+}
