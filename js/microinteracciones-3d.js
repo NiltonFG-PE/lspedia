@@ -56,14 +56,24 @@
 
         elementos.forEach(function(elemento){
             if(elemento.dataset.lspRevealPreparado === '1') return;
-            elemento.dataset.lspRevealPreparado = '1';
 
-            if(reducirMovimiento || !estaVisible(elemento)) return;
+            if(reducirMovimiento){
+                elemento.dataset.lspRevealPreparado = '1';
+                return;
+            }
+
+            /* Un bloque oculto puede pertenecer a otra sección. No lo marcamos
+               como preparado hasta que realmente llegue a mostrarse. */
+            if(!estaVisible(elemento)) return;
 
             const rect = elemento.getBoundingClientRect();
             /* Lo que ya está visible al cargar no se oculta ni parpadea. */
-            if(rect.top < alto * .9 || rect.bottom < 0) return;
+            if(rect.top < alto * .9 || rect.bottom < 0){
+                elemento.dataset.lspRevealPreparado = '1';
+                return;
+            }
 
+            elemento.dataset.lspRevealPreparado = '1';
             elemento.style.setProperty('--lsp-reveal-delay', Math.min(retraso, 180) + 'ms');
             retraso += 35;
             elemento.classList.add('lsp-reveal-item');
