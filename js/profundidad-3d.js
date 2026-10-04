@@ -1,5 +1,5 @@
 /* LSPedia — interacciones 3D ligeras y seguras.
-   No usa giroscopio ni DeviceOrientation: solo puntero/scroll visual.
+   No usa giroscopio ni DeviceOrientation: solo puntero fino.
 */
 (function(){
     'use strict';
@@ -7,7 +7,6 @@
     const reducirMovimiento = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const punteroFino = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
     let frameHero = 0;
-    let frameScroll = 0;
 
     function limitar(valor, minimo, maximo){
         return Math.min(maximo, Math.max(minimo, valor));
@@ -28,6 +27,8 @@
             hero.style.setProperty('--lsp-hero-card-y', '0px');
         }
 
+        /* Parallax únicamente con mouse/trackpad. En táctil se conserva
+           la profundidad visual sin escuchar movimiento ni sensores. */
         if(punteroFino){
             hero.addEventListener('pointermove', function(evento){
                 if(frameHero) cancelAnimationFrame(frameHero);
@@ -47,24 +48,6 @@
             hero.addEventListener('pointerleave', resetear, {passive:true});
         }
 
-        /* El scroll agrega una diferencia mínima entre personaje y tarjeta.
-           Se limita a pocos píxeles para no marear ni mover botones. */
-        function actualizarScroll(){
-            frameScroll = 0;
-            if(!hero.isConnected) return;
-            const rect = hero.getBoundingClientRect();
-            const vh = Math.max(window.innerHeight || 0, 1);
-            const progreso = limitar((vh * .55 - rect.top) / vh, -1, 1);
-            if(!punteroFino){
-                hero.style.setProperty('--lsp-avatar-y', (progreso * -3).toFixed(1) + 'px');
-                hero.style.setProperty('--lsp-hero-card-y', (progreso * 1.5).toFixed(1) + 'px');
-            }
-        }
-        window.addEventListener('scroll', function(){
-            if(!frameScroll) frameScroll = requestAnimationFrame(actualizarScroll);
-        }, {passive:true});
-        actualizarScroll();
-
         if(avatar) avatar.setAttribute('data-lsp-3d', 'avatar');
         if(descubre) descubre.setAttribute('data-lsp-3d', 'descubre');
     }
@@ -79,7 +62,6 @@
             '[id*="VideoRatio"]'
         ].join(','));
         candidatos.forEach(function(elemento){
-            /* Evita convertir contenedores diminutos o los propios controles. */
             if(elemento.closest('.controles-video')) return;
             elemento.classList.add('lsp-video-marco-3d');
         });
@@ -103,23 +85,30 @@
             if(!contenedor || contenedor.dataset.lsp3dObservado === '1') return;
             contenedor.dataset.lsp3dObservado = '1';
             animarResultado(contenedor);
+            let pendiente = 0;
             const observador = new MutationObserver(function(mutations){
-                const cambioVisible = mutations.some(function(m){
-                    return m.type === 'childList' || m.type === 'attributes';
-                });
-                if(cambioVisible) requestAnimationFrame(function(){ animarResultado(contenedor); });
+                const cambioVisible = mutations.some(function(m){ return m.type === 'childList'; });
+                if(!cambioVisible) return;
+                if(pendiente) window.clearTimeout(pendiente);
+                pendiente = window.setTimeout(function(){
+                    pendiente = 0;
+                    animarResultado(contenedor);
+                }, 60);
             });
-            observador.observe(contenedor, {childList:true, subtree:true, attributes:true, attributeFilter:['class','style']});
+            /* Solo cambios de nodos. Observar class/style causaría que la
+               propia clase de entrada volviera a disparar el observador. */
+            observador.observe(contenedor, {childList:true, subtree:true});
         });
     }
 
     function prepararVideoNosotros(){
-        const contenedor = document.getElementById('nosotrosVideoWrap');
-        if(contenedor) contenedor.classList.add('lsp-video-marco-3d');
+        /* El contenedor exterior es arrastrable y puede usar transform/posición.
+           La profundidad se aplica al marco interior para no interferir. */
+        const marco = document.getElementById('nosotrosVideoRatio');
+        if(marco) marco.classList.add('lsp-video-marco-3d');
     }
 
     function prepararAccesibilidad(){
-        /* Los efectos son decorativos: nunca deben robar foco ni cambiar roles. */
         document.documentElement.classList.add('lsp-3d-ready');
     }
 
@@ -129,7 +118,6 @@
         observarResultados();
         prepararVideoNosotros();
 
-        /* Parte del contenido se inyecta después de cargar datos. */
         document.addEventListener('lspedia:datosListos', function(){
             observarResultados();
             prepararVideoNosotros();
