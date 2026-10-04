@@ -19,6 +19,10 @@
         if(!hero || reducirMovimiento) return;
 
         function resetear(){
+            if(frameHero){
+                cancelAnimationFrame(frameHero);
+                frameHero = 0;
+            }
             hero.style.setProperty('--lsp-rx', '0deg');
             hero.style.setProperty('--lsp-ry', '0deg');
             hero.style.setProperty('--lsp-avatar-x', '0px');
@@ -33,6 +37,7 @@
             hero.addEventListener('pointermove', function(evento){
                 if(frameHero) cancelAnimationFrame(frameHero);
                 frameHero = requestAnimationFrame(function(){
+                    frameHero = 0;
                     const rect = hero.getBoundingClientRect();
                     if(!rect.width || !rect.height) return;
                     const nx = limitar(((evento.clientX - rect.left) / rect.width) * 2 - 1, -1, 1);
@@ -122,11 +127,10 @@
         prepararVideoNosotros();
 
         document.addEventListener('lspedia:datosListos', function(){
+            /* No reanimamos resultados existentes aquí: el MutationObserver
+               ya anima únicamente cuando cambia una ficha real. */
             observarResultados();
             prepararVideoNosotros();
-            ['resultado','resultadoCategorias'].forEach(function(id){
-                animarResultado(document.getElementById(id));
-            });
         });
     }
 
