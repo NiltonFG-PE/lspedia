@@ -308,3 +308,53 @@ html[data-lsp-tema="dark"] #sugerenciasCategorias .list-group-item {
         animation: none !important;
     }
 }
+
+
+/* ============================================================
+   FIX 2026-10-06 — CAPA DEL BUSCADOR SOBRE "LO NUEVO"
+   ------------------------------------------------------------
+   El hero usa isolation/perspective por los efectos 3D. Eso crea un
+   stacking context propio: subir solo el z-index de #sugerencias no
+   alcanza para superar a tarjetas hermanas que se pintan después.
+   js/buscador-capas-fix.js marca temporalmente el contexto que debe
+   quedar arriba mientras el desplegable esté realmente visible.
+   ============================================================ */
+#filaHeroPrincipal.lsp-buscador-desplegado {
+    position: relative !important;
+    z-index: 7000 !important;
+    overflow: visible !important;
+}
+
+#filaHeroPrincipal.lsp-buscador-desplegado #bloqueBuscador {
+    position: relative !important;
+    z-index: 7010 !important;
+    overflow: visible !important;
+}
+
+#bloqueBuscadorCategorias.lsp-buscador-desplegado {
+    position: relative !important;
+    z-index: 7000 !important;
+    overflow: visible !important;
+}
+
+#bloqueBuscadorCategorias.lsp-buscador-desplegado > .col-lg-8.position-relative {
+    z-index: 7010 !important;
+    overflow: visible !important;
+}
+
+#filaHeroPrincipal.lsp-buscador-desplegado #sugerencias,
+#bloqueBuscadorCategorias.lsp-buscador-desplegado #sugerenciasCategorias {
+    z-index: 7020 !important;
+}
+
+/* Los bloques que siguen conservan su relieve, pero no necesitan competir
+   con un menú de búsqueda abierto. */
+#ultimasPalabras,
+#filaCategoriasDiccionario,
+#panelCategorias,
+#resultado,
+#resultadoCategorias,
+#resultadoCategoriasDiccionario {
+    position: relative;
+    z-index: 1;
+}
