@@ -188,6 +188,7 @@
     cargar('js/microinteracciones-3d.js?v=20261003-2');
     cargarCss('css/detalles-3d.css?v=20261003-2');
     cargarCss('css/compatibilidad-captura-movil.css?v=20261003-1');
+    cargarCss('css/header-responsive-fix.css?v=20261006-1');
     cargar('js/buscador-movil-focus.js?v=20260925-1');
     cargarCss('css/lo-nuevo-premium.css?v=20260919-1');
     cargar('js/modo-oscuro.js?v=20260916-2');
