@@ -1,0 +1,290 @@
+/* ============================================================
+   LSPedia — resultado visual que deriva a Vocabulario
+   ------------------------------------------------------------
+   Para búsquedas del Diccionario que existen en Vocabulario:
+   miniatura + destino visual + palabra + categoría + CTA grande.
+   Toda la tarjeta es un único botón accesible.
+   ============================================================ */
+
+#sugerencias .lsp-vocab-deriva-card {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: minmax(116px, 148px) minmax(0, 1fr) !important;
+    gap: 15px !important;
+    align-items: stretch !important;
+    padding: 12px !important;
+    margin: 0 !important;
+    border: 1px solid rgba(96,165,250,.28) !important;
+    border-radius: 20px !important;
+    background:
+        radial-gradient(circle at 92% 10%, rgba(59,130,246,.17), transparent 32%),
+        linear-gradient(145deg, rgba(27,38,53,.99), rgba(35,48,64,.99)) !important;
+    color: #f8fafc !important;
+    text-align: left !important;
+    cursor: pointer;
+    overflow: hidden;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.08),
+        0 12px 28px rgba(2,8,23,.23) !important;
+    transform: none !important;
+    transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease !important;
+}
+
+#sugerencias .lsp-vocab-deriva-card:hover,
+#sugerencias .lsp-vocab-deriva-card:focus-visible {
+    border-color: rgba(96,165,250,.58) !important;
+    background:
+        radial-gradient(circle at 92% 10%, rgba(59,130,246,.23), transparent 34%),
+        linear-gradient(145deg, rgba(29,42,60,.995), rgba(38,54,73,.995)) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.10),
+        0 15px 34px rgba(2,8,23,.28),
+        0 0 0 3px rgba(59,130,246,.12) !important;
+    outline: none !important;
+    transform: none !important;
+}
+
+#sugerencias .lsp-vocab-deriva-card:active {
+    transform: scale(.994) !important;
+}
+
+.lsp-vocab-deriva-media {
+    position: relative;
+    min-width: 0;
+    min-height: 112px;
+    border-radius: 16px;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 50% 34%, rgba(96,165,250,.24), transparent 43%),
+        linear-gradient(145deg,#172033,#0f172a);
+    border: 1px solid rgba(255,255,255,.10);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 8px 18px rgba(0,0,0,.20);
+}
+
+.lsp-vocab-deriva-thumb {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.lsp-vocab-deriva-placeholder {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-size: 2.1rem;
+    color: #fff;
+}
+
+.lsp-vocab-deriva-play {
+    position: absolute;
+    z-index: 2;
+    left: 9px;
+    bottom: 9px;
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: rgba(15,23,42,.82);
+    border: 1px solid rgba(255,255,255,.22);
+    color: #fff;
+    font-size: .78rem;
+    box-shadow: 0 5px 14px rgba(0,0,0,.26);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+.lsp-vocab-deriva-content {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.lsp-vocab-deriva-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 7px;
+}
+
+.lsp-vocab-deriva-badge,
+.lsp-vocab-deriva-category,
+.lsp-vocab-deriva-match {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: .66rem;
+    line-height: 1;
+    font-weight: 800;
+}
+
+.lsp-vocab-deriva-badge {
+    background: rgba(59,130,246,.18);
+    border: 1px solid rgba(96,165,250,.26);
+    color: #bfdbfe;
+}
+
+.lsp-vocab-deriva-category {
+    background: rgba(255,193,7,.13);
+    border: 1px solid rgba(255,193,7,.20);
+    color: #fde68a;
+}
+
+.lsp-vocab-deriva-match {
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(255,255,255,.09);
+    color: #cbd5e1;
+}
+
+.lsp-vocab-deriva-title {
+    display: block;
+    margin: 0 0 8px;
+    color: #fff;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: clamp(1.12rem, .98rem + .55vw, 1.42rem);
+    font-weight: 900;
+    line-height: 1.08;
+    letter-spacing: -.02em;
+    overflow-wrap: anywhere;
+}
+
+.lsp-vocab-deriva-route {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-bottom: 10px;
+}
+
+.lsp-vocab-deriva-source {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    min-height: 30px;
+    padding: 5px 9px;
+    border-radius: 10px;
+    font-size: .72rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.lsp-vocab-deriva-source.is-missing {
+    color: #cbd5e1;
+    background: rgba(148,163,184,.10);
+    border: 1px solid rgba(148,163,184,.15);
+}
+
+.lsp-vocab-deriva-source.is-found {
+    color: #dbeafe;
+    background: rgba(37,99,235,.22);
+    border: 1px solid rgba(96,165,250,.30);
+}
+
+.lsp-vocab-deriva-mark {
+    font-size: .82rem;
+    font-weight: 900;
+}
+
+.lsp-vocab-deriva-source.is-missing .lsp-vocab-deriva-mark { color: #fca5a5; }
+.lsp-vocab-deriva-source.is-found .lsp-vocab-deriva-mark { color: #86efac; }
+
+.lsp-vocab-deriva-arrow {
+    color: #93c5fd;
+    font-size: 1rem;
+    font-weight: 900;
+}
+
+.lsp-vocab-deriva-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-start;
+    min-height: 39px;
+    padding: 8px 13px;
+    border-radius: 12px;
+    background: linear-gradient(180deg,#2684ff,#1473e6);
+    color: #fff;
+    font-size: .82rem;
+    font-weight: 900;
+    line-height: 1;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 7px 16px rgba(30,100,220,.24);
+}
+
+@media (max-width: 575.98px) {
+    #sugerencias .lsp-vocab-deriva-card {
+        grid-template-columns: 104px minmax(0,1fr) !important;
+        gap: 11px !important;
+        padding: 10px !important;
+        border-radius: 18px !important;
+    }
+
+    .lsp-vocab-deriva-media {
+        min-height: 118px;
+        border-radius: 14px;
+    }
+
+    .lsp-vocab-deriva-title {
+        margin-bottom: 6px;
+        font-size: 1.05rem;
+    }
+
+    .lsp-vocab-deriva-route {
+        gap: 5px;
+        margin-bottom: 8px;
+    }
+
+    .lsp-vocab-deriva-source {
+        min-height: 27px;
+        padding: 4px 7px;
+        font-size: .62rem;
+    }
+
+    .lsp-vocab-deriva-arrow { font-size: .8rem; }
+
+    .lsp-vocab-deriva-cta {
+        width: 100%;
+        min-height: 36px;
+        padding: 7px 10px;
+        font-size: .73rem;
+    }
+
+    .lsp-vocab-deriva-match {
+        display: none;
+    }
+}
+
+@media (max-width: 390px) {
+    #sugerencias .lsp-vocab-deriva-card {
+        grid-template-columns: 88px minmax(0,1fr) !important;
+        gap: 9px !important;
+    }
+
+    .lsp-vocab-deriva-media { min-height: 108px; }
+
+    .lsp-vocab-deriva-category {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .lsp-vocab-deriva-source {
+        font-size: .58rem;
+        padding: 4px 6px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #sugerencias .lsp-vocab-deriva-card {
+        transition: none !important;
+    }
+}
