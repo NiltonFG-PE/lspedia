@@ -1,21 +1,20 @@
 /* ============================================================
    LSPedia — resultado visual que deriva a Vocabulario
    ------------------------------------------------------------
-   Para búsquedas del Diccionario que existen en Vocabulario:
-   miniatura + destino visual + palabra + categoría + CTA grande.
-   Toda la tarjeta es un único botón accesible.
+   Versión compacta: conserva miniatura, ruta visual, categoría y CTA,
+   pero ocupa menos alto para comportarse como un resultado rápido.
    ============================================================ */
 
 #sugerencias .lsp-vocab-deriva-card {
     width: 100% !important;
     display: grid !important;
-    grid-template-columns: minmax(116px, 148px) minmax(0, 1fr) !important;
-    gap: 15px !important;
+    grid-template-columns: minmax(92px, 112px) minmax(0, 1fr) !important;
+    gap: 10px !important;
     align-items: stretch !important;
-    padding: 12px !important;
+    padding: 8px !important;
     margin: 0 !important;
     border: 1px solid rgba(96,165,250,.28) !important;
-    border-radius: 20px !important;
+    border-radius: 16px !important;
     background:
         radial-gradient(circle at 92% 10%, rgba(59,130,246,.17), transparent 32%),
         linear-gradient(145deg, rgba(27,38,53,.99), rgba(35,48,64,.99)) !important;
@@ -25,7 +24,7 @@
     overflow: hidden;
     box-shadow:
         inset 0 1px 0 rgba(255,255,255,.08),
-        0 12px 28px rgba(2,8,23,.23) !important;
+        0 9px 22px rgba(2,8,23,.20) !important;
     transform: none !important;
     transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease !important;
 }
@@ -38,8 +37,8 @@
         linear-gradient(145deg, rgba(29,42,60,.995), rgba(38,54,73,.995)) !important;
     box-shadow:
         inset 0 1px 0 rgba(255,255,255,.10),
-        0 15px 34px rgba(2,8,23,.28),
-        0 0 0 3px rgba(59,130,246,.12) !important;
+        0 12px 28px rgba(2,8,23,.24),
+        0 0 0 3px rgba(59,130,246,.10) !important;
     outline: none !important;
     transform: none !important;
 }
@@ -51,14 +50,14 @@
 .lsp-vocab-deriva-media {
     position: relative;
     min-width: 0;
-    min-height: 112px;
-    border-radius: 16px;
+    min-height: 88px;
+    border-radius: 13px;
     overflow: hidden;
     background:
         radial-gradient(circle at 50% 34%, rgba(96,165,250,.24), transparent 43%),
         linear-gradient(145deg,#172033,#0f172a);
     border: 1px solid rgba(255,255,255,.10);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 8px 18px rgba(0,0,0,.20);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 6px 14px rgba(0,0,0,.18);
 }
 
 .lsp-vocab-deriva-thumb {
@@ -76,25 +75,25 @@
     inset: 0;
     display: grid;
     place-items: center;
-    font-size: 2.1rem;
+    font-size: 1.65rem;
     color: #fff;
 }
 
 .lsp-vocab-deriva-play {
     position: absolute;
     z-index: 2;
-    left: 9px;
-    bottom: 9px;
-    width: 34px;
-    height: 34px;
+    left: 7px;
+    bottom: 7px;
+    width: 27px;
+    height: 27px;
     display: grid;
     place-items: center;
     border-radius: 50%;
     background: rgba(15,23,42,.82);
     border: 1px solid rgba(255,255,255,.22);
     color: #fff;
-    font-size: .78rem;
-    box-shadow: 0 5px 14px rgba(0,0,0,.26);
+    font-size: .62rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,.24);
 }
 
 .lsp-vocab-deriva-content {
@@ -108,8 +107,8 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 6px;
-    margin-bottom: 7px;
+    gap: 5px;
+    margin-bottom: 4px;
 }
 
 .lsp-vocab-deriva-badge,
@@ -117,10 +116,10 @@
 .lsp-vocab-deriva-match {
     display: inline-flex;
     align-items: center;
-    min-height: 24px;
-    padding: 4px 8px;
+    min-height: 20px;
+    padding: 3px 7px;
     border-radius: 999px;
-    font-size: .66rem;
+    font-size: .58rem;
     line-height: 1;
     font-weight: 800;
 }
@@ -145,12 +144,12 @@
 
 .lsp-vocab-deriva-title {
     display: block;
-    margin: 0 0 8px;
+    margin: 0 0 5px;
     color: #fff;
     font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size: clamp(1.12rem, .98rem + .55vw, 1.42rem);
+    font-size: clamp(.98rem, .91rem + .28vw, 1.12rem);
     font-weight: 900;
-    line-height: 1.08;
+    line-height: 1.06;
     letter-spacing: -.02em;
     overflow-wrap: anywhere;
 }
@@ -159,18 +158,18 @@
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 7px;
-    margin-bottom: 10px;
+    gap: 5px;
+    margin-bottom: 6px;
 }
 
 .lsp-vocab-deriva-source {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
-    min-height: 30px;
-    padding: 5px 9px;
-    border-radius: 10px;
-    font-size: .72rem;
+    gap: 4px;
+    min-height: 24px;
+    padding: 4px 7px;
+    border-radius: 8px;
+    font-size: .62rem;
     font-weight: 800;
     line-height: 1;
 }
@@ -188,7 +187,7 @@
 }
 
 .lsp-vocab-deriva-mark {
-    font-size: .82rem;
+    font-size: .72rem;
     font-weight: 900;
 }
 
@@ -197,7 +196,7 @@
 
 .lsp-vocab-deriva-arrow {
     color: #93c5fd;
-    font-size: 1rem;
+    font-size: .82rem;
     font-weight: 900;
 }
 
@@ -206,53 +205,53 @@
     align-items: center;
     justify-content: center;
     align-self: flex-start;
-    min-height: 39px;
-    padding: 8px 13px;
-    border-radius: 12px;
+    min-height: 31px;
+    padding: 6px 10px;
+    border-radius: 9px;
     background: linear-gradient(180deg,#2684ff,#1473e6);
     color: #fff;
-    font-size: .82rem;
+    font-size: .70rem;
     font-weight: 900;
     line-height: 1;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 7px 16px rgba(30,100,220,.24);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 5px 12px rgba(30,100,220,.22);
 }
 
 @media (max-width: 575.98px) {
     #sugerencias .lsp-vocab-deriva-card {
-        grid-template-columns: 104px minmax(0,1fr) !important;
-        gap: 11px !important;
-        padding: 10px !important;
-        border-radius: 18px !important;
+        grid-template-columns: 82px minmax(0,1fr) !important;
+        gap: 8px !important;
+        padding: 7px !important;
+        border-radius: 15px !important;
     }
 
     .lsp-vocab-deriva-media {
-        min-height: 118px;
-        border-radius: 14px;
+        min-height: 88px;
+        border-radius: 11px;
     }
 
     .lsp-vocab-deriva-title {
-        margin-bottom: 6px;
-        font-size: 1.05rem;
+        margin-bottom: 4px;
+        font-size: .94rem;
     }
 
     .lsp-vocab-deriva-route {
-        gap: 5px;
-        margin-bottom: 8px;
+        gap: 4px;
+        margin-bottom: 5px;
     }
 
     .lsp-vocab-deriva-source {
-        min-height: 27px;
-        padding: 4px 7px;
-        font-size: .62rem;
+        min-height: 22px;
+        padding: 3px 6px;
+        font-size: .56rem;
     }
 
-    .lsp-vocab-deriva-arrow { font-size: .8rem; }
+    .lsp-vocab-deriva-arrow { font-size: .7rem; }
 
     .lsp-vocab-deriva-cta {
-        width: 100%;
-        min-height: 36px;
-        padding: 7px 10px;
-        font-size: .73rem;
+        width: auto;
+        min-height: 29px;
+        padding: 6px 9px;
+        font-size: .66rem;
     }
 
     .lsp-vocab-deriva-match {
@@ -262,11 +261,11 @@
 
 @media (max-width: 390px) {
     #sugerencias .lsp-vocab-deriva-card {
-        grid-template-columns: 88px minmax(0,1fr) !important;
-        gap: 9px !important;
+        grid-template-columns: 74px minmax(0,1fr) !important;
+        gap: 7px !important;
     }
 
-    .lsp-vocab-deriva-media { min-height: 108px; }
+    .lsp-vocab-deriva-media { min-height: 82px; }
 
     .lsp-vocab-deriva-category {
         max-width: 100%;
@@ -276,8 +275,8 @@
     }
 
     .lsp-vocab-deriva-source {
-        font-size: .58rem;
-        padding: 4px 6px;
+        font-size: .53rem;
+        padding: 3px 5px;
     }
 }
 
