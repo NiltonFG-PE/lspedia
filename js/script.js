@@ -2969,6 +2969,135 @@ function registrarBusquedaGA4(termino, origen){
     }
 }
 
+// Tarjeta visual para una búsqueda del Diccionario que solo existe en
+// Vocabulario. Está pensada para comprenderse de un vistazo: miniatura,
+// palabra, categoría y una ruta visual Diccionario ✕ → Vocabulario ✓.
+function obtenerMiniaturaDerivacionVocabulario(registro){
+    const item = registro || {};
+    const idVideo = extraerIdYouTube(item.video);
+    const primeraImagen = String(item.imagen || "").split(",")[0].trim();
+    const imagenSegura = normalizarUrlImagenSegura(primeraImagen);
+    return {
+        src: imagenSegura || (idVideo ? "https://i.ytimg.com/vi/" + encodeURIComponent(idVideo) + "/mqdefault.jpg" : ""),
+        idVideo
+    };
+}
+
+function etiquetaCoincidenciaDerivacionVocabulario(coincidencia){
+    const tipo = String((coincidencia && coincidencia.tipo) || "").toLowerCase();
+    if(tipo === "variante") return "Coincide por variante";
+    if(tipo === "conjugacion" || tipo === "conjugación") return "Coincide por conjugación";
+    return "Resultado exacto";
+}
+
+function crearTarjetaDerivacionVocabulario(coincidencia){
+    const registro = coincidencia && coincidencia.registro;
+    if(!registro) return null;
+
+    const palabra = String(registro.palabra || coincidencia.forma || "Vocabulario").trim();
+    const categoria = String(registro.categoria || "Vocabulario").trim();
+    const miniatura = obtenerMiniaturaDerivacionVocabulario(registro);
+
+    const tarjeta = document.createElement("button");
+    tarjeta.type = "button";
+    tarjeta.className = "list-group-item list-group-item-action lsp-vocab-deriva-card";
+    tarjeta.setAttribute("aria-label", "Abrir " + palabra + " en Vocabulario");
+
+    const media = document.createElement("span");
+    media.className = "lsp-vocab-deriva-media";
+    media.setAttribute("aria-hidden", "true");
+
+    const placeholder = document.createElement("span");
+    placeholder.className = "lsp-vocab-deriva-placeholder";
+    placeholder.textContent = "🤟";
+    media.appendChild(placeholder);
+
+    if(miniatura.src){
+        const img = document.createElement("img");
+        img.className = "lsp-vocab-deriva-thumb";
+        img.src = miniatura.src;
+        img.alt = "";
+        img.loading = "lazy";
+        img.decoding = "async";
+        img.addEventListener("error", function(){
+            img.remove();
+        }, { once:true });
+        media.appendChild(img);
+    }
+
+    if(miniatura.idVideo){
+        const play = document.createElement("span");
+        play.className = "lsp-vocab-deriva-play";
+        play.textContent = "▶";
+        media.appendChild(play);
+    }
+
+    const contenido = document.createElement("span");
+    contenido.className = "lsp-vocab-deriva-content";
+
+    const meta = document.createElement("span");
+    meta.className = "lsp-vocab-deriva-meta";
+
+    const badge = document.createElement("span");
+    badge.className = "lsp-vocab-deriva-badge";
+    badge.textContent = "🗂️ Vocabulario";
+
+    const cat = document.createElement("span");
+    cat.className = "lsp-vocab-deriva-category";
+    cat.textContent = categoria;
+
+    const match = document.createElement("span");
+    match.className = "lsp-vocab-deriva-match";
+    match.textContent = etiquetaCoincidenciaDerivacionVocabulario(coincidencia);
+
+    meta.append(badge, cat, match);
+
+    const titulo = document.createElement("span");
+    titulo.className = "lsp-vocab-deriva-title";
+    titulo.textContent = palabra;
+
+    const ruta = document.createElement("span");
+    ruta.className = "lsp-vocab-deriva-route";
+
+    const origen = document.createElement("span");
+    origen.className = "lsp-vocab-deriva-source is-missing";
+    origen.innerHTML = '<span aria-hidden="true">📘</span><span>Diccionario</span><span class="lsp-vocab-deriva-mark" aria-hidden="true">✕</span>';
+
+    const flecha = document.createElement("span");
+    flecha.className = "lsp-vocab-deriva-arrow";
+    flecha.textContent = "→";
+    flecha.setAttribute("aria-hidden", "true");
+
+    const destino = document.createElement("span");
+    destino.className = "lsp-vocab-deriva-source is-found";
+    destino.innerHTML = '<span aria-hidden="true">🗂️</span><span>Vocabulario</span><span class="lsp-vocab-deriva-mark" aria-hidden="true">✓</span>';
+
+    ruta.append(origen, flecha, destino);
+
+    const cta = document.createElement("span");
+    cta.className = "lsp-vocab-deriva-cta";
+    cta.innerHTML = '<span aria-hidden="true">▶&nbsp;</span> Ver esta seña <span aria-hidden="true">&nbsp;→</span>';
+
+    contenido.append(meta, titulo, ruta, cta);
+    tarjeta.append(media, contenido);
+
+    tarjeta.addEventListener("click", function(evento){
+        evento.preventDefault();
+        evento.stopPropagation();
+        abrirResultadoVocabularioDesdeBusqueda(registro);
+    });
+
+    return tarjeta;
+}
+
+function mostrarDerivacionVocabulario(coincidencia){
+    const tarjeta = crearTarjetaDerivacionVocabulario(coincidencia);
+    if(!tarjeta) return false;
+    sugerencias.replaceChildren(tarjeta);
+    sugerencias.style.display = "block";
+    return true;
+}
+
 function buscarPalabras(){
     asegurarBancoVocabularioParaBusqueda();
 
@@ -3022,17 +3151,7 @@ function buscarPalabras(){
 
     if(encontrados.length===0 || coincidenciaVocabulario){
         if(coincidenciaVocabulario){
-            const etiqueta = coincidenciaVocabulario.tipo === "exacta"
-                ? "coincidencia exacta"
-                : (coincidenciaVocabulario.tipo === "variante" ? "variante" : "conjugación");
-            sugerencias.innerHTML =
-                '<div class="list-group-item text-center py-3" style="background-color: #343a40; border: none;">' +
-                '<span class="text-white d-block mb-2 small">No está en el Diccionario, pero sí en Vocabulario.</span>' +
-                '<span class="text-white-50 d-block mb-2" style="font-size:11px;">' + escaparHtml(etiqueta) + ': <strong>' + escaparHtml(coincidenciaVocabulario.forma || coincidenciaVocabulario.registro.palabra) + '</strong></span>' +
-                '<button type="button" class="btn btn-sm btn-primary w-100 fw-bold" id="btnIrVocabularioBusqueda">🗂️ Ver en Vocabulario</button>' +
-                '</div>';
-            const btnVocab = document.getElementById("btnIrVocabularioBusqueda");
-            if(btnVocab) btnVocab.onclick = () => abrirResultadoVocabularioDesdeBusqueda(coincidenciaVocabulario.registro);
+            mostrarDerivacionVocabulario(coincidenciaVocabulario);
             return;
         }
 
