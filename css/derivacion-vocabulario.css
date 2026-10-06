@@ -95,8 +95,6 @@
     color: #fff;
     font-size: .78rem;
     box-shadow: 0 5px 14px rgba(0,0,0,.26);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
 }
 
 .lsp-vocab-deriva-content {
