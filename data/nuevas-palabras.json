@@ -1,15 +1,33 @@
 {
-  "generadoEn": "2026-09-26T17:53:51Z",
+  "generadoEn": "2026-10-06T23:21:38Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
   "items": [
     {
-      "id": "neurodivergente",
-      "palabra": "Neurodivergente",
-      "categoria": "Psicología",
-      "imagen": "img/diccionario/neurodivergente.webp, img/diccionario/neurodivergente-2.webp",
-      "fecha": "2026-09-26T17:53:16Z",
+      "id": "",
+      "palabra": "Bueno",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/bueno.webp",
+      "fecha": "2026-10-06T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Bien",
+      "categoria": "Adverbios",
+      "imagen": "img/vocabulario/bien.webp",
+      "fecha": "2026-10-06T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "camara-gesell",
+      "palabra": "Cámara Gesell",
+      "categoria": "Legal",
+      "imagen": "img/diccionario/camara-gesell.webp",
+      "fecha": "2026-09-26T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
@@ -18,16 +36,16 @@
       "palabra": "Facilitador",
       "categoria": "Educación",
       "imagen": "img/diccionario/facilitador.webp, img/diccionario/facilitador-2.webp",
-      "fecha": "2026-09-26T16:14:55Z",
+      "fecha": "2026-09-26T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
     {
-      "id": "camara-gesell",
-      "palabra": "Cámara Gesell",
-      "categoria": "Legal",
-      "imagen": "img/diccionario/camara-gesell.webp",
-      "fecha": "2026-09-26T05:21:50Z",
+      "id": "neurodivergente",
+      "palabra": "Neurodivergente",
+      "categoria": "Psicología",
+      "imagen": "img/diccionario/neurodivergente.webp, img/diccionario/neurodivergente-2.webp",
+      "fecha": "2026-09-26T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
@@ -90,24 +108,6 @@
       "palabra": "Felicitaciones",
       "categoria": "Cortesía",
       "imagen": "img/vocabulario/felicitaciones.webp",
-      "fecha": "2026-09-23T05:00:00Z",
-      "origenFecha": "fechaPublicacion",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Gracias",
-      "categoria": "Cortesía",
-      "imagen": "img/vocabulario/gracias.webp",
-      "fecha": "2026-09-23T05:00:00Z",
-      "origenFecha": "fechaPublicacion",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Por favor",
-      "categoria": "Cortesía",
-      "imagen": "img/vocabulario/por-favor.webp",
       "fecha": "2026-09-23T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
