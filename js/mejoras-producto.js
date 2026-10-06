@@ -182,6 +182,7 @@
     cargarCss('css/fab-dock-delgado.css?v=20260916-1');
     cargarCss('css/modo-oscuro.css?v=20260916-2');
     cargarCss('css/buscador-dropdown-premium.css?v=20261006-5');
+    cargarCss('css/derivacion-vocabulario.css?v=20261006-1');
     cargarCss('css/profundidad-3d.css?v=20261003-3');
     cargar('js/profundidad-3d.js?v=20261003-3');
     cargarCss('css/microinteracciones-3d.css?v=20261003-1');
