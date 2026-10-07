@@ -76,7 +76,7 @@ test('la fuente pública deduplica cargas y no espera las definiciones de apoyo'
         return url.includes('definiciones') ? new Promise(() => {}) : new Promise(r => {resolverDatos = r;});
     }}};
     vm.runInNewContext(read('js/vocabulario-publico.js'), {window, URLSearchParams, console,
-        CustomEvent:class {constructor(type){this.type=type;}}, document:{dispatchEvent(e){eventos.push(e.type);}}});
+        CustomEvent:class {constructor(type){this.type=type;}}, document:{getElementById(){return null;},createElement(){return {};},head:{appendChild(){}},dispatchEvent(e){eventos.push(e.type);}}});
     const api = window.LSPediaVocabularioPublico;
     const a = api.cargar(), b = api.cargar();
     assert.equal(a, b);
@@ -95,7 +95,7 @@ test('la fuente publica un error recuperable y acepta un banco vacío al reinten
         return fallar ? Promise.reject(new Error('red')) : Promise.resolve([]);
     }}};
     vm.runInNewContext(read('js/vocabulario-publico.js'), {window, URLSearchParams,
-        console:{warn(){}}, CustomEvent:class {}, document:{dispatchEvent(){}}});
+        console:{warn(){}}, CustomEvent:class {}, document:{getElementById(){return null;},createElement(){return {};},head:{appendChild(){}},dispatchEvent(){}}});
     const api = window.LSPediaVocabularioPublico;
     await api.cargar();
     assert.equal(api.estado(), 'error');

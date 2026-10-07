@@ -173,7 +173,7 @@
     const obs=new MutationObserver(function(cambios){
       let actualizarNav=false,revisarDialogos=false;
       cambios.forEach(function(cambio){
-        if(cambio.type==='attributes'&&cambio.attributeName==='class'){actualizarNav=true;if(cambio.target instanceof Element&&cambio.target.matches('.modal,[role="dialog"],dialog'))revisarDialogos=true;}
+        if(cambio.type==='attributes'&&cambio.attributeName==='class'){if(cambio.target.matches('a.nav-link,[role="tab"],[data-admin-tab]'))actualizarNav=true;if(cambio.target instanceof Element&&cambio.target.matches('.modal,[role="dialog"],dialog'))revisarDialogos=true;}
         if(cambio.type==='attributes'&&(cambio.attributeName==='aria-hidden'||cambio.attributeName==='open'))revisarDialogos=true;
         cambio.addedNodes.forEach(function(nodo){if(!(nodo instanceof Element))return;if(nodo.matches('button, a, [role="button"]'))asegurarNombre(nodo);prepararControles(nodo);prepararDialogos(nodo);});
       });

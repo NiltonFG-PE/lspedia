@@ -786,7 +786,7 @@ function reproducirEntradaSeccionPrincipal(){
     if(!contenido) return;
     contenido.classList.remove("lsp-seccion-saliendo", "lsp-seccion-entrando");
 
-    if(window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if(window.matchMedia("(prefers-reduced-motion: reduce), (max-width: 1199.98px), (pointer: coarse)").matches) return;
 
     // Forzar reflow permite reiniciar la animación aunque se cambie de
     // sección varias veces seguidas.
@@ -825,7 +825,7 @@ document.addEventListener("click", (evento) => {
     const idDestino = idDestinoDesdeControlPrincipal(control);
     if(!IDS_SECCIONES_PRINCIPALES.has(idDestino) || idDestino === idSeccionPrincipalActiva) return;
 
-    if(window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if(window.matchMedia("(prefers-reduced-motion: reduce), (max-width: 1199.98px), (pointer: coarse)").matches) return;
 
     evento.preventDefault();
     evento.stopImmediatePropagation();

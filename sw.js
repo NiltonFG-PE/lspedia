@@ -12,7 +12,7 @@
    - El panel /admin/ y los laboratorios quedan fuera del fallback público.
    ============================================================ */
 
-const VERSION_APP = "v273";
+const VERSION_APP = "v274";
 const PREFIJO_CACHE = "lspedia-shell-";
 const PREFIJO_RUNTIME = "lspedia-runtime-";
 const CACHE_NOMBRE = PREFIJO_CACHE + VERSION_APP;
@@ -22,6 +22,8 @@ const RED_REINTENTOS = 1;
 
 const EXTENSION_ARCHIVO_ESTATICO = /\.(?:avif|bmp|gif|ico|jpe?g|png|svg|webp|css|html?|js|mjs|json|map|webmanifest|woff2?|ttf|otf|mp3|wav|ogg|mp4|webm|pdf|txt|xml)$/i;
 
+// Los módulos opcionales entran a la caché runtime al usarse. No compiten
+// con el contenido durante la instalación inicial de la PWA.
 const ARCHIVOS_CASCARON = [
     "./",
     "./index.html",
@@ -39,18 +41,12 @@ const ARCHIVOS_CASCARON = [
     "css/fab-dock-delgado.css",
     "css/modo-oscuro.css",
     "css/modo-oscuro-ajustes.css",
-    "css/modo-oscuro-herramientas.css",
     "css/buscador-dropdown-premium.css",
     "css/derivacion-vocabulario.css",
-    "css/profundidad-3d.css",
-    "css/microinteracciones-3d.css",
-    "css/detalles-3d.css",
     "css/compatibilidad-captura-movil.css",
     "css/header-responsive-fix.css",
-    "css/social-invitacion.css",
     "js/security.js",
     "js/lspedia-core.js",
-    "js/alfabetizacion-ampliar-fix.js",
     "js/web-premium-extras.js",
     "js/ultimos30-fix.js",
     "js/header-premium-fix.js",
@@ -64,7 +60,6 @@ const ARCHIVOS_CASCARON = [
     "js/accesibilidad-segura.js",
     "js/seo-institucional.js",
     "js/vocabulario-publico.js",
-    "js/juegos-banco-compartido.js",
     "js/lazy-modules.js",
     "js/fullscreen-mobile-fix.js",
     "js/pwa-install.js",
@@ -73,14 +68,11 @@ const ARCHIVOS_CASCARON = [
     "js/busqueda-core.js",
     "js/quiz.js",
     "js/mejoras-producto.js",
-    "js/profundidad-3d.js",
-    "js/microinteracciones-3d.js",
     "js/experiencia-vocabulario.js",
     "js/aprendizaje-colapsable.js",
     "js/categorias-compartir.js",
     "js/mejoras-producto-base.js",
     "js/modo-oscuro.js",
-    "js/modo-oscuro-herramientas.js",
     "js/youtube-diagnostico.js",
     "js/buscador-vocabulario-rescate.js",
     "js/buscador-capas-fix.js",
@@ -91,13 +83,9 @@ const ARCHIVOS_CASCARON = [
     "js/i18n.js",
     "js/i18n-restaurar.js",
     "js/i18n-auto.js",
-    "js/i18n-nosotros.js",
-    "js/i18n-completo.js",
-    "js/nosotros-premium.js",
     "js/buscador-visual.js",
     "js/buscador-predictivo.js",
     "js/a-z-movil.js",
-    "js/social-invitacion.js",
     "data/vocabulario.json",
     "data/vocabulario-definiciones.json",
     "data/nuevas-palabras.json"

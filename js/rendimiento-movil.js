@@ -2,6 +2,43 @@
 (function () {
     'use strict';
 
+    // Solo las animaciones decorativas: los videos de señas mantienen sus controles.
+    const decoraciones = new Map();
+    const observerDecoracion = 'IntersectionObserver' in window
+        ? new IntersectionObserver(function(entradas){
+            entradas.forEach(function(entrada){
+                decoraciones.set(entrada.target, entrada.isIntersecting);
+                actualizarDecoracion(entrada.target, entrada.isIntersecting);
+            });
+        })
+        : null;
+
+    function actualizarDecoracion(video, visible){
+        if(!video.isConnected){
+            decoraciones.delete(video);
+            if(observerDecoracion) observerDecoracion.unobserve(video);
+            return;
+        }
+        if(document.hidden || !visible){
+            if(!video.paused) video.pause();
+        } else if(video.autoplay && video.paused){
+            const reproduccion = video.play();
+            if(reproduccion && reproduccion.catch) reproduccion.catch(function(){});
+        }
+    }
+
+    function gestionarDecoracion(video){
+        if(video.tagName !== 'VIDEO' || !video.matches('#btnLogo video, #colAvatarHero video')) return;
+        if(decoraciones.has(video)) return;
+        const visible = estaVisible(video);
+        decoraciones.set(video, visible);
+        actualizarDecoracion(video, visible);
+        if(observerDecoracion) observerDecoracion.observe(video);
+    }
+    document.addEventListener('visibilitychange', function(){
+        decoraciones.forEach(function(visible, video){ actualizarDecoracion(video, visible); });
+    });
+
     function estaVisible(elemento) {
         if (!elemento || !elemento.isConnected) return false;
         const rect = elemento.getBoundingClientRect();
@@ -18,6 +55,8 @@
 
     function optimizarMedia(media) {
         if (!media || !['VIDEO', 'AUDIO'].includes(media.tagName)) return;
+
+        gestionarDecoracion(media);
 
         // Los recursos con autoplay se dejan intactos: LSPedia necesita que
         // los videos de señas/animaciones sigan iniciándose automáticamente.

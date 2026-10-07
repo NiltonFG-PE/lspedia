@@ -211,3 +211,43 @@ html[data-lsp-tema="dark"] :is(
         transform: none !important;
     }
 }
+
+/* Móvil: relieve estático con menos repintados al deslizar. */
+@media (max-width: 1199.98px) {
+    .mobile-bottom-nav,
+    .lspedia-idioma-selector,
+    #lspNuevasCard .lsp-mejora-titulo,
+    #lspNuevasCard .lsp-30d-btn {
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+    }
+    .mobile-bottom-nav .mbn-item::after,
+    nav.navbar .nav-link::after {
+        content: none !important;
+        display: none !important;
+    }
+    .lsp-nueva-palabra,
+    .categoria-card,
+    .categoria-dicc-card,
+    .ejemplo-chip {
+        box-shadow: 0 3px 9px rgba(15,23,42,.07) !important;
+        transform: none !important;
+        filter: none !important;
+        will-change: auto !important;
+        animation: none !important;
+    }
+    .lsp-nueva-badge {
+        box-shadow: none !important;
+    }
+    .mbn-item.active .mbn-icon-wrap,
+    .lsp-seccion-entrando,
+    .lsp-seccion-saliendo,
+    .lsp-seccion-enter,
+    .lsp-resultado-3d-enter,
+    body.vista-temas-movil #bloqueBuscadorCategorias .input-group,
+    body.vista-temas-movil #btnBuscarCategorias span {
+        animation: none !important;
+        transform: none !important;
+        will-change: auto !important;
+    }
+}

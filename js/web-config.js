@@ -24,10 +24,11 @@ function media(el,r,opt={}){
     el.replaceWith(n);
   }
   if(want==='video'){
-    if(n.getAttribute('src')!==r)n.src=r;
+    const cambioFuente=n.getAttribute('src')!==r;
+    if(cambioFuente)n.src=r;
     n.autoplay=true;n.loop=true;n.muted=true;n.playsInline=true;
     ['autoplay','loop','muted','playsinline','disablepictureinpicture'].forEach(a=>n.setAttribute(a,''));
-    try{n.load();const p=n.play();if(p&&p.catch)p.catch(()=>{});}catch(_e){}
+    if(cambioFuente){try{n.load();const p=n.play();if(p&&p.catch)p.catch(()=>{});}catch(_e){}}
   }else if(n.getAttribute('src')!==r){n.src=r;}
   if(opt.alt)n.alt=opt.alt;
   if(opt.aria)n.setAttribute('aria-label',opt.aria);

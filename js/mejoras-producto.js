@@ -184,10 +184,11 @@
     cargarCss('css/buscador-dropdown-premium.css?v=20261006-5');
     cargarCss('css/derivacion-vocabulario.css?v=20261006-2');
     cargarCss('css/profundidad-3d.css?v=20261003-3');
-    cargar('js/profundidad-3d.js?v=20261003-3');
-    cargarCss('css/microinteracciones-3d.css?v=20261003-1');
-    cargar('js/microinteracciones-3d.js?v=20261003-2');
-    cargarCss('css/detalles-3d.css?v=20261003-2');
+    const movilLigero = window.matchMedia('(max-width: 1199.98px), (pointer: coarse)').matches;
+    if(!movilLigero) cargar('js/profundidad-3d.js?v=20261003-3');
+    cargarCss('css/microinteracciones-3d.css?v=20261007-light-1');
+    if(!movilLigero) cargar('js/microinteracciones-3d.js?v=20261003-2');
+    cargarCss('css/detalles-3d.css?v=20261007-light-1');
     cargarCss('css/compatibilidad-captura-movil.css?v=20261003-1');
     cargarCss('css/header-responsive-fix.css?v=20261006-1');
     cargar('js/buscador-capas-fix.js?v=20261006-1');
@@ -199,14 +200,14 @@
     cargar('js/social-invitacion.js?v=20261002-1');
 
     function cargarMejorasConCore(){
-        cargar('js/accesibilidad-segura.js?v=20260914-1');
+        cargar('js/accesibilidad-segura.js?v=20261007-light-1');
         cargar('js/seo-institucional.js?v=20260914-1');
-        cargar('js/juegos-banco-compartido.js?v=20260914-2');
+        cargar('js/juegos-banco-compartido.js?v=20261007-light-1');
         cargar('js/a-z-movil.js?v=20260914');
     }
     if(window.LSPediaCore) cargarMejorasConCore(); else cargar('js/lspedia-core.js?v=20261003-mision-2', cargarMejorasConCore);
     cargar('js/optimizacion-errores.js?v=20260914-1', function(){
-        cargar('js/rendimiento-movil.js?v=20260914-1', function(){
+        cargar('js/rendimiento-movil.js?v=20261007-light-1', function(){
             cargar('js/mejoras-producto-base.js?v=20260914', function(){
                 cargar('js/lo-nuevo.js?v=20261007-result-scroll-1');
                 cargar('js/i18n.js?v=20261003-mision-2', function(){

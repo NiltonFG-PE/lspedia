@@ -238,9 +238,17 @@
   }
 
   const observer = new MutationObserver(function () { mejorarNivelesAventura(); });
-  function iniciar() {
+  function precargarHerramientas(){
     cargar(false).catch(function (e) { console.warn('[LSPedia Juegos] banco compartido no disponible:', e); });
-    observer.observe(document.body, { childList: true, subtree: true });
+  }
+  function iniciar() {
+    // Los bancos se necesitan al entrar a Herramientas, no al leer el inicio.
+    if(String(new URLSearchParams(location.search).get('vista') || '').startsWith('herramientas')) precargarHerramientas();
+    document.addEventListener('click', function(evento){
+      if(evento.target.closest('#btnHerramientas,#btnAccesoHerramientas,#btnAccesoJugar,.mbn-item[data-vinculado="btnHerramientas"]')) precargarHerramientas();
+    }, {capture:true,passive:true});
+    const seccion = document.getElementById('seccionAlfabetizacion');
+    if(seccion) observer.observe(seccion, { childList: true, subtree: true });
     mejorarNivelesAventura();
   }
 
