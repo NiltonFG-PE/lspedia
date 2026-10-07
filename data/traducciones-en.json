@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-10-07T16:32:09Z",
+  "actualizado": "2026-10-07T21:19:49Z",
   "traducciones": [
     {
       "fuente": "diccionario",
@@ -264,7 +264,7 @@
       "categoria": "Salud",
       "ingles": "Allergy",
       "aliases": [],
-      "definicionIngles": "This occurs when the body reacts adversely to something, such as food or dust, causing discomfort.\n\nExample: I have a dust allergy, that's why I sneeze a lot."
+      "definicionIngles": "This is when the body reacts badly to something, like food or dust, causing discomfort.\n\nExample: I have a dust allergy, that's why I sneeze a lot."
     },
     {
       "fuente": "diccionario",
@@ -376,7 +376,7 @@
       "categoria": "Salud",
       "ingles": "Anemia",
       "aliases": [],
-      "definicionIngles": "A health problem in which the blood has low hemoglobin or few healthy red blood cells."
+      "definicionIngles": "A health problem in which the blood has little hemoglobin or few healthy red blood cells."
     },
     {
       "fuente": "diccionario",
@@ -2016,7 +2016,7 @@
       "categoria": "Comunicación",
       "ingles": "Journalistic chronicle",
       "aliases": [],
-      "definicionIngles": "A journalistic account that tells real events following an order and providing details of the context."
+      "definicionIngles": "A journalistic account that tells real events in a specific order and provides details of the context."
     },
     {
       "fuente": "diccionario",
@@ -6192,7 +6192,7 @@
       "categoria": "Ocio",
       "ingles": "Movie",
       "aliases": [],
-      "definicionIngles": "It's a story that you see on television or at the movies, with moving images.\n\nExample: We saw an adventure movie on Saturday."
+      "definicionIngles": "It's a story you see on television or at the movies, with moving images.\n\nExample: We saw an adventure movie on Saturday."
     },
     {
       "fuente": "diccionario",
@@ -6408,7 +6408,7 @@
       "categoria": "Ciencia",
       "ingles": "Technical drawing",
       "aliases": [],
-      "definicionIngles": "Drawing with measurements and details used to manufacture, build or install something."
+      "definicionIngles": "A drawing with measurements and details used to manufacture, build, or install something."
     },
     {
       "fuente": "diccionario",
@@ -7504,7 +7504,7 @@
       "categoria": "Universidad",
       "ingles": "Semester",
       "aliases": [],
-      "definicionIngles": "It's one of the two parts into which a university academic year is divided.\n\nExample: This semester I'm taking five courses."
+      "definicionIngles": "It's one of the two parts into which a university year is divided.\n\nExample: This semester I'm taking five courses."
     },
     {
       "fuente": "diccionario",
@@ -7928,7 +7928,7 @@
       "categoria": "Psicología",
       "ingles": "Therapist",
       "aliases": [],
-      "definicionIngles": "Professional who accompanies a person in a process of treatment or therapeutic support."
+      "definicionIngles": "Professional who accompanies a person in a treatment or therapeutic support process."
     },
     {
       "fuente": "diccionario",
@@ -8632,7 +8632,7 @@
       "categoria": "Deportes",
       "ingles": "Referee",
       "aliases": [],
-      "definicionIngles": "It's the person who officiates a match and decides whether something is allowed or not.\n\nExample: The referee called a foul in the match."
+      "definicionIngles": "This is the person who officiates a match and decides whether something is allowed or not.\n\nExample: The referee called a foul in the match."
     },
     {
       "fuente": "diccionario",
