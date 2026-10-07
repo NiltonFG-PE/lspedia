@@ -60,7 +60,12 @@ const server = http.createServer((req, res) => {
             && /¿Cómo\?/.test(document.getElementById('resultadoCategorias')?.innerText || '')
             && /Vocabulario/.test(document.getElementById('resultadoCategorias')?.innerText || '')
         );
-        console.log('PASS: enlace directo como-preguntas abre la ficha de Vocabulario');
+        // No basta con que aparezca un instante: cargas asíncronas posteriores
+        // no deben volver a la pantalla madre ni borrar la ficha compartida.
+        await page.waitForTimeout(4000);
+        assert.match(await page.locator('#resultadoCategorias').innerText(), /¿Cómo\?/);
+        assert.match(await page.locator('#resultadoCategorias').innerText(), /Vocabulario/);
+        console.log('PASS: enlace directo como-preguntas permanece abierto tras cargas tardías');
         await context.close();
 
         ({context, page} = await pagina());
