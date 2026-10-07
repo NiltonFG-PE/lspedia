@@ -3836,7 +3836,7 @@ function mostrarPalabra(p, opciones = {}){
     } else {
         ytPlayerSugerida = null;
     }
-    setTimeout(() => contenedorDestino.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+    scrollAlPrimerResultado(contenedorDestino);
 }
 
 
@@ -3984,7 +3984,7 @@ function mostrarPalabraSimplificada(p, opciones = {}){
     } else {
         ytPlayerPalabra = null;
     }
-    setTimeout(() => contenedorDestino.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+    scrollAlPrimerResultado(contenedorDestino);
 }
 
 // --- REPRODUCTOR DE VIDEO CONTROLABLE (YouTube IFrame API) ---
@@ -5642,8 +5642,13 @@ function centrarResultadoCompartidoSuave(el){
     }));
 }
 
+// Cada apertura sustituye el desplazamiento anterior. Así la pantalla madre
+// no vuelve al inicio mientras la ficha ya está abierta.
+let secuenciaScrollAutomatico = 0;
+
 function scrollAlPrimerResultado(el){
     if(!el) return;
+    const secuencia = ++secuenciaScrollAutomatico;
 
     // En móvil, 2 frames fijos (el requestAnimationFrame doble de antes) a
     // veces no alcanzaban a esperar que el layout terminara de acomodarse
@@ -5665,6 +5670,7 @@ function scrollAlPrimerResultado(el){
     let intentos = 0;
 
     function medirYEsperar(){
+        if(secuencia !== secuenciaScrollAutomatico) return;
         const altoActual = document.documentElement.scrollHeight;
         const altoViewportActual = window.visualViewport ? window.visualViewport.height : -1;
         intentos++;
@@ -5701,6 +5707,7 @@ function scrollAlPrimerResultado(el){
     }
 
     function hacerScroll(){
+        if(secuencia !== secuenciaScrollAutomatico) return;
         // El salto inicial va con behavior:"auto" (instantáneo), no
         // "smooth". #resultado está antes que las tarjetas de categorías
         // en el HTML: al tocar una tarjeta, #resultado cambia de alto
@@ -5730,6 +5737,7 @@ function scrollAlPrimerResultado(el){
         const DURACION_VIGILANCIA_MS = 1200;
 
         function vigilarYCorregir(){
+            if(secuencia !== secuenciaScrollAutomatico) return;
             const transcurrido = performance.now() - inicioVigilancia;
             const bounds = el.getBoundingClientRect();
             // El límite superior de la franja válida ya no es un número
@@ -5765,11 +5773,13 @@ function scrollAlPrimerResultado(el){
 // entrada por IntersectionObserver), dejando la pantalla a mitad de camino
 // (el "cortado" reportado).
 function scrollArribaEstable(){
+    const secuencia = ++secuenciaScrollAutomatico;
     let altoAnterior = -1;
     let altoViewportAnterior = -1;
     let intentos = 0;
 
     function medirYEsperar(){
+        if(secuencia !== secuenciaScrollAutomatico) return;
         const altoActual = document.documentElement.scrollHeight;
         const altoViewportActual = window.visualViewport ? window.visualViewport.height : -1;
         intentos++;
@@ -5785,12 +5795,14 @@ function scrollArribaEstable(){
     }
 
     function hacerScroll(){
+        if(secuencia !== secuenciaScrollAutomatico) return;
         window.scrollTo({ top: 0, behavior: "auto" });
 
         const inicioVigilancia = performance.now();
         const DURACION_VIGILANCIA_MS = 1200;
 
         function vigilarYCorregir(){
+            if(secuencia !== secuenciaScrollAutomatico) return;
             const transcurrido = performance.now() - inicioVigilancia;
             if ((window.pageYOffset || document.documentElement.scrollTop || 0) > 5) {
                 window.scrollTo({ top: 0, behavior: "auto" });
@@ -6461,7 +6473,6 @@ function mostrarPalabraVocabularioPorReferencia(referencia){
             }
         }
         mostrarPalabraSimplificada(enVocabulario, { enCategorias: true });
-        window.scrollTo({ top: 0, behavior: 'smooth' });
         return true;
     }
     return false;

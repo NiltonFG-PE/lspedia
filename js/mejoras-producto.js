@@ -208,7 +208,7 @@
     cargar('js/optimizacion-errores.js?v=20260914-1', function(){
         cargar('js/rendimiento-movil.js?v=20260914-1', function(){
             cargar('js/mejoras-producto-base.js?v=20260914', function(){
-                cargar('js/lo-nuevo.js?v=20261007-navigation-sync-1');
+                cargar('js/lo-nuevo.js?v=20261007-result-scroll-1');
                 cargar('js/i18n.js?v=20261003-mision-2', function(){
                     cargar('js/i18n-restaurar.js?v=20261003-mision-2', function(){
                         cargar('js/i18n-auto.js?v=20260925-3', function(){

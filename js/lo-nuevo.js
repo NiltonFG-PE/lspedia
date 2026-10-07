@@ -205,7 +205,6 @@
             const abrir = function(){
                 if(typeof window.mostrarPalabraVocabularioPorReferencia === 'function'){
                     if(!window.mostrarPalabraVocabularioPorReferencia(referencia)) return false;
-                    window.scrollTo({top:0, behavior:'smooth'});
                     return true;
                 }
                 return false;
@@ -235,7 +234,6 @@
 
         if(typeof window.mostrarPalabra === 'function'){
             window.mostrarPalabra(x.palabra);
-            window.scrollTo({top:0, behavior:'smooth'});
             return;
         }
         location.href = location.pathname + '?p=' + encodeURIComponent(refPalabra(x.palabra) || x.palabra.palabra);
