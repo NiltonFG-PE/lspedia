@@ -812,6 +812,10 @@ function idDestinoDesdeControlPrincipal(control){
 // continúa intacta.
 document.addEventListener("click", (evento) => {
     if(omitirIntercepcionTransicionPrincipal) return;
+    // La restauración y los accesos a fichas ejecutan el menú de forma
+    // síncrona. Retrasar sus clics borra después la ficha y su URL.
+    // Solo una pulsación real del usuario necesita la animación de salida.
+    if(restaurandoHistorialNavegador || !evento.isTrusted) return;
 
     const control = evento.target.closest(
         "#btnInicio, #btnCategorias, #btnHerramientas, #btnSobreNosotros, .mobile-bottom-nav .mbn-item"
@@ -6443,9 +6447,24 @@ function mostrarCategoria(nombre, opciones = {}){
 function mostrarPalabraVocabularioPorReferencia(referencia){
     const enVocabulario = buscarPalabraPorReferencia(referencia, obtenerDatosVocabulario());
     if(enVocabulario){
+        // «Lo nuevo» también llama esta función desde Diccionario. Activar
+        // primero Vocabulario evita pintar dentro de un contenedor oculto.
+        if(!document.body.classList.contains('vista-temas-movil')){
+            const restaurandoAntes = restaurandoHistorialNavegador;
+            restaurandoHistorialNavegador = true;
+            saltarScrollAlAbrirVocabulario = true;
+            omitirAvisoVocabularioUnaVez = true;
+            try {
+                document.getElementById('btnCategorias').click();
+            } finally {
+                restaurandoHistorialNavegador = restaurandoAntes;
+            }
+        }
         mostrarPalabraSimplificada(enVocabulario, { enCategorias: true });
         window.scrollTo({ top: 0, behavior: 'smooth' });
+        return true;
     }
+    return false;
 }
 window.mostrarPalabraVocabularioPorReferencia = mostrarPalabraVocabularioPorReferencia;
 

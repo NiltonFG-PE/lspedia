@@ -204,7 +204,7 @@
             const referencia = refPalabra(x.palabra);
             const abrir = function(){
                 if(typeof window.mostrarPalabraVocabularioPorReferencia === 'function'){
-                    window.mostrarPalabraVocabularioPorReferencia(referencia);
+                    if(!window.mostrarPalabraVocabularioPorReferencia(referencia)) return false;
                     window.scrollTo({top:0, behavior:'smooth'});
                     return true;
                 }
