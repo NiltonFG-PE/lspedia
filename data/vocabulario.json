@@ -225,15 +225,15 @@
   },
   {
     "palabra": "Difícil",
-    "variantes": "complicado",
-    "video": "ledSey8cBJM",
+    "variantes": "Complicado, Complejo",
+    "video": "QMPdOp2ubxE",
     "categoria": "Adjetivos",
     "etiquetas": [],
     "nivel": "Difícil",
     "idQuiz": "Q1CF096AEB7",
     "imagen": "img/vocabulario/dificil.webp",
     "definicion": "",
-    "fechaPublicacion": "",
+    "fechaPublicacion": "06/10/2026",
     "ingles": "",
     "definicionIngles": ""
   },
@@ -1700,8 +1700,8 @@
     "definicionIngles": ""
   },
   {
-    "palabra": "Entendimiento, comprender, darse cuenta",
-    "variantes": "",
+    "palabra": "Entendimiento",
+    "variantes": "comprender, darse cuenta, entender, entiendo",
     "video": "T7w_H92hPmk",
     "categoria": "Verbos",
     "etiquetas": [],
@@ -1842,6 +1842,20 @@
     "imagen": "img/vocabulario/educado.webp",
     "definicion": "",
     "fechaPublicacion": "23/09/2026",
+    "ingles": "",
+    "definicionIngles": ""
+  },
+  {
+    "palabra": "No entiendo",
+    "variantes": "No comprendo",
+    "video": "ybMHTq7VggE",
+    "categoria": "Verbos",
+    "etiquetas": [],
+    "nivel": "Medio",
+    "idQuiz": "Q198CBC4C72",
+    "imagen": "img/vocabulario/no-entiendo.webp",
+    "definicion": "",
+    "fechaPublicacion": "06/10/2026",
     "ingles": "",
     "definicionIngles": ""
   }
