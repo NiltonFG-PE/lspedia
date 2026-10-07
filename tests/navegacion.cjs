@@ -49,6 +49,23 @@ const server = http.createServer((req, res) => {
         await page.waitForFunction(() => document.getElementById('resultado').textContent.includes('Barato'));
         assert.match(await page.locator('#resultado').innerText(), /Vocabulario/);
         console.log('PASS: BARATO + Enter durante carga lenta');
+
+        // Enlace compartido/directo de Vocabulario: debe abrir la ficha exacta
+        // al cargar la página, sin depender de interacción ni del Quiz.
+        await context.close();
+        ({context, page} = await pagina());
+        await page.goto(base + '/?vista=vocabulario&p=como-preguntas&fuente=vocabulario', {waitUntil:'domcontentloaded'});
+        await page.waitForFunction(() =>
+            window.LSPediaVocabularioPublico?.listo()
+            && /¿Cómo\?/.test(document.getElementById('resultadoCategorias')?.innerText || '')
+            && /Vocabulario/.test(document.getElementById('resultadoCategorias')?.innerText || '')
+        );
+        console.log('PASS: enlace directo como-preguntas abre la ficha de Vocabulario');
+        await context.close();
+
+        ({context, page} = await pagina());
+        await page.goto(base, {waitUntil:'domcontentloaded'});
+        await page.waitForFunction(() => window.App?.estadoDatos === 'listo' && window.LSPediaVocabularioPublico?.listo());
         for(const q of ['barato', 'Barato', 'BARATO']) {
             await page.locator('#buscar').fill(q);
             await page.waitForFunction(() => !!document.getElementById('btnIrVocabularioBusqueda'));
