@@ -170,7 +170,7 @@
 
     cargar('js/youtube-diagnostico.js?v=20260916-1');
     cargar('js/categorias-compartir.js?v=20260915d');
-    cargar('js/buscador-vocabulario-rescate.js?v=20260916-1');
+    cargar('js/buscador-vocabulario-rescate.js?v=20261007-share-fix-1');
     cargar('js/experiencia-vocabulario.js?v=20260916-2', function(){
         cargarCss('css/aprendizaje-unificado.css?v=20260916-2');
         cargarCss('css/aprendizaje-colapsable.css?v=20260916-1');
