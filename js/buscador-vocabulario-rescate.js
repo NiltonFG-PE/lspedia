@@ -319,14 +319,27 @@
 
         const buscada = normalizar(referenciaUrl);
         const lista = datosDisponibles();
-        const item = lista.find(function(p){ return normalizar(referencia(p)) === buscada; })
-            || lista.find(function(p){ return normalizar(p && p.palabra) === buscada; });
+        // No dependemos de _fuenteLspedia para resolver la URL. Algunas
+        // colecciones públicas llegan sin esa marca y obtenerIdPalabra()
+        // las trataba temporalmente como Diccionario (p.ej. ¿Cómo? => "como"
+        // en vez de "como-preguntas"). Calculamos también el ID estable de
+        // Vocabulario directamente desde palabra + categoría.
+        const referenciaVocabulario = function(p){
+            const idExplicito = texto(p && p.id);
+            if(idExplicito) return idExplicito;
+            const base = slug(p && p.palabra) || 'palabra';
+            const categoria = slug(p && p.categoria);
+            return categoria ? base + '-' + categoria : base;
+        };
+        const item = lista.find(function(p){ return normalizar(referenciaVocabulario(p)) === buscada; })
+            || lista.find(function(p){ return normalizar(referencia(p)) === buscada; })
+            || lista.find(function(p){ return slug(p && p.palabra) === slug(referenciaUrl); });
         if(!item) return false;
 
         if(typeof window.mostrarPalabraVocabularioPorReferencia !== 'function') return false;
         referenciaUrlRestaurada = referenciaUrl;
         try {
-            window.mostrarPalabraVocabularioPorReferencia(referencia(item));
+            window.mostrarPalabraVocabularioPorReferencia(referenciaVocabulario(item));
             return true;
         } catch(error){
             referenciaUrlRestaurada = '';
