@@ -239,7 +239,6 @@ html[data-lsp-tema="dark"] :is(
     .lsp-nueva-badge {
         box-shadow: none !important;
     }
-    .mbn-item.active .mbn-icon-wrap,
     .lsp-seccion-entrando,
     .lsp-seccion-saliendo,
     .lsp-seccion-enter,

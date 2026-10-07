@@ -188,7 +188,7 @@
     if(!movilLigero) cargar('js/profundidad-3d.js?v=20261003-3');
     cargarCss('css/microinteracciones-3d.css?v=20261007-light-1');
     if(!movilLigero) cargar('js/microinteracciones-3d.js?v=20261003-2');
-    cargarCss('css/detalles-3d.css?v=20261007-light-1');
+    cargarCss('css/detalles-3d.css?v=20261007-nav-1');
     cargarCss('css/compatibilidad-captura-movil.css?v=20261003-1');
     cargarCss('css/header-responsive-fix.css?v=20261006-1');
     cargar('js/buscador-capas-fix.js?v=20261006-1');
