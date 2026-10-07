@@ -202,11 +202,31 @@
 
         if(x.fuente === 'vocabulario'){
             const referencia = refPalabra(x.palabra);
-            if(typeof window.mostrarPalabraVocabularioPorReferencia === 'function'){
-                window.mostrarPalabraVocabularioPorReferencia(referencia);
-                window.scrollTo({top:0, behavior:'smooth'});
+            const abrir = function(){
+                if(typeof window.mostrarPalabraVocabularioPorReferencia === 'function'){
+                    window.mostrarPalabraVocabularioPorReferencia(referencia);
+                    window.scrollTo({top:0, behavior:'smooth'});
+                    return true;
+                }
+                return false;
+            };
+            if(abrir()) return;
+
+            const api = window.LSPediaVocabularioPublico;
+            if(api && typeof api.cargar === 'function'){
+                Promise.resolve(api.cargar()).then(function(){
+                    if(abrir()) return;
+                    location.href = location.pathname
+                        + '?vista=vocabulario&p=' + encodeURIComponent(referencia || x.palabra.palabra)
+                        + '&fuente=vocabulario';
+                }).catch(function(){
+                    location.href = location.pathname
+                        + '?vista=vocabulario&p=' + encodeURIComponent(referencia || x.palabra.palabra)
+                        + '&fuente=vocabulario';
+                });
                 return;
             }
+
             location.href = location.pathname
                 + '?vista=vocabulario&p=' + encodeURIComponent(referencia || x.palabra.palabra)
                 + '&fuente=vocabulario';
@@ -385,6 +405,7 @@
         prepararAnimacionAtencion();
         cargar();
         document.addEventListener('lspedia:datosListos', () => setTimeout(render, 0));
+        document.addEventListener('lspedia:vocabularioPublicoListo', () => setTimeout(render, 0));
         setTimeout(render, 350);
         setTimeout(render, 1200);
     }
