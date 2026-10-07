@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-10-07T01:10:01Z",
+  "actualizado": "2026-10-07T15:27:12Z",
   "traducciones": [
     {
       "fuente": "diccionario",
@@ -896,7 +896,7 @@
       "categoria": "Educación",
       "ingles": "Literature",
       "aliases": [],
-      "definicionIngles": "List of books and sources you used to do a paper or research."
+      "definicionIngles": "List of books and sources you used to do a project or research."
     },
     {
       "fuente": "diccionario",
@@ -1384,7 +1384,7 @@
       "categoria": "Tiempo",
       "ingles": "Appointment",
       "aliases": [],
-      "definicionIngles": "It's an agreed-upon time to meet someone, for example, a doctor or someone in an office, at a specific hour.\n\nExample: I have a dentist appointment tomorrow at three."
+      "definicionIngles": "It's an agreed-upon time to meet someone, for example, a doctor or someone in an office, at a specific time.\n\nExample: I have a dentist appointment tomorrow at three."
     },
     {
       "fuente": "diccionario",
@@ -3888,7 +3888,7 @@
       "categoria": "Filosofía",
       "ingles": "Philosophy",
       "aliases": [],
-      "definicionIngles": "Study of the fundamental principles of life, truth, and knowledge."
+      "definicionIngles": "Study of the fundamental principles about life, truth, and knowledge."
     },
     {
       "fuente": "diccionario",
@@ -6032,7 +6032,7 @@
       "categoria": "Psicología",
       "ingles": "Vocational guidance",
       "aliases": [],
-      "definicionIngles": "A process that helps a person understand their interests and abilities in order to choose their studies or occupation."
+      "definicionIngles": "A process that helps a person understand their interests and abilities in order to choose studies or an occupation."
     },
     {
       "fuente": "diccionario",
@@ -6358,7 +6358,7 @@
       "fuente": "diccionario",
       "palabra": "Plan contable",
       "categoria": "Economía",
-      "ingles": "Accounting plan",
+      "ingles": "accounting plan",
       "aliases": [],
       "definicionIngles": "Organized list of accounts used to record economic transactions."
     },
