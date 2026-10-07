@@ -304,15 +304,48 @@
         return true;
     }
 
+    // Restaura enlaces compartidos/directos de Vocabulario aunque el banco
+    // principal (QuizV2) todavía no haya terminado de inicializarse.
+    // Esto evita que ?vista=vocabulario&p=...&fuente=vocabulario quede en
+    // "Cargando..." cuando data/vocabulario.json sí está disponible.
+    let referenciaUrlRestaurada = '';
+    function restaurarPalabraVocabularioDesdeUrl(){
+        const params = new URLSearchParams(window.location.search);
+        const referenciaUrl = texto(params.get('p'));
+        const fuente = normalizar(params.get('fuente'));
+        const vista = normalizar(params.get('vista'));
+        if(!referenciaUrl || (fuente !== 'vocabulario' && vista !== 'vocabulario')) return false;
+        if(referenciaUrlRestaurada === referenciaUrl) return true;
+
+        const buscada = normalizar(referenciaUrl);
+        const lista = datosDisponibles();
+        const item = lista.find(function(p){ return normalizar(referencia(p)) === buscada; })
+            || lista.find(function(p){ return normalizar(p && p.palabra) === buscada; });
+        if(!item) return false;
+
+        if(typeof window.mostrarPalabraVocabularioPorReferencia !== 'function') return false;
+        referenciaUrlRestaurada = referenciaUrl;
+        try {
+            window.mostrarPalabraVocabularioPorReferencia(referencia(item));
+            return true;
+        } catch(error){
+            referenciaUrlRestaurada = '';
+            console.warn('[LSPedia] No se pudo restaurar el enlace directo de Vocabulario:', error);
+            return false;
+        }
+    }
+
     function iniciar(){
         enganchar();
         cargarRespaldo().then(function(){
+            restaurarPalabraVocabularioDesdeUrl();
             const input = document.getElementById(INPUT_ID);
             if(input && input.value.trim()) pintarRespaldo();
         });
 
-        [300, 900, 1800, 3200].forEach(function(ms){ setTimeout(enganchar, ms); });
+        [300, 900, 1800, 3200].forEach(function(ms){ setTimeout(function(){ enganchar(); restaurarPalabraVocabularioDesdeUrl(); }, ms); });
         document.addEventListener('lspedia:vocabularioPublicoListo', function(){
+            restaurarPalabraVocabularioDesdeUrl();
             const input = document.getElementById(INPUT_ID);
             if(input && input.value.trim()) pintarRespaldo();
         });
