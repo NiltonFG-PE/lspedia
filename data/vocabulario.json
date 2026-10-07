@@ -141,7 +141,7 @@
   },
   {
     "palabra": "Claro",
-    "variantes": "",
+    "variantes": "Claridad",
     "video": "GXYXGgRKDUo",
     "categoria": "Adjetivos",
     "etiquetas": [],
@@ -603,7 +603,7 @@
   },
   {
     "palabra": "Asustado",
-    "variantes": "miedo, temor, aterrado, espantado",
+    "variantes": "miedo, temor, aterrado, espantado, temeroso, asustadizo, medroso",
     "video": "mJMgeB1TRBw",
     "categoria": "Emociones",
     "etiquetas": [],
@@ -1640,6 +1640,20 @@
     "imagen": "img/vocabulario/jugar.webp",
     "definicion": "",
     "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
+  },
+  {
+    "palabra": "Entendimiento, comprender, darse cuenta",
+    "variantes": "",
+    "video": "T7w_H92hPmk",
+    "categoria": "Verbos",
+    "etiquetas": [],
+    "nivel": "Medio",
+    "idQuiz": "Q4D797A872E",
+    "imagen": "img/vocabulario/entendimiento-comprender-darse-cuenta.webp",
+    "definicion": "",
+    "fechaPublicacion": "06/10/2026",
     "ingles": "",
     "definicionIngles": ""
   },
