@@ -12,7 +12,7 @@
    - El panel /admin/ y los laboratorios quedan fuera del fallback público.
    ============================================================ */
 
-const VERSION_APP = "v270";
+const VERSION_APP = "v271";
 const PREFIJO_CACHE = "lspedia-shell-";
 const PREFIJO_RUNTIME = "lspedia-runtime-";
 const CACHE_NOMBRE = PREFIJO_CACHE + VERSION_APP;
@@ -187,26 +187,38 @@ self.addEventListener("fetch", (event) => {
 
     if (request.mode === "navigate") {
         event.respondWith((async () => {
-            const cached = await caches.match("./index.html");
-            const networkPromise = fetchConReintento(request).then(async (response) => {
+            // HTML siempre network-first. Devolver primero index.html desde
+            // caché dejaba a usuarios/PWA ejecutando referencias antiguas de
+            // script.js incluso después de un despliegue correcto.
+            const network = await fetchConReintento(request).then(async (response) => {
                 const runtime = await caches.open(CACHE_RUNTIME);
                 runtime.put(request, response.clone());
+                const shell = await caches.open(CACHE_NOMBRE);
+                shell.put("./index.html", response.clone());
                 return response;
             }).catch(() => null);
-
-            if (cached) {
-                event.waitUntil(networkPromise);
-                return cached;
-            }
-            const network = await networkPromise;
             if (network) return network;
             const runtime = await caches.match(request);
-            return runtime || Response.error();
+            return runtime || await caches.match("./index.html") || Response.error();
         })());
         return;
     }
 
     event.respondWith((async () => {
+        // JS/CSS/JSON críticos también son network-first para que una nueva
+        // versión entre en vigor en la misma visita. La caché queda como
+        // respaldo offline, no como fuente prioritaria de código obsoleto.
+        const esCodigoODatos = /\.(?:js|mjs|css|json)$/i.test(url.pathname);
+        if(esCodigoODatos){
+            const network = await fetchConReintento(request).then(async (response) => {
+                const runtime = await caches.open(CACHE_RUNTIME);
+                runtime.put(request, response.clone());
+                return response;
+            }).catch(() => null);
+            if(network) return network;
+            return await caches.match(request) || Response.error();
+        }
+
         const cached = await caches.match(request);
         const networkPromise = fetchConReintento(request).then(async (response) => {
             const runtime = await caches.open(CACHE_RUNTIME);
