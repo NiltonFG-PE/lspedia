@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-10-07T02:37:45Z",
+  "generadoEn": "2026-10-07T02:47:27Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
@@ -27,6 +27,15 @@
       "palabra": "Claro",
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/claro.webp",
+      "fecha": "2026-10-06T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Confundido",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/confundido.webp",
       "fecha": "2026-10-06T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
@@ -99,15 +108,6 @@
       "palabra": "Ancho",
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/ancho.webp",
-      "fecha": "2026-09-23T05:00:00Z",
-      "origenFecha": "fechaPublicacion",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Angosto",
-      "categoria": "Adjetivos",
-      "imagen": "img/vocabulario/angosto.webp",
       "fecha": "2026-09-23T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
