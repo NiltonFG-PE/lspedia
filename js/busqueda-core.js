@@ -2,7 +2,12 @@
 (function(root){
     'use strict';
 const norm = (s) => (s || "").toLowerCase()
-    .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    // Los signos de apertura/cierre forman parte de la escritura visible,
+    // no de la identidad de búsqueda. Así "Cómo", "¿Cómo?" y "COMO"
+    // resuelven la misma entrada sin alterar el texto mostrado en la ficha.
+    .replace(/[¿?¡!]/g, "")
+    .trim();
 
 // Formas alternativas de búsqueda que ayudan con plurales sencillos y
 // traducciones al inglés. La palabra canónica en la ficha sigue siendo
