@@ -2667,7 +2667,28 @@ function restaurarDestinoVocabularioInicial(){
 
 document.addEventListener('lspedia:vocabularioPublicoListo', () => {
     if (buscar.value.trim() && sugerencias.style.display !== 'none') buscarPalabras();
-    if (new URLSearchParams(location.search).get('p')) return;
+
+    // Una ficha compartida de Vocabulario debe restaurarse desde ESTA fuente
+    // pública, que es la misma que alimenta la sección. Antes este listener
+    // salía inmediatamente al detectar ?p=..., mientras restaurarPalabraDesdeUrl
+    // esperaba exclusivamente a QuizV2. Si QuizV2 no terminaba de cargar, la
+    // URL quedaba indefinidamente en "Cargando..." aunque Vocabulario ya estaba listo.
+    const paramsInicio = new URLSearchParams(location.search);
+    const palabraInicio = paramsInicio.get('p');
+    const fuenteInicio = String(paramsInicio.get('fuente') || '').toLowerCase();
+    if(palabraInicio){
+        if(fuenteInicio === 'vocabulario'){
+            const item = buscarPalabraPorReferencia(palabraInicio, obtenerDatosVocabulario());
+            if(item){
+                mostrarPalabraSimplificada(item, {
+                    noActualizarHistorial: true,
+                    fuente: 'vocabulario',
+                    enCategorias: true
+                });
+            }
+        }
+        return;
+    }
 
     if(restaurarDestinoVocabularioInicial()) return;
 
