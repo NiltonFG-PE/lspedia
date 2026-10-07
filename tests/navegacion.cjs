@@ -71,6 +71,16 @@ const server = http.createServer((req, res) => {
         ({context, page} = await pagina());
         await page.goto(base, {waitUntil:'domcontentloaded'});
         await page.waitForFunction(() => window.App?.estadoDatos === 'listo' && window.LSPediaVocabularioPublico?.listo());
+        // Las palabras interrogativas/exclamativas se guardan con signos
+        // visibles (p. ej. "¿Cómo?"), pero el usuario normalmente escribe
+        // "Cómo". Debe ganar la coincidencia exacta de Vocabulario frente a
+        // coincidencias semánticas del Diccionario.
+        await page.locator('#buscar').fill('Cómo');
+        await page.waitForFunction(() => document.getElementById('sugerencias').textContent.includes('¿Cómo?'));
+        assert.match(await page.locator('#sugerencias').innerText(), /Vocabulario/);
+        assert.doesNotMatch(await page.locator('#sugerencias').innerText(), /Tesis/);
+        console.log('PASS: Cómo encuentra ¿Cómo? exacto en Vocabulario');
+
         for(const q of ['barato', 'Barato', 'BARATO']) {
             await page.locator('#buscar').fill(q);
             await page.waitForFunction(() => !!document.getElementById('btnIrVocabularioBusqueda'));
