@@ -221,7 +221,22 @@
         <priority>0.8</priority>
     </url>
     <url>
+        <loc>https://lspedia.site/vocabulario/curioso-adjetivos/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
         <loc>https://lspedia.site/vocabulario/debil-adjetivos/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/vocabulario/delgado-adjetivos/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/vocabulario/desordenado-adjetivos/</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>

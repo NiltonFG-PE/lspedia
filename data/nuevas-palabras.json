@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-10-07T02:47:27Z",
+  "generadoEn": "2026-10-07T03:29:29Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
@@ -36,6 +36,33 @@
       "palabra": "Confundido",
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/confundido.webp",
+      "fecha": "2026-10-06T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Curioso",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/curioso.webp",
+      "fecha": "2026-10-06T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Delgado",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/delgado.webp",
+      "fecha": "2026-10-06T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Desordenado",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/desordenado.webp",
       "fecha": "2026-10-06T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
@@ -84,33 +111,6 @@
       "fecha": "2026-09-26T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
-    },
-    {
-      "id": "neurodivergente",
-      "palabra": "Neurodivergente",
-      "categoria": "Psicología",
-      "imagen": "img/diccionario/neurodivergente.webp, img/diccionario/neurodivergente-2.webp",
-      "fecha": "2026-09-26T05:00:00Z",
-      "origenFecha": "fechaPublicacion",
-      "fuente": "diccionario"
-    },
-    {
-      "id": "",
-      "palabra": "Alto",
-      "categoria": "Adjetivos",
-      "imagen": "img/vocabulario/alto.webp",
-      "fecha": "2026-09-23T05:00:00Z",
-      "origenFecha": "fechaPublicacion",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Ancho",
-      "categoria": "Adjetivos",
-      "imagen": "img/vocabulario/ancho.webp",
-      "fecha": "2026-09-23T05:00:00Z",
-      "origenFecha": "fechaPublicacion",
-      "fuente": "vocabulario"
     }
   ]
 }
