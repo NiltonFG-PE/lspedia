@@ -736,6 +736,11 @@
         <priority>0.8</priority>
     </url>
     <url>
+        <loc>https://lspedia.site/vocabulario/entendimiento-comprender-darse-cuenta-verbos/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
         <loc>https://lspedia.site/vocabulario/numero-numeros/</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
