@@ -6503,27 +6503,69 @@ function restaurarPalabraDesdeUrl(referencia, opciones = {}){
         if(diccionarioExplicito) return;
     }
 
-    // Vocabulario se carga desde Vocabulario y puede llegar unos instantes
-    // después que palabras.json. onBancoListo funciona tanto si ya está
-    // cargado como si todavía está en camino.
+    // Los enlaces directos/compartidos de Vocabulario deben depender de la
+    // MISMA fuente pública que pinta la sección (data/vocabulario.json), no
+    // de QuizV2. En producción Diccionario y Vocabulario pueden terminar de
+    // cargar en distinto orden: si Diccionario llegaba después, volvía a
+    // abrir la pantalla madre y borraba una ficha que ya se había pintado.
+    // Esta restauración es idempotente y vuelve a abrir la ficha exacta
+    // cuando la fuente pública esté lista, sin importar el orden de carga.
+    const restaurarDesdeFuentePublica = () => {
+        const paramsAhora = new URLSearchParams(window.location.search);
+        if(paramsAhora.get("p") !== referencia) return false;
+        const fuenteAhora = String(paramsAhora.get("fuente") || "").toLowerCase();
+        if(vocabularioExplicito && fuenteAhora !== "vocabulario") return false;
+        if(!vocabularioExplicito && fuenteAhora === "diccionario") return false;
+
+        const enVocabulario = buscarPalabraPorReferencia(referencia, obtenerDatosVocabulario());
+        if(!enVocabulario) return false;
+
+        normalizarUrlLegadaPalabra(enVocabulario, referencia, "vocabulario");
+        mostrarPalabraSimplificada(enVocabulario, {
+            ...opciones,
+            noActualizarHistorial: true,
+            fuente: "vocabulario",
+            enCategorias: true
+        });
+        return true;
+    };
+
+    const apiPublica = window.LSPediaVocabularioPublico;
+    if(apiPublica){
+        if(typeof apiPublica.listo === "function" && apiPublica.listo()){
+            if(restaurarDesdeFuentePublica()) return;
+        }
+        if(typeof apiPublica.cargar === "function"){
+            Promise.resolve(apiPublica.cargar())
+                .then(() => restaurarDesdeFuentePublica())
+                .catch(error => console.warn("No se pudo restaurar la ficha desde Vocabulario público:", error));
+        }
+    }
+
+    // Compatibilidad de respaldo: QuizV2 ya no es la fuente primaria para
+    // URLs compartidas, pero puede rescatar enlaces históricos si la fuente
+    // pública no estuviera disponible por un fallo temporal.
     if(window.QuizV2 && typeof QuizV2.onBancoListo === "function"){
         if(typeof QuizV2.asegurarBancoCargado === "function") QuizV2.asegurarBancoCargado();
         QuizV2.onBancoListo((banco) => {
+            const paramsAhora = new URLSearchParams(window.location.search);
+            if(paramsAhora.get("p") !== referencia) return;
+            const fuenteAhora = String(paramsAhora.get("fuente") || "").toLowerCase();
+            if(vocabularioExplicito && fuenteAhora !== "vocabulario") return;
+            if(!vocabularioExplicito && fuenteAhora === "diccionario") return;
+
+            // Si la fuente pública ya puede resolverlo, ella tiene prioridad.
+            if(restaurarDesdeFuentePublica()) return;
+
             const datosVocabulario = (banco || [])
                 .filter(p => p && p.palabra && p.categoria)
                 .map(marcarFuenteVocabulario);
             const enVocabulario = buscarPalabraPorReferencia(referencia, datosVocabulario);
-            const paramsAhora = new URLSearchParams(window.location.search);
-            const sigueEnMismaPalabra = paramsAhora.get("p") === referencia;
-            const fuenteAhora = String(paramsAhora.get("fuente") || "").toLowerCase();
-            const fuenteCompatible = vocabularioExplicito
-                ? fuenteAhora === "vocabulario"
-                : fuenteAhora !== "diccionario";
-
-            if(enVocabulario && sigueEnMismaPalabra && fuenteCompatible){
+            if(enVocabulario){
                 normalizarUrlLegadaPalabra(enVocabulario, referencia, "vocabulario");
                 mostrarPalabraSimplificada(enVocabulario, {
                     ...opciones,
+                    noActualizarHistorial: true,
                     fuente: "vocabulario",
                     enCategorias: true
                 });
