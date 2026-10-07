@@ -39,7 +39,7 @@
 
     if (window.LSPediaVocabularioPublico && window.LSPediaVocabularioPublico.version) return;
 
-    const VERSION = '2026.09.27.2';
+    const VERSION = '2026.10.07.1';
     const DATA_URL = 'data/vocabulario.json';
     const DEFINICIONES_URL = 'data/vocabulario-definiciones.json';
     const getterAnterior = typeof window.obtenerBancoHoja2 === 'function'
@@ -159,7 +159,7 @@
             const palabra = texto(params.get('p'));
             if (palabra && fuente === 'vocabulario' &&
                 typeof window.restaurarPalabraDesdeUrl === 'function') {
-                window.restaurarPalabraDesdeUrl();
+                window.restaurarPalabraDesdeUrl(palabra, { noActualizarHistorial: true, fuente: 'vocabulario', enCategorias: true });
             }
         } catch (_e) {}
 
