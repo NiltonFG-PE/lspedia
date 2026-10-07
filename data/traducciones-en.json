@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-10-07T15:27:12Z",
+  "actualizado": "2026-10-07T15:48:56Z",
   "traducciones": [
     {
       "fuente": "diccionario",
@@ -376,7 +376,7 @@
       "categoria": "Salud",
       "ingles": "Anemia",
       "aliases": [],
-      "definicionIngles": "A health problem in which the blood has low hemoglobin or few healthy red blood cells."
+      "definicionIngles": "A health problem in which the blood has little hemoglobin or few healthy red blood cells."
     },
     {
       "fuente": "diccionario",
@@ -896,7 +896,7 @@
       "categoria": "Educación",
       "ingles": "Literature",
       "aliases": [],
-      "definicionIngles": "List of books and sources you used to do a project or research."
+      "definicionIngles": "List of books and sources you used to do a paper or research."
     },
     {
       "fuente": "diccionario",
@@ -3888,7 +3888,7 @@
       "categoria": "Filosofía",
       "ingles": "Philosophy",
       "aliases": [],
-      "definicionIngles": "Study of the fundamental principles about life, truth, and knowledge."
+      "definicionIngles": "Study of the fundamental principles of life, truth, and knowledge."
     },
     {
       "fuente": "diccionario",
@@ -6032,7 +6032,7 @@
       "categoria": "Psicología",
       "ingles": "Vocational guidance",
       "aliases": [],
-      "definicionIngles": "A process that helps a person understand their interests and abilities in order to choose studies or an occupation."
+      "definicionIngles": "A process that helps a person understand their interests and abilities in order to choose their studies or occupation."
     },
     {
       "fuente": "diccionario",
@@ -6222,7 +6222,7 @@
       "fuente": "diccionario",
       "palabra": "Percepción tributaria",
       "categoria": "Economía",
-      "ingles": "Tax perception",
+      "ingles": "Tax collection",
       "aliases": [],
       "definicionIngles": "Additional amount that is charged in advance in some transactions with respect to taxes."
     },
@@ -7928,7 +7928,7 @@
       "categoria": "Psicología",
       "ingles": "Therapist",
       "aliases": [],
-      "definicionIngles": "Professional who accompanies a person in a process of treatment or therapeutic support."
+      "definicionIngles": "Professional who accompanies a person in a treatment or therapeutic support process."
     },
     {
       "fuente": "diccionario",
