@@ -1,9 +1,27 @@
 {
-  "generadoEn": "2026-10-08T04:03:04Z",
+  "generadoEn": "2026-10-08T12:07:01Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 174,
+  "maxItems": 176,
   "diasEtiquetaNuevo": 14,
   "items": [
+    {
+      "id": "",
+      "palabra": "Joven",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/joven.webp",
+      "fecha": "2026-10-08T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Juntos",
+      "categoria": "Adverbios",
+      "imagen": "img/vocabulario/juntos.webp",
+      "fecha": "2026-10-08T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
     {
       "id": "",
       "palabra": "Enfermo",
