@@ -1,7 +1,31 @@
 /* El contenido introductorio se conserva; el campo recibe el espacio del índice. */
 #bloqueEjemplos { display: none !important; }
 #bloqueBuscadorCategorias > .col-lg-8 { width: 100%; max-width: 960px; }
-.buscador-indice-linea > .indice-compacto-wrap { order: 2; }
+.buscador-indice-linea > .indice-compacto-wrap { order: 0; }
+#tituloPrincipal {
+    font-size: clamp(1.4rem, 1.12rem + 1.05vw, 1.95rem) !important;
+    line-height: 1.2 !important;
+    margin-bottom: 8px !important;
+}
+#subtituloPrincipal.aviso-mision {
+    padding: 12px 15px !important;
+    margin: 8px 0 !important;
+    border-radius: 16px !important;
+}
+#subtituloPrincipal .aviso-mision-texto { gap: 7px !important; }
+#subtituloPrincipal .aviso-mision-linea1 { font-size: .88rem !important; line-height: 1.45 !important; }
+#subtituloPrincipal .aviso-mision-publico { font-size: .82rem !important; line-height: 1.45 !important; }
+#subtituloPrincipal .aviso-mision-linea2 { font-size: .76rem !important; line-height: 1.4 !important; padding-top: 7px !important; }
+#bloqueTituloPrincipal .vocab-intro-lista { gap: 9px; margin: 10px 0 12px; }
+#bloqueTituloPrincipal .vocab-intro-item { gap: 9px; }
+#bloqueTituloPrincipal .vocab-intro-icono { width: 28px; height: 28px; font-size: 13px; }
+#bloqueTituloPrincipal .vocab-intro-icono::after { height: 12px; }
+#bloqueTituloPrincipal .vocab-intro-texto { font-size: .86rem; line-height: 1.4; padding-top: 3px; }
+@media (min-width: 992px) {
+    #filaHeroPrincipal > .col-lg-6 { width: 58.333333%; }
+    #filaHeroPrincipal > #colAvatarHero { width: 16.666667%; }
+    #colAvatarHero .avatar-hero-img { max-width: 100%; }
+}
 #btnToggleAbc, #btnToggleAbcVocabulario {
     width: 52px !important;
     min-width: 52px !important;
