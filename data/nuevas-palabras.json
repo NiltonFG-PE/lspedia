@@ -1,7 +1,7 @@
 {
-  "generadoEn": "2026-10-08T03:18:43Z",
+  "generadoEn": "2026-10-08T03:40:37Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 171,
+  "maxItems": 172,
   "diasEtiquetaNuevo": 14,
   "items": [
     {
@@ -90,6 +90,15 @@
       "palabra": "Honestidad",
       "categoria": "Valores",
       "imagen": "img/vocabulario/honestidad.webp",
+      "fecha": "2026-10-07T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Paciencia",
+      "categoria": "Valores",
+      "imagen": "img/vocabulario/paciencia.webp",
       "fecha": "2026-10-07T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
