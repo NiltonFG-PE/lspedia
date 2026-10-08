@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-10-08T00:44:51Z",
+  "generadoEn": "2026-10-08T01:12:00Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
@@ -9,6 +9,33 @@
       "palabra": "Enfermo",
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/enfermo.webp",
+      "fecha": "2026-10-07T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Fácil",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/facil.webp, img/vocabulario/facil-2.webp",
+      "fecha": "2026-10-07T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Feo",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/feo.webp",
+      "fecha": "2026-10-07T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Fuerte",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/fuerte.webp",
       "fecha": "2026-10-07T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
@@ -81,33 +108,6 @@
       "palabra": "Desordenado",
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/desordenado.webp",
-      "fecha": "2026-10-06T05:00:00Z",
-      "origenFecha": "fechaPublicacion",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Difícil",
-      "categoria": "Adjetivos",
-      "imagen": "img/vocabulario/dificil.webp",
-      "fecha": "2026-10-06T05:00:00Z",
-      "origenFecha": "fechaPublicacion",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Bien",
-      "categoria": "Adverbios",
-      "imagen": "img/vocabulario/bien.webp",
-      "fecha": "2026-10-06T05:00:00Z",
-      "origenFecha": "fechaPublicacion",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Bueno",
-      "categoria": "Valores",
-      "imagen": "img/vocabulario/bueno.webp",
       "fecha": "2026-10-06T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
