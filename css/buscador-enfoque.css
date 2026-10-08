@@ -58,3 +58,79 @@
     outline: 2px solid #85bfff;
     outline-offset: 1px;
 }
+
+/* Vocabulario: una misma alineación para introducción y búsqueda. */
+html body.vista-temas-movil #bloqueBuscadorCategorias {
+    width: 100%;
+    max-width: 960px;
+    margin: 12px auto !important;
+    padding: 0 !important;
+}
+html body.vista-temas-movil #bloqueBuscadorCategorias > .col-lg-8 {
+    padding-inline: 0 !important;
+}
+html body.vista-temas-movil #vocabularioIntroLista {
+    gap: 8px !important;
+    margin: 10px 0 0 !important;
+    padding: 12px !important;
+    border: 1px solid #dce8f5 !important;
+    border-radius: 14px !important;
+    background: #f4f8fd !important;
+    box-shadow: none !important;
+}
+html body.vista-temas-movil #vocabularioIntroLista .vocab-intro-item {
+    align-items: flex-start !important;
+    gap: 8px !important;
+    padding: 0 !important;
+    border: 0 !important;
+}
+html body.vista-temas-movil #vocabularioIntroLista .vocab-intro-icono {
+    width: 26px !important;
+    height: 26px !important;
+    min-width: 26px !important;
+    flex: 0 0 26px !important;
+    font-size: 12px !important;
+    background: #e0edff;
+    box-shadow: none !important;
+}
+html body.vista-temas-movil #vocabularioIntroLista .vocab-intro-icono::after { display: none !important; }
+html body.vista-temas-movil #vocabularioIntroLista .vocab-intro-texto {
+    font-size: .86rem !important;
+    line-height: 1.45 !important;
+    padding-top: 2px !important;
+}
+@media (min-width: 992px) {
+    html body.vista-temas-movil #filaHeroPrincipal {
+        width: 100%;
+        max-width: 960px;
+        margin: 0 auto 12px !important;
+        gap: 16px;
+        align-items: flex-start !important;
+    }
+    html body.vista-temas-movil #filaHeroPrincipal > .col-lg-6 {
+        width: calc(100% - 136px);
+        padding: 0;
+    }
+    html body.vista-temas-movil #filaHeroPrincipal > #colAvatarHero {
+        width: 120px;
+        padding: 0;
+        margin: 0 !important;
+    }
+    html body.vista-temas-movil #colAvatarHero .avatar-hero-img {
+        max-width: 120px !important;
+        height: 140px !important;
+        object-fit: contain;
+    }
+    html body.vista-temas-movil #vocabularioIntroLista:not(.d-none) {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+@media (max-width: 991.98px) {
+    html body.vista-temas-movil #vocabularioIntroLista { margin: 0 0 12px !important; }
+}
+html[data-lsp-tema="dark"] body.vista-temas-movil #vocabularioIntroLista {
+    background: #172436 !important;
+    border-color: #30435a !important;
+}
+html[data-lsp-tema="dark"] body.vista-temas-movil #vocabularioIntroLista .vocab-intro-icono { background: #263e5e; }
