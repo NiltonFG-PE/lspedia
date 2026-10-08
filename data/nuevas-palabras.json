@@ -1,504 +1,9 @@
 {
-  "generadoEn": "2026-10-08T02:47:13Z",
+  "generadoEn": "2026-10-08T02:49:17Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 172,
+  "maxItems": 169,
   "diasEtiquetaNuevo": 14,
   "items": [
-    {
-      "id": "",
-      "palabra": "Adulto",
-      "categoria": "Adjetivos",
-      "imagen": "img/vocabulario/adulto.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Caro",
-      "categoria": "Adjetivos",
-      "imagen": "img/vocabulario/caro.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Débil",
-      "categoria": "Adjetivos",
-      "imagen": "img/vocabulario/debil.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Distraído",
-      "categoria": "Adjetivos",
-      "imagen": "img/vocabulario/distraido.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Cansado",
-      "categoria": "Emociones",
-      "imagen": "img/vocabulario/cansado.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Aburrido",
-      "categoria": "Emociones",
-      "imagen": "img/vocabulario/aburrido.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Amor",
-      "categoria": "Emociones",
-      "imagen": "img/vocabulario/amor.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Asustado",
-      "categoria": "Emociones",
-      "imagen": "img/vocabulario/asustado.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Cariño",
-      "categoria": "Emociones",
-      "imagen": "img/vocabulario/cariño.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "historial-publicacion-video",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Celos",
-      "categoria": "Emociones",
-      "imagen": "img/vocabulario/celos.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Contento",
-      "categoria": "Emociones",
-      "imagen": "img/vocabulario/contento.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Enojado",
-      "categoria": "Emociones",
-      "imagen": "img/vocabulario/enojado.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Envidia",
-      "categoria": "Emociones",
-      "imagen": "img/vocabulario/envidia.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Esperanza",
-      "categoria": "Emociones",
-      "imagen": "img/vocabulario/esperanza.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Feliz",
-      "categoria": "Emociones",
-      "imagen": "img/vocabulario/feliz.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Extrañar",
-      "categoria": "Emociones",
-      "imagen": "img/vocabulario/extrañar.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "historial-publicacion-video",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Orgullo (negativo)",
-      "categoria": "Emociones",
-      "imagen": "img/vocabulario/orgullo.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Soledad",
-      "categoria": "Emociones",
-      "imagen": "img/vocabulario/soledad.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Sorprendido",
-      "categoria": "Emociones",
-      "imagen": "img/vocabulario/sorprendido.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Triste",
-      "categoria": "Emociones",
-      "imagen": "img/vocabulario/tristeza.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Vergüenza",
-      "categoria": "Emociones",
-      "imagen": "img/vocabulario/verguenza.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Abril",
-      "categoria": "Tiempo",
-      "imagen": "img/vocabulario/abril.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Agosto",
-      "categoria": "Tiempo",
-      "imagen": "img/vocabulario/agosto.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Diciembre",
-      "categoria": "Tiempo",
-      "imagen": "img/vocabulario/diciembre.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Domingo",
-      "categoria": "Tiempo",
-      "imagen": "img/vocabulario/domingo.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Enero",
-      "categoria": "Tiempo",
-      "imagen": "img/vocabulario/enero.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Febrero",
-      "categoria": "Tiempo",
-      "imagen": "img/vocabulario/febrero.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Jueves",
-      "categoria": "Tiempo",
-      "imagen": "img/vocabulario/jueves.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Julio",
-      "categoria": "Tiempo",
-      "imagen": "img/vocabulario/julio.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Junio",
-      "categoria": "Tiempo",
-      "imagen": "img/vocabulario/junio.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Lunes",
-      "categoria": "Tiempo",
-      "imagen": "img/vocabulario/lunes.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Martes",
-      "categoria": "Tiempo",
-      "imagen": "img/vocabulario/martes.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Marzo",
-      "categoria": "Tiempo",
-      "imagen": "img/vocabulario/marzo.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Mayo",
-      "categoria": "Tiempo",
-      "imagen": "img/vocabulario/mayo.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Miércoles",
-      "categoria": "Tiempo",
-      "imagen": "img/vocabulario/miercoles.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Noviembre",
-      "categoria": "Tiempo",
-      "imagen": "img/vocabulario/noviembre.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Octubre",
-      "categoria": "Tiempo",
-      "imagen": "img/vocabulario/octubre.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Sábado",
-      "categoria": "Tiempo",
-      "imagen": "img/vocabulario/sabado.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Septiembre",
-      "categoria": "Tiempo",
-      "imagen": "img/vocabulario/septiembre.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Viernes",
-      "categoria": "Tiempo",
-      "imagen": "img/vocabulario/viernes.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Apoyar",
-      "categoria": "Verbos",
-      "imagen": "img/vocabulario/apoyar.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Ayudar",
-      "categoria": "Verbos",
-      "imagen": "img/vocabulario/ayudar.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Examinar",
-      "categoria": "Verbos",
-      "imagen": "img/vocabulario/examinar.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Advertir",
-      "categoria": "Verbos",
-      "imagen": "img/vocabulario/advertir.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Practicar",
-      "categoria": "Verbos",
-      "imagen": "img/vocabulario/practicar.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Aceptar",
-      "categoria": "Verbos",
-      "imagen": "img/vocabulario/aceptar.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Añadir",
-      "categoria": "Verbos",
-      "imagen": "img/vocabulario/añadir.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "historial-publicacion-video",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Abrir",
-      "categoria": "Verbos",
-      "imagen": "img/vocabulario/abrir.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Bromear",
-      "categoria": "Verbos",
-      "imagen": "img/vocabulario/bromear.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Abrazar",
-      "categoria": "Verbos",
-      "imagen": "img/vocabulario/abrazar.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Atender",
-      "categoria": "Verbos",
-      "imagen": "img/vocabulario/atender.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Aplaudir",
-      "categoria": "Verbos",
-      "imagen": "img/vocabulario/aplaudir.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Escuchar",
-      "categoria": "Verbos",
-      "imagen": "img/vocabulario/oir.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Agradecer",
-      "categoria": "Verbos",
-      "imagen": "img/vocabulario/agradecer.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Jugar",
-      "categoria": "Verbos",
-      "imagen": "img/vocabulario/jugar.webp",
-      "fecha": "2026-10-08T02:16:25Z",
-      "origenFecha": "imagen-git",
-      "fuente": "vocabulario"
-    },
     {
       "id": "",
       "palabra": "Enfermo",
@@ -1362,6 +867,474 @@
       "fecha": "2026-09-05T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
+    },
+    {
+      "id": "",
+      "palabra": "Adulto",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/adulto.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Caro",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/caro.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Débil",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/debil.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Distraído",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/distraido.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Cansado",
+      "categoria": "Emociones",
+      "imagen": "img/vocabulario/cansado.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Aburrido",
+      "categoria": "Emociones",
+      "imagen": "img/vocabulario/aburrido.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Amor",
+      "categoria": "Emociones",
+      "imagen": "img/vocabulario/amor.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Asustado",
+      "categoria": "Emociones",
+      "imagen": "img/vocabulario/asustado.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Celos",
+      "categoria": "Emociones",
+      "imagen": "img/vocabulario/celos.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Contento",
+      "categoria": "Emociones",
+      "imagen": "img/vocabulario/contento.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Enojado",
+      "categoria": "Emociones",
+      "imagen": "img/vocabulario/enojado.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Envidia",
+      "categoria": "Emociones",
+      "imagen": "img/vocabulario/envidia.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Esperanza",
+      "categoria": "Emociones",
+      "imagen": "img/vocabulario/esperanza.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Feliz",
+      "categoria": "Emociones",
+      "imagen": "img/vocabulario/feliz.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Orgullo (negativo)",
+      "categoria": "Emociones",
+      "imagen": "img/vocabulario/orgullo.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Soledad",
+      "categoria": "Emociones",
+      "imagen": "img/vocabulario/soledad.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Sorprendido",
+      "categoria": "Emociones",
+      "imagen": "img/vocabulario/sorprendido.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Triste",
+      "categoria": "Emociones",
+      "imagen": "img/vocabulario/tristeza.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Vergüenza",
+      "categoria": "Emociones",
+      "imagen": "img/vocabulario/verguenza.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Abril",
+      "categoria": "Tiempo",
+      "imagen": "img/vocabulario/abril.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Agosto",
+      "categoria": "Tiempo",
+      "imagen": "img/vocabulario/agosto.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Diciembre",
+      "categoria": "Tiempo",
+      "imagen": "img/vocabulario/diciembre.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Domingo",
+      "categoria": "Tiempo",
+      "imagen": "img/vocabulario/domingo.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Enero",
+      "categoria": "Tiempo",
+      "imagen": "img/vocabulario/enero.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Febrero",
+      "categoria": "Tiempo",
+      "imagen": "img/vocabulario/febrero.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Jueves",
+      "categoria": "Tiempo",
+      "imagen": "img/vocabulario/jueves.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Julio",
+      "categoria": "Tiempo",
+      "imagen": "img/vocabulario/julio.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Junio",
+      "categoria": "Tiempo",
+      "imagen": "img/vocabulario/junio.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Lunes",
+      "categoria": "Tiempo",
+      "imagen": "img/vocabulario/lunes.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Martes",
+      "categoria": "Tiempo",
+      "imagen": "img/vocabulario/martes.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Marzo",
+      "categoria": "Tiempo",
+      "imagen": "img/vocabulario/marzo.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Mayo",
+      "categoria": "Tiempo",
+      "imagen": "img/vocabulario/mayo.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Miércoles",
+      "categoria": "Tiempo",
+      "imagen": "img/vocabulario/miercoles.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Noviembre",
+      "categoria": "Tiempo",
+      "imagen": "img/vocabulario/noviembre.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Octubre",
+      "categoria": "Tiempo",
+      "imagen": "img/vocabulario/octubre.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Sábado",
+      "categoria": "Tiempo",
+      "imagen": "img/vocabulario/sabado.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Septiembre",
+      "categoria": "Tiempo",
+      "imagen": "img/vocabulario/septiembre.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Viernes",
+      "categoria": "Tiempo",
+      "imagen": "img/vocabulario/viernes.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Apoyar",
+      "categoria": "Verbos",
+      "imagen": "img/vocabulario/apoyar.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Ayudar",
+      "categoria": "Verbos",
+      "imagen": "img/vocabulario/ayudar.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Examinar",
+      "categoria": "Verbos",
+      "imagen": "img/vocabulario/examinar.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Advertir",
+      "categoria": "Verbos",
+      "imagen": "img/vocabulario/advertir.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Practicar",
+      "categoria": "Verbos",
+      "imagen": "img/vocabulario/practicar.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Aceptar",
+      "categoria": "Verbos",
+      "imagen": "img/vocabulario/aceptar.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Abrir",
+      "categoria": "Verbos",
+      "imagen": "img/vocabulario/abrir.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Bromear",
+      "categoria": "Verbos",
+      "imagen": "img/vocabulario/bromear.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Abrazar",
+      "categoria": "Verbos",
+      "imagen": "img/vocabulario/abrazar.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Atender",
+      "categoria": "Verbos",
+      "imagen": "img/vocabulario/atender.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Aplaudir",
+      "categoria": "Verbos",
+      "imagen": "img/vocabulario/aplaudir.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Escuchar",
+      "categoria": "Verbos",
+      "imagen": "img/vocabulario/oir.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Agradecer",
+      "categoria": "Verbos",
+      "imagen": "img/vocabulario/agradecer.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Jugar",
+      "categoria": "Verbos",
+      "imagen": "img/vocabulario/jugar.webp",
+      "fecha": "2026-09-03T18:27:52Z",
+      "origenFecha": "imagen-git",
+      "fuente": "vocabulario"
     },
     {
       "id": "ecosistema",
