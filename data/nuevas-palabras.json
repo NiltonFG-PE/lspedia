@@ -1,7 +1,7 @@
 {
-  "generadoEn": "2026-10-08T14:38:16Z",
+  "generadoEn": "2026-10-08T15:13:03Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 189,
+  "maxItems": 190,
   "diasEtiquetaNuevo": 14,
   "items": [
     {
@@ -126,6 +126,15 @@
       "palabra": "Tacaño",
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/tacano.webp",
+      "fecha": "2026-10-08T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Valiente",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/valiente.webp",
       "fecha": "2026-10-08T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
