@@ -110,6 +110,7 @@ html body.vista-temas-movil #vocabularioIntroLista .vocab-intro-texto {
     html body.vista-temas-movil #filaHeroPrincipal > .col-lg-6 {
         width: calc(100% - 136px);
         padding: 0;
+        margin: 0 !important;
     }
     html body.vista-temas-movil #filaHeroPrincipal > #colAvatarHero {
         width: 120px;
@@ -125,6 +126,11 @@ html body.vista-temas-movil #vocabularioIntroLista .vocab-intro-texto {
         display: grid !important;
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+}
+html body.vista-temas-movil #resultado:empty,
+html body.vista-temas-movil #ultimasPalabras:empty,
+html body.vista-temas-movil .row:has(> .col-12 > #resultadoCategoriasDiccionario:empty) {
+    display: none !important;
 }
 @media (max-width: 991.98px) {
     html body.vista-temas-movil #vocabularioIntroLista { margin: 0 0 12px !important; }
