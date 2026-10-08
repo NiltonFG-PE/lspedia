@@ -13,17 +13,26 @@
                 if (!mostrandoInicio) return;
                 panel.replaceChildren();
                 panel.style.display = 'none';
+                panel.classList.remove('lsp-panel-inicio');
                 mostrandoInicio = false;
             }
             function sugerir() {
                 if (document.activeElement !== input || input.value.trim()) return;
+                if (mostrandoInicio) return;
                 const palabras = input.id === 'buscar'
                     ? Array.from(document.querySelectorAll('#bloqueEjemplos .ejemplo-chip'))
                         .filter(function (chip) { return chip.style.display !== 'none'; })
                         .map(function (chip) { return chip.dataset.palabra || chip.textContent.trim(); })
                     : typeof window.obtenerDatosVocabulario === 'function'
                         ? window.obtenerDatosVocabulario().map(function (p) { return p.palabra; }) : [];
-                const lista = Array.from(new Set(palabras.filter(Boolean))).slice(0, 5);
+                const disponibles = Array.from(new Set(palabras.filter(Boolean)));
+                if (input.id === 'buscarCategorias') {
+                    for (let i = disponibles.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [disponibles[i], disponibles[j]] = [disponibles[j], disponibles[i]];
+                    }
+                }
+                const lista = disponibles.slice(0, 5);
                 if (!lista.length) return;
                 const bloque = document.createElement('div');
                 bloque.className = 'lsp-sugerencias-inicio';
@@ -47,6 +56,7 @@
                 });
                 bloque.append(label, opciones);
                 panel.replaceChildren(bloque);
+                panel.classList.add('lsp-panel-inicio');
                 panel.style.display = 'block';
                 mostrandoInicio = true;
             }

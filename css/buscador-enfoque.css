@@ -39,25 +39,45 @@
 #btnToggleAbcVocabulario .indice-compacto-flecha { display: none !important; }
 #btnBuscar, #btnBuscarCategorias { padding-inline: 16px !important; }
 #buscar, #buscarCategorias { padding-inline: 16px !important; }
-.lsp-sugerencias-inicio { padding: 10px; }
-.lsp-sugerencias-inicio-label { margin: 0 0 8px; font-size: .78rem; font-weight: 600; color: #aabbd0; }
-.lsp-sugerencias-inicio-lista { display: flex; flex-wrap: wrap; gap: 6px; }
+:is(#sugerencias, #sugerenciasCategorias).lsp-panel-inicio {
+    width: max-content !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    background: #fff !important;
+    border: 1px solid #dce5ef !important;
+    border-radius: 14px !important;
+    box-shadow: 0 8px 24px #182b5514 !important;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+.lsp-sugerencias-inicio { padding: 8px 10px; }
+.lsp-sugerencias-inicio-label { margin: 0 0 5px; font-size: .68rem; font-weight: 500; color: #718096; }
+.lsp-sugerencias-inicio-lista { display: flex; flex-wrap: wrap; gap: 5px; }
 .lsp-sugerencia-inicio {
-    border: 1px solid #ffffff24;
-    border-radius: 999px;
-    background: #ffffff0e;
-    color: #edf5ff;
-    padding: 8px 13px;
-    min-height: 44px;
+    border: 1px solid #e3ebf5;
+    border-radius: 9px;
+    background: #f5f8fc;
+    color: #294466;
+    padding: 5px 10px;
+    min-height: 32px;
     font: inherit;
-    font-size: .9rem;
+    font-size: .82rem;
     cursor: pointer;
 }
 .lsp-sugerencia-inicio:hover, .lsp-sugerencia-inicio:focus-visible {
-    background: #ffffff20;
-    outline: 2px solid #85bfff;
+    background: #eaf2ff;
+    outline: 2px solid #8fb7ed;
     outline-offset: 1px;
 }
+@media (pointer: coarse) { .lsp-sugerencia-inicio { min-height: 40px; } }
+html[data-lsp-tema="dark"] :is(#sugerencias, #sugerenciasCategorias).lsp-panel-inicio {
+    background: #172436 !important;
+    border-color: #30435a !important;
+}
+html[data-lsp-tema="dark"] .lsp-sugerencia-inicio { background: #22334b; border-color: #344963; color: #dbeaff; }
+html[data-lsp-tema="dark"] .lsp-sugerencia-inicio:hover,
+html[data-lsp-tema="dark"] .lsp-sugerencia-inicio:focus-visible { background: #2d4566; }
+html[data-lsp-tema="dark"] .lsp-sugerencias-inicio-label { color: #a8bad0; }
 
 /* Vocabulario: una misma alineación para introducción y búsqueda. */
 html body.vista-temas-movil #bloqueBuscadorCategorias {
