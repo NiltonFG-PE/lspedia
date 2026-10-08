@@ -1,7 +1,7 @@
 {
-  "generadoEn": "2026-10-08T02:49:17Z",
+  "generadoEn": "2026-10-08T03:18:43Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 169,
+  "maxItems": 171,
   "diasEtiquetaNuevo": 14,
   "items": [
     {
@@ -60,6 +60,15 @@
     },
     {
       "id": "",
+      "palabra": "Igual",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/igual.webp, img/vocabulario/igual-2.webp",
+      "fecha": "2026-10-07T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
       "palabra": "Obeso",
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/obeso.webp",
@@ -99,6 +108,15 @@
       "palabra": "Torpe",
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/torpe.webp",
+      "fecha": "2026-10-07T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Igualdad",
+      "categoria": "Valores",
+      "imagen": "img/vocabulario/igualdad.webp",
       "fecha": "2026-10-07T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
