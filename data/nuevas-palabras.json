@@ -1,7 +1,7 @@
 {
-  "generadoEn": "2026-10-08T03:40:37Z",
+  "generadoEn": "2026-10-08T03:54:45Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 172,
+  "maxItems": 173,
   "diasEtiquetaNuevo": 14,
   "items": [
     {
@@ -126,6 +126,15 @@
       "palabra": "Igualdad",
       "categoria": "Valores",
       "imagen": "img/vocabulario/igualdad.webp",
+      "fecha": "2026-10-07T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Aguante",
+      "categoria": "Valores",
+      "imagen": "img/vocabulario/aguante.webp",
       "fecha": "2026-10-07T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
