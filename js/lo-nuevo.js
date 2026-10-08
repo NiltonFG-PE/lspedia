@@ -166,7 +166,10 @@
             const cerrar = botonAccion('×', () => catalogo.close());
             cerrar.className += ' lsp-catalogo-cerrar';
             cerrar.setAttribute('aria-label', 'Cerrar catálogo');
-            fila.append(titulo, cerrar);
+            const marca = document.createElement('span');
+            marca.className = 'lsp-catalogo-marca';
+            marca.textContent = 'LSPedia';
+            fila.append(titulo, marca, cerrar);
             const descripcion = document.createElement('p');
             descripcion.id = 'lspCatalogoDescripcion';
             const filtros = document.createElement('div');
@@ -191,7 +194,10 @@
             filtros.append(etiqueta, periodo, contador);
             const acciones = document.createElement('div');
             acciones.id = 'lspCatalogoAcciones'; acciones.className = 'lsp-nuevo-acciones';
-            cabecera.append(fila, descripcion, filtros, acciones);
+            const herramientas = document.createElement('div');
+            herramientas.className = 'lsp-catalogo-herramientas';
+            herramientas.append(filtros, acciones);
+            cabecera.append(fila, descripcion, herramientas);
             const grid = document.createElement('div');
             grid.id = 'lspCatalogoGrid'; grid.className = 'lsp-catalogo-grid';
             catalogo.append(cabecera, grid);
@@ -218,7 +224,7 @@
     function renderCatalogo(){
         const catalogo = $('lspCatalogoNovedades');
         if(!catalogo || !catalogo.open) return;
-        $('lspCatalogoTitulo').textContent = referenciasCompartidas.length ? '✨ Novedades compartidas' : '✨ Lo nuevo · catálogo';
+        $('lspCatalogoTitulo').textContent = referenciasCompartidas.length ? '✨ Novedades compartidas' : '✨ Lo nuevo';
         $('lspCatalogoDescripcion').textContent = modoSeleccion
             ? 'Marca los videos que quieres compartir.'
             : 'Explora las publicaciones de Diccionario y Vocabulario. Toca una ficha para ver el video.';
@@ -235,7 +241,17 @@
             const iso = fechaAISO(x.registro.fecha || fechaPalabra(x.palabra) || (indice && indice.fecha));
             if(iso) fecha.dateTime = iso;
             fecha.textContent = fechaMostrar(iso);
-            tarjeta.appendChild(fecha);
+            const etiquetas = document.createElement('span');
+            etiquetas.className = 'lsp-catalogo-etiquetas';
+            const badges = tarjeta.querySelectorAll('.lsp-nueva-badge');
+            if(badges.length){
+                badges[0].before(etiquetas);
+                badges.forEach(badge => etiquetas.appendChild(badge));
+            }
+            const pie = document.createElement('span');
+            pie.className = 'lsp-catalogo-pie';
+            pie.append(tarjeta.querySelector('.lsp-nueva-cat'), fecha);
+            tarjeta.appendChild(pie);
             grid.appendChild(tarjeta);
         });
         if(!publicadasVisibles.length){
