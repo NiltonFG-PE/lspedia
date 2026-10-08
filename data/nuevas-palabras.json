@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-10-08T01:12:00Z",
+  "generadoEn": "2026-10-08T01:25:41Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
@@ -36,6 +36,15 @@
       "palabra": "Fuerte",
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/fuerte.webp",
+      "fecha": "2026-10-07T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Generoso",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/generoso.webp",
       "fecha": "2026-10-07T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
@@ -99,15 +108,6 @@
       "palabra": "Delgado",
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/delgado.webp",
-      "fecha": "2026-10-06T05:00:00Z",
-      "origenFecha": "fechaPublicacion",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Desordenado",
-      "categoria": "Adjetivos",
-      "imagen": "img/vocabulario/desordenado.webp",
       "fecha": "2026-10-06T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
