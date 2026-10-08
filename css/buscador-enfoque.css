@@ -97,8 +97,20 @@ html[data-lsp-tema="dark"] .lsp-sugerencias-inicio-label { color: #a8bad0; }
 html body.vista-temas-movil #bloqueBuscadorCategorias {
     width: 100%;
     max-width: 960px;
-    margin: 12px auto !important;
+    margin: 12px auto 32px !important;
     padding: 0 !important;
+}
+html body.vista-temas-movil #bloqueBuscadorCategorias .input-group {
+    animation: none !important;
+    transform: none !important;
+    box-shadow: 0 3px 8px rgba(27, 58, 105, .06), 0 10px 24px rgba(27, 58, 105, .10) !important;
+    transition: box-shadow .2s ease;
+}
+html body.vista-temas-movil #bloqueBuscadorCategorias .input-group:focus-within {
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, .10), 0 10px 24px rgba(27, 58, 105, .13) !important;
+}
+html[data-lsp-tema="dark"] body.vista-temas-movil #bloqueBuscadorCategorias .input-group {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, .16), 0 12px 26px rgba(0, 0, 0, .22) !important;
 }
 html body.vista-temas-movil #bloqueBuscadorCategorias > .col-lg-8 {
     padding-inline: 0 !important;
@@ -167,6 +179,7 @@ html body.vista-temas-movil .row:has(> .col-12 > #resultadoCategoriasDiccionario
     display: none !important;
 }
 @media (max-width: 991.98px) {
+    html body.vista-temas-movil #bloqueBuscadorCategorias { margin-bottom: 24px !important; }
     html body.vista-temas-movil #vocabularioIntroLista { margin: 0 0 12px !important; }
 }
 html[data-lsp-tema="dark"] body.vista-temas-movil #vocabularioIntroLista {
