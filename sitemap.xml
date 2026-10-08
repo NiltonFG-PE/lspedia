@@ -281,6 +281,11 @@
         <priority>0.8</priority>
     </url>
     <url>
+        <loc>https://lspedia.site/vocabulario/igual-adjetivos/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
         <loc>https://lspedia.site/vocabulario/obeso-adjetivos/</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
@@ -867,6 +872,11 @@
     </url>
     <url>
         <loc>https://lspedia.site/vocabulario/torpe-adjetivos/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/vocabulario/igualdad-valores/</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
