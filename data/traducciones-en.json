@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-10-07T21:19:49Z",
+  "actualizado": "2026-10-08T00:34:41Z",
   "traducciones": [
     {
       "fuente": "diccionario",
@@ -376,7 +376,7 @@
       "categoria": "Salud",
       "ingles": "Anemia",
       "aliases": [],
-      "definicionIngles": "A health problem in which the blood has little hemoglobin or few healthy red blood cells."
+      "definicionIngles": "A health problem in which the blood has low hemoglobin or few healthy red blood cells."
     },
     {
       "fuente": "diccionario",
@@ -1384,7 +1384,7 @@
       "categoria": "Tiempo",
       "ingles": "Appointment",
       "aliases": [],
-      "definicionIngles": "It's an agreed-upon time to meet someone, for example, a doctor or someone in an office, at a specific time.\n\nExample: I have a dentist appointment tomorrow at three."
+      "definicionIngles": "It's an agreed-upon time to meet someone, for example, a doctor or someone in an office, at a specific hour.\n\nExample: I have a dentist appointment tomorrow at three."
     },
     {
       "fuente": "diccionario",
@@ -6222,7 +6222,7 @@
       "fuente": "diccionario",
       "palabra": "Percepción tributaria",
       "categoria": "Economía",
-      "ingles": "Tax collection",
+      "ingles": "Tax perception",
       "aliases": [],
       "definicionIngles": "Additional amount that is charged in advance in some transactions with respect to taxes."
     },
@@ -6358,7 +6358,7 @@
       "fuente": "diccionario",
       "palabra": "Plan contable",
       "categoria": "Economía",
-      "ingles": "accounting plan",
+      "ingles": "Accounting plan",
       "aliases": [],
       "definicionIngles": "Organized list of accounts used to record economic transactions."
     },
@@ -7928,7 +7928,7 @@
       "categoria": "Psicología",
       "ingles": "Therapist",
       "aliases": [],
-      "definicionIngles": "Professional who accompanies a person in a treatment or therapeutic support process."
+      "definicionIngles": "Professional who accompanies a person in a process of treatment or therapeutic support."
     },
     {
       "fuente": "diccionario",
