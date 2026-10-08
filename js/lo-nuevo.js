@@ -12,6 +12,125 @@
     let itemsLoNuevo = [];
     let diasEtiquetaNuevo = 14;
     let diccionarioCrudo = [];
+    let publicadasVisibles = [];
+    let modoSeleccion = false;
+    const seleccionadas = new Set();
+    let referenciasCompartidas = new URLSearchParams(location.search).getAll('nuevo')
+        .filter(ref => /^(diccionario|vocabulario):.{1,200}$/.test(ref)).slice(0, 12);
+    let compartidasDesplazadas = false;
+
+    function claveFicha(x){ return x.fuente + ':' + refPalabra(x.palabra); }
+
+    function urlCompartirNovedades(fichas){
+        const url = new URL(location.pathname, location.origin);
+        url.searchParams.set('vista', 'diccionario');
+        url.searchParams.set('novedades', 'compartidas');
+        fichas.slice(0, 12).forEach(x => url.searchParams.append('nuevo', claveFicha(x)));
+        url.hash = 'lspNuevasCard';
+        return url.href;
+    }
+
+    function botonAccion(textoBoton, accion, id){
+        const boton = document.createElement('button');
+        boton.type = 'button';
+        boton.className = 'lsp-nuevo-accion';
+        if(id) boton.id = id;
+        boton.textContent = textoBoton;
+        boton.addEventListener('click', accion);
+        return boton;
+    }
+
+    function compartirFichas(fichas){
+        if(!fichas.length) return;
+        let dialogo = $('lspCompartirNovedades');
+        if(!dialogo){
+            dialogo = document.createElement('dialog');
+            dialogo.id = 'lspCompartirNovedades';
+            dialogo.className = 'lsp-nuevo-dialogo';
+            dialogo.setAttribute('aria-labelledby', 'lspCompartirNovedadesTitulo');
+            document.body.appendChild(dialogo);
+        }
+        dialogo.replaceChildren();
+        const titulo = document.createElement('h2');
+        titulo.id = 'lspCompartirNovedadesTitulo';
+        titulo.textContent = 'Compartir novedades';
+        const resumen = document.createElement('p');
+        resumen.textContent = fichas.length + (fichas.length === 1 ? ' ficha: ' : ' fichas: ')
+            + fichas.map(x => x.palabra.palabra).join(', ');
+        const etiqueta = document.createElement('label');
+        etiqueta.textContent = 'Enlace para compartir';
+        etiqueta.htmlFor = 'lspEnlaceNovedades';
+        const campo = document.createElement('input');
+        campo.id = 'lspEnlaceNovedades';
+        campo.type = 'text';
+        campo.readOnly = true;
+        campo.value = urlCompartirNovedades(fichas);
+        campo.addEventListener('click', () => campo.select());
+        const estado = document.createElement('p');
+        estado.className = 'lsp-nuevo-estado';
+        estado.setAttribute('role', 'status');
+        const acciones = document.createElement('div');
+        acciones.className = 'lsp-nuevo-acciones';
+        acciones.appendChild(botonAccion('Copiar enlace', async () => {
+            try{
+                await navigator.clipboard.writeText(campo.value);
+                estado.textContent = 'Enlace copiado. Ya puedes pegarlo donde quieras compartirlo.';
+            }catch(_e){
+                campo.focus(); campo.select();
+                estado.textContent = 'Selecciona y copia el enlace con tu navegador.';
+            }
+        }));
+        if(typeof navigator.share === 'function'){
+            acciones.appendChild(botonAccion('Compartir…', async () => {
+                try{
+                    await navigator.share({title:'Lo nuevo en LSPedia', text:'Mira estas novedades en LSPedia 🤟', url:campo.value});
+                }catch(e){
+                    if(e.name !== 'AbortError') estado.textContent = 'Puedes usar Copiar enlace para compartirlo.';
+                }
+            }));
+        }
+        acciones.appendChild(botonAccion('Cerrar', () => dialogo.close()));
+        dialogo.append(titulo, resumen, etiqueta, campo, acciones, estado);
+        dialogo.showModal();
+    }
+
+    function actualizarAcciones(){
+        const card = $('lspNuevasCard');
+        if(!card) return;
+        let barra = $('lspNuevasAcciones');
+        if(!barra){
+            barra = document.createElement('div');
+            barra.id = 'lspNuevasAcciones';
+            barra.className = 'lsp-nuevo-acciones';
+            $('lspNuevasLista').before(barra);
+        }
+        barra.replaceChildren();
+        const elegidas = publicadasVisibles.filter(x => seleccionadas.has(claveFicha(x)));
+        if(modoSeleccion){
+            const compartir = botonAccion('Compartir selección (' + elegidas.length + ')', () => compartirFichas(elegidas), 'lspCompartirSeleccion');
+            compartir.disabled = !elegidas.length;
+            barra.append(compartir,
+                botonAccion('Seleccionar todas', () => { publicadasVisibles.forEach(x => seleccionadas.add(claveFicha(x))); render(); }),
+                botonAccion('Cancelar', () => { modoSeleccion = false; seleccionadas.clear(); render(); }));
+        }else{
+            const compartir = botonAccion('Compartir todo', () => compartirFichas(publicadasVisibles), 'lspCompartirTodo');
+            compartir.disabled = !publicadasVisibles.length;
+            const seleccionar = botonAccion('Seleccionar', () => { modoSeleccion = true; render(); }, 'lspSeleccionarNovedades');
+            seleccionar.disabled = !publicadasVisibles.length;
+            barra.append(compartir, seleccionar);
+        }
+        if(referenciasCompartidas.length){
+            barra.appendChild(botonAccion('Ver todas las novedades', () => {
+                referenciasCompartidas = [];
+                modoSeleccion = false; seleccionadas.clear();
+                const url = new URL(location.href);
+                url.searchParams.delete('nuevo'); url.searchParams.delete('novedades');
+                history.replaceState(history.state, '', url.href);
+                render();
+            }));
+        }
+        card.classList.toggle('lsp-nuevo-seleccionando', modoSeleccion);
+    }
 
     function $(id){ return document.getElementById(id); }
     function texto(v){ return String(v == null ? '' : v).trim(); }
@@ -193,7 +312,9 @@
 
         const subtitulo = card.querySelector('.lsp-mejora-sub');
         if(subtitulo){
-            subtitulo.textContent = 'Últimos videos publicados en Diccionario y Vocabulario.';
+            subtitulo.textContent = referenciasCompartidas.length
+                ? 'Novedades compartidas contigo. Abre una ficha para ver su contenido.'
+                : (modoSeleccion ? 'Toca las fichas que quieres compartir.' : 'Últimos videos publicados en Diccionario y Vocabulario.');
         }
     }
 
@@ -248,7 +369,28 @@
         boton.type = 'button';
         boton.className = 'lsp-nueva-palabra';
         boton.setAttribute('aria-label', 'Abrir ' + nombre + ' en ' + (x.fuente === 'vocabulario' ? 'Vocabulario' : 'Diccionario'));
-        boton.addEventListener('click', () => abrirContenido(x));
+        if(modoSeleccion){
+            const elegida = seleccionadas.has(claveFicha(x));
+            boton.setAttribute('aria-label', 'Seleccionar ' + nombre + ' en ' + (x.fuente === 'vocabulario' ? 'Vocabulario' : 'Diccionario'));
+            boton.setAttribute('aria-pressed', String(elegida));
+            boton.classList.toggle('lsp-nueva-seleccionada', elegida);
+            const marca = document.createElement('span');
+            marca.className = 'lsp-nueva-marca';
+            marca.textContent = elegida ? '✓' : '+';
+            marca.setAttribute('aria-hidden', 'true');
+            boton.appendChild(marca);
+        }
+        boton.addEventListener('click', () => {
+            if(!modoSeleccion){ abrirContenido(x); return; }
+            const clave = claveFicha(x);
+            if(seleccionadas.has(clave)) seleccionadas.delete(clave); else seleccionadas.add(clave);
+            // No reemplaza el botón enfocado ni desplaza el carrusel al seleccionar.
+            const elegida = seleccionadas.has(clave);
+            boton.setAttribute('aria-pressed', String(elegida));
+            boton.classList.toggle('lsp-nueva-seleccionada', elegida);
+            boton.querySelector('.lsp-nueva-marca').textContent = elegida ? '✓' : '+';
+            actualizarAcciones();
+        });
 
         const thumbWrap = document.createElement('span');
         thumbWrap.className = 'lsp-nueva-thumb-wrap';
@@ -292,16 +434,24 @@
         const caja = $('lspNuevasLista');
         if(!caja) return;
 
-        const publicadas = itemsLoNuevo
+        const registros = referenciasCompartidas.length ? referenciasCompartidas.map(ref => {
+            const separador = ref.indexOf(':');
+            return {fuente:ref.slice(0,separador),id:ref.slice(separador+1)};
+        }) : itemsLoNuevo;
+        const publicadas = registros
             .map(buscarContenido)
             .filter(x => x && x.palabra && tieneVideoValido(x.palabra))
             .slice(0, 12);
+        publicadasVisibles = publicadas;
+        actualizarAcciones();
 
         caja.replaceChildren();
         if(!publicadas.length){
             const vacio = document.createElement('span');
             vacio.className = 'lsp-mejora-sub';
-            vacio.textContent = 'Los próximos videos publicados aparecerán aquí.';
+            vacio.textContent = referenciasCompartidas.length
+                ? 'Cargando las fichas compartidas. Si ya no están disponibles, puedes ver todas las novedades.'
+                : 'Los próximos videos publicados aparecerán aquí.';
             caja.appendChild(vacio);
             return;
         }
@@ -309,6 +459,14 @@
         const fragmento = document.createDocumentFragment();
         publicadas.forEach(x => fragmento.appendChild(crearTarjeta(x)));
         caja.appendChild(fragmento);
+        if(referenciasCompartidas.length && !compartidasDesplazadas){
+            compartidasDesplazadas = true;
+            requestAnimationFrame(() => {
+                const card = $('lspNuevasCard');
+                if(typeof window.scrollAlPrimerResultado === 'function') window.scrollAlPrimerResultado(card);
+                else card.scrollIntoView({block:'start',behavior:'smooth'});
+            });
+        }
     }
 
     function leerJson(url){
