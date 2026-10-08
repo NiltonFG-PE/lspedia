@@ -25,6 +25,20 @@
     #filaHeroPrincipal > .col-lg-6 { width: 58.333333%; }
     #filaHeroPrincipal > #colAvatarHero { width: 16.666667%; }
     #colAvatarHero .avatar-hero-img { max-width: 100%; }
+    html body:not(.vista-temas-movil) #colAvatarHero .avatar-hero-img {
+        width: 270px !important;
+        height: 310px !important;
+        max-width: calc(100% + 56px) !important;
+        flex-shrink: 0;
+        object-fit: contain;
+    }
+}
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    html body:not(.vista-temas-movil) #colAvatarHero .avatar-hero-img {
+        width: 220px !important;
+        height: 260px !important;
+        max-width: calc(100% + 24px) !important;
+    }
 }
 #btnToggleAbc, #btnToggleAbcVocabulario {
     width: 52px !important;
