@@ -2,7 +2,7 @@
 #bloqueEjemplos { display: none !important; }
 #bloqueBuscadorCategorias > .col-lg-8 { width: 100%; max-width: 960px; }
 .buscador-indice-linea > .indice-compacto-wrap { order: 0; }
-#tituloPrincipal {
+#bloqueTituloPrincipal #tituloPrincipal {
     font-size: clamp(1.4rem, 1.12rem + 1.05vw, 1.95rem) !important;
     line-height: 1.2 !important;
     margin-bottom: 8px !important;
