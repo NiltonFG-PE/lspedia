@@ -11,7 +11,7 @@ function environment(){
         appendChild(item){this.children.push(item);},addEventListener(k,fn){this.events[k]=fn;},
         querySelector(){return this.children.find(c=>c.className==='lsp-nueva-marca');}};}
     const context={URL,location:{pathname:'/',origin:'https://lspedia.site'},window:{obtenerIdPalabra:p=>p.id},
-        document:{createElement:element},miniatura:()=>'/img/test.webp',esNuevo:()=>false,
+        document:{createElement:element,getElementById:()=>null},miniatura:()=>'/img/test.webp',esNuevo:()=>false,
         abrirContenido:()=>state.opens++,actualizarAcciones:()=>state.updates++};
     vm.createContext(context);
     vm.runInContext("let modoSeleccion=false; const seleccionadas=new Set();",context);
@@ -33,7 +33,7 @@ test('enlace conserva origen, referencia y orden de las fichas seleccionadas',()
 test('seleccionar una ficha marca y desmarca sin abrirla ni reemplazar el carrusel',()=>{
     const {context,state}=environment();
     vm.runInContext('modoSeleccion=true',context);
-    const boton=context.crearTarjeta(ficha);
+    const boton=context.crearTarjeta(ficha,true);
     assert.equal(boton.attrs['aria-pressed'],'false');
     boton.events.click();
     assert.equal(boton.attrs['aria-pressed'],'true');
@@ -74,4 +74,13 @@ test('períodos de 7 y 30 días excluyen fechas antiguas e inválidas',()=>{
     assert.equal(context.dentroDelPeriodo(fecha(15),30),true);
     assert.equal(context.dentroDelPeriodo(fecha(31),30),false);
     assert.equal(context.dentroDelPeriodo('sin fecha',30),false);
+});
+
+test('el carrusel sigue abriendo fichas mientras se selecciona en el catálogo',()=>{
+    const {context,state}=environment();
+    vm.runInContext('modoSeleccion=true',context);
+    const boton=context.crearTarjeta(ficha);
+    boton.events.click();
+    assert.equal(state.opens,1);
+    assert.equal(boton.attrs['aria-pressed'],undefined);
 });

@@ -19,6 +19,7 @@
     let referenciasCompartidas = new URLSearchParams(location.search).getAll('nuevo')
         .filter(ref => /^(diccionario|vocabulario):.{1,200}$/.test(ref));
     let compartidasDesplazadas = false;
+    let overflowAntesCatalogo = '';
 
     function claveFicha(x){ return x.fuente + ':' + refPalabra(x.palabra); }
 
@@ -95,41 +96,38 @@
         dialogo.showModal();
     }
 
+    function volverALoNuevo(){
+        referenciasCompartidas = [];
+        modoSeleccion = false; seleccionadas.clear();
+        const url = new URL(location.href);
+        url.searchParams.delete('nuevo'); url.searchParams.delete('novedades');
+        history.replaceState(history.state, '', url.href);
+        render();
+    }
+
     function actualizarAcciones(){
-        const card = $('lspNuevasCard');
-        if(!card) return;
-        let barra = $('lspNuevasAcciones');
-        if(!barra){
-            barra = document.createElement('div');
-            barra.id = 'lspNuevasAcciones';
-            barra.className = 'lsp-nuevo-acciones';
-            $('lspNuevasLista').before(barra);
-        }
+        const barra = $('lspCatalogoAcciones');
+        if(!barra) return;
         barra.replaceChildren();
         const elegidas = publicadasVisibles.filter(x => seleccionadas.has(claveFicha(x)));
-        barra.hidden = !modoSeleccion && !referenciasCompartidas.length;
         if(modoSeleccion){
             const contador = document.createElement('span');
             contador.className = 'lsp-nuevo-contador';
             contador.setAttribute('role', 'status');
             contador.textContent = elegidas.length + ' seleccionadas';
-            const compartir = botonAccion('Compartir', () => compartirFichas(elegidas), 'lspCompartirSeleccion');
+            const compartir = botonAccion('Compartir selección', () => compartirFichas(elegidas), 'lspCompartirSeleccion');
             compartir.disabled = !elegidas.length;
             barra.append(contador, compartir,
-                botonAccion('Cancelar', () => { modoSeleccion = false; seleccionadas.clear(); render(); }));
+                botonAccion('Seleccionar todas', () => { publicadasVisibles.forEach(x => seleccionadas.add(claveFicha(x))); renderCatalogo(); }),
+                botonAccion('Cancelar', () => { modoSeleccion = false; seleccionadas.clear(); renderCatalogo(); }));
+        }else{
+            const compartir = botonAccion('Compartir todo', () => compartirFichas(publicadasVisibles), 'lspCompartirTodo');
+            compartir.disabled = !publicadasVisibles.length;
+            const seleccionar = botonAccion('Seleccionar videos', () => { modoSeleccion = true; renderCatalogo(); }, 'lspSeleccionarNovedades');
+            seleccionar.disabled = !publicadasVisibles.length;
+            barra.append(compartir, seleccionar);
         }
-        if(referenciasCompartidas.length){
-            barra.appendChild(botonAccion('Ver Lo nuevo', () => {
-                referenciasCompartidas = [];
-                modoSeleccion = false; seleccionadas.clear();
-                const url = new URL(location.href);
-                url.searchParams.delete('nuevo'); url.searchParams.delete('novedades');
-                history.replaceState(history.state, '', url.href);
-                render();
-            }));
-        }
-        actualizarMenu();
-        card.classList.toggle('lsp-nuevo-seleccionando', modoSeleccion);
+        if(referenciasCompartidas.length) barra.appendChild(botonAccion('Ver Lo nuevo', volverALoNuevo));
     }
 
     function dentroDelPeriodo(fecha, dias){
@@ -141,56 +139,112 @@
     function actualizarMenu(){
         const boton = $('lspBtn30Dias');
         if(!boton) return;
-        boton.textContent = '🗓️ Últimos ' + periodoDias + ' días · ' + publicadasVisibles.length + ' ⌄';
-        boton.setAttribute('aria-label', 'Opciones de Lo nuevo, últimos ' + periodoDias + ' días, ' + publicadasVisibles.length + ' novedades');
-        boton.setAttribute('aria-expanded', 'false');
-        boton.setAttribute('aria-controls', 'lspNovedadesMenu');
-        let menu = $('lspNovedadesMenu');
-        if(!menu){
-            menu = document.createElement('div');
-            menu.id = 'lspNovedadesMenu';
-            menu.className = 'lsp-novedades-menu';
-            boton.parentElement.appendChild(menu);
-        }
-        menu.hidden = true;
-        menu.replaceChildren();
-        function opcion(nombre, accion, id){
-            const b = botonAccion(nombre, () => { menu.hidden = true; boton.setAttribute('aria-expanded', 'false'); accion(); }, id);
-            menu.appendChild(b);
-            return b;
-        }
-        opcion('Compartir todo', () => compartirFichas(publicadasVisibles), 'lspCompartirTodo').disabled = !publicadasVisibles.length;
-        opcion('Seleccionar fichas', () => { modoSeleccion = true; render(); }, 'lspSeleccionarNovedades').disabled = !publicadasVisibles.length;
-        [7,30].forEach(dias => {
-            const b = opcion('Últimos ' + dias + ' días', () => {
-                periodoDias = dias; referenciasCompartidas = []; modoSeleccion = false; seleccionadas.clear();
-                const url = new URL(location.href);
-                url.searchParams.delete('nuevo'); url.searchParams.delete('novedades');
-                history.replaceState(history.state, '', url.href);
-                render(); boton.focus();
-            });
-            b.setAttribute('aria-pressed', String(periodoDias === dias));
-        });
+        boton.textContent = 'Ver todo ›';
+        boton.setAttribute('aria-label', 'Ver todo: abrir catálogo de Lo nuevo');
+        boton.setAttribute('aria-haspopup', 'dialog');
+        boton.setAttribute('aria-controls', 'lspCatalogoNovedades');
+        boton.removeAttribute('aria-expanded');
     }
-    window.LSPediaNovedades = {toggleMenu(){
-        const menu = $('lspNovedadesMenu'), boton = $('lspBtn30Dias');
-        if(!menu){ actualizarMenu(); return window.LSPediaNovedades.toggleMenu(); }
-        menu.hidden = !menu.hidden;
-        boton.setAttribute('aria-expanded', String(!menu.hidden));
-        if(!menu.hidden) menu.querySelector('button').focus();
-    }};
-    document.addEventListener('click', e => {
-        const menu = $('lspNovedadesMenu'), boton = $('lspBtn30Dias');
-        if(menu && !menu.hidden && !menu.contains(e.target) && !boton.contains(e.target)){
-            menu.hidden = true; boton.setAttribute('aria-expanded', 'false');
+
+    function abrirCatalogo(){
+        let catalogo = $('lspCatalogoNovedades');
+        if(!catalogo){
+            catalogo = document.createElement('dialog');
+            catalogo.id = 'lspCatalogoNovedades';
+            catalogo.className = 'lsp-catalogo';
+            catalogo.setAttribute('aria-labelledby', 'lspCatalogoTitulo');
+            const cabecera = document.createElement('div');
+            cabecera.className = 'lsp-catalogo-cabecera';
+            const fila = document.createElement('div');
+            fila.className = 'lsp-catalogo-titulo-fila';
+            const titulo = document.createElement('h2');
+            titulo.id = 'lspCatalogoTitulo';
+            const cerrar = botonAccion('×', () => catalogo.close());
+            cerrar.className += ' lsp-catalogo-cerrar';
+            cerrar.setAttribute('aria-label', 'Cerrar catálogo');
+            fila.append(titulo, cerrar);
+            const descripcion = document.createElement('p');
+            descripcion.id = 'lspCatalogoDescripcion';
+            const filtros = document.createElement('div');
+            filtros.className = 'lsp-catalogo-filtros';
+            const etiqueta = document.createElement('label');
+            etiqueta.htmlFor = 'lspCatalogoPeriodo';
+            etiqueta.textContent = 'Publicaciones';
+            const periodo = document.createElement('select');
+            periodo.id = 'lspCatalogoPeriodo';
+            [[7,'Últimos 7 días'],[30,'Últimos 30 días'],[0,'Todas las publicaciones']].forEach(([valor,nombre]) => {
+                const opcion = document.createElement('option');
+                opcion.value = String(valor); opcion.textContent = nombre; periodo.appendChild(opcion);
+            });
+            periodo.value = String(periodoDias);
+            periodo.addEventListener('change', () => {
+                periodoDias = Number(periodo.value);
+                volverALoNuevo();
+            });
+            const contador = document.createElement('span');
+            contador.id = 'lspCatalogoCantidad';
+            contador.setAttribute('role', 'status');
+            filtros.append(etiqueta, periodo, contador);
+            const acciones = document.createElement('div');
+            acciones.id = 'lspCatalogoAcciones'; acciones.className = 'lsp-nuevo-acciones';
+            cabecera.append(fila, descripcion, filtros, acciones);
+            const grid = document.createElement('div');
+            grid.id = 'lspCatalogoGrid'; grid.className = 'lsp-catalogo-grid';
+            catalogo.append(cabecera, grid);
+            catalogo.addEventListener('close', () => {
+                document.body.style.overflow = overflowAntesCatalogo;
+                modoSeleccion = false; seleccionadas.clear();
+            });
+            document.body.appendChild(catalogo);
         }
-    });
-    document.addEventListener('keydown', e => {
-        const menu = $('lspNovedadesMenu'), boton = $('lspBtn30Dias');
-        if(e.key === 'Escape' && menu && !menu.hidden){
-            menu.hidden = true; boton.setAttribute('aria-expanded', 'false'); boton.focus();
+        if(!catalogo.open){
+            overflowAntesCatalogo = document.body.style.overflow;
+            document.body.style.overflow = 'hidden';
+            catalogo.showModal();
         }
-    });
+        renderCatalogo();
+    }
+
+    function fechaMostrar(fecha){
+        const t = Date.parse(texto(fecha));
+        if(!Number.isFinite(t)) return 'Fecha no disponible';
+        return new Intl.DateTimeFormat('es-PE', {day:'2-digit',month:'short',year:'numeric',timeZone:'America/Lima'}).format(new Date(t));
+    }
+
+    function renderCatalogo(){
+        const catalogo = $('lspCatalogoNovedades');
+        if(!catalogo || !catalogo.open) return;
+        $('lspCatalogoTitulo').textContent = referenciasCompartidas.length ? '✨ Novedades compartidas' : '✨ Lo nuevo · catálogo';
+        $('lspCatalogoDescripcion').textContent = modoSeleccion
+            ? 'Marca los videos que quieres compartir.'
+            : 'Explora las publicaciones de Diccionario y Vocabulario. Toca una ficha para ver el video.';
+        $('lspCatalogoPeriodo').value = String(periodoDias);
+        $('lspCatalogoCantidad').textContent = publicadasVisibles.length + ' videos';
+        actualizarAcciones();
+        const grid = $('lspCatalogoGrid');
+        grid.replaceChildren();
+        publicadasVisibles.forEach(x => {
+            const tarjeta = crearTarjeta(x, true);
+            const fecha = document.createElement('time');
+            fecha.className = 'lsp-catalogo-fecha';
+            const indice = itemsLoNuevo.find(r => fuenteRegistro(r) === x.fuente && normal(r.palabra) === normal(x.palabra.palabra) && normal(r.categoria) === normal(x.palabra.categoria));
+            const iso = fechaAISO(x.registro.fecha || fechaPalabra(x.palabra) || (indice && indice.fecha));
+            if(iso) fecha.dateTime = iso;
+            fecha.textContent = fechaMostrar(iso);
+            tarjeta.appendChild(fecha);
+            grid.appendChild(tarjeta);
+        });
+        if(!publicadasVisibles.length){
+            const vacio = document.createElement('p');
+            vacio.className = 'lsp-catalogo-vacio';
+            vacio.textContent = referenciasCompartidas.length
+                ? 'Cargando las fichas compartidas. Si ya no están disponibles, puedes ver Lo nuevo.'
+                : 'No hay publicaciones en este período. Prueba con Todas las publicaciones.';
+            grid.appendChild(vacio);
+        }
+    }
+
+    window.LSPediaNovedades = {abrirCatalogo};
 
     function $(id){ return document.getElementById(id); }
     function texto(v){ return String(v == null ? '' : v).trim(); }
@@ -420,7 +474,8 @@
         location.href = location.pathname + '?p=' + encodeURIComponent(refPalabra(x.palabra) || x.palabra.palabra);
     }
 
-    function crearTarjeta(x){
+    function crearTarjeta(x, enCatalogo = false){
+        const seleccionar = enCatalogo && modoSeleccion;
         const nombre = texto(x.palabra.palabra);
         const categoria = texto(x.palabra.categoria || x.registro.categoria);
         const etiquetaFuente = x.fuente === 'vocabulario' ? '🗂️ Vocabulario' : '📘 Diccionario';
@@ -429,7 +484,7 @@
         boton.type = 'button';
         boton.className = 'lsp-nueva-palabra';
         boton.setAttribute('aria-label', 'Abrir ' + nombre + ' en ' + (x.fuente === 'vocabulario' ? 'Vocabulario' : 'Diccionario'));
-        if(modoSeleccion){
+        if(seleccionar){
             const elegida = seleccionadas.has(claveFicha(x));
             boton.setAttribute('aria-label', 'Seleccionar ' + nombre + ' en ' + (x.fuente === 'vocabulario' ? 'Vocabulario' : 'Diccionario'));
             boton.setAttribute('aria-pressed', String(elegida));
@@ -441,7 +496,11 @@
             boton.appendChild(marca);
         }
         boton.addEventListener('click', () => {
-            if(!modoSeleccion){ abrirContenido(x); return; }
+            if(!seleccionar){
+                const catalogo = $('lspCatalogoNovedades');
+                if(enCatalogo && catalogo && catalogo.open) catalogo.close();
+                abrirContenido(x); return;
+            }
             const clave = claveFicha(x);
             if(seleccionadas.has(clave)) seleccionadas.delete(clave); else seleccionadas.add(clave);
             // No reemplaza el botón enfocado ni desplaza el carrusel al seleccionar.
@@ -497,12 +556,13 @@
         const registros = referenciasCompartidas.length ? referenciasCompartidas.map(ref => {
             const separador = ref.indexOf(':');
             return {fuente:ref.slice(0,separador),id:ref.slice(separador+1)};
-        }) : itemsLoNuevo.filter(x => dentroDelPeriodo(x.fecha, periodoDias));
+        }) : itemsLoNuevo.filter(x => !periodoDias || dentroDelPeriodo(x.fecha, periodoDias));
         const publicadas = registros
             .map(buscarContenido)
             .filter(x => x && x.palabra && tieneVideoValido(x.palabra));
         publicadasVisibles = publicadas;
-        actualizarAcciones();
+        actualizarMenu();
+        renderCatalogo();
 
         caja.replaceChildren();
         if(!publicadas.length){
@@ -516,11 +576,12 @@
         }
 
         const fragmento = document.createDocumentFragment();
-        publicadas.forEach(x => fragmento.appendChild(crearTarjeta(x)));
+        publicadas.slice(0,12).forEach(x => fragmento.appendChild(crearTarjeta(x)));
         caja.appendChild(fragmento);
         if(referenciasCompartidas.length && !compartidasDesplazadas){
             compartidasDesplazadas = true;
             requestAnimationFrame(() => {
+                abrirCatalogo();
                 const card = $('lspNuevasCard');
                 if(typeof window.scrollAlPrimerResultado === 'function') window.scrollAlPrimerResultado(card);
                 else card.scrollIntoView({block:'start',behavior:'smooth'});
