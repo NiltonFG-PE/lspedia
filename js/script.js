@@ -2793,8 +2793,10 @@ function buscarCoincidenciaExactaEnVocabulario(texto){
 // Abre directamente la ficha de Vocabulario encontrada desde una búsqueda
 // sin resultado en Diccionario.
 function abrirResultadoVocabularioDesdeBusqueda(palabra){
-    if(!palabra) return;
-    mostrarPalabraSimplificada(marcarFuenteVocabulario(palabra));
+    if(!palabra) return false;
+    // Usa la misma apertura que las fichas de «Lo nuevo»: activa Vocabulario
+    // antes de pintar para no heredar la cuadrícula de escritorio de Diccionario.
+    return mostrarPalabraVocabularioPorReferencia(obtenerIdPalabra(palabra));
 }
 
 // La precarga en segundo plano de QuizV2 puede tardar unos segundos en
