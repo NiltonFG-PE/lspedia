@@ -1,11 +1,11 @@
 /* LSPedia — invitación inteligente a redes sociales.
    - 1.ª aparición: desde 15 s con interés o respaldo a los 25 s.
-   - Máximo 2 apariciones por sesión; la 2.ª espera 90 s tras cerrar la 1.ª.
+   - Máximo una aparición por día, según la fecha local del visitante.
    - Cada aparición permanece hasta 60 s.
    - Tocar una red NO cierra la invitación.
    - X y “Ahora no” cierran con desintegración de partículas.
    - El autocierre conserva una salida breve y discreta.
-   - Sin visitar redes: descanso 3 días. Tras visitar una red: 7 días.
+   - Cerrar o visitar una red permite volver a mostrarla al día siguiente.
 */
 (function(){
     'use strict';
@@ -13,17 +13,12 @@
     if(window.__LSPEDIA_SOCIAL_INVITE_RUNNING__) return;
     window.__LSPEDIA_SOCIAL_INVITE_RUNNING__=true;
 
-    const VERSION='1';
+    const VERSION='2';
     const SESSION_KEY='lsp_social_invite_session_v'+VERSION;
-    const SECOND_AT_KEY='lsp_social_invite_second_at_v'+VERSION;
     const NEXT_KEY='lsp_social_invite_next_v'+VERSION;
     const VISIT_KEY='lsp_social_invite_social_visit_v'+VERSION;
-    const MIGRATION_KEY='lsp_social_invite_cooldown_20261002c';
-    const TRES_DIAS=3*24*60*60*1000;
-    const SIETE_DIAS=7*24*60*60*1000;
     const TIEMPO_VISIBLE=60*1000;
-    const ESPERA_SEGUNDA=90*1000;
-    const MAX_SESION=2;
+    const MAX_SESION=1;
     const INICIO=Date.now();
     const MODO_PRUEBA=(function(){
         try{return new URLSearchParams(window.location.search).get('socialtest')==='1';}
@@ -49,8 +44,8 @@
     ];
 
     const TEXTOS={
-        es:{eyebrow:'COMUNIDAD LSPEDIA',title:'¿Te está ayudando LSPedia? 🤟',text:'Síguenos para descubrir nuevas palabras, videos y contenido visual sobre Lengua de Señas Peruana.',note:'Lo mostramos solo de vez en cuando.',later:'Ahora no',close:'Cerrar invitación a redes sociales'},
-        en:{eyebrow:'LSPEDIA COMMUNITY',title:'Is LSPedia helping you? 🤟',text:'Follow us for new words, videos and visual content about Peruvian Sign Language.',note:'We only show this occasionally.',later:'Not now',close:'Close social media invitation'}
+        es:{eyebrow:'COMUNIDAD LSPEDIA',title:'¿Te está ayudando LSPedia? 🤟',text:'Síguenos para descubrir nuevas palabras, videos y contenido visual sobre Lengua de Señas Peruana.',note:'Una invitación al día.',later:'Ahora no',close:'Cerrar invitación a redes sociales'},
+        en:{eyebrow:'LSPEDIA COMMUNITY',title:'Is LSPedia helping you? 🤟',text:'Follow us for new words, videos and visual content about Peruvian Sign Language.',note:'One invitation per day.',later:'Not now',close:'Close social media invitation'}
     };
 
     function idioma(){
@@ -64,24 +59,11 @@
     function leerLocalNumero(clave){try{const n=Number(localStorage.getItem(clave)||0);return Number.isFinite(n)?n:0;}catch(_e){return 0;}}
     function leerSesionNumero(clave){try{const n=Number(sessionStorage.getItem(clave)||0);return Number.isFinite(n)?n:0;}catch(_e){return 0;}}
     function guardarSesion(clave,valor){try{sessionStorage.setItem(clave,String(valor));}catch(_e){}}
-    function aparicionesSesion(){return Math.min(MAX_SESION,Math.max(0,leerSesionNumero(SESSION_KEY)));}
-    function registrarAparicionSesion(){const n=Math.min(MAX_SESION,aparicionesSesion()+1);guardarSesion(SESSION_KEY,n);return n;}
+    function claveSesionDelDia(){const fecha=new Date(ahora());return SESSION_KEY+'_'+fecha.getFullYear()+'-'+fecha.getMonth()+'-'+fecha.getDate();}
+    function aparicionesSesion(){return Math.min(MAX_SESION,Math.max(0,leerSesionNumero(claveSesionDelDia())));}
+    function registrarAparicionSesion(){const n=Math.min(MAX_SESION,aparicionesSesion()+1);guardarSesion(claveSesionDelDia(),n);return n;}
     function sesionCompleta(){return aparicionesSesion()>=MAX_SESION;}
-    function aplazar(ms){guardarLocal(NEXT_KEY,ahora()+ms);}
-
-    function migrarFrecuenciaAnterior(){
-        try{
-            if(localStorage.getItem(MIGRATION_KEY)==='1')return;
-            const proxima=leerLocalNumero(NEXT_KEY),visita=leerLocalNumero(VISIT_KEY),ahoraMs=ahora();
-            if(proxima>ahoraMs){
-                let nuevaProxima=proxima;
-                if(visita>0)nuevaProxima=Math.min(proxima,visita+SIETE_DIAS);
-                else nuevaProxima=Math.min(proxima,ahoraMs+TRES_DIAS);
-                guardarLocal(NEXT_KEY,Math.max(ahoraMs,nuevaProxima));
-            }
-            localStorage.setItem(MIGRATION_KEY,'1');
-        }catch(_e){}
-    }
+    function aplazarHastaManana(){const fecha=new Date(ahora());fecha.setHours(24,0,0,0);guardarLocal(NEXT_KEY,fecha.getTime());}
 
     function registrarGA(nombre,parametros){
         try{if(typeof window.gtag==='function')window.gtag('event',nombre,Object.assign({feature:'social_invite',test:MODO_PRUEBA?1:0},parametros||{}));}catch(_e){}
@@ -113,14 +95,9 @@
 
     function elegible(){
         if(visible||tarjeta||desintegrando||sesionCompleta()||bloqueadoTemporalmente())return false;
-        const apariciones=aparicionesSesion();
-        if(apariciones===0){
-            if(!MODO_PRUEBA&&leerLocalNumero(NEXT_KEY)>ahora())return false;
-            const transcurrido=ahora()-INICIO;
-            return(transcurrido>=15000&&puntos>=2)||transcurrido>=25000;
-        }
-        const segundaDesde=leerSesionNumero(SECOND_AT_KEY);
-        return segundaDesde>0&&ahora()>=segundaDesde;
+        if(!MODO_PRUEBA&&leerLocalNumero(NEXT_KEY)>ahora())return false;
+        const transcurrido=ahora()-INICIO;
+        return(transcurrido>=15000&&puntos>=2)||transcurrido>=25000;
     }
 
     function actualizarTextos(){
@@ -136,23 +113,11 @@
         registrarGA('social_invite_click',{network:redId,appearance:aparicionesSesion()});
         if(MODO_PRUEBA)return;
         guardarLocal(VISIT_KEY,ahora());
-        aplazar(SIETE_DIAS);
-    }
-
-    function programarSegunda(){
-        if(sesionCompleta())return;
-        const cuando=ahora()+ESPERA_SEGUNDA;
-        guardarSesion(SECOND_AT_KEY,cuando);
-        clearTimeout(temporizador);
-        temporizador=setTimeout(evaluar,ESPERA_SEGUNDA+50);
+        aplazarHastaManana();
     }
 
     function guardarResultadoCierre(){
-        if(MODO_PRUEBA)return;
-        if(visitoRed){
-            const visita=leerLocalNumero(VISIT_KEY)||ahora();
-            guardarLocal(NEXT_KEY,Math.max(leerLocalNumero(NEXT_KEY),visita+SIETE_DIAS));
-        }else aplazar(TRES_DIAS);
+        if(!MODO_PRUEBA)aplazarHastaManana();
     }
 
     function finalizarCierre(cerrada,espera){
@@ -160,7 +125,6 @@
             if(cerrada&&cerrada.parentNode)cerrada.remove();
             if(tarjeta===cerrada)tarjeta=null;
             desintegrando=false;
-            if(!sesionCompleta())programarSegunda();
         },espera);
     }
 
@@ -258,7 +222,7 @@
     function mostrar(){
         if(!elegible())return false;
         const numero=registrarAparicionSesion();
-        if(numero>=MAX_SESION){try{sessionStorage.removeItem(SECOND_AT_KEY);}catch(_e){}}
+        if(!MODO_PRUEBA)aplazarHastaManana();
         visible=true;
         desintegrando=false;
         const el=crear();
@@ -273,14 +237,8 @@
         clearTimeout(temporizador);
         if(mostrar())return;
         if(sesionCompleta()||visible||desintegrando)return;
-        const apariciones=aparicionesSesion();
-        if(apariciones===0){
-            if(!MODO_PRUEBA&&leerLocalNumero(NEXT_KEY)>ahora())return;
-            temporizador=setTimeout(evaluar,2000);
-            return;
-        }
-        const cuando=leerSesionNumero(SECOND_AT_KEY);
-        if(cuando>0)temporizador=setTimeout(evaluar,Math.max(500,Math.min(4000,cuando-ahora())));
+        if(!MODO_PRUEBA&&leerLocalNumero(NEXT_KEY)>ahora())return;
+        temporizador=setTimeout(evaluar,2000);
     }
 
     function sumarPunto(tipo){
@@ -313,9 +271,9 @@
             if(target)sumarPunto('nav');
             const social=e.target.closest&&e.target.closest('.footer-red-tiktok,.footer-red-instagram,.footer-red-youtube,.footer-red-facebook,.stat2-red-tiktok,.stat2-red-instagram,.stat2-red-youtube,.stat2-red-facebook');
             if(social&&!MODO_PRUEBA){
-                guardarSesion(SESSION_KEY,MAX_SESION);
+                guardarSesion(claveSesionDelDia(),MAX_SESION);
                 guardarLocal(VISIT_KEY,ahora());
-                aplazar(SIETE_DIAS);
+                aplazarHastaManana();
             }
         },true);
         document.addEventListener('visibilitychange',function(){if(!document.hidden)evaluar();});
@@ -334,25 +292,17 @@
 
     function iniciar(){
         cargarRepeticionInstalacion();
-        if(!MODO_PRUEBA)migrarFrecuenciaAnterior();
-        if(sesionCompleta())return;
-        const apariciones=aparicionesSesion();
-        if(apariciones===0&&!MODO_PRUEBA&&leerLocalNumero(NEXT_KEY)>ahora())return;
         observarInteres();
-        if(apariciones===1){
-            if(!leerSesionNumero(SECOND_AT_KEY))guardarSesion(SECOND_AT_KEY,ahora()+ESPERA_SEGUNDA);
-            evaluar();
-            return;
-        }
+        if(sesionCompleta()||(!MODO_PRUEBA&&leerLocalNumero(NEXT_KEY)>ahora()))return;
         setTimeout(function(){puntos=Math.max(puntos,1);evaluar();},15000);
         temporizador=setTimeout(evaluar,17000);
         setTimeout(evaluar,25000);
     }
 
     window.LSPediaSocialInvite={
-        mostrar:function(){puntos=5;if(aparicionesSesion()===1)guardarSesion(SECOND_AT_KEY,ahora());return mostrar();},
+        mostrar:function(){puntos=5;return mostrar();},
         cerrar:cerrar,
-        estado:function(){return{puntos:puntos,visible:visible,apariciones:aparicionesSesion(),maximo:MAX_SESION,segundaDesde:leerSesionNumero(SECOND_AT_KEY),proxima:leerLocalNumero(NEXT_KEY),prueba:MODO_PRUEBA,bloqueado:bloqueadoTemporalmente(),visitoRed:visitoRed,desintegrando:desintegrando};}
+        estado:function(){return{puntos:puntos,visible:visible,apariciones:aparicionesSesion(),maximo:MAX_SESION,proxima:leerLocalNumero(NEXT_KEY),prueba:MODO_PRUEBA,bloqueado:bloqueadoTemporalmente(),visitoRed:visitoRed,desintegrando:desintegrando};}
     };
 
     if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',iniciar,{once:true});

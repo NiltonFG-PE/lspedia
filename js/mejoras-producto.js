@@ -197,7 +197,7 @@
     cargar('js/modo-oscuro.js?v=20260916-2');
     cargar('js/mi-lspedia-secciones.js?v=20260930-1');
     cargarCss('css/social-invitacion.css?v=20261001-3');
-    cargar('js/social-invitacion.js?v=20261002-1');
+    cargar('js/social-invitacion.js?v=20261008-1');
 
     function cargarMejorasConCore(){
         cargar('js/accesibilidad-segura.js?v=20261007-light-1');
