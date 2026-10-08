@@ -136,10 +136,14 @@
         return Number.isFinite(t) && diferencia >= -86400000 && diferencia <= dias * 86400000;
     }
 
-    function actualizarMenu(){
+    function actualizarMenu(intentos = 0){
         const boton = $('lspBtn30Dias');
-        if(!boton) return;
+        if(!boton){
+            if(intentos < 20) setTimeout(() => actualizarMenu(intentos + 1), 250);
+            return;
+        }
         boton.textContent = 'Ver todo ›';
+        boton.onclick = abrirCatalogo;
         boton.setAttribute('aria-label', 'Ver todo: abrir catálogo de Lo nuevo');
         boton.setAttribute('aria-haspopup', 'dialog');
         boton.setAttribute('aria-controls', 'lspCatalogoNovedades');
@@ -245,6 +249,11 @@
     }
 
     window.LSPediaNovedades = {abrirCatalogo};
+    document.addEventListener('click', e => {
+        if(!e.target.closest || !e.target.closest('#lspBtn30Dias')) return;
+        e.preventDefault(); e.stopImmediatePropagation();
+        actualizarMenu(); abrirCatalogo();
+    }, true);
 
     function $(id){ return document.getElementById(id); }
     function texto(v){ return String(v == null ? '' : v).trim(); }

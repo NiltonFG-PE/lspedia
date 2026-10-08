@@ -162,7 +162,7 @@
     function asegurarCore() {
         if (window.LSPediaCore) return Promise.resolve();
         if (promesaCore) return promesaCore;
-        promesaCore = cargarScript('js/lspedia-core.js?v=' + VERSION, 'LSPediaCore')
+        promesaCore = cargarScript('js/lspedia-core.js?v=20261008-catalogo-2', 'LSPediaCore')
             .catch((error) => {
                 promesaCore = null;
                 console.error('[LSPedia seguridad] No se pudo activar el núcleo seguro.', error);
