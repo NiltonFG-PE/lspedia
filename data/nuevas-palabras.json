@@ -1,7 +1,7 @@
 {
-  "generadoEn": "2026-10-08T13:00:11Z",
+  "generadoEn": "2026-10-08T14:28:35Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 184,
+  "maxItems": 188,
   "diasEtiquetaNuevo": 14,
   "items": [
     {
@@ -90,6 +90,42 @@
       "palabra": "Rápido",
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/rapido.webp",
+      "fecha": "2026-10-08T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Sabio",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/sabio.webp, img/vocabulario/sabio-2.webp",
+      "fecha": "2026-10-08T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Seguro",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/seguro.webp",
+      "fecha": "2026-10-08T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Sucio",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/sucio.webp",
+      "fecha": "2026-10-08T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Tarde",
+      "categoria": "Tiempo",
+      "imagen": "img/vocabulario/tarde.webp",
       "fecha": "2026-10-08T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
