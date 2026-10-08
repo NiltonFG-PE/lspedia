@@ -286,6 +286,11 @@
         <priority>0.8</priority>
     </url>
     <url>
+        <loc>https://lspedia.site/vocabulario/pesado-adjetivos/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
         <loc>https://lspedia.site/vocabulario/bien-adverbios/</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
@@ -712,6 +717,11 @@
     </url>
     <url>
         <loc>https://lspedia.site/vocabulario/bueno-valores/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/vocabulario/honestidad-valores/</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
