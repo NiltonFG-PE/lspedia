@@ -1,0 +1,36 @@
+/* El contenido introductorio se conserva; el campo recibe el espacio del índice. */
+#bloqueEjemplos { display: none !important; }
+#bloqueBuscadorCategorias > .col-lg-8 { width: 100%; max-width: 960px; }
+.buscador-indice-linea > .indice-compacto-wrap { order: 2; }
+#btnToggleAbc, #btnToggleAbcVocabulario {
+    width: 52px !important;
+    min-width: 52px !important;
+    min-height: 48px;
+    padding: 0 !important;
+    gap: 0;
+}
+#btnToggleAbc .indice-compacto-texto,
+#btnToggleAbc .indice-compacto-flecha,
+#btnToggleAbcVocabulario .indice-compacto-texto,
+#btnToggleAbcVocabulario .indice-compacto-flecha { display: none !important; }
+#btnBuscar, #btnBuscarCategorias { padding-inline: 16px !important; }
+#buscar, #buscarCategorias { padding-inline: 16px !important; }
+.lsp-sugerencias-inicio { padding: 10px; }
+.lsp-sugerencias-inicio-label { margin: 0 0 8px; font-size: .78rem; font-weight: 600; color: #aabbd0; }
+.lsp-sugerencias-inicio-lista { display: flex; flex-wrap: wrap; gap: 6px; }
+.lsp-sugerencia-inicio {
+    border: 1px solid #ffffff24;
+    border-radius: 999px;
+    background: #ffffff0e;
+    color: #edf5ff;
+    padding: 8px 13px;
+    min-height: 44px;
+    font: inherit;
+    font-size: .9rem;
+    cursor: pointer;
+}
+.lsp-sugerencia-inicio:hover, .lsp-sugerencia-inicio:focus-visible {
+    background: #ffffff20;
+    outline: 2px solid #85bfff;
+    outline-offset: 1px;
+}
