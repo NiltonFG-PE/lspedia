@@ -303,7 +303,7 @@
 
     if (!document.querySelector('script[data-lspedia-web-premium-extras]')) {
       const premium = document.createElement('script');
-      premium.src = 'js/web-premium-extras.js?v=20260927-1';
+      premium.src = 'js/web-premium-extras.js?v=20261008-menu-1';
       premium.async = true;
       premium.dataset.lspediaWebPremiumExtras = '1';
       premium.onerror = function () {

@@ -56,3 +56,22 @@ test('la recepción resuelve por ID en la fuente aunque ya no esté entre las no
     assert.equal(context.buscarContenido({fuente:'vocabulario',id:'generoso-adjetivos'}).palabra.palabra,'Generoso');
     assert.equal(context.buscarContenido({fuente:'vocabulario',id:'ausente'}),null);
 });
+
+test('compartir todo conserva más de doce fichas',()=>{
+    const {context}=environment();
+    const fichas=Array.from({length:45},(_,i)=>({...ficha,palabra:{id:'palabra-'+i}}));
+    const url=new URL(context.urlCompartirNovedades(fichas));
+    assert.equal(url.searchParams.getAll('nuevo').length,45);
+    assert.equal(url.searchParams.getAll('nuevo')[44],'vocabulario:palabra-44');
+});
+test('períodos de 7 y 30 días excluyen fechas antiguas e inválidas',()=>{
+    const context={Date,texto:v=>String(v)};
+    vm.createContext(context);
+    vm.runInContext(block('    function dentroDelPeriodo(','    function actualizarMenu('),context);
+    const fecha=d=>new Date(Date.now()-d*86400000).toISOString();
+    assert.equal(context.dentroDelPeriodo(fecha(6),7),true);
+    assert.equal(context.dentroDelPeriodo(fecha(15),7),false);
+    assert.equal(context.dentroDelPeriodo(fecha(15),30),true);
+    assert.equal(context.dentroDelPeriodo(fecha(31),30),false);
+    assert.equal(context.dentroDelPeriodo('sin fecha',30),false);
+});

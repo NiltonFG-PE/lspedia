@@ -124,7 +124,7 @@
     asegurarEstilos();if(q('#lspBtn30Dias',card))return;
     const sub=q('.lsp-mejora-sub',card),lista=q('#lspNuevasLista',card);const row=document.createElement('div');row.className='lsp-30d-action-row';
     const b=document.createElement('button');b.id='lspBtn30Dias';b.type='button';b.className='lsp-30d-btn';b.textContent='🗓️ Últimos 30 días';b.setAttribute('aria-label','Ver lo nuevo de los últimos 30 días');
-    b.onclick=()=>{const ov=modal30();overflowAntes=document.body.style.overflow;document.body.style.overflow='hidden';ov.hidden=false;cargar30().catch(e=>{console.warn('[LSPedia] No se pudo cargar Lo nuevo de 30 días',e);const g=q('#lsp30dGrid');if(g)g.innerHTML='<div class="lsp-30d-empty">No pude cargar las publicaciones recientes. Intenta nuevamente.</div>';});};
+    b.onclick=()=>{if(window.LSPediaNovedades){window.LSPediaNovedades.toggleMenu();return;}const ov=modal30();overflowAntes=document.body.style.overflow;document.body.style.overflow='hidden';ov.hidden=false;cargar30().catch(e=>{console.warn('[LSPedia] No se pudo cargar Lo nuevo de 30 días',e);const g=q('#lsp30dGrid');if(g)g.innerHTML='<div class="lsp-30d-empty">No pude cargar las publicaciones recientes. Intenta nuevamente.</div>';});};
     row.appendChild(b);if(sub&&sub.parentNode)sub.parentNode.insertBefore(row,sub.nextSibling);else if(lista&&lista.parentNode)lista.parentNode.insertBefore(row,lista);else card.appendChild(row);
   }
 

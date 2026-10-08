@@ -345,3 +345,24 @@ html[data-lsp-tema="dark"] .lsp-nuevo-dialogo { background:#1e293b; color:#fef3c
         transition: none !important;
     }
 }
+
+/* Opciones de período integradas en el encabezado. */
+#lspNuevasAcciones[hidden], .lsp-novedades-menu[hidden] { display:none !important; }
+.lsp-nuevo-contador { align-self:center; font-size:.88rem; font-weight:700; color:#715514; }
+#lspNuevasCard .lsp-30d-action-row { z-index:8; }
+.lsp-novedades-menu {
+ position:absolute; right:0; top:calc(100% + 6px); width:210px; padding:8px;
+ display:grid; gap:4px; border-radius:16px; border:1px solid #e5d7ad;
+ background:#fffef8; box-shadow:0 8px 20px rgba(60,45,10,.14);
+}
+.lsp-novedades-menu .lsp-nuevo-accion { text-align:left; background:transparent; border:0; }
+.lsp-novedades-menu .lsp-nuevo-accion:hover,
+.lsp-novedades-menu [aria-pressed="true"] { background:#fff1b8; }
+html[data-lsp-tema="dark"] .lsp-novedades-menu { background:#1e293b; border-color:#64748b; }
+html[data-lsp-tema="dark"] .lsp-novedades-menu [aria-pressed="true"] { background:#334155; }
+html[data-lsp-tema="dark"] .lsp-nuevo-contador { color:#fef3c7; }
+
+@media (max-width:600px) {
+ #lspNuevasCard .lsp-mejora-head { max-width:100% !important; }
+ #lspNuevasCard .lsp-30d-action-row { position:relative !important; top:auto !important; right:auto !important; margin:8px 0 !important; }
+}

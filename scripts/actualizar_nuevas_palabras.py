@@ -25,7 +25,6 @@ DICCIONARIO = ROOT / "data" / "palabras.json"
 VOCABULARIO = ROOT / "data" / "vocabulario.json"
 DESTINO = ROOT / "data" / "nuevas-palabras.json"
 MAX_COMMITS = 160
-MAX_ITEMS = 12
 
 try:
     ZONA_LIMA = ZoneInfo("America/Lima")
@@ -328,12 +327,12 @@ def main() -> int:
     )
 
     candidatos.sort(key=lambda par: par[0], reverse=True)
-    items = [registro for _fecha, registro in candidatos[:MAX_ITEMS]]
+    items = [registro for _fecha, registro in candidatos]
 
     salida = {
         "generadoEn": fecha_iso_utc(dt.datetime.now(dt.timezone.utc)),
         "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-        "maxItems": MAX_ITEMS,
+        "maxItems": len(items),
         "diasEtiquetaNuevo": 14,
         "items": items,
     }
