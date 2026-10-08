@@ -128,18 +128,18 @@ html body.vista-temas-movil #vocabularioIntroLista .vocab-intro-texto {
         align-items: flex-start !important;
     }
     html body.vista-temas-movil #filaHeroPrincipal > .col-lg-6 {
-        width: calc(100% - 136px);
+        width: calc(100% - 196px);
         padding: 0;
         margin: 0 !important;
     }
     html body.vista-temas-movil #filaHeroPrincipal > #colAvatarHero {
-        width: 120px;
+        width: 180px;
         padding: 0;
         margin: 0 !important;
     }
     html body.vista-temas-movil #colAvatarHero .avatar-hero-img {
-        max-width: 120px !important;
-        height: 140px !important;
+        max-width: 180px !important;
+        height: 210px !important;
         object-fit: contain;
     }
     html body.vista-temas-movil #vocabularioIntroLista:not(.d-none) {
