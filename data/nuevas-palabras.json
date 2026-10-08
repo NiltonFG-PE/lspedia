@@ -1,7 +1,7 @@
 {
-  "generadoEn": "2026-10-08T14:28:35Z",
+  "generadoEn": "2026-10-08T14:38:16Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 188,
+  "maxItems": 189,
   "diasEtiquetaNuevo": 14,
   "items": [
     {
@@ -117,6 +117,15 @@
       "palabra": "Sucio",
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/sucio.webp",
+      "fecha": "2026-10-08T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Tacaño",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/tacano.webp",
       "fecha": "2026-10-08T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
