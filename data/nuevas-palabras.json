@@ -1,7 +1,7 @@
 {
-  "generadoEn": "2026-10-08T12:39:52Z",
+  "generadoEn": "2026-10-08T13:00:11Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 181,
+  "maxItems": 184,
   "diasEtiquetaNuevo": 14,
   "items": [
     {
@@ -63,6 +63,33 @@
       "palabra": "Nuevo",
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/nuevo.webp",
+      "fecha": "2026-10-08T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Peligroso",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/peligroso.webp",
+      "fecha": "2026-10-08T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Pequeño",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/pequeno.webp",
+      "fecha": "2026-10-08T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Rápido",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/rapido.webp",
       "fecha": "2026-10-08T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
