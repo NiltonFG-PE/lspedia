@@ -221,10 +221,17 @@
     function leerIdioma(){
         try {
             const guardado = localStorage.getItem(CLAVE_IDIOMA);
-            return IDIOMAS.has(guardado) ? guardado : 'es';
-        } catch(_e){
-            return 'es';
+            if(IDIOMAS.has(guardado)) return guardado;
+        } catch(_e) {}
+        // La preferencia del navegador refleja el idioma del visitante,
+        // sin depender de su ubicación ni de un servicio de geolocalización.
+        const preferidos = navigator.languages && navigator.languages.length
+            ? navigator.languages : [navigator.language];
+        for(const preferido of preferidos){
+            const base = String(preferido || '').toLowerCase().split(/[-_]/)[0];
+            if(IDIOMAS.has(base)) return base;
         }
+        return 'es';
     }
 
     function guardarIdioma(valor){
@@ -702,9 +709,10 @@
     }
 
     function cambiarIdioma(nuevo){
-        if(!IDIOMAS.has(nuevo) || nuevo === idioma) return;
+        if(!IDIOMAS.has(nuevo)) return;
+        guardarIdioma(nuevo);
+        if(nuevo === idioma) return;
         idioma = nuevo;
-        guardarIdioma(idioma);
         aplicarDatos();
         refrescarFichaActual();
         setTimeout(programarAplicacion, 0);
