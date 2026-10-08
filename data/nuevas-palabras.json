@@ -1,7 +1,7 @@
 {
-  "generadoEn": "2026-10-08T03:54:45Z",
+  "generadoEn": "2026-10-08T04:03:04Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 173,
+  "maxItems": 174,
   "diasEtiquetaNuevo": 14,
   "items": [
     {
@@ -63,6 +63,15 @@
       "palabra": "Igual",
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/igual.webp, img/vocabulario/igual-2.webp",
+      "fecha": "2026-10-07T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Inteligente",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/inteligente.webp",
       "fecha": "2026-10-07T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
