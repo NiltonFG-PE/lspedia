@@ -346,6 +346,21 @@
         <priority>0.8</priority>
     </url>
     <url>
+        <loc>https://lspedia.site/vocabulario/sabio-adjetivos/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/vocabulario/seguro-adjetivos/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/vocabulario/sucio-adjetivos/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
         <loc>https://lspedia.site/vocabulario/pesado-adjetivos/</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
@@ -762,6 +777,11 @@
     </url>
     <url>
         <loc>https://lspedia.site/vocabulario/septiembre-tiempo/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/vocabulario/tarde-tiempo/</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
