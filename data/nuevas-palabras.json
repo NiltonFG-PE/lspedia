@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-10-08T01:55:53Z",
+  "generadoEn": "2026-10-08T02:10:09Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 12,
   "diasEtiquetaNuevo": 14,
@@ -78,6 +78,15 @@
     },
     {
       "id": "",
+      "palabra": "Torpe",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/torpe.webp",
+      "fecha": "2026-10-07T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
       "palabra": "Bonito",
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/bonito.webp",
@@ -99,15 +108,6 @@
       "palabra": "Claro",
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/claro.webp",
-      "fecha": "2026-10-06T05:00:00Z",
-      "origenFecha": "fechaPublicacion",
-      "fuente": "vocabulario"
-    },
-    {
-      "id": "",
-      "palabra": "Confundido",
-      "categoria": "Adjetivos",
-      "imagen": "img/vocabulario/confundido.webp",
       "fecha": "2026-10-06T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
