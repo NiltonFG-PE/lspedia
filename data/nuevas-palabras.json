@@ -1,7 +1,7 @@
 {
-  "generadoEn": "2026-10-08T12:07:01Z",
+  "generadoEn": "2026-10-08T12:39:52Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 176,
+  "maxItems": 181,
   "diasEtiquetaNuevo": 14,
   "items": [
     {
@@ -18,6 +18,51 @@
       "palabra": "Juntos",
       "categoria": "Adverbios",
       "imagen": "img/vocabulario/juntos.webp",
+      "fecha": "2026-10-08T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Lento",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/lento.webp",
+      "fecha": "2026-10-08T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Limpio",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/limpio.webp",
+      "fecha": "2026-10-08T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Malo",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/malo.webp",
+      "fecha": "2026-10-08T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Mentiroso",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/mentiroso.webp",
+      "fecha": "2026-10-08T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Nuevo",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/nuevo.webp",
       "fecha": "2026-10-08T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
