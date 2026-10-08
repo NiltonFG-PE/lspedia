@@ -1,7 +1,7 @@
 {
-  "generadoEn": "2026-10-08T15:13:03Z",
+  "generadoEn": "2026-10-08T15:24:38Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 190,
+  "maxItems": 191,
   "diasEtiquetaNuevo": 14,
   "items": [
     {
@@ -135,6 +135,15 @@
       "palabra": "Valiente",
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/valiente.webp",
+      "fecha": "2026-10-08T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Presumido",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/presumido.webp",
       "fecha": "2026-10-08T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
