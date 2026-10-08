@@ -731,6 +731,11 @@
         <priority>0.8</priority>
     </url>
     <url>
+        <loc>https://lspedia.site/vocabulario/paciencia-valores/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
         <loc>https://lspedia.site/vocabulario/apoyar-verbos/</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
