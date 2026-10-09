@@ -1,7 +1,7 @@
 {
-  "generadoEn": "2026-10-09T02:54:04Z",
+  "generadoEn": "2026-10-09T03:02:03Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 198,
+  "maxItems": 199,
   "diasEtiquetaNuevo": 14,
   "items": [
     {
@@ -216,6 +216,15 @@
       "palabra": "Tarde",
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/tarde.webp",
+      "fecha": "2026-10-08T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Peso",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/peso.webp",
       "fecha": "2026-10-08T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
