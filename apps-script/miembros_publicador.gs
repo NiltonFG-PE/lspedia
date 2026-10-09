@@ -259,7 +259,8 @@ function lspMiembrosUsuarioCrear(datos) {
   if(typeof password!=='string' || password.length<12 || password.length>128)throw new Error('Usa una contraseña inicial de 12 a 128 caracteres.');
   const username=lspMiembrosTexto_(datos.username);
   if(username.length>80 || /[\u0000-\u001f\u007f]/.test(username))throw new Error('Nombre de usuario inválido (máximo 80 caracteres).');
-  const expiry=datos.months?lspMiembrosPlazo_(datos.months):null;
+  const expiry=datos.months?lspMiembrosPlazo_(datos.months):datos.expiry?new Date(Date.parse(lspMiembrosFecha_(datos.expiry))+86400000).toISOString():null;
+  if(expiry && Date.parse(expiry)<=Date.now())throw new Error('Elige una fecha de vencimiento actual o futura.');
   if(expiry && Number(lspMiembrosApi_('rpc/lsp_member_features','post',{}).version)<2)throw new Error('Primero instala los límites de acceso en Supabase.');
   const lock=LockService.getScriptLock();if(!lock.tryLock(30000))throw new Error('Publicador ocupado.');
   try {
@@ -275,7 +276,7 @@ function lspMiembrosUsuarioCrear(datos) {
         if(!saved || !saved.ok)throw new Error('No se guardó el vencimiento.');
         const active=lspMiembrosApi_('lsp_members?user_id=eq.'+user.id+'&role=eq.member&status=eq.pending','patch',{status:'active'},'return=representation');
         if(!active || active.length!==1 || active[0].status!=='active')throw new Error('No se activó el acceso.');
-        return {ok:true,mensaje:'Cuenta creada con acceso por '+Number(datos.months)+' meses. Se bloquea automáticamente al vencer.'};
+        return {ok:true,mensaje:datos.months?'Cuenta creada con acceso por '+Number(datos.months)+' meses. Se bloquea automáticamente al vencer.':'Cuenta creada con acceso hasta el '+datos.expiry+'. La fecha incluye todo ese día en Perú.'};
       } catch(e){return {ok:true,mensaje:'Cuenta creada. No se pudo completar el acceso temporal; revisa su estado y vencimiento en Usuarios antes de activarla.'};}
     }
     return {ok:true,mensaje:'Cuenta creada, pendiente de aprobación. Activa su acceso desde Usuarios.'};

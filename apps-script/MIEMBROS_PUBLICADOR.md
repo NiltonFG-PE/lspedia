@@ -138,3 +138,7 @@ público para estas mejoras. La recuperación necesita la Redirect URL exacta
 Crear usuario permite guardar un nombre (además del correo) y elegir 1, 3, 6 meses o 1 año. El plazo comienza al crear la cuenta y requiere la migración de Supabase instalada antes de crear el acceso temporal. La cuenta solo se activa después de guardar el vencimiento; si falla, el panel indica que se revise su estado. El servidor bloquea el contenido al vencer, incluso con una sesión abierta. El ingreso sigue usando correo y contraseña.
 
 En Secciones y vencimiento se puede asignar un nuevo plazo desde hoy o elegir una fecha. Los meses son de calendario y ajustan el día al último del mes cuando corresponde.
+
+### Vencimiento manual editable
+
+Al crear una cuenta, Tiempo de acceso → Fecha manual permite elegir cualquier fecha actual o futura. Se incluye todo ese día en Perú. En Usuarios → Secciones y vencimiento → Definir fecha manual se puede adelantar o ampliar el vencimiento de una cuenta existente. Una fecha pasada bloquea su contenido inmediatamente; sin fecha, el acceso no vence. Los cambios mantienen el control contra ediciones simultáneas. Estas opciones requieren instalar la versión actualizada del publicador en Proyecto.
