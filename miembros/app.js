@@ -7,11 +7,13 @@ const ready = /^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/.test(config.supabaseUrl 
 const base = (config.supabaseUrl || '').replace(/\/$/, '');
 const key = 'lspedia_members_session_v1';
 let session = null, profile = null, categories = [], content = [], selected = '', generation = 0;
+const sectionState = new Map();
+const state = () => { if (!sectionState.has(selected)) sectionState.set(selected, {search:'',topic:'',letter:'',order:'alphabetical'}); return sectionState.get(selected); };
 const text = (tag, value, cls) => { const el = document.createElement(tag); el.textContent = value; if (cls) el.className = cls; return el; };
 function status(message = '') { $('status').textContent = message; }
 function clearPlayer() { $('embed').replaceChildren(); if ($('player').open) $('player').close(); }
 function lock(message = '') {
-  generation++; session = null; profile = null; content = []; categories = []; selected = '';
+  sectionState.clear(); generation++; session = null; profile = null; content = []; categories = []; selected = '';
   try { sessionStorage.removeItem(key); } catch (_) {}
   clearPlayer(); $('library').hidden = true; $('admin').hidden = true; $('logout').hidden = true; $('loginPanel').hidden = false;
   $('videos').replaceChildren(); $('categories').replaceChildren(); $('adminVideos').replaceChildren(); $('users').replaceChildren();
@@ -79,27 +81,47 @@ function fromDatabase(row) {
 function renderCategories() {
   $('categories').replaceChildren();
   for (const category of categories) {
-    const el = button('', () => { selected = category.id; $('search').value = ''; renderCategories(); renderVideos(); });
+    const el = button('', () => { selected = category.id; $('search').value = state().search; $('sortOrder').value = state().order; renderCategories(); renderVideos(); });
     el.className = 'category'; el.setAttribute('aria-pressed', String(selected === category.id));
     el.append(text('b', category.title), text('small', content.filter(v => v.category_id === category.id && visible(v)).length + ' videos')); $('categories').append(el);
   }
 }
 function renderVideos() {
-  const category = categories.find(c => c.id === selected);
+  const category = categories.find(c => c.id === selected), filters = state();
+  $('search').value = filters.search; $('sortOrder').value = filters.order;
+  $('clearSearch').hidden = !filters.search;
   $('categoryTitle').textContent = category?.title || 'Biblioteca'; $('categoryDescription').textContent = category?.description || '';
   $('searchLabel').textContent = 'Buscar en ' + (category?.title || 'esta sección');
-  const terms = normalize($('search').value).split(/\s+/).filter(Boolean);
-  const videos = content.filter(v => v.category_id === selected && visible(v) && terms.every(term => normalize([v.title,v.description,v.keywords,v.variants,v.topic].join(' ')).includes(term)));
-  $('videos').replaceChildren(); $('resultCount').textContent = videos.length ? videos.length + ' resultados' : terms.length ? 'No encontramos videos con esa búsqueda.' : 'Pronto encontrarás contenido en esta sección.';
+  const sectionVideos = content.filter(v => v.category_id === selected && visible(v));
+  const topics = [...new Set(sectionVideos.map(v => v.topic || 'General'))].sort((a,b)=>a.localeCompare(b,'es'));
+  if (filters.topic && !topics.includes(filters.topic)) filters.topic = '';
+  $('topics').replaceChildren();
+  if (topics.length) for (const topic of ['',...topics]) {
+    const el = button(topic || 'Todas las categorías', () => { filters.topic = topic; renderVideos(); });
+    el.setAttribute('aria-pressed', String(filters.topic === topic));
+    el.append(text('small', sectionVideos.filter(v => !topic || (v.topic || 'General') === topic).length)); $('topics').append(el);
+  }
+  $('alphabet').replaceChildren();
+  for (const letter of ['',...'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ']) {
+    const el = button(letter || 'Todas', () => { filters.letter = letter; renderVideos(); });
+    el.setAttribute('aria-pressed', String(filters.letter === letter)); $('alphabet').append(el);
+  }
+  const terms = normalize(filters.search).split(/\s+/).filter(Boolean);
+  const initial = value => String(value || '').trim().slice(0,1).toLocaleUpperCase('es').normalize('NFD').replace(/([AEIOU])[\u0300-\u036f]/g,'$1').normalize('NFC');
+  const videos = sectionVideos.filter(v => (!filters.topic || (v.topic || 'General') === filters.topic) && (!filters.letter || initial(v.title) === filters.letter) && terms.every(term => normalize([v.title,v.description,v.keywords,v.variants,v.topic].join(' ')).includes(term)));
+  videos.sort(filters.order === 'recent' ? (a,b) => (Date.parse(b.publish_at)||0)-(Date.parse(a.publish_at)||0) || a.title.localeCompare(b.title,'es') : (a,b) => a.title.localeCompare(b.title,'es'));
+  $('videos').replaceChildren(); $('resultCount').textContent = videos.length + (videos.length === 1 ? ' resultado' : ' resultados');
+  if (!videos.length) {
+    const empty = text('div','','empty'); empty.append(text('h3',sectionVideos.length ? 'No encontramos coincidencias' : 'Esta sección está en preparación'),text('p',sectionVideos.length ? 'Prueba otra palabra, categoría o letra del índice.' : 'Próximamente encontrarás videos y recursos aquí. Tu acceso ya está habilitado.')); $('videos').append(empty);
+  }
   for (const video of videos) {
-    const el = button('', () => play(video)); el.className = 'video';
+    const el = button('', () => play(video)); el.className = 'video'; el.setAttribute('aria-label','Ver video: '+video.title);
     const image = document.createElement('img');
     const fallback = 'https://i.ytimg.com/vi/' + video.youtube_id + '/hqdefault.jpg';
     const supplied = String(video.image_url || '');
     image.src = /^https:\/\//.test(supplied) ? supplied : /^img\//.test(supplied) ? 'https://lspedia.site/' + supplied : fallback;
-    image.addEventListener('error', () => { image.src = fallback; }, {once:true});
-    image.alt = ''; image.loading = 'lazy';
-    el.append(image, text('b', video.title), text('p', video.description || 'Ver video')); $('videos').append(el);
+    image.addEventListener('error', () => { image.src = fallback; }, {once:true}); image.alt = ''; image.loading = 'lazy';
+    el.append(image, text('b', video.title), text('small',video.topic || 'General','topic'),text('p', video.variants ? 'Variantes: '+video.variants : video.description || 'Ver video')); $('videos').append(el);
   }
 }
 async function play(video) {
@@ -148,7 +170,10 @@ $('loginForm').addEventListener('submit', e => { e.preventDefault(); run($('logi
 }); });
 $('showPassword').addEventListener('click', () => { const show = $('password').type === 'password'; $('password').type = show ? 'text' : 'password'; $('showPassword').textContent = show ? 'Ocultar' : 'Mostrar'; $('showPassword').setAttribute('aria-pressed',String(show)); });
 $('logout').addEventListener('click', async () => { const token = session?.access_token; lock(); if (token) await fetch(base + '/auth/v1/logout', {method:'POST',headers:{apikey:config.publishableKey,Authorization:'Bearer ' + token},cache:'no-store'}).catch(() => {}); });
-$('search').addEventListener('input', renderVideos);
+$('search').addEventListener('input', () => { state().search = $('search').value; renderVideos(); });
+$('clearSearch').addEventListener('click', () => { state().search = ''; renderVideos(); $('search').focus(); });
+$('sortOrder').addEventListener('change', () => { state().order = $('sortOrder').value; renderVideos(); });
+$('alphabetToggle').addEventListener('click', () => { $('alphabet').hidden = !$('alphabet').hidden; $('alphabetToggle').setAttribute('aria-expanded',String(!$('alphabet').hidden)); });
 $('playerClose').addEventListener('click', clearPlayer); $('player').addEventListener('close', () => $('embed').replaceChildren());
 $('adminToggle').addEventListener('click', () => run($('adminToggle'), async () => { if (!await membership() || profile.role !== 'admin') return; $('library').hidden = true; $('admin').hidden = false; await loadUsers(); }));
 $('adminClose').addEventListener('click', () => { $('admin').hidden = true; $('library').hidden = false; resetEditor(); });
