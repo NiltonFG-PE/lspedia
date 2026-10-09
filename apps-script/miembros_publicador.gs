@@ -153,6 +153,9 @@ function lspMiembrosConfigurado_() {
   return Boolean(p.getProperty('LSPEDIA_MIEMBROS_SUPABASE_URL') && p.getProperty('LSPEDIA_MIEMBROS_SUPABASE_SECRET'));
 }
 function lspMiembrosApi_(path,method,body,prefer) {
+  return lspMiembrosRequest_('/rest/v1/'+path,method,body,prefer);
+}
+function lspMiembrosRequest_(path,method,body,prefer) {
   const p=PropertiesService.getScriptProperties(),base=lspMiembrosTexto_(p.getProperty('LSPEDIA_MIEMBROS_SUPABASE_URL')).replace(/\/$/,''),secret=p.getProperty('LSPEDIA_MIEMBROS_SUPABASE_SECRET');
   if (!/^https:\/\/[a-z0-9-]+\.supabase\.co$/.test(base) || !secret) throw new Error('Configura Supabase en Script Properties.');
   const headers={apikey:secret};
@@ -161,7 +164,7 @@ function lspMiembrosApi_(path,method,body,prefer) {
   if (prefer) headers.Prefer=prefer;
   const options={method:method,headers:headers,contentType:'application/json',muteHttpExceptions:true};
   if (body!==undefined) options.payload=JSON.stringify(body);
-  const response=UrlFetchApp.fetch(base+'/rest/v1/'+path,options);
+  const response=UrlFetchApp.fetch(base+path,options);
   if (response.getResponseCode()<200 || response.getResponseCode()>=300) throw new Error('Error de sincronización con Supabase ('+response.getResponseCode()+').');
   const data=response.getContentText();return data?JSON.parse(data):null;
 }
@@ -197,4 +200,42 @@ function lspMiembrosSincronizarSinLock_() {
   const enviados={};payload.forEach(function(r){enviados[r.id]=true;});
   existentes.filter(function(r){return !enviados[r.source_key.slice(7)];}).forEach(function(r){lspMiembrosApi_('lsp_content?id=eq.'+encodeURIComponent(r.id),'patch',{published:false});});
   return {ok:true,total:rows.length,mensaje:'Catálogo sincronizado. Las fechas futuras se respetan.'};
+}
+
+/** Usuarios: solo el Publicador autorizado; nunca devuelve credenciales ni metadatos privados. */
+function lspMiembrosUsuariosListar(datos) {
+  lspMiembrosAuth_(datos);
+  if(!lspMiembrosConfigurado_())return {configurado:false,usuarios:[],pagina:1,siguiente:false};
+  const pagina=datos.pagina==null?1:Number(datos.pagina);
+  if(!Number.isInteger(pagina) || pagina<1 || pagina>10000)throw new Error('Página inválida.');
+  const respuesta=lspMiembrosRequest_('/auth/v1/admin/users?page='+pagina+'&per_page=50','get');
+  const usuarios=respuesta.users || [];
+  const ids=usuarios.map(function(u){return u.id;});
+  ids.forEach(lspMiembrosUsuarioId_);
+  const miembros=ids.length?lspMiembrosApi_('lsp_members?select=user_id,role,status&user_id=in.('+ids.join(',')+')','get'):[];
+  const mapa={};miembros.forEach(function(m){mapa[m.user_id]=m;});
+  return {configurado:true,pagina:pagina,siguiente:respuesta.last_page?pagina<Number(respuesta.last_page):usuarios.length===50,usuarios:usuarios.map(function(u){
+    const m=mapa[u.id];return {user_id:u.id,email:u.email || '',role:m?m.role:'member',status:m?m.status:'pending',confirmado:!!u.email_confirmed_at};
+  })};
+}
+function lspMiembrosUsuarioId_(id) {
+  if(typeof id!=='string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id))throw new Error('Usuario inválido.');
+}
+function lspMiembrosUsuarioEstado(datos) {
+  lspMiembrosAuth_(datos);lspMiembrosUsuarioId_(datos.user_id);
+  if(!lspMiembrosConfigurado_())throw new Error('Conexión con Supabase pendiente.');
+  if(['active','suspended'].indexOf(datos.estado)===-1)throw new Error('Estado inválido.');
+  const lock=LockService.getScriptLock();if(!lock.tryLock(30000))throw new Error('Publicador ocupado.');
+  try {
+    const id=datos.user_id,actuales=lspMiembrosApi_('lsp_members?select=user_id,role,status&user_id=eq.'+id,'get'),actual=actuales[0];
+    if(actual && actual.role==='admin')throw new Error('La cuenta administradora está protegida.');
+    if(datos.roleAnterior!=='member' || datos.estadoAnterior!==(actual?actual.status:'pending'))throw new Error('El acceso cambió. Actualiza la lista antes de continuar.');
+    const cuenta=lspMiembrosRequest_('/auth/v1/admin/users/'+id,'get');
+    if(!cuenta || cuenta.id!==id)throw new Error('La cuenta ya no existe.');
+    let resultado;
+    if(actual)resultado=lspMiembrosApi_('lsp_members?user_id=eq.'+id+'&role=eq.member&status=eq.'+encodeURIComponent(actual.status),'patch',{status:datos.estado},'return=representation');
+    else resultado=lspMiembrosApi_('lsp_members?on_conflict=user_id','post',{user_id:id,role:'member',status:datos.estado},'resolution=ignore-duplicates,return=representation');
+    if(!resultado || resultado.length!==1 || resultado[0].role!=='member' || resultado[0].status!==datos.estado)throw new Error('El acceso cambió. Actualiza la lista antes de continuar.');
+    return {ok:true,mensaje:datos.estado==='active'?'Acceso activado.':'Acceso suspendido. El contenido protegido queda bloqueado para esta cuenta.'};
+  } finally {lock.releaseLock();}
 }

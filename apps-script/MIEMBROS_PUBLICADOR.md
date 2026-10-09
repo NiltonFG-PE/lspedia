@@ -85,3 +85,9 @@ imagen también debe ser exclusiva. YouTube no listado sigue siendo compartible.
 ## Imágenes, edición y eliminación
 
 La pestaña tiene nueva ficha, buscador, edición, borrador y eliminación con confirmación. Reutiliza `optimizarImagenWebpPublicador` del panel para comprimir a WebP (máximo 1400 px, transparencia conservada), muestra el tamaño y una vista previa y permite quitar la imagen. La eliminación exige la clave del panel y la revisión actual. Cuando la conexión está configurada, primero oculta el registro remoto; si esto falla conserva la fila. Después guarda los diez campos originales más fechaEliminacion en MiembrosPapelera del mismo archivo privado y retira la fila. Para recuperar, copiar los diez primeros campos desde MiembrosPapelera a Miembros y sincronizar. La imagen y el video no se eliminan.
+
+## Usuarios en el publicador
+
+Zona de miembros contiene ahora Contenido y Usuarios. Usuarios consulta cuentas de Supabase en páginas de 50 y muestra únicamente ID, correo, rol, estado y confirmación del correo. El filtro y el buscador se aplican a la página visible. Activar/Suspender exige confirmación en la interfaz, la clave del Publicador y el estado anterior. El servidor protege administradores, valida IDs, confirma que la cuenta exista y condiciona la escritura para evitar sobrescribir cambios simultáneos. No modifica roles ni contraseñas ni envía invitaciones. Las cuentas deben existir en Supabase Auth.
+
+Los usuarios y sus accesos permanecen en Supabase, no en la hoja privada ni en GitHub. Si falta la configuración del servidor, Usuarios muestra Conexión pendiente y no permite cambios. Completar esa conexión requiere guardar la clave secret en Script Properties del Apps Script, previa autorización del propietario por el acceso privilegiado que concede.
