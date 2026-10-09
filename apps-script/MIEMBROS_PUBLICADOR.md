@@ -132,3 +132,9 @@ SQL, instalar ambos archivos en Apps Script y verificar el remitente de correo
 en Authentication. Nunca repetir la migración inicial ni cambiar el registro
 público para estas mejoras. La recuperación necesita la Redirect URL exacta
 `https://lspedia.site/miembros/?recuperar=1` y un SMTP apto para los miembros.
+
+### Usuarios con plazo y nombre
+
+Crear usuario permite guardar un nombre (además del correo) y elegir 1, 3, 6 meses o 1 año. El plazo comienza al crear la cuenta y requiere la migración de Supabase instalada antes de crear el acceso temporal. La cuenta solo se activa después de guardar el vencimiento; si falla, el panel indica que se revise su estado. El servidor bloquea el contenido al vencer, incluso con una sesión abierta. El ingreso sigue usando correo y contraseña.
+
+En Secciones y vencimiento se puede asignar un nuevo plazo desde hoy o elegir una fecha. Los meses son de calendario y ajustan el día al último del mes cuando corresponde.

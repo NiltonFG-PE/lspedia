@@ -217,7 +217,7 @@ function lspMiembrosUsuariosListar(datos) {
   let accessFeatures=false;try {accessFeatures=Number(lspMiembrosApi_('rpc/lsp_member_features','post',{}).version)>=2;} catch(_) {}
   const sections=lspMiembrosApi_('lsp_member_categories?select=title&order=position.asc','get').map(function(c){return {title:c.title,code:({'Señas Internacionales (IS)':'IS','Lengua de Señas Americana (ASL)':'ASL','Contenido para profesores':'Profesores'})[c.title] || c.title};});
   return {secciones:sections,configurado:true,pagina:pagina,siguiente:respuesta.last_page?pagina<Number(respuesta.last_page):usuarios.length===50,usuarios:usuarios.map(function(u){
-    const m=mapa[u.id];return {user_id:u.id,email:u.email || '',role:m?m.role:'member',status:m?m.status:'pending',confirmado:!!u.email_confirmed_at,expires_at:m?m.expires_at || null:null,allowed_sections:m?m.allowed_sections==null?null:m.allowed_sections:null,accessReady:accessFeatures && !!m && Object.prototype.hasOwnProperty.call(m,'allowed_sections')};
+    const m=mapa[u.id];return {user_id:u.id,email:u.email || '',username:lspMiembrosTexto_((u.user_metadata || {}).username),role:m?m.role:'member',status:m?m.status:'pending',confirmado:!!u.email_confirmed_at,expires_at:m?m.expires_at || null:null,allowed_sections:m?m.allowed_sections==null?null:m.allowed_sections:null,accessReady:accessFeatures && !!m && Object.prototype.hasOwnProperty.call(m,'allowed_sections')};
   })};
 }
 function lspMiembrosUsuarioId_(id) {
@@ -242,25 +242,49 @@ function lspMiembrosUsuarioEstado(datos) {
   } finally {lock.releaseLock();}
 }
 
-/** Crear una cuenta pendiente desde el panel privado; contraseñas nunca van a Sheets ni logs. */
+/** Meses de calendario desde hoy en Perú; el día se ajusta al último del mes. */
+function lspMiembrosPlazo_(months, ahora) {
+  if([1,3,6,12].indexOf(Number(months))===-1)throw new Error('Elige 1, 3, 6 o 12 meses.');
+  const peru=new Date((ahora || new Date()).getTime()-5*3600000),day=peru.getUTCDate();
+  peru.setUTCDate(1);peru.setUTCMonth(peru.getUTCMonth()+Number(months));
+  const last=new Date(Date.UTC(peru.getUTCFullYear(),peru.getUTCMonth()+1,0)).getUTCDate();
+  peru.setUTCDate(Math.min(day,last));
+  return new Date(peru.getTime()+5*3600000).toISOString();
+}
+/** Contraseñas nunca van a Sheets ni logs. Acceso temporal solo tras guardar sus límites. */
 function lspMiembrosUsuarioCrear(datos) {
   lspMiembrosAuth_(datos);
   const email=lspMiembrosTexto_(datos.email).toLowerCase(),password=datos.password;
   if(email.length>254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))throw new Error('Escribe un correo válido.');
   if(typeof password!=='string' || password.length<12 || password.length>128)throw new Error('Usa una contraseña inicial de 12 a 128 caracteres.');
+  const username=lspMiembrosTexto_(datos.username);
+  if(username.length>80 || /[\u0000-\u001f\u007f]/.test(username))throw new Error('Nombre de usuario inválido (máximo 80 caracteres).');
+  const expiry=datos.months?lspMiembrosPlazo_(datos.months):null;
+  if(expiry && Number(lspMiembrosApi_('rpc/lsp_member_features','post',{}).version)<2)throw new Error('Primero instala los límites de acceso en Supabase.');
   const lock=LockService.getScriptLock();if(!lock.tryLock(30000))throw new Error('Publicador ocupado.');
   try {
-    const user=lspMiembrosRequest_('/auth/v1/admin/users','post',{email:email,password:password,email_confirm:true});
+    const user=lspMiembrosRequest_('/auth/v1/admin/users','post',{email:email,password:password,email_confirm:true,user_metadata:{username:username}});
     lspMiembrosUsuarioId_(user.id);
     try {lspMiembrosApi_('lsp_members?on_conflict=user_id','post',{user_id:user.id,role:'member',status:'pending'},'resolution=ignore-duplicates');}
     catch(e){return {ok:true,mensaje:'Cuenta creada sin acceso. Actualiza Usuarios antes de activarla.'};}
+    if(expiry){
+      try {
+        const m=lspMiembrosApi_('lsp_members?select=*&user_id=eq.'+user.id,'get')[0];
+        if(!m || m.role!=='member' || m.status!=='pending')throw new Error('Estado inesperado.');
+        const saved=lspMiembrosApi_('rpc/lsp_set_member_access','post',{target_user:user.id,new_sections:null,new_expiry:expiry,expected_access:{sections:m.allowed_sections,expires:m.expires_at}});
+        if(!saved || !saved.ok)throw new Error('No se guardó el vencimiento.');
+        const active=lspMiembrosApi_('lsp_members?user_id=eq.'+user.id+'&role=eq.member&status=eq.pending','patch',{status:'active'},'return=representation');
+        if(!active || active.length!==1 || active[0].status!=='active')throw new Error('No se activó el acceso.');
+        return {ok:true,mensaje:'Cuenta creada con acceso por '+Number(datos.months)+' meses. Se bloquea automáticamente al vencer.'};
+      } catch(e){return {ok:true,mensaje:'Cuenta creada. No se pudo completar el acceso temporal; revisa su estado y vencimiento en Usuarios antes de activarla.'};}
+    }
     return {ok:true,mensaje:'Cuenta creada, pendiente de aprobación. Activa su acceso desde Usuarios.'};
   } finally {lock.releaseLock();}
 }
 function lspMiembrosUsuarioAcceso(datos) {
   lspMiembrosAuth_(datos);lspMiembrosUsuarioId_(datos.user_id);
   if(datos.sections!==null && (!Array.isArray(datos.sections) || datos.sections.length>100 || datos.sections.some(function(s){return typeof s!=='string' || s.length>100;})))throw new Error('Secciones inválidas.');
-  const expiry=datos.expiry?new Date(Date.parse(lspMiembrosFecha_(datos.expiry))+86400000).toISOString():null;
+  const expiry=datos.months?lspMiembrosPlazo_(datos.months):datos.expiry?new Date(Date.parse(lspMiembrosFecha_(datos.expiry))+86400000).toISOString():null;
   const result=lspMiembrosApi_('rpc/lsp_set_member_access','post',{target_user:datos.user_id,new_sections:datos.sections,new_expiry:expiry,expected_access:datos.expectedAccess});
   if(!result || !result.ok)throw new Error('No se pudo guardar el acceso.');
   return {ok:true,mensaje:'Secciones y vencimiento guardados. El servidor aplica estos límites.'};

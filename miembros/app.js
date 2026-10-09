@@ -7,6 +7,14 @@ const ready = /^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/.test(config.supabaseUrl 
 const base = (config.supabaseUrl || '').replace(/\/$/, '');
 const key = 'lspedia_members_session_v1';
 let session = null, profile = null, categories = [], content = [], selected = '', generation = 0;
+let accessTimer = null;
+function scheduleAccessExpiry() {
+  clearTimeout(accessTimer);
+  if (!profile?.expires_at || profile.role === 'admin') return;
+  const remaining = Date.parse(profile.expires_at) - Date.now();
+  if (remaining <= 0) { lock('Tu acceso venció. Contacta al administrador para renovarlo.'); return; }
+  accessTimer = setTimeout(scheduleAccessExpiry, Math.min(remaining, 2147483647));
+}
 let recoverySession = null, recovering = false, recoverySentAt = 0;
 let favorites = new Set(), recent = [], activeVideo = null;
 const specialViews = new Set(['@favorites','@recent']);
@@ -45,6 +53,7 @@ const text = (tag, value, cls) => { const el = document.createElement(tag); el.t
 function status(message = '') { $('status').textContent = message; }
 function clearPlayer() { activeVideo = null; $('embed').replaceChildren(); if ($('player').open) $('player').close(); }
 function lock(message = '') {
+  clearTimeout(accessTimer); accessTimer = null;
   recoverySession = null; recovering = false; $('recoveryForm').hidden = true; $('newPasswordForm').hidden = true; $('loginForm').hidden = false; $('newPasswordForm').reset();
   favorites=new Set(); recent=[]; sectionState.clear(); generation++; session = null; profile = null; content = []; categories = []; selected = '';
   try { sessionStorage.removeItem(key); } catch (_) {}
@@ -72,7 +81,7 @@ async function request(path, options = {}, authenticated = true) {
 async function membership() {
   const rows = await request('/rest/v1/lsp_members?select=*&user_id=eq.' + encodeURIComponent(session.user.id));
   if (!rows?.[0] || (rows[0].status !== 'active' || (rows[0].role !== 'admin' && rows[0].expires_at && Date.parse(rows[0].expires_at) <= Date.now()))) { lock('Tu cuenta aún no tiene acceso o ha sido suspendida. Contacta al administrador de LSPedia.'); return false; }
-  profile = rows[0]; return true;
+  profile = rows[0]; scheduleAccessExpiry(); return !!profile;
 }
 function youtubeId(value) {
   try {
