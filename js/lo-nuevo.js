@@ -133,7 +133,7 @@
     function dentroDelPeriodo(fecha, dias){
         const t = Date.parse(texto(fecha));
         const diferencia = Date.now() - t;
-        return Number.isFinite(t) && diferencia >= -86400000 && diferencia <= dias * 86400000;
+        return Number.isFinite(t) && diferencia >= (dias === 1 ? 0 : -86400000) && diferencia <= dias * 86400000;
     }
 
     function actualizarMenu(intentos = 0){
@@ -179,7 +179,7 @@
             etiqueta.textContent = 'Publicaciones';
             const periodo = document.createElement('select');
             periodo.id = 'lspCatalogoPeriodo';
-            [[7,'Últimos 7 días'],[30,'Últimos 30 días'],[0,'Todas las publicaciones']].forEach(([valor,nombre]) => {
+            [[1,'Últimas 24 horas'],[7,'Últimos 7 días'],[30,'Últimos 30 días'],[0,'Todas las publicaciones']].forEach(([valor,nombre]) => {
                 const opcion = document.createElement('option');
                 opcion.value = String(valor); opcion.textContent = nombre; periodo.appendChild(opcion);
             });
@@ -191,7 +191,13 @@
             const contador = document.createElement('span');
             contador.id = 'lspCatalogoCantidad';
             contador.setAttribute('role', 'status');
-            filtros.append(etiqueta, periodo, contador);
+            const ultimas24 = botonAccion('Últimas 24 horas', () => {
+                periodoDias = 1;
+                volverALoNuevo();
+            });
+            ultimas24.id = 'lspCatalogo24Horas';
+            ultimas24.setAttribute('aria-pressed', 'false');
+            filtros.append(etiqueta, ultimas24, periodo, contador);
             const acciones = document.createElement('div');
             acciones.id = 'lspCatalogoAcciones'; acciones.className = 'lsp-nuevo-acciones';
             const herramientas = document.createElement('div');
@@ -229,10 +235,19 @@
             ? 'Marca los videos que quieres compartir.'
             : 'Explora las publicaciones de Diccionario y Vocabulario. Toca una ficha para ver el video.';
         $('lspCatalogoPeriodo').value = String(periodoDias);
+        $('lspCatalogo24Horas').setAttribute('aria-pressed', String(periodoDias === 1 && !referenciasCompartidas.length));
         $('lspCatalogoCantidad').textContent = publicadasVisibles.length + ' videos';
         actualizarAcciones();
         const grid = $('lspCatalogoGrid');
         grid.replaceChildren();
+        if(!publicadasVisibles.length){
+            const vacio = document.createElement('p');
+            vacio.className = 'lsp-catalogo-vacio';
+            vacio.textContent = periodoDias === 1
+                ? 'No hay videos publicados en las últimas 24 horas. Prueba otro período.'
+                : 'No hay videos en este período. Prueba otro filtro.';
+            grid.appendChild(vacio);
+        }
         publicadasVisibles.forEach(x => {
             const tarjeta = crearTarjeta(x, true);
             const fecha = document.createElement('time');
@@ -595,6 +610,7 @@
             vacio.className = 'lsp-mejora-sub';
             vacio.textContent = referenciasCompartidas.length
                 ? 'Cargando las fichas compartidas. Si ya no están disponibles, puedes ver todas las novedades.'
+                : periodoDias === 1 ? 'No hay videos publicados en las últimas 24 horas.'
                 : 'No hay videos publicados en los últimos ' + periodoDias + ' días.';
             caja.appendChild(vacio);
             return;

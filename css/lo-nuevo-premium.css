@@ -360,7 +360,10 @@ html[data-lsp-tema="dark"] .lsp-nuevo-dialogo { background:#1e293b; color:#fef3c
 .lsp-catalogo-cerrar { margin-left:auto; font-size:21px; min-width:36px; min-height:36px; padding:2px 8px; color:#1e293b; }
 #lspCatalogoDescripcion, .lsp-catalogo-filtros label { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
 .lsp-catalogo-herramientas { display:flex; align-items:center; gap:8px 16px; flex-wrap:wrap; justify-content:space-between; }
-.lsp-catalogo-filtros { display:flex; align-items:center; gap:8px; font-size:.77rem; }
+.lsp-catalogo-filtros { display:flex; flex-wrap:wrap; align-items:center; gap:8px; font-size:.77rem; }
+#lspCatalogo24Horas[aria-pressed="true"] { background:#e7f0ff; border-color:#2474d6; color:#1555a3; }
+.lsp-catalogo-vacio { grid-column:1 / -1; margin:16px 0; color:#64748b; font-size:.9rem; }
+html[data-lsp-tema="dark"] #lspCatalogo24Horas[aria-pressed="true"] { background:#203959; border-color:#6fa9ef; color:#d9eaff; }
 .lsp-catalogo-filtros select { min-height:36px; max-width:190px; padding:5px 8px; border:1px solid #cedaea; border-radius:9px; background:#fff; color:#233b5d; font:inherit; }
 #lspCatalogoCantidad { color:#62758f; font-size:.73rem; white-space:nowrap; }
 .lsp-catalogo .lsp-nuevo-acciones { gap:6px; margin:0; align-items:center; }
