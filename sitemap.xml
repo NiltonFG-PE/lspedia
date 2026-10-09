@@ -386,6 +386,16 @@
         <priority>0.8</priority>
     </url>
     <url>
+        <loc>https://lspedia.site/vocabulario/ocupado-adjetivos/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/vocabulario/libre-adjetivos/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
         <loc>https://lspedia.site/vocabulario/pesado-adjetivos/</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
@@ -527,6 +537,11 @@
     </url>
     <url>
         <loc>https://lspedia.site/vocabulario/aburrido-emociones/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/vocabulario/tranquilo-emociones/</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
