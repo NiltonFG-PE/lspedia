@@ -1,0 +1,15 @@
+/* Acceso en preparación: vidrio suave, sin animación ni llamada a la acción. */
+.miembros-access{width:100%;display:flex;align-items:center;gap:16px;padding:18px 20px;text-align:left;border:1px solid rgba(148,163,184,.24);border-radius:20px;background:rgba(255,255,255,.44);color:#64748b;box-shadow:0 4px 18px rgba(15,23,42,.035),inset 0 1px 0 rgba(255,255,255,.65);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-family:'Poppins',system-ui,sans-serif;cursor:default;opacity:1;animation:none;transform:none}
+.miembros-access:disabled{opacity:1;cursor:default}
+.miembros-access-icon{display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;background:rgba(226,232,240,.45);border:1px solid rgba(148,163,184,.12);border-radius:14px;color:#8190a4}
+.miembros-access-icon svg{width:21px;height:21px}
+.miembros-access-copy{min-width:0;flex:1;display:flex;flex-direction:column;gap:5px}
+.miembros-access-title{font-size:1rem;font-weight:600;letter-spacing:-.02em;color:#52647d;line-height:1.3}
+.miembros-access-desc{font-size:.76rem;font-weight:400;line-height:1.55;color:#718096}
+.miembros-access-status{flex-shrink:0;border:1px solid rgba(148,163,184,.2);border-radius:999px;padding:5px 10px;font-size:.65rem;font-weight:500;letter-spacing:.02em;color:#67788f;background:rgba(241,245,249,.6)}
+html[data-lsp-tema="dark"] .miembros-access{background:rgba(30,41,59,.38);border-color:rgba(148,163,184,.17);box-shadow:inset 0 1px 0 rgba(255,255,255,.035)}
+html[data-lsp-tema="dark"] .miembros-access-title{color:#a2afc2}
+html[data-lsp-tema="dark"] .miembros-access-desc{color:#8c9cb1}
+html[data-lsp-tema="dark"] .miembros-access-icon{background:rgba(71,85,105,.2);color:#98a7ba}
+html[data-lsp-tema="dark"] .miembros-access-status{background:rgba(51,65,85,.25);color:#a5b2c5}
+@media(max-width:480px){.miembros-access{padding:16px;gap:12px;flex-wrap:wrap}.miembros-access-copy{flex-basis:calc(100% - 54px)}.miembros-access-status{margin-left:54px;margin-top:-2px}.miembros-access-title{font-size:.95rem}.miembros-access-desc{font-size:.72rem}}

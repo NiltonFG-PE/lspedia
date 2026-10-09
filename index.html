@@ -144,6 +144,7 @@
     <link rel="stylesheet" href="css/quiz.css?v=20260925-3">
     <link rel="stylesheet" href="css/mejoras-producto.css?v=20260926-video-3">
     <link rel="stylesheet" href="css/buscador-enfoque.css?v=20261008-9">
+    <link rel="stylesheet" href="css/miembros-acceso.css?v=20261009-2">
 
     <!-- Preconnect: adelanta la conexión a Google para que el Quiz cargue más rápido -->
     <link rel="preconnect" href="https://script.google.com">
@@ -5289,15 +5290,7 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
              ============================================================ -->
         <div id="herramientasMenuMovil" class="d-none d-xl-none mb-4">
             <div class="row g-3" id="herramientasMenuMovilRow">
-                <div class="col-12">
-                    <a href="miembros/" class="herr-movil-btn w-100 text-decoration-none" id="btnZonaMiembros" style="background:linear-gradient(135deg,#173e73,#102943);color:#fff;">
-                        <span class="herr-movil-icono" aria-hidden="true" style="font-size:2rem;">🔐</span>
-                        <span class="herr-movil-textos">
-                            <span class="herr-movil-texto">Zona de miembros</span><span class="herr-movil-desc">IS, ASL, tutoriales y recursos para profesores</span>
-                        </span>
-                        <span class="herr-movil-flecha" aria-hidden="true">→</span>
-                    </a>
-                </div>
+
                 <div class="col-12">
                     <button type="button" id="btnHerrMovilAlfabetizacion" class="herr-movil-btn herr-movil-btn-alfabetizacion w-100">
                         <span class="herr-movil-ola" aria-hidden="true"></span>
@@ -5328,16 +5321,12 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                         <span class="herr-movil-flecha" aria-hidden="true">→</span>
                     </button>
                 </div>
+                <div class="col-12"><button type="button" id="btnZonaMiembros" class="miembros-access" disabled aria-disabled="true" aria-label="Zona de miembros. Próximamente, todavía no disponible."><span class="miembros-access-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><path d="M12 14v3"/></svg></span><span class="miembros-access-copy"><span class="miembros-access-title">Zona de miembros</span><span class="miembros-access-desc">IS, ASL, tutoriales y recursos para profesores</span></span><span class="miembros-access-status">Próximamente</span></button></div>
             </div>
         </div>
 
         <section id="seccionSubtitulos" class="d-none">
-            <div class="d-none d-xl-block mb-4">
-                <a href="miembros/" class="card border-0 shadow-sm p-4 text-decoration-none rounded-4" style="background:linear-gradient(135deg,#173e73,#102943);color:#fff;">
-                    <span class="fw-bold fs-4">Zona de miembros →</span>
-                    <span class="mt-2">Ingresa para explorar IS, ASL, tutoriales y recursos para profesores.</span>
-                </a>
-            </div>
+            <div class="d-none d-xl-block mb-4"><button type="button" class="miembros-access" disabled aria-disabled="true" aria-label="Zona de miembros. Próximamente, todavía no disponible."><span class="miembros-access-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><path d="M12 14v3"/></svg></span><span class="miembros-access-copy"><span class="miembros-access-title">Zona de miembros</span><span class="miembros-access-desc">IS, ASL, tutoriales y recursos para profesores</span></span><span class="miembros-access-status">Próximamente</span></button></div>
 
 
             <div class="card quiz-card border-0 shadow-sm p-2 p-md-3 mb-4" id="subtitulosPanelTitulo">

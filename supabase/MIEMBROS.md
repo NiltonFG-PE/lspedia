@@ -17,7 +17,10 @@ Supabase y ejecutar la migración. Nunca se simula seguridad con una contraseña
 5. Configurar `miembros/config.js` con la URL del proyecto y su clave **publishable**
    (o la antigua clave `anon`). Ambas son públicas. Nunca usar `service_role`,
    una clave secret ni la contraseña de la base de datos en archivos de la web.
-6. Publicar en el alojamiento actual de LSPedia y comprobar el flujo de acceso.
+6. Cuando las pruebas reales pasen, convertir las dos tarjetas «Próximamente»
+   de `index.html` en enlaces a `miembros/`, quitar `disabled` y `aria-disabled`
+   y cambiar el estado a «Ingresar». Hasta entonces se mantienen desactivadas.
+7. Publicar en el alojamiento actual de LSPedia y comprobar el flujo de acceso.
    Ningún cambio de hosting es necesario.
 
 ## Administración
