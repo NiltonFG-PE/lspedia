@@ -16,3 +16,5 @@ html[data-lsp-tema="dark"] .miembros-access-status{background:rgba(51,65,85,.25)
 
 
 .miembros-access{text-decoration:none;transition:background .2s,border-color .2s}.miembros-access:hover{background:rgba(255,255,255,.7);border-color:rgba(148,163,184,.5)}.miembros-access:focus-visible{outline:3px solid #ffc107;outline-offset:4px}html[data-lsp-tema="dark"] .miembros-access:hover{background:rgba(51,65,85,.6)}
+
+.miembros-access{position:relative;overflow:hidden;box-shadow:0 8px 25px rgba(15,23,42,.04),inset 0 1px 0 rgba(255,255,255,.8)}.miembros-access-icon{background:linear-gradient(145deg,rgba(255,255,255,.8),rgba(226,232,240,.4));animation:members-lock-float 6s ease-in-out infinite}.miembros-access-status::before{content:'';display:inline-block;width:4px;height:4px;background:#9aa9bc;border-radius:50%;margin:0 6px 2px 0}.miembros-access:hover .miembros-access-icon{color:#456487}.miembros-access-copy{gap:0}@keyframes members-lock-float{50%{transform:translateY(-2px)}}@media(prefers-reduced-motion:reduce){.miembros-access-icon{animation:none}}

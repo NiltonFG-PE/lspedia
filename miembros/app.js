@@ -17,7 +17,7 @@ function lock(message = '') {
   try { sessionStorage.removeItem(key); } catch (_) {}
   clearPlayer(); $('library').hidden = true; $('admin').hidden = true; $('logout').hidden = true; $('loginPanel').hidden = false;
   $('videos').replaceChildren(); $('categories').replaceChildren(); $('adminVideos').replaceChildren(); $('users').replaceChildren();
-  $('contentForm').reset(); $('contentId').value = ''; $('adminToggle').hidden = true; status(message);
+  $('contentForm').reset(); $('contentId').value = ''; $('adminToggle').hidden = true; renderNavigation(); status(message);
 }
 async function request(path, options = {}, authenticated = true) {
   if (!ready) throw new Error('La zona de miembros todavía no está habilitada.');
@@ -68,9 +68,10 @@ async function loadLibrary() {
   ]);
   if (current !== generation) return;
   categories = newCategories || []; content = (newContent || []).map(fromDatabase);
-  if (!categories.some(c => c.id === selected)) selected = categories[0]?.id || '';
+  if (!categories.some(c => c.id === selected)) selected = '';
+  if (!selected && location.hash.startsWith('#seccion=')) { const id = decodeURIComponent(location.hash.slice(9)); if (categories.some(c => c.id === id)) selected = id; }
   $('loginPanel').hidden = true; $('library').hidden = adminWasOpen && profile.role === 'admin'; $('admin').hidden = !adminWasOpen || profile.role !== 'admin'; $('logout').hidden = false;
-  $('adminToggle').hidden = profile.role !== 'admin'; renderCategories(); renderVideos();
+  $('adminToggle').hidden = profile.role !== 'admin'; renderCategories(); renderVideos(); renderNavigation();
   if (profile.role === 'admin') renderAdmin();
 }
 function fromDatabase(row) {
@@ -78,19 +79,39 @@ function fromDatabase(row) {
   const section = sectionNames[row.section] || row.section;
   return {...row,title:row.word,category_id:categories.find(c=>c.title===section)?.id || '',youtube_id:youtubeId(row.video_url),keywords:(row.variants || []).join(', '),variants:(row.variants || []).join(', '),topic:row.category,publish_at:row.published_at};
 }
+function renderNavigation() {
+  const internal = Boolean(session && (!$('admin').hidden || selected));
+  $('memberBack').hidden = !internal; $('exitMembers').hidden = internal;
+  $('exitMembers').textContent = session ? 'Salir a Herramientas ↗' : '← Volver a LSPedia';
+  $('memberBack').textContent = !$('admin').hidden ? '← Volver a la biblioteca' : '← Zona de miembros';
+  $('sectionPanel').hidden = !selected; $('categories').hidden = Boolean(selected); $('libraryWelcome').hidden = Boolean(selected);
+}
+function openSection(id, push = true) {
+  if (!categories.some(c => c.id === id)) return;
+  selected = id;
+  if (push) { if (!location.hash || location.hash === '#biblioteca') history.replaceState(null,'','#biblioteca'); history.pushState(null,'','#seccion='+encodeURIComponent(id)); }
+  renderCategories(); renderVideos(); renderNavigation();
+}
+function showLibraryHome() {
+  selected = ''; $('admin').hidden = true; $('library').hidden = false; resetEditor();
+  history.replaceState(null,'','#biblioteca'); renderCategories(); renderNavigation();
+}
+$('memberBack').addEventListener('click', () => { if (!$('admin').hidden) { $('adminClose').click(); renderNavigation(); } else showLibraryHome(); });
+window.addEventListener('popstate', () => { if (!session) return; const id = location.hash.startsWith('#seccion=') ? decodeURIComponent(location.hash.slice(9)) : ''; if (categories.some(c=>c.id===id)) openSection(id,false); else showLibraryHome(); });
 function renderCategories() {
   $('categories').replaceChildren();
   for (const category of categories) {
-    const el = button('', () => { selected = category.id; $('search').value = state().search; $('sortOrder').value = state().order; renderCategories(); renderVideos(); });
+    const el = button('', () => { openSection(category.id); });
     el.className = 'category'; el.setAttribute('aria-pressed', String(selected === category.id));
-    el.append(text('b', category.title), text('small', content.filter(v => v.category_id === category.id && visible(v)).length + ' videos')); $('categories').append(el);
+    const symbol = text('span',category.title.includes('(IS)') ? 'IS' : category.title.includes('(ASL)') ? 'ASL' : category.title === 'Tutoriales' ? '↗' : category.title.includes('profesores') ? '✦' : category.title.slice(0,2).toUpperCase(),'category-symbol');
+    el.append(symbol, text('b', category.title), text('small', content.filter(v => v.category_id === category.id && visible(v)).length + ' videos'),text('span','↗','category-arrow')); $('categories').append(el);
   }
 }
 function renderVideos() {
   const category = categories.find(c => c.id === selected), filters = state();
   $('search').value = filters.search; $('sortOrder').value = filters.order;
   $('clearSearch').hidden = !filters.search;
-  $('categoryTitle').textContent = category?.title || 'Biblioteca'; $('categoryDescription').textContent = category?.description || '';
+  $('categoryTitle').textContent = category?.title || 'Biblioteca'; 
   $('searchLabel').textContent = 'Buscar en ' + (category?.title || 'esta sección');
   const sectionVideos = content.filter(v => v.category_id === selected && visible(v));
   const topics = [...new Set(sectionVideos.map(v => v.topic || 'General'))].sort((a,b)=>a.localeCompare(b,'es'));
@@ -112,7 +133,7 @@ function renderVideos() {
   videos.sort(filters.order === 'recent' ? (a,b) => (Date.parse(b.publish_at)||0)-(Date.parse(a.publish_at)||0) || a.title.localeCompare(b.title,'es') : (a,b) => a.title.localeCompare(b.title,'es'));
   $('videos').replaceChildren(); $('resultCount').textContent = videos.length + (videos.length === 1 ? ' resultado' : ' resultados');
   if (!videos.length) {
-    const empty = text('div','','empty'); empty.append(text('h3',sectionVideos.length ? 'No encontramos coincidencias' : 'Esta sección está en preparación'),text('p',sectionVideos.length ? 'Prueba otra palabra, categoría o letra del índice.' : 'Próximamente encontrarás videos y recursos aquí. Tu acceso ya está habilitado.')); $('videos').append(empty);
+    const empty = text('div','','empty'); empty.append(text('h3',sectionVideos.length ? 'No encontramos coincidencias' : 'Esta sección está en preparación'),text('p',sectionVideos.length ? 'Prueba otra palabra, categoría o letra del índice.' : 'Todavía no hay publicaciones disponibles.')); $('videos').append(empty);
   }
   for (const video of videos) {
     const el = button('', () => play(video)); el.className = 'video'; el.setAttribute('aria-label','Ver video: '+video.title);
@@ -175,8 +196,8 @@ $('clearSearch').addEventListener('click', () => { state().search = ''; renderVi
 $('sortOrder').addEventListener('change', () => { state().order = $('sortOrder').value; renderVideos(); });
 $('alphabetToggle').addEventListener('click', () => { $('alphabet').hidden = !$('alphabet').hidden; $('alphabetToggle').setAttribute('aria-expanded',String(!$('alphabet').hidden)); });
 $('playerClose').addEventListener('click', clearPlayer); $('player').addEventListener('close', () => $('embed').replaceChildren());
-$('adminToggle').addEventListener('click', () => run($('adminToggle'), async () => { if (!await membership() || profile.role !== 'admin') return; $('library').hidden = true; $('admin').hidden = false; await loadUsers(); }));
-$('adminClose').addEventListener('click', () => { $('admin').hidden = true; $('library').hidden = false; resetEditor(); });
+$('adminToggle').addEventListener('click', () => run($('adminToggle'), async () => { if (!await membership() || profile.role !== 'admin') return; $('library').hidden = true; $('admin').hidden = false; renderNavigation(); await loadUsers(); }));
+$('adminClose').addEventListener('click', () => { $('admin').hidden = true; $('library').hidden = false; resetEditor(); renderNavigation(); });
 $('refreshUsers').addEventListener('click', () => run($('refreshUsers'), loadUsers));
 $('cancelEdit').addEventListener('click', resetEditor);
 $('contentForm').addEventListener('submit', e => { e.preventDefault(); run(e.submitter, async () => {
@@ -204,3 +225,4 @@ if (!ready) {
   document.addEventListener('visibilitychange', () => { if (!document.hidden && session) loadLibrary().catch(error => lock(error.message)); });
 }
 })();
+
