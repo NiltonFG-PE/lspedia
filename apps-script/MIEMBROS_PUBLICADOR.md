@@ -30,14 +30,14 @@ reinstalarla si se necesita.
 2. Añadir un archivo HTML `PublicadorMiembrosUI` con el fragmento del mismo nombre.
 3. En `PublicadorUI`, dentro de `<body>` y antes de `</body>`, incluir:
    `<?!= lspMiembrosFragmento_(); ?>`
-   Esto añade un bloque plegable al panel actual y reutiliza su acceso autorizado.
+   Aplicar también `PublicadorMiembrosNav.patch` a la plantilla actual: añade un botón propio, registra `miembros` en cambiarTipo, oculta el guardado general y carga el editor al entrar. La sección permanece oculta en las demás pestañas.
 4. La cuenta que ejecuta el Apps Script debe poder editar la nueva hoja privada.
    El ID del archivo ya está configurado en el módulo; no usa Proyecto como fallback.
-5. Comprobar en el panel de Sheets el bloque Zona de miembros: crear borrador,
+5. Comprobar en el panel de Sheets la pestaña Zona de miembros: crear borrador,
    editarlo y verificar la fila en el nuevo archivo. Las funciones nuevas exigen
    la clave del publicador en cada llamada, también en escritorio.
 6. Actualizar una nueva versión de la misma implementación `/exec` para que
-   el panel móvil vea el bloque. La URL estable actual permanece igual.
+   el panel móvil vea la pestaña. La URL estable actual permanece igual.
 
 ## Conectar la publicación protegida
 
@@ -81,3 +81,7 @@ imagen también debe ser exclusiva. YouTube no listado sigue siendo compartible.
 - Estructura, administrador activo y políticas existentes inspeccionados en Supabase.
 - Lectura real de la hoja privada verificada desde Apps Script.
 - La sincronización requiere la clave privada del servidor en Script Properties.
+
+## Imágenes, edición y eliminación
+
+La pestaña tiene nueva ficha, buscador, edición, borrador y eliminación con confirmación. Reutiliza `optimizarImagenWebpPublicador` del panel para comprimir a WebP (máximo 1400 px, transparencia conservada), muestra el tamaño y una vista previa y permite quitar la imagen. La eliminación exige la clave del panel y la revisión actual. Cuando la conexión está configurada, primero oculta el registro remoto; si esto falla conserva la fila. Después guarda los diez campos originales más fechaEliminacion en MiembrosPapelera del mismo archivo privado y retira la fila. Para recuperar, copiar los diez primeros campos desde MiembrosPapelera a Miembros y sincronizar. La imagen y el video no se eliminan.

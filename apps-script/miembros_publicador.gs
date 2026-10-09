@@ -120,6 +120,30 @@ function lspMiembrosGuardar(datos) {
     return {ok:true,id:registro.id,sincronizado:sincronizado,mensaje:aviso};
   } finally {lock.releaseLock();}
 }
+/** Eliminación con copia recuperable en el mismo archivo privado. */
+function lspMiembrosEliminar(datos) {
+  lspMiembrosAuth_(datos);
+  const lock=LockService.getScriptLock();if(!lock.tryLock(30000))throw new Error('Publicador ocupado.');
+  try {
+    const hoja=lspMiembrosHoja_(),entrada=datos.registro || {},rows=lspMiembrosLeer_(hoja);
+    const actual=entrada.id ? rows.find(function(r){return r.id===entrada.id;}) : rows.find(function(r){return !r.id && r.fila===entrada.fila;});
+    if(!actual)throw new Error('La ficha ya no existe. Actualiza la lista.');
+    if(entrada.revision!==actual.revision)throw new Error('La ficha cambió en Sheets. Actualiza antes de eliminar.');
+    // Si la retirada remota falla, la ficha permanece en la hoja original.
+    const conectado=lspMiembrosConfigurado_();
+    if(conectado && actual.id)lspMiembrosApi_('lsp_content?id=eq.'+encodeURIComponent(actual.id)+'&source_key=eq.'+encodeURIComponent('sheets:'+actual.id),'patch',{published:false});
+    const libro=SpreadsheetApp.openById(LSP_MIEMBROS_SPREADSHEET_ID);
+    const papelera=libro.getSheetByName('MiembrosPapelera') || libro.insertSheet('MiembrosPapelera');
+    const headers=LSP_MIEMBROS_CAMPOS.concat(['fechaEliminacion']);
+    if(papelera.getLastRow()===0)papelera.getRange(1,1,1,11).setValues([headers]);
+    if(papelera.getRange(1,1,1,11).getValues()[0].join('|')!==headers.join('|'))throw new Error('Revisa los encabezados de MiembrosPapelera.');
+    const copia=hoja.getRange(actual.fila,1,1,10).getValues()[0].concat([new Date()]);
+    papelera.getRange(papelera.getLastRow()+1,1,1,11).setValues([copia.map(function(v){return typeof v==='string' && /^[=+@-]/.test(v)?"'"+v:v;})]);
+    SpreadsheetApp.flush();
+    hoja.deleteRow(actual.fila);SpreadsheetApp.flush();
+    return {ok:true,mensaje:conectado?'Ficha retirada del catálogo. Copia guardada en MiembrosPapelera.':'Ficha eliminada de la hoja y guardada en MiembrosPapelera. La conexión con la web está pendiente.'};
+  } finally {lock.releaseLock();}
+}
 function lspMiembrosSincronizar(datos) {
   lspMiembrosAuth_(datos);const lock=LockService.getScriptLock();if (!lock.tryLock(30000)) throw new Error('Publicador ocupado.');
   try { return lspMiembrosSincronizarSinLock_(); } finally {lock.releaseLock();}

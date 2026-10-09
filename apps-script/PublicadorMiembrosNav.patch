@@ -1,0 +1,48 @@
+--- PublicadorUI.html
++++ PublicadorUI.html
+@@ -2128,6 +2128,7 @@
+ </div>
+ 
+ <div class="tipos" aria-label="Secciones del Panel LSPedia">
++<button type="button" class="tipo" data-tipo="miembros" onclick="cambiarTipo('miembros', this)">Zona de miembros</button>
+ 
+   <button
+     type="button"
+@@ -4188,7 +4189,8 @@
+     'pendientes',
+     'editar',
+     'web',
+-    'control'
++    'control',
++    'miembros'
+   ].forEach(function(id) {
+ 
+     document
+@@ -4221,7 +4223,7 @@
+ 
+   if (btnPublicar) {
+     btnPublicar.style.display =
+-      (tipo === 'editar' || tipo === 'pendientes' || tipo === 'alfabeto' || tipo === 'web' || tipo === 'control')
++      (tipo === 'editar' || tipo === 'pendientes' || tipo === 'alfabeto' || tipo === 'web' || tipo === 'control' || tipo === 'miembros')
+         ? 'none'
+         : 'block';
+   }
+@@ -4242,6 +4244,8 @@
+   if (tipo === 'control') {
+     cargarControlPublicador22();
+   }
++
++  if (tipo === 'miembros') cargarZonaMiembrosPublicador();
+ 
+   const previo = document.getElementById('estadoPrevioPublicacion');
+   if (previo) previo.style.display = ['diccionario','vocabulario','alfabetizacion'].indexOf(tipo) !== -1 ? '' : 'none';
+@@ -9646,7 +9650,8 @@
+       pendientes:'Pendientes',
+       editar:'Editar',
+       web:'WEB',
+-      control:'Control'
++      control:'Control',
++      miembros:'Zona de miembros'
+     };
+     return mapa[tipo] || 'Publicador';
+   }
