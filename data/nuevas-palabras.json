@@ -1,7 +1,7 @@
 {
-  "generadoEn": "2026-10-08T15:24:38Z",
+  "generadoEn": "2026-10-09T01:23:16Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 191,
+  "maxItems": 192,
   "diasEtiquetaNuevo": 14,
   "items": [
     {
@@ -144,6 +144,15 @@
       "palabra": "Presumido",
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/presumido.webp",
+      "fecha": "2026-10-08T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Alegre",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/alegre.webp",
       "fecha": "2026-10-08T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
