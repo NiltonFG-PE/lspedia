@@ -9916,7 +9916,9 @@ document.documentElement.classList.add('modo-movil-real');
    Zoom ajusta el ancho de la disposición y conserva el desplazamiento normal. */
 var anchoPantalla=Number(screen.width)||0,ancho=Number(window.innerWidth)||0;
 var escala=anchoPantalla>=240&&anchoPantalla<=600&&ancho>anchoPantalla*1.3?ancho/anchoPantalla:1;
-document.body.style.zoom=String(Math.min(4,Math.max(1,escala)));
+escala=Math.min(4,Math.max(1,escala));
+document.body.style.zoom=String(escala);
+if(escala>1)document.body.style.setProperty('width',String(ancho/escala)+'px','important');else document.body.style.removeProperty('width');
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',adaptar,{once:true});else adaptar();
 window.addEventListener('resize',adaptar,{passive:true});
