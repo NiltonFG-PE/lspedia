@@ -12,7 +12,7 @@
    - El panel /admin/ y los laboratorios quedan fuera del fallback público.
    ============================================================ */
 
-const VERSION_APP = "v294";
+const VERSION_APP = "v295-members-1";
 const PREFIJO_CACHE = "lspedia-shell-";
 const PREFIJO_RUNTIME = "lspedia-runtime-";
 const CACHE_NOMBRE = PREFIJO_CACHE + VERSION_APP;
@@ -151,6 +151,8 @@ self.addEventListener("fetch", (event) => {
     if (url.origin !== self.location.origin) return;
 
     if (url.pathname === "/admin" || url.pathname.startsWith("/admin/")) return;
+    // La zona autenticada y su configuración no usan caché ni fallback público.
+    if (url.pathname === "/miembros" || url.pathname.startsWith("/miembros/")) return;
 
     if (url.pathname === "/lab-senas-ia.html" || url.pathname === "/lab-juego-educativo.html") {
         event.respondWith(fetch(request).catch(() => Response.error()));
@@ -223,3 +225,4 @@ self.addEventListener("fetch", (event) => {
     })());
     return;
 });
+

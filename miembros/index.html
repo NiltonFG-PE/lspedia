@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><meta name="referrer" content="strict-origin-when-cross-origin">
+<title>Zona de miembros · LSPedia</title>
+<link rel="stylesheet" href="estilos.css?v=20261009-1">
+<script defer src="config.js?v=20261009-1"></script><script defer src="app.js?v=20261009-1"></script>
+</head>
+<body>
+<header><a href="../?vista=herramientas" aria-label="Volver a Herramientas"><img src="../img/lspedia.png" alt="LSPedia"></a><span>Zona de miembros</span><button id="logout" hidden>Cerrar sesión</button></header>
+<main>
+<a class="back" href="../?vista=herramientas">← Herramientas</a>
+<section id="loginPanel" class="intro">
+<div><span class="eyebrow">TU ESPACIO EN LSPEDIA</span><h1>Más contenido.<br>Un mismo lugar.</h1><p>Explora videos de Señas Internacionales, ASL, tutoriales y recursos para profesores.</p><div class="pills"><span>IS</span><span>ASL</span><span>Tutoriales</span><span>Profesores</span></div></div>
+<form id="loginForm" class="panel"><h2>Ingresar</h2><p>Accede con la cuenta autorizada por LSPedia.</p><label>Usuario (correo electrónico)<input id="email" type="email" autocomplete="username" required maxlength="254"></label><label>Contraseña<div class="password"><input id="password" type="password" autocomplete="current-password" required><button type="button" id="showPassword" aria-pressed="false">Mostrar</button></div></label><button id="loginButton" class="primary" type="submit">Ingresar</button><p class="small">Si necesitas una cuenta o recuperar tu acceso, contacta al administrador de LSPedia.</p></form>
+</section>
+<p id="status" role="status" aria-live="polite"></p>
+<section id="library" hidden><div class="heading"><div><span class="eyebrow">BIBLIOTECA</span><h1>¿Qué quieres explorar?</h1></div><button id="adminToggle" hidden>Administrar</button></div><div id="categories" class="categories"></div><section class="panel"><div class="heading"><div><h2 id="categoryTitle"></h2><p id="categoryDescription"></p></div></div><label id="searchLabel" for="search">Buscar en esta sección</label><input id="search" type="search" placeholder="Escribe una palabra o un tema…" autocomplete="off"><p id="resultCount" class="small" role="status"></p><div id="videos" class="videos"></div></section></section>
+<section id="admin" class="panel" hidden><div class="heading"><h2>Administrar contenido</h2><button id="adminClose">Volver a la biblioteca</button></div>
+<form id="contentForm"><h3 id="editorTitle">Añadir video</h3><input id="contentId" type="hidden"><div class="form-grid"><label>Título<input name="title" required maxlength="160"></label><label>Sección<select name="category_id" required></select></label></div><label>Enlace de YouTube<input name="youtube_url" type="url" required placeholder="https://www.youtube.com/watch?v=…"></label><label>Descripción<textarea name="description" maxlength="4000" rows="3"></textarea></label><label>Palabras para el buscador<input name="keywords" maxlength="1000" placeholder="Variantes, temas, términos relacionados"></label><label class="check"><input name="published" type="checkbox" checked> Publicar en la biblioteca</label><div class="actions"><button class="primary" type="submit">Guardar video</button><button id="cancelEdit" type="button">Cancelar edición</button></div></form>
+<hr><form id="categoryForm"><h3>Añadir una sección</h3><label>Nombre<input name="title" required maxlength="100"></label><label>Descripción<input name="description" maxlength="500"></label><button type="submit">Crear sección</button></form>
+<hr><h3>Videos registrados</h3><div id="adminVideos"></div>
+<hr><h3>Usuarios y permisos</h3><p class="small">Las cuentas se crean en Authentication → Users de Supabase. Aquí puedes aprobar o suspender su acceso a LSPedia. Las cuentas nuevas no tienen acceso hasta que las apruebes.</p><button id="refreshUsers">Actualizar usuarios</button><div id="users"></div></section>
+</main><footer>LSPedia · Un espacio para conectar y comprender.</footer>
+<dialog id="player"><div class="heading"><h2 id="playerTitle"></h2><button id="playerClose" aria-label="Cerrar video">Cerrar ✕</button></div><div id="embed"></div></dialog>
+</body></html>
