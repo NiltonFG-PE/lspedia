@@ -1,7 +1,7 @@
 {
-  "generadoEn": "2026-10-09T01:23:16Z",
+  "generadoEn": "2026-10-09T02:14:38Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 192,
+  "maxItems": 195,
   "diasEtiquetaNuevo": 14,
   "items": [
     {
@@ -153,6 +153,33 @@
       "palabra": "Alegre",
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/alegre.webp",
+      "fecha": "2026-10-08T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Ocupado",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/ocupado.webp",
+      "fecha": "2026-10-08T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Libre",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/libre.webp",
+      "fecha": "2026-10-08T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Tranquilo",
+      "categoria": "Emociones",
+      "imagen": "img/vocabulario/tranquilo.webp",
       "fecha": "2026-10-08T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
