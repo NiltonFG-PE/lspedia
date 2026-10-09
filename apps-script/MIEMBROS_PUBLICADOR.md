@@ -22,8 +22,8 @@ publicarlo en la web. No se necesitan cambios en el archivo Proyecto.
 
 ## Instalar en el Publicador actual
 
-Esta extensión está preparada y probada localmente. No está instalada en la
-implementación de Apps Script hasta completar estos pasos con acceso al editor.
+La extensión está instalada en el Publicador de Proyecto. Estos pasos permiten
+reinstalarla si se necesita.
 
 1. Añadir un archivo `.gs` llamado `MiembrosPublicador` con el contenido de
    `miembros_publicador.gs`. Conserva todos los archivos actuales.
@@ -41,9 +41,10 @@ implementación de Apps Script hasta completar estos pasos con acceso al editor.
 
 ## Conectar la publicación protegida
 
-Cuando exista el proyecto Supabase gratuito:
+Proyecto existente: `lspedia-web`. La tabla nativa es `lsp_content`.
 
-1. Ejecutar `supabase/miembros.sql` y después `supabase/miembros-sheet.sql`.
+1. La integración aditiva `supabase/miembros-existing.sql` ya fue ejecutada.
+   No ejecutar `miembros.sql` ni `miembros-sheet.sql` en este proyecto: corresponden a otro esquema.
 2. Configurar en Script Properties del Apps Script:
    - `LSPEDIA_MIEMBROS_SUPABASE_URL`: URL del proyecto.
    - `LSPEDIA_MIEMBROS_SUPABASE_SECRET`: clave secret moderna o service_role antigua.
@@ -77,5 +78,6 @@ imagen también debe ser exclusiva. YouTube no listado sigue siendo compartible.
 - Pruebas PostgreSQL locales de publicación programada y permisos RLS.
 - Pruebas locales del módulo: autenticación obligatoria, variantes, borradores,
   IDs estables, duplicados, control de cambios y payload de sincronización.
-- Falta la prueba de extremo a extremo en la implementación real de Apps Script
-  y en el proyecto Supabase del usuario, que todavía no está conectado.
+- Estructura, administrador activo y políticas existentes inspeccionados en Supabase.
+- Lectura real de la hoja privada verificada desde Apps Script.
+- La sincronización requiere la clave privada del servidor en Script Properties.

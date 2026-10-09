@@ -163,14 +163,14 @@ function lspMiembrosSincronizarSinLock_() {
     resp.forEach(function(c){categorias[c.title]=c.id;});
   }
   const payload=rows.filter(function(r){return !!r.video;}).map(function(r){return {
-    id:r.id,source_id:r.id,category_id:categorias[nombres[r.seccion] || r.seccion],title:r.palabra,variants:r.variantes,keywords:r.variantes,
-    youtube_id:r.video,topic:r.categoria,image_url:r.imagen,description:r.definicion,publish_at:r.fechaPublicacion || null,published:r.estado==='Publicado'
+    id:r.id,source_key:'sheets:'+r.id,section:nombres[r.seccion] || r.seccion,word:r.palabra,variants:r.variantes.split(',').map(function(v){return v.trim();}).filter(Boolean),
+    video_url:'https://www.youtube.com/watch?v='+r.video,category:r.categoria,image_url:r.imagen,description:r.definicion,published_at:r.fechaPublicacion || new Date().toISOString(),published:r.estado==='Publicado'
   };});
-  for (let i=0;i<payload.length;i+=100) lspMiembrosApi_('lsp_member_content?on_conflict=id','post',payload.slice(i,i+100),'resolution=merge-duplicates');
+  for (let i=0;i<payload.length;i+=100) lspMiembrosApi_('lsp_content?on_conflict=id','post',payload.slice(i,i+100),'resolution=merge-duplicates');
   // Borradores sin video o filas quitadas de Sheets se ocultan; no se borran
   // registros manuales ni se publican videos pendientes por una fecha futura.
-  const existentes=lspMiembrosApi_('lsp_member_content?select=id,source_id&source_id=not.is.null','get');
+  const existentes=lspMiembrosApi_('lsp_content?select=id,source_key&source_key=like.sheets:*','get');
   const enviados={};payload.forEach(function(r){enviados[r.id]=true;});
-  existentes.filter(function(r){return !enviados[r.source_id];}).forEach(function(r){lspMiembrosApi_('lsp_member_content?id=eq.'+encodeURIComponent(r.id),'patch',{published:false});});
+  existentes.filter(function(r){return !enviados[r.source_key.slice(7)];}).forEach(function(r){lspMiembrosApi_('lsp_content?id=eq.'+encodeURIComponent(r.id),'patch',{published:false});});
   return {ok:true,total:rows.length,mensaje:'Catálogo sincronizado. Las fechas futuras se respetan.'};
 }

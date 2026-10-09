@@ -62,14 +62,19 @@ async function loadLibrary() {
   if (!await membership()) return;
   const [newCategories, newContent] = await Promise.all([
     request('/rest/v1/lsp_member_categories?select=*&order=position.asc,title.asc'),
-    request('/rest/v1/lsp_member_content?select=*&order=created_at.desc')
+    request('/rest/v1/lsp_content?select=*&order=created_at.desc')
   ]);
   if (current !== generation) return;
-  categories = newCategories || []; content = newContent || [];
+  categories = newCategories || []; content = (newContent || []).map(fromDatabase);
   if (!categories.some(c => c.id === selected)) selected = categories[0]?.id || '';
   $('loginPanel').hidden = true; $('library').hidden = adminWasOpen && profile.role === 'admin'; $('admin').hidden = !adminWasOpen || profile.role !== 'admin'; $('logout').hidden = false;
   $('adminToggle').hidden = profile.role !== 'admin'; renderCategories(); renderVideos();
   if (profile.role === 'admin') renderAdmin();
+}
+function fromDatabase(row) {
+  const sectionNames = {IS:'Señas Internacionales (IS)',ASL:'Lengua de Señas Americana (ASL)',Tutoriales:'Tutoriales',Profesores:'Contenido para profesores'};
+  const section = sectionNames[row.section] || row.section;
+  return {...row,title:row.word,category_id:categories.find(c=>c.title===section)?.id || '',youtube_id:youtubeId(row.video_url),keywords:(row.variants || []).join(', '),variants:(row.variants || []).join(', '),topic:row.category,publish_at:row.published_at};
 }
 function renderCategories() {
   $('categories').replaceChildren();
@@ -100,8 +105,9 @@ function renderVideos() {
 async function play(video) {
   if (!await membership()) return;
   // Reconsultar permite detectar un video retirado desde que se abrió la biblioteca.
-  const rows = await request('/rest/v1/lsp_member_content?select=title,youtube_id&id=eq.' + video.id + '&published=eq.true');
-  if (!rows?.[0]) { await loadLibrary(); throw new Error('Este video ya no está disponible.'); }
+  const records = await request('/rest/v1/lsp_content?select=*&id=eq.' + video.id + '&published=eq.true');
+  const rows = (records || []).map(fromDatabase);
+  if (!rows?.[0] || !visible(rows[0]) || !rows[0].youtube_id) { await loadLibrary(); throw new Error('Este video ya no está disponible.'); }
   clearPlayer(); $('playerTitle').textContent = rows[0].title;
   const frame = document.createElement('iframe'); frame.title = rows[0].title; frame.src = 'https://www.youtube-nocookie.com/embed/' + rows[0].youtube_id;
   frame.allow = 'encrypted-media; picture-in-picture; fullscreen'; frame.allowFullscreen = true; frame.referrerPolicy = 'strict-origin-when-cross-origin';
@@ -121,7 +127,7 @@ function renderAdmin() {
       f.elements.keywords.value = video.keywords; f.elements.published.checked = video.published; $('editorTitle').textContent = 'Editar video'; f.scrollIntoView({behavior:'smooth'});
     }), button('Eliminar', async () => {
       if (!confirm('¿Eliminar «' + video.title + '» de LSPedia? El video de YouTube se conserva.')) return;
-      await request('/rest/v1/lsp_member_content?id=eq.' + video.id, {method:'DELETE'}); await loadLibrary();
+      await request('/rest/v1/lsp_content?id=eq.' + video.id, {method:'DELETE'}); await loadLibrary();
     })); row.append(actions); $('adminVideos').append(row);
   }
 }
@@ -152,8 +158,10 @@ $('contentForm').addEventListener('submit', e => { e.preventDefault(); run(e.sub
   const f = e.target, id = $('contentId').value, youtube = youtubeId(f.elements.youtube_url.value.trim());
   if (!youtube) throw new Error('Usa un enlace válido de YouTube (video, Shorts o youtu.be).');
   const title = f.elements.title.value.trim(); if (!title) throw new Error('Escribe un título para el video.');
-  const body = {title,category_id:f.elements.category_id.value,youtube_id:youtube,description:f.elements.description.value.trim(),keywords:f.elements.keywords.value.trim(),published:f.elements.published.checked};
-  await request('/rest/v1/lsp_member_content' + (id ? '?id=eq.' + id : ''), {method:id ? 'PATCH' : 'POST',body:JSON.stringify(body)});
+  const section = categories.find(c=>c.id===f.elements.category_id.value)?.title;
+  if (!section) throw new Error('Selecciona una sección.');
+  const body = {word:title,section,video_url:'https://www.youtube.com/watch?v='+youtube,description:f.elements.description.value.trim(),variants:f.elements.keywords.value.split(',').map(v=>v.trim()).filter(Boolean),published:f.elements.published.checked};
+  await request('/rest/v1/lsp_content' + (id ? '?id=eq.' + id : ''), {method:id ? 'PATCH' : 'POST',body:JSON.stringify(body)});
   resetEditor(); await loadLibrary(); $('library').hidden = true; status('Video guardado.');
 }); });
 $('categoryForm').addEventListener('submit', e => { e.preventDefault(); run(e.submitter, async () => {
