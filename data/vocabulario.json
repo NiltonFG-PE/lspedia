@@ -630,6 +630,34 @@
     "definicionIngles": ""
   },
   {
+    "palabra": "Ocupado",
+    "variantes": "Ocupada, Ocupados, Ocupadas, Muy ocupado, Muy ocupada, Súper ocupado, Súper ocupada, A tope, A full, Full, Lleno, Llena, Llenos, Llenas, Repleto, Repleta, Saturado, Saturada, Atareado, Atareada, Sobrecargado, Sobrecargada",
+    "video": "P1AP-KHCmxk",
+    "categoria": "Adjetivos",
+    "etiquetas": [],
+    "nivel": "Medio",
+    "idQuiz": "Q1475F03FAE",
+    "imagen": "img/vocabulario/ocupado.webp",
+    "definicion": "",
+    "fechaPublicacion": "08/10/2026",
+    "ingles": "",
+    "definicionIngles": ""
+  },
+  {
+    "palabra": "Libre",
+    "variantes": "Libres, Libertad, Liberado, Liberada, Liberados, Liberadas, Independiente, Autónomo, Autónoma, Sin ataduras, Sin cadenas, Sin restricciones, Sin limitaciones, Sin obstáculos, Sin impedimentos, Sin prohibiciones",
+    "video": "Ma__C6Tya0s",
+    "categoria": "Adjetivos",
+    "etiquetas": [],
+    "nivel": "Fácil",
+    "idQuiz": "Q46FB786C45",
+    "imagen": "img/vocabulario/libre.webp",
+    "definicion": "",
+    "fechaPublicacion": "08/10/2026",
+    "ingles": "",
+    "definicionIngles": ""
+  },
+  {
     "palabra": "Pesado",
     "variantes": "Cargoso, Latoso, Impertinente, Chinchoso",
     "video": "5KF6CAIfQPw",
@@ -1032,6 +1060,20 @@
     "imagen": "img/vocabulario/aburrido.webp",
     "definicion": "",
     "fechaPublicacion": "",
+    "ingles": "",
+    "definicionIngles": ""
+  },
+  {
+    "palabra": "Tranquilo",
+    "variantes": "Calma, Calmado, Sereno, Relajado, Fresh, Sereno, Serena, Relajado, Relajada, Sosegado, Sosegada, Apacible, Pacífico, Pacífica",
+    "video": "LUeqwde5Oes",
+    "categoria": "Emociones",
+    "etiquetas": [],
+    "nivel": "Medio",
+    "idQuiz": "Q9695F03B17",
+    "imagen": "img/vocabulario/tranquilo.webp",
+    "definicion": "",
+    "fechaPublicacion": "08/10/2026",
     "ingles": "",
     "definicionIngles": ""
   },
