@@ -51,6 +51,7 @@ function youtubeId(value) {
     return /^[a-zA-Z0-9_-]{11}$/.test(id || '') ? id : null;
   } catch (_) { return null; }
 }
+const visible = video => video.published && (!video.publish_at || Date.parse(video.publish_at) <= Date.now());
 const normalize = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('es').trim();
 function button(label, action) {
   const el = text('button', label); el.type = 'button'; el.addEventListener('click', () => run(el, action)); return el;
@@ -75,7 +76,7 @@ function renderCategories() {
   for (const category of categories) {
     const el = button('', () => { selected = category.id; $('search').value = ''; renderCategories(); renderVideos(); });
     el.className = 'category'; el.setAttribute('aria-pressed', String(selected === category.id));
-    el.append(text('b', category.title), text('small', content.filter(v => v.category_id === category.id && v.published).length + ' videos')); $('categories').append(el);
+    el.append(text('b', category.title), text('small', content.filter(v => v.category_id === category.id && visible(v)).length + ' videos')); $('categories').append(el);
   }
 }
 function renderVideos() {
@@ -83,11 +84,16 @@ function renderVideos() {
   $('categoryTitle').textContent = category?.title || 'Biblioteca'; $('categoryDescription').textContent = category?.description || '';
   $('searchLabel').textContent = 'Buscar en ' + (category?.title || 'esta sección');
   const terms = normalize($('search').value).split(/\s+/).filter(Boolean);
-  const videos = content.filter(v => v.category_id === selected && v.published && terms.every(term => normalize([v.title,v.description,v.keywords].join(' ')).includes(term)));
+  const videos = content.filter(v => v.category_id === selected && visible(v) && terms.every(term => normalize([v.title,v.description,v.keywords,v.variants,v.topic].join(' ')).includes(term)));
   $('videos').replaceChildren(); $('resultCount').textContent = videos.length ? videos.length + ' resultados' : terms.length ? 'No encontramos videos con esa búsqueda.' : 'Pronto encontrarás contenido en esta sección.';
   for (const video of videos) {
     const el = button('', () => play(video)); el.className = 'video';
-    const image = document.createElement('img'); image.src = 'https://i.ytimg.com/vi/' + video.youtube_id + '/hqdefault.jpg'; image.alt = ''; image.loading = 'lazy';
+    const image = document.createElement('img');
+    const fallback = 'https://i.ytimg.com/vi/' + video.youtube_id + '/hqdefault.jpg';
+    const supplied = String(video.image_url || '');
+    image.src = /^https:\/\//.test(supplied) ? supplied : /^img\//.test(supplied) ? 'https://lspedia.site/' + supplied : fallback;
+    image.addEventListener('error', () => { image.src = fallback; }, {once:true});
+    image.alt = ''; image.loading = 'lazy';
     el.append(image, text('b', video.title), text('p', video.description || 'Ver video')); $('videos').append(el);
   }
 }
