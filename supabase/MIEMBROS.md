@@ -37,9 +37,10 @@ Entrar a Herramientas → Zona de miembros → Administrar.
 - Suspender accesos en el panel. Las siguientes consultas se deniegan al instante
   desde la base de datos; la interfaz comprueba el estado cada minuto y al volver
   a la pestaña. No se puede retirar un enlace de YouTube que alguien ya copió.
-- Para contraseñas olvidadas, gestionar la cuenta en Supabase. Esta primera
-  versión no incluye recuperación automática por correo ni creación de cuentas
-  desde el navegador de LSPedia.
+- Para contraseñas olvidadas, usar «¿Olvidaste tu contraseña?» en el login.
+  El enlace abre la pantalla para crear y confirmar una contraseña nueva.
+  Cambiar la contraseña no aprueba ni reactiva una cuenta suspendida.
+  No se habilita registro público.
 
 ## Seguridad y límites
 
@@ -80,3 +81,21 @@ Referencias oficiales:
 - https://supabase.com/docs/guides/auth/managing-user-data
 - https://supabase.com/docs/guides/auth/general-configuration
 - https://support.google.com/youtube/answer/157177
+
+## Recuperación por correo
+
+En Authentication → URL Configuration, añadir exactamente esta Redirect URL:
+`https://lspedia.site/miembros/?recuperar=1`.
+Mantener las demás direcciones existentes. El correo usa la plantilla de
+restablecimiento de Supabase. No incluir claves secretas en la plantilla.
+
+El remitente predeterminado de Supabase tiene restricciones: comprobar SMTP
+antes de ofrecer recuperación a usuarios externos al equipo del proyecto.
+Sin un SMTP configurado, no prometer envío de correos a todos los miembros.
+No contratar servicios de pago sin autorización.
+
+Verificar con una cuenta de prueba: recibir el correo, abrirlo, crear una nueva
+contraseña, ingresar de nuevo y confirmar que se conserva el estado del miembro.
+Los tokens del enlace se eliminan de la dirección, se validan en Supabase y se
+mantienen solo en memoria durante el cambio. Un enlace inválido o caducado pide
+solicitar otro. Las pruebas locales usan respuestas simuladas; no prueban SMTP.

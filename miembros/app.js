@@ -7,12 +7,14 @@ const ready = /^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/.test(config.supabaseUrl 
 const base = (config.supabaseUrl || '').replace(/\/$/, '');
 const key = 'lspedia_members_session_v1';
 let session = null, profile = null, categories = [], content = [], selected = '', generation = 0;
+let recoverySession = null, recovering = false, recoverySentAt = 0;
 const sectionState = new Map();
 const state = () => { if (!sectionState.has(selected)) sectionState.set(selected, {search:'',topic:'',letter:'',order:'alphabetical'}); return sectionState.get(selected); };
 const text = (tag, value, cls) => { const el = document.createElement(tag); el.textContent = value; if (cls) el.className = cls; return el; };
 function status(message = '') { $('status').textContent = message; }
 function clearPlayer() { $('embed').replaceChildren(); if ($('player').open) $('player').close(); }
 function lock(message = '') {
+  recoverySession = null; recovering = false; $('recoveryForm').hidden = true; $('newPasswordForm').hidden = true; $('loginForm').hidden = false; $('newPasswordForm').reset();
   sectionState.clear(); generation++; session = null; profile = null; content = []; categories = []; selected = '';
   try { sessionStorage.removeItem(key); } catch (_) {}
   clearPlayer(); if ($('contributionDialog').open) $('contributionDialog').close(); $('library').hidden = true; $('admin').hidden = true; $('logout').hidden = true; $('loginPanel').hidden = false;
@@ -189,6 +191,59 @@ $('loginForm').addEventListener('submit', e => { e.preventDefault(); run($('logi
   try { sessionStorage.setItem(key, JSON.stringify(session)); } catch (_) {}
   try { await loadLibrary(); } catch (error) { lock(error.message); }
 }); });
+function recoveryScreen(mode) {
+  $('loginForm').hidden = mode !== 'login';
+  $('recoveryForm').hidden = mode !== 'email';
+  $('newPasswordForm').hidden = mode !== 'password';
+}
+$('forgotPassword').addEventListener('click', () => {
+  status(); $('recoveryEmail').value = $('email').value.trim(); recoveryScreen('email'); $('recoveryEmail').focus();
+});
+$('cancelRecovery').addEventListener('click', () => { status(); recoveryScreen('login'); $('email').focus(); });
+$('cancelNewPassword').addEventListener('click', () => { lock(); $('email').focus(); });
+$('recoveryForm').addEventListener('submit', e => { e.preventDefault(); run($('sendRecovery'), async () => {
+  if (Date.now() - recoverySentAt < 60000) throw new Error('Espera un minuto antes de pedir otro enlace.');
+  await request('/auth/v1/recover?redirect_to=' + encodeURIComponent('https://lspedia.site/miembros/?recuperar=1'), {
+    method:'POST',body:JSON.stringify({email:$('recoveryEmail').value.trim()})
+  }, false);
+  recoverySentAt = Date.now();
+  $('recoveryNotice').textContent = 'Si tu correo tiene una cuenta, recibirás un enlace. Revisa también Spam.';
+}); });
+$('showNewPassword').addEventListener('change', () => {
+  const type = $('showNewPassword').checked ? 'text' : 'password'; $('newPassword').type = type; $('confirmPassword').type = type;
+});
+$('newPasswordForm').addEventListener('submit', e => { e.preventDefault(); run($('savePassword'), async () => {
+  if (!recoverySession || recoverySession.expires_at <= Date.now()) { lock('El enlace venció. Solicita otro.'); return; }
+  const password = $('newPassword').value;
+  if (password.length < 8) throw new Error('Usa al menos 8 caracteres.');
+  if (password !== $('confirmPassword').value) throw new Error('Las contraseñas no coinciden.');
+  const token = recoverySession.access_token;
+  await request('/auth/v1/user', {method:'PUT',headers:{Authorization:'Bearer '+token},body:JSON.stringify({password})}, false);
+  lock('Contraseña guardada. Ingresa con tu nueva contraseña.');
+  await fetch(base+'/auth/v1/logout', {method:'POST',headers:{apikey:config.publishableKey,Authorization:'Bearer '+token},cache:'no-store',credentials:'omit'}).catch(()=>{});
+  $('email').focus();
+}); });
+async function receiveRecovery() {
+  const fragment = new URLSearchParams(location.hash.slice(1));
+  const isRecovery = fragment.get('type') === 'recovery' || new URLSearchParams(location.search).get('recuperar') === '1';
+  const hasAuthFragment = fragment.has('access_token') || fragment.has('error');
+  if (!isRecovery && !hasAuthFragment) return false;
+  // Retirar credenciales de la dirección antes de cualquier consulta.
+  history.replaceState(null,'',location.pathname);
+  lock(); recovering = true; recoveryScreen('password'); $('savePassword').disabled = true;
+  const token = fragment.get('access_token'), duration = Number(fragment.get('expires_in'));
+  if (fragment.has('error') || !token || !Number.isFinite(duration) || duration <= 0 || fragment.get('type') !== 'recovery') {
+    lock('El enlace no es válido o venció. Solicita otro.'); return true;
+  }
+  try {
+    const user = await request('/auth/v1/user', {headers:{Authorization:'Bearer '+token}}, false);
+    if (!user?.id) throw new Error('Invalid recovery');
+    if (!recovering) return true;
+    recoverySession = {access_token:token,expires_at:Date.now()+duration*1000};
+    $('savePassword').disabled = false; $('newPassword').focus();
+  } catch (_) { if (recovering) lock('El enlace no es válido o venció. Solicita otro.'); }
+  return true;
+}
 $('showPassword').addEventListener('click', () => { const show = $('password').type === 'password'; $('password').type = show ? 'text' : 'password'; $('showPassword').setAttribute('aria-label',show ? 'Ocultar contraseña' : 'Mostrar contraseña'); $('showPassword').title = show ? 'Ocultar contraseña' : 'Mostrar contraseña'; $('showPassword').setAttribute('aria-pressed',String(show)); });
 $('logout').addEventListener('click', async () => { const token = session?.access_token; lock(); if (token) await fetch(base + '/auth/v1/logout', {method:'POST',headers:{apikey:config.publishableKey,Authorization:'Bearer ' + token},cache:'no-store'}).catch(() => {}); });
 $('search').addEventListener('input', () => { state().search = $('search').value; renderVideos(); });
@@ -220,13 +275,15 @@ $('categoryForm').addEventListener('submit', e => { e.preventDefault(); run(e.su
   f.reset(); await loadLibrary(); $('library').hidden = true; status('Sección creada.');
 }); });
 if (!ready) {
-  $('loginButton').disabled = true; $('email').disabled = true; $('password').disabled = true;
+  $('forgotPassword').disabled = true; $('sendRecovery').disabled = true; $('loginButton').disabled = true; $('email').disabled = true; $('password').disabled = true;
   status('La zona de miembros está en preparación. El acceso se habilitará cuando esté lista.');
 } else {
+  receiveRecovery().then(handled => { if (handled) return;
   try { const saved = JSON.parse(sessionStorage.getItem(key) || 'null'); if (saved?.access_token && saved?.user?.id && saved.expires_at > Date.now()) session = saved; } catch (_) {}
   if (session) loadLibrary().catch(error => lock(error.message));
-  setInterval(() => { if (session) membership().catch(error => lock(error.message)); }, 60000);
-  document.addEventListener('visibilitychange', () => { if (!document.hidden && session) loadLibrary().catch(error => lock(error.message)); });
+  });
+  setInterval(() => { if (session && !recovering) membership().catch(error => lock(error.message)); }, 60000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && session && !recovering) loadLibrary().catch(error => lock(error.message)); });
 }
 })();
 
