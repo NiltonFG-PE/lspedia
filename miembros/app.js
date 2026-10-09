@@ -15,7 +15,7 @@ function clearPlayer() { $('embed').replaceChildren(); if ($('player').open) $('
 function lock(message = '') {
   sectionState.clear(); generation++; session = null; profile = null; content = []; categories = []; selected = '';
   try { sessionStorage.removeItem(key); } catch (_) {}
-  clearPlayer(); $('library').hidden = true; $('admin').hidden = true; $('logout').hidden = true; $('loginPanel').hidden = false;
+  clearPlayer(); if ($('contributionDialog').open) $('contributionDialog').close(); $('library').hidden = true; $('admin').hidden = true; $('logout').hidden = true; $('loginPanel').hidden = false;
   $('videos').replaceChildren(); $('categories').replaceChildren(); $('adminVideos').replaceChildren(); $('users').replaceChildren();
   $('contentForm').reset(); $('contentId').value = ''; $('adminToggle').hidden = true; renderNavigation(); status(message);
 }
@@ -189,12 +189,16 @@ $('loginForm').addEventListener('submit', e => { e.preventDefault(); run($('logi
   try { sessionStorage.setItem(key, JSON.stringify(session)); } catch (_) {}
   try { await loadLibrary(); } catch (error) { lock(error.message); }
 }); });
-$('showPassword').addEventListener('click', () => { const show = $('password').type === 'password'; $('password').type = show ? 'text' : 'password'; $('showPassword').textContent = show ? 'Ocultar' : 'Mostrar'; $('showPassword').setAttribute('aria-pressed',String(show)); });
+$('showPassword').addEventListener('click', () => { const show = $('password').type === 'password'; $('password').type = show ? 'text' : 'password'; $('showPassword').setAttribute('aria-label',show ? 'Ocultar contraseña' : 'Mostrar contraseña'); $('showPassword').title = show ? 'Ocultar contraseña' : 'Mostrar contraseña'; $('showPassword').setAttribute('aria-pressed',String(show)); });
 $('logout').addEventListener('click', async () => { const token = session?.access_token; lock(); if (token) await fetch(base + '/auth/v1/logout', {method:'POST',headers:{apikey:config.publishableKey,Authorization:'Bearer ' + token},cache:'no-store'}).catch(() => {}); });
 $('search').addEventListener('input', () => { state().search = $('search').value; renderVideos(); });
 $('clearSearch').addEventListener('click', () => { state().search = ''; renderVideos(); $('search').focus(); });
 $('sortOrder').addEventListener('change', () => { state().order = $('sortOrder').value; renderVideos(); });
 $('alphabetToggle').addEventListener('click', () => { $('alphabet').hidden = !$('alphabet').hidden; $('alphabetToggle').setAttribute('aria-expanded',String(!$('alphabet').hidden)); });
+const contributionUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSfbOQn5ZaVy0uP9sIQnqv4QJlhjYj8lHy-UiUU1whHAXZW4Bg/viewform';
+$('contributionLink').href = contributionUrl;
+$('contribute').addEventListener('click', () => run($('contribute'), async () => { if (!await membership()) return; $('contributionDialog').showModal(); }));
+$('contributionClose').addEventListener('click', () => $('contributionDialog').close());
 $('playerClose').addEventListener('click', clearPlayer); $('player').addEventListener('close', () => $('embed').replaceChildren());
 $('adminToggle').addEventListener('click', () => run($('adminToggle'), async () => { if (!await membership() || profile.role !== 'admin') return; $('library').hidden = true; $('admin').hidden = false; renderNavigation(); await loadUsers(); }));
 $('adminClose').addEventListener('click', () => { $('admin').hidden = true; $('library').hidden = false; resetEditor(); renderNavigation(); });
