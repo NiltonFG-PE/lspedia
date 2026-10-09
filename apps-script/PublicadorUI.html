@@ -1575,7 +1575,7 @@
 
 <style id="publicadorPremiumV283Css">
   /* ==========================================================
-     PANEL LSPEDIA v28.7 — navegación Premium + sugerencias aleatorias
+     PANEL LSPEDIA v29.0 — navegación Premium + sugerencias aleatorias
      Solo presentación. No modifica reglas de publicación.
      ========================================================== */
   :root {
@@ -2101,19 +2101,19 @@
 
 <body>
 
-<h1>🛠️ Panel LSPedia <span style="font-size:.62em;font-weight:800;color:#64748b;white-space:nowrap">v28.7</span></h1>
+<h1>🛠️ Panel LSPedia <span style="font-size:.62em;font-weight:800;color:#64748b;white-space:nowrap">v29.0</span></h1>
 
 <div class="subtitulo">
   Publica contenido sin subir imágenes ni copiar rutas manualmente.
 </div>
 
-<div class="version-movil">📱 Panel LSPedia v28.7 · interfaz Premium adaptable</div>
+<div class="version-movil">📱 Panel LSPedia v29.0 · interfaz Premium adaptable</div>
 
 <div class="publicador-shell-tools-v283" id="publicadorShellToolsV283">
   <div class="publicador-shell-section-v283" aria-live="polite">
     <span class="publicador-shell-dot-v283" aria-hidden="true"></span>
     <span id="publicadorShellSectionV283">Diccionario</span>
-    <span class="publicador-shell-version-v283">v28.7</span>
+    <span class="publicador-shell-version-v283">v29.0</span>
   </div>
   <button
     id="btnPantallaCompletaPublicadorV283"
@@ -2243,6 +2243,8 @@
        ======================================================= -->
 
   <section id="diccionario">
+<div class="lsp-fecha-publicacion"><label for="dicFechaPublicacion">Fecha de publicación</label><input id="dicFechaPublicacion" type="date"><div class="campo-ayuda">Por defecto: hoy en Perú. Puedes cambiar la fecha antes de publicar.</div></div>
+
 
     <label>Palabra *</label>
 
@@ -2415,6 +2417,8 @@
   <section
     id="vocabulario"
     class="oculto">
+<div class="lsp-fecha-publicacion"><label for="vocFechaPublicacion">Fecha de publicación</label><input id="vocFechaPublicacion" type="date"><div class="campo-ayuda">Por defecto: hoy en Perú. Puedes cambiar la fecha antes de publicar.</div></div>
+
 
     <div id="vocIdQuizBloque" class="id-quiz-destacado oculto">
       <div class="id-quiz-titulo">🧩 ID Quiz</div>
@@ -2603,6 +2607,8 @@
   <section
     id="alfabetizacion"
     class="oculto">
+<div class="lsp-fecha-publicacion"><label for="alfFechaPublicacion">Fecha de publicación</label><input id="alfFechaPublicacion" type="date"><div class="campo-ayuda">Por defecto: hoy en Perú. Puedes cambiar la fecha antes de publicar.</div></div>
+
 
     <label>Letra *</label>
 
@@ -7085,6 +7091,7 @@ async function publicar() {
     }
 
 
+    datos.fechaPublicacion = document.getElementById(({diccionario:'dic',vocabulario:'voc',alfabetizacion:'alf'})[tipoActual]+'FechaPublicacion').value || lspHoyPublicadorPeru();
     datos.origenWeb = CONTEXTO_PUBLICADOR.modoWeb;
     datos.claveMovil = CONTEXTO_PUBLICADOR.claveMovil;
 
@@ -7527,13 +7534,13 @@ function cargarEstadoTecnicoPublicador() {
 function camposBorradorPorTipo(tipo) {
   const mapa = {
     diccionario: [
-      'dicPalabra','dicVariantes','dicDefinicion','dicCategoria','dicCategoriaNueva','dicEtiquetas','dicVideo'
+      'dicPalabra','dicVariantes','dicDefinicion','dicCategoria','dicCategoriaNueva','dicEtiquetas','dicVideo','dicFechaPublicacion'
     ],
     vocabulario: [
-      'vocPalabra','vocVariantes','vocDefinicion','vocCategoria','vocCategoriaNueva','vocEtiquetas','vocNivel','vocVideo','vocIdQuiz'
+      'vocPalabra','vocVariantes','vocDefinicion','vocCategoria','vocCategoriaNueva','vocEtiquetas','vocNivel','vocVideo','vocIdQuiz','vocFechaPublicacion'
     ],
     alfabetizacion: [
-      'alfCaracter','alfPalabra','alfNivel'
+      'alfCaracter','alfPalabra','alfNivel','alfFechaPublicacion'
     ]
   };
   return mapa[tipo] || [];
@@ -7541,7 +7548,7 @@ function camposBorradorPorTipo(tipo) {
 
 function tieneContenidoBorradorPublicador(datos) {
   if (!datos || !datos.valores) return false;
-  return Object.keys(datos.valores).some(function(id) {
+  return Object.keys(datos.valores).filter(function(id){return !/FechaPublicacion$/.test(id);}).some(function(id) {
     return String(datos.valores[id] || '').trim() !== '';
   });
 }
@@ -8112,6 +8119,8 @@ function limpiarFormularioPublicacion(tipo) {
     limpiarInputArchivoPublicador('alfImagen','previewAlf','quitarAlfImagen');
   }
 
+  var fecha = document.getElementById(({diccionario:'dic',vocabulario:'voc',alfabetizacion:'alf'})[tipo]+'FechaPublicacion');
+  if (fecha) fecha.value = lspHoyPublicadorPeru();
   limpiarEstado();
   ocultarAccionesPostPublicacion();
   limpiarBorradorGuardado();
@@ -9878,5 +9887,45 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 })();
 </script>
 
+<style id="lsp-panel-movil-v29">
+html.modo-movil-real .version-movil{display:none!important}
+html.modo-movil-real .tipos,html.modo-movil-real.publicador-fullscreen-ui .tipos{grid-template-columns:repeat(2,minmax(0,1fr))!important;overflow:visible!important;position:static!important}
+html.modo-movil-real .tipo,html.modo-movil-real.publicador-nav-compacta .tipo{min-width:0!important;max-width:100%!important;min-height:46px!important;font-size:14px!important;line-height:1.3!important;padding:10px 8px!important;white-space:normal!important;overflow-wrap:anywhere}
+html.modo-movil-real body,html.modo-movil-real.publicador-fullscreen-ui body{width:100%!important;max-width:none!important;min-width:0!important;font-size:16px!important;padding:12px!important;min-height:0!important}
+html.modo-movil-real body>h1{font-size:23px!important}
+html.modo-movil-real .subtitulo{font-size:13px!important;margin:4px 0 12px!important}
+html.modo-movil-real label{font-size:14px!important;margin:15px 0 7px!important}
+html.modo-movil-real input,html.modo-movil-real select,html.modo-movil-real textarea{font-size:16px!important;min-height:46px!important;padding:12px!important}
+html.modo-movil-real textarea{min-height:110px!important}
+html.modo-movil-real .nota,html.modo-movil-real .asistente-categoria{font-size:13px!important;padding:12px!important}
+html.modo-movil-real .panel{padding:14px!important}
+html.modo-movil-real .lsp-panel-ayuda p,html.modo-movil-real #lsp-members-editor small{font-size:13px!important}
+html.modo-movil-real #lm-user-create-form,html.modo-movil-real #lsp-members-editor .lm-grid{grid-template-columns:1fr!important}
+html.modo-movil-real .publicador-shell-version-v283{display:inline!important;font-size:11px!important}
+html.modo-movil-real .publicador-fullscreen-label-v283{display:inline!important;font-size:11px!important}
+html.modo-movil-real #lsp-members-editor .lm-check input{width:18px!important;min-height:18px!important;padding:0!important}
+</style>
+<script id="lsp-panel-movil-v29-js">
+(function(){'use strict';
+function adaptar(){
+var tactil=window.matchMedia&&window.matchMedia('(pointer:coarse)').matches;
+var movil=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent||'')||tactil;
+if(!movil)return;
+document.documentElement.classList.add('modo-movil-real');
+/* Algunos navegadores conservan el viewport de escritorio dentro del iframe.
+   Zoom ajusta el ancho de la disposición y conserva el desplazamiento normal. */
+var anchoPantalla=Number(screen.width)||0,ancho=Number(window.innerWidth)||0;
+var escala=anchoPantalla>=240&&anchoPantalla<=600&&ancho>anchoPantalla*1.3?ancho/anchoPantalla:1;
+document.body.style.zoom=String(Math.min(4,Math.max(1,escala)));
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',adaptar,{once:true});else adaptar();
+window.addEventListener('resize',adaptar,{passive:true});
+})();
+</script>
+
+<script id="lsp-fechas-publicador-js">
+function lspHoyPublicadorPeru(){var p=new Intl.DateTimeFormat('en',{timeZone:'America/Lima',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());function v(t){return p.find(function(x){return x.type===t;}).value;}return v('year')+'-'+v('month')+'-'+v('day');}
+(function(){function iniciar(){['dic','voc','alf'].forEach(function(p){var f=document.getElementById(p+'FechaPublicacion');if(f&&!f.value)f.value=lspHoyPublicadorPeru();});}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',iniciar,{once:true});else iniciar();})();
+</script>
 </body>
 </html>
