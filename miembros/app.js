@@ -8,16 +8,47 @@ const base = (config.supabaseUrl || '').replace(/\/$/, '');
 const key = 'lspedia_members_session_v1';
 let session = null, profile = null, categories = [], content = [], selected = '', generation = 0;
 let recoverySession = null, recovering = false, recoverySentAt = 0;
+let favorites = new Set(), recent = [], activeVideo = null;
+const specialViews = new Set(['@favorites','@recent']);
+const incomingId = new URLSearchParams(location.search).get('ficha');
+let pendingShared = /^[0-9a-f-]{36}$/i.test(incomingId || '') ? incomingId : '';
+const sectionCode = title => ({'Señas Internacionales (IS)':'IS','Lengua de Señas Americana (ASL)':'ASL','Contenido para profesores':'Profesores'}[title] || title);
+const canUse = title => profile?.role === 'admin' || profile?.allowed_sections == null || profile.allowed_sections.includes(sectionCode(title));
+const personalKey = () => 'lspedia_members_library_v1_' + session.user.id;
+function readPersonal() {
+  favorites = new Set(); recent = [];
+  try { const saved=JSON.parse(localStorage.getItem(personalKey()) || '{}');
+    favorites=new Set((Array.isArray(saved.favorites)?saved.favorites:[]).filter(v=>typeof v==='string').slice(0,1000));
+    recent=(Array.isArray(saved.recent)?saved.recent:[]).filter(v=>v && typeof v.id==='string' && Number.isFinite(v.at)).slice(0,30);
+  } catch (_) {}
+}
+function savePersonal() {
+  if (!session) return;
+  try { localStorage.setItem(personalKey(),JSON.stringify({favorites:[...favorites].slice(0,1000),recent:recent.slice(0,30)})); }
+  catch (_) { status('Este navegador no pudo guardar tus favoritos.'); }
+}
+function favoriteLabel(id) { return favorites.has(id) ? '♥ Guardado' : '♡ Guardar'; }
+function toggleFavorite(video) {
+  if (!session) return;
+  favorites.has(video.id) ? favorites.delete(video.id) : favorites.add(video.id); savePersonal(); renderVideos();
+  if (activeVideo?.id===video.id) { $('playerFavorite').textContent=favoriteLabel(video.id); $('playerFavorite').setAttribute('aria-pressed',String(favorites.has(video.id))); }
+}
+async function shareVideo(video) {
+  const url=new URL(location.pathname,location.origin);url.searchParams.set('ficha',video.id);
+  if (navigator.share) { try { await navigator.share({title:video.title,url:url.href}); return; } catch(e) { if(e.name==='AbortError') return; } }
+  try { await navigator.clipboard.writeText(url.href); status('Enlace copiado. Se necesita una cuenta autorizada para ver la ficha.'); }
+  catch (_) { const field=$('shareUrl');field.value=url.href;$('shareDialog').showModal();field.select(); }
+}
 const sectionState = new Map();
 const state = () => { if (!sectionState.has(selected)) sectionState.set(selected, {search:'',topic:'',letter:'',order:'alphabetical'}); return sectionState.get(selected); };
 const text = (tag, value, cls) => { const el = document.createElement(tag); el.textContent = value; if (cls) el.className = cls; return el; };
 function status(message = '') { $('status').textContent = message; }
-function clearPlayer() { $('embed').replaceChildren(); if ($('player').open) $('player').close(); }
+function clearPlayer() { activeVideo = null; $('embed').replaceChildren(); if ($('player').open) $('player').close(); }
 function lock(message = '') {
   recoverySession = null; recovering = false; $('recoveryForm').hidden = true; $('newPasswordForm').hidden = true; $('loginForm').hidden = false; $('newPasswordForm').reset();
-  sectionState.clear(); generation++; session = null; profile = null; content = []; categories = []; selected = '';
+  favorites=new Set(); recent=[]; sectionState.clear(); generation++; session = null; profile = null; content = []; categories = []; selected = '';
   try { sessionStorage.removeItem(key); } catch (_) {}
-  clearPlayer(); if ($('contributionDialog').open) $('contributionDialog').close(); $('library').hidden = true; $('admin').hidden = true; $('logout').hidden = true; $('loginPanel').hidden = false;
+  clearPlayer(); if ($('shareDialog').open) $('shareDialog').close(); $('shareUrl').value=''; if ($('contributionDialog').open) $('contributionDialog').close(); $('library').hidden = true; $('admin').hidden = true; $('logout').hidden = true; $('loginPanel').hidden = false;
   $('videos').replaceChildren(); $('categories').replaceChildren(); $('adminVideos').replaceChildren(); $('users').replaceChildren();
   $('contentForm').reset(); $('contentId').value = ''; $('adminToggle').hidden = true; renderNavigation(); status(message);
 }
@@ -39,8 +70,8 @@ async function request(path, options = {}, authenticated = true) {
   return data;
 }
 async function membership() {
-  const rows = await request('/rest/v1/lsp_members?select=role,status&user_id=eq.' + encodeURIComponent(session.user.id));
-  if (!rows?.[0] || rows[0].status !== 'active') { lock('Tu cuenta aún no tiene acceso o ha sido suspendida. Contacta al administrador de LSPedia.'); return false; }
+  const rows = await request('/rest/v1/lsp_members?select=*&user_id=eq.' + encodeURIComponent(session.user.id));
+  if (!rows?.[0] || (rows[0].status !== 'active' || (rows[0].role !== 'admin' && rows[0].expires_at && Date.parse(rows[0].expires_at) <= Date.now()))) { lock('Tu cuenta aún no tiene acceso o ha sido suspendida. Contacta al administrador de LSPedia.'); return false; }
   profile = rows[0]; return true;
 }
 function youtubeId(value) {
@@ -69,12 +100,17 @@ async function loadLibrary() {
     request('/rest/v1/lsp_content?select=*&order=created_at.desc')
   ]);
   if (current !== generation) return;
-  categories = newCategories || []; content = (newContent || []).map(fromDatabase);
-  if (!categories.some(c => c.id === selected)) selected = '';
+  categories = (newCategories || []).filter(c=>canUse(c.title)); content = (newContent || []).map(fromDatabase);
+  if (!specialViews.has(selected) && !categories.some(c => c.id === selected)) selected = '';
   if (!selected && location.hash.startsWith('#seccion=')) { const id = decodeURIComponent(location.hash.slice(9)); if (categories.some(c => c.id === id)) selected = id; }
   $('loginPanel').hidden = true; $('library').hidden = adminWasOpen && profile.role === 'admin'; $('admin').hidden = !adminWasOpen || profile.role !== 'admin'; $('logout').hidden = false;
   $('adminToggle').hidden = profile.role !== 'admin'; renderCategories(); renderVideos(); renderNavigation();
   if (profile.role === 'admin') renderAdmin();
+  $('accessBadge').hidden=!profile.expires_at || profile.role==='admin';
+  if (!$('accessBadge').hidden) $('accessBadge').textContent='Acceso hasta '+new Intl.DateTimeFormat('es-PE',{dateStyle:'medium',timeZone:'America/Lima'}).format(new Date(Date.parse(profile.expires_at)-1));
+  if (pendingShared) { const id=pendingShared; pendingShared='';const video=content.find(v=>v.id===id && visible(v) && categories.some(c=>c.id===v.category_id));
+    if (video) {openSection(video.category_id);await play(video);} else status('Esta ficha no está disponible para tu cuenta.'); }
+
 }
 function fromDatabase(row) {
   const sectionNames = {IS:'Señas Internacionales (IS)',ASL:'Lengua de Señas Americana (ASL)',Tutoriales:'Tutoriales',Profesores:'Contenido para profesores'};
@@ -86,10 +122,11 @@ function renderNavigation() {
   $('memberBack').hidden = !internal; $('exitMembers').hidden = internal;
   $('exitMembers').textContent = session ? 'Salir a Herramientas ↗' : '← Volver a LSPedia';
   $('memberBack').textContent = !$('admin').hidden ? '← Volver a la biblioteca' : '← Zona de miembros';
+  $('openFavorites').setAttribute('aria-pressed',String(selected==='@favorites')); $('openRecent').setAttribute('aria-pressed',String(selected==='@recent'));
   $('sectionPanel').hidden = !selected; $('categories').hidden = Boolean(selected); $('libraryWelcome').hidden = Boolean(selected);
 }
 function openSection(id, push = true) {
-  if (!categories.some(c => c.id === id)) return;
+  if (!specialViews.has(id) && !categories.some(c => c.id === id)) return;
   selected = id;
   if (push) { if (!location.hash || location.hash === '#biblioteca') history.replaceState(null,'','#biblioteca'); history.pushState(null,'','#seccion='+encodeURIComponent(id)); }
   renderCategories(); renderVideos(); renderNavigation();
@@ -99,23 +136,30 @@ function showLibraryHome() {
   history.replaceState(null,'','#biblioteca'); renderCategories(); renderNavigation();
 }
 $('memberBack').addEventListener('click', () => { if (!$('admin').hidden) { $('adminClose').click(); renderNavigation(); } else showLibraryHome(); });
-window.addEventListener('popstate', () => { if (!session) return; const id = location.hash.startsWith('#seccion=') ? decodeURIComponent(location.hash.slice(9)) : ''; if (categories.some(c=>c.id===id)) openSection(id,false); else showLibraryHome(); });
+window.addEventListener('popstate', () => { if (!session) return; const id = location.hash.startsWith('#seccion=') ? decodeURIComponent(location.hash.slice(9)) : ''; if (specialViews.has(id) || categories.some(c=>c.id===id)) openSection(id,false); else showLibraryHome(); });
+function sectionIcon(title) {
+  const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 48 48');svg.setAttribute('aria-hidden','true');
+  const paths=title.includes('(IS)') || title.includes('(ASL)') ? ['M24 5a19 19 0 1 0 0 38 19 19 0 0 0 0-38Z','M5 24h38M24 5c-10 10-10 28 0 38M24 5c10 10 10 28 0 38M9 13h30M9 35h30'] : title==='Tutoriales' ? ['M10 7h28a4 4 0 0 1 4 4v26a4 4 0 0 1-4 4H10a4 4 0 0 1-4-4V11a4 4 0 0 1 4-4Z','m20 16 12 8-12 8Z'] : ['m3 17 21-10 21 10-21 10Z','M12 23v11c8 6 16 6 24 0V23M45 18v16'];
+  paths.forEach(d=>{const path=document.createElementNS(ns,'path');path.setAttribute('d',d);svg.append(path);});return svg;
+}
 function renderCategories() {
   $('categories').replaceChildren();
   for (const category of categories) {
     const el = button('', () => { openSection(category.id); });
     el.className = 'category'; el.setAttribute('aria-pressed', String(selected === category.id));
     const symbol = text('span',category.title.includes('(IS)') ? 'IS' : category.title.includes('(ASL)') ? 'ASL' : category.title === 'Tutoriales' ? '↗' : category.title.includes('profesores') ? '✦' : category.title.slice(0,2).toUpperCase(),'category-symbol');
-    el.append(symbol, text('b', category.title), text('small', content.filter(v => v.category_id === category.id && visible(v)).length + ' videos'),text('span','↗','category-arrow')); $('categories').append(el);
+    symbol.append(sectionIcon(category.title));el.append(symbol, text('b', category.title), text('small', content.filter(v => v.category_id === category.id && visible(v)).length + ' videos'),text('span','↗','category-arrow')); $('categories').append(el);
   }
 }
 function renderVideos() {
   const category = categories.find(c => c.id === selected), filters = state();
+  const specialTitle=selected==='@favorites'?'Favoritos':selected==='@recent'?'Últimos vistos':'';
+  $('personalHint').hidden=!specialViews.has(selected);
   $('search').value = filters.search; $('sortOrder').value = filters.order;
   $('clearSearch').hidden = !filters.search;
-  $('categoryTitle').textContent = category?.title || 'Biblioteca'; 
-  $('searchLabel').textContent = 'Buscar en ' + (category?.title || 'esta sección');
-  const sectionVideos = content.filter(v => v.category_id === selected && visible(v));
+  $('categoryTitle').textContent = specialTitle || category?.title || 'Biblioteca'; 
+  $('searchLabel').textContent = 'Buscar en ' + (specialTitle || category?.title || 'esta sección');
+  const sectionVideos = content.filter(v => visible(v) && categories.some(c=>c.id===v.category_id) && (selected==='@favorites' ? favorites.has(v.id) : selected==='@recent' ? recent.some(r=>r.id===v.id) : v.category_id === selected));
   const topics = [...new Set(sectionVideos.map(v => v.topic || 'General'))].sort((a,b)=>a.localeCompare(b,'es'));
   if (filters.topic && !topics.includes(filters.topic)) filters.topic = '';
   $('topics').replaceChildren();
@@ -132,19 +176,23 @@ function renderVideos() {
   const terms = normalize(filters.search).split(/\s+/).filter(Boolean);
   const initial = value => String(value || '').trim().slice(0,1).toLocaleUpperCase('es').normalize('NFD').replace(/([AEIOU])[\u0300-\u036f]/g,'$1').normalize('NFC');
   const videos = sectionVideos.filter(v => (!filters.topic || (v.topic || 'General') === filters.topic) && (!filters.letter || initial(v.title) === filters.letter) && terms.every(term => normalize([v.title,v.description,v.keywords,v.variants,v.topic].join(' ')).includes(term)));
-  videos.sort(filters.order === 'recent' ? (a,b) => (Date.parse(b.publish_at)||0)-(Date.parse(a.publish_at)||0) || a.title.localeCompare(b.title,'es') : (a,b) => a.title.localeCompare(b.title,'es'));
+  videos.sort(selected==='@recent' ? (a,b)=>(recent.find(r=>r.id===b.id)?.at||0)-(recent.find(r=>r.id===a.id)?.at||0) : filters.order === 'recent' ? (a,b) => (Date.parse(b.publish_at)||0)-(Date.parse(a.publish_at)||0) || a.title.localeCompare(b.title,'es') : (a,b) => a.title.localeCompare(b.title,'es'));
   $('videos').replaceChildren(); $('resultCount').textContent = videos.length + (videos.length === 1 ? ' resultado' : ' resultados');
   if (!videos.length) {
-    const empty = text('div','','empty'); empty.append(text('h3',sectionVideos.length ? 'No encontramos coincidencias' : 'Esta sección está en preparación'),text('p',sectionVideos.length ? 'Prueba otra palabra, categoría o letra del índice.' : 'Todavía no hay publicaciones disponibles.')); $('videos').append(empty);
+    const empty = text('div','','empty'); empty.append(text('h3',sectionVideos.length ? 'No encontramos coincidencias' : selected==='@favorites' ? 'Guarda lo que te gusta' : selected==='@recent' ? 'Aquí aparecerán los videos que abras' : 'Esta sección está en preparación'),text('p',sectionVideos.length ? 'Prueba otra palabra, categoría o letra del índice.' : selected==='@favorites' ? 'Pulsa el corazón de una ficha.' : selected==='@recent' ? 'Elige un video de tu biblioteca.' : 'Todavía no hay publicaciones disponibles.')); $('videos').append(empty);
   }
   for (const video of videos) {
-    const el = button('', () => play(video)); el.className = 'video'; el.setAttribute('aria-label','Ver video: '+video.title);
+    const card = text('article','','video');
+    const el = button('', () => play(video)); el.className = 'video-open'; el.setAttribute('aria-label','Ver video: '+video.title);
     const image = document.createElement('img');
     const fallback = 'https://i.ytimg.com/vi/' + video.youtube_id + '/hqdefault.jpg';
     const supplied = String(video.image_url || '');
     image.src = /^https:\/\//.test(supplied) ? supplied : /^img\//.test(supplied) ? 'https://lspedia.site/' + supplied : fallback;
     image.addEventListener('error', () => { image.src = fallback; }, {once:true}); image.alt = ''; image.loading = 'lazy';
-    el.append(image, text('b', video.title), text('small',video.topic || 'General','topic'),text('p', video.variants ? 'Variantes: '+video.variants : video.description || 'Ver video')); $('videos').append(el);
+    el.append(image, text('b', video.title), text('small',video.topic || 'General','topic'),text('p', video.variants ? 'Variantes: '+video.variants : video.description || 'Ver video')); const actions=text('div','','video-actions');
+    const favorite=button(favoriteLabel(video.id),()=>toggleFavorite(video));favorite.setAttribute('aria-pressed',String(favorites.has(video.id)));favorite.setAttribute('aria-label',favoriteLabel(video.id)+': '+video.title);
+    const share=button('↗ Compartir',()=>shareVideo(video));share.setAttribute('aria-label','Compartir ficha: '+video.title);
+    actions.append(favorite,share);card.append(el,actions);$('videos').append(card);
   }
 }
 async function play(video) {
@@ -156,7 +204,9 @@ async function play(video) {
   clearPlayer(); $('playerTitle').textContent = rows[0].title;
   const frame = document.createElement('iframe'); frame.title = rows[0].title; frame.src = 'https://www.youtube-nocookie.com/embed/' + rows[0].youtube_id;
   frame.allow = 'encrypted-media; picture-in-picture; fullscreen'; frame.allowFullscreen = true; frame.referrerPolicy = 'strict-origin-when-cross-origin';
-  $('embed').append(frame); $('player').showModal();
+  $('embed').append(frame); activeVideo=rows[0];
+  recent=[{id:video.id,at:Date.now()},...recent.filter(r=>r.id!==video.id)].slice(0,30);savePersonal();
+  $('playerFavorite').textContent=favoriteLabel(video.id);$('playerFavorite').setAttribute('aria-pressed',String(favorites.has(video.id)));$('player').showModal();
 }
 function resetEditor() { $('contentForm').reset(); $('contentId').value = ''; $('editorTitle').textContent = 'Añadir video'; }
 function renderAdmin() {
@@ -188,6 +238,7 @@ async function loadUsers() {
 $('loginForm').addEventListener('submit', e => { e.preventDefault(); run($('loginButton'), async () => {
   const data = await request('/auth/v1/token?grant_type=password', {method:'POST',body:JSON.stringify({email:$('email').value.trim(),password:$('password').value})}, false);
   $('password').value = ''; generation++; session = {access_token:data.access_token,expires_at:Date.now() + data.expires_in * 1000,user:{id:data.user.id}};
+  readPersonal();
   try { sessionStorage.setItem(key, JSON.stringify(session)); } catch (_) {}
   try { await loadLibrary(); } catch (error) { lock(error.message); }
 }); });
@@ -246,6 +297,11 @@ async function receiveRecovery() {
 }
 $('showPassword').addEventListener('click', () => { const show = $('password').type === 'password'; $('password').type = show ? 'text' : 'password'; $('showPassword').setAttribute('aria-label',show ? 'Ocultar contraseña' : 'Mostrar contraseña'); $('showPassword').title = show ? 'Ocultar contraseña' : 'Mostrar contraseña'; $('showPassword').setAttribute('aria-pressed',String(show)); });
 $('logout').addEventListener('click', async () => { const token = session?.access_token; lock(); if (token) await fetch(base + '/auth/v1/logout', {method:'POST',headers:{apikey:config.publishableKey,Authorization:'Bearer ' + token},cache:'no-store'}).catch(() => {}); });
+$('openFavorites').addEventListener('click',()=>openSection('@favorites'));
+$('openRecent').addEventListener('click',()=>openSection('@recent'));
+$('playerFavorite').addEventListener('click',()=>{if(activeVideo)toggleFavorite(activeVideo);});
+$('playerShare').addEventListener('click',()=>run($('playerShare'),()=>activeVideo && shareVideo(activeVideo)));
+$('shareClose').addEventListener('click',()=>$('shareDialog').close());
 $('search').addEventListener('input', () => { state().search = $('search').value; renderVideos(); });
 $('clearSearch').addEventListener('click', () => { state().search = ''; renderVideos(); $('search').focus(); });
 $('sortOrder').addEventListener('change', () => { state().order = $('sortOrder').value; renderVideos(); });
@@ -280,7 +336,7 @@ if (!ready) {
 } else {
   receiveRecovery().then(handled => { if (handled) return;
   try { const saved = JSON.parse(sessionStorage.getItem(key) || 'null'); if (saved?.access_token && saved?.user?.id && saved.expires_at > Date.now()) session = saved; } catch (_) {}
-  if (session) loadLibrary().catch(error => lock(error.message));
+  if (session) {readPersonal();loadLibrary().catch(error => lock(error.message));}
   });
   setInterval(() => { if (session && !recovering) membership().catch(error => lock(error.message)); }, 60000);
   document.addEventListener('visibilitychange', () => { if (!document.hidden && session && !recovering) loadLibrary().catch(error => lock(error.message)); });

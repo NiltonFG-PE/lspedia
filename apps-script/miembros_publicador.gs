@@ -212,10 +212,12 @@ function lspMiembrosUsuariosListar(datos) {
   const usuarios=respuesta.users || [];
   const ids=usuarios.map(function(u){return u.id;});
   ids.forEach(lspMiembrosUsuarioId_);
-  const miembros=ids.length?lspMiembrosApi_('lsp_members?select=user_id,role,status&user_id=in.('+ids.join(',')+')','get'):[];
+  const miembros=ids.length?lspMiembrosApi_('lsp_members?select=*&user_id=in.('+ids.join(',')+')','get'):[];
   const mapa={};miembros.forEach(function(m){mapa[m.user_id]=m;});
-  return {configurado:true,pagina:pagina,siguiente:respuesta.last_page?pagina<Number(respuesta.last_page):usuarios.length===50,usuarios:usuarios.map(function(u){
-    const m=mapa[u.id];return {user_id:u.id,email:u.email || '',role:m?m.role:'member',status:m?m.status:'pending',confirmado:!!u.email_confirmed_at};
+  let accessFeatures=false;try {accessFeatures=Number(lspMiembrosApi_('rpc/lsp_member_features','post',{}).version)>=2;} catch(_) {}
+  const sections=lspMiembrosApi_('lsp_member_categories?select=title&order=position.asc','get').map(function(c){return {title:c.title,code:({'Señas Internacionales (IS)':'IS','Lengua de Señas Americana (ASL)':'ASL','Contenido para profesores':'Profesores'})[c.title] || c.title};});
+  return {secciones:sections,configurado:true,pagina:pagina,siguiente:respuesta.last_page?pagina<Number(respuesta.last_page):usuarios.length===50,usuarios:usuarios.map(function(u){
+    const m=mapa[u.id];return {user_id:u.id,email:u.email || '',role:m?m.role:'member',status:m?m.status:'pending',confirmado:!!u.email_confirmed_at,expires_at:m?m.expires_at || null:null,allowed_sections:m?m.allowed_sections==null?null:m.allowed_sections:null,accessReady:accessFeatures && !!m && Object.prototype.hasOwnProperty.call(m,'allowed_sections')};
   })};
 }
 function lspMiembrosUsuarioId_(id) {
@@ -237,5 +239,65 @@ function lspMiembrosUsuarioEstado(datos) {
     else resultado=lspMiembrosApi_('lsp_members?on_conflict=user_id','post',{user_id:id,role:'member',status:datos.estado},'resolution=ignore-duplicates,return=representation');
     if(!resultado || resultado.length!==1 || resultado[0].role!=='member' || resultado[0].status!==datos.estado)throw new Error('El acceso cambió. Actualiza la lista antes de continuar.');
     return {ok:true,mensaje:datos.estado==='active'?'Acceso activado.':'Acceso suspendido. El contenido protegido queda bloqueado para esta cuenta.'};
+  } finally {lock.releaseLock();}
+}
+
+/** Crear una cuenta pendiente desde el panel privado; contraseñas nunca van a Sheets ni logs. */
+function lspMiembrosUsuarioCrear(datos) {
+  lspMiembrosAuth_(datos);
+  const email=lspMiembrosTexto_(datos.email).toLowerCase(),password=datos.password;
+  if(email.length>254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))throw new Error('Escribe un correo válido.');
+  if(typeof password!=='string' || password.length<12 || password.length>128)throw new Error('Usa una contraseña inicial de 12 a 128 caracteres.');
+  const lock=LockService.getScriptLock();if(!lock.tryLock(30000))throw new Error('Publicador ocupado.');
+  try {
+    const user=lspMiembrosRequest_('/auth/v1/admin/users','post',{email:email,password:password,email_confirm:true});
+    lspMiembrosUsuarioId_(user.id);
+    try {lspMiembrosApi_('lsp_members?on_conflict=user_id','post',{user_id:user.id,role:'member',status:'pending'},'resolution=ignore-duplicates');}
+    catch(e){return {ok:true,mensaje:'Cuenta creada sin acceso. Actualiza Usuarios antes de activarla.'};}
+    return {ok:true,mensaje:'Cuenta creada, pendiente de aprobación. Activa su acceso desde Usuarios.'};
+  } finally {lock.releaseLock();}
+}
+function lspMiembrosUsuarioAcceso(datos) {
+  lspMiembrosAuth_(datos);lspMiembrosUsuarioId_(datos.user_id);
+  if(datos.sections!==null && (!Array.isArray(datos.sections) || datos.sections.length>100 || datos.sections.some(function(s){return typeof s!=='string' || s.length>100;})))throw new Error('Secciones inválidas.');
+  const expiry=datos.expiry?new Date(Date.parse(lspMiembrosFecha_(datos.expiry))+86400000).toISOString():null;
+  const result=lspMiembrosApi_('rpc/lsp_set_member_access','post',{target_user:datos.user_id,new_sections:datos.sections,new_expiry:expiry,expected_access:datos.expectedAccess});
+  if(!result || !result.ok)throw new Error('No se pudo guardar el acceso.');
+  return {ok:true,mensaje:'Secciones y vencimiento guardados. El servidor aplica estos límites.'};
+}
+
+const LSP_MIEMBROS_COLABORACIONES_FOLDER='1RxHETWDjgkAsPj_emlywyfFkbpe3Oj113Ge1kVkF-TbqpCKHL1MV6VT4Lu5U5vm7-pbUlDUZ';
+function lspMiembrosColaboracionesHoja_() {
+  const ss=SpreadsheetApp.openById(LSP_MIEMBROS_SPREADSHEET_ID);let sh=ss.getSheetByName('Colaboraciones');
+  if(!sh){sh=ss.insertSheet('Colaboraciones');sh.appendRow(['idArchivo','nombre','estado','nota','revision']);sh.setFrozenRows(1);}
+  return sh;
+}
+function lspMiembrosColaboracionesListar(datos) {
+  lspMiembrosAuth_(datos);
+  const sh=lspMiembrosColaboracionesHoja_(),mapa={};
+  if(sh.getLastRow()>1)sh.getRange(2,1,sh.getLastRow()-1,5).getValues().forEach(function(r){mapa[r[0]]={estado:r[2],nota:r[3],revision:String(r[4])};});
+  const folder=DriveApp.getFolderById(LSP_MIEMBROS_COLABORACIONES_FOLDER),files=[];
+  // Google Forms crea subcarpetas por pregunta. Solo revisar dentro de la carpeta configurada.
+  const folders=[folder],children=folder.getFolders();while(children.hasNext())folders.push(children.next());
+  folders.forEach(function(f){const it=f.getFiles();while(it.hasNext()){const file=it.next();if(file.getMimeType().indexOf('video/')!==0)continue;const stored=mapa[file.getId()] || {};files.push({id:file.getId(),nombre:file.getName(),url:file.getUrl(),fecha:file.getDateCreated().toISOString(),bytes:file.getSize(),estado:stored.estado || 'Pendiente',nota:stored.nota || '',revision:stored.revision || ''});}});
+  files.sort(function(a,b){return b.fecha.localeCompare(a.fecha);});
+  return {registros:files,mensaje:files.length+' videos recibidos. Aprobar no publica el video.'};
+}
+function lspMiembrosColaboracionEstado(datos) {
+  lspMiembrosAuth_(datos);
+  if(typeof datos.id!=='string' || !/^[A-Za-z0-9_-]{10,}$/.test(datos.id) || ['Pendiente','Aprobado','Descartado'].indexOf(datos.estado)===-1)throw new Error('Colaboración inválida.');
+  if(typeof datos.nota!=='string' || datos.nota.length>1000)throw new Error('Nota demasiado larga.');
+  const lock=LockService.getScriptLock();if(!lock.tryLock(30000))throw new Error('Publicador ocupado.');
+  try {
+    // Evita escribir estados sobre archivos ajenos a la carpeta de recepción.
+    const file=DriveApp.getFileById(datos.id),parents=file.getParents();let permitted=false;
+    while(parents.hasNext()){const p=parents.next();if(p.getId()===LSP_MIEMBROS_COLABORACIONES_FOLDER)permitted=true;const ancestors=p.getParents();while(ancestors.hasNext())if(ancestors.next().getId()===LSP_MIEMBROS_COLABORACIONES_FOLDER)permitted=true;}
+    if(!permitted || file.getMimeType().indexOf('video/')!==0)throw new Error('Archivo fuera de la carpeta de colaboraciones.');
+    const sh=lspMiembrosColaboracionesHoja_(),rows=sh.getLastRow()>1?sh.getRange(2,1,sh.getLastRow()-1,5).getValues():[];
+    const index=rows.findIndex(function(r){return r[0]===datos.id;});
+    if(String(index>=0?rows[index][4]:'')!==String(datos.revision || ''))throw new Error('La revisión cambió. Actualiza la lista.');
+    const safe=function(v){return /^[=+@-]/.test(v)?"'"+v:v;};
+    sh.getRange(index>=0?index+2:sh.getLastRow()+1,1,1,5).setValues([[datos.id,safe(file.getName()),datos.estado,safe(datos.nota),Utilities.getUuid()]]);
+    return {ok:true,mensaje:'Revisión guardada. El archivo se conserva en Drive.'};
   } finally {lock.releaseLock();}
 }

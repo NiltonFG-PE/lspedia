@@ -97,3 +97,38 @@ Los usuarios y sus accesos permanecen en Supabase, no en la hoja privada ni en G
 Conexión completada con autorización del propietario. La URL y la clave secreta están guardadas en Script Properties; la clave no está en el repositorio ni en la hoja. Se aplicó `supabase/miembros-publisher-permissions.sql` tras confirmar el acceso del servidor: lectura/escritura de contenido y lectura/creación de miembros, con actualización restringida a status en cuentas existentes. No modifica anon, authenticated ni RLS.
 
 Comprobación real desde el Publicador: Usuarios muestra la cuenta administradora protegida y la sincronización del catálogo finaliza correctamente. La hoja aún está vacía: la publicación de la primera ficha se comprobará cuando exista contenido real. Activación/suspensión y controles de concurrencia fueron probados con APIs simuladas; no se alteró el acceso de ninguna cuenta real durante la comprobación.
+
+## Mejoras de miembros, versión 2
+
+Instalar los archivos actualizados `miembros_publicador.gs` y
+`PublicadorMiembrosUI.html` en el proyecto existente. Publicar una nueva versión
+sobre la misma implementación móvil. No crear otra hoja ni otro publicador.
+
+- Usuarios → Crear usuario: correo y contraseña inicial (mínimo 12 caracteres).
+  Crea una cuenta pendiente; nunca escribe contraseñas en la hoja ni las devuelve.
+  Después, activar su acceso. El administrador sigue protegido.
+- Usuarios → Secciones y vencimiento: requiere aplicar primero
+  `supabase/miembros-mejoras.sql` sobre las tablas existentes. El control queda
+  desactivado si los campos todavía no existen. Una fecha incluye todo ese día
+  en Lima. Sin fecha no vence; todas las secciones usa NULL; ninguna usa [].
+- Colaboraciones: lee la carpeta privada creada por Google Forms y guarda
+  revisiones en la pestaña Colaboraciones del archivo privado de miembros.
+  Pendiente / Aprobado / Descartado no mueve, borra ni publica archivos.
+  Solo archivos de video contenidos en esa carpeta pueden revisarse.
+
+La biblioteca web incluye favoritos y últimos videos abiertos por cuenta y
+por navegador. Guarda solo IDs y fechas en el dispositivo, nunca títulos ni
+contraseñas. No sincroniza favoritos entre dispositivos ni recupera el segundo
+exacto de reproducción. Las fichas compartidas piden acceso autorizado.
+
+### Validación y activación
+
+Las pruebas locales cubren permisos por sección, vencimiento, suspensión,
+cuentas protegidas, creación pendiente, revisiones, búsquedas y aislamiento
+entre cuentas. Usan APIs simuladas y PostgreSQL local; no prueban el correo.
+
+Pendientes para activar las funciones administrativas: aplicar la migración
+SQL, instalar ambos archivos en Apps Script y verificar el remitente de correo
+en Authentication. Nunca repetir la migración inicial ni cambiar el registro
+público para estas mejoras. La recuperación necesita la Redirect URL exacta
+`https://lspedia.site/miembros/?recuperar=1` y un SMTP apto para los miembros.
