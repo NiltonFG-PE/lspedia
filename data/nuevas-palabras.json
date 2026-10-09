@@ -1,7 +1,7 @@
 {
-  "generadoEn": "2026-10-09T02:14:38Z",
+  "generadoEn": "2026-10-09T02:54:04Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 195,
+  "maxItems": 198,
   "diasEtiquetaNuevo": 14,
   "items": [
     {
@@ -171,6 +171,33 @@
       "palabra": "Libre",
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/libre.webp",
+      "fecha": "2026-10-08T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Vacío",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/vacio.webp",
+      "fecha": "2026-10-08T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Duro",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/duro.webp",
+      "fecha": "2026-10-08T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Suave",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/suave.webp",
       "fecha": "2026-10-08T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
