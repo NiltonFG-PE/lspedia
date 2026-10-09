@@ -1,9 +1,27 @@
 {
-  "generadoEn": "2026-10-09T03:02:03Z",
+  "generadoEn": "2026-10-09T16:08:45Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 199,
+  "maxItems": 202,
   "diasEtiquetaNuevo": 14,
   "items": [
+    {
+      "id": "",
+      "palabra": "Oscuro",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/oscuro.webp",
+      "fecha": "2026-10-09T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Cerca",
+      "categoria": "Adverbios",
+      "imagen": "img/vocabulario/cerca-2.webp",
+      "fecha": "2026-10-09T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
     {
       "id": "",
       "palabra": "Joven",
@@ -153,6 +171,15 @@
       "palabra": "Alegre",
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/alegre.webp",
+      "fecha": "2026-10-08T05:00:00Z",
+      "origenFecha": "fechaPublicacion",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Nervioso",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/nervioso.webp",
       "fecha": "2026-10-08T05:00:00Z",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
