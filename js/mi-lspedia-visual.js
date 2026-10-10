@@ -105,7 +105,7 @@
       .mi-lsp-visual-btn[data-action="favoritos"] .mi-lsp-visual-icon{background:linear-gradient(145deg,#fff1f2,#ffe4e6)}
       .mi-lsp-visual-btn[data-action="recientes"] .mi-lsp-visual-icon{background:linear-gradient(145deg,#f5f3ff,#ede9fe)}
       .mi-lsp-visual-btn[data-action="descubrir"] .mi-lsp-visual-icon{background:linear-gradient(145deg,#fff8d8,#ffe992)}
-      .mi-lsp-visual-btn b{font-size:.80rem}.mi-lsp-visual-btn small{font-size:.62rem;color:#7b8a9d;max-width:130px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      .mi-lsp-visual-btn>span:last-child{display:flex;flex-direction:column;gap:4px;min-width:0;max-width:100%;line-height:1.4}.mi-lsp-visual-btn b{display:block;font-size:.80rem}.mi-lsp-visual-btn small{display:block;font-size:.62rem;color:#7b8a9d;max-width:130px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
       .mi-lsp-discovery-wrap{margin:-3px 0 16px}
       .mi-lsp-discovery-wrap[hidden]{display:none!important}
       .mi-lsp-discovery-card{position:relative;display:grid;grid-template-columns:92px minmax(0,1fr) auto;align-items:center;gap:15px;padding:13px 14px;border:1px solid rgba(231,182,22,.28);border-radius:24px;background:linear-gradient(135deg,#fffdf1 0%,#fff4b8 52%,#eef6ff 100%);box-shadow:0 13px 30px rgba(146,103,11,.10);overflow:hidden;animation:miLspDiscoverIn .28s cubic-bezier(.2,.8,.2,1)}
@@ -190,7 +190,7 @@
     if(!dash){
       const body=$('.mi-lsp-body',panel),smart=$('.mi-lsp-smart-wrap',panel);if(!body)return false;
       dash=document.createElement('div');dash.className='mi-lsp-visual-dashboard';
-      dash.innerHTML='<div class="mi-lsp-progress-card"><div class="mi-lsp-ring"><div class="mi-lsp-ring-copy"><strong>0%</strong><small>progreso</small></div></div></div><div class="mi-lsp-visual-actions"><button class="mi-lsp-visual-btn" data-action="continuar"><span class="mi-lsp-visual-icon">▶️</span><span><b>Seguir</b><small>Última palabra</small></span></button><button class="mi-lsp-visual-btn" data-action="favoritos"><span class="mi-lsp-visual-icon">❤️</span><span><b>Favoritos</b><small>0 guardados</small></span></button><button class="mi-lsp-visual-btn" data-action="recientes"><span class="mi-lsp-visual-icon">🕘</span><span><b>Recientes</b><small>0 vistos</small></span></button><button class="mi-lsp-visual-btn" data-action="descubrir"><span class="mi-lsp-visual-icon">✨</span><span><b>Descubrir</b><small>Para ti</small></span></button></div>';
+      dash.innerHTML='<div class="mi-lsp-progress-card"><div class="mi-lsp-ring"><div class="mi-lsp-ring-copy"><strong>0%</strong><small>progreso</small></div></div></div><div class="mi-lsp-visual-actions"><button class="mi-lsp-visual-btn" data-action="continuar"><span class="mi-lsp-visual-icon">▶️</span><span><b>Seguir</b> <small>Última palabra</small></span></button><button class="mi-lsp-visual-btn" data-action="favoritos"><span class="mi-lsp-visual-icon">❤️</span><span><b>Favoritos</b> <small>0 guardados</small></span></button><button class="mi-lsp-visual-btn" data-action="recientes"><span class="mi-lsp-visual-icon">🕘</span><span><b>Recientes</b> <small>0 vistos</small></span></button><button class="mi-lsp-visual-btn" data-action="descubrir"><span class="mi-lsp-visual-icon">✨</span><span><b>Descubrir</b> <small>Para ti</small></span></button></div>';
       if(smart)body.insertBefore(dash,smart);else body.prepend(dash);
       conectarDashboard(dash);
     }
