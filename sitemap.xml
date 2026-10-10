@@ -1061,6 +1061,11 @@
         <priority>0.8</priority>
     </url>
     <url>
+        <loc>https://lspedia.site/vocabulario/fuego-naturaleza/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
         <loc>https://lspedia.site/categoria/diccionario/ciencia/</loc>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
@@ -1152,6 +1157,11 @@
     </url>
     <url>
         <loc>https://lspedia.site/categoria/vocabulario/emociones/</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/categoria/vocabulario/naturaleza/</loc>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
     </url>
