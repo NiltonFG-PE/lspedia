@@ -1575,7 +1575,7 @@
 
 <style id="publicadorPremiumV283Css">
   /* ==========================================================
-     PANEL LSPEDIA v29.1 — navegación Premium + sugerencias aleatorias
+     PANEL LSPEDIA v30.0 — navegación Premium + sugerencias aleatorias
      Solo presentación. No modifica reglas de publicación.
      ========================================================== */
   :root {
@@ -2101,19 +2101,19 @@
 
 <body>
 
-<h1>🛠️ Panel LSPedia <span style="font-size:.62em;font-weight:800;color:#64748b;white-space:nowrap">v29.1</span></h1>
+<h1>🛠️ Panel LSPedia <span style="font-size:.62em;font-weight:800;color:#64748b;white-space:nowrap">v30.0</span></h1>
 
 <div class="subtitulo">
   Publica contenido sin subir imágenes ni copiar rutas manualmente.
 </div>
 
-<div class="version-movil">📱 Panel LSPedia v29.1 · interfaz Premium adaptable</div>
+<div class="version-movil">📱 Panel LSPedia v30.0 · interfaz Premium adaptable</div>
 
 <div class="publicador-shell-tools-v283" id="publicadorShellToolsV283">
   <div class="publicador-shell-section-v283" aria-live="polite">
     <span class="publicador-shell-dot-v283" aria-hidden="true"></span>
     <span id="publicadorShellSectionV283">Diccionario</span>
-    <span class="publicador-shell-version-v283">v29.1</span>
+    <span class="publicador-shell-version-v283">v30.0</span>
   </div>
   <button
     id="btnPantallaCompletaPublicadorV283"
@@ -5410,6 +5410,7 @@ async function guardarFichaEditor() {
         boton.disabled = false;
         boton.textContent =
           '💾 Guardar cambios de la ficha';
+        if(window.Panel30){Panel30.clear('editar');Panel30.publication(resultado,Object.assign({},datos).origenContenido||'diccionario');}
 
         let mensaje =
           '<span class="mensaje-exito-titulo">✅ Ficha actualizada</span>';
@@ -5494,7 +5495,7 @@ async function guardarFichaEditor() {
         publicacionFallida(error);
       })
       .actualizarFichaContenidoLSPedia(
-        datos
+        (window.Panel30?(Panel30.begin('editar'),datos):datos)
       );
 
   } catch (error) {
@@ -7113,7 +7114,7 @@ async function publicar() {
       )
 
       .publicarContenidoLSPedia(
-        datos
+        (window.Panel30?(Panel30.begin(tipoActual),datos):datos)
       );
 
 
@@ -9420,10 +9421,12 @@ setTimeout(function() {
       };
       var auth = payloadAutorizacionEditor();
       if(window.WebTextoEditor)cfg.textoEnriquecido=window.WebTextoEditor.collect();
+      if(window.Panel30)Panel30.begin('web');
       google.script.run
         .withSuccessHandler(function(resultado){
           window.__PUBLICADOR_WEB_GUARDANDO_V28=false;
           boton.disabled=false; boton.textContent='💾 Guardar cambios de la WEB';
+          if(window.Panel30){Panel30.clear('web');Panel30.publication(resultado||{},'web');}
           WEB_CONFIG_CARGADA=true; WEB_CONFIG_CACHE=(resultado && resultado.config) || cfg;
           pintarConfiguracionWebPublicador(WEB_CONFIG_CACHE);
           if (estado) { estado.className='estado ok web-config-estado'; estado.innerHTML=(resultado&&resultado.verificado?'✅ <b>WEB actualizada y verificada.</b>':'✅ <b>WEB actualizada.</b>')+' Revisión: '+escaparHtmlPublicador((resultado&&resultado.revision)||'sin dato')+'.'; }
@@ -9435,6 +9438,7 @@ setTimeout(function() {
         })
         .withFailureHandler(function(error){
           window.__PUBLICADOR_WEB_GUARDANDO_V28=false;
+          if(window.Panel30)Panel30.finish('web');
           boton.disabled=false; boton.textContent='💾 Guardar cambios de la WEB';
           if (estado) { estado.className='estado error web-config-estado'; estado.textContent='❌ ' + (error && error.message ? error.message : String(error)); }
         })
@@ -9662,6 +9666,7 @@ document.addEventListener('DOMContentLoaded',function(){p26PintarEstado();var m=
 
   function textoSeccionV283(tipo){
     var mapa = {
+      inicio:'Inicio',
       diccionario:'Diccionario',
       vocabulario:'Vocabulario',
       alfabetizacion:'Ejemplos',
@@ -10001,6 +10006,61 @@ document.addEventListener('DOMContentLoaded',()=>{const root=document.getElement
 window.addEventListener('resize',()=>{if(active)fit();});
 })();
 
+</script>
+<style id="panel-v30-style">
+.p30-home,.p30-publication{background:#fff;border:1px solid #dce5f0;border-radius:20px;padding:22px;margin:18px 0;color:#172d4d}.p30-home-head{display:flex;justify-content:space-between;gap:15px;align-items:start}.p30-home h2{margin:5px 0;font-size:26px}.p30-home p{color:#64748b}.p30-home small{font-size:12px;color:#64748b}.p30-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:20px 0}.p30-kpis button{display:flex;flex-direction:column;align-items:start;gap:6px;background:#f6f9fe!important;border:1px solid #e0e8f4!important;padding:18px!important;border-radius:16px!important;text-align:left!important;color:#172d4d!important;width:100%!important}.p30-kpis b{font-size:30px;line-height:1.1}.p30-kpis span{font-size:13px}.p30-quick,.p30-stages{display:flex;gap:10px;flex-wrap:wrap}.p30-home button,.p30-draft button,.p30-publication button,.p30-mobile-bar button{font:inherit;padding:10px 14px;background:white;border:1px solid #cbd8e8;border-radius:10px;color:#173e73;cursor:pointer;min-height:44px}.p30-draft{padding:12px;border:1px solid #caddf5;border-radius:12px;margin:10px 0;background:#edf5ff;display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px}.p30-draft[hidden],.p30-home[hidden],.p30-publication[hidden]{display:none}.p30-draft span{flex:1;min-width:150px}.p30-stages span{padding:8px 12px;border-radius:9px;background:#f0f5fc;font-size:13px}.p30-publication p{font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere}.p30-publication a{margin-left:12px}.p30-mobile-bar{display:none}.p30-hint{font-size:12px}#p30-draft-state{padding:12px;background:#f3f7fc;border-radius:10px}#lsp-members-editor .lm-user-name{font-size:18px}#lsp-members-editor .lm-user-email{font-size:13px;overflow-wrap:anywhere}#lsp-members-editor .lm-user-meta{padding:8px 10px;border-radius:9px;background:#edf5ff;display:block;margin:10px 0}#lsp-members-editor .lm-expired{background:#fff1f0;color:#a12c27}#lsp-members-editor .lm-expiring{background:#fff7e6;color:#865c08}#lm-user-edit-form{background:white;border:1px solid #dce4ee;padding:18px;border-radius:16px;margin:18px 0}
+@media(max-width:700px),(pointer:coarse){body{padding-bottom:80px!important}.tipos{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}.tipo{min-height:46px!important;font-size:14px!important;padding:10px!important}.p30-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.p30-home,.p30-publication{padding:16px}.p30-home h2{font-size:23px}.p30-kpis button{padding:14px!important}.p30-mobile-bar{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:800;gap:8px;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:rgba(255,255,255,.97);border-top:1px solid #dce5f0;box-shadow:0 -3px 15px #172d4d0d}.p30-mobile-bar button{flex:1}.lm-actions button{min-height:44px}.lm-actions{gap:8px!important}#lsp-members-editor{padding:14px!important}.p30-home-head{flex-wrap:wrap}}
+</style>
+<script>
+/* Panel v30: estado por sección, recuperación local y verificación explícita. */
+(()=>{'use strict';
+const $=id=>document.getElementById(id),groups=['diccionario','vocabulario','alfabetizacion','web','editar','miembros'],dirty=new Set(),timers={},saving={},states={};let muted=false,homeLoaded=false,lastPublication=null;
+const storagePrefix='lspedia-panel-v30:';
+// La clave del enlace nunca se guarda; solo se usa una huella para separar dispositivos/proyectos.
+let fingerprint=2166136261;for(const c of String((typeof CONTEXTO_PUBLICADOR!=='undefined'&&CONTEXTO_PUBLICADOR.claveMovil)||'sheets'))fingerprint=Math.imul(fingerprint^c.charCodeAt(0),16777619);
+const key=g=>storagePrefix+(fingerprint>>>0).toString(36)+':'+g;
+const read=g=>{try{const d=JSON.parse(localStorage.getItem(key(g))||'null');return d&&d.version===30&&d.group===g?d:null;}catch(_){return null;}};
+const escape=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function fields(g){if(g==='miembros')return Array.from($('lm-form').querySelectorAll('input,select,textarea')).filter(el=>el.type!=='file');if(g==='editar')return Array.from($('editar').querySelectorAll('input[id],select[id],textarea[id]')).filter(el=>!['file','password','search'].includes(el.type)&&!/(Origen|Contenido|Filtro|Buscar)/.test(el.id));if(g!=='web')return camposBorradorPorTipo(g).map($).filter(Boolean);return Array.from($('web').querySelectorAll('input[id],select[id],textarea[id]')).filter(el=>!['file','password','search'].includes(el.type));}
+function value(el){return el.type==='checkbox'?el.checked:el.value;}
+function snapshot(g){const vals={};fields(g).forEach(el=>vals[el.id||el.name]=value(el));const d={version:30,group:g,at:Date.now(),values:vals};if(g==='editar')d.identity={origen:($('editOrigen')||{}).value,contenido:($('editContenido')||{}).value};if(g==='miembros')d.identity=window.Miembros30?Miembros30.identity():null;if(g==='web'){d.baseRevision=WEB_CONFIG_CACHE&&WEB_CONFIG_CACHE.actualizadoEn||'';d.base=JSON.parse(JSON.stringify(WEB_CONFIG_CACHE||{}));d.heroFlags=Object.assign({},window.webHeroEstiloCambiado||{});d.rich=window.WebTextoEditor?WebTextoEditor.collect():{};d.about=Array.from($('webAboutSections').querySelectorAll('.web-about-section')).map(b=>{const v=c=>(b.querySelector('.web-about-'+c)||{}).value||'';return {titulo:v('titulo'),contenido:v('contenido'),tiempo:Number(v('tiempo'))||0,imagen:v('imagen')};});d.dynamic=Array.from($('web').querySelectorAll('#webLegalSections input,#webLegalSections textarea,#webLegalSections select,#webJuegosLista input,#webJuegosLista select,#webJuegosLista textarea')).filter(x=>x.type!=='file').map(el=>({value:value(el),type:el.type,cls:el.className}));}return d;}
+function refreshDirty(){PUBLICADOR_CAMBIOS_SIN_GUARDAR=dirty.size>0;const names={diccionario:'Diccionario',vocabulario:'Vocabulario',alfabetizacion:'Ejemplos',web:'WEB',editar:'Editar',miembros:'Miembros'};const el=$('p30-draft-state');if(el)el.textContent=dirty.size?'Cambios sin publicar: '+Array.from(dirty).map(g=>names[g]||g).join(', '):'Todo al día';const chip=$('chipBorradorPublicador');if(chip)chip.textContent=dirty.size?'💾 Cambios protegidos':'💾 Sin cambios';}
+function persist(g){clearTimeout(timers[g]);if(!groups.includes(g)||!dirty.has(g))return;try{const d=snapshot(g);localStorage.setItem(key(g),JSON.stringify(d));states[g]='Borrador guardado en este dispositivo · '+new Intl.DateTimeFormat('es-PE',{hour:'2-digit',minute:'2-digit',timeZone:'America/Lima'}).format(d.at);banner(g);}catch(_){states[g]='No se pudo guardar el borrador local. Mantén el panel abierto y guarda tus cambios.';banner(g);}refreshDirty();}
+function touch(g){if(muted)return;dirty.add(g);refreshDirty();if(groups.includes(g)){states[g]='Guardando borrador…';clearTimeout(timers[g]);timers[g]=setTimeout(()=>persist(g),650);banner(g);}}
+function clear(g){finish(g);clearTimeout(timers[g]);dirty.delete(g);try{localStorage.removeItem(key(g));}catch(_){}states[g]='Cambios guardados';banner(g);refreshDirty();}
+function begin(g){if(saving[g])return;persist(g);saving[g]=Array.from($(g).querySelectorAll('input,textarea,select,button')).filter(el=>!el.disabled);saving[g].forEach(el=>el.disabled=true);}
+function finish(g){(saving[g]||[]).forEach(el=>el.disabled=false);delete saving[g];}
+function banner(g){const b=$('p30-draft-'+g);if(!b)return;const d=read(g);b.hidden=!d&&!dirty.has(g);b.querySelector('span').textContent=states[g]||(d?'Hay un borrador del '+new Intl.DateTimeFormat('es-PE',{dateStyle:'short',timeStyle:'short',timeZone:'America/Lima'}).format(d.at):'');b.querySelector('[data-recover]').hidden=dirty.has(g);b.querySelector('[data-discard]').hidden=!d;}
+async function decision(text){return (await decisionPublicador26({icono:'💾',titulo:'Cambios sin guardar',texto:text,botones:[{id:'stay',texto:'Seguir editando',clase:'primario'},{id:'leave',texto:'Continuar'}]}))==='leave';}
+async function restore(g){const d=read(g);if(!d)return;if(g==='web'&&!WEB_CONFIG_CARGADA){await decisionPublicador26({titulo:'Espera un momento',texto:'Primero carga la configuración WEB y vuelve a recuperar el borrador.',botones:[{id:'ok',texto:'Entendido'}]});return;}if(dirty.has(g)&&!await decision('Recuperar reemplazará los campos de esta sección.'))return;if(g==='web'&&d.baseRevision!==(WEB_CONFIG_CACHE&&WEB_CONFIG_CACHE.actualizadoEn||'')&&!await decision('La WEB cambió desde este borrador. Recuperarlo reemplazará los campos visibles; revisa los cambios antes de guardar.'))return;
+if(g==='editar'&&JSON.stringify(d.identity)!==JSON.stringify({origen:($('editOrigen')||{}).value,contenido:($('editContenido')||{}).value})){await decisionPublicador26({titulo:'Selecciona la ficha del borrador',texto:'El borrador pertenece a otra ficha. Selecciónala y cárgala en Editar antes de recuperar los campos.',botones:[{id:'ok',texto:'Entendido'}]});return;}if(g==='miembros'&&window.Miembros30&&!Miembros30.restoreIdentity(d.identity)){await decisionPublicador26({titulo:'La ficha cambió',texto:'Actualiza la lista y selecciona la ficha original antes de recuperar este borrador.',botones:[{id:'ok',texto:'Entendido'}]});return;}
+muted=true;try{if(g==='web'){const cfg=JSON.parse(JSON.stringify(d.base||{}));cfg.actualizadoEn=WEB_CONFIG_CACHE.actualizadoEn;cfg.nosotros=Object.assign({},cfg.nosotros,{secciones:d.about});cfg.textoEnriquecido=d.rich||{};pintarConfiguracionWebPublicador(cfg);if(d.about&&d.about.length===0)$('webAboutSections').replaceChildren();const els=Array.from($('web').querySelectorAll('#webLegalSections input,#webLegalSections textarea,#webLegalSections select,#webJuegosLista input,#webJuegosLista select,#webJuegosLista textarea')).filter(x=>x.type!=='file');(d.dynamic||[]).forEach((v,i)=>{const el=els[i];if(el&&el.className===v.cls&&el.type===v.type){if(el.type==='checkbox')el.checked=!!v.value;else el.value=v.value;}});}
+Object.keys(d.values||{}).forEach(id=>{const el=$(id)||(g==='miembros'?$('lm-form').elements.namedItem(id):null);if(el&&fields(g).includes(el)){if(el.type==='checkbox')el.checked=!!d.values[id];else {if(el.tagName==='SELECT'&&!Array.from(el.options).some(o=>o.value===String(d.values[id]))){const o=document.createElement('option');o.value=o.textContent=String(d.values[id]);el.append(o);}el.value=d.values[id];}}});if(g==='web')window.webHeroEstiloCambiado=Object.assign({},d.heroFlags||{});if(g==='web'&&window.WebTextoEditor)WebTextoEditor.load(Object.assign({},d.base,{textoEnriquecido:d.rich}));}finally{muted=false;}touch(g);persist(g);states[g]='Borrador recuperado. Revisa los campos y vuelve a seleccionar los archivos.';banner(g);if(typeof actualizarEstadoPrevioPublicacion==='function')actualizarEstadoPrevioPublicacion();}
+async function discard(g){if(!await decision('Se eliminará el borrador local. Los textos actuales se conservarán en pantalla.'))return;try{localStorage.removeItem(key(g));}catch(_){}states[g]='Borrador eliminado. Los campos actuales siguen sin guardar.';banner(g);}
+// Sustituye el borrador único antiguo; los listeners existentes continúan usando la nueva función.
+programarGuardadoBorrador=function(){if(groups.includes(tipoActual))touch(tipoActual);};guardarBorradorPublicador=function(){persist(tipoActual);};limpiarBorradorGuardado=function(){clear(tipoActual);};
+const oldChange=cambiarTipo;cambiarTipo=async function(g,button){if(g===tipoActual)return;if(saving[tipoActual])return;if(dirty.has(tipoActual)&&!await decision(groups.includes(tipoActual)?'Tus cambios se conservarán en un borrador local. Aún no se han publicado.':'Esta sección tiene cambios sin guardar. Vuelve y guárdalos antes de continuar.'))return;persist(tipoActual);if(g==='inicio'){tipoActual='inicio';document.querySelectorAll('.tipo').forEach(b=>b.classList.toggle('activo',b===button));['diccionario','vocabulario','alfabetizacion','alfabeto','pendientes','editar','web','control','miembros'].forEach(id=>$(id)?.classList.add('oculto'));$('btnPublicar').style.display='none';$('estadoPrevioPublicacion').style.display='none';$('inicio').hidden=false;if($('publicadorShellSectionV283'))$('publicadorShellSectionV283').textContent='Inicio';if($('lsp-panel-ayuda'))$('lsp-panel-ayuda').hidden=true;loadHome();}else{$('inicio').hidden=true;if($('lsp-panel-ayuda'))$('lsp-panel-ayuda').hidden=false;oldChange(g,button);}refreshDirty();};
+async function go(g){const b=Array.from(document.querySelectorAll('.tipo')).find(b=>(b.getAttribute('onclick')||'').includes("'"+g+"'"));if(b)await cambiarTipo(g,b);}
+function rpc(name,data){return new Promise((resolve,reject)=>google.script.run.withSuccessHandler(resolve).withFailureHandler(e=>reject(new Error(e.message||String(e))))[name](data));}
+async function loadHome(force){if(homeLoaded&&!force)return;homeLoaded=true;$('p30-home-message').textContent='Actualizando resumen…';const results=await Promise.allSettled([rpc('obtenerResumenInicio30',authPublicador21()),rpc('lspPanelResumenMiembros30',payloadAutorizacionEditor())]);const a=results[0],b=results[1];if(a.status==='fulfilled'){const d=a.value;[['dic',d.diccionario],['voc',d.vocabulario],['pending',d.pendientes],['today',d.accionesHoy]].forEach(([id,v])=>$('p30-kpi-'+id).textContent=String(v??'—'));}if(b.status==='fulfilled'){const d=b.value;$('p30-kpi-expiry').textContent=d.usuariosConfigurados?String(d.porVencer):'Sin conexión';$('p30-kpi-review').textContent=String(d.porRevisar??'—');$('p30-member-note').textContent=d.nota||'';}const errors=results.filter(r=>r.status==='rejected').map(r=>r.reason.message);$('p30-home-message').textContent=errors.length?'Resumen parcial: '+errors.join(' · '):'Actualizado '+new Intl.DateTimeFormat('es-PE',{hour:'2-digit',minute:'2-digit',timeZone:'America/Lima'}).format(new Date());}
+function publication(r,group){lastPublication={result:r,group};$('p30-publication').hidden=false;$('p30-publication-title').textContent=(r.palabra||'Configuración WEB');$('p30-stage-save').textContent='✓ Guardado';$('p30-stage-sync').textContent=r.sincronizacion&&r.sincronizacion.ok===false?'⚠ Sincronización pendiente':'◌ Comprobando sincronización';$('p30-stage-live').textContent='◌ Comprobando datos de la web';$('p30-publication-note').textContent='Comprobando la versión pública. Guardar no confirma que el despliegue haya terminado.';verifyPublication();}
+async function verifyPublication(){if(!lastPublication||saving.verify)return;saving.verify=true;$('p30-recheck').disabled=true;const {result:r,group}=lastPublication;try{const d=await rpc('verificarEstadoPublicacion30',Object.assign({},payloadAutorizacionEditor(),{tipo:group,palabra:r.palabra||'',categoria:r.categoria||'',publicada:r.publicada,revision:r.revision||r.config&&r.config.actualizadoEn||''}));$('p30-stage-sync').textContent=d.sincronizado?'✓ Sincronizado':'⚠ Sincronización sin confirmar';$('p30-stage-live').textContent=d.visible?'✓ Datos visibles verificados':d.pendiente?'— Pendiente de completar':'◌ Datos públicos sin confirmar';$('p30-publication-note').textContent=d.mensaje;}catch(e){$('p30-stage-live').textContent='⚠ No se pudo comprobar';$('p30-publication-note').textContent=e.message+' Puedes volver a comprobar.';}finally{saving.verify=false;$('p30-recheck').disabled=false;}}
+const oldFailed=publicacionFallida;publicacionFallida=function(e){finish(tipoActual);oldFailed(e);refreshDirty();};
+const oldSuccess=publicacionCorrecta;publicacionCorrecta=function(r){const g=tipoActual;oldSuccess(r);clear(g);publication(r,g);homeLoaded=false;};
+window.Panel30={touch,clear,restore,discard,persist,publication,dirty,refreshDirty,begin,finish};
+function init(){const nav=document.querySelector('.tipos');const homeButton=document.createElement('button');homeButton.type='button';homeButton.className='tipo';homeButton.dataset.tipo='inicio';homeButton.textContent='⌂ Inicio';homeButton.onclick=()=>cambiarTipo('inicio',homeButton);nav.prepend(homeButton);nav.setAttribute('aria-label','Secciones del panel');
+const home=document.createElement('section');home.id='inicio';home.hidden=true;home.className='p30-home';home.innerHTML='<div class="p30-home-head"><div><small>ADMINISTRACIÓN · LSPEDIA</small><h2>Todo bajo control</h2><p>Tu contenido, accesos y revisiones en un solo lugar.</p></div><button type="button" id="p30-refresh">Actualizar</button></div><div class="p30-kpis">'+[['dic','Diccionario','diccionario'],['voc','Vocabulario','vocabulario'],['pending','Por completar','pendientes'],['today','Cambios de hoy','control'],['expiry','Vencen en 7 días','miembros'],['review','Colaboraciones por revisar','miembros']].map(([id,title,g])=>'<button type="button" data-go="'+g+'"><b id="p30-kpi-'+id+'">—</b><span>'+title+'</span></button>').join('')+'</div><p id="p30-home-message" role="status"></p><small id="p30-member-note"></small><div class="p30-quick"><button type="button" data-go="diccionario">＋ Nueva publicación</button><button type="button" data-go="web">Editar WEB</button><button type="button" data-go="miembros" data-users="true">Gestionar usuarios</button></div><p id="p30-draft-state" role="status">Todo al día</p><p class="p30-hint">Los borradores se guardan en este navegador. Los archivos deben seleccionarse nuevamente al recuperarlos.</p>';nav.after(home);home.querySelectorAll('[data-go]').forEach(b=>b.onclick=async()=>{await go(b.dataset.go);if(b.dataset.users==='true'&&tipoActual==='miembros')$('lm-users-tab').click();});$('p30-refresh').onclick=()=>loadHome(true);
+const pub=document.createElement('section');pub.id='p30-publication';pub.hidden=true;pub.className='p30-publication';pub.innerHTML='<h3>Estado de publicación · <span id="p30-publication-title"></span></h3><div class="p30-stages"><span id="p30-stage-save"></span><span id="p30-stage-sync"></span><span id="p30-stage-live"></span></div><p id="p30-publication-note" role="status"></p><button id="p30-recheck" type="button">Volver a comprobar</button><a href="https://lspedia.site/" target="_blank" rel="noopener noreferrer">Abrir LSPedia ↗</a>';nav.after(pub);$('p30-recheck').onclick=verifyPublication;
+groups.forEach(g=>{const b=document.createElement('aside');b.id='p30-draft-'+g;b.className='p30-draft';b.innerHTML='<span role="status"></span><button type="button" data-recover>Recuperar borrador</button><button type="button" data-discard>Eliminar borrador local</button>';$ (g).prepend(b);b.querySelector('[data-recover]').onclick=()=>restore(g);b.querySelector('[data-discard]').onclick=()=>discard(g);banner(g);});
+document.addEventListener('input',e=>{const target=e.target;if(target.closest('.wr-overlay'))return;if(target.closest('#lm-users-panel,#lm-contributions-panel')){if(target.type!=='search'&&!/filter|Filter/.test(target.id)){dirty.add('miembros');refreshDirty();}return;}const section=target.closest('#diccionario,#vocabulario,#alfabetizacion,#web,#editar,#miembros');if(!section||target.type==='search'||/Buscar|search|filter|Filter/.test(target.id))return;touch(section.id);},true);document.addEventListener('change',e=>{if(e.target.closest('#lm-users-panel,#lm-contributions-panel'))return;const section=e.target.closest('#diccionario,#vocabulario,#alfabetizacion,#web,#editar,#miembros');if(section&&!/search|filter|Filter|Buscar/.test(e.target.id))touch(section.id);},true);
+document.addEventListener('click',e=>{if(e.target.closest('#webAboutSections .web-about-remove')||e.target.closest('#web button[onclick*=agregarSeccion]'))setTimeout(()=>touch('web'),0);});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')groups.forEach(persist);});window.addEventListener('pagehide',()=>groups.forEach(persist));window.addEventListener('beforeunload',e=>{groups.forEach(persist);if(dirty.size){e.preventDefault();e.returnValue='';}});
+const mobile=document.createElement('div');mobile.className='p30-mobile-bar';mobile.innerHTML='<button type="button" id="p30-mobile-home">⌂ Inicio</button><button type="button" id="p30-mobile-top">↑ Secciones</button>';document.body.append(mobile);$('p30-mobile-home').onclick=()=>cambiarTipo('inicio',homeButton);$('p30-mobile-top').onclick=()=>nav.scrollIntoView({behavior:'smooth',block:'start'});
+const legacy=$('borradorBannerPublicador');if(legacy)legacy.hidden=true;
+try{const old=JSON.parse(localStorage.getItem(BORRADOR_PUBLICADOR_KEY)||'null');if(old&&groups.includes(old.tipo)&&!read(old.tipo)){localStorage.setItem(key(old.tipo),JSON.stringify({version:30,group:old.tipo,at:old.fecha||Date.now(),values:old.valores||{}}));banner(old.tipo);}}catch(_){}
+cambiarTipo('inicio',homeButton);refreshDirty();}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})();
 </script>
 </body>
 </html>
