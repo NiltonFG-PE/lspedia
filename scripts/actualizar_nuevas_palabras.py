@@ -6,9 +6,10 @@ publicación. Se conservan respaldos históricos para contenido anterior al
 Publicador actual.
 
 Prioridad para decidir la fecha:
-1. ``fechaPublicacion`` (también acepta ``fechapublicacion`` de Sheets).
-2. Fecha en que se agregó a Git la ilustración local.
-3. Historial del archivo de datos: commit en que el registro pasó a tener video.
+1. ``publicadoEn``: hora automática de primera publicación.
+2. ``fechaPublicacion`` (también acepta ``fechapublicacion`` de Sheets).
+3. Fecha en que se agregó a Git la ilustración local.
+4. Historial del archivo de datos: commit en que el registro pasó a tener video.
 """
 from __future__ import annotations
 
@@ -42,6 +43,14 @@ def valor_fecha_publicacion(item: dict) -> object:
         if str(nombre).strip().casefold() == "fechapublicacion":
             return valor
     return None
+
+
+def momento_publicacion(item: dict) -> str:
+    valor = next((str(v or "").strip() for k, v in item.items() if str(k).casefold() == "publicadoen" and str(v or "").strip()), "")
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})", valor):
+        return ""
+    fecha = parsear_fecha(valor)
+    return fecha_iso_utc(fecha) if fecha else ""
 
 
 def cargar_archivo(ruta: Path) -> list[dict]:
@@ -267,8 +276,10 @@ def candidatos_fuente(
     candidatos: list[tuple[dt.datetime, dict]] = []
 
     for k, item in por_clave.items():
-        fecha = parsear_fecha(valor_fecha_publicacion(item))
-        origen = "fechaPublicacion"
+        momento = momento_publicacion(item)
+        fecha_editorial = parsear_fecha(valor_fecha_publicacion(item))
+        fecha = parsear_fecha(momento) or fecha_editorial
+        origen = "publicadoEn" if momento else "fechaPublicacion"
 
         if fecha is None:
             ruta_imagen = ruta_imagen_local(item)
@@ -291,6 +302,8 @@ def candidatos_fuente(
                     "categoria": str(item.get("categoria") or "").strip(),
                     "imagen": str(item.get("imagen") or "").strip(),
                     "fecha": fecha_iso_utc(fecha),
+                    "fechaPublicacion": fecha_iso_utc(fecha_editorial) if fecha_editorial else "",
+                    "publicadoEn": momento,
                     "origenFecha": origen,
                     "fuente": fuente,
                 },
