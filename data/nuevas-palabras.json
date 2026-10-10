@@ -1,9 +1,42 @@
 {
-  "generadoEn": "2026-10-10T12:47:29Z",
+  "generadoEn": "2026-10-10T17:53:29Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 203,
+  "maxItems": 206,
   "diasEtiquetaNuevo": 14,
   "items": [
+    {
+      "id": "",
+      "palabra": "No conocer",
+      "categoria": "Verbos",
+      "imagen": "img/vocabulario/no-conocer.webp",
+      "fecha": "2026-10-10T17:53:03Z",
+      "fechaPublicacion": "2026-10-10T05:00:00Z",
+      "publicadoEn": "2026-10-10T17:53:03Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Conocer",
+      "categoria": "Verbos",
+      "imagen": "img/vocabulario/conocer.webp",
+      "fecha": "2026-10-10T17:48:36Z",
+      "fechaPublicacion": "2026-10-10T05:00:00Z",
+      "publicadoEn": "2026-10-10T17:48:36Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Famoso",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/famoso.webp",
+      "fecha": "2026-10-10T12:50:39Z",
+      "fechaPublicacion": "2026-10-10T05:00:00Z",
+      "publicadoEn": "2026-10-10T12:50:39Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
     {
       "id": "",
       "palabra": "Oscuro",

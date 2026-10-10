@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-10-10T12:47:30Z",
+  "actualizado": "2026-10-10T17:53:30Z",
   "traducciones": [
     {
       "fuente": "diccionario",
@@ -264,7 +264,7 @@
       "categoria": "Salud",
       "ingles": "Allergy",
       "aliases": [],
-      "definicionIngles": "This is when the body reacts badly to something, like food or dust, causing discomfort.\n\nExample: I have a dust allergy, that's why I sneeze a lot."
+      "definicionIngles": "This occurs when the body reacts adversely to something, such as food or dust, causing discomfort.\n\nExample: I have a dust allergy, that's why I sneeze a lot."
     },
     {
       "fuente": "diccionario",
@@ -376,7 +376,7 @@
       "categoria": "Salud",
       "ingles": "Anemia",
       "aliases": [],
-      "definicionIngles": "A health problem in which the blood has low hemoglobin or few healthy red blood cells."
+      "definicionIngles": "A health problem in which the blood has little hemoglobin or few healthy red blood cells."
     },
     {
       "fuente": "diccionario",
@@ -2558,7 +2558,7 @@
       "fuente": "diccionario",
       "palabra": "Dirección IP",
       "categoria": "Tecnología",
-      "ingles": "IP Address",
+      "ingles": "IP address",
       "aliases": [],
       "definicionIngles": "A number that identifies a device or connection within a network."
     },
@@ -4352,7 +4352,7 @@
       "categoria": "Economía",
       "ingles": "Assessment",
       "aliases": [],
-      "definicionIngles": "A charge or tax that is applied to something."
+      "definicionIngles": "Charge or tax that is applied to something."
     },
     {
       "fuente": "diccionario",
@@ -6222,7 +6222,7 @@
       "fuente": "diccionario",
       "palabra": "Percepción tributaria",
       "categoria": "Economía",
-      "ingles": "Tax collection",
+      "ingles": "Tax perception",
       "aliases": [],
       "definicionIngles": "Additional amount that is charged in advance in some transactions with respect to taxes."
     },
@@ -6304,7 +6304,7 @@
       "categoria": "Comida",
       "ingles": "Fish",
       "aliases": [],
-      "definicionIngles": "It's fish that comes from the sea or river, and is widely used in Peruvian cuisine.\n\nFor example: Ceviche is made with fresh fish."
+      "definicionIngles": "It's fish that comes from the sea or rivers, and is widely used in Peruvian cuisine.\n\nFor example: Ceviche is made with fresh fish."
     },
     {
       "fuente": "diccionario",
@@ -6816,7 +6816,7 @@
       "categoria": "Universidad",
       "ingles": "Pre-professional practice",
       "aliases": [],
-      "definicionIngles": "It's the time a student spends working at a company to learn about their field of study before graduating.\n\nExample: I'm starting my pre-professional internship at a hospital next month."
+      "definicionIngles": "It's the time a student spends working at a company to learn about their field of study before finishing their degree.\n\nExample: I'm starting my pre-professional internship at a hospital next month."
     },
     {
       "fuente": "diccionario",
