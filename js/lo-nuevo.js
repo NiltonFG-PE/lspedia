@@ -130,18 +130,20 @@
         if(referenciasCompartidas.length) barra.appendChild(botonAccion('Ver Lo nuevo', volverALoNuevo));
     }
 
+    function momentoPublicacion(registro){
+        const valor = texto(registro && (registro.publicadoEn || registro.publicadoen));
+        if(!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/.test(valor)) return '';
+        const t = Date.parse(valor);
+        return Number.isFinite(t) ? new Date(t).toISOString() : '';
+    }
+
     function dentroDelPeriodo(registro, dias){
-        const valor = texto(registro && registro.fecha);
-        const t = Date.parse(fechaAISO(valor));
-        if(!Number.isFinite(t)) return false;
-        const ahora = Date.now();
-        // El panel guarda fechas sin hora como medianoche de Perú.
-        // Su intervalo es todo ese día; una hora real conserva precisión exacta.
-        const soloDia = /^\d{4}-\d{2}-\d{2}$/.test(valor)
-            || /^\d{1,2}\/\d{1,2}\/\d{4}$/.test(valor)
-            || (/^fechaPublicacion/i.test(texto(registro.origenFecha))
-                && /T05:00:00(?:\.000)?Z$/.test(fechaAISO(valor)));
-        return t <= ahora && (soloDia ? t + 86400000 > ahora - dias * 86400000 : t >= ahora - dias * 86400000);
+        // El filtro de 24 horas requiere un instante registrado, nunca una fecha editorial.
+        const momento = momentoPublicacion(registro);
+        if(dias === 1 && !momento) return false;
+        const t = Date.parse(momento || fechaAISO(registro && registro.fecha));
+        const diferencia = Date.now() - t;
+        return Number.isFinite(t) && diferencia >= 0 && diferencia <= dias * 86400000;
     }
 
     function actualizarMenu(intentos = 0){
@@ -242,11 +244,11 @@
         $('lspCatalogoDescripcion').textContent = modoSeleccion
             ? 'Marca los videos que quieres compartir.'
             : periodoDias === 1
-                ? 'Últimas 24 horas. Las fechas sin hora incluyen los días que coinciden con este período (hora de Perú).'
+                ? 'Últimas 24 horas según la hora real de publicación. Las fichas antiguas sin hora registrada siguen disponibles en los demás períodos.'
                 : 'Explora las publicaciones de Diccionario y Vocabulario. Toca una ficha para ver el video.';
         $('lspCatalogoPeriodo').value = String(periodoDias);
         $('lspCatalogo24Horas').setAttribute('aria-pressed', String(periodoDias === 1 && !referenciasCompartidas.length));
-        $('lspCatalogoCantidad').textContent = publicadasVisibles.length + ' videos';
+        $('lspCatalogoCantidad').textContent = publicadasVisibles.length + (publicadasVisibles.length === 1 ? ' video' : ' videos');
         actualizarAcciones();
         const grid = $('lspCatalogoGrid');
         grid.replaceChildren();
@@ -256,7 +258,7 @@
             vacio.textContent = referenciasCompartidas.length
                 ? 'Cargando las fichas compartidas. Si ya no están disponibles, puedes ver Lo nuevo.'
                 : periodoDias === 1
-                ? 'No hay videos publicados en las últimas 24 horas. Prueba otro período.'
+                ? 'No hay publicaciones con hora registrada en las últimas 24 horas. Prueba Todas las publicaciones.'
                 : 'No hay videos en este período. Prueba otro filtro.';
             grid.appendChild(vacio);
         }
@@ -265,9 +267,12 @@
             const fecha = document.createElement('time');
             fecha.className = 'lsp-catalogo-fecha';
             const indice = itemsLoNuevo.find(r => fuenteRegistro(r) === x.fuente && normal(r.palabra) === normal(x.palabra.palabra) && normal(r.categoria) === normal(x.palabra.categoria));
-            const iso = fechaAISO(x.registro.fecha || fechaPalabra(x.palabra) || (indice && indice.fecha));
+            const iso = fechaAISO(x.registro.fechaPublicacion || fechaPalabra(x.palabra) || x.registro.fecha || (indice && indice.fecha));
             if(iso) fecha.dateTime = iso;
             fecha.textContent = fechaMostrar(iso);
+            fecha.title = momentoPublicacion(x.registro)
+                ? 'Primera publicación: ' + new Intl.DateTimeFormat('es-PE', {dateStyle:'medium',timeStyle:'short',timeZone:'America/Lima'}).format(new Date(momentoPublicacion(x.registro))) + ' (Perú)'
+                : 'Hora de publicación no registrada';
             const etiquetas = document.createElement('span');
             etiquetas.className = 'lsp-catalogo-etiquetas';
             const badges = tarjeta.querySelectorAll('.lsp-nueva-badge');
@@ -418,12 +423,16 @@
     }
 
     function integrarDiccionarioPorVideo(registros){
-        const salida = Array.isArray(registros) ? registros.slice() : [];
+        const salida = Array.isArray(registros) ? registros.map(r => Object.assign({},r)) : [];
         const existentes = new Set(salida.map(claveRegistro));
 
-        datosDiccionario().forEach(p => {
+        const contenido = datosDiccionario().map(p => ({p,fuente:'diccionario'}))
+            .concat(datosVocabulario().map(p => ({p,fuente:'vocabulario'})));
+        contenido.forEach(({p,fuente}) => {
             if(!p || !p.palabra || !p.categoria || !tieneVideoValido(p)) return;
-            const fecha = fechaPalabra(p);
+            const fechaEditorial = fechaPalabra(p);
+            const momento = momentoPublicacion(p);
+            const fecha = momento || fechaEditorial;
             if(!fecha) return;
             const registro = {
                 id: refPalabra(p),
@@ -431,19 +440,29 @@
                 categoria: p.categoria,
                 imagen: esImagenReal(p.imagen) ? texto(p.imagen).split(',')[0].trim() : '',
                 fecha,
-                origenFecha: 'fechaPublicacion-video',
-                fuente: 'diccionario'
+                fechaPublicacion: fechaEditorial,
+                publicadoEn: momento,
+                origenFecha: momento ? 'publicadoEn' : 'fechaPublicacion-video',
+                fuente
             };
             const clave = claveRegistro(registro);
             if(!existentes.has(clave)){
                 salida.push(registro);
                 existentes.add(clave);
+            }else{
+                const existente = salida.find(r => claveRegistro(r) === clave);
+                if(momento && !momentoPublicacion(existente)){
+                    existente.publicadoEn = momento;
+                    existente.fecha = momento;
+                    existente.origenFecha = 'publicadoEn';
+                }
+                if(fechaEditorial) existente.fechaPublicacion = fechaEditorial;
             }
         });
 
         return salida.sort((a,b) => {
-            const ta = Date.parse(texto(a && a.fecha)) || 0;
-            const tb = Date.parse(texto(b && b.fecha)) || 0;
+            const ta = Date.parse(momentoPublicacion(a) || texto(a && a.fecha)) || 0;
+            const tb = Date.parse(momentoPublicacion(b) || texto(b && b.fecha)) || 0;
             return tb - ta;
         });
     }
@@ -616,7 +635,7 @@
             vacio.className = 'lsp-mejora-sub';
             vacio.textContent = referenciasCompartidas.length
                 ? 'Cargando las fichas compartidas. Si ya no están disponibles, puedes ver todas las novedades.'
-                : periodoDias === 1 ? 'No hay videos publicados en las últimas 24 horas.'
+                : periodoDias === 1 ? 'No hay publicaciones con hora registrada en las últimas 24 horas.'
                 : 'No hay videos publicados en los últimos ' + periodoDias + ' días.';
             caja.appendChild(vacio);
             return;
@@ -740,4 +759,5 @@
         iniciar();
     }
 })();
+
 
