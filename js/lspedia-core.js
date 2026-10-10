@@ -270,7 +270,7 @@
   function cargarConfiguracionWeb() {
     if (!document.querySelector('script[data-lspedia-web-config]')) {
       const script = document.createElement('script');
-      script.src = 'js/web-config.js?v=20261007-light-1';
+      script.src = 'js/web-config.js?v=20261010-rich-1';
       script.async = true;
       script.dataset.lspediaWebConfig = '1';
       script.onerror = function () {
@@ -281,7 +281,7 @@
 
     if (!document.querySelector('script[data-lspedia-web-v27]')) {
       const avanzado = document.createElement('script');
-      avanzado.src = 'js/web-config-v27.js?v=20260927-4';
+      avanzado.src = 'js/web-config-v27.js?v=20261010-rich-1';
       avanzado.async = true;
       avanzado.dataset.lspediaWebV27 = '1';
       avanzado.onerror = function () {
