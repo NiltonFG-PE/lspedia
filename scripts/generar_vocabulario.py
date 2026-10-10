@@ -45,6 +45,7 @@ CAMPOS = (
     "imagen",
     "definicion",
     "fechaPublicacion",
+    "publicadoEn",
     "ingles",
     "definicionIngles",
 )
@@ -296,6 +297,7 @@ def limpiar(
             "imagen": imagen,
             "definicion": definicion,
             "fechaPublicacion": fecha_publicacion,
+            "publicadoEn": normalizar_fecha_publicacion(mapa.get("publicadoen")),
             "ingles": ingles_hoja or ingles_previo,
             "definicionIngles": definicion_ingles_hoja or definicion_ingles_previa,
         }
@@ -352,3 +354,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
