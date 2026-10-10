@@ -357,6 +357,10 @@
             cambiarIdioma(btn.dataset.idioma);
         });
         navContainer.appendChild(wrap);
+        // Modo oscuro puede haberse inicializado antes de este selector.
+        // Avisamos al módulo para que mueva el botón desde su respaldo
+        // independiente a la misma cápsula ES/EN sin esperar temporizadores.
+        document.dispatchEvent(new Event('lspedia:selectorIdiomaListo'));
     }
 
     function guardarOriginalesPalabra(p){
