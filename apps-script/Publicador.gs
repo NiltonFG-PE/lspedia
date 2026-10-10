@@ -86,7 +86,7 @@ function crearHtmlPublicadorLSPedia_(modoWeb, claveMovil) {
 
   return plantilla
     .evaluate()
-    .setTitle('Panel LSPedia v29.0')
+    .setTitle('Panel LSPedia v29.1')
     .addMetaTag(
       'viewport',
       'width=device-width, initial-scale=1, viewport-fit=cover'
@@ -109,7 +109,7 @@ function servirPublicadorWebLSPedia_(e) {
         '<p>Este enlace no autoriza el Publicador LSPedia.</p>' +
         '</div>'
       )
-      .setTitle('Panel LSPedia v29.0')
+      .setTitle('Panel LSPedia v29.1')
       .addMetaTag(
         'viewport',
         'width=device-width, initial-scale=1, viewport-fit=cover'
@@ -170,7 +170,7 @@ function mostrarAccesoMovilPublicadorLSPedia() {
     '</head>' +
     '<body style="font-family:Arial,sans-serif;padding:18px;line-height:1.45">' +
 
-      '<h3 style="margin-top:0">📱 Panel LSPedia v29.0 en el celular</h3>' +
+      '<h3 style="margin-top:0">📱 Panel LSPedia v29.1 en el celular</h3>' +
 
       '<p>Abre este enlace en Chrome del celular. Es privado: no lo compartas.</p>' +
 
@@ -622,7 +622,7 @@ function abrirPublicadorLSPedia() {
 
   SpreadsheetApp.getUi().showModelessDialog(
     html,
-    'Panel LSPedia v29.0'
+    'Panel LSPedia v29.1'
   );
 }
 
@@ -682,7 +682,7 @@ function instalarPublicadorLSPedia() {
    * El menú se creará automáticamente cuando vuelvas al Sheet
    * y recargues la página.
    */
-  Logger.log('✅ Panel LSPedia v29.0 instalado correctamente.');
+  Logger.log('✅ Panel LSPedia v29.1 instalado correctamente.');
   Logger.log('📱 Acceso móvil preparado.');
   Logger.log('🔄 Ahora vuelve al Google Sheet Proyecto y recarga la página.');
 
@@ -9681,6 +9681,7 @@ function normalizarConfigWebPublicador_(entrada, anterior) {
     if (Object.prototype.hasOwnProperty.call(h,'categoriasIniciales')) cfg.heroes[k].categoriasIniciales = Math.max(4, Math.min(18, Number(h.categoriasIniciales)||10));
     const estiloEntrada = h.estilo || {};
     if (!cfg.heroes[k].estilo || typeof cfg.heroes[k].estilo !== 'object') cfg.heroes[k].estilo = {};
+    if (Object.prototype.hasOwnProperty.call(estiloEntrada,'aplicar')) cfg.heroes[k].estilo.aplicar=estiloEntrada.aplicar===true;
     if (Object.prototype.hasOwnProperty.call(estiloEntrada,'fuente')) cfg.heroes[k].estilo.fuente = textoWebPublicador_(estiloEntrada.fuente, 80) || 'inherit';
     if (Object.prototype.hasOwnProperty.call(estiloEntrada,'emoji')) cfg.heroes[k].estilo.emoji = textoWebPublicador_(estiloEntrada.emoji, 30);
     if (Object.prototype.hasOwnProperty.call(estiloEntrada,'tituloColor')) cfg.heroes[k].estilo.tituloColor = normalizarColorWebPublicador_(estiloEntrada.tituloColor, cfg.heroes[k].estilo.tituloColor || '#17233c');
@@ -9762,6 +9763,7 @@ function normalizarConfigWebPublicador_(entrada, anterior) {
     if (Object.prototype.hasOwnProperty.call(entrada.nosotros,'video')) cfg.nosotros.video = textoWebPublicador_(entrada.nosotros.video, 800);
     if (Array.isArray(entrada.nosotros.secciones)) cfg.nosotros.secciones = entrada.nosotros.secciones.slice(0,8).map(function(s){ const imagen=textoWebPublicador_(s && s.imagen,1200); if(/^(?:javascript|vbscript|data):/i.test(imagen)) throw new Error('Hay una imagen no permitida en Sobre nosotros.'); return { tiempo: Math.max(0, Math.round(Number(s && s.tiempo || 0))), titulo: textoWebPublicador_(s && s.titulo, 220), imagen:imagen, contenido: textoWebPublicador_(s && s.contenido, 12000) }; }).filter(function(s){ return s.titulo || s.contenido || s.imagen; });
   }
+  if(Object.prototype.hasOwnProperty.call(entrada,'textoEnriquecido')) cfg.textoEnriquecido=normalizarTextoEnriquecidoWeb_(entrada.textoEnriquecido,cfg);
   cfg.version = 2;
   cfg.actualizadoEn = new Date().toISOString();
   return cfg;
@@ -10239,4 +10241,26 @@ function lspFechaPublicacionNueva_(valor) {
   const fecha = new Date(texto + 'T00:00:00-05:00');
   if (isNaN(fecha.getTime()) || Utilities.formatDate(fecha, 'America/Lima', 'yyyy-MM-dd') !== texto) throw new Error('La fecha de publicación no es válida.');
   return fecha;
+}
+
+// Guarda únicamente texto y marcas permitidas; el sitio nunca recibe HTML del editor.
+function normalizarTextoEnriquecidoWeb_(entrada,cfg) {
+  if(!entrada || typeof entrada!=='object' || Array.isArray(entrada))throw new Error('El formato WEB no es válido.');
+  const keys=Object.keys(entrada);if(keys.length>120)throw new Error('Hay demasiados textos con formato.');
+  const out={},fonts=['Poppins, sans-serif','Nunito, sans-serif','Arial, sans-serif','Georgia, serif'];
+  function valor(key){
+    const permitted=/^(?:header\.menu\.(?:diccionario|vocabulario|herramientas|nosotros)\.texto|heroes\.(?:diccionario|vocabulario)\.(?:titulo|subtitulo|sugerenciasLabel)|footer\.(?:copyright|legalTexto)|acciones\.(?:sugerir|idea|apoyar|interprete)\.(?:nombre|contenido)|herramientas\.(?:alfabeto|jugar|subtitulos)\.(?:nombre|descripcion)|nosotros\.titulo|nosotros\.secciones\.[0-7]\.(?:titulo|contenido)|aviso\.(?:titulo|mensaje|botonTexto)|novedades\.titulo|novedades\.items\.[0-5]\.(?:titulo|texto)|pwa\.(?:titulo|subtitulo|ayuda)|mantenimiento\.(?:titulo|mensaje)|legal\.intro|legal\.secciones\.(?:responsable|datos|formularios|conservacion|arco|terceros|cookies|menores|terminos|licencia|cambios)\.(?:titulo|contenido))$/;
+    if(!permitted.test(key)&&!/^juegos\.(?:adivina|caras|chat|completar|unir|quiz|matematicas|carrera|oraciones)\.(?:nombre|descripcion|etiqueta)$/.test(key))throw new Error('Campo de formato no permitido: '+key);
+    const path=key.split('.');if(path[0]==='legal'&&path[1]==='secciones'){const sec=cfg.legal.secciones.find(s=>s.clave===path[2]);return sec&&sec[path[3]];}
+    return path.reduce((v,k)=>v&&Object.prototype.hasOwnProperty.call(v,k)?v[k]:undefined,cfg);
+  }
+  keys.forEach(key=>{
+    const d=entrada[key],text=valor(key);if(typeof text!=='string')return;
+    if(!d||typeof d.texto!=='string'||d.texto!==text||!Array.isArray(d.fragmentos)||d.fragmentos.length>1000)throw new Error('El texto y su formato no coinciden: '+key+'. Recarga WEB antes de guardar.');
+    const parts=d.fragmentos.map(p=>{if(!p||typeof p.texto!=='string'||p.texto.length>16000)throw new Error('Fragmento de texto inválido.');const r={texto:p.texto};['negrita','cursiva','subrayado'].forEach(k=>{if(typeof p[k]==='boolean')r[k]=p[k];});if(p.color){if(!/^#[0-9a-f]{6}$/i.test(p.color))throw new Error('Color de texto inválido.');r.color=p.color;}if(p.fuente){if(fonts.indexOf(p.fuente)===-1)throw new Error('Fuente de texto inválida.');r.fuente=p.fuente;}return r;});
+    if(parts.map(p=>p.texto).join('')!==text)throw new Error('El formato no cubre todo el texto.');
+    const r={texto:text,fragmentos:parts};[['interlineado',1,3],['espacioLetras',0,5],['espacioPalabras',0,12],['espacioBloque',0,48]].forEach(spec=>{const k=spec[0];if(Object.prototype.hasOwnProperty.call(d,k)){const n=Number(d[k]);if(!Number.isFinite(n)||n<spec[1]||n>spec[2])throw new Error('Espaciado fuera de rango.');r[k]=n;}});if(d.alineacion){if(['left','center','right','justify'].indexOf(d.alineacion)===-1)throw new Error('Alineación inválida.');r.alineacion=d.alineacion;}out[key]=r;
+  });
+  if(JSON.stringify(out).length>450000)throw new Error('El formato WEB supera el tamaño permitido.');
+  return out;
 }
