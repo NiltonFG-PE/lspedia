@@ -34,7 +34,7 @@ CAMPOS_ALFABETO = (
     "grafiaCursivaMayuscula", "grafiaCursivaMinuscula",
     "imagenCirculo", "orden", "grafiaImagen",
 )
-CAMPOS_EJEMPLOS = ("caracter", "palabra", "imagen", "orden", "nivel")
+CAMPOS_EJEMPLOS = ("caracter", "palabra", "imagen", "orden", "nivel", "fechaPublicacion", "publicadoEn")
 
 
 def texto(valor: object) -> str:
@@ -184,6 +184,8 @@ def limpiar_ejemplos(filas: object) -> list[dict]:
             "imagen": imagen,
             "orden": convertir_orden(fila.get("orden")),
             "nivel": texto(fila.get("nivel")),
+            "fechaPublicacion": texto(fila.get("fechaPublicacion") or fila.get("fechapublicacion")),
+            "publicadoEn": texto(fila.get("publicadoEn") or fila.get("publicadoen")),
         }
         salida.append({campo: limpio[campo] for campo in CAMPOS_EJEMPLOS})
     return salida
