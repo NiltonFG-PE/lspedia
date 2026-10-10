@@ -4475,6 +4475,18 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
 .sena-ia-coming-copy{min-width:0}.sena-ia-coming-copy h3{margin:0 0 7px;font-size:1.08rem;font-weight:750;color:#243b53;line-height:1.35}
 .sena-ia-coming-copy p{margin:0 0 10px;font-size:.86rem;color:#5b6e81;line-height:1.6}
 @media(max-width:575.98px){.sena-ia-search-preview{justify-content:flex-start}.sena-ia-coming-card{padding:16px;gap:12px}.sena-ia-coming-icon{flex-basis:40px;height:40px}}
+
+/* Los dos anuncios de Herramientas comparten el diseño de Zona de miembros. */
+.sena-ia-coming-card{align-items:center;gap:16px;padding:18px 20px;border:1px solid rgba(148,163,184,.24);border-radius:20px;background:rgba(255,255,255,.44);box-shadow:0 8px 25px rgba(15,23,42,.04),inset 0 1px 0 rgba(255,255,255,.8);font-family:'Poppins',system-ui,sans-serif;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.sena-ia-coming-copy{flex:1}
+.sena-ia-coming-copy h3{font-size:1rem;font-weight:600;letter-spacing:-.02em;color:#52647d;line-height:1.3;margin:0 0 5px}
+.sena-ia-coming-copy p{font-size:.76rem;font-weight:400;line-height:1.55;color:#718096;margin:0}
+.sena-ia-coming-icon{flex:0 0 42px;width:42px;height:42px;border:1px solid rgba(148,163,184,.12);border-radius:14px;background:linear-gradient(145deg,rgba(255,255,255,.8),rgba(226,232,240,.4));color:#8190a4}
+html[data-lsp-tema="dark"] .sena-ia-coming-card{background:rgba(30,41,59,.38);border-color:rgba(148,163,184,.17);box-shadow:inset 0 1px 0 rgba(255,255,255,.035)}
+html[data-lsp-tema="dark"] .sena-ia-coming-copy h3{color:#a2afc2}
+html[data-lsp-tema="dark"] .sena-ia-coming-copy p{color:#8c9cb1}
+html[data-lsp-tema="dark"] .sena-ia-coming-icon{background:rgba(71,85,105,.2);color:#98a7ba}
+@media(max-width:480px){.sena-ia-coming-card{padding:16px;gap:12px;flex-wrap:wrap}.sena-ia-coming-copy{flex-basis:calc(100% - 54px)}.sena-ia-coming-card .miembros-access-status{margin-left:54px;margin-top:-2px}.sena-ia-coming-copy h3{font-size:.95rem}.sena-ia-coming-copy p{font-size:.72rem}}
 </style>
 </head>
 
@@ -5344,7 +5356,7 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                         <span class="herr-movil-flecha" aria-hidden="true">→</span>
                     </button>
                 </div>
-<div class="col-12 herramientas-proximamente-senas"><article id="senasTextoVozMovil" class="sena-ia-coming-card" aria-labelledby="senasTextoVozMovilTitulo"><span class="sena-ia-coming-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7l1.5-2h5L16 7h3a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/><circle cx="12" cy="13" r="3.5"/></svg></span><div class="sena-ia-coming-copy"><h3 id="senasTextoVozMovilTitulo">Señas a texto y voz</h3><p>Haz señas ante la cámara para convertirlas en texto y escucharlas en voz alta.</p><span class="sena-ia-coming-badge">Próximamente</span></div></article></div>
+<div class="col-12 herramientas-proximamente-senas"><article id="senasTextoVozMovil" class="sena-ia-coming-card" aria-labelledby="senasTextoVozMovilTitulo"><span class="sena-ia-coming-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7l1.5-2h5L16 7h3a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/><circle cx="12" cy="13" r="3.5"/></svg></span><div class="sena-ia-coming-copy"><h3 id="senasTextoVozMovilTitulo">Señas a texto y voz</h3><p>Haz señas ante la cámara para convertirlas en texto y escucharlas en voz alta.</p></div><span class="miembros-access-status">Próximamente</span></article></div>
                 <div class="col-12 herramientas-proximamente-miembros"><a href="miembros/" id="btnZonaMiembros" class="miembros-access" aria-label="Entrar a Zona de miembros. Contenido próximamente."><span class="miembros-access-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><path d="M12 14v3"/></svg></span><span class="miembros-access-copy"><span class="miembros-access-title">Zona de miembros</span></span><span class="miembros-access-status">Próximamente</span></a></div>
             </div>
         </div>
@@ -6091,7 +6103,7 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                 </div>
             </div>
 
-        <div class="d-none d-xl-block mb-4"><article id="senasTextoVozEscritorio" class="sena-ia-coming-card" aria-labelledby="senasTextoVozEscritorioTitulo"><span class="sena-ia-coming-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7l1.5-2h5L16 7h3a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/><circle cx="12" cy="13" r="3.5"/></svg></span><div class="sena-ia-coming-copy"><h3 id="senasTextoVozEscritorioTitulo">Señas a texto y voz</h3><p>Haz señas ante la cámara para convertirlas en texto y escucharlas en voz alta.</p><span class="sena-ia-coming-badge">Próximamente</span></div></article></div>
+        <div class="d-none d-xl-block mb-4"><article id="senasTextoVozEscritorio" class="sena-ia-coming-card" aria-labelledby="senasTextoVozEscritorioTitulo"><span class="sena-ia-coming-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7l1.5-2h5L16 7h3a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/><circle cx="12" cy="13" r="3.5"/></svg></span><div class="sena-ia-coming-copy"><h3 id="senasTextoVozEscritorioTitulo">Señas a texto y voz</h3><p>Haz señas ante la cámara para convertirlas en texto y escucharlas en voz alta.</p></div><span class="miembros-access-status">Próximamente</span></article></div>
             <div class="d-none d-xl-block mb-4"><a href="miembros/" class="miembros-access" aria-label="Entrar a Zona de miembros. Contenido próximamente."><span class="miembros-access-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><path d="M12 14v3"/></svg></span><span class="miembros-access-copy"><span class="miembros-access-title">Zona de miembros</span></span><span class="miembros-access-status">Próximamente</span></a></div>
 </section>
 
