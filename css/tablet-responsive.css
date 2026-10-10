@@ -422,3 +422,10 @@ html.modo-movil-real body.lsp-inicio-oculto #filaHeroPrincipal {
     object-fit: contain !important;
   }
 }
+
+/* Prioridad final: nunca mostrar el bloque Diccionario/Vocabulario al abrir
+   Herramientas, Jugar o Sobre Nosotros, ni siquiera con el grid portrait. */
+html.modo-movil-real body.lsp-inicio-oculto #filaHeroPrincipal,
+html.modo-movil-real body.lsp-inicio-oculto:not(.vista-temas-movil):not(.senal-cerrada) #filaHeroPrincipal {
+  display: none !important;
+}
