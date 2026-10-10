@@ -243,3 +243,33 @@
     border-color: rgba(148,163,184,.25) !important;
   }
 }
+
+/* Tablets anchas: conserva el personaje animado en una columna propia.
+   En tablets de 768–999px se prioriza el buscador y la lectura. */
+@media (min-width: 1000px) and (min-height: 480px) {
+  html.modo-movil-real body:not(.vista-temas-movil):not(.senal-cerrada) #filaHeroPrincipal {
+    grid-template-columns: clamp(240px, 25%, 285px) minmax(0, 1fr) clamp(108px, 11vw, 142px) !important;
+    grid-template-areas: "carta titulo avatar" !important;
+    column-gap: clamp(16px, 1.8vw, 26px) !important;
+  }
+  html.modo-movil-real body:not(.vista-temas-movil):not(.senal-cerrada) #filaHeroPrincipal > #colAvatarHero {
+    grid-area: avatar !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 28px 0 0 !important;
+    overflow: visible !important;
+  }
+  html.modo-movil-real body:not(.vista-temas-movil):not(.senal-cerrada) #colAvatarHero .avatar-hero-img {
+    display: block !important;
+    width: 100% !important;
+    max-width: 142px !important;
+    height: auto !important;
+    max-height: 245px !important;
+    object-fit: contain !important;
+  }
+}
