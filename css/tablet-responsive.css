@@ -389,6 +389,13 @@ html.modo-movil-real body.lsp-inicio-oculto #filaHeroPrincipal {
 /* Tablet horizontal: el avatar tambien acompana al titulo de Vocabulario.
    La variante anterior lo mostraba solo en Diccionario. */
 @media (min-width: 768px) and (min-height: 480px) and (orientation: landscape) {
+  /* Entre 768 y 999 px, no dejar el avatar en una fila implícita. */
+  html.modo-movil-real body:not(.vista-temas-movil):not(.senal-cerrada) #filaHeroPrincipal {
+    grid-template-columns: clamp(195px, 25%, 270px) minmax(0, 1fr) clamp(105px, 12vw, 150px) !important;
+    grid-template-areas: "carta titulo avatar" !important;
+    column-gap: clamp(12px, 2vw, 26px) !important;
+    align-items: start !important;
+  }
   html.modo-movil-real body.vista-temas-movil #filaHeroPrincipal,
   html.modo-movil-real body.senal-cerrada #filaHeroPrincipal {
     grid-template-columns: minmax(0, 1fr) clamp(130px, 14vw, 180px) !important;
