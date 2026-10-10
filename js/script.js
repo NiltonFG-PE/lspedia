@@ -1041,7 +1041,10 @@ if (btnAceptarAvisoVocabulario && modalAvisoVocabulario) {
         destino.classList.remove("vocab-buscador-revelado");
         void destino.offsetWidth;
         destino.classList.add("vocab-buscador-revelado");
-        scrollAlPrimerResultado(destino);
+        // En tablet, el título de Vocabulario y el avatar deben quedar
+        // visibles desde el inicio. No desplazar hasta el buscador.
+        if(esTabletRealLSPedia()) scrollArribaEstable();
+        else scrollAlPrimerResultado(destino);
 
         setTimeout(() => {
             destino.classList.remove("vocab-buscador-revelado");
@@ -1051,6 +1054,13 @@ if (btnAceptarAvisoVocabulario && modalAvisoVocabulario) {
             }
         }, 320);
     });
+}
+
+// Solo en tablets físicas: navegación con el hero completo al inicio.
+// Se evita cambiar el comportamiento de celulares y PC reducidas.
+function esTabletRealLSPedia(){
+    return document.documentElement.classList.contains("modo-movil-real")
+        && window.matchMedia("(min-width: 768px) and (min-height: 480px)").matches;
 }
 
 // El botón "Historial" del menú se fusionó dentro de "Temas orden":
@@ -1137,10 +1147,10 @@ document.getElementById("btnCategorias").addEventListener("click", (e) => {
         // apuntando al techo de la página (top:0) en vez de a un elemento.
         scrollArribaEstable();
     } else if (!avisoVocabularioMostrado) {
-        // Al entrar a Vocabulario sin aviso (ya aceptado en esta sesión), la
-        // primera referencia visual sigue siendo el buscador. Si el aviso se
-        // mostró, el scroll se hace al terminar su animación de salida.
-        scrollAlPrimerResultado(bloqueBuscadorCategorias || panelCategorias);
+        // Tablet: mostrar el título entero junto al avatar; en celulares
+        // conservar el desplazamiento al buscador que ya estaba aprobado.
+        if(esTabletRealLSPedia()) scrollArribaEstable();
+        else scrollAlPrimerResultado(bloqueBuscadorCategorias || panelCategorias);
         panelCategorias.classList.add("highlight-anim");
         seccionFavoritos.classList.add("highlight-anim");
         seccionHistorial.classList.add("highlight-anim");
