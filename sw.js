@@ -12,7 +12,7 @@
    - El panel /admin/ y los laboratorios quedan fuera del fallback público.
    ============================================================ */
 
-const VERSION_APP = "v301-spacing-dates";
+const VERSION_APP = "v302-publication-clock";
 const PREFIJO_CACHE = "lspedia-shell-";
 const PREFIJO_RUNTIME = "lspedia-runtime-";
 const CACHE_NOMBRE = PREFIJO_CACHE + VERSION_APP;
@@ -225,5 +225,6 @@ self.addEventListener("fetch", (event) => {
     })());
     return;
 });
+
 
 
