@@ -86,7 +86,7 @@ function crearHtmlPublicadorLSPedia_(modoWeb, claveMovil) {
 
   return plantilla
     .evaluate()
-    .setTitle('Panel LSPedia v29.1')
+    .setTitle('Panel LSPedia v30.0')
     .addMetaTag(
       'viewport',
       'width=device-width, initial-scale=1, viewport-fit=cover'
@@ -109,7 +109,7 @@ function servirPublicadorWebLSPedia_(e) {
         '<p>Este enlace no autoriza el Publicador LSPedia.</p>' +
         '</div>'
       )
-      .setTitle('Panel LSPedia v29.1')
+      .setTitle('Panel LSPedia v30.0')
       .addMetaTag(
         'viewport',
         'width=device-width, initial-scale=1, viewport-fit=cover'
@@ -170,7 +170,7 @@ function mostrarAccesoMovilPublicadorLSPedia() {
     '</head>' +
     '<body style="font-family:Arial,sans-serif;padding:18px;line-height:1.45">' +
 
-      '<h3 style="margin-top:0">📱 Panel LSPedia v29.1 en el celular</h3>' +
+      '<h3 style="margin-top:0">📱 Panel LSPedia v30.0 en el celular</h3>' +
 
       '<p>Abre este enlace en Chrome del celular. Es privado: no lo compartas.</p>' +
 
@@ -622,7 +622,7 @@ function abrirPublicadorLSPedia() {
 
   SpreadsheetApp.getUi().showModelessDialog(
     html,
-    'Panel LSPedia v29.1'
+    'Panel LSPedia v30.0'
   );
 }
 
@@ -682,7 +682,7 @@ function instalarPublicadorLSPedia() {
    * El menú se creará automáticamente cuando vuelvas al Sheet
    * y recargues la página.
    */
-  Logger.log('✅ Panel LSPedia v29.1 instalado correctamente.');
+  Logger.log('✅ Panel LSPedia v30.0 instalado correctamente.');
   Logger.log('📱 Acceso móvil preparado.');
   Logger.log('🔄 Ahora vuelve al Google Sheet Proyecto y recarga la página.');
 
@@ -10264,3 +10264,30 @@ function normalizarTextoEnriquecidoWeb_(entrada,cfg) {
   if(JSON.stringify(out).length>450000)throw new Error('El formato WEB supera el tamaño permitido.');
   return out;
 }
+
+/** Compara los datos de GitHub con la respuesta del sitio público; no da por hecho el despliegue. */
+function verificarEstadoPublicacion30(datos) {
+  authControlPublicador22_(datos);
+  const rutas={diccionario:'data/palabras.json',vocabulario:'data/vocabulario.json',alfabetizacion:'data/alfabetizacion.json',ejemplos:'data/alfabetizacion.json',web:'data/web-config.json'};
+  const ruta=rutas[datos.tipo];if(!ruta)throw new Error('Sección sin comprobación pública.');
+  const lectura=leerJsonGitHubPublicador_(ruta);if(!lectura || !lectura.datos)return {sincronizado:false,visible:false,mensaje:'No se encontró el archivo sincronizado. El contenido guardado se conserva.'};
+  if(datos.tipo==='web' && String(lectura.datos.actualizadoEn||'')!==String(datos.revision||''))return {sincronizado:false,visible:false,mensaje:'La revisión cambió después del guardado. Actualiza la configuración WEB antes de editarla.'};
+  if(datos.tipo!=='web'){
+    const c=configPublicador_(),ss=obtenerSpreadsheetPublicador_();let generada;
+    if(datos.tipo==='diccionario')generada=construirDiccionarioJsonPublicador_(ss.getSheetByName(c.hojaDiccionario),lectura.datos).registros;
+    else if(datos.tipo==='vocabulario')generada=construirVocabularioJsonPublicador_(ss.getSheetByName(c.hojaVocabulario)).registros;
+    else generada=construirAlfabetizacionJsonPublicador_(ss.getSheetByName(c.hojaAlfabetizacion),ss.getSheetByName(c.hojaEjemplos)).documento.ejemplos;
+    const esperado=buscarRegistroJsonPublicador22_(generada,datos.palabra,datos.categoria);
+    if(!esperado)return {sincronizado:true,visible:false,pendiente:true,mensaje:'La ficha está guardada, pero todavía no cumple las condiciones para entrar en el catálogo público. Completa sus recursos.'};
+    const registro=datos.tipo==='alfabetizacion'||datos.tipo==='ejemplos'?buscarRegistroJsonPublicador22_(lectura.datos.ejemplos,datos.palabra,datos.categoria):buscarRegistroJsonPublicador22_(lectura.datos,datos.palabra,datos.categoria);
+    if(registro&&canonicoPanel30_(registro)!==canonicoPanel30_(esperado))return {sincronizado:false,visible:false,mensaje:'La ficha guardada en Sheets y la versión de GitHub todavía son diferentes. Sincroniza antes de comprobar la web.'};
+    if(!registro)return {sincronizado:datos.publicada===false,visible:false,pendiente:datos.publicada===false,mensaje:datos.publicada===false?'Guardado como pendiente. Completa los recursos requeridos para publicarlo.':'El registro aún no se encontró en los datos de GitHub. Revisa la sincronización.'};
+  }
+  let respuesta;try{respuesta=UrlFetchApp.fetch('https://lspedia.site/'+ruta+'?verificacion='+Date.now(),{muteHttpExceptions:true,followRedirects:false});if(respuesta.getResponseCode()!==200)throw new Error('Respuesta pública '+respuesta.getResponseCode());}catch(e){return {sincronizado:true,visible:false,mensaje:'Datos encontrados en GitHub. No fue posible comprobar la respuesta del sitio; vuelve a comprobar en unos momentos.'};}
+  let publica;try{publica=JSON.parse(respuesta.getContentText());}catch(_){return {sincronizado:true,visible:false,mensaje:'GitHub está actualizado, pero la respuesta pública todavía no contiene JSON válido.'};}
+  const igual=canonicoPanel30_(lectura.datos)===canonicoPanel30_(publica);
+  return {sincronizado:true,visible:igual,mensaje:igual?'La respuesta pública coincide con la versión de GitHub. Datos disponibles verificados; recarga LSPedia para verlos. Las fechas futuras y las reglas de cada sección siguen aplicándose.':'Guardado y sincronizado. El sitio público todavía devuelve otra versión; espera un momento y vuelve a comprobar.'};
+}
+function canonicoPanel30_(v){if(Array.isArray(v))return '['+v.map(canonicoPanel30_).join(',')+']';if(v&&typeof v==='object')return '{'+Object.keys(v).sort().map(k=>JSON.stringify(k)+':'+canonicoPanel30_(v[k])).join(',')+'}';return JSON.stringify(v);}
+
+function obtenerResumenInicio30(datos){const d=obtenerDashboardPublicadorLSPedia(datos);const p=obtenerPendientesPaginadosPublicador26(Object.assign({},datos,{seccion:"todos",consulta:"",offset:0,limit:1}));d.pendientes=Number((p.totales||{}).pendientes||0);return d;}
