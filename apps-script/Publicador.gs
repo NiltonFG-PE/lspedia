@@ -5763,6 +5763,7 @@ function escribirFilaPublicador_(
   hoja,
   valores
 ) {
+  lspPrepararMomentoPublicacion_(hoja, 0, valores);
   const ultimaColumna =
     hoja.getLastColumn();
 
@@ -5910,6 +5911,7 @@ function actualizarFilaPublicador_(
   numeroFila,
   valores
 ) {
+  lspPrepararMomentoPublicacion_(hoja, numeroFila, valores);
   const ultimaColumna =
     Math.max(hoja.getLastColumn(), 1);
 
@@ -6486,6 +6488,7 @@ function construirDiccionarioJsonPublicador_(
     imagen: indice('imagen'),
     senaSugerida: indice('senasugerida'),
     fechaPublicacion: indice('fechapublicacion'),
+    publicadoEn: indice('publicadoen'),
     ingles: indice('ingles'),
     definicionIngles: indice('definicioningles'),
     etiquetas: indice('etiquetas'),
@@ -6794,6 +6797,8 @@ function construirDiccionarioJsonPublicador_(
       }
 
       registro.fechapublicacion = fecha;
+      registro.publicadoEn = lspMomentoPublicacionJson_(valorFilaJsonPublicador_(fila, columnas.publicadoEn)) || lspMomentoPublicacionJson_(registro.publicadoEn || registro.publicadoen);
+      delete registro.publicadoen;
       registro.ingles =
         valorFilaJsonPublicador_(
           fila,
@@ -7067,6 +7072,7 @@ function construirVocabularioJsonPublicador_(
     definicion: indice('definicion'),
     publicarSinImagen: indice('publicarsinimagen'),
     fechaPublicacion: indice('fechapublicacion'),
+    publicadoEn: indice('publicadoen'),
     ingles: indice('ingles'),
     definicionIngles: indice('definicioningles')
   };
@@ -7199,6 +7205,7 @@ function construirVocabularioJsonPublicador_(
         definicion: definicion,
         fechaPublicacion:
           fechaPublicacion,
+        publicadoEn: lspMomentoPublicacionJson_(valorFilaJsonPublicador_(fila, columnas.publicadoEn)),
         ingles:
           valorFilaJsonPublicador_(
             fila,
@@ -10291,3 +10298,37 @@ function verificarEstadoPublicacion30(datos) {
 function canonicoPanel30_(v){if(Array.isArray(v))return '['+v.map(canonicoPanel30_).join(',')+']';if(v&&typeof v==='object')return '{'+Object.keys(v).sort().map(k=>JSON.stringify(k)+':'+canonicoPanel30_(v[k])).join(',')+'}';return JSON.stringify(v);}
 
 function obtenerResumenInicio30(datos){const d=obtenerDashboardPublicadorLSPedia(datos);const p=obtenerPendientesPaginadosPublicador26(Object.assign({},datos,{seccion:"todos",consulta:"",offset:0,limit:1}));d.pendientes=Number((p.totales||{}).pendientes||0);return d;}
+
+
+// Hora automática de la primera publicación; independiente de la fecha editorial.
+function lspPrepararMomentoPublicacion_(hoja, numeroFila, valores) {
+  const c = configPublicador_(), nombre = hoja.getName();
+  if ([c.hojaDiccionario, c.hojaVocabulario, c.hojaEjemplos].indexOf(nombre) === -1) return;
+  asegurarEncabezadoPublicador_(hoja, 'publicadoEn');
+  const headers = hoja.getRange(1, 1, 1, hoja.getLastColumn()).getDisplayValues()[0];
+  const anterior = {};
+  if (numeroFila) {
+    const fila = hoja.getRange(numeroFila, 1, 1, headers.length).getDisplayValues()[0];
+    headers.forEach(function(k, i) { anterior[normalizarClavePublicador_(k)] = fila[i]; });
+  }
+  const siguiente = Object.assign({}, anterior);
+  Object.keys(valores).forEach(function(k) { siguiente[normalizarClavePublicador_(k)] = valores[k]; });
+  // Nunca aceptar ni reemplazar la hora desde un formulario de edición.
+  Object.keys(valores).forEach(function(k) { if (normalizarClavePublicador_(k) === 'publicadoen') delete valores[k]; });
+  function publicable(r) {
+    if (!r.palabra) return false;
+    const imagen = esImagenRealVocabularioJsonPublicador_(String(r.imagen || ''));
+    if (nombre === c.hojaEjemplos) return !!r.caracter && imagen;
+    if (!r.categoria || !extraerYoutubeIdPublicador_(String(r.video || ''))) return false;
+    return nombre === c.hojaVocabulario ? imagen : imagen || (!!r.definicion && esSiPublicador_(r.publicarsinimagen));
+  }
+  if (!anterior.publicadoen && publicable(siguiente) && !publicable(anterior)) valores.publicadoEn = new Date().toISOString();
+}
+
+function lspMomentoPublicacionJson_(valor) {
+  const s = String(valor || '').trim();
+  // Rechazar fechas sin hora: no convertirlas en una hora inventada.
+  if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/.test(s)) return '';
+  const t = Date.parse(s);
+  return Number.isFinite(t) ? new Date(t).toISOString() : '';
+}
