@@ -1,9 +1,20 @@
 {
-  "generadoEn": "2026-10-10T19:05:20Z",
+  "generadoEn": "2026-10-10T22:22:19Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 208,
+  "maxItems": 209,
   "diasEtiquetaNuevo": 14,
   "items": [
+    {
+      "id": "",
+      "palabra": "Dulce",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/dulce.webp",
+      "fecha": "2026-10-10T22:21:30Z",
+      "fechaPublicacion": "2026-10-10T05:00:00Z",
+      "publicadoEn": "2026-10-10T22:21:30Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
     {
       "id": "",
       "palabra": "Fuego",
