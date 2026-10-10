@@ -166,6 +166,9 @@
             integrarBoton();
             actualizarBoton();
         });
+        // Si el selector de idioma se monta después del botón de tema,
+        // evita que la luna quede sola en el centro de la cabecera.
+        document.addEventListener('lspedia:selectorIdiomaListo', integrarBoton);
     }
 
     if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar, { once:true });
