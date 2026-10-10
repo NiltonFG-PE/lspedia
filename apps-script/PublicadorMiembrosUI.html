@@ -52,7 +52,7 @@ form.elements.imagen.addEventListener('change',savedPreview);
 $('lm-delete').addEventListener('click',()=>{if(current)$('lm-delete-confirm').hidden=false;});
 $('lm-delete-no').addEventListener('click',()=>{$('lm-delete-confirm').hidden=true;});
 $('lm-delete-yes').addEventListener('click',()=>busy(async()=>{if(!current)throw new Error('Selecciona una ficha existente.');const result=await call('lspMiembrosEliminar',{registro:{id:current.id,fila:current.fila,revision:current.revision}});if(window.Panel30)Panel30.clear('miembros');await reload();reset();msg(result.mensaje);}));
-window.Miembros30={resumen:()=>call('lspPanelResumenMiembros30'),identity:()=>current?{id:current.id,revision:current.revision}:null,restoreIdentity:s=>{if(!s){reset();return true;}const r=rows.find(r=>r.id===s.id&&r.revision===s.revision);if(!r)return false;edit(r);return true;}};
+window.Miembros30={openUsers:()=>memberView('users'),resumen:()=>call('lspPanelResumenMiembros30'),identity:()=>current?{id:current.id,revision:current.revision}:null,restoreIdentity:s=>{if(!s){reset();return true;}const r=rows.find(r=>r.id===s.id&&r.revision===s.revision);if(!r)return false;edit(r);return true;}};
 window.cargarZonaMiembrosPublicador=()=>busy(async()=>{const d=await reload();msg(d.configurado?'Listo. Selecciona una ficha para editarla o eliminarla.':'Puedes guardar fichas. La conexión con la web está pendiente.');});
 let accessTarget=null,userSections=[],profileTarget=null;
 let users=[],usersPage=1,usersNext=false,usersConnected=false,pendingAccess=null,userBusy=false;
