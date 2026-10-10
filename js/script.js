@@ -1403,7 +1403,7 @@ function abrirJuegoChatEspanol(){
 }
 
 function abrirJuegoCarrera(){
-    window.location.assign("juegos/carrera-matematica.html?v=20260925-11");
+    window.location.assign("juegos/carrera-matematica.html?v=20261010-fullscreen-2");
 }
 
 const btnMenuJuegoChatEspanol = document.getElementById("btnMenuJuegoChatEspanol");
