@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-10-09T16:16:03Z",
+  "generadoEn": "2026-10-10T12:47:29Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 203,
   "diasEtiquetaNuevo": 14,
@@ -10,6 +10,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/oscuro.webp",
       "fecha": "2026-10-09T05:00:00Z",
+      "fechaPublicacion": "2026-10-09T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -19,6 +21,8 @@
       "categoria": "Adverbios",
       "imagen": "img/vocabulario/cerca-2.webp",
       "fecha": "2026-10-09T05:00:00Z",
+      "fechaPublicacion": "2026-10-09T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -28,6 +32,8 @@
       "categoria": "Adverbios",
       "imagen": "img/vocabulario/lejos.webp",
       "fecha": "2026-10-09T05:00:00Z",
+      "fechaPublicacion": "2026-10-09T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -37,6 +43,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/joven.webp",
       "fecha": "2026-10-08T05:00:00Z",
+      "fechaPublicacion": "2026-10-08T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -46,6 +54,8 @@
       "categoria": "Adverbios",
       "imagen": "img/vocabulario/juntos.webp",
       "fecha": "2026-10-08T05:00:00Z",
+      "fechaPublicacion": "2026-10-08T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -55,6 +65,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/lento.webp",
       "fecha": "2026-10-08T05:00:00Z",
+      "fechaPublicacion": "2026-10-08T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -64,6 +76,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/limpio.webp",
       "fecha": "2026-10-08T05:00:00Z",
+      "fechaPublicacion": "2026-10-08T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -73,6 +87,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/malo.webp",
       "fecha": "2026-10-08T05:00:00Z",
+      "fechaPublicacion": "2026-10-08T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -82,6 +98,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/mentiroso.webp",
       "fecha": "2026-10-08T05:00:00Z",
+      "fechaPublicacion": "2026-10-08T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -91,6 +109,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/nuevo.webp",
       "fecha": "2026-10-08T05:00:00Z",
+      "fechaPublicacion": "2026-10-08T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -100,6 +120,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/peligroso.webp",
       "fecha": "2026-10-08T05:00:00Z",
+      "fechaPublicacion": "2026-10-08T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -109,6 +131,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/pequeno.webp",
       "fecha": "2026-10-08T05:00:00Z",
+      "fechaPublicacion": "2026-10-08T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -118,6 +142,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/rapido.webp",
       "fecha": "2026-10-08T05:00:00Z",
+      "fechaPublicacion": "2026-10-08T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -127,6 +153,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/sabio.webp, img/vocabulario/sabio-2.webp",
       "fecha": "2026-10-08T05:00:00Z",
+      "fechaPublicacion": "2026-10-08T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -136,6 +164,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/seguro.webp",
       "fecha": "2026-10-08T05:00:00Z",
+      "fechaPublicacion": "2026-10-08T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -145,6 +175,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/sucio.webp",
       "fecha": "2026-10-08T05:00:00Z",
+      "fechaPublicacion": "2026-10-08T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -154,6 +186,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/tacano.webp",
       "fecha": "2026-10-08T05:00:00Z",
+      "fechaPublicacion": "2026-10-08T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -163,6 +197,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/valiente.webp",
       "fecha": "2026-10-08T05:00:00Z",
+      "fechaPublicacion": "2026-10-08T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -172,6 +208,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/presumido.webp",
       "fecha": "2026-10-08T05:00:00Z",
+      "fechaPublicacion": "2026-10-08T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -181,6 +219,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/alegre.webp",
       "fecha": "2026-10-08T05:00:00Z",
+      "fechaPublicacion": "2026-10-08T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -190,6 +230,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/nervioso.webp",
       "fecha": "2026-10-08T05:00:00Z",
+      "fechaPublicacion": "2026-10-08T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -199,6 +241,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/ocupado.webp",
       "fecha": "2026-10-08T05:00:00Z",
+      "fechaPublicacion": "2026-10-08T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -208,6 +252,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/libre.webp",
       "fecha": "2026-10-08T05:00:00Z",
+      "fechaPublicacion": "2026-10-08T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -217,6 +263,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/vacio.webp",
       "fecha": "2026-10-08T05:00:00Z",
+      "fechaPublicacion": "2026-10-08T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -226,6 +274,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/duro.webp",
       "fecha": "2026-10-08T05:00:00Z",
+      "fechaPublicacion": "2026-10-08T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -235,6 +285,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/suave.webp",
       "fecha": "2026-10-08T05:00:00Z",
+      "fechaPublicacion": "2026-10-08T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -244,6 +296,8 @@
       "categoria": "Emociones",
       "imagen": "img/vocabulario/tranquilo.webp",
       "fecha": "2026-10-08T05:00:00Z",
+      "fechaPublicacion": "2026-10-08T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -253,6 +307,8 @@
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/tarde.webp",
       "fecha": "2026-10-08T05:00:00Z",
+      "fechaPublicacion": "2026-10-08T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -262,6 +318,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/peso.webp",
       "fecha": "2026-10-08T05:00:00Z",
+      "fechaPublicacion": "2026-10-08T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -271,6 +329,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/enfermo.webp",
       "fecha": "2026-10-07T05:00:00Z",
+      "fechaPublicacion": "2026-10-07T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -280,6 +340,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/facil.webp, img/vocabulario/facil-2.webp",
       "fecha": "2026-10-07T05:00:00Z",
+      "fechaPublicacion": "2026-10-07T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -289,6 +351,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/feo.webp",
       "fecha": "2026-10-07T05:00:00Z",
+      "fechaPublicacion": "2026-10-07T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -298,6 +362,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/fuerte.webp",
       "fecha": "2026-10-07T05:00:00Z",
+      "fechaPublicacion": "2026-10-07T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -307,6 +373,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/generoso.webp",
       "fecha": "2026-10-07T05:00:00Z",
+      "fechaPublicacion": "2026-10-07T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -316,6 +384,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/gordo.webp",
       "fecha": "2026-10-07T05:00:00Z",
+      "fechaPublicacion": "2026-10-07T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -325,6 +395,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/igual.webp, img/vocabulario/igual-2.webp",
       "fecha": "2026-10-07T05:00:00Z",
+      "fechaPublicacion": "2026-10-07T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -334,6 +406,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/inteligente.webp",
       "fecha": "2026-10-07T05:00:00Z",
+      "fechaPublicacion": "2026-10-07T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -343,6 +417,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/obeso.webp",
       "fecha": "2026-10-07T05:00:00Z",
+      "fechaPublicacion": "2026-10-07T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -352,6 +428,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/pesado.webp",
       "fecha": "2026-10-07T05:00:00Z",
+      "fechaPublicacion": "2026-10-07T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -361,6 +439,8 @@
       "categoria": "Valores",
       "imagen": "img/vocabulario/honestidad.webp",
       "fecha": "2026-10-07T05:00:00Z",
+      "fechaPublicacion": "2026-10-07T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -370,6 +450,8 @@
       "categoria": "Valores",
       "imagen": "img/vocabulario/paciencia.webp",
       "fecha": "2026-10-07T05:00:00Z",
+      "fechaPublicacion": "2026-10-07T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -379,6 +461,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/fino.webp",
       "fecha": "2026-10-07T05:00:00Z",
+      "fechaPublicacion": "2026-10-07T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -388,6 +472,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/torpe.webp",
       "fecha": "2026-10-07T05:00:00Z",
+      "fechaPublicacion": "2026-10-07T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -397,6 +483,8 @@
       "categoria": "Valores",
       "imagen": "img/vocabulario/igualdad.webp",
       "fecha": "2026-10-07T05:00:00Z",
+      "fechaPublicacion": "2026-10-07T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -406,6 +494,8 @@
       "categoria": "Valores",
       "imagen": "img/vocabulario/aguante.webp",
       "fecha": "2026-10-07T05:00:00Z",
+      "fechaPublicacion": "2026-10-07T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -415,6 +505,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/bonito.webp",
       "fecha": "2026-10-06T05:00:00Z",
+      "fechaPublicacion": "2026-10-06T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -424,6 +516,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/bueno.webp",
       "fecha": "2026-10-06T05:00:00Z",
+      "fechaPublicacion": "2026-10-06T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -433,6 +527,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/claro.webp",
       "fecha": "2026-10-06T05:00:00Z",
+      "fechaPublicacion": "2026-10-06T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -442,6 +538,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/confundido.webp",
       "fecha": "2026-10-06T05:00:00Z",
+      "fechaPublicacion": "2026-10-06T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -451,6 +549,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/curioso.webp",
       "fecha": "2026-10-06T05:00:00Z",
+      "fechaPublicacion": "2026-10-06T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -460,6 +560,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/delgado.webp",
       "fecha": "2026-10-06T05:00:00Z",
+      "fechaPublicacion": "2026-10-06T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -469,6 +571,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/desordenado.webp",
       "fecha": "2026-10-06T05:00:00Z",
+      "fechaPublicacion": "2026-10-06T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -478,6 +582,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/dificil.webp",
       "fecha": "2026-10-06T05:00:00Z",
+      "fechaPublicacion": "2026-10-06T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -487,6 +593,8 @@
       "categoria": "Adverbios",
       "imagen": "img/vocabulario/bien.webp",
       "fecha": "2026-10-06T05:00:00Z",
+      "fechaPublicacion": "2026-10-06T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -496,6 +604,8 @@
       "categoria": "Valores",
       "imagen": "img/vocabulario/bueno.webp",
       "fecha": "2026-10-06T05:00:00Z",
+      "fechaPublicacion": "2026-10-06T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -505,6 +615,8 @@
       "categoria": "Verbos",
       "imagen": "img/vocabulario/entendimiento-comprender-darse-cuenta.webp",
       "fecha": "2026-10-06T05:00:00Z",
+      "fechaPublicacion": "2026-10-06T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -514,6 +626,8 @@
       "categoria": "Verbos",
       "imagen": "img/vocabulario/no-entiendo.webp",
       "fecha": "2026-10-06T05:00:00Z",
+      "fechaPublicacion": "2026-10-06T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -523,6 +637,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/desatento.webp",
       "fecha": "2026-10-06T05:00:00Z",
+      "fechaPublicacion": "2026-10-06T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -532,6 +648,8 @@
       "categoria": "Legal",
       "imagen": "img/diccionario/camara-gesell.webp",
       "fecha": "2026-09-26T05:00:00Z",
+      "fechaPublicacion": "2026-09-26T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
@@ -541,6 +659,8 @@
       "categoria": "Educación",
       "imagen": "img/diccionario/facilitador.webp, img/diccionario/facilitador-2.webp",
       "fecha": "2026-09-26T05:00:00Z",
+      "fechaPublicacion": "2026-09-26T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
@@ -550,6 +670,8 @@
       "categoria": "Psicología",
       "imagen": "img/diccionario/neurodivergente.webp, img/diccionario/neurodivergente-2.webp",
       "fecha": "2026-09-26T05:00:00Z",
+      "fechaPublicacion": "2026-09-26T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
@@ -559,6 +681,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/alto.webp",
       "fecha": "2026-09-23T05:00:00Z",
+      "fechaPublicacion": "2026-09-23T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -568,6 +692,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/ancho.webp",
       "fecha": "2026-09-23T05:00:00Z",
+      "fechaPublicacion": "2026-09-23T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -577,6 +703,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/angosto.webp",
       "fecha": "2026-09-23T05:00:00Z",
+      "fechaPublicacion": "2026-09-23T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -586,6 +714,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/antiguo.webp",
       "fecha": "2026-09-23T05:00:00Z",
+      "fechaPublicacion": "2026-09-23T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -595,6 +725,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/bajo.webp",
       "fecha": "2026-09-23T05:00:00Z",
+      "fechaPublicacion": "2026-09-23T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -604,6 +736,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/barato.webp",
       "fecha": "2026-09-23T05:00:00Z",
+      "fechaPublicacion": "2026-09-23T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -613,6 +747,8 @@
       "categoria": "Cortesía",
       "imagen": "img/vocabulario/felicitaciones.webp",
       "fecha": "2026-09-23T05:00:00Z",
+      "fechaPublicacion": "2026-09-23T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -622,6 +758,8 @@
       "categoria": "Cortesía",
       "imagen": "img/vocabulario/gracias.webp",
       "fecha": "2026-09-23T05:00:00Z",
+      "fechaPublicacion": "2026-09-23T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -631,6 +769,8 @@
       "categoria": "Cortesía",
       "imagen": "img/vocabulario/por-favor.webp",
       "fecha": "2026-09-23T05:00:00Z",
+      "fechaPublicacion": "2026-09-23T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -640,6 +780,8 @@
       "categoria": "Cortesía",
       "imagen": "img/vocabulario/perdon.webp",
       "fecha": "2026-09-23T05:00:00Z",
+      "fechaPublicacion": "2026-09-23T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -649,6 +791,8 @@
       "categoria": "Cortesía",
       "imagen": "img/vocabulario/bienvenido.webp",
       "fecha": "2026-09-23T05:00:00Z",
+      "fechaPublicacion": "2026-09-23T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -658,6 +802,8 @@
       "categoria": "Cortesía",
       "imagen": "img/vocabulario/hasta-luego.webp",
       "fecha": "2026-09-23T05:00:00Z",
+      "fechaPublicacion": "2026-09-23T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -667,6 +813,8 @@
       "categoria": "Cortesía",
       "imagen": "img/vocabulario/buenos-dias.webp",
       "fecha": "2026-09-23T05:00:00Z",
+      "fechaPublicacion": "2026-09-23T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -676,6 +824,8 @@
       "categoria": "Cortesía",
       "imagen": "img/vocabulario/buenas-tardes.webp",
       "fecha": "2026-09-23T05:00:00Z",
+      "fechaPublicacion": "2026-09-23T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -685,6 +835,8 @@
       "categoria": "Cortesía",
       "imagen": "img/vocabulario/buenas-noches.webp",
       "fecha": "2026-09-23T05:00:00Z",
+      "fechaPublicacion": "2026-09-23T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -694,6 +846,8 @@
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/ahora.webp",
       "fecha": "2026-09-23T05:00:00Z",
+      "fechaPublicacion": "2026-09-23T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -703,6 +857,8 @@
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/anteayer.webp",
       "fecha": "2026-09-23T05:00:00Z",
+      "fechaPublicacion": "2026-09-23T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -712,6 +868,8 @@
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/ayer.webp",
       "fecha": "2026-09-23T05:00:00Z",
+      "fechaPublicacion": "2026-09-23T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -721,6 +879,8 @@
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/todos-los-dias-a-diario.webp",
       "fecha": "2026-09-23T05:00:00Z",
+      "fechaPublicacion": "2026-09-23T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -730,6 +890,8 @@
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/hoy.webp",
       "fecha": "2026-09-23T05:00:00Z",
+      "fechaPublicacion": "2026-09-23T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -739,6 +901,8 @@
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/manana.webp",
       "fecha": "2026-09-23T05:00:00Z",
+      "fechaPublicacion": "2026-09-23T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -748,6 +912,8 @@
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/pasado-manana.webp",
       "fecha": "2026-09-23T05:00:00Z",
+      "fechaPublicacion": "2026-09-23T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -757,6 +923,8 @@
       "categoria": "Cortesía",
       "imagen": "img/vocabulario/saludos.webp",
       "fecha": "2026-09-23T05:00:00Z",
+      "fechaPublicacion": "2026-09-23T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -766,6 +934,8 @@
       "categoria": "Cortesía",
       "imagen": "img/vocabulario/muchas-gracias.webp",
       "fecha": "2026-09-23T05:00:00Z",
+      "fechaPublicacion": "2026-09-23T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -775,6 +945,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/gratis.webp",
       "fecha": "2026-09-23T05:00:00Z",
+      "fechaPublicacion": "2026-09-23T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -784,6 +956,8 @@
       "categoria": "Cortesía",
       "imagen": "img/vocabulario/nos-vemos.webp",
       "fecha": "2026-09-23T05:00:00Z",
+      "fechaPublicacion": "2026-09-23T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -793,6 +967,8 @@
       "categoria": "Cortesía",
       "imagen": "img/vocabulario/hola.webp",
       "fecha": "2026-09-23T05:00:00Z",
+      "fechaPublicacion": "2026-09-23T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -802,6 +978,8 @@
       "categoria": "Cortesía",
       "imagen": "img/vocabulario/chau.webp",
       "fecha": "2026-09-23T05:00:00Z",
+      "fechaPublicacion": "2026-09-23T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -811,6 +989,8 @@
       "categoria": "Cortesía",
       "imagen": "img/vocabulario/cuidate.webp",
       "fecha": "2026-09-23T05:00:00Z",
+      "fechaPublicacion": "2026-09-23T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -820,6 +1000,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/educado.webp",
       "fecha": "2026-09-23T05:00:00Z",
+      "fechaPublicacion": "2026-09-23T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -829,6 +1011,8 @@
       "categoria": "Comunicación",
       "imagen": "img/vocabulario/pregunta.webp",
       "fecha": "2026-09-22T05:00:00Z",
+      "fechaPublicacion": "2026-09-22T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -838,6 +1022,8 @@
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/estaciones.webp",
       "fecha": "2026-09-22T05:00:00Z",
+      "fechaPublicacion": "2026-09-22T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -847,6 +1033,8 @@
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/invierno.webp",
       "fecha": "2026-09-22T05:00:00Z",
+      "fechaPublicacion": "2026-09-22T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -856,6 +1044,8 @@
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/otono.webp",
       "fecha": "2026-09-22T05:00:00Z",
+      "fechaPublicacion": "2026-09-22T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -865,6 +1055,8 @@
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/primavera.webp",
       "fecha": "2026-09-22T05:00:00Z",
+      "fechaPublicacion": "2026-09-22T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -874,6 +1066,8 @@
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/verano.webp",
       "fecha": "2026-09-22T05:00:00Z",
+      "fechaPublicacion": "2026-09-22T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -883,6 +1077,8 @@
       "categoria": "Números",
       "imagen": "img/vocabulario/numero.webp",
       "fecha": "2026-09-22T05:00:00Z",
+      "fechaPublicacion": "2026-09-22T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -892,6 +1088,8 @@
       "categoria": "Preguntas",
       "imagen": "img/vocabulario/como.webp",
       "fecha": "2026-09-21T05:00:00Z",
+      "fechaPublicacion": "2026-09-21T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -901,6 +1099,8 @@
       "categoria": "Preguntas",
       "imagen": "img/vocabulario/cual.webp",
       "fecha": "2026-09-21T05:00:00Z",
+      "fechaPublicacion": "2026-09-21T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -910,6 +1110,8 @@
       "categoria": "Preguntas",
       "imagen": "img/vocabulario/cuando.webp",
       "fecha": "2026-09-21T05:00:00Z",
+      "fechaPublicacion": "2026-09-21T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -919,6 +1121,8 @@
       "categoria": "Preguntas",
       "imagen": "img/vocabulario/donde.webp",
       "fecha": "2026-09-21T05:00:00Z",
+      "fechaPublicacion": "2026-09-21T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -928,6 +1132,8 @@
       "categoria": "Preguntas",
       "imagen": "img/vocabulario/por-que.webp",
       "fecha": "2026-09-21T05:00:00Z",
+      "fechaPublicacion": "2026-09-21T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -937,6 +1143,8 @@
       "categoria": "Preguntas",
       "imagen": "img/vocabulario/que.webp",
       "fecha": "2026-09-21T05:00:00Z",
+      "fechaPublicacion": "2026-09-21T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -946,6 +1154,8 @@
       "categoria": "Preguntas",
       "imagen": "img/vocabulario/quien.webp",
       "fecha": "2026-09-21T05:00:00Z",
+      "fechaPublicacion": "2026-09-21T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -955,6 +1165,8 @@
       "categoria": "Preguntas",
       "imagen": "img/vocabulario/quienes.webp",
       "fecha": "2026-09-21T05:00:00Z",
+      "fechaPublicacion": "2026-09-21T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -964,6 +1176,8 @@
       "categoria": "Preguntas",
       "imagen": "img/vocabulario/cuales.webp",
       "fecha": "2026-09-21T05:00:00Z",
+      "fechaPublicacion": "2026-09-21T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -973,6 +1187,8 @@
       "categoria": "Preguntas",
       "imagen": "img/vocabulario/cuantos.webp",
       "fecha": "2026-09-21T05:00:00Z",
+      "fechaPublicacion": "2026-09-21T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -982,6 +1198,8 @@
       "categoria": "Preguntas",
       "imagen": "img/vocabulario/para-que.webp",
       "fecha": "2026-09-21T05:00:00Z",
+      "fechaPublicacion": "2026-09-21T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -991,6 +1209,8 @@
       "categoria": "Colores",
       "imagen": "img/vocabulario/beige.webp",
       "fecha": "2026-09-16T05:00:00Z",
+      "fechaPublicacion": "2026-09-16T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -1000,6 +1220,8 @@
       "categoria": "Colores",
       "imagen": "img/vocabulario/blanco.webp",
       "fecha": "2026-09-16T05:00:00Z",
+      "fechaPublicacion": "2026-09-16T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -1009,6 +1231,8 @@
       "categoria": "Colores",
       "imagen": "img/vocabulario/guinda.webp",
       "fecha": "2026-09-16T05:00:00Z",
+      "fechaPublicacion": "2026-09-16T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -1018,6 +1242,8 @@
       "categoria": "Colores",
       "imagen": "img/vocabulario/marron.webp",
       "fecha": "2026-09-16T05:00:00Z",
+      "fechaPublicacion": "2026-09-16T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -1027,6 +1253,8 @@
       "categoria": "Colores",
       "imagen": "img/vocabulario/morado.webp",
       "fecha": "2026-09-16T05:00:00Z",
+      "fechaPublicacion": "2026-09-16T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -1036,6 +1264,8 @@
       "categoria": "Colores",
       "imagen": "img/vocabulario/negro.webp",
       "fecha": "2026-09-16T05:00:00Z",
+      "fechaPublicacion": "2026-09-16T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -1045,6 +1275,8 @@
       "categoria": "Colores",
       "imagen": "img/vocabulario/rosado.webp",
       "fecha": "2026-09-16T05:00:00Z",
+      "fechaPublicacion": "2026-09-16T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -1054,6 +1286,8 @@
       "categoria": "Colores",
       "imagen": "img/vocabulario/turquesa.webp",
       "fecha": "2026-09-16T05:00:00Z",
+      "fechaPublicacion": "2026-09-16T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -1063,6 +1297,8 @@
       "categoria": "Colores",
       "imagen": "img/vocabulario/amarillo.webp",
       "fecha": "2026-09-15T05:00:00Z",
+      "fechaPublicacion": "2026-09-15T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -1072,6 +1308,8 @@
       "categoria": "Colores",
       "imagen": "img/vocabulario/azul.webp",
       "fecha": "2026-09-15T05:00:00Z",
+      "fechaPublicacion": "2026-09-15T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -1081,6 +1319,8 @@
       "categoria": "Colores",
       "imagen": "img/vocabulario/celeste.webp",
       "fecha": "2026-09-15T05:00:00Z",
+      "fechaPublicacion": "2026-09-15T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -1090,6 +1330,8 @@
       "categoria": "Colores",
       "imagen": "img/vocabulario/dorado.webp",
       "fecha": "2026-09-15T05:00:00Z",
+      "fechaPublicacion": "2026-09-15T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -1099,6 +1341,8 @@
       "categoria": "Colores",
       "imagen": "img/vocabulario/anaranjado.webp",
       "fecha": "2026-09-15T05:00:00Z",
+      "fechaPublicacion": "2026-09-15T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -1108,6 +1352,8 @@
       "categoria": "Colores",
       "imagen": "img/vocabulario/rojo.webp",
       "fecha": "2026-09-15T05:00:00Z",
+      "fechaPublicacion": "2026-09-15T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -1117,6 +1363,8 @@
       "categoria": "Colores",
       "imagen": "img/vocabulario/verde.webp",
       "fecha": "2026-09-15T05:00:00Z",
+      "fechaPublicacion": "2026-09-15T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "vocabulario"
     },
@@ -1126,6 +1374,8 @@
       "categoria": "Habilidades",
       "imagen": "img/diccionario/flexible.webp",
       "fecha": "2026-09-12T05:00:00Z",
+      "fechaPublicacion": "2026-09-12T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
@@ -1135,6 +1385,8 @@
       "categoria": "Psicología",
       "imagen": "img/diccionario/resiliencia.webp",
       "fecha": "2026-09-12T05:00:00Z",
+      "fechaPublicacion": "2026-09-12T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
@@ -1144,6 +1396,8 @@
       "categoria": "Psicología",
       "imagen": "img/diccionario/psicosis.webp",
       "fecha": "2026-09-12T05:00:00Z",
+      "fechaPublicacion": "2026-09-12T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
@@ -1153,6 +1407,8 @@
       "categoria": "Verbos",
       "imagen": "img/diccionario/retar.png",
       "fecha": "2026-09-12T05:00:00Z",
+      "fechaPublicacion": "2026-09-12T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
@@ -1162,6 +1418,8 @@
       "categoria": "Universidad",
       "imagen": "img/diccionario/tesis.webp",
       "fecha": "2026-09-08T05:00:00Z",
+      "fechaPublicacion": "2026-09-08T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
@@ -1171,6 +1429,8 @@
       "categoria": "Tecnología",
       "imagen": "img/diccionario/ia.webp",
       "fecha": "2026-09-05T05:00:00Z",
+      "fechaPublicacion": "2026-09-05T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
@@ -1180,6 +1440,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/adulto.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1189,6 +1451,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/caro.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1198,6 +1462,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/debil.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1207,6 +1473,8 @@
       "categoria": "Adjetivos",
       "imagen": "img/vocabulario/distraido.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1216,6 +1484,8 @@
       "categoria": "Emociones",
       "imagen": "img/vocabulario/cansado.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1225,6 +1495,8 @@
       "categoria": "Emociones",
       "imagen": "img/vocabulario/aburrido.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1234,6 +1506,8 @@
       "categoria": "Emociones",
       "imagen": "img/vocabulario/amor.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1243,6 +1517,8 @@
       "categoria": "Emociones",
       "imagen": "img/vocabulario/asustado.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1252,6 +1528,8 @@
       "categoria": "Emociones",
       "imagen": "img/vocabulario/celos.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1261,6 +1539,8 @@
       "categoria": "Emociones",
       "imagen": "img/vocabulario/contento.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1270,6 +1550,8 @@
       "categoria": "Emociones",
       "imagen": "img/vocabulario/enojado.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1279,6 +1561,8 @@
       "categoria": "Emociones",
       "imagen": "img/vocabulario/envidia.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1288,6 +1572,8 @@
       "categoria": "Emociones",
       "imagen": "img/vocabulario/esperanza.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1297,6 +1583,8 @@
       "categoria": "Emociones",
       "imagen": "img/vocabulario/feliz.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1306,6 +1594,8 @@
       "categoria": "Emociones",
       "imagen": "img/vocabulario/orgullo.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1315,6 +1605,8 @@
       "categoria": "Emociones",
       "imagen": "img/vocabulario/soledad.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1324,6 +1616,8 @@
       "categoria": "Emociones",
       "imagen": "img/vocabulario/sorprendido.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1333,6 +1627,8 @@
       "categoria": "Emociones",
       "imagen": "img/vocabulario/tristeza.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1342,6 +1638,8 @@
       "categoria": "Emociones",
       "imagen": "img/vocabulario/verguenza.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1351,6 +1649,8 @@
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/abril.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1360,6 +1660,8 @@
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/agosto.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1369,6 +1671,8 @@
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/diciembre.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1378,6 +1682,8 @@
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/domingo.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1387,6 +1693,8 @@
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/enero.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1396,6 +1704,8 @@
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/febrero.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1405,6 +1715,8 @@
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/jueves.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1414,6 +1726,8 @@
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/julio.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1423,6 +1737,8 @@
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/junio.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1432,6 +1748,8 @@
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/lunes.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1441,6 +1759,8 @@
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/martes.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1450,6 +1770,8 @@
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/marzo.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1459,6 +1781,8 @@
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/mayo.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1468,6 +1792,8 @@
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/miercoles.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1477,6 +1803,8 @@
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/noviembre.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1486,6 +1814,8 @@
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/octubre.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1495,6 +1825,8 @@
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/sabado.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1504,6 +1836,8 @@
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/septiembre.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1513,6 +1847,8 @@
       "categoria": "Tiempo",
       "imagen": "img/vocabulario/viernes.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1522,6 +1858,8 @@
       "categoria": "Verbos",
       "imagen": "img/vocabulario/apoyar.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1531,6 +1869,8 @@
       "categoria": "Verbos",
       "imagen": "img/vocabulario/ayudar.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1540,6 +1880,8 @@
       "categoria": "Verbos",
       "imagen": "img/vocabulario/examinar.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1549,6 +1891,8 @@
       "categoria": "Verbos",
       "imagen": "img/vocabulario/advertir.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1558,6 +1902,8 @@
       "categoria": "Verbos",
       "imagen": "img/vocabulario/practicar.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1567,6 +1913,8 @@
       "categoria": "Verbos",
       "imagen": "img/vocabulario/aceptar.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1576,6 +1924,8 @@
       "categoria": "Verbos",
       "imagen": "img/vocabulario/abrir.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1585,6 +1935,8 @@
       "categoria": "Verbos",
       "imagen": "img/vocabulario/bromear.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1594,6 +1946,8 @@
       "categoria": "Verbos",
       "imagen": "img/vocabulario/abrazar.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1603,6 +1957,8 @@
       "categoria": "Verbos",
       "imagen": "img/vocabulario/atender.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1612,6 +1968,8 @@
       "categoria": "Verbos",
       "imagen": "img/vocabulario/aplaudir.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1621,6 +1979,8 @@
       "categoria": "Verbos",
       "imagen": "img/vocabulario/oir.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1630,6 +1990,8 @@
       "categoria": "Verbos",
       "imagen": "img/vocabulario/agradecer.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1639,6 +2001,8 @@
       "categoria": "Verbos",
       "imagen": "img/vocabulario/jugar.webp",
       "fecha": "2026-09-03T18:27:52Z",
+      "fechaPublicacion": "",
+      "publicadoEn": "",
       "origenFecha": "imagen-git",
       "fuente": "vocabulario"
     },
@@ -1648,6 +2012,8 @@
       "categoria": "Ciencia",
       "imagen": "img/diccionario/ecosistema.webp",
       "fecha": "2026-09-03T05:00:00Z",
+      "fechaPublicacion": "2026-09-03T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
@@ -1657,6 +2023,8 @@
       "categoria": "Comunicación",
       "imagen": "img/diccionario/diccionario.webp",
       "fecha": "2026-09-03T05:00:00Z",
+      "fechaPublicacion": "2026-09-03T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
@@ -1666,6 +2034,8 @@
       "categoria": "Comunicación",
       "imagen": "img/diccionario/vocabulario.webp",
       "fecha": "2026-09-03T05:00:00Z",
+      "fechaPublicacion": "2026-09-03T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
@@ -1675,6 +2045,8 @@
       "categoria": "Cortesía",
       "imagen": "img/diccionario/gracias.webp",
       "fecha": "2026-09-03T05:00:00Z",
+      "fechaPublicacion": "2026-09-03T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
@@ -1684,6 +2056,8 @@
       "categoria": "Cortesía",
       "imagen": "img/diccionario/porfavor.webp",
       "fecha": "2026-09-03T05:00:00Z",
+      "fechaPublicacion": "2026-09-03T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
@@ -1693,6 +2067,8 @@
       "categoria": "Cortesía",
       "imagen": "img/diccionario/Disculpa.webp",
       "fecha": "2026-09-03T05:00:00Z",
+      "fechaPublicacion": "2026-09-03T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
@@ -1702,6 +2078,8 @@
       "categoria": "Cortesía",
       "imagen": "img/diccionario/de%20nada.webp",
       "fecha": "2026-09-03T05:00:00Z",
+      "fechaPublicacion": "2026-09-03T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
@@ -1711,6 +2089,8 @@
       "categoria": "Cortesía",
       "imagen": "img/diccionario/con%20gusto.webp",
       "fecha": "2026-09-03T05:00:00Z",
+      "fechaPublicacion": "2026-09-03T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
@@ -1720,6 +2100,8 @@
       "categoria": "Cortesía",
       "imagen": "img/diccionario/felicitaciones.webp",
       "fecha": "2026-09-03T05:00:00Z",
+      "fechaPublicacion": "2026-09-03T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
@@ -1729,6 +2111,8 @@
       "categoria": "Educación",
       "imagen": "img/diccionario/Hip%C3%B3tesis.webp",
       "fecha": "2026-09-03T05:00:00Z",
+      "fechaPublicacion": "2026-09-03T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
@@ -1738,6 +2122,8 @@
       "categoria": "Educación",
       "imagen": "img/diccionario/discrepancia.webp",
       "fecha": "2026-09-03T05:00:00Z",
+      "fechaPublicacion": "2026-09-03T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
@@ -1747,6 +2133,8 @@
       "categoria": "Educación",
       "imagen": "img/diccionario/uniformidad.webp",
       "fecha": "2026-09-03T05:00:00Z",
+      "fechaPublicacion": "2026-09-03T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
@@ -1756,6 +2144,8 @@
       "categoria": "Reflexión",
       "imagen": "img/diccionario/abismo1.webp",
       "fecha": "2026-09-03T05:00:00Z",
+      "fechaPublicacion": "2026-09-03T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
@@ -1765,6 +2155,8 @@
       "categoria": "Reflexión",
       "imagen": "img/diccionario/Trascender1.webp, img/diccionario/Trascender2.webp",
       "fecha": "2026-09-03T05:00:00Z",
+      "fechaPublicacion": "2026-09-03T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
@@ -1774,6 +2166,8 @@
       "categoria": "Saludos",
       "imagen": "img/diccionario/hola.webp",
       "fecha": "2026-09-03T05:00:00Z",
+      "fechaPublicacion": "2026-09-03T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
@@ -1783,6 +2177,8 @@
       "categoria": "Saludos",
       "imagen": "img/diccionario/Adi%C3%B3s.webp",
       "fecha": "2026-09-03T05:00:00Z",
+      "fechaPublicacion": "2026-09-03T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
@@ -1792,6 +2188,8 @@
       "categoria": "Saludos",
       "imagen": "img/diccionario/Buenos%20d%C3%ADas.webp",
       "fecha": "2026-09-03T05:00:00Z",
+      "fechaPublicacion": "2026-09-03T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
@@ -1801,6 +2199,8 @@
       "categoria": "Saludos",
       "imagen": "img/diccionario/buenas%20tardes.webp",
       "fecha": "2026-09-03T05:00:00Z",
+      "fechaPublicacion": "2026-09-03T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
@@ -1810,6 +2210,8 @@
       "categoria": "Saludos",
       "imagen": "img/diccionario/Buenas%20noches.webp",
       "fecha": "2026-09-03T05:00:00Z",
+      "fechaPublicacion": "2026-09-03T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
@@ -1819,6 +2221,8 @@
       "categoria": "Saludos",
       "imagen": "img/diccionario/Bienvenido.webp",
       "fecha": "2026-09-03T05:00:00Z",
+      "fechaPublicacion": "2026-09-03T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
@@ -1828,6 +2232,8 @@
       "categoria": "Sociedad",
       "imagen": "img/diccionario/digno.webp",
       "fecha": "2026-09-03T05:00:00Z",
+      "fechaPublicacion": "2026-09-03T05:00:00Z",
+      "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     }
