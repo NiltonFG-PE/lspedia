@@ -1,0 +1,245 @@
+/* LSPedia · interfaz para tablets táctiles (vertical y horizontal)
+   Aislado de móvil pequeño y escritorio; no altera navegación ni eventos JS.
+   2026-10-10 */
+@media (min-width: 768px) and (min-height: 480px) {
+  /* Una tablet usa una cabecera distribuida, no el logo centrado del teléfono.
+     Las reglas anteriores aplicaban transformaciones contradictorias al logo. */
+  html.modo-movil-real body nav.navbar {
+    height: 76px !important;
+    min-height: 76px !important;
+    padding: 0 !important;
+    background: rgba(10, 23, 52, .96) !important;
+    border-bottom: 1px solid rgba(255,255,255,.12) !important;
+    box-shadow: 0 5px 18px rgba(10,23,52,.12) !important;
+  }
+  html.modo-movil-real body nav.navbar > .container {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    position: relative !important;
+    width: 100% !important;
+    max-width: 1200px !important;
+    height: 76px !important;
+    min-height: 76px !important;
+    padding: 0 24px !important;
+    margin: 0 auto !important;
+    gap: 24px !important;
+  }
+  html.modo-movil-real body nav.navbar .container > .navbar-brand {
+    position: relative !important;
+    inset: auto !important;
+    left: auto !important;
+    top: auto !important;
+    right: auto !important;
+    transform: none !important;
+    margin: 0 auto 0 0 !important;
+    padding: 0 !important;
+    max-width: calc(100% - 200px) !important;
+    height: 76px !important;
+    display: flex !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    z-index: 2 !important;
+    flex: 0 1 auto !important;
+  }
+  html.modo-movil-real body nav.navbar .navbar-brand video,
+  html.modo-movil-real body nav.navbar .navbar-brand img {
+    width: auto !important;
+    height: 68px !important;
+    max-width: min(240px, 100%) !important;
+    object-fit: contain !important;
+    object-position: left center !important;
+  }
+  html.modo-movil-real body nav.navbar #lspediaIdiomaSelector {
+    position: relative !important;
+    inset: auto !important;
+    top: auto !important;
+    right: auto !important;
+    left: auto !important;
+    transform: none !important;
+    margin: 0 0 0 auto !important;
+    min-height: 44px !important;
+    height: 44px !important;
+    flex-shrink: 0 !important;
+    z-index: 3 !important;
+  }
+  html.modo-movil-real body {
+    padding-top: 76px !important;
+    padding-bottom: calc(92px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+  html.modo-movil-real body #buscar,
+  html.modo-movil-real body #panelCategorias,
+  html.modo-movil-real body #herramientasMenuMovil,
+  html.modo-movil-real body #seccionSubtitulos,
+  html.modo-movil-real body #seccionNosotros {
+    scroll-margin-top: 92px !important;
+  }
+
+  /* El área principal no puede heredar 3 columnas estrechas de Bootstrap.
+     Dos columnas: Descubre y el buscador/explicación con espacio legible. */
+  html.modo-movil-real body #contenidoPrincipalApp {
+    width: calc(100% - 48px) !important;
+    max-width: 1140px !important;
+    padding: 22px 0 12px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  html.modo-movil-real body #filaHeroPrincipal {
+    display: grid !important;
+    grid-template-columns: clamp(220px, 28%, 290px) minmax(0, 1fr) !important;
+    grid-template-areas: "carta titulo" !important;
+    column-gap: clamp(20px, 3vw, 36px) !important;
+    row-gap: 0 !important;
+    align-items: start !important;
+    width: 100% !important;
+    margin: 0 0 28px !important;
+    padding: 0 !important;
+    --bs-gutter-x: 0;
+    --bs-gutter-y: 0;
+  }
+  html.modo-movil-real body #filaHeroPrincipal > #senalDelDia {
+    display: block !important;
+    grid-area: carta !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  html.modo-movil-real body #filaHeroPrincipal > .col-lg-6 {
+    grid-area: titulo !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  /* Decorativo en escritorio/móvil: se retira solo en tablet para que el
+     título, los avisos y los campos no se compriman ni queden ilegibles. */
+  html.modo-movil-real body #filaHeroPrincipal > #colAvatarHero {
+    display: none !important;
+  }
+  html.modo-movil-real body #bloqueTituloPrincipal {
+    text-align: left !important;
+    margin: 0 0 14px !important;
+  }
+  html.modo-movil-real body #tituloPrincipal {
+    font-size: clamp(1.55rem, 2.45vw, 2.05rem) !important;
+    letter-spacing: -.025em !important;
+    line-height: 1.22 !important;
+    text-wrap: balance;
+    margin: 0 0 10px !important;
+  }
+  html.modo-movil-real body #subtituloPrincipal.aviso-mision {
+    max-width: none !important;
+    margin-top: 10px !important;
+    padding: 13px 16px !important;
+    border-radius: 16px !important;
+  }
+  html.modo-movil-real body #subtituloPrincipal .aviso-mision-texto {
+    gap: 6px !important;
+  }
+  html.modo-movil-real body #subtituloPrincipal .aviso-mision-linea1 {
+    font-size: .93rem !important;
+    line-height: 1.5 !important;
+  }
+  html.modo-movil-real body #subtituloPrincipal .aviso-mision-publico {
+    font-size: .84rem !important;
+    line-height: 1.5 !important;
+  }
+  html.modo-movil-real body #subtituloPrincipal .aviso-mision-linea2 {
+    font-size: .76rem !important;
+    line-height: 1.5 !important;
+    padding-top: 7px !important;
+  }
+  html.modo-movil-real body #bloqueBuscador,
+  html.modo-movil-real body #bloqueBuscadorCategorias {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+  html.modo-movil-real body #filaHeroPrincipal .buscador-indice-linea {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+  html.modo-movil-real body #senalDelDia .dia-rect-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+
+  /* En Vocabulario no existe la tarjeta Descubre. Reutilizar el ancho completo
+     evita una columna fantasma vacía y conserva los controles existentes. */
+  html.modo-movil-real body.vista-temas-movil #filaHeroPrincipal,
+  html.modo-movil-real body.senal-cerrada #filaHeroPrincipal {
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-areas: "titulo" !important;
+  }
+  html.modo-movil-real body.vista-temas-movil #filaHeroPrincipal > #senalDelDia,
+  html.modo-movil-real body.senal-cerrada #filaHeroPrincipal > #senalDelDia {
+    display: none !important;
+  }
+  html.modo-movil-real body.vista-temas-movil #filaHeroPrincipal > .col-lg-6,
+  html.modo-movil-real body.senal-cerrada #filaHeroPrincipal > .col-lg-6 {
+    max-width: 940px !important;
+    justify-self: center !important;
+  }
+  html.modo-movil-real body.vista-temas-movil #bloqueTituloPrincipal {
+    margin-bottom: 12px !important;
+  }
+
+  /* Dock de navegación para tablet: flotante, centrado, fácil de tocar.
+     No invade todo el ancho ni tapa secciones al final de la página. */
+  html.modo-movil-real body #mobileBottomNav {
+    position: fixed !important;
+    left: 50% !important;
+    right: auto !important;
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
+    width: min(720px, calc(100vw - 44px)) !important;
+    max-width: 720px !important;
+    min-height: 70px !important;
+    padding: 6px 10px !important;
+    gap: 7px !important;
+    border: 1px solid rgba(148,163,184,.24) !important;
+    border-radius: 22px !important;
+    background: rgba(255,255,255,.97) !important;
+    box-shadow: 0 10px 32px rgba(15,23,42,.16), 0 1px 2px rgba(15,23,42,.06) !important;
+    transform: translateX(-50%) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+    backdrop-filter: blur(14px) !important;
+  }
+  html.modo-movil-real body #mobileBottomNav.lsp-nav-oculta-scroll {
+    transform: translate(-50%, calc(100% + 26px)) !important;
+  }
+  html.modo-movil-real body #mobileBottomNav .mbn-item {
+    min-width: 0 !important;
+    min-height: 56px !important;
+    padding: 4px 6px !important;
+    gap: 3px !important;
+    border-radius: 15px !important;
+  }
+  html.modo-movil-real body #mobileBottomNav .mbn-icon-wrap {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 12px !important;
+  }
+  html.modo-movil-real body #mobileBottomNav .mbn-item.active .mbn-icon-wrap {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 13px !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 10px rgba(146,103,11,.16) !important;
+  }
+  html.modo-movil-real body #mobileBottomNav .mbn-icon {
+    width: 20px !important;
+    height: 20px !important;
+  }
+  html.modo-movil-real body #mobileBottomNav .mbn-label {
+    font-size: 11.5px !important;
+    line-height: 1.2 !important;
+    font-weight: 700 !important;
+  }
+  html.modo-movil-real[data-lsp-tema="dark"] body #mobileBottomNav {
+    background: rgba(22,34,54,.97) !important;
+    border-color: rgba(148,163,184,.25) !important;
+  }
+}
