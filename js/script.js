@@ -1584,6 +1584,9 @@ function volverAlMenuHerramientasMovilSiCorresponde(){
 // ni el panel de Estadísticas, ni el bloque "¿Falta alguna palabra?"
 // (se ven solo en Inicio/Temas orden).
 function ocultarBloqueInicio(){
+    // Marca la sección completa como oculta; la tablet no debe reservar
+    // una fila de hero ni volver a mostrar Descubre por CSS !important.
+    document.body.classList.add("lsp-inicio-oculto");
     const senal = document.getElementById("senalDelDia");
     if(senal) senal.style.display = "none";
     const titulo = document.getElementById("bloqueTituloPrincipal");
@@ -1621,6 +1624,7 @@ function ocultarBloqueInicio(){
 }
 
 function mostrarBloqueInicio(){
+    document.body.classList.remove("lsp-inicio-oculto");
     const titulo = document.getElementById("bloqueTituloPrincipal");
     if(titulo) titulo.style.display = "";
     const bloqueBuscador = document.getElementById("bloqueBuscador");
