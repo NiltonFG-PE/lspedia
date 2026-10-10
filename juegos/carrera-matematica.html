@@ -38,6 +38,27 @@
     #tiltCenterBtn:active { transform:scale(.95); }
     #orientation-toast { position:absolute; left:50%; bottom:calc(env(safe-area-inset-bottom,0px) + 102px); transform:translateX(-50%) translateY(10px); z-index:50; width:min(92%,480px); padding:10px 14px; border-radius:14px; background:rgba(17,24,39,.93); color:#fff; font-size:.82rem; font-weight:700; text-align:center; opacity:0; pointer-events:none; transition:opacity .2s ease,transform .2s ease; box-shadow:0 10px 30px rgba(0,0,0,.3); }
     #orientation-toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+    /* Reintento de fullscreen si Chrome salió del modo inmersivo. */
+    #fullscreenRetry {
+      position:absolute; top:calc(env(safe-area-inset-top,0px) + 12px); right:12px;
+      z-index:48; display:inline-flex; align-items:center; justify-content:center;
+      gap:7px; min-height:44px; padding:9px 12px; border-radius:13px;
+      border:1px solid rgba(255,255,255,.48); color:#fff;
+      background:rgba(27,34,48,.92); box-shadow:0 7px 20px rgba(0,0,0,.27);
+      font:700 .78rem var(--font); cursor:pointer;
+    }
+    #fullscreenRetry[hidden] { display:none!important; }
+    #fullscreenRetry:focus-visible { outline:3px solid var(--sign); outline-offset:2px; }
+    #hud.on ~ #fullscreenRetry { top:calc(env(safe-area-inset-top,0px) + 120px); }
+    #game-container:has(#math-modal.active) #fullscreenRetry,
+    #game-container:has(#pause-overlay.active) #fullscreenRetry { display:none!important; }
+    @media (orientation:landscape) and (max-height:520px) {
+      #hud.on ~ #fullscreenRetry { top:calc(env(safe-area-inset-top,0px) + 90px); }
+      #fullscreenRetry { padding:7px 10px; min-height:38px; font-size:.72rem; }
+    }
+    #game-container:fullscreen, #game-container:-webkit-full-screen {
+      width:100vw!important; height:100dvh!important;
+    }
 
     #pauseBtn {
       cursor:pointer; pointer-events:auto; min-width:92px; min-height:46px; justify-content:center; gap:7px;
@@ -306,6 +327,8 @@
         </div>
       </div>
     </div>
+
+    <button type="button" id="fullscreenRetry" aria-label="Activar pantalla completa" title="Activar pantalla completa" hidden>⛶ Pantalla completa</button>
 
     <div id="lights"><div class="light-bar"><div class="lamp" id="l1"></div><div class="lamp" id="l2"></div><div class="lamp" id="l3"></div></div></div>
 
@@ -2027,21 +2050,53 @@ function updateDisplayModeUI() {
   if (p) p.classList.toggle('active', preferredDisplayMode === 'portrait');
   if (l) l.classList.toggle('active', preferredDisplayMode === 'landscape');
 }
+function syncGameFullscreenControl() {
+  const target = document.getElementById('game-container');
+  const retry = document.getElementById('fullscreenRetry');
+  if (!retry || !target) return;
+  const supported = !!(target.requestFullscreen || target.webkitRequestFullscreen);
+  const active = document.fullscreenElement === target || document.webkitFullscreenElement === target;
+  retry.hidden = !supported || active;
+  retry.setAttribute('aria-hidden', String(retry.hidden));
+}
 async function requestGameFullscreen() {
   const target = document.getElementById('game-container');
-  if (document.fullscreenElement || document.webkitFullscreenElement) return true;
+  if (document.fullscreenElement === target || document.webkitFullscreenElement === target) {
+    syncGameFullscreenControl();
+    return true;
+  }
   try {
     if (target.requestFullscreen) {
+      // Es crucial ejecutar requestFullscreen inmediatamente tras el toque.
       await target.requestFullscreen({ navigationUI: 'hide' });
+      syncGameFullscreenControl();
       return true;
     }
     if (target.webkitRequestFullscreen) {
-      target.webkitRequestFullscreen();
+      const result = target.webkitRequestFullscreen();
+      if (result && typeof result.then === 'function') await result;
+      syncGameFullscreenControl();
       return true;
     }
-  } catch (e) {}
+  } catch (e) {
+    console.warn('[Carrera Matemática] Pantalla completa bloqueada:', e);
+  }
+  syncGameFullscreenControl();
   return false;
 }
+['fullscreenchange', 'webkitfullscreenchange'].forEach(evt =>
+  document.addEventListener(evt, syncGameFullscreenControl)
+);
+const fullscreenRetry = document.getElementById('fullscreenRetry');
+if (fullscreenRetry) fullscreenRetry.addEventListener('click', () => {
+  requestGameFullscreen().then(full => {
+    showOrientationToast(full
+      ? 'Pantalla completa activada'
+      : 'Tu navegador no permitió la pantalla completa. Puedes seguir jugando.');
+    setTimeout(resize, 100);
+  });
+});
+syncGameFullscreenControl();
 async function lockGameOrientation(mode) {
   try {
     if (screen.orientation && typeof screen.orientation.lock === 'function') {
@@ -2051,25 +2106,31 @@ async function lockGameOrientation(mode) {
   } catch (e) {}
   return false;
 }
-async function activateDisplayMode(mode) {
+async function activateDisplayMode(mode, fullscreenSolicitado) {
   preferredDisplayMode = mode;
   try { localStorage.setItem('carrera-matematica-display-mode', mode); } catch (e) {}
   updateDisplayModeUI();
-  // Se solicita desde el toque del usuario: necesario para fullscreen y,
-  // en iPhone/iPad compatibles, para autorizar el sensor de orientación.
-  await enableTilt();
-  const full = await requestGameFullscreen();
+  // El fullscreen se solicita ANTES de esperar el permiso del acelerómetro.
+  // En Chrome Android la activación táctil se pierde tras una espera asíncrona.
+  const fullscreenPendiente = fullscreenSolicitado || requestGameFullscreen();
+  const sensorPendiente = enableTilt();
+  const full = await fullscreenPendiente;
   const locked = await lockGameOrientation(mode);
+  await sensorPendiente;
   resetTiltCalibration();
   setTimeout(resize, 180);
   const nombre = mode === 'landscape' ? 'horizontal' : 'vertical';
   const help = document.getElementById('displayModeHelp');
-  if (locked) {
-    if (help) help.textContent = 'Modo ' + nombre + ' activo. Mantén el teléfono centrado un instante.';
+  if (full && locked) {
+    if (help) help.textContent = 'Modo ' + nombre + ' activo. Mantén el dispositivo centrado un instante.';
     showOrientationToast('Pantalla completa ' + nombre + ' · inclinación recalibrada');
   } else {
-    if (help) help.textContent = 'Si no gira solo, gira el teléfono manualmente. La inclinación se adapta.';
-    showOrientationToast((full ? 'Pantalla completa activa. ' : '') + 'Gira el teléfono a ' + nombre + ' si es necesario.');
+    if (help) help.textContent = full
+      ? 'Si no gira solo, gira el dispositivo manualmente. La inclinación se adapta.'
+      : 'Pulsa ⛶ Pantalla completa si Chrome no ocultó sus barras.';
+    showOrientationToast(full
+      ? 'Pantalla completa activa. Gira el dispositivo a ' + nombre + ' si es necesario.'
+      : 'No se activó la pantalla completa. Pulsa ⛶ para reintentar.');
   }
 }
 async function enableTilt() {
@@ -2169,8 +2230,16 @@ function toggleMute() { isMuted = !isMuted; document.getElementById('snd-on').st
 muteBtn.addEventListener('click', toggleMute); muteBtn.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') toggleMute(); });
 document.getElementById('startBtn').onclick = async () => {
   initAudio(); sfx.click();
-  if (preferredDisplayMode) await activateDisplayMode(preferredDisplayMode);
-  else await enableTilt();
+  // Jugar debe activar fullscreen aunque no se haya elegido una orientación.
+  // No esperar al permiso del sensor antes de pedirlo.
+  const fullscreenPendiente = requestGameFullscreen();
+  if (preferredDisplayMode) await activateDisplayMode(preferredDisplayMode, fullscreenPendiente);
+  else {
+    const sensorPendiente = enableTilt();
+    const full = await fullscreenPendiente;
+    await sensorPendiente;
+    if (!full) showOrientationToast('Pulsa ⛶ Pantalla completa para ampliar el juego.');
+  }
   buildGarage(); showScreen('garage-screen');
 };
 document.getElementById('garageNext').onclick = () => { sfx.click(); buildMap(); showScreen('map-screen'); };
