@@ -130,10 +130,18 @@
         if(referenciasCompartidas.length) barra.appendChild(botonAccion('Ver Lo nuevo', volverALoNuevo));
     }
 
-    function dentroDelPeriodo(fecha, dias){
-        const t = Date.parse(texto(fecha));
-        const diferencia = Date.now() - t;
-        return Number.isFinite(t) && diferencia >= (dias === 1 ? 0 : -86400000) && diferencia <= dias * 86400000;
+    function dentroDelPeriodo(registro, dias){
+        const valor = texto(registro && registro.fecha);
+        const t = Date.parse(fechaAISO(valor));
+        if(!Number.isFinite(t)) return false;
+        const ahora = Date.now();
+        // El panel guarda fechas sin hora como medianoche de Perú.
+        // Su intervalo es todo ese día; una hora real conserva precisión exacta.
+        const soloDia = /^\d{4}-\d{2}-\d{2}$/.test(valor)
+            || /^\d{1,2}\/\d{1,2}\/\d{4}$/.test(valor)
+            || (/^fechaPublicacion/i.test(texto(registro.origenFecha))
+                && /T05:00:00(?:\.000)?Z$/.test(fechaAISO(valor)));
+        return t <= ahora && (soloDia ? t + 86400000 > ahora - dias * 86400000 : t >= ahora - dias * 86400000);
     }
 
     function actualizarMenu(intentos = 0){
@@ -233,7 +241,9 @@
         $('lspCatalogoTitulo').textContent = referenciasCompartidas.length ? '✨ Novedades compartidas' : '✨ Lo nuevo';
         $('lspCatalogoDescripcion').textContent = modoSeleccion
             ? 'Marca los videos que quieres compartir.'
-            : 'Explora las publicaciones de Diccionario y Vocabulario. Toca una ficha para ver el video.';
+            : periodoDias === 1
+                ? 'Últimas 24 horas. Las fechas sin hora incluyen los días que coinciden con este período (hora de Perú).'
+                : 'Explora las publicaciones de Diccionario y Vocabulario. Toca una ficha para ver el video.';
         $('lspCatalogoPeriodo').value = String(periodoDias);
         $('lspCatalogo24Horas').setAttribute('aria-pressed', String(periodoDias === 1 && !referenciasCompartidas.length));
         $('lspCatalogoCantidad').textContent = publicadasVisibles.length + ' videos';
@@ -243,7 +253,9 @@
         if(!publicadasVisibles.length){
             const vacio = document.createElement('p');
             vacio.className = 'lsp-catalogo-vacio';
-            vacio.textContent = periodoDias === 1
+            vacio.textContent = referenciasCompartidas.length
+                ? 'Cargando las fichas compartidas. Si ya no están disponibles, puedes ver Lo nuevo.'
+                : periodoDias === 1
                 ? 'No hay videos publicados en las últimas 24 horas. Prueba otro período.'
                 : 'No hay videos en este período. Prueba otro filtro.';
             grid.appendChild(vacio);
@@ -269,14 +281,7 @@
             tarjeta.appendChild(pie);
             grid.appendChild(tarjeta);
         });
-        if(!publicadasVisibles.length){
-            const vacio = document.createElement('p');
-            vacio.className = 'lsp-catalogo-vacio';
-            vacio.textContent = referenciasCompartidas.length
-                ? 'Cargando las fichas compartidas. Si ya no están disponibles, puedes ver Lo nuevo.'
-                : 'No hay publicaciones en este período. Prueba con Todas las publicaciones.';
-            grid.appendChild(vacio);
-        }
+
     }
 
     window.LSPediaNovedades = {abrirCatalogo};
@@ -395,8 +400,9 @@
         if(!v) return '';
         const m = v.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
         if(m){
-            return m[3] + '-' + m[2].padStart(2,'0') + '-' + m[1].padStart(2,'0') + 'T12:00:00Z';
+            return m[3] + '-' + m[2].padStart(2,'0') + '-' + m[1].padStart(2,'0') + 'T05:00:00Z';
         }
+        if(/^\d{4}-\d{2}-\d{2}$/.test(v)) return v + 'T05:00:00Z';
         const t = Date.parse(v);
         return Number.isFinite(t) ? new Date(t).toISOString() : '';
     }
@@ -596,7 +602,7 @@
         const registros = referenciasCompartidas.length ? referenciasCompartidas.map(ref => {
             const separador = ref.indexOf(':');
             return {fuente:ref.slice(0,separador),id:ref.slice(separador+1)};
-        }) : itemsLoNuevo.filter(x => !periodoDias || dentroDelPeriodo(x.fecha, periodoDias));
+        }) : itemsLoNuevo.filter(x => !periodoDias || dentroDelPeriodo(x, periodoDias));
         const publicadas = registros
             .map(buscarContenido)
             .filter(x => x && x.palabra && tieneVideoValido(x.palabra));
@@ -734,3 +740,4 @@
         iniciar();
     }
 })();
+
