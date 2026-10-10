@@ -1,9 +1,20 @@
 {
-  "generadoEn": "2026-10-10T17:53:29Z",
+  "generadoEn": "2026-10-10T18:55:43Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 206,
+  "maxItems": 207,
   "diasEtiquetaNuevo": 14,
   "items": [
+    {
+      "id": "",
+      "palabra": "Seco",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/seco.webp",
+      "fecha": "2026-10-10T18:09:49Z",
+      "fechaPublicacion": "2026-10-10T05:00:00Z",
+      "publicadoEn": "2026-10-10T18:09:49Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
     {
       "id": "",
       "palabra": "No conocer",
