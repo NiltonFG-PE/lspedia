@@ -326,3 +326,21 @@ function lspMiembrosColaboracionEstado(datos) {
     return {ok:true,mensaje:'Revisión guardada. El archivo se conserva en Drive.'};
   } finally {lock.releaseLock();}
 }
+
+function lspPanelResumenMiembros30(datos){
+  lspMiembrosAuth_(datos);const out={usuariosConfigurados:lspMiembrosConfigurado_(),porVencer:0,porRevisar:0,nota:'Colaboraciones: revisiones registradas en la hoja privada. Usa Actualizar videos para descubrir nuevos envíos.'};
+  const sh=SpreadsheetApp.openById(LSP_MIEMBROS_SPREADSHEET_ID).getSheetByName('Colaboraciones');if(sh&&sh.getLastRow()>1)out.porRevisar=sh.getRange(2,3,sh.getLastRow()-1,1).getDisplayValues().filter(r=>!r[0]||r[0]==='Pendiente').length;
+  if(out.usuariosConfigurados){const now=Date.now(),end=now+7*86400000;const rows=lspMiembrosApi_('lsp_members?select=user_id&role=eq.member&status=eq.active&expires_at=gt.'+encodeURIComponent(new Date(now).toISOString())+'&expires_at=lte.'+encodeURIComponent(new Date(end).toISOString())+'&limit=1000','get');out.porVencer=rows.length;if(rows.length===1000)out.nota+=' Vencimientos: se muestran al menos 1000 cuentas.';}
+  return out;
+}
+/** Edita la identificación sin cambiar estado, rol, contraseña ni vencimiento. */
+function lspMiembrosUsuarioPerfil30(datos){
+  lspMiembrosAuth_(datos);lspMiembrosUsuarioId_(datos.user_id);
+  const username=lspMiembrosTexto_(datos.username),email=lspMiembrosTexto_(datos.email).toLowerCase();if(!username||username.length>80||/[\u0000-\u001f\u007f]/.test(username))throw new Error('Escribe un nombre de 1 a 80 caracteres.');if(email.length>254||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))throw new Error('Escribe un correo válido.');
+  const lock=LockService.getScriptLock();if(!lock.tryLock(30000))throw new Error('Publicador ocupado.');try{
+    const m=lspMiembrosApi_('lsp_members?select=role&user_id=eq.'+datos.user_id,'get')[0];if(m&&m.role==='admin')throw new Error('La cuenta administradora está protegida.');
+    const u=lspMiembrosRequest_('/auth/v1/admin/users/'+datos.user_id,'get');if(!u||u.id!==datos.user_id)throw new Error('La cuenta no existe.');if(String(u.email||'')!==String(datos.expectedEmail||'')||lspMiembrosTexto_((u.user_metadata||{}).username)!==String(datos.expectedUsername||''))throw new Error('El usuario cambió. Actualiza la lista antes de editarlo.');
+    const body={user_metadata:Object.assign({},u.user_metadata||{},{username:username})};if(email!==String(u.email||'').toLowerCase())body.email=email;
+    const saved=lspMiembrosRequest_('/auth/v1/admin/users/'+datos.user_id,'put',body);if(!saved||saved.id!==datos.user_id)throw new Error('No se pudo verificar el usuario guardado.');return {ok:true,mensaje:'Nombre y correo guardados. El acceso y vencimiento se conservaron.'};
+  }finally{lock.releaseLock();}
+}
