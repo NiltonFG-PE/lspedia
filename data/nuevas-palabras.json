@@ -1,9 +1,20 @@
 {
-  "generadoEn": "2026-10-10T18:55:43Z",
+  "generadoEn": "2026-10-10T19:05:20Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 207,
+  "maxItems": 208,
   "diasEtiquetaNuevo": 14,
   "items": [
+    {
+      "id": "",
+      "palabra": "Fuego",
+      "categoria": "Naturaleza",
+      "imagen": "img/vocabulario/fuego.webp",
+      "fecha": "2026-10-10T19:04:56Z",
+      "fechaPublicacion": "2026-10-10T05:00:00Z",
+      "publicadoEn": "2026-10-10T19:04:56Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
     {
       "id": "",
       "palabra": "Seco",
