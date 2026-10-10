@@ -98,7 +98,8 @@
     --bs-gutter-y: 0;
   }
   html.modo-movil-real body #filaHeroPrincipal > #senalDelDia {
-    display: block !important;
+    /* Respetar el style.display='none' que aplica la navegación al salir
+       del Diccionario; display:block!important mostraba Descubre en Herramientas. */
     grid-area: carta !important;
     width: 100% !important;
     min-width: 0 !important;
@@ -252,7 +253,7 @@
     grid-template-areas: "carta titulo avatar" !important;
     column-gap: clamp(16px, 1.8vw, 26px) !important;
   }
-  html.modo-movil-real body:not(.vista-temas-movil):not(.senal-cerrada) #filaHeroPrincipal > #colAvatarHero {
+  html.modo-movil-real body:not(.vista-temas-movil):not(.senal-cerrada):not(.lsp-inicio-oculto) #filaHeroPrincipal > #colAvatarHero:not(.oculto-por-seccion) {
     grid-area: avatar !important;
     display: flex !important;
     align-items: flex-start !important;
@@ -271,5 +272,72 @@
     height: auto !important;
     max-height: 245px !important;
     object-fit: contain !important;
+  }
+}
+
+/* Cuando la lógica abre Herramientas / Jugar / Nosotros, el hero completo
+   desaparece. Evita columnas vacías y bloqueos visuales de Descubre. */
+html.modo-movil-real body.lsp-inicio-oculto #filaHeroPrincipal {
+  display: none !important;
+}
+
+/* TABLET VERTICAL: una columna completa para título, lectura y buscadores.
+   El breakpoint de 992px del CSS móvil conservaba dos columnas que aplastaban
+   el título (Descubre 60% + buscador 40%) pese a la regla tablet anterior. */
+@media (min-width: 768px) and (min-height: 480px) and (orientation: portrait) {
+  html.modo-movil-real body:not(.vista-temas-movil):not(.senal-cerrada) #filaHeroPrincipal,
+  html.modo-movil-real body #filaHeroPrincipal {
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-areas:
+      "titulo"
+      "carta" !important;
+    column-gap: 0 !important;
+    row-gap: 18px !important;
+    align-items: start !important;
+    margin: 0 0 28px !important;
+  }
+  html.modo-movil-real body #filaHeroPrincipal > .col-lg-6 {
+    grid-area: titulo !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    justify-self: stretch !important;
+  }
+  html.modo-movil-real body #filaHeroPrincipal > #senalDelDia {
+    grid-area: carta !important;
+    width: 100% !important;
+    max-width: 490px !important;
+    min-width: 0 !important;
+    justify-self: start !important;
+    align-self: start !important;
+  }
+  html.modo-movil-real body #bloqueTituloPrincipal {
+    margin: 0 0 16px !important;
+  }
+  html.modo-movil-real body #tituloPrincipal {
+    max-width: 850px !important;
+    font-size: clamp(1.65rem, 3vw, 2rem) !important;
+    line-height: 1.25 !important;
+    text-wrap: pretty;
+  }
+  html.modo-movil-real body #subtituloPrincipal.aviso-mision {
+    width: 100% !important;
+    padding: 14px 18px !important;
+  }
+  html.modo-movil-real body #subtituloPrincipal .aviso-mision-texto {
+    gap: 7px !important;
+  }
+  html.modo-movil-real body #bloqueBuscador {
+    width: 100% !important;
+    max-width: none !important;
+  }
+  html.modo-movil-real body #filaHeroPrincipal > #colAvatarHero {
+    display: none !important;
+  }
+  /* Vocabulario no lleva Descubre ni una segunda fila vacía. */
+  html.modo-movil-real body.vista-temas-movil #filaHeroPrincipal,
+  html.modo-movil-real body.senal-cerrada #filaHeroPrincipal {
+    grid-template-areas: "titulo" !important;
+    row-gap: 0 !important;
   }
 }
