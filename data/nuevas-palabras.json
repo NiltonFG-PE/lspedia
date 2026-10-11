@@ -1,9 +1,31 @@
 {
-  "generadoEn": "2026-10-10T22:22:19Z",
+  "generadoEn": "2026-10-11T02:26:15Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 209,
+  "maxItems": 211,
   "diasEtiquetaNuevo": 14,
   "items": [
+    {
+      "id": "",
+      "palabra": "Casi",
+      "categoria": "Adverbios",
+      "imagen": "img/vocabulario/casi.webp",
+      "fecha": "2026-10-10T23:08:45Z",
+      "fechaPublicacion": "2026-10-10T05:00:00Z",
+      "publicadoEn": "2026-10-10T23:08:45Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Caliente",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/caliente.webp",
+      "fecha": "2026-10-10T22:56:40Z",
+      "fechaPublicacion": "2026-10-10T05:00:00Z",
+      "publicadoEn": "2026-10-10T22:56:40Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
     {
       "id": "",
       "palabra": "Dulce",
