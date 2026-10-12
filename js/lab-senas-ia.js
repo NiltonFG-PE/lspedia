@@ -1,4 +1,4 @@
-import { HandLandmarker, PoseLandmarker, FaceLandmarker, FilesetResolver } from 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.0.1/+esm';
+import { decidirCoincidencia, SegmentadorSenas, distanciaSecuencia } from './senas-ia-core.mjs?v=20261012-1';
 
 const MODEL_URL = 'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/latest/hand_landmarker.task';
 const POSE_MODEL_URL = 'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task';
@@ -83,6 +83,29 @@ canvasLuz.height = 18;
 let muestrasLocales = cargarMuestrasLocales();
 let muestrasCentrales = [];
 let evaluando = false;
+let continuo = false;
+const segmentador = new SegmentadorSenas();
+function pausarTexto() {
+  continuo = false;
+  segmentador.reiniciar();
+  $('btnContinuoSenas').textContent = 'Iniciar reconocimiento';
+  $('btnContinuoSenas').setAttribute('aria-pressed', 'false');
+}
+function aplicarDecision(secuencia, paraTexto = false) {
+  const decision = decidirCoincidencia(secuencia, todasLasMuestras(), distanciaSecuencia);
+  renderResultados(decision.candidatos.slice(0,3).map(x => [x.etiqueta,x.distancia]), decision);
+  if (!decision.aceptada) return estado('Sin coincidencia clara. ' + decision.motivo);
+  if (paraTexto) {
+    const campo = $('textoSenas');
+    if (campo.value.length + decision.etiqueta.length + 1 > campo.maxLength) {
+      pausarTexto(); return estado('El texto llegó al límite. Copia o borra el texto para continuar.');
+    }
+    campo.value = (campo.value.trim() + ' ' + decision.etiqueta).trim();
+    if ($('vozAutomaticaSenas').checked) pronunciarPrimerResultadoPrediccion(decision.etiqueta);
+    estado('Palabra añadida. Baja las manos fuera del cuadro antes de la siguiente seña.', 'ok');
+  } else estado('Coincidencia experimental. Comprueba que corresponde a tu seña.', 'ok');
+}
+
 
 async function conTimeout(promesa, timeoutMs, mensaje) {
   let temporizador = null;
@@ -223,6 +246,7 @@ async function cargarDatasetCentral() {
 async function prepararDetector() {
   if (detector) return detector;
   estado('Cargando detectores de manos, cuerpo y rostro…');
+  const { HandLandmarker, PoseLandmarker, FaceLandmarker, FilesetResolver } = await conTimeout(import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.0.1/+esm'), 20000, 'No se pudo cargar el motor de visión. Revisa tu conexión.');
   const vision = await conTimeout(
     FilesetResolver.forVisionTasks(WASM_URL),
     15000,
@@ -397,6 +421,8 @@ async function cambiarCamara() {
 }
 
 function detenerCamara() {
+  pausarTexto();
+  window.speechSynthesis?.cancel();
   activo = false;
   captura = null;
   capturaReconocimiento = null;
@@ -746,50 +772,6 @@ function vectorNormalizado(resultado, resultadoPose, resultadoRostro) {
   return salida;
 }
 
-function distanciaVector(a, b) {
-  if (!Array.isArray(a) || !Array.isArray(b) ||
-      a.length < DIMENSION_VECTOR_LEGACY || b.length < DIMENSION_VECTOR_LEGACY) return 99;
-
-  const rms = (inicio, fin) => {
-    let suma = 0;
-    let n = 0;
-    for (let i = inicio; i < fin; i++) {
-      const d = Number(a[i]) - Number(b[i]);
-      suma += d * d;
-      n += 1;
-    }
-    return n ? Math.sqrt(suma / n) : 99;
-  };
-
-  const manos = rms(0, DIMENSION_VECTOR_LEGACY);
-  if (a.length >= DIMENSION_VECTOR_MULTIMODAL && b.length >= DIMENSION_VECTOR_MULTIMODAL) {
-    const pose = rms(DIMENSION_VECTOR_LEGACY, DIMENSION_VECTOR_POSE);
-    const rostro = rms(DIMENSION_VECTOR_POSE, DIMENSION_VECTOR_MULTIMODAL);
-    return manos * 0.64 + pose * 0.21 + rostro * 0.15;
-  }
-  if (a.length >= DIMENSION_VECTOR_POSE && b.length >= DIMENSION_VECTOR_POSE) {
-    const pose = rms(DIMENSION_VECTOR_LEGACY, DIMENSION_VECTOR_POSE);
-    return manos * 0.78 + pose * 0.22;
-  }
-  return manos;
-}
-
-function distanciaSecuencia(a, b) {
-  if (!Array.isArray(a) || !Array.isArray(b) || !a.length || !b.length) return 99;
-  const n = a.length, m = b.length;
-  let anterior = new Array(m + 1).fill(Infinity);
-  anterior[0] = 0;
-  for (let i = 1; i <= n; i++) {
-    const actual = new Array(m + 1).fill(Infinity);
-    for (let j = 1; j <= m; j++) {
-      const coste = distanciaVector(a[i - 1], b[j - 1]);
-      actual[j] = coste + Math.min(actual[j - 1], anterior[j], anterior[j - 1]);
-    }
-    anterior = actual;
-  }
-  return anterior[m] / (n + m);
-}
-
 function cancelarCapturaPorTiempo(tipo) {
   if (tipo === 'muestra') {
     captura = null;
@@ -810,9 +792,7 @@ function finalizarReconocimientoGuiado() {
   capturaReconocimiento = null;
   ui.btnReconocer.disabled = false;
   ui.btnMuestra.disabled = false;
-  const top = candidatosPara(secuencia, todasLasMuestras()).slice(0, 3);
-  renderResultados(top);
-  estado('Comparación terminada. Toca una de las opciones si corresponde a tu seña.', 'ok');
+  aplicarDecision(secuencia);
 }
 
 async function iniciarCuentaDesdeSolicitud() {
@@ -875,6 +855,13 @@ function procesarResultado(resultado, resultadoPose, resultadoRostro, tiempo = p
   gestionarPreparacionAutomatica(tiempo);
 
   const vector = vectorNormalizado(resultado, resultadoPose, resultadoRostro);
+  if (continuo && !captura && !capturaReconocimiento && !solicitudCaptura && !preparandoCaptura) {
+    if (vector && !calidadActual.apta) segmentador.reiniciar();
+    else {
+      const secuencia = segmentador.actualizar(vector, tiempo);
+      if (secuencia) aplicarDecision(secuencia, true);
+    }
+  }
   if (!vector) {
     if (captura) ui.progreso.textContent = 'Esperando una mano visible…';
     return;
@@ -937,6 +924,7 @@ function bucle(tiempo = performance.now()) {
 }
 
 function iniciarCaptura() {
+  pausarTexto();
   const etiqueta = etiquetaValida(ui.etiqueta.value);
   if (!activo) return estado('Activa la cámara primero.', 'error');
   if (!etiqueta) return estado('Escribe el concepto de la seña antes de grabar.', 'error');
@@ -984,6 +972,7 @@ function candidatosPara(secuencia, banco = todasLasMuestras(), excluirId = '') {
 }
 
 function reconocer() {
+  pausarTexto();
   if (!activo) return estado('Activa la cámara primero.', 'error');
   if (captura || capturaReconocimiento || preparandoCaptura || solicitudCaptura) return;
   const banco = todasLasMuestras();
@@ -997,8 +986,9 @@ function reconocer() {
 }
 
 function pronunciarPrimerResultadoPrediccion(etiqueta) {
-  const texto = etiquetaValida(etiqueta);
-  if (!texto || !('speechSynthesis' in window) || typeof SpeechSynthesisUtterance === 'undefined') return;
+  const texto = String(etiqueta || '').trim().slice(0,2000);
+  if (!texto) return;
+  if (!('speechSynthesis' in window) || typeof SpeechSynthesisUtterance === 'undefined') return estado('Tu navegador no tiene lectura de voz disponible. El texto sigue funcionando.');
 
   try {
     // Si el usuario hace otra búsqueda mientras todavía se reproduce la
@@ -1012,9 +1002,9 @@ function pronunciarPrimerResultadoPrediccion(etiqueta) {
     voz.volume = 1;
 
     const voces = window.speechSynthesis.getVoices();
-    const preferida = voces.find(v => /^es-PE$/i.test(v.lang)) ||
-      voces.find(v => /^es-(419|MX|CO|AR|CL)$/i.test(v.lang)) ||
-      voces.find(v => /^es(?:-|$)/i.test(v.lang));
+    const locales = voces.filter(v => v.localService && /^es(?:-|$)/i.test(v.lang));
+    if (!locales.length) return estado('No hay una voz española local disponible. El texto sigue funcionando; revisa las voces instaladas.');
+    const preferida = locales.find(v => /^es-PE$/i.test(v.lang)) || locales[0];
     if (preferida) voz.voice = preferida;
 
     window.speechSynthesis.speak(voz);
@@ -1023,16 +1013,16 @@ function pronunciarPrimerResultadoPrediccion(etiqueta) {
   }
 }
 
-function renderResultados(top) {
+function renderResultados(top, decision = {aceptada:false}) {
   ui.resultados.textContent = '';
   if (!top.length) {
     ui.resultados.textContent = 'Sin candidatos.';
     return;
   }
 
-  // La búsqueda es una acción explícita del usuario: una vez terminada la
-  // comparación, pronunciamos únicamente el candidato Top 1.
-  pronunciarPrimerResultadoPrediccion(top[0][0]);
+  const nota = document.createElement('p'); nota.className = 'help';
+  nota.textContent = decision.aceptada ? 'Coincidencia experimental; comprueba el resultado.' : 'Sin coincidencia clara. Estas opciones son solo sugerencias; no se añaden al texto.';
+  ui.resultados.appendChild(nota);
   top.forEach(([etiqueta, distancia], i) => {
     const a = document.createElement('a');
     a.className = 'resultado-sena';
@@ -1040,7 +1030,7 @@ function renderResultados(top) {
     const puesto = document.createElement('strong');
     puesto.textContent = `${i + 1}. ${etiqueta}`;
     const detalle = document.createElement('span');
-    detalle.textContent = `distancia ${distancia.toFixed(4)}`;
+    detalle.textContent = `Diferencia ${distancia.toFixed(4)} · menor es más parecido`;
     a.append(puesto, detalle);
     ui.resultados.appendChild(a);
   });
@@ -1216,8 +1206,8 @@ async function evaluarDataset() {
   try {
     for (let i = 0; i < banco.length; i++) {
       const muestra = banco[i];
-      const candidatos = candidatosPara(muestra.frames, banco, muestra.id);
-      const prediccion = candidatos.length ? candidatos[0][0] : '';
+      const decision = decidirCoincidencia(muestra.frames, banco.filter(x => x.id !== muestra.id), distanciaSecuencia);
+      const prediccion = decision.aceptada ? decision.etiqueta : '';
       const ok = prediccion === muestra.etiqueta;
       if (ok) aciertos += 1;
       const dato = porConcepto.get(muestra.etiqueta) || { total: 0, aciertos: 0, confusiones: new Map() };
@@ -1246,7 +1236,7 @@ async function evaluarDataset() {
     const muestraNota = bancoCompleto.length > banco.length
       ? ` Se evaluó una muestra equilibrada de ${banco.length}/${bancoCompleto.length} para no bloquear el celular.`
       : '';
-    mostrarResultadoEvaluacion(precision, nivel, muestraNota, detalle);
+    mostrarResultadoEvaluacion(precision, nivel, muestraNota + ' Validación interna entre muestras: no mide precisión con personas nuevas ni traducción de frases. Los rechazos cuentan como errores.', detalle);
   } finally {
     evaluando = false;
     if (ui.btnEvaluar) ui.btnEvaluar.disabled = false;
@@ -1264,6 +1254,24 @@ function borrarTodoLocal() {
   estado('Todas las muestras locales fueron eliminadas.');
 }
 
+$('modoSenas').addEventListener('change', e => {
+  pausarTexto(); window.speechSynthesis?.cancel();
+  const texto = e.target.value === 'texto';
+  $('panelTextoSenas').hidden = !texto; ui.btnReconocer.hidden = texto;
+});
+$('btnContinuoSenas').addEventListener('click', () => {
+  if (continuo) return pausarTexto();
+  if (!activo) return estado('Activa la cámara primero.', 'error');
+  if (captura || capturaReconocimiento || solicitudCaptura || preparandoCaptura) return estado('Espera a que termine la captura actual.');
+  if (new Set(todasLasMuestras().map(x => x.etiqueta)).size < 2) return estado('Añade muestras de al menos dos conceptos antes de comenzar.', 'error');
+  segmentador.reiniciar(); continuo = true;
+  $('btnContinuoSenas').textContent = 'Pausar reconocimiento'; $('btnContinuoSenas').setAttribute('aria-pressed','true');
+  estado('Haz una seña aislada y baja las manos fuera del cuadro. Solo añadimos coincidencias claras.');
+});
+$('btnLeerSenas').addEventListener('click', () => pronunciarPrimerResultadoPrediccion($('textoSenas').value));
+$('btnPararVozSenas').addEventListener('click', () => window.speechSynthesis?.cancel());
+$('btnLimpiarTextoSenas').addEventListener('click', () => {pausarTexto(); window.speechSynthesis?.cancel(); $('textoSenas').value='';});
+document.addEventListener('visibilitychange', () => {if (document.hidden) detenerCamara();});
 ui.btnCamara?.addEventListener('click', iniciarCamara);
 ui.btnDetener?.addEventListener('click', detenerCamara);
 ui.btnCambiarCamara?.addEventListener('click', cambiarCamara);
@@ -1284,3 +1292,4 @@ renderMuestras();
 cargarDatasetCentral();
 renderCalidadCaptura(calidadActual, 'Activa la cámara. Para mejores muestras usa luz de frente, fondo liso y deja visibles cabeza, hombros y manos.');
 estado('Laboratorio listo. La cámara permanece apagada hasta que la actives.');
+
