@@ -4,6 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Safari iOS/iPadOS puede mostrar verde al decodificar alpha en WebM.
+         Detectar antes del primer pintado evita un destello verde. -->
+    <script id="lsp-ios-video-alpha-detect">
+      (function () {
+        try {
+          var ua = navigator.userAgent || "";
+          var ios = /iPad|iPhone|iPod/i.test(ua)
+            || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+          if (ios) document.documentElement.classList.add("lsp-ios-video-fallback");
+        } catch (_error) {}
+      })();
+    </script>
     <!-- Google Analytics (GA4) — solo dominio oficial.
          LSPEDIA_GA_ONLY_OFFICIAL: una copia del frontend en otro dominio no
          reutiliza ni contamina la propiedad Analytics de LSPedia. -->
@@ -4489,6 +4501,44 @@ html[data-lsp-tema="dark"] .sena-ia-coming-copy p{color:#8c9cb1}
 html[data-lsp-tema="dark"] .sena-ia-coming-icon{background:rgba(71,85,105,.2);color:#98a7ba}
 @media(max-width:480px){.sena-ia-coming-card{padding:16px;gap:12px;flex-wrap:wrap}.sena-ia-coming-copy{flex-basis:calc(100% - 54px)}.sena-ia-coming-card .miembros-access-status{margin-left:54px;margin-top:-2px}.sena-ia-coming-copy h3{font-size:.95rem}.sena-ia-coming-copy p{font-size:.72rem}}
 </style>
+    <!-- Reemplazo localizado: el video WebM transparente se conserva fuera
+         de iOS; Safari muestra PNG transparentes sin cuadros verdes. -->
+    <style id="lsp-ios-video-alpha-styles">
+      #logoLspediaFallback,
+      #avatarHeroFallback {
+        display: none !important;
+      }
+      html.lsp-ios-video-fallback body #btnLogo video.lsp-ios-alpha-video,
+      html.lsp-ios-video-fallback body #colAvatarHero video.lsp-ios-alpha-video {
+        display: none !important;
+        visibility: hidden !important;
+      }
+      html.lsp-ios-video-fallback body #btnLogo img#logoLspediaFallback {
+        display: block !important;
+        visibility: visible !important;
+        width: auto !important;
+        height: clamp(52px, 6vw, 68px) !important;
+        max-width: min(54vw, 230px) !important;
+        object-fit: contain !important;
+        object-position: left center !important;
+        flex-shrink: 0 !important;
+      }
+      html.lsp-ios-video-fallback body #colAvatarHero img#avatarHeroFallback {
+        display: block !important;
+        visibility: visible !important;
+        width: auto !important;
+        height: auto !important;
+        max-width: 100% !important;
+        max-height: 185px !important;
+        object-fit: contain !important;
+        object-position: center bottom !important;
+      }
+      @media (max-width: 575.98px) {
+        html.lsp-ios-video-fallback body #colAvatarHero img#avatarHeroFallback {
+          max-height: 130px !important;
+        }
+      }
+    </style>
 </head>
 
 <body>
@@ -4831,7 +4881,8 @@ html[data-lsp-tema="dark"] .sena-ia-coming-icon{background:rgba(71,85,105,.2);co
     <nav class="navbar navbar-expand-xl navbar-dark bg-primary shadow-sm py-2 d-flex">
         <div class="container">
             <a class="navbar-brand fw-bold d-flex align-items-center" href="#" id="btnLogo">
-                <video src="video/lspedia_transparente.webm" poster="img/lspedia_poster_transparente.png" height="85" style="width:auto; object-fit: contain;" autoplay loop muted playsinline disablepictureinpicture aria-label="Logo LSPedia animado"></video>
+                <video class="lsp-ios-alpha-video" src="video/lspedia_transparente.webm" poster="img/lspedia_poster_transparente.png" height="85" style="width:auto; object-fit: contain;" autoplay loop muted playsinline disablepictureinpicture aria-label="Logo LSPedia animado"></video>
+                <img id="logoLspediaFallback" src="img/lspedia_poster_transparente.png" width="207" height="80" alt="LSPedia" decoding="async">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal" aria-controls="menuPrincipal" aria-expanded="false" aria-label="Abrir menú">
                 <span class="navbar-toggler-icon"></span>
@@ -5079,9 +5130,10 @@ html[data-lsp-tema="dark"] .sena-ia-coming-icon{background:rgba(71,85,105,.2);co
             </div>
 
             <div class="col-lg-3 order-first order-lg-last d-flex justify-content-center align-items-start mb-3 mb-lg-0" id="colAvatarHero">
-                <video class="avatar-hero-img" autoplay muted loop playsinline disablepictureinpicture poster="img/avatar_sin_fondo.png" aria-label="Personaje de LSPedia sosteniendo una lupa">
+                <video class="avatar-hero-img lsp-ios-alpha-video" autoplay muted loop playsinline disablepictureinpicture poster="img/avatar_sin_fondo.png" aria-label="Personaje de LSPedia sosteniendo una lupa">
                     <source src="img/avatar_lupa.webm" type="video/webm">
                 </video>
+                <img id="avatarHeroFallback" class="avatar-hero-img" src="img/avatar_sin_fondo.png" width="2048" height="2048" alt="Personaje de LSPedia sosteniendo una lupa" decoding="async">
             </div>
 
         </div>
