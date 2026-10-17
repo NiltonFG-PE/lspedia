@@ -48,6 +48,9 @@ jobs:
         with:
           python-version: "3.x"
 
+      - name: Instalar dependencias SEO
+        run: python -m pip install --disable-pip-version-check Pillow
+
       - name: Crear y migrar IDs únicos
         run: python scripts/migrar_ids_palabras.py
 
