@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-10-17T19:23:48Z",
+  "actualizado": "2026-10-17T22:18:31Z",
   "traducciones": [
     {
       "fuente": "diccionario",
@@ -232,7 +232,7 @@
       "categoria": "Economía",
       "ingles": "Saving",
       "aliases": [],
-      "definicionIngles": "It's money a person saves without spending it, to use later.\n\nExample: I have savings to buy a laptop."
+      "definicionIngles": "It's money that a person saves without spending it, to use later.\n\nExample: I have savings to buy a laptop."
     },
     {
       "fuente": "diccionario",
@@ -896,7 +896,7 @@
       "categoria": "Educación",
       "ingles": "Literature",
       "aliases": [],
-      "definicionIngles": "List of books and sources you used to do a project or research."
+      "definicionIngles": "List of books and sources you used to do a paper or research."
     },
     {
       "fuente": "diccionario",
@@ -912,7 +912,7 @@
       "categoria": "Transporte",
       "ingles": "Bicycle",
       "aliases": [],
-      "definicionIngles": "It's a two-wheeled vehicle that is propelled by pedaling.\n\nExample: I cycle to work every day."
+      "definicionIngles": "It's a two-wheeled vehicle that moves by pedaling.\n\nExample: I go to work by bicycle every day."
     },
     {
       "fuente": "diccionario",
@@ -3000,7 +3000,7 @@
       "categoria": "Trabajo",
       "ingles": "Sales funnel",
       "aliases": [],
-      "definicionIngles": "Representation of the stages a person goes through from learning about an offer until they make a purchase."
+      "definicionIngles": "Representation of the stages a person goes through from the moment they learn about an offer until they make a purchase."
     },
     {
       "fuente": "diccionario",
@@ -3888,7 +3888,7 @@
       "categoria": "Filosofía",
       "ingles": "Philosophy",
       "aliases": [],
-      "definicionIngles": "Study of the fundamental principles of life, truth, and knowledge."
+      "definicionIngles": "Study of the fundamental principles about life, truth, and knowledge."
     },
     {
       "fuente": "diccionario",
@@ -4352,7 +4352,7 @@
       "categoria": "Economía",
       "ingles": "Assessment",
       "aliases": [],
-      "definicionIngles": "A charge or tax that is applied to something."
+      "definicionIngles": "Charge or tax that is applied to something."
     },
     {
       "fuente": "diccionario",
@@ -6358,7 +6358,7 @@
       "fuente": "diccionario",
       "palabra": "Plan contable",
       "categoria": "Economía",
-      "ingles": "accounting plan",
+      "ingles": "Accounting plan",
       "aliases": [],
       "definicionIngles": "Organized list of accounts used to record economic transactions."
     },
