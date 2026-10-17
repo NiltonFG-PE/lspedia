@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - develop
+      - main
     paths:
       - "data/palabras.json"
       - "data/vocabulario.json"
