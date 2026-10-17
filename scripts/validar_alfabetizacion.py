@@ -147,7 +147,10 @@ def main() -> int:
         if not isinstance(fila, dict):
             errores.append(f"Ejemplo #{i}: no es un objeto.")
             continue
-        permitidos = {"caracter", "palabra", "imagen", "orden", "nivel"}
+        permitidos = {
+            "caracter", "palabra", "imagen", "orden", "nivel",
+            "fechaPublicacion", "publicadoEn",
+        }
         extras = set(fila) - permitidos
         if extras:
             errores.append(f"Ejemplo #{i}: campos no permitidos: {sorted(extras)}")
