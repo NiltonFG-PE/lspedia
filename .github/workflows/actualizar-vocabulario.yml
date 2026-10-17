@@ -2,7 +2,7 @@ name: Actualizar vocabulario desde Vocabulario
 
 on:
   push:
-    branches: [develop]
+    branches: [develop, main]
     paths:
       - "data/vocabulario.json"
       - "js/quiz.js"
