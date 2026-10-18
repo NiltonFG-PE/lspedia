@@ -12,19 +12,19 @@
   "lang": "es-PE",
   "icons": [
     {
-      "src": "img/icons/icon-192-v20261018.png",
+      "src": "img/icons/icon-192-v20261018-white.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "img/icons/icon-512-v20261018.png",
+      "src": "img/icons/icon-512-v20261018-white.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "img/icons/icon-512-maskable-v20261018.png",
+      "src": "img/icons/icon-512-maskable-v20261018-white.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
