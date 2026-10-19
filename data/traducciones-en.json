@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-10-18T23:12:25Z",
+  "actualizado": "2026-10-19T19:57:10Z",
   "traducciones": [
     {
       "fuente": "diccionario",
@@ -232,7 +232,7 @@
       "categoria": "Economía",
       "ingles": "Saving",
       "aliases": [],
-      "definicionIngles": "It's money a person saves without spending it, to use later.\n\nExample: I have savings to buy a laptop."
+      "definicionIngles": "It's money that a person saves without spending it, to use later.\n\nExample: I have savings to buy a laptop."
     },
     {
       "fuente": "diccionario",
@@ -912,7 +912,7 @@
       "categoria": "Transporte",
       "ingles": "Bicycle",
       "aliases": [],
-      "definicionIngles": "It's a two-wheeled vehicle that is propelled by pedaling.\n\nExample: I cycle to work every day."
+      "definicionIngles": "It's a two-wheeled vehicle that moves by pedaling.\n\nExample: I go to work by bicycle every day."
     },
     {
       "fuente": "diccionario",
@@ -1032,7 +1032,7 @@
       "categoria": "Tecnología",
       "ingles": "Bug",
       "aliases": [],
-      "definicionIngles": "A bug in a program that causes something to work incorrectly or unexpectedly."
+      "definicionIngles": "A bug in a program that causes something to malfunction or malfunction unexpectedly."
     },
     {
       "fuente": "diccionario",
@@ -1248,7 +1248,7 @@
       "categoria": "Trámites",
       "ingles": "Cadastre",
       "aliases": [],
-      "definicionIngles": "Organized register of properties, land and their characteristics."
+      "definicionIngles": "Organized record of properties, land and their characteristics."
     },
     {
       "fuente": "diccionario",
@@ -3550,7 +3550,7 @@
       "fuente": "diccionario",
       "palabra": "Evaluación diagnóstica",
       "categoria": "Educación",
-      "ingles": "Diagnostic assessment",
+      "ingles": "Diagnostic evaluation",
       "aliases": [],
       "definicionIngles": "An assessment done at the beginning to find out what the student already knows or needs to learn."
     },
@@ -3888,7 +3888,7 @@
       "categoria": "Filosofía",
       "ingles": "Philosophy",
       "aliases": [],
-      "definicionIngles": "Study of the fundamental principles of life, truth, and knowledge."
+      "definicionIngles": "Study of the fundamental principles about life, truth, and knowledge."
     },
     {
       "fuente": "diccionario",
@@ -4576,7 +4576,7 @@
       "categoria": "Salud",
       "ingles": "Hospital",
       "aliases": [],
-      "definicionIngles": "It's a large place where doctors treat and heal sick or injured people.\n\nExample: They took my grandfather to the hospital because he wasn't feeling well."
+      "definicionIngles": "It's a large place where doctors treat and care for sick or injured people.\n\nExample: They took my grandfather to the hospital because he wasn't feeling well."
     },
     {
       "fuente": "diccionario",
@@ -6032,7 +6032,7 @@
       "categoria": "Psicología",
       "ingles": "Vocational guidance",
       "aliases": [],
-      "definicionIngles": "A process that helps a person understand their interests and abilities in order to choose studies or an occupation."
+      "definicionIngles": "A process that helps a person understand their interests and abilities in order to choose their studies or occupation."
     },
     {
       "fuente": "diccionario",
@@ -6104,7 +6104,7 @@
       "categoria": "Deportes",
       "ingles": "Game",
       "aliases": [],
-      "definicionIngles": "It's a game between two teams or two people in a sport.\n\nExample: We watched the soccer game on television."
+      "definicionIngles": "It's a game between two teams or people in a sport.\n\nExample: We watched the soccer game on television."
     },
     {
       "fuente": "diccionario",
@@ -6304,7 +6304,7 @@
       "categoria": "Comida",
       "ingles": "Fish",
       "aliases": [],
-      "definicionIngles": "It's fish that comes from the sea or river, and is widely used in Peruvian cuisine.\n\nFor example: Ceviche is made with fresh fish."
+      "definicionIngles": "It's fish that comes from the sea or rivers, and is widely used in Peruvian cuisine.\n\nFor example: Ceviche is made with fresh fish."
     },
     {
       "fuente": "diccionario",
@@ -6358,7 +6358,7 @@
       "fuente": "diccionario",
       "palabra": "Plan contable",
       "categoria": "Economía",
-      "ingles": "accounting plan",
+      "ingles": "Accounting plan",
       "aliases": [],
       "definicionIngles": "Organized list of accounts used to record economic transactions."
     },
@@ -6816,7 +6816,7 @@
       "categoria": "Universidad",
       "ingles": "Pre-professional practice",
       "aliases": [],
-      "definicionIngles": "It's the time a student spends working at a company to learn about their field of study before finishing their degree.\n\nExample: I'm starting my pre-professional internship at a hospital next month."
+      "definicionIngles": "It's the time a student spends working at a company to learn about their field of study before graduating.\n\nExample: I'm starting my pre-professional internship at a hospital next month."
     },
     {
       "fuente": "diccionario",
@@ -7312,7 +7312,7 @@
       "categoria": "Ciudad",
       "ingles": "Municipal retreat",
       "aliases": [],
-      "definicionIngles": "Required distance between a building and certain limits of the land or public road."
+      "definicionIngles": "Required distance between a building and certain boundaries of the land or public road."
     },
     {
       "fuente": "diccionario",
@@ -7536,7 +7536,7 @@
       "categoria": "Salud",
       "ingles": "Sepsis",
       "aliases": [],
-      "definicionIngles": "A severe bodily response to an infection that can affect organs and put life at risk."
+      "definicionIngles": "A severe response of the body to an infection that can affect organs and be life-threatening."
     },
     {
       "fuente": "diccionario",
@@ -8280,7 +8280,7 @@
       "categoria": "Familia",
       "ingles": "Aunt",
       "aliases": [],
-      "definicionIngles": "She's your dad's or your mom's sister.\n\nExample: My aunt gave me a book for my birthday."
+      "definicionIngles": "She's your dad's or mom's sister.\n\nExample: My aunt gave me a book for my birthday."
     },
     {
       "fuente": "diccionario",
@@ -8448,7 +8448,7 @@
       "categoria": "Ciudad",
       "ingles": "Natural ventilation",
       "aliases": [],
-      "definicionIngles": "Air movement that enters and exits a space without using mechanical equipment."
+      "definicionIngles": "Air movement that enters and exits a space without the use of mechanical equipment."
     },
     {
       "fuente": "diccionario",
@@ -8632,7 +8632,7 @@
       "categoria": "Deportes",
       "ingles": "Referee",
       "aliases": [],
-      "definicionIngles": "It's the person who officiates a match and decides whether something is allowed or not.\n\nExample: The referee called a foul in the match."
+      "definicionIngles": "This is the person who officiates a match and decides whether something is allowed or not.\n\nExample: The referee called a foul in the match."
     },
     {
       "fuente": "diccionario",
