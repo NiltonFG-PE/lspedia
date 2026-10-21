@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-10-20T15:05:55Z",
+  "actualizado": "2026-10-21T01:35:43Z",
   "traducciones": [
     {
       "fuente": "diccionario",
@@ -6358,7 +6358,7 @@
       "fuente": "diccionario",
       "palabra": "Plan contable",
       "categoria": "Economía",
-      "ingles": "Accounting plan",
+      "ingles": "accounting plan",
       "aliases": [],
       "definicionIngles": "Organized list of accounts used to record economic transactions."
     },
