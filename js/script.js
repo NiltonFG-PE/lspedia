@@ -3372,8 +3372,7 @@ async function ejecutarBusquedaDirecta() {
             '<div class="card-body p-4 text-center">' +
             '<div class="mb-2" style="font-size: 42px;">🗂️</div>' +
             '<h4 class="fw-bold mb-2 text-primary">"' + escaparHtml(consultaOriginal) + '" no está en el Diccionario</h4>' +
-            '<p class="text-muted small mb-1">Pero sí encontramos una ' + escaparHtml(etiqueta) + ' en Vocabulario.</p>' +
-            '<p class="fw-bold text-primary mb-3">"' + escaparHtml(coincidenciaVocabulario.forma || coincidenciaVocabulario.registro.palabra) + '"</p>' +
+            '<p class="fw-bold text-primary mb-3">Encontramos "' + escaparHtml(coincidenciaVocabulario.forma || coincidenciaVocabulario.registro.palabra) + '" en Vocabulario.</p>' +
             '<button type="button" class="btn btn-primary px-4 py-2 rounded-pill fw-bold" id="btnIrVocabularioBusquedaDirecta">🗂️ Ver en Vocabulario</button>' +
             '</div></div>';
         const btnIrVocabulario = document.getElementById("btnIrVocabularioBusquedaDirecta");
