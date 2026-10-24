@@ -43,7 +43,7 @@
         ],
         apoyo: {
             'Sugerir palabra': 'Suggest a word',
-            '¿Falta un término? Envíanos tu propuesta.': 'Is a term missing? Send us your suggestion.',
+            '¿No encuentras una palabra? Sugiérela.': 'Cannot find a word? Suggest it.',
             'Enviar una idea': 'Send an idea',
             'Comparte sugerencias para mejorar LSPedia.': 'Share suggestions for improving LSPedia.',
             'Apoyar LSPedia': 'Support LSPedia',
