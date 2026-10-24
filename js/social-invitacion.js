@@ -1,5 +1,6 @@
 /* LSPedia — invitación inteligente a redes sociales.
-   - 1.ª aparición: desde 15 s con interés o respaldo a los 25 s.
+   - Desde 15 s con interés o 25 s, siempre en una pausa de actividad.
+   - Espera durante búsquedas, lectura de resultados y uso de videos.
    - Máximo una aparición por día, según la fecha local del visitante.
    - Cada aparición permanece hasta 60 s.
    - Tocar una red NO cierra la invitación.
@@ -25,6 +26,8 @@
         catch(_e){return false;}
     })();
 
+    const PAUSA_ACTIVIDAD=12000;
+    let ultimaActividad=INICIO;
     let puntos=0;
     let scrollContado=false;
     let busquedaContada=false;
@@ -80,8 +83,38 @@
         const diferencia=Math.max(0,(window.innerHeight||0)-vv.height);
         return diferencia>Math.max(120,(window.innerHeight||0)*0.16);
     }
+    function editando(){
+        const activo=document.activeElement;
+        return !!(activo&&(/^(INPUT|TEXTAREA|SELECT)$/.test(activo.tagName)||activo.isContentEditable));
+    }
+    function consultandoResultados(){
+        return ['resultado','resultadoCategorias','resultadoCategoriasDiccionario'].some(function(id){
+            const el=document.getElementById(id);
+            return elementoVisible(el)&&!!String(el.textContent||'').trim();
+        });
+    }
+    function usandoVideo(){
+        // Los reproductores externos no siempre exponen su estado.
+        // Mientras estén visibles, esperar también si están pausados o cargando.
+        const externos=document.querySelectorAll('iframe[src*="youtube.com"],iframe[src*="youtube-nocookie.com"],iframe[src*="youtu.be"],iframe[src*="vimeo.com"]');
+        if(Array.from(externos).some(elementoVisible))return true;
+        return Array.from(document.querySelectorAll('video,audio')).some(function(el){
+            // No contar el logo ni los avatares decorativos automáticos.
+            const decorativo=el.matches('.lsp-ios-alpha-video,.avatar-hero-img')||/^(Personaje|Logo) de LSPedia/.test(el.getAttribute('aria-label')||'');
+            return elementoVisible(el)&&!decorativo&&!el.paused&&!el.ended;
+        });
+    }
+    function registrarActividad(e){
+        if(tarjeta&&e.target&&tarjeta.contains(e.target))return;
+        ultimaActividad=ahora();
+        if(visible)cerrar('activity');
+        evaluar();
+    }
+
     function bloqueadoTemporalmente(){
         if(document.hidden||document.fullscreenElement)return true;
+        if(editando()||consultandoResultados()||usandoVideo())return true;
+        if(ahora()-ultimaActividad<PAUSA_ACTIVIDAD)return true;
         const splash=document.getElementById('splashScreen');
         if(splash&&!splash.classList.contains('splash-oculto')&&elementoVisible(splash))return true;
         if(document.body.classList.contains('modal-open')){
@@ -253,6 +286,10 @@
     }
 
     function observarInteres(){
+        ['focusin','input','keydown','pointerdown','click','play'].forEach(function(tipo){
+            document.addEventListener(tipo,registrarActividad,true);
+        });
+        window.addEventListener('scroll',registrarActividad,{passive:true});
         let scrollRaf=0;
         window.addEventListener('scroll',function(){
             if(scrollRaf)return;
