@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-10-24T05:08:10Z",
+  "actualizado": "2026-10-24T05:53:22Z",
   "traducciones": [
     {
       "fuente": "diccionario",
@@ -912,7 +912,7 @@
       "categoria": "Transporte",
       "ingles": "Bicycle",
       "aliases": [],
-      "definicionIngles": "It's a two-wheeled vehicle that is propelled by pedaling.\n\nExample: I cycle to work every day."
+      "definicionIngles": "It's a two-wheeled vehicle that moves by pedaling.\n\nExample: I go to work by bicycle every day."
     },
     {
       "fuente": "diccionario",
@@ -4352,7 +4352,7 @@
       "categoria": "Economía",
       "ingles": "Assessment",
       "aliases": [],
-      "definicionIngles": "A charge or tax that is applied to something."
+      "definicionIngles": "Charge or tax that is applied to something."
     },
     {
       "fuente": "diccionario",
@@ -5304,7 +5304,7 @@
       "categoria": "Familia",
       "ingles": "Mother",
       "aliases": [],
-      "definicionIngles": "It's the word for your mother, the woman who is your mom within the family.\n\nExample: My mom cooks delicious meals on Sundays."
+      "definicionIngles": "It's the word for your mother, the woman who is your mom within the family.\n\nExample: My mom cooks delicious food on Sundays."
     },
     {
       "fuente": "diccionario",
@@ -6158,7 +6158,7 @@
       "fuente": "diccionario",
       "palabra": "Patrimonio contable",
       "categoria": "Economía",
-      "ingles": "Accounting equity",
+      "ingles": "accounting equity",
       "aliases": [],
       "definicionIngles": "Economic value resulting from assets less liabilities."
     },
@@ -6358,7 +6358,7 @@
       "fuente": "diccionario",
       "palabra": "Plan contable",
       "categoria": "Economía",
-      "ingles": "Accounting plan",
+      "ingles": "accounting plan",
       "aliases": [],
       "definicionIngles": "Organized list of accounts used to record economic transactions."
     },
