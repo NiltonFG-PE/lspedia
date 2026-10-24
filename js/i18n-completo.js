@@ -30,7 +30,7 @@
         'Mira, reconoce y practica letras y números':'Look, recognize, and practice letters and numbers',
         'Aprende tocando, ordenando y resolviendo':'Learn by tapping, ordering, and solving',
         'Convierte la voz en texto en tiempo real':'Turn speech into text in real time',
-        'Desarrollado con corazón para potenciar la comunicación y la inclusión en el Perú.':'Developed with care to strengthen communication and inclusion in Peru.',
+        'Un proyecto desarrollado con corazón para apoyar la alfabetización de las personas sordas.':'A project developed with care to support literacy for deaf people.',
         'Palabras sugeridas':'Suggested words',
         'Categorías':'Categories',
         'Índice':'Index',
@@ -141,7 +141,7 @@
         '¿Quisiste decir...?':'Did you mean...?',
         'No encontramos resultados.':'We found no results.',
         'Sugerir palabra':'Suggest a word',
-        '¿Falta un término? Envíanos tu propuesta.':'Is a term missing? Send us your suggestion.'
+        '¿No encuentras una palabra? Sugiérela.':'Cannot find a word? Suggest it.'
     }));
 
     const CATEGORIES = new Map(Object.entries({
