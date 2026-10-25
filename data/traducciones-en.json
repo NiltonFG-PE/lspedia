@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-10-25T16:18:33Z",
+  "actualizado": "2026-10-25T19:36:57Z",
   "traducciones": [
     {
       "fuente": "diccionario",
@@ -896,7 +896,7 @@
       "categoria": "Educación",
       "ingles": "Literature",
       "aliases": [],
-      "definicionIngles": "List of books and sources you used to do a paper or research."
+      "definicionIngles": "List of books and sources you used to do a project or research."
     },
     {
       "fuente": "diccionario",
@@ -1376,7 +1376,7 @@
       "categoria": "Tecnología",
       "ingles": "Electrical circuit",
       "aliases": [],
-      "definicionIngles": "A closed path through which electric current can flow."
+      "definicionIngles": "A closed path through which an electric current can flow."
     },
     {
       "fuente": "diccionario",
@@ -1384,7 +1384,7 @@
       "categoria": "Tiempo",
       "ingles": "Appointment",
       "aliases": [],
-      "definicionIngles": "It's an agreed-upon time to meet someone, for example, a doctor or someone in an office, at a specific time.\n\nExample: I have a dentist appointment tomorrow at three."
+      "definicionIngles": "It's an agreed-upon time to meet someone, for example, a doctor or someone in an office, at a specific hour.\n\nExample: I have a dentist appointment tomorrow at three."
     },
     {
       "fuente": "diccionario",
@@ -2376,7 +2376,7 @@
       "categoria": "Salud",
       "ingles": "Rest",
       "aliases": [],
-      "definicionIngles": "This is the time when the body relaxes and recovers energy.\n\nExample: I need rest because I worked a lot this week."
+      "definicionIngles": "It's the time when the body relaxes and recovers energy.\n\nExample: I need rest because I worked a lot this week."
     },
     {
       "fuente": "diccionario",
@@ -5232,7 +5232,7 @@
       "categoria": "Tecnología",
       "ingles": "Logo",
       "aliases": [],
-      "definicionIngles": "Graphic representation based primarily on letters or words that identifies a brand or project."
+      "definicionIngles": "A graphic representation based primarily on letters or words that identifies a brand or project."
     },
     {
       "fuente": "diccionario",
@@ -5304,7 +5304,7 @@
       "categoria": "Familia",
       "ingles": "Mother",
       "aliases": [],
-      "definicionIngles": "It's the word for your mother, the woman who is your mom within the family.\n\nExample: My mom cooks delicious meals on Sundays."
+      "definicionIngles": "It's the word for your mother, the woman who is your mom within the family.\n\nExample: My mom cooks delicious food on Sundays."
     },
     {
       "fuente": "diccionario",
@@ -6032,7 +6032,7 @@
       "categoria": "Psicología",
       "ingles": "Vocational guidance",
       "aliases": [],
-      "definicionIngles": "A process that helps a person understand their interests and abilities in order to choose their studies or occupation."
+      "definicionIngles": "A process that helps a person understand their interests and abilities in order to choose studies or an occupation."
     },
     {
       "fuente": "diccionario",
@@ -6104,7 +6104,7 @@
       "categoria": "Deportes",
       "ingles": "Game",
       "aliases": [],
-      "definicionIngles": "It's a game between two teams or people in a sport.\n\nExample: We watched the soccer game on television."
+      "definicionIngles": "It's a game between two teams or two people in a sport.\n\nExample: We watched the soccer game on television."
     },
     {
       "fuente": "diccionario",
@@ -6222,7 +6222,7 @@
       "fuente": "diccionario",
       "palabra": "Percepción tributaria",
       "categoria": "Economía",
-      "ingles": "Tax perception",
+      "ingles": "Tax collection",
       "aliases": [],
       "definicionIngles": "Additional amount that is charged in advance in some transactions with respect to taxes."
     },
@@ -6304,7 +6304,7 @@
       "categoria": "Comida",
       "ingles": "Fish",
       "aliases": [],
-      "definicionIngles": "It's fish that comes from the sea or river, and is widely used in Peruvian cuisine.\n\nFor example: Ceviche is made with fresh fish."
+      "definicionIngles": "It's fish that comes from the sea or rivers, and is widely used in Peruvian cuisine.\n\nFor example: Ceviche is made with fresh fish."
     },
     {
       "fuente": "diccionario",
@@ -6568,7 +6568,7 @@
       "categoria": "Comunicación",
       "ingles": "Ask",
       "aliases": [],
-      "definicionIngles": "It's asking someone for information about something you don't know.\n\nExample: I asked the teacher about the homework."
+      "definicionIngles": "It's asking someone else for information about something you don't know.\n\nExample: I asked the teacher about the homework."
     },
     {
       "fuente": "diccionario",
@@ -7504,7 +7504,7 @@
       "categoria": "Universidad",
       "ingles": "Semester",
       "aliases": [],
-      "definicionIngles": "It's one of the two parts into which a university year is divided.\n\nExample: This semester I'm taking five courses."
+      "definicionIngles": "It's one of the two parts into which a university academic year is divided.\n\nExample: This semester I'm taking five courses."
     },
     {
       "fuente": "diccionario",
