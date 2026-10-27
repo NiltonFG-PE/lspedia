@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-10-27T05:04:22Z",
+  "actualizado": "2026-10-27T10:33:59Z",
   "traducciones": [
     {
       "fuente": "diccionario",
@@ -232,7 +232,7 @@
       "categoria": "Economía",
       "ingles": "Saving",
       "aliases": [],
-      "definicionIngles": "It's money a person saves without spending it, to use later.\n\nExample: I have savings to buy a laptop."
+      "definicionIngles": "It's money that a person saves without spending it, to use later.\n\nExample: I have savings to buy a laptop."
     },
     {
       "fuente": "diccionario",
@@ -848,7 +848,7 @@
       "categoria": "Ciudad",
       "ingles": "Neighborhood",
       "aliases": [],
-      "definicionIngles": "It's the part of the city where a person lives, along with their neighbors.\n\nExample: Everyone knows each other in my neighborhood."
+      "definicionIngles": "It's the part of the city where a person lives, along with their neighbors.\n\nExample: In my neighborhood, everyone knows each other."
     },
     {
       "fuente": "diccionario",
@@ -912,7 +912,7 @@
       "categoria": "Transporte",
       "ingles": "Bicycle",
       "aliases": [],
-      "definicionIngles": "It's a two-wheeled vehicle that moves by pedaling.\n\nExample: I go to work by bicycle every day."
+      "definicionIngles": "It's a two-wheeled vehicle that is propelled by pedaling.\n\nExample: I cycle to work every day."
     },
     {
       "fuente": "diccionario",
@@ -2376,7 +2376,7 @@
       "categoria": "Salud",
       "ingles": "Rest",
       "aliases": [],
-      "definicionIngles": "This is the time when the body relaxes and recovers energy.\n\nExample: I need rest because I worked a lot this week."
+      "definicionIngles": "It's the time when the body relaxes and recovers energy.\n\nExample: I need rest because I worked a lot this week."
     },
     {
       "fuente": "diccionario",
@@ -3000,7 +3000,7 @@
       "categoria": "Trabajo",
       "ingles": "Sales funnel",
       "aliases": [],
-      "definicionIngles": "Representation of the stages a person goes through from the moment they learn about an offer until they make a purchase."
+      "definicionIngles": "Representation of the stages a person goes through from learning about an offer until they make a purchase."
     },
     {
       "fuente": "diccionario",
@@ -3888,7 +3888,7 @@
       "categoria": "Filosofía",
       "ingles": "Philosophy",
       "aliases": [],
-      "definicionIngles": "Study of the fundamental principles of life, truth, and knowledge."
+      "definicionIngles": "Study of the fundamental principles about life, truth, and knowledge."
     },
     {
       "fuente": "diccionario",
@@ -5232,7 +5232,7 @@
       "categoria": "Tecnología",
       "ingles": "Logo",
       "aliases": [],
-      "definicionIngles": "Graphic representation based primarily on letters or words that identifies a brand or project."
+      "definicionIngles": "A graphic representation based primarily on letters or words that identifies a brand or project."
     },
     {
       "fuente": "diccionario",
@@ -6304,7 +6304,7 @@
       "categoria": "Comida",
       "ingles": "Fish",
       "aliases": [],
-      "definicionIngles": "It's fish that comes from the sea or river, and is widely used in Peruvian cuisine.\n\nFor example: Ceviche is made with fresh fish."
+      "definicionIngles": "It's fish that comes from the sea or rivers, and is widely used in Peruvian cuisine.\n\nFor example: Ceviche is made with fresh fish."
     },
     {
       "fuente": "diccionario",
@@ -7504,7 +7504,7 @@
       "categoria": "Universidad",
       "ingles": "Semester",
       "aliases": [],
-      "definicionIngles": "It's one of the two parts into which a university year is divided.\n\nExample: This semester I'm taking five courses."
+      "definicionIngles": "It's one of the two parts into which a university academic year is divided.\n\nExample: This semester I'm taking five courses."
     },
     {
       "fuente": "diccionario",
@@ -7928,7 +7928,7 @@
       "categoria": "Psicología",
       "ingles": "Therapist",
       "aliases": [],
-      "definicionIngles": "Professional who accompanies a person in a process of treatment or therapeutic support."
+      "definicionIngles": "Professional who accompanies a person in a treatment or therapeutic support process."
     },
     {
       "fuente": "diccionario",
