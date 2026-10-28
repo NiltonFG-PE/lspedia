@@ -1,0 +1,2812 @@
+.spin-anim {
+            animation: girar 0.5s ease-in-out;
+        }
+        @keyframes girar {
+            100% { transform: rotate(360deg); }
+        }
+
+        .highlight-anim {
+            animation: resalte 2s ease-out;
+            border-radius: 10px;
+        }
+        @keyframes resalte {
+            0% { box-shadow: 0 0 20px rgba(13, 110, 253, 0.6); background-color: rgba(13, 110, 253, 0.1); }
+            100% { box-shadow: none; background-color: inherit; }
+        }
+
+        .categoria-card {
+            transition: filter 0.2s ease-in-out, transform 0.2s ease-in-out;
+        }
+        .categoria-card:hover {
+            filter: brightness(0.96) saturate(1.15);
+            transform: scale(1.03);
+            cursor: pointer;
+        }
+
+        /* MENÚ SUPERIOR: botones tipo "píldora" (ícono + texto), con el
+           ítem activo resaltado en blanco y un subrayado ámbar debajo,
+           igual al diseño de referencia. Los íconos son los mismos PNG
+           que ya se usan en la barra inferior móvil (img/icons/nav/),
+           coloreados con currentColor vía máscara para que sigan blancos
+           en los ítems inactivos y oscuros en el ítem activo. */
+        .navbar-nav {
+            gap: 6px;
+            padding-bottom: 6px; /* deja lugar visible al subrayado del activo */
+        }
+
+        #menuPrincipal.navbar-nav .nav-link,
+        .navbar-nav .nav-link {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-weight: 700 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px;
+            font-size: 15px;
+            color: #ffffff !important;
+            transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 0.6rem 1.1rem !important;
+            border-radius: 999px;
+            white-space: nowrap;
+            position: relative;
+        }
+
+        .navbar-nav .nav-link .nav-icono {
+            width: 19px;
+            height: 19px;
+            flex-shrink: 0;
+            display: inline-block;
+            background-color: currentColor;
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-position: center;
+            -webkit-mask-size: contain;
+            mask-size: contain;
+        }
+
+        .navbar-nav .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.12);
+            color: #ffffff !important;
+            transform: translateY(-1px);
+        }
+
+        /* Ítem activo (solo escritorio, xl en adelante): en vez del
+           subrayado ámbar de antes, ahora el botón activo se rellena por
+           completo con la píldora ámbar de la marca (mismo color que ya
+           se usa en "Seña del día" y en los botones destacados del
+           sitio), con el ícono y el texto en blanco encima. El cambio
+           entre inactivo <-> activo anima el fondo y un pequeño "pop" de
+           escala, en vez de aparecer de golpe. */
+        #menuPrincipal .navbar-nav .nav-link.active,
+        .navbar-nav .nav-link.active {
+            background-color: #ffc107;
+            color: var(--primary-color) !important;
+            box-shadow: 0 6px 14px rgba(146, 103, 11, 0.35);
+            animation: navPillPop 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        #menuPrincipal .navbar-nav .nav-link.active .nav-icono,
+        .navbar-nav .nav-link.active .nav-icono {
+            background-color: var(--primary-color) !important;
+        }
+        #menuPrincipal .navbar-nav .nav-link.active:hover,
+        .navbar-nav .nav-link.active:hover {
+            background-color: #ffca2c;
+            transform: translateY(-1px);
+        }
+        @keyframes navPillPop {
+            0% { transform: scale(0.9); }
+            60% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* El avatar del hero usa clases Bootstrap (d-none d-lg-flex) que
+           llevan !important, así que un simple style.display="none" por
+           JS no alcanza para ocultarlo en escritorio. Esta clase se
+           encarga de eso al entrar a Herramientas / Sobre Nosotros. */
+        #colAvatarHero.oculto-por-seccion {
+            display: none !important;
+        }
+
+        /* Título principal ("Vocabulario/Diccionario de Lengua de Señas
+           Peruana (LSP)..."): antes usaba el tamaño h1 por defecto de
+           Bootstrap, que se veía demasiado grande. Se reduce un poco acá
+           (clamp para que también achique de forma proporcional en
+           pantallas angostas, no solo en escritorio). */
+        #tituloPrincipal {
+            font-size: clamp(1.7rem, 1.32rem + 1.5vw, 2.32rem);
+        }
+
+        @media (max-width: 1199.98px) {
+            .navbar-nav .nav-link {
+                font-size: 17px;
+                padding: 0.7rem 1.2rem !important;
+            }
+            .navbar-nav .nav-link .nav-icono {
+                width: 21px;
+                height: 21px;
+            }
+        }
+
+        /* Barra superior fija en ESCRITORIO (xl en adelante): igual que ya
+           pasaba en móvil, la barra con el logo y el menú se queda quieta
+           arriba al hacer scroll, y el contenido se desliza debajo de
+           ella. El padding-top del body deja el espacio exacto (85px del
+           logo + los 16px de padding vertical "py-2" del navbar) para que
+           nada quede tapado al cargar la página. */
+        @media (min-width: 1200px) {
+            nav.navbar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 1030;
+            }
+            body {
+                padding-top: 101px;
+            }
+            /* Al cambiar de sección (Diccionario/Vocabulario/Herramientas/
+               Sobre Nosotros), script.js hace scrollIntoView() sobre estos
+               bloques. scrollIntoView por sí solo no sabe que el navbar de
+               arriba es "fixed": deja el bloque pegado al borde superior
+               del viewport, y el navbar (101px) queda flotando ENCIMA,
+               tapando ese primer tramo de contenido (título, tarjetas,
+               video, etc. se ven "cortados" arriba). scroll-margin-top le
+               indica al navegador que reserve ese mismo espacio como
+               margen antes de considerar el scroll terminado, así el
+               contenido siempre asoma completo debajo del navbar. */
+            #buscar,
+            #panelCategorias,
+            #herramientasMenuMovil,
+            #seccionSubtitulos,
+            #seccionNosotros {
+                scroll-margin-top: 117px;
+            }
+        }
+
+        /* La barra azul superior con el logo ahora también se ve en móvil,
+           igual que en escritorio. Como la navegación real ya vive en la
+           barra inferior (mobile-bottom-nav), acá se oculta el botón
+           hamburguesa y el menú colapsable para no duplicar accesos.
+           Además, igual que la barra inferior, ahora queda FIJA arriba
+           al hacer scroll, con el logo centrado y un poco más grande. */
+        @media (max-width: 1199.98px) {
+            .navbar-toggler {
+                display: none !important;
+            }
+            #menuPrincipal {
+                display: none !important;
+            }
+            nav.navbar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 1030;
+                /* Barra superior semitransparente solo en móvil. Antes de
+                   mezclarse con el color navy, oscurecemos (brightness)
+                   y saturamos lo que se ve detrás (backdrop-filter), así
+                   se puede bajar la opacidad para que sea más
+                   transparente sin que el navy se vea lavado/grisáceo
+                   al superponerse a fondos claros. */
+                background-color: rgba(15, 23, 42, 0.72) !important;
+                -webkit-backdrop-filter: blur(6px) brightness(0.55) saturate(1.4);
+                backdrop-filter: blur(6px) brightness(0.55) saturate(1.4);
+            }
+            nav.navbar .container {
+                justify-content: center !important;
+            }
+            .navbar-brand {
+                margin: 0 !important;
+                transform: translateX(-34px);
+            }
+            .navbar-brand img,
+            .navbar-brand video {
+                height: 64px !important;
+            }
+            /* Empuja el contenido hacia abajo para que la barra fija de
+               arriba no lo tape (mismo criterio que el padding-bottom de
+               abajo, para dejar lugar a la barra inferior). */
+            body {
+                padding-top: 80px;
+            }
+            /* Mismo motivo que el bloque "scroll-margin-top" de escritorio
+               (ver comentario ahí): en móvil/tablet el navbar fijo mide
+               80px, así que el margen de scroll debe ser ese valor y no
+               los 117px de escritorio. */
+            #buscar,
+            #panelCategorias,
+            #herramientasMenuMovil,
+            #seccionSubtitulos,
+            #seccionNosotros {
+                scroll-margin-top: 96px;
+            }
+        }
+
+        /* Vista "Temas" en móvil: al tocar TEMAS solo deben quedar visibles
+           el buscador, el índice A-Z, las categorías, Mis Favoritos y Mi
+           Historial. La seña de hoy/ayer y el bloque de Estadísticas se
+           ocultan (script.js agrega/quita la clase "vista-temas-movil" en
+           <body>). Solo aplica en móvil/tablet: en escritorio no cambia
+           nada. */
+        @media (max-width: 1199.98px) {
+            body.vista-temas-movil #senalDelDia,
+            body.vista-temas-movil .stats-header,
+            body.vista-temas-movil .stats-panel-destacado {
+                display: none !important;
+            }
+        }
+
+        /* ============================================================
+           TARJETAS DE ESTADÍSTICAS (Palabras / Categorías / Videos):
+           versión grande, a todo el ancho del contenedor, con encabezado
+           propio ("ESTADÍSTICAS | LSPedia") y pequeños acentos
+           decorativos por tarjeta (confeti en Palabras, ícono de grilla
+           en Categorías, claqueta en Videos).
+           ============================================================ */
+        .stats-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        .stats-header-icono {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background-color: #dbeafe;
+            color: #1d4ed8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+            flex-shrink: 0;
+        }
+        .stats-header-titulo {
+            font-size: 1.05rem;
+            font-weight: 800;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            color: var(--primary-color);
+            margin: 2px 0 2px;
+        }
+        .stats-header-marca {
+            color: var(--accent-color);
+            font-weight: 800;
+        }
+        .stats-header-subtitulo {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            margin: 0;
+        }
+        .stat2-card {
+            position: relative;
+            background-color: #ffffff;
+            border-radius: 20px;
+            padding: 22px 22px 20px;
+            overflow: hidden;
+            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.07);
+            height: 100%;
+        }
+        .stat2-onda {
+            position: absolute;
+            right: -38px;
+            bottom: -44px;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            z-index: 0;
+            opacity: 0.9;
+        }
+        .stat2-onda-azul { background: linear-gradient(135deg, #bfdbfe, #93c5fd); }
+        .stat2-onda-ambar { background: linear-gradient(135deg, #fde8b6, #fbcf7d); }
+        .stat2-onda-morada { background: linear-gradient(135deg, #ddd6fe, #c4b5fd); }
+        .stat2-onda-rosa { background: linear-gradient(135deg, #fbcfe8, #f9a8d4); }
+        .stat2-puntos {
+            position: absolute;
+            top: 14px;
+            right: 18px;
+            width: 54px;
+            height: 54px;
+            background-image: radial-gradient(rgba(124, 58, 237, 0.18) 1.6px, transparent 1.6px);
+            background-size: 10px 10px;
+            -webkit-mask-image: radial-gradient(circle, #000 0%, transparent 75%);
+            mask-image: radial-gradient(circle, #000 0%, transparent 75%);
+            z-index: 0;
+        }
+        /* Confeti decorativo (tarjeta Palabras) */
+        .stat2-confetti {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            width: 40px;
+            height: 34px;
+            z-index: 0;
+        }
+        .stat2-confetti i {
+            position: absolute;
+            display: block;
+            border-radius: 2px;
+        }
+        .stat2-confetti i:nth-child(1) { width: 14px; height: 3px; background: #22c55e; top: 0; left: 8px; transform: rotate(-30deg); }
+        .stat2-confetti i:nth-child(2) { width: 5px; height: 5px; border-radius: 50%; background: #a855f7; top: 15px; left: 0; }
+        .stat2-confetti i:nth-child(3) { width: 12px; height: 3px; background: #ef4444; bottom: 0; right: 0; transform: rotate(20deg); }
+        /* Ícono de grilla (tarjeta Categorías) */
+        .stat2-grid-icono {
+            position: absolute;
+            top: 18px;
+            right: 20px;
+            width: 26px;
+            height: 26px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+            z-index: 0;
+        }
+        .stat2-grid-icono i {
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 3px;
+        }
+        /* Claqueta decorativa (tarjeta Videos) */
+        .stat2-clapper {
+            position: absolute;
+            top: 16px;
+            right: 28px;
+            font-size: 26px;
+            z-index: 0;
+            opacity: 0.9;
+        }
+        .stat2-icono-wrap {
+            position: relative;
+            z-index: 1;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 29px;
+            margin-bottom: 14px;
+        }
+        .stat2-icono-azul { background-color: #dbeafe; }
+        .stat2-icono-ambar { background-color: #fef3c7; }
+        .stat2-icono-morada { background-color: #ede9fe; }
+        .stat2-icono-rosa { background-color: #fce7f3; }
+        .stat2-titulo {
+            position: relative;
+            z-index: 1;
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+        .stat2-numero {
+            position: relative;
+            z-index: 1;
+            font-size: 2.3rem;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.1;
+            margin-bottom: 12px;
+        }
+        .stat2-progreso-fila {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .stat2-progreso-wrap {
+            flex: 1 1 auto;
+            height: 8px;
+            border-radius: 20px;
+            background-color: #e2e8f0;
+            overflow: hidden;
+        }
+        .stat2-progreso-barra {
+            height: 100%;
+            width: 100%;
+            border-radius: 20px;
+            background: linear-gradient(90deg, #4ade80, #16a34a);
+        }
+        .stat2-check {
+            flex-shrink: 0;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background-color: #16a34a;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 800;
+        }
+        .stat2-completo {
+            position: relative;
+            z-index: 1;
+            font-size: 0.98rem;
+            font-weight: 600;
+            color: #94a3b8;
+        }
+        .stat2-completo strong { color: #16a34a; font-weight: 800; }
+        /* Íconos que acompañan "Diccionario" y "Vocabulario" dentro del
+           desglose (.stat2-completo / .stat2-pill), como apoyo visual
+           para personas sordas. */
+        /* Mini-íconos de máscara PNG usados dentro de los pills de desglose */
+        .stat2-desglose-icon-img {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            background-color: currentColor;
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-position: center;
+            -webkit-mask-size: contain;
+            mask-size: contain;
+            vertical-align: middle;
+            flex-shrink: 0;
+        }
+        .stat2-desglose-sep {
+            color: inherit;
+            opacity: 0.4;
+            font-size: 0.75em;
+            margin: 0 1px;
+        }
+        /* Texto "Diccionario"/"Vocabulario": visible en escritorio,
+           oculto en móvil (donde solo se muestran los íconos porque
+           el ancho de pantalla no alcanza para el texto completo). */
+        .stat2-desglose-label {
+            margin-left: 3px;
+        }
+        .stat2-completo .stat2-desglose-icono,
+        .stat2-pill .stat2-desglose-icono {
+            font-size: 1em;
+            margin-right: 2px;
+        }
+        .stat2-pill {
+            position: relative;
+            z-index: 1;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.98rem;
+        }
+        .stat2-pill-ambar { background-color: #fef3c7; color: #b45309; }
+        .stat2-pill-morada { background-color: #ede9fe; color: #6d28d9; }
+        .stat2-pill-azul { background-color: #dbeafe; color: #1d4ed8; }
+        .stat2-pill-play {
+            width: 19px;
+            height: 19px;
+            border-radius: 50%;
+            background-color: #7c3aed;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            flex-shrink: 0;
+        }
+        .stat2-card-ancha {
+            padding: 26px 28px 24px;
+        }
+        .stat2-card-ancha .stat2-icono-wrap {
+            width: 70px;
+            height: 70px;
+            font-size: 32px;
+        }
+        .stat2-card-ancha .stat2-numero {
+            font-size: 2.5rem;
+        }
+        /* Tarjeta "REDES SOCIALES" (4ta tarjeta del panel, mismo tamaño
+           que Palabras/Categorías/Videos): en vez de un número grande,
+           muestra un texto corto y los 3 íconos de redes en círculos. */
+        .stat2-redes-texto {
+            position: relative;
+            z-index: 1;
+            font-size: 0.85rem;
+            color: #64748b;
+            margin: 0 0 14px 0;
+        }
+        .stat2-redes-iconos {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            gap: 10px;
+        }
+        .stat2-red-icono {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background-color: #f1f5f9;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+        }
+        .stat2-red-icono svg {
+            width: 18px;
+            height: 18px;
+        }
+        .stat2-red-icono:hover,
+        .stat2-red-icono:focus-visible {
+            transform: scale(1.12);
+            color: #ffffff;
+        }
+        .stat2-red-tiktok:hover { background-color: #010101; }
+        .stat2-red-instagram:hover { background: radial-gradient(circle at 30% 110%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285AEB 90%); }
+        .stat2-red-youtube:hover { background-color: #ff0000; }
+        @media (max-width: 576px) {
+            .stat2-redes-texto { font-size: 0.72rem; margin-bottom: 10px; }
+            .stat2-red-icono { width: 32px; height: 32px; }
+            .stat2-red-icono svg { width: 15px; height: 15px; }
+            .stat2-redes-iconos { gap: 7px; }
+        }
+        @media (max-width: 576px) {
+            .stats-header-titulo { font-size: 0.92rem; }
+            .stats-header-subtitulo { font-size: 0.8rem; }
+            .stat2-card { padding: 16px 16px 14px; border-radius: 16px; }
+            .stat2-icono-wrap { width: 50px; height: 50px; font-size: 22px; margin-bottom: 10px; }
+            .stat2-titulo { font-size: 0.68rem; }
+            .stat2-numero { font-size: 1.7rem; margin-bottom: 8px; }
+            .stat2-card-ancha { padding: 18px 18px 16px; }
+            .stat2-card-ancha .stat2-icono-wrap { width: 54px; height: 54px; font-size: 24px; }
+            .stat2-card-ancha .stat2-numero { font-size: 1.9rem; }
+            .stat2-confetti, .stat2-grid-icono, .stat2-clapper { display: none; }
+            /* En móvil el pill solo muestra íconos + números, sin texto,
+               porque la tarjeta es angosta (2 columnas). */
+            .stat2-desglose-label { display: none; }
+        }
+
+        /* ============================================================
+           SECCIÓN "SOBRE NOSOTROS": tarjetas con las 4 formas de apoyar
+           al proyecto (sugerir palabra, enviar idea, donar, contratar
+           intérprete). Mismo lenguaje visual que las tarjetas de
+           estadísticas: ícono circular arriba, texto centrado.
+           Rediseño: antes el color de acento (--nosotros-acento) solo
+           aparecía al pasar el mouse (fondo blanco puro + borde casi del
+           mismo tono que el fondo), así que en reposo se veían casi sin
+           color. Ahora cada tarjeta lleva su tinte visible todo el
+           tiempo (degradado sutil + borde + sombra con ese color), la
+           franja superior queda fija en vez de aparecer solo al hover,
+           y el ícono va en una insignia circular con una animación de
+           "respiración" continua para que se sientan vivas incluso sin
+           tocarlas. */
+        .nosotros-apoyo-card {
+            position: relative;
+            background: #fffaf0;
+            background: linear-gradient(160deg, color-mix(in srgb, var(--nosotros-acento, #cbd5e1) 12%, #ffffff), #ffffff 65%);
+            border: 1.5px solid #e2c98a;
+            border: 1.5px solid color-mix(in srgb, var(--nosotros-acento, #cbd5e1) 35%, #ffffff);
+            border-radius: 14px;
+            padding: 20px 12px 18px;
+            box-shadow: 0 3px 10px rgba(15, 23, 42, 0.08), 0 1px 0 rgba(255, 255, 255, 0.6) inset;
+            box-shadow: 0 3px 10px color-mix(in srgb, var(--nosotros-acento, #cbd5e1) 18%, transparent), 0 1px 0 rgba(255, 255, 255, 0.6) inset;
+            cursor: pointer;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+        .nosotros-apoyo-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--nosotros-acento, #cbd5e1), color-mix(in srgb, var(--nosotros-acento, #cbd5e1) 55%, #ffffff));
+        }
+        .nosotros-apoyo-card:hover,
+        .nosotros-apoyo-card:focus-visible {
+            transform: translateY(-6px) scale(1.015);
+            box-shadow: 0 14px 28px color-mix(in srgb, var(--nosotros-acento, #cbd5e1) 35%, transparent);
+            border-color: var(--nosotros-acento, #cbd5e1);
+            outline: none;
+        }
+        .nosotros-apoyo-card:hover .nosotros-apoyo-icono,
+        .nosotros-apoyo-card:focus-visible .nosotros-apoyo-icono {
+            animation-play-state: paused;
+            transform: scale(1.15) rotate(-6deg);
+            background: color-mix(in srgb, var(--nosotros-acento, #cbd5e1) 28%, #ffffff);
+        }
+        .nosotros-apoyo-card:hover .nosotros-apoyo-titulo,
+        .nosotros-apoyo-card:focus-visible .nosotros-apoyo-titulo {
+            color: var(--nosotros-acento, #0f172a);
+        }
+        .nosotros-apoyo-card-idea { --nosotros-acento: #0d6efd; }
+        .nosotros-apoyo-card-sugerencia { --nosotros-acento: #f59e0b; }
+        .nosotros-apoyo-card-donacion { --nosotros-acento: #e11d48; }
+        .nosotros-apoyo-card-interprete { --nosotros-acento: #7c3aed; }
+        .nosotros-apoyo-icono {
+            font-size: 26px;
+            width: 52px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            border-radius: 50%;
+            background: #f4f0fb;
+            background: color-mix(in srgb, var(--nosotros-acento, #cbd5e1) 16%, #ffffff);
+            box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--nosotros-acento, #cbd5e1) 30%, #ffffff);
+            transition: transform 0.2s ease, background-color 0.2s ease;
+            animation: nosotrosApoyoRespira 2.6s ease-in-out infinite;
+        }
+        @keyframes nosotrosApoyoRespira {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .nosotros-apoyo-icono {
+                animation: none;
+            }
+        }
+        .nosotros-apoyo-titulo {
+            font-weight: 800;
+            color: #0f172a;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+            transition: color 0.2s ease;
+        }
+        .nosotros-apoyo-desc {
+            font-size: 0.78rem;
+            color: #64748b;
+            line-height: 1.35;
+        }
+
+        /* Video de "Sobre Nosotros" FIJO en la pantalla mientras se lee el
+           texto (mismo comportamiento que la Watchtower Online): a
+           diferencia de "sticky" (que solo acompaña el scroll dentro de
+           su contenedor), acá el video queda anclado al viewport con
+           "fixed", así el texto de abajo sigue subiendo y pasa
+           realmente POR DETRÁS de él, en vez de empujarlo. Para eso el
+           texto necesita un padding-top que dé lugar al video la
+           primera vez (ver .nosotros-texto-bajo-video) y el contenedor
+           de la sección necesita "position: relative" para que el
+           <section> siga midiendo el alto real del texto (si no,
+           position:fixed no cuenta para el alto del documento y el
+           scroll se corta antes de tiempo). */
+        #seccionNosotros {
+            position: relative;
+        }
+        .nosotros-video-wrap.nosotros-fijo {
+            position: fixed;
+            left: 50%;
+            z-index: 20;
+            width: calc(100% - 32px);
+            max-width: 510px;
+            transform: translateX(-50%);
+            background: rgba(248, 249, 250, 0.92);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border-radius: 14px;
+            padding: 6px 6px 3px;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.18);
+        }
+        /* Barrita para arrastrar la ventana flotante del video a cualquier
+           parte de la pantalla (ver configurarArrastreNosotros en
+           script.js). Solo sirve como mango: los clics dentro del video o
+           los botones de control no la tocan, así no interfiere con nada
+           más. "touch-action: none" evita que el celular intente hacer
+           scroll de la página mientras se arrastra con el dedo. */
+        .nosotros-arrastre {
+            cursor: grab;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+            text-align: center;
+            font-size: 11px;
+            line-height: 1;
+            color: #64748b;
+            letter-spacing: 2px;
+            padding: 5px 0 4px;
+            margin: -6px -6px 4px;
+            border-radius: 14px 14px 0 0;
+            background: rgba(15, 23, 42, 0.05);
+        }
+        .nosotros-arrastre:hover {
+            color: #0f172a;
+            background: rgba(15, 23, 42, 0.09);
+        }
+        /* La barra de controles también arrastra desde cualquier parte
+           "vacía" de ella (el JS ignora el toque si cae justo sobre un
+           botón o la píldora de velocidad, para no romper esos clics).
+           touch-action:none evita que el dedo dispare el scroll de la
+           página al arrastrar desde ahí. */
+        .nosotros-video-wrap.nosotros-fijo .controles-video {
+            cursor: grab;
+            touch-action: none;
+        }
+        .nosotros-video-wrap.nosotros-fijo .controles-video .btn,
+        .nosotros-video-wrap.nosotros-fijo .controles-video-velocidad {
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+        .nosotros-video-wrap.nosotros-arrastrando {
+            box-shadow: 0 16px 32px rgba(15, 23, 42, 0.32);
+        }
+        .nosotros-video-wrap.nosotros-arrastrando .nosotros-arrastre,
+        .nosotros-video-wrap.nosotros-arrastrando .controles-video {
+            cursor: grabbing;
+        }
+        /* En pantalla completa no tiene sentido arrastrar (el video ocupa
+           toda la pantalla), así que se oculta el mango. */
+        .nosotros-video-wrap.nosotros-fijo.nosotros-pantalla-completa .nosotros-arrastre {
+            display: none;
+        }
+        @media (min-width: 1200px) {
+            .nosotros-video-wrap.nosotros-fijo {
+                top: 117px;
+            }
+        }
+        @media (max-width: 1199.98px) {
+            .nosotros-video-wrap.nosotros-fijo {
+                top: 96px;
+            }
+        }
+        /* El video fijo se hace bien chico para dejar espacio de lectura
+           al texto (era la queja: "no hay espacio para ver el texto").
+           Acá se compacta la barra de controles SOLO mientras el video
+           está en este modo chico; en pantalla completa
+           (.nosotros-pantalla-completa, definida más abajo y con más
+           prioridad por ir después en este archivo) vuelve a su tamaño
+           normal. */
+        .nosotros-video-wrap.nosotros-fijo .controles-video {
+            padding: 5px 6px;
+            gap: 5px !important;
+            margin-top: 0 !important;
+            margin-bottom: 4px !important;
+            flex-wrap: wrap;
+        }
+        /* Los botones se agrandaron (antes 9px, casi ilegibles) pero
+           siguen entrando todos en una sola cinta: al no tener texto
+           (.controles-video-texto oculto) son solo un icono cada uno, asi
+           que hay margen de sobra incluso en celulares angostos; si algun
+           celular muy chico no llegara a entrar, flex-wrap:wrap (definido
+           arriba) los pasa a una segunda linea en vez de recortarlos. */
+        .nosotros-video-wrap.nosotros-fijo .controles-video .btn {
+            font-size: 14px;
+            padding: 0.35rem 0.55rem;
+        }
+        .nosotros-video-wrap.nosotros-fijo .controles-video-texto {
+            display: none;
+        }
+        .nosotros-video-wrap.nosotros-fijo .controles-video-velocidad {
+            padding: 3px 8px;
+            gap: 5px;
+        }
+        .nosotros-video-wrap.nosotros-fijo .controles-video-velocidad .small {
+            font-size: 13px;
+        }
+        /* En pantalla completa el video deja de ser chico (ver
+           .nosotros-pantalla-completa más abajo, con más ancho
+           disponible), así que los controles vuelven a su tamaño normal
+           en vez de quedarse con el tamaño compacto de arriba. */
+        .nosotros-video-wrap.nosotros-fijo.nosotros-pantalla-completa .controles-video-velocidad .small {
+            font-size: inherit !important;
+        }
+        /* El navy oscuro (#0f172a) del modo compacto casi no se distingue
+           sobre el fondo oscuro de pantalla completa; acá se aclara. */
+        .nosotros-video-wrap.nosotros-fijo.nosotros-pantalla-completa .controles-video-velocidad {
+            background-color: rgba(255, 255, 255, 0.14);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+        .nosotros-video-wrap.nosotros-fijo.nosotros-pantalla-completa .controles-video-velocidad .small {
+            color: #ffffff !important;
+        }
+        .nosotros-video-wrap.nosotros-fijo.nosotros-pantalla-completa .controles-video {
+            padding: 10px 12px;
+            gap: 8px !important;
+            flex-wrap: nowrap;
+        }
+        .nosotros-video-wrap.nosotros-fijo.nosotros-pantalla-completa .controles-video .btn {
+            font-size: 13px;
+            padding: 0.25rem 0.5rem;
+        }
+        .nosotros-video-wrap.nosotros-fijo.nosotros-pantalla-completa .controles-video-texto {
+            display: inline;
+        }
+        /* El texto arranca debajo del video (que ahora "flota" fuera del
+           flujo normal por el position:fixed) y, a medida que se hace
+           scroll, sube y desaparece detrás de él. El valor exacto se
+           ajusta por JS según la altura real del video+controles (ver
+           ajustarEspacioVideoNosotros en script.js), este es solo un
+           valor de respaldo mientras carga. */
+        .nosotros-texto-bajo-video {
+            padding-top: 420px;
+        }
+
+        /* ============================================================
+           LAYOUT ANCHO DE "SOBRE NOSOTROS" (escritorio con la ventana
+           completa): en vez de la ventanita flotante centrada sobre el
+           texto (pensada para pantallas angostas o la mitad de la
+           ventana), el video arranca más grande y fijo (sticky) a la
+           izquierda, con el texto a la derecha, en dos columnas
+           ordenadas, sin que una tape a la otra. Al hacer scroll el
+           video se queda visible (pegado a "top: 117px") en vez de
+           irse con el resto de la página. El mango de arrastre sigue
+           disponible acá también: si se arrastra, script.js pasa el
+           video a "position: fixed" para que se pueda mover libremente,
+           igual que en pantalla angosta (ver configurarArrastreNosotros).
+
+           Nota: el "position: sticky" solo funciona si ningún ancestro
+           hasta el <html> tiene "overflow" distinto de "visible"; por
+           eso el overflow-x global del sitio usa "clip" y no "hidden"
+           (ver esa regla más arriba).
+
+           Se activa agregando "nosotros-layout-ancho" al <html> (ver
+           actualizarLayoutAnchoNosotros() en script.js), que decide
+           según el ancho REAL de la ventana del navegador (no según si
+           el dispositivo es un celular/tablet real): así, si la
+           ventana se achica —por ejemplo a la mitad de la pantalla— o
+           si es un celular/tablet, vuelve solo a la ventanita flotante
+           y arrastrable de siempre.
+
+           ":not(.nosotros-pantalla-completa)" en el video evita que
+           esto se mezcle con la vista de pantalla completa (que ya
+           tiene sus propias reglas, con más especificidad, más abajo
+           en este archivo). */
+        html.nosotros-layout-ancho .nosotros-contenido {
+            display: flex;
+            align-items: flex-start;
+            gap: 40px;
+            max-width: 1200px !important;
+        }
+        html.nosotros-layout-ancho .nosotros-video-wrap.nosotros-fijo:not(.nosotros-pantalla-completa) {
+            position: sticky;
+            left: auto;
+            top: 117px;
+            transform: none;
+            width: 560px;
+            flex: 0 0 560px;
+            margin: 0;
+        }
+        html.nosotros-layout-ancho .nosotros-texto-bajo-video {
+            padding-top: 0 !important;
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+
+
+
+        /* Títulos y párrafos del texto de "Sobre Nosotros": al tocarlos,
+           el video salta directo a la parte donde se explica ese tema
+           (ver saltarVideoNosotros en script.js). El título va en azul
+           (color de marca) para que se note que es interactivo; el
+           bloque de párrafos se resalta sutilmente al pasar el mouse. */
+        .nosotros-titulo-clicable {
+            color: #0d6efd;
+            cursor: pointer;
+            transition: color 0.15s ease;
+        }
+        .nosotros-titulo-clicable:hover,
+        .nosotros-titulo-clicable:focus-visible {
+            color: #084298;
+            text-decoration: underline;
+            outline: none;
+        }
+        .nosotros-bloque-clicable {
+            cursor: pointer;
+            border-radius: 10px;
+            padding: 4px 8px;
+            margin: 0 -8px;
+            transition: background-color 0.15s ease;
+        }
+        .nosotros-bloque-clicable:hover,
+        .nosotros-bloque-clicable:focus-visible {
+            background-color: rgba(13, 110, 253, 0.06);
+            outline: none;
+        }
+
+        /* Resaltado "en vivo" del bloque de texto que corresponde al
+           segundo actual del video de "Sobre Nosotros" (ver
+           actualizarBloqueActivoNosotros en script.js): mientras el
+           video se reproduce, el título y los párrafos del tema que se
+           está explicando en ese momento cambian a celeste, como un
+           subtítulo que va siguiendo el audio. Se usa !important en el
+           párrafo/lista porque Bootstrap aplica su propio color con
+           !important vía la clase .text-secondary. */
+        .nosotros-titulo-clicable.nosotros-bloque-activo {
+            color: #0ea5e9;
+        }
+        .nosotros-bloque-clicable.nosotros-bloque-activo p,
+        .nosotros-bloque-clicable.nosotros-bloque-activo li {
+            color: #0ea5e9 !important;
+            transition: color 0.25s ease;
+        }
+
+        /* Botones del modal "Contratar un intérprete": fila con ícono,
+           nombre del medio de contacto y flecha, mismo lenguaje visual
+           que el resto de tarjetas de Sobre Nosotros. */
+        .btn-contacto-interprete {
+            background-color: #ffffff;
+            border: 1px solid #eef1f6;
+            border-radius: 14px;
+            padding: 14px 16px;
+            box-shadow: 0 3px 9px rgba(15, 23, 42, 0.06);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .btn-contacto-interprete:hover,
+        .btn-contacto-interprete:focus-visible {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(15, 23, 42, 0.1);
+            outline: none;
+        }
+        .btn-contacto-icono {
+            flex-shrink: 0;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+            margin-right: 12px;
+        }
+
+
+
+        /* ============================================================
+           MENÚ DE HERRAMIENTAS EN MÓVIL: 3 tarjetas grandes (Subtítulos,
+           Jugar, Alfabetización), con icono en insignia pastel, título +
+           descripción, y una "ola" de color con botón circular a la
+           derecha. Ver mostrarSeccionHerramientas() en script.js: en
+           móvil se muestra primero este selector y solo se carga el
+           módulo elegido al tocar su tarjeta. En escritorio no se usa
+           (d-xl-none).
+           ============================================================ */
+        #herramientasMenuMovil {
+            width: min(100%, 760px);
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+        #herramientasMenuMovilRow {
+            margin-left: 0;
+            margin-right: 0;
+            justify-content: center;
+        }
+
+        .herr-titulo-icono-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            font-size: 1.7rem;
+            margin-bottom: 20px !important;
+        }
+        .herr-titulo-icono {
+            width: 52px;
+            height: 52px;
+            object-fit: contain;
+            animation: herrTituloFlotar 2.6s ease-in-out infinite;
+        }
+        @keyframes herrTituloFlotar {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-6px) rotate(-6deg); }
+        }
+        @media (max-width: 576px) {
+            .herr-titulo-icono-wrap { font-size: 1.4rem; gap: 10px; }
+            .herr-titulo-icono { width: 40px; height: 40px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .herr-titulo-icono { animation: none; }
+        }
+        .herr-movil-btn {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 18px 20px;
+            border-radius: 20px;
+            border: none;
+            background-color: #ffffff;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+            overflow: hidden;
+            text-align: left;
+            transition: transform 0.15s ease, box-shadow 0.2s ease;
+            /* Entrada en cascada: cada tarjeta aparece deslizándose desde
+               abajo con un pequeño rebote, con un poco de retraso entre
+               una y otra (ver los nth-child más abajo), cada vez que el
+               menú deja de estar oculto (d-none -> visible). */
+            animation: herrMovilBtnEntrada 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+        @keyframes herrMovilBtnEntrada {
+            from { opacity: 0; transform: translateY(22px) scale(0.94); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .col-12:nth-child(1) .herr-movil-btn { animation-delay: 0.02s; }
+        .col-12:nth-child(2) .herr-movil-btn { animation-delay: 0.12s; }
+        .col-12:nth-child(3) .herr-movil-btn { animation-delay: 0.22s; }
+        .herr-movil-btn:active {
+            transform: scale(0.98);
+        }
+        /* Animación al pasar el mouse (escritorio) o al tocar (móvil):
+           la tarjeta se eleva un poco y aparece un resplandor de color
+           alrededor, a la vez que el icono se agranda ligeramente. El
+           color del resplandor cambia según la herramienta (ver los
+           bloques --glow de cada variante más abajo). */
+        .herr-movil-btn:hover,
+        .herr-movil-btn:focus-visible {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08),
+                        0 0 0 4px var(--herr-glow, rgba(15, 23, 42, 0.08)),
+                        0 8px 24px var(--herr-glow-fuerte, rgba(15, 23, 42, 0.18));
+        }
+        .herr-movil-icono {
+            flex: 0 0 auto;
+            width: 62px;
+            height: 62px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            line-height: 1;
+            position: relative;
+            z-index: 2;
+            transition: transform 0.2s ease;
+            overflow: hidden;
+        }
+        /* Los iconos ahora son ilustraciones 3D a color (img/categorias/),
+           no emojis ni texto: se ajustan al badge sin recortarse y
+           "flotan" suavemente todo el tiempo para dar vida a la tarjeta,
+           incluso sin interacción (desfasadas entre sí, ver los
+           nth-child de abajo). */
+        .herr-movil-icono img {
+            width: 68%;
+            height: 68%;
+            object-fit: contain;
+            animation: herrIconoFlotar 3s ease-in-out infinite;
+        }
+        .herr-movil-btn:hover .herr-movil-icono,
+        .herr-movil-btn:focus-visible .herr-movil-icono {
+            transform: scale(1.12);
+        }
+        /* Al pasar el mouse o tocar: además del zoom del badge, un
+           rebote más marcado del icono, para que la tarjeta se sienta
+           "atrayente" al interactuar. */
+        .herr-movil-btn:hover .herr-movil-icono img,
+        .herr-movil-btn:focus-visible .herr-movil-icono img {
+            animation: herrIconoRebote 0.6s ease;
+        }
+        @keyframes herrIconoFlotar {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-4px) rotate(-3deg); }
+        }
+        @keyframes herrIconoRebote {
+            0%   { transform: scale(1) rotate(0deg); }
+            35%  { transform: scale(1.22) rotate(-8deg); }
+            65%  { transform: scale(1.05) rotate(6deg); }
+            100% { transform: scale(1.1) rotate(0deg); }
+        }
+        /* Pequeño desfase entre tarjetas para que no floten "al mismo
+           compás" y se vea más natural. */
+        .col-12:nth-child(2) .herr-movil-icono img { animation-delay: 0.4s; }
+        .col-12:nth-child(3) .herr-movil-icono img { animation-delay: 0.8s; }
+        .herr-movil-textos {
+            position: relative;
+            z-index: 2;
+            min-width: 0;
+        }
+        .herr-movil-texto {
+            display: block;
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: 0.4px;
+        }
+        .herr-movil-desc {
+            display: block;
+            margin-top: 2px;
+            font-size: 12.5px;
+            font-weight: 500;
+            color: #64748b;
+            line-height: 1.3;
+        }
+        .herr-movil-ola {
+            position: absolute;
+            top: 0;
+            right: -55px;
+            bottom: 0;
+            width: 160px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        .herr-movil-flecha {
+            position: absolute;
+            top: 50%;
+            right: 18px;
+            transform: translateY(-50%);
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background-color: var(--herr-flecha-color, #0f172a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 800;
+            color: #ffffff;
+            z-index: 2;
+            box-shadow: 0 6px 14px rgba(15, 23, 42, 0.22);
+        }
+        .herr-movil-btn-subtitulos .herr-movil-icono { background-color: #fde3b8; color: #d97706; }
+        .herr-movil-btn-subtitulos .herr-movil-texto { color: #ea7f0e; }
+        .herr-movil-btn-subtitulos .herr-movil-ola { background: linear-gradient(135deg, #fbbf5c, #ea7f0e); }
+        .herr-movil-btn-subtitulos { --herr-flecha-color: #ea7f0e; --herr-glow: rgba(234, 127, 14, 0.18); --herr-glow-fuerte: rgba(234, 127, 14, 0.28); }
+
+        .herr-movil-btn-jugar .herr-movil-icono { background-color: #e3daf9; color: #7c3aed; }
+        .herr-movil-btn-jugar .herr-movil-texto { color: #7c3aed; }
+        .herr-movil-btn-jugar .herr-movil-ola { background: linear-gradient(135deg, #a78bfa, #6d28d9); }
+        .herr-movil-btn-jugar { --herr-flecha-color: #7c3aed; --herr-glow: rgba(124, 58, 237, 0.18); --herr-glow-fuerte: rgba(124, 58, 237, 0.28); }
+
+        .herr-movil-btn-alfabetizacion .herr-movil-icono { background-color: #c7f0dd; color: #047857; }
+        .herr-movil-btn-alfabetizacion .herr-movil-texto { color: #059669; }
+        .herr-movil-btn-alfabetizacion .herr-movil-ola { background: linear-gradient(135deg, #34d399, #059669); }
+        .herr-movil-btn-alfabetizacion { --herr-flecha-color: #059669; --herr-glow: rgba(5, 150, 105, 0.18); --herr-glow-fuerte: rgba(5, 150, 105, 0.28); }
+
+        /* Quienes prefieren menos movimiento no reciben las animaciones
+           continuas de flotación ni la entrada en cascada. */
+        @media (prefers-reduced-motion: reduce) {
+            .herr-movil-btn { animation: none; opacity: 1; }
+            .herr-movil-icono img,
+            .herr-movil-btn:hover .herr-movil-icono img,
+            .herr-movil-btn:focus-visible .herr-movil-icono img { animation: none; }
+        }
+
+        /* ============================================================
+           BLOQUE "SUGERIR PALABRA": tarjeta azul oscuro con foco (halo),
+           chispas decorativas junto al título, siluetas muy tenues de
+           fondo (chat/libro) y botón píldora en degradado amarillo con
+           ícono de lápiz a la izquierda y "+" a la derecha.
+           ============================================================ */
+        .sugerencia-card {
+            position: relative;
+            max-width: 1040px;
+            margin: 0 auto;
+            background-color: #0f172a;
+            border-radius: 28px;
+            padding: 44px 32px 40px;
+            overflow: hidden;
+            text-align: center;
+            color: #ffffff;
+            box-shadow: 0 20px 45px rgba(15, 23, 42, 0.35);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+        }
+        .sugerencia-contenido {
+            position: relative;
+            z-index: 2;
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+        .sugerencia-ilustracion {
+            position: relative;
+            z-index: 2;
+            flex-shrink: 0;
+            width: 220px;
+            height: 190px;
+            display: none;
+        }
+        .sugerencia-ilus-libro {
+            position: absolute;
+            bottom: 0;
+            left: 20px;
+            font-size: 108px;
+            line-height: 1;
+            filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.35));
+        }
+        .sugerencia-ilus-burbuja {
+            position: absolute;
+            top: 4px;
+            right: 8px;
+            width: 52px;
+            height: 52px;
+            background: #2563eb;
+            border-radius: 50% 50% 4px 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 8px 16px rgba(37, 99, 235, 0.4);
+        }
+        .sugerencia-ilus-spark {
+            position: absolute;
+            font-size: 20px;
+            color: #facc15;
+        }
+        .sugerencia-ilus-spark.s1 { top: 0; left: 0; }
+        .sugerencia-ilus-spark.s2 { bottom: 34px; right: 0; font-size: 14px; }
+        @media (min-width: 992px) {
+            .sugerencia-card { flex-direction: row; text-align: left; padding: 48px 56px; }
+            .sugerencia-icono-wrap { margin: 0 0 18px; }
+            .sugerencia-subtitulo { margin: 0 0 26px; }
+            .sugerencia-ilustracion { display: block; }
+        }
+        .sugerencia-puntos {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.12) 1.5px, transparent 1.5px);
+            background-size: 14px 14px;
+            -webkit-mask-image: radial-gradient(circle, #000 0%, transparent 75%);
+            mask-image: radial-gradient(circle, #000 0%, transparent 75%);
+            pointer-events: none;
+        }
+        .sugerencia-puntos-tl { top: -10px; left: -10px; }
+        .sugerencia-puntos-br { bottom: -10px; right: -10px; }
+        .sugerencia-silueta {
+            position: absolute;
+            width: 130px;
+            height: 130px;
+            color: #ffffff;
+            opacity: 0.06;
+            pointer-events: none;
+        }
+        .sugerencia-silueta-chat { bottom: 6px; left: 14px; }
+        .sugerencia-silueta-libro { top: 10px; right: 10px; }
+        .sugerencia-icono-wrap {
+            position: relative;
+            z-index: 2;
+            width: 74px;
+            height: 74px;
+            margin: 0 auto 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle, rgba(250, 204, 21, 0.20), rgba(250, 204, 21, 0) 70%);
+        }
+        .sugerencia-icono-wrap::before {
+            content: "";
+            position: absolute;
+            inset: 8px;
+            border-radius: 50%;
+            border: 1px solid rgba(250, 204, 21, 0.28);
+        }
+        .sugerencia-icono {
+            position: relative;
+            z-index: 2;
+            font-size: 30px;
+            line-height: 1;
+        }
+        .sugerencia-titulo-wrap {
+            position: relative;
+            z-index: 2;
+            display: inline-block;
+            max-width: 480px;
+        }
+        .sugerencia-spark {
+            position: absolute;
+            top: 50%;
+            width: 20px;
+            height: 34px;
+            transform: translateY(-50%);
+        }
+        .sugerencia-spark-izq { left: -32px; }
+        .sugerencia-spark-der { right: -32px; }
+        .sugerencia-titulo {
+            color: #ffffff;
+            font-size: clamp(1.3rem, 2.3vw, 1.75rem);
+            font-weight: 800;
+            line-height: 1.28;
+            margin: 0 0 14px;
+        }
+        .sugerencia-titulo .resaltado { color: #facc15; }
+        .sugerencia-subtitulo {
+            position: relative;
+            z-index: 2;
+            color: #cbd5e1;
+            font-size: 1rem;
+            max-width: 460px;
+            margin: 0 auto 26px;
+        }
+        .sugerencia-btn {
+            position: relative;
+            z-index: 2;
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            padding: 8px 10px 8px 10px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #fde047, #f59e0b);
+            color: #0f172a;
+            font-weight: 800;
+            font-size: 1.05rem;
+            box-shadow: 0 10px 22px rgba(245, 158, 11, 0.35);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .sugerencia-btn:hover {
+            transform: translateY(-2px);
+            color: #0f172a;
+            box-shadow: 0 14px 26px rgba(245, 158, 11, 0.4);
+        }
+        .sugerencia-btn-icono {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        .sugerencia-btn-mas {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background-color: #0f172a;
+            color: #facc15;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+        .sugerencia-glow {
+            position: absolute;
+            bottom: -1px;
+            left: 15%;
+            right: 15%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #38bdf8, transparent);
+            filter: blur(1px);
+        }
+        @media (max-width: 576px) {
+            .sugerencia-card { padding: 36px 20px 32px; border-radius: 22px; }
+            .sugerencia-spark { display: none; }
+            .sugerencia-silueta { width: 100px; height: 100px; }
+        }
+
+        /* ============================================================
+           PIE DE PÁGINA: logo real de LSPedia + mensaje "Desarrollado
+           con corazón", separados por una línea superior, con la línea
+           de copyright centrada debajo. En móvil todo se apila y se
+           centra.
+           ============================================================ */
+        .footer-lspedia {
+            background-color: #ffffff;
+            border-top: 1px solid var(--border-color);
+            padding: 28px 0 20px;
+        }
+        .footer-logo {
+            height: 56px;
+            width: auto;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+        .footer-corazon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background-color: #fee2e2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .footer-desarrollado {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            max-width: 360px;
+        }
+        .footer-top {
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 16px;
+        }
+        /* Barra inferior del footer (copyright + licencia): fondo gris muy
+           claro en una "píldora" redondeada, con un ícono de escudo a la
+           izquierda y el link "Ver licencia" acompañado de un ícono de
+           enlace externo. */
+        .footer-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background-color: #f8fafc;
+            border-radius: 999px;
+            padding: 12px 20px;
+            flex-wrap: wrap;
+        }
+        .footer-escudo {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background-color: #dbeafe;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .footer-escudo svg {
+            width: 15px;
+            height: 15px;
+        }
+        .footer-link-licencia {
+            color: #2563eb;
+            font-weight: 600;
+            text-decoration: underline;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .footer-icono-externo {
+            width: 13px;
+            height: 13px;
+            flex-shrink: 0;
+        }
+        /* Fila de íconos de redes sociales del footer (ahora dentro de
+   footer-top, junto al logo y al texto del corazón): círculos
+   discretos en tono gris que se colorean con la marca de cada red al
+   pasar el mouse/tocar (mismo comportamiento que en la tarjeta de
+   Estadísticas). */
+        .footer-redes {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .footer-red-icono {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #f1f5f9;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+        }
+        .footer-red-icono svg {
+            width: 19px;
+            height: 19px;
+        }
+        .footer-red-icono:hover,
+        .footer-red-icono:focus-visible {
+            transform: scale(1.12);
+            color: #ffffff;
+        }
+        .footer-red-tiktok:hover { background-color: #010101; }
+        .footer-red-instagram:hover { background: radial-gradient(circle at 30% 110%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285AEB 90%); }
+        .footer-red-youtube:hover { background-color: #ff0000; }
+        /* Facebook LSPedia — comportamiento consistente con las demás redes */
+        .footer-red-facebook,
+        .stat2-red-facebook {
+            color: #1877F2 !important;
+        }
+        .footer-red-facebook svg,
+        .footer-red-facebook path,
+        .stat2-red-facebook svg,
+        .stat2-red-facebook path {
+            color: currentColor !important;
+            fill: currentColor !important;
+            opacity: 1 !important;
+            filter: none !important;
+        }
+        @media (hover: hover) and (pointer: fine) {
+            .footer-red-facebook:hover,
+            .footer-red-facebook:focus-visible,
+            .stat2-red-facebook:hover,
+            .stat2-red-facebook:focus-visible {
+                background: #1877F2 !important;
+                color: #ffffff !important;
+                transform: scale(1.12);
+            }
+        }
+        @media (hover: none), (pointer: coarse) {
+            .footer-red-facebook,
+            .footer-red-facebook:hover,
+            .footer-red-facebook:focus,
+            .footer-red-facebook:focus-visible,
+            .footer-red-facebook:active,
+            .stat2-red-facebook,
+            .stat2-red-facebook:hover,
+            .stat2-red-facebook:focus,
+            .stat2-red-facebook:focus-visible,
+            .stat2-red-facebook:active {
+                background: #ffffff !important;
+                color: #1877F2 !important;
+                opacity: 1 !important;
+                filter: none !important;
+            }
+            .footer-red-facebook:active,
+            .stat2-red-facebook:active {
+                transform: scale(1.10) !important;
+            }
+        }
+        @media (max-width: 767.98px) {
+            .footer-logo { height: 48px; }
+            .footer-desarrollado { max-width: none; }
+        }
+
+        /* Evita que el menú (u otro elemento) desborde el ancho de la
+           pantalla y "empuje" o descentre el contenido en tablets.
+           Se usa "clip" en vez de "hidden": recorta igual el
+           desborde horizontal, pero (a diferencia de "hidden") no
+           convierte a <html>/<body> en un contenedor con scroll
+           propio, que es justo lo que rompía el "position: sticky"
+           del video de Sobre Nosotros en el layout ancho de
+           escritorio (ver "nosotros-layout-ancho" más abajo). */
+        html, body {
+            overflow-x: clip;
+        }
+
+        /* Con el navbar ya expandido (pantallas anchas), si aun así no
+           entran todos los ítems en una sola fila, que pasen a una
+           segunda línea centrada en vez de desbordarse/superponerse. */
+        .navbar-nav {
+            flex-wrap: wrap;
+            justify-content: center;
+            row-gap: 4px;
+        }
+
+        /* Letras A-Z interactivas FLUIDAS y SIN NEGRITA */
+        .btn-abc {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: normal !important;
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+        .btn-abc:hover {
+            transform: scale(1.5);
+            color: #0d6efd !important;
+            font-weight: normal !important;
+            text-shadow: 0px 4px 8px rgba(13, 110, 253, 0.2);
+        }
+
+        /* Letra actualmente seleccionada en el índice alfabético */
+        .btn-abc.active {
+            background-color: #fdf1cf !important;
+            color: #92670b !important;
+            font-weight: 700 !important;
+        }
+
+        /* ============================================================
+           Rediseño del índice alfabético SOLO para móvil: tarjeta gris
+           redondeada con una grilla de casillas cuadradas (8 columnas:
+           A-H, I-P, Q-X, Y-Z), igual al diseño de referencia pero más
+           compacta. En escritorio no se toca nada.
+           ============================================================ */
+        @media (max-width: 767.98px) {
+            .indice-alfabetico {
+                display: grid !important;
+                grid-template-columns: repeat(8, 1fr);
+                gap: 6px !important;
+                background-color: #eef1f5 !important;
+                border: none !important;
+                box-shadow: none !important;
+                border-radius: 18px !important;
+                padding: 12px !important;
+            }
+            .btn-abc {
+                width: 100% !important;
+                height: auto !important;
+                aspect-ratio: 1 / 1;
+                background-color: #ffffff;
+                border-radius: 10px;
+                font-size: 0.8rem;
+                box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+            }
+            .btn-abc:hover {
+                transform: none;
+                text-shadow: none;
+                background-color: #f8fafc;
+            }
+            .btn-abc.active {
+                box-shadow: inset 0 0 0 1px rgba(217, 163, 26, 0.25);
+            }
+            /* La regla ".indice-alfabetico .btn-abc.active" de css/estilos.css
+               (degradado azul→ámbar oscuro) es más específica que la de
+               arriba y termina ganando en la práctica, dejando la letra
+               seleccionada oscura/negra en vez de amarilla. Se repite acá
+               con la MISMA especificidad + !important para que en móvil se
+               vea igual de amarillo claro que en escritorio. */
+            .indice-alfabetico .btn-abc.active {
+                background: #fdf1cf !important;
+                border-color: transparent !important;
+                color: #92670b !important;
+                box-shadow: inset 0 0 0 1px rgba(217, 163, 26, 0.35) !important;
+            }
+        }
+
+        /* Cuadro de Sugerencias en Plomo Oscuro (buscador principal y
+           buscador de Vocabulario comparten el mismo look) */
+        #sugerencias .list-group-item,
+        #sugerenciasCategorias .list-group-item {
+            background-color: #343a40 !important;
+            color: #ffffff !important;
+            border-bottom: 1px solid #495057 !important;
+            transition: background-color 0.2s ease;
+        }
+        #sugerencias .list-group-item:hover,
+        #sugerenciasCategorias .list-group-item:hover {
+            background-color: #495057 !important;
+        }
+        #sugerencias .badge,
+        #sugerenciasCategorias .badge {
+            background-color: #6c757d !important;
+            color: #fff !important;
+        }
+        #sugerencias .text-primary {
+            color: #8bb9fe !important;
+        }
+
+        /* Efecto hover para el botón de la lupa AMARILLO */
+        #btnBuscar {
+            background-color: #ffc107 !important;
+            border: none !important;
+            color: #000 !important;
+            transition: all 0.2s ease;
+        }
+        #btnBuscar:hover {
+            background-color: #ffca2c !important;
+            transform: scale(1.05);
+        }
+        /* ============================================================
+           BUSCADOR PRINCIPAL: estilo animado y llamativo para que sea
+           el centro de atención de la portada. Combina un halo dorado
+           que respira, un destello de luz que recorre la caja y un
+           pequeño rebote de la lupa. Se detiene al enfocar el campo
+           (ya logró la atención) y respeta prefers-reduced-motion.
+           ============================================================ */
+        #bloqueBuscador .input-group {
+            position: relative;
+            animation: buscadorPulso 2.4s ease-in-out infinite;
+        }
+        #bloqueBuscador .input-group::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -60%;
+            width: 35%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.65), transparent);
+            transform: skewX(-20deg);
+            animation: buscadorDestello 3.4s ease-in-out infinite;
+            pointer-events: none;
+        }
+        #bloqueBuscador .input-group:focus-within {
+            animation: none;
+            box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.28), 0 10px 24px rgba(255, 193, 7, 0.32) !important;
+        }
+        #bloqueBuscador .input-group:focus-within::after {
+            animation: none;
+            opacity: 0;
+        }
+        #btnBuscar span {
+            display: inline-block;
+            animation: lupaRebote 2.4s ease-in-out infinite;
+        }
+        @keyframes buscadorPulso {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.45), 0 4px 14px rgba(15, 23, 42, 0.08);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 0 0 9px rgba(255, 193, 7, 0.14), 0 8px 22px rgba(255, 193, 7, 0.38);
+                transform: scale(1.012);
+            }
+        }
+        @keyframes buscadorDestello {
+            0% { left: -60%; }
+            40% { left: 130%; }
+            100% { left: 130%; }
+        }
+        @keyframes lupaRebote {
+            0%, 78%, 100% { transform: rotate(0deg) scale(1); }
+            86% { transform: rotate(-14deg) scale(1.18); }
+            93% { transform: rotate(10deg) scale(1.1); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            #bloqueBuscador .input-group,
+            #bloqueBuscador .input-group::after,
+            #btnBuscar span,
+            #bloqueBuscadorCategorias .input-group,
+            #bloqueBuscadorCategorias .input-group::after,
+            #btnBuscarCategorias span {
+                animation: none !important;
+            }
+        }
+        /* Mismo efecto (halo + destello + lupa con rebote) para el
+           buscador de la sección VOCABULARIO, en su color azul. */
+        #bloqueBuscadorCategorias .input-group {
+            position: relative;
+            animation: buscadorPulsoAzul 2.4s ease-in-out infinite;
+        }
+        #bloqueBuscadorCategorias .input-group::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -60%;
+            width: 35%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.65), transparent);
+            transform: skewX(-20deg);
+            animation: buscadorDestello 3.4s ease-in-out infinite;
+            pointer-events: none;
+        }
+        #bloqueBuscadorCategorias .input-group:focus-within {
+            animation: none;
+            box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.28), 0 10px 24px rgba(13, 110, 253, 0.32) !important;
+        }
+        #bloqueBuscadorCategorias .input-group:focus-within::after {
+            animation: none;
+            opacity: 0;
+        }
+        #btnBuscarCategorias span {
+            display: inline-block;
+            animation: lupaRebote 2.4s ease-in-out infinite;
+        }
+        @keyframes buscadorPulsoAzul {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.45), 0 4px 14px rgba(15, 23, 42, 0.08);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 0 0 9px rgba(13, 110, 253, 0.14), 0 8px 22px rgba(13, 110, 253, 0.38);
+                transform: scale(1.012);
+            }
+        }
+/* El efecto hover de los botones del menu ahora vive en la pildora
+   del propio .nav-link (ver bloque "MENU SUPERIOR" mas arriba), asi
+   que ya no se resalta el .nav-item contenedor. */
+
+/* Estilos de la caja de Apoyo Visual (.apoyo-visual-caja/.apoyo-visual-img/
+   .apoyo-visual-lupa) centralizados en css/estilos.css: la caja se adapta
+   al tamaño real de la imagen sin recortarla. No se duplican acá para
+   evitar que este <style> (que carga después que css/estilos.css) los
+   pise sin querer. */
+
+
+
+/* Controles personalizados del reproductor de video (LSP): barra amarilla
+   clara y semitransparente (look "vidrio esmerilado" moderno), con
+   botones en el mismo azul marino que ya se usa en el resto del sitio,
+   "abultados" (sombra + borde inferior más grueso, como una tecla
+   física) al estilo control de videojuego, para que resalten y se
+   sientan más táctiles. */
+.controles-video {
+    background: rgba(255, 205, 87, 0.32);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid rgba(209, 138, 27, 0.45);
+    border-radius: 14px;
+    padding: 10px 12px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 4px 12px rgba(180, 116, 11, 0.18);
+    /* Que la barra ocupe el ancho real del video (nunca más). En pantallas
+       normales los botones caben en una sola fila (flex-nowrap, ver
+       script.js/index.html); en celulares angostos se permite pasar a
+       "wrap" (ver media query más abajo) para que ningún botón quede
+       cortado ni haga falta deslizar para verlos todos. */
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+.controles-video::-webkit-scrollbar {
+    height: 4px;
+}
+.controles-video::-webkit-scrollbar-thumb {
+    background-color: rgba(15, 23, 42, 0.35);
+    border-radius: 999px;
+}
+.controles-video .btn,
+.controles-video-velocidad {
+    /* Con flex-nowrap, sin esto los botones se irían achicando entre sí
+       para intentar entrar todos; se fijan a su ancho natural y es la
+       barra la que scrollea si hace falta, no los botones los que se
+       deforman. */
+    flex-shrink: 0;
+}
+/* En el reproductor principal de la palabra, el video (#reproductorPalabraWrap)
+   está centrado y topeado a 480px de ancho (ver .reproductor-palabra-wrap en
+   css/estilos.css); la barra de controles, en cambio, ocupaba el 100% de la
+   columna y quedaba más ancha que el propio video. Al ser el siguiente
+   hermano de ese wrap en el HTML, se le pone el mismo tope y centrado acá
+   para que calcen exactamente. */
+#reproductorPalabraWrap + .controles-video {
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.controles-video .btn {
+    border-radius: 999px;
+    font-weight: bold;
+    font-size: 13px;
+    color: #ffffff;
+    background-color: #0f172a;
+    border: 1px solid #1e293b;
+    border-bottom: 3px solid #020617;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    transition: transform 0.12s ease, border-bottom-width 0.08s ease, background-color 0.15s ease, box-shadow 0.12s ease;
+}
+.controles-video .btn:hover {
+    background-color: #1e293b;
+    color: #ffffff;
+    /* Pequeño "salto" al pasar el mouse, para que se sientan más vivos. */
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.3);
+}
+.controles-video .btn:active {
+    transform: translateY(2px) scale(0.97);
+    border-bottom-width: 1px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+/* El botón Reproducir/Pausar es la acción principal: mismo azul marino
+   oscuro que el resto de botones (para que combinen igual que en la
+   referencia), y "respira" con un pulso suave y constante para llamar la
+   atención hacia él. */
+.controles-video .btn.btn-primary {
+    background-color: #0f172a;
+    border-color: #1e293b;
+    border-bottom: 3px solid #020617;
+    color: #ffffff;
+    animation: pulsoBotonPrincipal 2.2s ease-in-out infinite;
+}
+.nosotros-icono-iniciar {
+    color: #28a745;
+}
+.controles-video .btn.btn-primary:hover {
+    background-color: #1e293b;
+    animation-play-state: paused;
+}
+.controles-video .btn.btn-primary:active {
+    border-bottom-width: 1px;
+}
+@keyframes pulsoBotonPrincipal {
+    0%, 100% { box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 0 0 0 rgba(15, 23, 42, 0.55); }
+    50% { box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 0 0 6px rgba(15, 23, 42, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .controles-video .btn.btn-primary {
+        animation: none;
+    }
+}
+/* Animaciones propias por ícono, para que cada botón "actúe" lo que hace
+   en vez de solo agrandarse: retroceder/avanzar se deslizan hacia su
+   lado, reiniciar gira como el ícono ↺, y pantalla completa se expande
+   un poco más que el resto. */
+.controles-video [id^="btnRetroceder10"]:hover {
+    transform: translateY(-2px) scale(1.05) translateX(-3px);
+}
+.controles-video [id^="btnAvanzar10"]:hover {
+    transform: translateY(-2px) scale(1.05) translateX(3px);
+}
+.controles-video [id^="btnReiniciar"]:hover {
+    transform: translateY(-2px) scale(1.05) rotate(-45deg);
+}
+.controles-video [id$="Fullscreen"]:hover {
+    transform: translateY(-2px) scale(1.18);
+}
+.controles-video [id^="btnPalabraVelocidadLenta"]:hover,
+.controles-video [id^="btnVelocidadLentaSugerida"]:hover,
+.controles-video [id^="btnVelocidadLentaNosotros"]:hover {
+    transform: translateY(-2px) scale(1.15) rotate(-8deg);
+}
+.controles-video [id^="btnPalabraVelocidadRapida"]:hover,
+.controles-video [id^="btnVelocidadRapidaSugerida"]:hover,
+.controles-video [id^="btnVelocidadRapidaNosotros"]:hover {
+    transform: translateY(-2px) scale(1.15) rotate(8deg);
+}
+/* Pantallas angostas (celulares chicos): se oculta el texto de cada
+   botón (el ícono solo ya es identificable, y title/aria-label siguen
+   describiéndolo para lectores de pantalla) y, con el espacio ganado, se
+   agrandan los botones en vez de dejarlos chicos o partir la barra en 2
+   líneas — la fila se mantiene siempre en una sola línea (flex-nowrap). */
+@media (max-width: 480px) {
+    .controles-video {
+        flex-wrap: nowrap;
+        overflow-x: visible;
+        gap: 6px;
+        padding: 8px 6px;
+    }
+    .controles-video .btn {
+        font-size: 15px;
+        padding: 8px 12px;
+        line-height: 1;
+    }
+    /* En vez de forzar los 8 controles completos (con texto) a entrar a
+       la fuerza o depender del scroll horizontal, se oculta la palabra y
+       se deja solo el ícono (▶️/⏸️/↺) en pantallas de celular: así todo
+       entra en una sola fila sin recortarse ni necesitar deslizar. El
+       title/aria-label del botón sigue explicando qué hace para quien
+       use lector de pantalla. */
+    .controles-video-texto {
+        display: none;
+    }
+}
+.controles-video-velocidad {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background-color: rgba(15, 23, 42, 0.08);
+    border: 1px solid #0f172a;
+    border-radius: 999px;
+    padding: 2px 8px;
+}
+.controles-video-velocidad .small {
+    color: #0f172a !important;
+}
+.controles-video #selectVelocidad {
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 13px;
+    min-width: 92px;
+    background-color: #0f172a;
+    color: #ffffff;
+    border: 1px solid #1e293b;
+}
+
+/* Vista "pantalla completa" del video de Sobre Nosotros: es un overlay
+   dentro de la misma ventana del navegador (no usa la Fullscreen API real),
+   para que la barra de direcciones y el resto de la página sigan visibles. */
+/* Selector reforzado con ".nosotros-fijo" (3 clases, especificidad 0,3,0)
+   a propósito: el elemento SIEMPRE tiene también esa clase (nunca se
+   quita al entrar a pantalla completa, ver toggleNosotrosPantallaCompleta
+   en script.js), así que esto no cambia a qué aplica, pero garantiza que
+   estas reglas ganen siempre a las de ".nosotros-fijo" solo (0,2,0), sin
+   depender de cuál de los dos bloques quede después en el archivo. Antes
+   "width" y sobre todo "transform: translateX(-50%)" del modo compacto
+   quedaban sin anular: el video terminaba corrido medio ancho hacia la
+   izquierda y se veía cortado/deformado en pantalla completa. */
+.nosotros-video-wrap.nosotros-fijo.nosotros-pantalla-completa {
+    position: fixed;
+    inset: 0;
+    left: 0;
+    top: 0;
+    transform: none;
+    z-index: 2000;
+    width: 100%;
+    max-width: none;
+    background: rgba(15, 23, 42, 0.97);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-radius: 0;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    margin: 0;
+    overflow-y: auto;
+}
+.nosotros-video-wrap.nosotros-fijo.nosotros-pantalla-completa #nosotrosVideoRatio {
+    width: 100%;
+    max-width: 1100px;
+}
+.nosotros-video-wrap.nosotros-fijo.nosotros-pantalla-completa .controles-video {
+    background: rgba(255, 205, 87, 0.32);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    width: 100%;
+    max-width: 1100px;
+}
+body.nosotros-pantalla-completa-activa {
+    overflow: hidden;
+}
+
+/* En pantalla completa del video de la palabra (o de la seña sugerida),
+   la barra de controles se ve mejor flotando sobre el video sin su
+   fondo amarillo de siempre, como una capa de controles transparente
+   (estilo reproductor de video nativo) en vez de una tarjeta aparte. */
+body.video-palabra-pantalla-completa-activa .controles-video {
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+}
+
+/* Tarjeta "Seña del día" / "de ayer" — formato rectangular horizontal */
+.dia-rect-card {
+    display: flex;
+    background-color: #0f172a;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.16);
+}
+.dia-rect-media {
+    position: relative;
+    width: 220px;
+    flex-shrink: 0;
+    background-color: #000;
+    cursor: pointer;
+}
+.dia-rect-media-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    opacity: 0.9;
+}
+.dia-rect-media-play {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15, 23, 42, 0.18);
+    color: #fff;
+    font-size: 20px;
+    pointer-events: none;
+}
+.dia-rect-media-tag {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(15, 23, 42, 0.6);
+    color: #fff;
+    font-size: 9.5px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+    pointer-events: none;
+}
+.dia-rect-media:hover .dia-rect-media-img,
+.dia-rect-media:focus .dia-rect-media-img {
+    opacity: 1;
+}
+.dia-rect-body {
+    flex: 1;
+    padding: 18px 20px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+}
+.dia-rect-nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+/* Flechas de navegación grandes: 38px en escritorio, 44px en móvil,
+   para que sean fáciles de tocar con el pulgar (zona táctil mínima
+   recomendada ~44px), en vez de los 14px de texto que tenían antes. */
+.dia-rect-nav-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.dia-rect-nav-btn:hover,
+.dia-rect-nav-btn:focus {
+    background: rgba(255, 255, 255, 0.22);
+    outline: none;
+}
+.dia-rect-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #ffc107;
+}
+.dia-rect-badge {
+    background-color: #ffc107 !important;
+    color: #000 !important;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 5px;
+    margin-bottom: 8px;
+    width: fit-content;
+}
+.dia-rect-titulo {
+    font-size: 19px;
+    font-weight: 800;
+    margin: 0 0 6px;
+    color: #fff;
+}
+.dia-rect-desc {
+    font-size: 12px;
+    color: #cbd5e1;
+    line-height: 1.5;
+    margin: 0 0 14px;
+}
+.dia-rect-btn {
+    background-color: #ffc107;
+    color: #0f172a;
+    font-weight: 700;
+    font-size: 12.5px;
+    padding: 9px 18px;
+    border-radius: 6px;
+    border: none;
+    width: fit-content;
+}
+.dia-rect-btn:hover {
+    background-color: #e6ac00;
+    color: #0f172a;
+}
+@media (max-width: 991.98px) {
+    /* Antes se apilaba en columna con el video a ancho completo (16:9),
+       lo que hacía la tarjeta muy alta. Ahora se mantiene horizontal
+       como en escritorio, con una miniatura pequeña en proporción 4:3
+       (en vez de cuadrada) para que el video quepa sin recortarse tanto,
+       en un formato rectangular compacto. Se reduce aún más (miniatura,
+       tipografías y paddings) para que la tarjeta quepa junto al avatar
+       en la misma fila, igual que en el diseño de referencia. Este
+       tratamiento compacto ahora cubre TODO el rango debajo de 992px
+       (celular Y tablet/ventana reducida), para que no quede un tramo
+       intermedio sin ajustar. */
+    .dia-rect-card { flex-direction: row; align-items: stretch; }
+    .dia-rect-media { width: 92px; aspect-ratio: 4 / 3; align-self: center; border-radius: 7px; overflow: hidden; margin: 6px 0 6px 6px; }
+    .dia-rect-media-tag { display: none; }
+    .dia-rect-media-play { font-size: 11px; }
+    .dia-rect-body { padding: 6px 8px; justify-content: center; }
+    .dia-rect-nav { margin-bottom: 2px; gap: 4px; }
+    .dia-rect-nav-btn { width: 22px; height: 22px; font-size: 10px; border-radius: 6px; }
+    .dia-rect-label { font-size: 9.5px; font-weight: 800; }
+    .dia-rect-badge { font-size: 7.5px; padding: 1px 6px; margin-bottom: 3px; }
+    .dia-rect-titulo { font-size: 16px; margin-bottom: 2px; }
+    .dia-rect-desc { display: none; }
+    .dia-rect-btn { font-size: 8.5px; padding: 4px 9px; }
+
+    /* La tarjeta "Seña del día" y el avatar comparten la misma fila,
+       igual que en el diseño de referencia, en vez de que la tarjeta
+       ocupe todo el ancho y empuje al avatar fuera de vista (o que el
+       avatar se muestre gigante y solo arriba, como pasaba entre 768px
+       y 991px al no tener este ajuste). El título + buscador pasan a su
+       propia fila completa debajo de ambos. Se usa grid con áreas
+       nombradas para no depender del orden real de las columnas en el
+       HTML (colAvatarHero trae "order-first" de Bootstrap para el
+       layout de escritorio). La columna del avatar es más angosta que
+       la de la tarjeta: el avatar se dimensiona por alto (no por ancho
+       de columna) para no quedar desproporcionado. */
+    #filaHeroPrincipal {
+        display: grid;
+        grid-template-columns: 3fr 2fr;
+        grid-template-areas:
+            "carta avatar"
+            "titulo titulo";
+        column-gap: 10px;
+        row-gap: 12px;
+        align-items: start;
+        margin-left: 0;
+        margin-right: 0;
+        margin-top: 28px;
+    }
+    #senalDelDia {
+        grid-area: carta;
+        margin: 0;
+        padding: 0;
+    }
+    #colAvatarHero {
+        grid-area: avatar;
+        margin: 0 !important;
+        padding: 0;
+        align-self: center;
+    }
+    #filaHeroPrincipal > .col-lg-6 {
+        grid-area: titulo;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* El avatar se fija por ALTURA (no por ancho de columna) para que
+       su tamaño quede proporcional a la tarjeta sin importar cuán ancha
+       sea la pantalla dentro de este rango; así no crece de más ni en
+       celular angosto ni en ventana reducida. */
+    #colAvatarHero .avatar-hero-img {
+        width: auto;
+        height: 100px;
+        max-width: 100%;
+    }
+
+    /* Vista "Vocabulario": la tarjeta "Seña del día" se oculta (ver
+       regla body.vista-temas-movil #senalDelDia más arriba), así que ya
+       no hace falta la fila superior "tarjeta + avatar" seguida del
+       título abajo. En su lugar, el texto (título + lista de intro) y
+       el avatar comparten una sola fila, con el avatar a la derecha,
+       para que no quede solo arriba empujando el texto hacia abajo. */
+    body.vista-temas-movil #filaHeroPrincipal {
+        grid-template-columns: 3fr 2fr;
+        grid-template-areas: "titulo avatar";
+    }
+    body.vista-temas-movil #colAvatarHero {
+        align-self: center;
+    }
+    /* Avatar un poco más grande que en el resto de vistas móviles
+       (100px), para que se note más al costado del título, como en el
+       diseño de referencia. */
+    body.vista-temas-movil #colAvatarHero .avatar-hero-img {
+        height: 130px;
+    }
+
+    /* Al cerrar la tarjeta "Seña del día" con la X (btnCerrarDelDia en
+       script.js, que agrega la clase "senal-cerrada" al body), el
+       avatar quedaba solo, grande, en su fila de arriba, con el título
+       empujado debajo (fila vacía donde antes estaba la tarjeta). Se
+       reutiliza el mismo layout de una sola fila "título + avatar al
+       costado" que ya existe para "vista-temas-movil" más arriba, para
+       que el avatar se achique y se acomode al lado del título en vez
+       de quedar solo y grande arriba. */
+    body.senal-cerrada #filaHeroPrincipal {
+        grid-template-columns: 3fr 2fr;
+        grid-template-areas: "titulo avatar";
+    }
+    body.senal-cerrada #colAvatarHero {
+        align-self: center;
+    }
+    body.senal-cerrada #colAvatarHero .avatar-hero-img {
+        height: 130px;
+    }
+}
+
+/* Bloque principal (Seña del día + título/buscador + avatar) en 3
+   columnas, como en el diseño de referencia. Solo a partir de 992px:
+   por debajo de eso, la tarjeta y el título se apilan igual que antes
+   y el avatar se oculta, para no complicar la vista móvil/tablet ya
+   afinada. */
+@media (min-width: 992px) {
+    #senalDelDia .dia-rect-card {
+        flex-direction: column;
+        max-width: 230px;
+        margin: 0 auto;
+    }
+    #senalDelDia .dia-rect-media {
+        width: 100%;
+        aspect-ratio: 16 / 10;
+    }
+    #senalDelDia .dia-rect-body {
+        padding: 10px 12px 12px;
+    }
+    #senalDelDia .dia-rect-nav {
+        margin-bottom: 5px;
+    }
+    #senalDelDia .dia-rect-nav-btn {
+        width: 26px;
+        height: 26px;
+        font-size: 12px;
+    }
+    #senalDelDia .dia-rect-label {
+        font-size: 10px;
+    }
+    #senalDelDia .dia-rect-badge {
+        font-size: 9.5px;
+        padding: 2px 8px;
+        margin-bottom: 4px;
+    }
+    #senalDelDia .dia-rect-titulo {
+        font-size: 14.5px;
+        margin-bottom: 3px;
+    }
+    #senalDelDia .dia-rect-desc {
+        font-size: 10.5px;
+        line-height: 1.4;
+        margin-bottom: 8px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    #senalDelDia .dia-rect-btn {
+        font-size: 11px;
+        padding: 6px 14px;
+    }
+}
+
+/* Avatar decorativo a la derecha del buscador. */
+.avatar-hero-img {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+}
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    .avatar-hero-img {
+        max-width: 220px;
+    }
+}
+
+/* Acento azul en "Diccionario" y raya amarilla decorativa debajo del
+   título, igual al diseño de referencia. */
+.titulo-acento {
+    color: #268bff;
+}
+.titulo-raya {
+    display: block;
+    width: 46px;
+    height: 4px;
+    border-radius: 4px;
+    background-color: #ffc107;
+    margin: 10px auto 12px;
+}
+@media (min-width: 992px) {
+    .titulo-raya {
+        margin-left: 0;
+    }
+}
+
+/* Aviso "No enseñamos lengua de señas" (reemplaza al subtítulo simple de
+   antes, solo en la vista Diccionario): franja de acento dorada a la
+   izquierda + ícono circular azul, para que la regla central del
+   proyecto no pase desapercibida. Dos líneas de texto, una idea por
+   línea; la primera línea usa <strong> para remarcar "eso le pertenece
+   a los sordos", la segunda reutiliza .subtitulo-resaltado (ya definido
+   más abajo) para la frase en azul. */
+/* Recuadro de misión: jerarquía clara y lectura cómoda en móvil. */
+#subtituloPrincipal.aviso-mision {
+    display: block;
+    box-sizing: border-box;
+    text-align: left;
+    background: linear-gradient(125deg, #ffffff 0%, #f5f9ff 76%, #fff9e8 100%);
+    border: 1px solid #dce6f4;
+    border-top: 3px solid #eabf39;
+    border-radius: 22px;
+    padding: 22px 24px;
+    margin: 12px 0 8px;
+    box-shadow: 0 12px 32px rgba(24, 55, 100, .07), inset 0 1px 0 #fff;
+}
+#subtituloPrincipal .aviso-mision-texto { min-width: 0; display: grid; gap: 13px; }
+#subtituloPrincipal .aviso-mision-linea1,
+#subtituloPrincipal .aviso-mision-publico,
+#subtituloPrincipal .aviso-mision-linea2 {
+    margin: 0;
+    font-family: 'Poppins', system-ui, sans-serif;
+    overflow-wrap: anywhere;
+}
+#subtituloPrincipal .aviso-mision-linea1 { color: #163961; font-size: 1.04rem; font-weight: 600; line-height: 1.6; }
+#subtituloPrincipal .aviso-mision-publico { color: #50627b; font-size: .91rem; font-weight: 400; line-height: 1.65; }
+#subtituloPrincipal .aviso-mision-linea2 {
+    padding-top: 12px;
+    border-top: 1px solid #dce6f4;
+    color: #6b561f;
+    font-size: .79rem;
+    font-weight: 500;
+    line-height: 1.6;
+}
+body.lspedia-modo-oscuro #subtituloPrincipal.aviso-mision {
+    background: linear-gradient(125deg, #182940, #142236);
+    border-color: #344963;
+    border-top-color: #eabf39;
+    box-shadow: 0 12px 30px rgba(0,0,0,.16);
+}
+body.lspedia-modo-oscuro #subtituloPrincipal .aviso-mision-linea1 { color: #edf5ff; }
+body.lspedia-modo-oscuro #subtituloPrincipal .aviso-mision-publico { color: #c1d0e2; }
+body.lspedia-modo-oscuro #subtituloPrincipal .aviso-mision-linea2 { color: #f0d893; border-color: #344963; }
+@media (max-width: 575.98px) {
+    #subtituloPrincipal.aviso-mision { border-radius: 18px; padding: 18px; margin-top: 10px; }
+    #subtituloPrincipal .aviso-mision-texto { gap: 11px; }
+    #subtituloPrincipal .aviso-mision-linea1 { font-size: .96rem; }
+    #subtituloPrincipal .aviso-mision-publico { font-size: .86rem; }
+    #subtituloPrincipal .aviso-mision-linea2 { font-size: .77rem; padding-top: 11px; }
+}
+
+/* Lista de introducción de "Vocabulario": ícono circular azul + texto,
+   con un conector punteado vertical entre ícono e ícono, igual al diseño
+   de referencia. Solo visible en la vista Vocabulario. */
+.vocab-intro-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin: 18px 0 22px;
+}
+.vocab-intro-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    text-align: left;
+}
+.vocab-intro-icono {
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background-color: #2563eb;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    position: relative;
+}
+.vocab-intro-item:not(:last-child) .vocab-intro-icono::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 22px;
+    border-left: 2px dotted #93c5fd;
+}
+.vocab-intro-texto {
+    margin: 0;
+    padding-top: 5px;
+    color: #334155;
+    font-size: 0.98rem;
+    line-height: 1.45;
+}
+.vocab-intro-texto strong {
+    color: #2563eb;
+    font-weight: 700;
+}
+
+/* Chips "Ejemplos" debajo del buscador: palabras rápidas para tocar y
+   ver el resultado directamente, sin tener que escribirlas. */
+.ejemplos-busqueda {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+}
+.ejemplos-label {
+    font-size: 15px;
+    font-weight: 700;
+    color: #182b55;
+}
+/* Frase destacada en azul dentro del subtítulo del buscador ("videos en
+   Lengua de Señas Peruana"), igual al diseño de referencia. */
+.subtitulo-resaltado {
+    color: #268bff;
+    font-weight: 600;
+}
+.ejemplo-chip {
+    border: none;
+    background-color: #eaf2fe;
+    color: #0284c7;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: 999px;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+.ejemplo-chip:hover,
+.ejemplo-chip:focus {
+    background-color: #0284c7;
+    color: #ffffff;
+    outline: none;
+}
+.ejemplo-chip:active {
+    transform: scale(0.96);
+}
+
+/* Tarjetas del menú de Juegos (Completar / Unir / Quiz) */
+.menu-juego-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 26px 12px;
+    text-align: center;
+}
+.menu-juego-btn .icono {
+    font-size: 2.2rem;
+}
+
+/* ============================================================
+   Navegación inferior tipo app, solo en móvil/tablet (se oculta a
+   partir del breakpoint "xl" de Bootstrap, que es cuando el navbar
+   de arriba deja de estar colapsado detrás del ☰). La versión de
+   escritorio (navbar superior) queda exactamente igual que antes.
+   ============================================================ */
+.mobile-bottom-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1035;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #eef1f5;
+    /* opacidad explícita: antes, el recorte (mask-image) de la muesca
+       dejaba ver lo que había detrás (el navbar oscuro de arriba) en
+       cuanto el círculo no calzaba pixel a pixel con el agujero
+       recortado, y la barra se veía rota/transparente. Ahora la barra
+       queda siempre sólida y el círculo del botón activo simplemente
+       se monta encima (igual que en la referencia), sin ningún
+       recorte de por medio. */
+    opacity: 1;
+    border-top: none;
+    border-radius: 22px 22px 0 0;
+    box-shadow: 0 -8px 20px rgba(15, 23, 42, 0.14);
+    padding: 8px 8px calc(8px + env(safe-area-inset-bottom, 0px));
+    overflow: visible;
+}
+.mbn-item {
+    position: relative;
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 6px 4px;
+    background: transparent;
+    border: none;
+    border-radius: 14px;
+    color: #64748b;
+    cursor: pointer;
+    z-index: 1;
+    transition: color 0.18s ease, transform 0.1s ease;
+}
+.mbn-item:active {
+    transform: scale(0.94);
+}
+.mbn-item.active {
+    z-index: 2;
+}
+.mbn-icon-wrap {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 13px;
+    background-color: rgba(148, 163, 184, 0.12);
+    transition: background-color 0.18s ease, transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+        width 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), height 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+        border-radius 0.45s ease, box-shadow 0.3s ease;
+}
+/* El botón activo "salta" fuera de la barra: su círculo crece, se
+   redondea del todo y sube por encima del borde superior, justo
+   sobre la muesca de arriba (igual al video de referencia). Los
+   colores son los mismos que ya usaba el estado activo (fondo/ícono
+   ámbar): esto solo agrega el movimiento. */
+.mbn-item.active .mbn-icon-wrap {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    transform: translateY(-21px);
+    box-shadow: 0 10px 18px rgba(146, 103, 11, 0.32);
+}
+.mbn-item.active .mbn-icon {
+    transform: scale(1.1);
+}
+.mbn-icon {
+    width: 22px;
+    height: 22px;
+    stroke: currentColor;
+    fill: none;
+    transition: transform 0.18s ease;
+}
+/* Íconos entregados como PNG (no dibujados a mano en SVG): se usan
+   como máscara para poder colorearlos igual que los SVG de arriba
+   (gris inactivo / ámbar activo) con currentColor, en vez de quedar
+   fijos en un solo color. */
+.mbn-icon-img {
+    display: inline-block;
+    background-color: currentColor;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+}
+.mbn-label {
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    color: inherit;
+}
+.mbn-item.active {
+    color: #92670b;
+}
+.mbn-item.active .mbn-icon-wrap {
+    background-color: #fdeaad;
+}
+
+/* Deja espacio abajo para que el footer y el contenido no queden
+   tapados detrás de la barra fija, y sube el stack de botones
+   flotantes (Jugar/Subtítulos/Buscar) para que no se solapen con
+   la nueva barra. */
+@media (max-width: 1199.98px) {
+    body { padding-bottom: 74px; }
+}
+
+/* Los botones flotantes (Jugar/Herramientas/Temas orden, mas los de
+   cerrar/mostrar accesos) solo deben verse en la versión de escritorio.
+   En vez de basarnos en el ancho de pantalla (que cambia con el zoom del
+   navegador y hacía que en escritorio, al hacer zoom, se ocultaran por
+   error), usamos el tipo de puntero: los celulares/tablets táctiles no
+   tienen "hover" y su puntero es "coarse" (el dedo), mientras que una PC
+   con mouse sí tiene hover y puntero "fine". Así, en escritorio los
+   botones se mantienen visibles a cualquier nivel de zoom, y en
+   móvil/tablet quedan ocultos siempre (ahí ya existe la barra inferior
+   tipo app para navegar). */
+@media (hover: none), (pointer: coarse) {
+    .fab-wrap,
+    .btn-cerrar-accesos,
+    .btn-mostrar-accesos {
+        display: none !important;
+    }
+}
+
+/* ============================================================
+   "VERSIÓN PARA ESCRITORIO" DESDE EL NAVEGADOR DEL CELULAR:
+   Cuando el usuario activa esa opción en Chrome/Safari móvil, el
+   navegador cambia el user-agent a uno de escritorio (deja de decir
+   "Mobile"/"Android"/"iPhone"), aunque la pantalla física siga siendo
+   chica. Un script en <body> detecta eso y agrega la clase
+   "modo-escritorio-forzado" al <html>. Estas reglas anulan (con más
+   especificidad, para ganarle a los @media de arriba) todo lo que
+   normalmente se activa solo en pantallas angostas, para que se vea
+   el diseño real de escritorio: menú superior completo, sin barra
+   inferior tipo app, sin el selector simplificado de Herramientas.
+   ============================================================ */
+/* Escritorio ANGOSTO (menor a 1200px): el logo se mantiene arriba a
+   la izquierda y los botones de menú se esconden detrás del ícono ☰
+   (hamburguesa), que al tocarlo despliega la lista completa como un
+   menú desplegable clásico (mismo comportamiento nativo de Bootstrap
+   que ya trae el botón data-bs-toggle="collapse" del HTML, solo que
+   antes se ocultaba a propósito para pantallas angostas porque esa
+   regla estaba pensada para el celular real, que usa su propia barra
+   inferior en vez de este menú). Escritorio AMPLIO (1200px o más): se
+   ve igual que siempre, con los botones en una sola fila. */
+html.modo-escritorio-forzado .navbar-toggler {
+    display: block !important;
+}
+html.modo-escritorio-forzado #menuPrincipal {
+    display: none !important;
+}
+html.modo-escritorio-forzado #menuPrincipal.show {
+    display: block !important;
+}
+@media (min-width: 1200px) {
+    html.modo-escritorio-forzado .navbar-toggler {
+        display: none !important;
+    }
+    html.modo-escritorio-forzado #menuPrincipal,
+    html.modo-escritorio-forzado #menuPrincipal.show {
+        display: flex !important;
+        flex-basis: auto;
+    }
+}
+html.modo-escritorio-forzado .navbar-brand img,
+html.modo-escritorio-forzado .navbar-brand video {
+    height: 85px !important;
+}
+html.modo-escritorio-forzado .mobile-bottom-nav {
+    display: none !important;
+}
+html.modo-escritorio-forzado body {
+    padding-bottom: 0 !important;
+    padding-top: 101px !important;
+}
+/* Mismo motivo que el "scroll-margin-top" del media query real de
+   escritorio: acá se repite porque "modo-escritorio-forzado" puede
+   activarse aunque el ancho real de la ventana no sea >=1200px. */
+html.modo-escritorio-forzado #buscar,
+html.modo-escritorio-forzado #panelCategorias,
+html.modo-escritorio-forzado #herramientasMenuMovil,
+html.modo-escritorio-forzado #seccionSubtitulos,
+html.modo-escritorio-forzado #seccionNosotros {
+    scroll-margin-top: 117px !important;
+}
+html.modo-escritorio-forzado nav.navbar {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1030;
+    /* El efecto de barra semitransparente + blur (ver el media query
+       "max-width: 1199.98px" de arriba) es exclusivo del diseño móvil.
+       Si alguien en escritorio achica la ventana del navegador por
+       debajo de 1200px, ese media query se activa igual por ancho,
+       aunque el user-agent siga siendo de escritorio. Como acá SÍ
+       sabemos (por user-agent) que es escritorio real, se fuerza de
+       nuevo el fondo sólido de siempre y se anula el blur. */
+    background-color: var(--primary-color) !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+}
+html.modo-escritorio-forzado nav.navbar .container {
+    justify-content: space-between !important;
+}
+html.modo-escritorio-forzado body.vista-temas-movil #senalDelDia,
+html.modo-escritorio-forzado body.vista-temas-movil .stats-header,
+html.modo-escritorio-forzado body.vista-temas-movil .stats-panel-destacado {
+    display: none !important;
+}
+/* El selector de 3 botones grandes de Herramientas (Subtítulos, Jugar,
+   Alfabetización) ahora también se usa en escritorio (ver
+   esVistaMovilHerramientas() en script.js): por eso ya NO se oculta
+   acá. Solo se anula el "d-xl-none" de Bootstrap (que lo escondía a
+   partir de 1200px) para que pueda mostrarse a cualquier ancho cuando
+   script.js le saque la clase "d-none". */
+html.modo-escritorio-forzado #herramientasMenuMovil:not(.d-none) {
+    display: block !important;
+}
+
+/* ============================================================
+   TABLET REAL EN HORIZONTAL: caso contrario al de "modo-escritorio-
+   forzado" de arriba. Acá el user-agent SÍ confirma que es un
+   celular/tablet real (se agregó la clase "modo-movil-real" más
+   abajo), pero su ancho en horizontal puede superar igual los 1200px
+   del breakpoint "xl" de Bootstrap. Sin estas reglas, pasado ese
+   ancho el sitio saltaba al diseño de escritorio completo (menú
+   superior en una fila, sin barra inferior, sin el selector de 3
+   botones de Herramientas) apenas se giraba el dispositivo, aunque se
+   lo siguiera usando con el dedo. Estas reglas repiten, sin depender
+   del ancho, las mismas reglas que ya existen arriba para
+   "@media (max-width: 1199.98px)", así el diseño móvil (barra
+   superior fija solo con el logo, navegación real en la barra
+   inferior) se mantiene siempre en un dispositivo táctil real. */
+html.modo-movil-real .navbar-toggler {
+    display: none !important;
+}
+html.modo-movil-real #menuPrincipal {
+    display: none !important;
+}
+html.modo-movil-real nav.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1030;
+}
+html.modo-movil-real nav.navbar .container {
+    justify-content: center !important;
+}
+html.modo-movil-real .navbar-brand {
+    margin: 0 !important;
+    transform: translateX(-34px);
+}
+html.modo-movil-real .navbar-brand img,
+html.modo-movil-real .navbar-brand video {
+    height: 64px !important;
+}
+html.modo-movil-real .mobile-bottom-nav {
+    display: flex !important;
+}
+html.modo-movil-real body {
+    padding-top: 80px !important;
+    padding-bottom: 74px !important;
+}
+/* Mismo motivo que el "scroll-margin-top" del media query real de
+   móvil/tablet: acá se repite porque "modo-movil-real" puede
+   activarse con un ancho de ventana horizontal que supere 1200px. */
+html.modo-movil-real #buscar,
+html.modo-movil-real #panelCategorias,
+html.modo-movil-real #herramientasMenuMovil,
+html.modo-movil-real #seccionSubtitulos,
+html.modo-movil-real #seccionNosotros {
+    scroll-margin-top: 96px !important;
+}
+html.modo-movil-real body.vista-temas-movil #senalDelDia,
+html.modo-movil-real body.vista-temas-movil .stats-header,
+html.modo-movil-real body.vista-temas-movil .stats-panel-destacado {
+    display: none !important;
+}
+/* El selector de 3 botones grandes de Herramientas trae la clase
+   Bootstrap "d-xl-none", que lo esconde apenas el ancho llega a
+   1200px, sin importar que script.js le haya sacado el "d-none". Acá
+   se anula ese "d-xl-none" para que, en un dispositivo táctil real,
+   pueda mostrarse a cualquier ancho una vez que script.js decide
+   mostrarlo (mismo criterio que ya existe arriba para
+   "modo-escritorio-forzado"). */
+html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
+    display: block !important;
+}

@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /scripts/
+Disallow: /tests/
 
 Sitemap: https://lspedia.site/sitemap.xml

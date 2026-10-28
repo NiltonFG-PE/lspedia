@@ -69,10 +69,10 @@ def main():
             "45000", "cacheRead(state.statsPeriod)", "if(fallback&&!data&&!force)",
         ], "vistas Analytics actuales")
         exigir(dashboard, [
-            "async function analytics(period,force)", "for(const delay of [0,1200])",
-            "cacheSet(period,d)", "38000", "state.data7=await analytics('7',force)",
-            "state.data30=await analytics('30',force)", "state.dataAll=await analytics('todo',force)",
-            "Analytics no pudo cargar los datos esenciales", "const token=++state.loadToken",
+            "async function analytics(period,force)",
+            "cacheSet(period,d)", "45000",
+            "analytics('7',force)", "analytics('30',force)", "analytics('todo',force)",
+            "Promise.allSettled([p7,p30,pAll,contentP,repoP])", "const token=++state.loadToken",
         ], "carga progresiva y recuperación de Analytics")
 
         # El JSONP administrativo solo puede apuntar al host oficial de Apps Script.
