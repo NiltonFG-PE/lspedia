@@ -38,7 +38,7 @@ def main() -> int:
     if "Sitemap: https://lspedia.site/sitemap.xml" not in robots:
         errores.append("robots.txt: no declara el sitemap oficial")
 
-    version = re.search(r'const\s+VERSION_APP\s*=\s*"v(\d+)"', sw)
+    version = re.search(r'const\s+VERSION_APP\s*=\s*"v(\d+)[^"]*"', sw)
     if not version:
         errores.append("sw.js: no se pudo leer VERSION_APP")
     elif int(version.group(1)) < 128:

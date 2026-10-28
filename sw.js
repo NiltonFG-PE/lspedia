@@ -27,11 +27,9 @@ const EXTENSION_ARCHIVO_ESTATICO = /\.(?:avif|bmp|gif|ico|jpe?g|png|svg|webp|css
 const ARCHIVOS_CASCARON = [
     "./",
     "./index.html",
-    "./licencia.html",
     "img/favicon.png",
     "css/estilos.css",
     "css/estilos-base.css",
-    "css/quiz.css",
     "css/mejoras-producto.css",
     "css/lo-nuevo-premium.css",
     "css/aprendizaje-unificado.css",
@@ -66,7 +64,6 @@ const ARCHIVOS_CASCARON = [
     "js/pwa-repeat.js",
     "js/script.js",
     "js/busqueda-core.js",
-    "js/quiz.js",
     "js/mejoras-producto.js",
     "js/experiencia-vocabulario.js",
     "js/aprendizaje-colapsable.js",
@@ -205,10 +202,10 @@ self.addEventListener("fetch", (event) => {
                 return response;
             }).catch(() => null);
             if(network) return network;
-            return await caches.match(request) || Response.error();
+            return await caches.match(request) || await caches.match(request, { ignoreSearch: true }) || Response.error();
         }
 
-        const cached = await caches.match(request);
+        const cached = await caches.match(request) || await caches.match(request, { ignoreSearch: true });
         const networkPromise = fetchConReintento(request).then(async (response) => {
             const runtime = await caches.open(CACHE_RUNTIME);
             runtime.put(request, response.clone());
