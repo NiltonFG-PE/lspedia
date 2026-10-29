@@ -250,14 +250,23 @@
   }
   function cue(kind) {
     if (prefs.vibration && navigator.vibrate) {
-      const pattern = {correct: [70, 50, 70], pass: [160], start: [40, 40, 40], tick: [20], end: [100, 80, 100, 80, 220]}[kind];
+      const pattern = {correct: [65, 45, 65], pass: [180, 70, 180], start: [40, 40, 40], tick: [20], end: [100, 80, 100, 80, 220]}[kind];
       try {navigator.vibrate(pattern);} catch {}
     }
     if (!prefs.sound || !audio || audio.state !== 'running') return;
     try {
       const now = audio.currentTime;
-      if (kind === 'correct') {tone(659, now, .14, 'triangle'); tone(988, now + .1, .26, 'triangle');}
-      else if (kind === 'pass') tone(380, now, .26, 'sine', .09, 220);
+      if (kind === 'correct') {
+        // Acierto: tres notas claras y ascendentes.
+        tone(523, now, .13, 'triangle', .14);
+        tone(659, now + .11, .13, 'triangle', .14);
+        tone(784, now + .22, .24, 'triangle', .15);
+      }
+      else if (kind === 'pass') {
+        // Falla/pasar: sonido grave y descendente, claramente distinto al acierto.
+        tone(260, now, .19, 'sawtooth', .12, 190);
+        tone(190, now + .16, .24, 'sawtooth', .12, 140);
+      }
       else if (kind === 'start') {tone(523, now, .12, 'triangle'); tone(784, now + .1, .2, 'triangle');}
       else if (kind === 'tick') tone(1200, now, .06, 'square', .035);
       else if (kind === 'end') {tone(784, now, .16, 'triangle'); tone(659, now + .16, .16, 'triangle'); tone(523, now + .32, .34, 'triangle');}
