@@ -757,6 +757,30 @@ $('wagain').addEventListener('click',()=>{closeDialog($('win'));newGame()});
 $('wnext').addEventListener('click',()=>{closeDialog($('win'));state.theme=drawTheme(THEMES[state.theme].id);persist();newGame();window.scrollTo({top:0,behavior:reduced?'auto':'smooth'})});
 ['picker','helpd'].forEach(id=>$(id).addEventListener('click',e=>{if(e.target===e.currentTarget)closeDialog(e.currentTarget)}));
 window.addEventListener('resize',sizeFx);
+
+// Botón Atrás del móvil: primero retrocede dentro del juego.
+history.pushState({sopaBack:true},'',location.href);
+window.addEventListener('popstate',()=>{
+ const dialog=document.querySelector('dialog[open]');
+ if(dialog){
+  closeDialog(dialog);
+  history.pushState({sopaBack:true},'',location.href);
+  return;
+ }
+ if(inFs()){
+  exitFs();
+  history.pushState({sopaBack:true},'',location.href);
+  return;
+ }
+ if(state.pending!==null||state.anchor!==null){
+  clearSel();
+  say('info','👀','Selección cancelada. Puedes seguir jugando.');
+  history.pushState({sopaBack:true},'',location.href);
+  return;
+ }
+ window.location.href='../index.html';
+});
+
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&inFs())document.body.classList.remove('fs');renderControls()});
 document.addEventListener('webkitfullscreenchange',()=>{if(!document.webkitFullscreenElement&&inFs())document.body.classList.remove('fs');renderControls()});
 window.addEventListener('keydown',e=>{if(e.key==='Escape'&&inFs()&&!document.fullscreenElement&&!document.webkitFullscreenElement&&!document.querySelector('dialog[open]'))exitFs()});
