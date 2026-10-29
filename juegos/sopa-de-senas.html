@@ -244,7 +244,8 @@ body.fs .mini{display:none}
 
 /* Ajuste visual: la cuadrícula debe ser lo primero que vea el jugador. */
 @media(max-width:899px){
-  .game{grid-template-areas:"board" "current" "list";gap:12px}
+  /* En móvil, mostrar primero la palabra objetivo y justo debajo la cuadrícula. */
+  .game{grid-template-areas:"current" "board" "list";gap:12px}
   .boardp{padding:10px}
   .bw{max-width:720px;padding:5px;border-radius:19px}
   .btop{margin:0 2px}
@@ -261,7 +262,6 @@ body.fs .mini{display:none}
   .game{gap:10px}
   .boardp{padding:8px}
   .bw{padding:4px;border-radius:16px}
-  .current{order:0}
   .listc .lh{margin-bottom:8px}
   .list{gap:6px}
   .row{min-height:46px}
