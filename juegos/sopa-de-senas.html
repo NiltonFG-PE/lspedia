@@ -241,6 +241,32 @@ body.fs .list{grid-template-columns:repeat(2,minmax(0,1fr))}
 body.fs .mini{display:none}
 }
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.flash.on{animation-duration:.6s!important}}
+
+/* Ajuste visual: la cuadrícula debe ser lo primero que vea el jugador. */
+@media(max-width:899px){
+  .game{grid-template-areas:"board" "current" "list";gap:12px}
+  .boardp{padding:10px}
+  .bw{max-width:720px;padding:5px;border-radius:19px}
+  .btop{margin:0 2px}
+  .bar{margin:9px 2px 11px}
+  .msg{margin-top:10px;min-height:42px;padding:8px 11px;font-size:13px}
+  .tools{margin-top:9px}
+  .listc,.current{padding:12px}
+}
+@media(max-width:600px){
+  .title{padding-top:2px;align-items:center}
+  .spell{display:none}
+  .title h1{font-size:clamp(27px,7vw,34px)}
+  .ctrl{margin-bottom:9px}
+  .game{gap:10px}
+  .boardp{padding:8px}
+  .bw{padding:4px;border-radius:16px}
+  .current{order:0}
+  .listc .lh{margin-bottom:8px}
+  .list{gap:6px}
+  .row{min-height:46px}
+}
+
 </style>
 </head>
 <body>
