@@ -91,7 +91,7 @@ function makeBoard(){
 }
 function render(){
  const n=state.size,grid=$('grid');grid.style.gridTemplateColumns='repeat('+n+',minmax(0,1fr))';grid.innerHTML='';
- state.grid.forEach((letter,i)=>{const b=document.createElement('button');b.type='button';b.className='cell';b.textContent=letter;b.dataset.index=i;b.setAttribute('role','gridcell');b.setAttribute('aria-label','Letra '+letter+', fila '+(Math.floor(i/n)+1)+', columna '+(i%n+1));b.addEventListener('pointerdown',startSelect);b.addEventListener('pointerenter',moveSelect);b.addEventListener('pointerup',endSelect);b.addEventListener('click',()=>keyboardSelect(i));grid.appendChild(b)});
+ state.grid.forEach((letter,i)=>{const b=document.createElement('button');b.type='button';b.className='cell';b.textContent=letter;b.dataset.index=i;b.setAttribute('role','gridcell');b.setAttribute('aria-label','Letra '+letter+', fila '+(Math.floor(i/n)+1)+', columna '+(i%n+1));b.addEventListener('pointerdown',startSelect);b.addEventListener('pointerenter',moveSelect);b.addEventListener('pointerup',endSelect);b.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();keyboardSelect(i)}});grid.appendChild(b)});
  $('level-title').textContent='Nivel '+state.level+' · '+THEMES[state.theme].name;
  $('level-subtitle').textContent='Encuentra las palabras en horizontal, vertical o diagonal.';
  $('word-list').innerHTML='';
@@ -106,9 +106,9 @@ function render(){
  if(done)$('status').textContent='¡Completaste este tema!';else $('status').textContent='Selecciona la primera y la última letra de una palabra.';
 }
 let anchor=null,last=null;
-function startSelect(e){if(e.button!==undefined&&e.button!==0)return;e.preventDefault();anchor=Number(e.currentTarget.dataset.index);last=anchor;document.querySelectorAll('.cell.selected').forEach(c=>c.classList.remove('selected'));e.currentTarget.classList.add('selected');try{e.currentTarget.setPointerCapture(e.pointerId)}catch(_){}}
+function startSelect(e){if(e.button!==undefined&&e.button!==0)return;e.preventDefault();anchor=Number(e.currentTarget.dataset.index);last=anchor;document.querySelectorAll('.cell.selected').forEach(c=>c.classList.remove('selected'));e.currentTarget.classList.add('selected');}
 function moveSelect(e){if(anchor===null||!e.buttons)return;last=Number(e.currentTarget.dataset.index);paintSelection(anchor,last)}
-function endSelect(e){if(anchor===null)return;last=Number(e.currentTarget.dataset.index);paintSelection(anchor,last);checkSelection(anchor,last);anchor=null;last=null}
+function endSelect(e){if(anchor===null)return;last=Number(e.currentTarget.dataset.index);paintSelection(anchor,last);if(anchor===last){if(firstTap===null){firstTap=anchor;$('status').textContent='Ahora elige la última letra.';}else{checkSelection(firstTap,anchor);firstTap=null;}}else{checkSelection(anchor,last);firstTap=null;}anchor=null;last=null;}
 function paintSelection(a,b){document.querySelectorAll('.cell.selected').forEach(c=>c.classList.remove('selected'));const n=state.size,ar=Math.floor(a/n),ac=a%n,br=Math.floor(b/n),bc=b%n,dr=Math.sign(br-ar),dc=Math.sign(bc-ac);if(ar!==br&&ac!==bc&&Math.abs(br-ar)!==Math.abs(bc-ac))return;const steps=Math.max(Math.abs(br-ar),Math.abs(bc-ac));for(let k=0;k<=steps;k++){const idx=(ar+dr*k)*n+(ac+dc*k),el=$('grid').children[idx];if(el)el.classList.add('selected')}}
 function checkSelection(a,b){const cells=Array.from(document.querySelectorAll('.cell.selected'));if(!cells.length)return;const word=cells.map(c=>c.textContent).join(''),rev=word.split('').reverse().join('');const match=THEMES[state.theme].words.map(x=>x[0]).find(w=>(w===word||w===rev)&&!state.found.has(w));if(match){state.found.add(match);$('status').textContent='¡Encontraste '+match+'!';render()}else{$('status').textContent='Todavía no. Prueba otra palabra.';setTimeout(()=>document.querySelectorAll('.cell.selected').forEach(c=>c.classList.remove('selected')),350)}}
 let firstTap=null;
