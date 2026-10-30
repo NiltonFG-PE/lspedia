@@ -617,7 +617,7 @@ function onFound(w,a,b,path){
  const cx=r.left+((((a%n)+(b%n))/2+.5)/n)*r.width,cy=r.top+((Math.floor(a/n)+Math.floor(b/n))/2+.5)/n*r.height;
  burst(cx,cy,34,9);vibrate(45);flash('green');playOk();
  const left=state.words.filter(x=>!state.found.has(x[0]));
- if(state.active===k||state.found.has(state.active))state.active=left.length?left[0][0]:k;
+ state.active=left.length?left[0][0]:k;
  renderList();renderCurrent();renderTop();
  if(left.length){say('ok','✅','¡Muy bien! Encontraste '+w[1]+'. Faltan '+left.length+'.')}
  else{say('ok','🎉','¡Encontraste todas las palabras!');state.busy=true;setTimeout(win,750)}
