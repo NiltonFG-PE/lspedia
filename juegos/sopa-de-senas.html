@@ -244,8 +244,8 @@ body.fs .mini{display:none}
 
 /* Ajuste visual: la cuadrícula debe ser lo primero que vea el jugador. */
 @media(max-width:899px){
-  /* En móvil, mostrar primero la palabra objetivo y justo debajo la cuadrícula. */
-  .game{grid-template-areas:"current" "board" "list";gap:12px}
+  /* En móvil, reunir la lista y la palabra objetivo antes de la cuadrícula. */
+  .game{grid-template-areas:"list" "current" "board";gap:10px}
   .boardp{padding:10px}
   .bw{max-width:720px;padding:5px;border-radius:19px}
   .btop{margin:0 2px}
