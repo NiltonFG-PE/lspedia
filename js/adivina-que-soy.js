@@ -104,7 +104,7 @@
     if (name !== 'play') {
       document.body.style.removeProperty('--c1');
       document.body.style.removeProperty('--c2');
-      setThemeColor('#f6f2ec');
+      setThemeColor('#f6f3ee');
       window.scrollTo(0, 0);
     }
   }
@@ -455,7 +455,6 @@
     $('card').style.visibility = 'hidden';
     $('countdown').hidden = false;
     $('score').textContent = '✓ 0';
-    $('team-label').textContent = prefs.teams > 1 ? teamName(currentTeam) : '';
     $('time').textContent = prefs.seconds || '∞';
     $('time-bar').firstElementChild.style.width = '100%';
     let count = 3;
@@ -501,6 +500,7 @@
     document.body.style.setProperty('--c1', first);
     document.body.style.setProperty('--c2', second);
     setThemeColor(first);
+    $('team-label').textContent = (prefs.teams > 1 ? `${teamName(currentTeam)} · ` : '') + `${position + 1}/${round.length}`;
     $('card-category').textContent = card.category;
     $('card-word').textContent = card.word;
     const image = $('card-image'), emoji = $('card-emoji');

@@ -1,0 +1,764 @@
+[
+ {
+  "palabra": "Correr",
+  "emoji": "🏃",
+  "categoria": "Acciones",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Saltar",
+  "emoji": "🤸",
+  "categoria": "Acciones",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Nadar",
+  "emoji": "🏊",
+  "categoria": "Acciones",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Bailar",
+  "emoji": "💃",
+  "categoria": "Acciones",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Dormir",
+  "emoji": "😴",
+  "categoria": "Acciones",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Comer",
+  "emoji": "🍽️",
+  "categoria": "Acciones",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Reír",
+  "emoji": "😂",
+  "categoria": "Acciones",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Caminar",
+  "emoji": "🚶",
+  "categoria": "Acciones",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Llorar",
+  "emoji": "😢",
+  "categoria": "Acciones",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Cocinar",
+  "emoji": "🍳",
+  "categoria": "Acciones",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Cantar",
+  "emoji": "🎤",
+  "categoria": "Acciones",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Escribir",
+  "emoji": "✍️",
+  "categoria": "Acciones",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Leer",
+  "emoji": "📖",
+  "categoria": "Acciones",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Peinarse",
+  "emoji": "💇",
+  "categoria": "Acciones",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Manejar",
+  "emoji": "🚗",
+  "categoria": "Acciones",
+  "nivel": "Difícil"
+ },
+ {
+  "palabra": "Dibujar",
+  "emoji": "🎨",
+  "categoria": "Acciones",
+  "nivel": "Difícil"
+ },
+ {
+  "palabra": "Mamá",
+  "emoji": "👩",
+  "categoria": "Familia",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Papá",
+  "emoji": "👨",
+  "categoria": "Familia",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Hermano",
+  "emoji": "👦",
+  "categoria": "Familia",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Hermana",
+  "emoji": "👧",
+  "categoria": "Familia",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Abuela",
+  "emoji": "👵",
+  "categoria": "Familia",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Abuelo",
+  "emoji": "👴",
+  "categoria": "Familia",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Tío",
+  "emoji": "🧑",
+  "categoria": "Familia",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Tía",
+  "emoji": "👩‍🦱",
+  "categoria": "Familia",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Primo",
+  "emoji": "🧑‍🤝‍🧑",
+  "categoria": "Familia",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Prima",
+  "emoji": "🧑‍🤝‍🧑",
+  "categoria": "Familia",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Hijo",
+  "emoji": "👦",
+  "categoria": "Familia",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Hija",
+  "emoji": "👧",
+  "categoria": "Familia",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Esposo",
+  "emoji": "🤵",
+  "categoria": "Familia",
+  "nivel": "Difícil"
+ },
+ {
+  "palabra": "Esposa",
+  "emoji": "👰",
+  "categoria": "Familia",
+  "nivel": "Difícil"
+ },
+ {
+  "palabra": "Nieto",
+  "emoji": "🧒",
+  "categoria": "Familia",
+  "nivel": "Difícil"
+ },
+ {
+  "palabra": "Playa",
+  "emoji": "🏖️",
+  "categoria": "Lugares",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Hospital",
+  "emoji": "🏥",
+  "categoria": "Lugares",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Parque",
+  "emoji": "🌳",
+  "categoria": "Lugares",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Mercado",
+  "emoji": "🛒",
+  "categoria": "Lugares",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Cine",
+  "emoji": "🎬",
+  "categoria": "Lugares",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Escuela",
+  "emoji": "🏫",
+  "categoria": "Lugares",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Iglesia",
+  "emoji": "⛪",
+  "categoria": "Lugares",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Biblioteca",
+  "emoji": "📚",
+  "categoria": "Lugares",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Restaurante",
+  "emoji": "🍽️",
+  "categoria": "Lugares",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Zoológico",
+  "emoji": "🦓",
+  "categoria": "Lugares",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Montaña",
+  "emoji": "⛰️",
+  "categoria": "Lugares",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Estadio",
+  "emoji": "🏟️",
+  "categoria": "Lugares",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Aeropuerto",
+  "emoji": "✈️",
+  "categoria": "Lugares",
+  "nivel": "Difícil"
+ },
+ {
+  "palabra": "Río",
+  "emoji": "🏞️",
+  "categoria": "Lugares",
+  "nivel": "Difícil"
+ },
+ {
+  "palabra": "Selva",
+  "emoji": "🌴",
+  "categoria": "Lugares",
+  "nivel": "Difícil"
+ },
+ {
+  "palabra": "Desierto",
+  "emoji": "🏜️",
+  "categoria": "Lugares",
+  "nivel": "Difícil"
+ },
+ {
+  "palabra": "Cama",
+  "emoji": "🛏️",
+  "categoria": "Casa",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Puerta",
+  "emoji": "🚪",
+  "categoria": "Casa",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Ventana",
+  "emoji": "🪟",
+  "categoria": "Casa",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Mesa",
+  "emoji": "🪑",
+  "categoria": "Casa",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Cocina",
+  "emoji": "🍳",
+  "categoria": "Casa",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Baño",
+  "emoji": "🚿",
+  "categoria": "Casa",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Almohada",
+  "emoji": "🛌",
+  "categoria": "Casa",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Sofá",
+  "emoji": "🛋️",
+  "categoria": "Casa",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Lámpara",
+  "emoji": "💡",
+  "categoria": "Casa",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Televisor",
+  "emoji": "📺",
+  "categoria": "Casa",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Cortina",
+  "emoji": "🪟",
+  "categoria": "Casa",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Jardín",
+  "emoji": "🌷",
+  "categoria": "Casa",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Escalera",
+  "emoji": "🪜",
+  "categoria": "Casa",
+  "nivel": "Difícil"
+ },
+ {
+  "palabra": "Refrigeradora",
+  "emoji": "🧊",
+  "categoria": "Casa",
+  "nivel": "Difícil"
+ },
+ {
+  "palabra": "Techo",
+  "emoji": "🏠",
+  "categoria": "Casa",
+  "nivel": "Difícil"
+ },
+ {
+  "palabra": "Lápiz",
+  "emoji": "✏️",
+  "categoria": "Escuela",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Libro",
+  "emoji": "📘",
+  "categoria": "Escuela",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Mochila",
+  "emoji": "🎒",
+  "categoria": "Escuela",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Cuaderno",
+  "emoji": "📓",
+  "categoria": "Escuela",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Pizarra",
+  "emoji": "🖊️",
+  "categoria": "Escuela",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Lonchera",
+  "emoji": "🍱",
+  "categoria": "Escuela",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Borrador",
+  "emoji": "🧹",
+  "categoria": "Escuela",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Regla",
+  "emoji": "📏",
+  "categoria": "Escuela",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Tijeras",
+  "emoji": "✂️",
+  "categoria": "Escuela",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Recreo",
+  "emoji": "🤾",
+  "categoria": "Escuela",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Uniforme",
+  "emoji": "👕",
+  "categoria": "Escuela",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Mapa",
+  "emoji": "🗺️",
+  "categoria": "Escuela",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Profesor",
+  "emoji": "🧑‍🏫",
+  "categoria": "Escuela",
+  "nivel": "Difícil"
+ },
+ {
+  "palabra": "Examen",
+  "emoji": "📝",
+  "categoria": "Escuela",
+  "nivel": "Difícil"
+ },
+ {
+  "palabra": "Calculadora",
+  "emoji": "🧮",
+  "categoria": "Escuela",
+  "nivel": "Difícil"
+ },
+ {
+  "palabra": "Fútbol",
+  "emoji": "⚽",
+  "categoria": "Deportes",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Natación",
+  "emoji": "🏊",
+  "categoria": "Deportes",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Tenis",
+  "emoji": "🎾",
+  "categoria": "Deportes",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Boxeo",
+  "emoji": "🥊",
+  "categoria": "Deportes",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Pesca",
+  "emoji": "🎣",
+  "categoria": "Deportes",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Yoga",
+  "emoji": "🧘",
+  "categoria": "Deportes",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Básquetbol",
+  "emoji": "🏀",
+  "categoria": "Deportes",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Ciclismo",
+  "emoji": "🚴",
+  "categoria": "Deportes",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Vóleibol",
+  "emoji": "🏐",
+  "categoria": "Deportes",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Karate",
+  "emoji": "🥋",
+  "categoria": "Deportes",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Golf",
+  "emoji": "⛳",
+  "categoria": "Deportes",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Surf",
+  "emoji": "🏄",
+  "categoria": "Deportes",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Atletismo",
+  "emoji": "🏃‍♀️",
+  "categoria": "Deportes",
+  "nivel": "Difícil"
+ },
+ {
+  "palabra": "Ajedrez",
+  "emoji": "♟️",
+  "categoria": "Deportes",
+  "nivel": "Difícil"
+ },
+ {
+  "palabra": "Gimnasia",
+  "emoji": "🤸‍♀️",
+  "categoria": "Deportes",
+  "nivel": "Difícil"
+ },
+ {
+  "palabra": "Guitarra",
+  "emoji": "🎸",
+  "categoria": "Música",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Piano",
+  "emoji": "🎹",
+  "categoria": "Música",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Tambor",
+  "emoji": "🥁",
+  "categoria": "Música",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Radio",
+  "emoji": "📻",
+  "categoria": "Música",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Micrófono",
+  "emoji": "🎤",
+  "categoria": "Música",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Trompeta",
+  "emoji": "🎺",
+  "categoria": "Música",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Violín",
+  "emoji": "🎻",
+  "categoria": "Música",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Flauta",
+  "emoji": "🪈",
+  "categoria": "Música",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Batería",
+  "emoji": "🥁",
+  "categoria": "Música",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Audífonos",
+  "emoji": "🎧",
+  "categoria": "Música",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Concierto",
+  "emoji": "🎶",
+  "categoria": "Música",
+  "nivel": "Difícil"
+ },
+ {
+  "palabra": "Orquesta",
+  "emoji": "🎼",
+  "categoria": "Música",
+  "nivel": "Difícil"
+ },
+ {
+  "palabra": "Saxofón",
+  "emoji": "🎷",
+  "categoria": "Música",
+  "nivel": "Difícil"
+ },
+ {
+  "palabra": "Acordeón",
+  "emoji": "🪗",
+  "categoria": "Música",
+  "nivel": "Difícil"
+ },
+ {
+  "palabra": "Sol",
+  "emoji": "☀️",
+  "categoria": "Naturaleza",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Luna",
+  "emoji": "🌙",
+  "categoria": "Naturaleza",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Nube",
+  "emoji": "☁️",
+  "categoria": "Naturaleza",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Estrella",
+  "emoji": "⭐",
+  "categoria": "Naturaleza",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Nieve",
+  "emoji": "❄️",
+  "categoria": "Naturaleza",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Viento",
+  "emoji": "🌬️",
+  "categoria": "Naturaleza",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Volcán",
+  "emoji": "🌋",
+  "categoria": "Naturaleza",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Bosque",
+  "emoji": "🌲",
+  "categoria": "Naturaleza",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Océano",
+  "emoji": "🌊",
+  "categoria": "Naturaleza",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Arcoíris",
+  "emoji": "🌈",
+  "categoria": "Naturaleza",
+  "nivel": "Difícil"
+ },
+ {
+  "palabra": "Cascada",
+  "emoji": "💦",
+  "categoria": "Naturaleza",
+  "nivel": "Difícil"
+ },
+ {
+  "palabra": "Policía",
+  "emoji": "👮",
+  "categoria": "Profesiones",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Maestro",
+  "emoji": "🧑‍🏫",
+  "categoria": "Profesiones",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Enfermera",
+  "emoji": "👩‍⚕️",
+  "categoria": "Profesiones",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Piloto",
+  "emoji": "🧑‍✈️",
+  "categoria": "Profesiones",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Pintor",
+  "emoji": "🎨",
+  "categoria": "Profesiones",
+  "nivel": "Fácil"
+ },
+ {
+  "palabra": "Carpintero",
+  "emoji": "🪚",
+  "categoria": "Profesiones",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Veterinario",
+  "emoji": "🐾",
+  "categoria": "Profesiones",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Ingeniero",
+  "emoji": "🧑‍💻",
+  "categoria": "Profesiones",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Periodista",
+  "emoji": "📰",
+  "categoria": "Profesiones",
+  "nivel": "Medio"
+ },
+ {
+  "palabra": "Abogado",
+  "emoji": "⚖️",
+  "categoria": "Profesiones",
+  "nivel": "Difícil"
+ }
+]

@@ -190,49 +190,75 @@
 /* --- Modo memoria --- */
 .quiz-memoria-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+    gap: 12px;
 }
 @media (max-width: 576px) {
-    .quiz-memoria-grid { grid-template-columns: repeat(2, 1fr); }
+    .quiz-memoria-grid { grid-template-columns: repeat(auto-fit, minmax(72px, 1fr)); gap: 8px; }
 }
 .quiz-memoria-carta {
     aspect-ratio: 1/1;
-    border-radius: 12px;
-    background-color: #0d6efd;
-    color: #fff;
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+    perspective: 900px;
+}
+.quiz-memoria-carta.acertada { cursor: default; }
+.quiz-memoria-cara {
+    position: absolute;
+    inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    font-size: 0.8rem;
-    font-weight: bold;
+    border-radius: 14px;
+    font-weight: 700;
+    line-height: 1.1;
     padding: 6px;
-    cursor: pointer;
-    user-select: none;
-    transition: transform 0.25s ease, background-color 0.2s ease;
     overflow: hidden;
+    backface-visibility: hidden;
+    transition: transform 0.5s cubic-bezier(0.4, 0.2, 0.2, 1), box-shadow 0.25s ease, border-color 0.25s ease, opacity 0.25s ease;
 }
-.quiz-memoria-carta.volteada {
-    background-color: #fff;
-    color: #0f172a;
+.quiz-memoria-dorso {
+    background: linear-gradient(150deg, #eaf2ff, #dce9ff);
+    border: 2px solid #c7dbfb;
+    color: #0d6efd;
+    font-size: 1.6rem;
+    transform: rotateY(0deg);
+    box-shadow: 0 6px 14px -8px rgba(13, 110, 253, 0.45);
+}
+.quiz-memoria-carta:not(.volteada):not(.acertada):hover .quiz-memoria-dorso {
+    box-shadow: 0 10px 20px -10px rgba(13, 110, 253, 0.6);
+    border-color: #8fb8f7;
+}
+.quiz-memoria-frente {
+    background: #ffffff;
     border: 2px solid #0d6efd;
+    color: #0f172a;
+    font-size: clamp(0.62rem, 2.6vw, 0.85rem);
+    transform: rotateY(180deg);
 }
-.quiz-memoria-carta img {
+.quiz-memoria-carta.volteada .quiz-memoria-dorso { transform: rotateY(180deg); }
+.quiz-memoria-carta.volteada .quiz-memoria-frente { transform: rotateY(0deg); }
+.quiz-memoria-frente img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 8px;
+    border-radius: 10px;
 }
-.quiz-memoria-carta.acertada {
-    background-color: #dcfce7;
+.quiz-memoria-carta.acertada .quiz-memoria-frente {
     border-color: #16a34a;
+    background: #ecfdf3;
     color: #166534;
-    cursor: default;
-    opacity: 0.85;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.18);
 }
-.quiz-memoria-carta.error-temp {
+.quiz-memoria-carta.acertada .quiz-memoria-dorso { opacity: 0.85; }
+.quiz-memoria-carta.error-temp .quiz-memoria-frente,
+.quiz-memoria-carta.error-temp .quiz-memoria-dorso {
     animation: quizTiemble 0.4s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+    .quiz-memoria-cara { transition: none; }
 }
 
 /* --- Fade genérico reutilizado por el quiz --- */

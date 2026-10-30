@@ -21,7 +21,7 @@ const QuizV2 = (function () {
         CLAVE_CACHE: "lspedia_quiz_cache_v3",
         DURACION_CACHE_MS: 24 * 60 * 60 * 1000,
         PREGUNTAS_POR_RONDA: 8,
-        PARES_MEMORIA: 6,
+        PARES_MEMORIA_POR_NIVEL: { "Fácil": 6, "Medio": 8, "Difícil": 10, "Todos": 8 },
         TIEMPOS_POR_NIVEL: { "Fácil": 20, "Medio": 15, "Difícil": 10 },
         // Tiempo (ms) que se muestra el feedback (✅/❌) antes de avanzar
         // solo a la siguiente pregunta automáticamente.
@@ -372,12 +372,17 @@ const QuizV2 = (function () {
         return estado.banco.filter((p) => p.nivel === estado.nivel);
     }
 
+    function paresMemoriaParaNivel(nivel) {
+        const mapa = CONFIG.PARES_MEMORIA_POR_NIVEL;
+        return (mapa && mapa[nivel]) || (mapa && mapa["Todos"]) || 6;
+    }
+
     function actualizarConteoDisponibles() {
         const disponibles = bancoFiltrado().length;
         const texto = el("quizTotalDisponibles");
         const btn = el("btnEmpezarQuiz");
         const btnRapido = el("btnQuizJugarRapido");
-        const minimoNecesario = estado.modo === "4" ? Math.min(CONFIG.PARES_MEMORIA, 3) : 4;
+        const minimoNecesario = estado.modo === "4" ? Math.min(paresMemoriaParaNivel(estado.nivel), 3) : 4;
         const deshabilitar = disponibles < minimoNecesario;
         if (texto) {
             if (deshabilitar) {
@@ -981,7 +986,8 @@ const QuizV2 = (function () {
     // MODO 4: MEMORIA (relacionar palabra con video)
     // ---------------------------------------------------------
     function iniciarModoMemoria() {
-        const pool = mezclar(bancoFiltrado()).slice(0, CONFIG.PARES_MEMORIA);
+        const paresObjetivo = paresMemoriaParaNivel(estado.nivel);
+        const pool = mezclar(bancoFiltrado()).slice(0, paresObjetivo);
         const cartas = [];
         pool.forEach((p, idx) => {
             cartas.push({ id: "p" + idx, parejaId: idx, tipo: "palabra", valor: p.palabra });
@@ -1004,15 +1010,21 @@ const QuizV2 = (function () {
     function renderGridMemoria() {
         const grid = el("quizMemoriaGrid");
         grid.innerHTML = "";
+        const totalPares = estado.memoria.cartas.length / 2;
         estado.memoria.cartas.forEach((carta) => {
             const div = document.createElement("div");
             div.className = "quiz-memoria-carta";
             div.dataset.id = carta.id;
-            div.textContent = "🤟";
+            div.innerHTML = `
+                <div class="quiz-memoria-cara quiz-memoria-dorso" aria-hidden="true">🤟</div>
+                <div class="quiz-memoria-cara quiz-memoria-frente"></div>
+            `;
             div.onclick = () => seleccionarCartaMemoria(carta, div);
             grid.appendChild(div);
         });
         el("quizMemoriaIntentos").textContent = `Intentos: ${estado.memoria.intentos}`;
+        const paresEl = el("quizMemoriaPares");
+        if (paresEl) paresEl.textContent = `Pares: ${estado.memoria.aciertos}/${totalPares}`;
     }
 
     function seleccionarCartaMemoria(carta, divCarta) {
@@ -1038,6 +1050,8 @@ const QuizV2 = (function () {
                 divCarta.classList.add("acertada");
                 estado.memoria.aciertos++;
                 reproducirSonidoCorrecto();
+                const paresEl = el("quizMemoriaPares");
+                if (paresEl) paresEl.textContent = `Pares: ${estado.memoria.aciertos}/${estado.memoria.cartas.length / 2}`;
                 if (estado.memoria.aciertos === estado.memoria.cartas.length / 2) {
                     detenerCronoMemoria();
                     mostrarResultadosMemoria();
@@ -1058,16 +1072,19 @@ const QuizV2 = (function () {
 
     function voltearCarta(carta, div) {
         div.classList.add("volteada");
+        const frente = div.querySelector(".quiz-memoria-frente");
+        if (!frente) return;
         if (carta.tipo === "palabra") {
-            div.textContent = carta.valor;
+            frente.textContent = carta.valor;
         } else {
-            div.innerHTML = `<img src="https://img.youtube.com/vi/${carta.valor}/default.jpg" alt="Seña">`;
+            frente.innerHTML = `<img src="https://img.youtube.com/vi/${carta.valor}/mqdefault.jpg" alt="Seña">`;
         }
     }
 
     function volverACerrar(div) {
         div.classList.remove("volteada", "error-temp");
-        div.textContent = "🤟";
+        const frente = div.querySelector(".quiz-memoria-frente");
+        if (frente) frente.innerHTML = "";
     }
 
     function actualizarCronoMemoria() {
@@ -1083,13 +1100,13 @@ const QuizV2 = (function () {
 
     function mostrarResultadosMemoria() {
         const segundos = Math.floor((Date.now() - estado.memoria.inicio) / 1000);
+        const precision = estado.memoria.intentos > 0 ? Math.round((estado.memoria.aciertos / estado.memoria.intentos) * 100) : 0;
         mostrarBloque("quizResultados");
-        el("quizResultadoIcono").textContent = "🧠";
+        el("quizResultadoIcono").textContent = precision >= 80 ? "🏆" : precision >= 50 ? "🙂" : "💪";
         el("quizResultadoTitulo").textContent = "¡Memoria completada!";
         el("quizResultadoTexto").innerHTML = `Encontraste <strong>${estado.memoria.aciertos}</strong> pares en <strong>${estado.memoria.intentos}</strong> intentos y ${segundos} segundos.`;
         el("statCorrectas").textContent = estado.memoria.aciertos;
         el("statIncorrectas").textContent = Math.max(0, estado.memoria.intentos - estado.memoria.aciertos);
-        const precision = estado.memoria.intentos > 0 ? Math.round((estado.memoria.aciertos / estado.memoria.intentos) * 100) : 0;
         el("statPorcentaje").textContent = precision + "%";
         el("quizRevisionLista").innerHTML = `<p class="text-muted small text-center mb-0">Modo memoria: no aplica revisión palabra por palabra.</p>`;
     }

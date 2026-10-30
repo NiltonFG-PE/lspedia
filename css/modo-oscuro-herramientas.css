@@ -193,9 +193,20 @@ html[data-lsp-tema="dark"] #seccionQuiz .quiz-progreso-wrap,
 html[data-lsp-tema="dark"] #seccionQuiz .quiz-timer-wrap {
     background: #29394f !important;
 }
-html[data-lsp-tema="dark"] #seccionQuiz .quiz-memoria-carta.volteada {
-    background: #17243a !important;
+html[data-lsp-tema="dark"] #seccionQuiz .quiz-memoria-dorso {
+    background: linear-gradient(150deg,#17243a,#111c2f) !important;
+    border-color: #2b3e58 !important;
+    color: #7fb4ff !important;
+}
+html[data-lsp-tema="dark"] #seccionQuiz .quiz-memoria-frente {
+    background: #111c2f !important;
+    border-color: #3d8ee8 !important;
     color: #e7eef8 !important;
+}
+html[data-lsp-tema="dark"] #seccionQuiz .quiz-memoria-carta.acertada .quiz-memoria-frente {
+    background: #0f2a1d !important;
+    border-color: #22c55e !important;
+    color: #86efac !important;
 }
 
 /* ============================================================
