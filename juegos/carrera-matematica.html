@@ -2257,6 +2257,31 @@ if (lspediaBack) lspediaBack.addEventListener('click', () => {
     else location.href = volver;
   } catch (e) { location.href = volver; }
 });
+ 
+// Botón Atrás del móvil: retrocede dentro del juego sin cerrar la página.
+history.replaceState({ ...(history.state||{}), carreraLspedia:true }, '', location.href);
+history.pushState({ carreraLspedia:true }, '', location.href);
+window.addEventListener('popstate', () => {
+  const math = document.getElementById('math-modal');
+  const pause = document.getElementById('pause-overlay');
+  if (math && math.classList.contains('active')) {
+    // La pregunta matemática permanece visible para no perder la respuesta.
+  } else if (gameState === 'playing' || gameState === 'countdown') {
+    pauseGame();
+  } else if (gameState === 'paused') {
+    resumeGame();
+  } else if (!document.getElementById('map-screen').hidden) {
+    document.getElementById('mapGarage').click();
+  } else if (!document.getElementById('garage-screen').hidden) {
+    showScreen('start-screen');
+  } else if (!document.getElementById('win-screen').hidden || !document.getElementById('gameover-screen').hidden) {
+    showScreen('map-screen');
+  } else {
+    location.href = '../?vista=herramientas-jugar';
+    return;
+  }
+  history.pushState({ carreraLspedia:true }, '', location.href);
+});
 
 // ===================== BUCLE ROBUSTO + CALIDAD ADAPTATIVA =====================
 // 60 Hz es suficiente para la física y reduce notablemente CPU/batería en móvil.

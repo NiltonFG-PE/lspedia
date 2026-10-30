@@ -1261,6 +1261,23 @@ function backToLspedia(){
   }catch(_){location.href=fallback}
 }
 
+// Botón Atrás del móvil: cerrar capas y volver un paso dentro de la práctica.
+history.replaceState({...history.state,lspediaChatBack:true},"",location.href);
+history.pushState({lspediaChatBack:true},"",location.href);
+window.addEventListener("popstate",()=>{
+  if(!$("modal").classList.contains("hidden")){
+    hideModal();
+  }else if(!$("wildcardPanel").classList.contains("hidden")){
+    closeWildcard();
+  }else if(!$("screenChat").classList.contains("hidden")){
+    backHome(false);
+  }else{
+    location.href="../?vista=herramientas-jugar";
+    return;
+  }
+  history.pushState({lspediaChatBack:true},"",location.href);
+});
+
 $("btnBackLspedia").addEventListener("click",backToLspedia);
 $("btnHelp").addEventListener("click",showHelp);
 $("btnChatBack").addEventListener("click",()=>backHome(false));
