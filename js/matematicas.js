@@ -505,6 +505,22 @@ const MatematicasV2 = (function () {
             let lx = e.clientX;
             let ly = e.clientY;
 
+            // Mientras dura el arrastre, dejamos un marcador invisible del
+            // mismo tamaño ocupando el lugar de la pieza dentro de su zona
+            // de origen (la bandeja). Sin esto, al sacar la pieza esa zona
+            // se encoge de golpe apenas se la toca, y si con eso pasa a ser
+            // mas baja que la zona vecina (el leon), toda la fila se
+            // reacomoda y el leon se corre de lugar justo en el instante en
+            // que el jugador empieza a arrastrar -antes de que mueva el
+            // dedo o el cursor-, haciendo que el blanco ya no este donde se
+            // veia. El marcador se quita en soltar(), pase lo que pase.
+            const marcador = document.createElement("div");
+            marcador.className = "m10-marcador-espacio";
+            marcador.style.width = w + "px";
+            marcador.style.height = h + "px";
+            if (siguiente) padre.insertBefore(marcador, siguiente);
+            else padre.appendChild(marcador);
+
             escena.appendChild(el);
             el.classList.add("m10-arrastrando");
             Object.assign(el.style, {
@@ -533,9 +549,18 @@ const MatematicasV2 = (function () {
                 el.removeEventListener("pointercancel", soltar);
                 el.classList.remove("m10-arrastrando");
 
+                // Importante: el marcador se quita DESPUES de preguntarle a
+                // onDrop si acierta, no antes. Si lo sacamos primero, la
+                // bandeja se encoge (y el leon se corre) justo en el
+                // instante de soltar, antes de que centroDentro() alcance a
+                // comparar -el blanco cambia de lugar entre que el jugador
+                // apunta y el momento en que se decide si entro o no-.
                 const aceptado = onDrop(ev, el);
-                if (!aceptado) {
-                    if (siguiente) padre.insertBefore(el, siguiente);
+                if (aceptado) {
+                    if (marcador.parentNode) marcador.remove();
+                } else {
+                    if (marcador.parentNode) marcador.parentNode.replaceChild(el, marcador);
+                    else if (siguiente) padre.insertBefore(el, siguiente);
                     else padre.appendChild(el);
                     Object.assign(el.style, {
                         position: "", left: "", top: "", width: "", height: "", margin: ""
@@ -822,21 +847,50 @@ const MatematicasV2 = (function () {
 
         zonas.append(bandeja, leon);
 
-        const piezas = [];
-        piezasCompactas(p.a).forEach((v) => {
-            const o = crearObjeto("🥩", v);
-            bandeja.appendChild(o);
-            piezas.push({ el: o, valor: v });
+        // Las piezas se calculan a partir de lo que hay que QUITAR (p.b),
+        // no del total (p.a). Asi se decide de antemano, pieza por pieza,
+        // que va al leon y que se queda en la bandeja: el jugador nunca
+        // puede arrastrar algo "de mas" ni quedarse sin piezas que encajen,
+        // sin importar el orden en que las mueva.
+        const necesita = desglosarValor(p.b);
+        const disponible = desglosarValor(p.a);
+        const piezasArrastrables = [];
+
+        [100, 10].forEach((denom) => {
+            const cantidadNecesaria = necesita[denom];
+            const cantidadQueda = disponible[denom] - cantidadNecesaria;
+
+            if (cantidadQueda > 0) {
+                const pilaFija = crearPilaResta(denom, cantidadQueda);
+                pilaFija.dataset.bloqueado = "1";
+                pilaFija.classList.add("m10-base");
+                bandeja.appendChild(pilaFija);
+            }
+            if (cantidadNecesaria > 0) {
+                const pilaMovible = crearPilaResta(denom, cantidadNecesaria);
+                bandeja.appendChild(pilaMovible);
+                piezasArrastrables.push({ el: pilaMovible, valor: denom * cantidadNecesaria });
+            }
         });
 
+        // Las unidades se muestran una por una: son pocas como maximo (9) y
+        // contar de a una ayuda mas que agruparlas.
+        for (let i = 0; i < disponible[1] - necesita[1]; i++) {
+            const o = crearObjeto("🥩", 1);
+            o.dataset.bloqueado = "1";
+            o.classList.add("m10-base");
+            bandeja.appendChild(o);
+        }
+        for (let i = 0; i < necesita[1]; i++) {
+            const o = crearObjeto("🥩", 1);
+            bandeja.appendChild(o);
+            piezasArrastrables.push({ el: o, valor: 1 });
+        }
+
         let comido = 0;
-        piezas.forEach(({ el, valor }) => {
+        piezasArrastrables.forEach(({ el, valor }) => {
             activarArrastre(el, escena, (_ev, obj) => {
                 if (!centroDentro(obj, leon)) return false;
-                if (comido + valor > p.b) {
-                    fallo("Es demasiado.");
-                    return false;
-                }
 
                 comido += valor;
                 leon.querySelector(".m10-contador").textContent = String(comido);
@@ -859,11 +913,54 @@ const MatematicasV2 = (function () {
         });
 
         if (estado.modo === "practicar") {
-            tutorialResta(escena, piezas[0] && piezas[0].el, leon);
-            ayudaModo("Mira la mano. Luego alimenta al leon con la cantidad correcta.");
+            tutorialResta(escena, piezasArrastrables[0] && piezasArrastrables[0].el, leon);
+            ayudaModo("Mira la mano. Luego dale al leon las piezas que no estan apagadas.");
         } else {
-            ayudaModo("Dale de comer al leon la cantidad correcta antes de que acabe el tiempo.");
+            ayudaModo("Dale al leon las piezas que no estan apagadas antes de que acabe el tiempo.");
         }
+    }
+
+    // Separa un numero en cuantas centenas, decenas y unidades tiene.
+    // Se usa para decidir, pieza por pieza, cuales van al leon (p.b) y
+    // cuales se quedan en la bandeja (p.a - p.b).
+    function desglosarValor(n) {
+        return {
+            100: Math.floor(n / 100),
+            10: Math.floor((n % 100) / 10),
+            1: n % 10
+        };
+    }
+
+    // Una pieza que representa varias decenas o centenas juntas (por
+    // ejemplo "8 decenas"), para no obligar a arrastrar una por una en
+    // numeros grandes. cantidad siempre es la que corresponde arrastrar
+    // o quedarse completa: nunca hace falta partirla.
+    function crearPilaResta(denominacion, cantidad) {
+        const pila = document.createElement("div");
+        pila.className = "m10-pila-resta " + (denominacion === 100 ? "m10-pila-100" : "m10-pila-10");
+        pila.dataset.valor = String(denominacion * cantidad);
+
+        const icono = denominacion === 100 ? "🍖" : "🥩";
+        if (cantidad <= 6) {
+            const iconos = document.createElement("div");
+            iconos.className = "m10-grupo-iconos";
+            for (let i = 0; i < cantidad; i++) {
+                const s = document.createElement("span");
+                s.textContent = icono;
+                iconos.appendChild(s);
+            }
+            pila.appendChild(iconos);
+        } else {
+            const grande = document.createElement("span");
+            grande.className = "m10-grupo-grande";
+            grande.textContent = icono + " × " + cantidad;
+            pila.appendChild(grande);
+        }
+
+        const etiqueta = document.createElement("strong");
+        etiqueta.textContent = String(denominacion * cantidad);
+        pila.appendChild(etiqueta);
+        return pila;
     }
 
     /* ---------- Multiplicacion y division: grupos compactos ---------- */

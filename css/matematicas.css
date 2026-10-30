@@ -15,6 +15,20 @@
    quedan son cortas y van siempre acompanadas de un icono grande.
    ============================================================ */
 
+/* No depende de que la pagina que lo carga ya traiga box-sizing:
+   border-box (por ejemplo via Bootstrap). Sin esto, las piezas con
+   padding/borde (las agrupadas de resta, multiplicar y dividir)
+   crecen un poco justo al empezar a arrastrarlas -el codigo les fija
+   un ancho/alto explicito- y su centro real queda desalineado del
+   dedo o el cursor, haciendo que a veces no "entren" al soltarlas
+   encima del destino aunque se vea bien colocado. */
+#matApp.mat-app,
+#matApp.mat-app *,
+#matApp.mat-app *::before,
+#matApp.mat-app *::after {
+    box-sizing: border-box;
+}
+
 #matApp.mat-app {
     --m10-texto: #0f2740;
     --m10-muted: #64748b;
@@ -471,6 +485,9 @@
     filter: drop-shadow(0 10px 14px rgba(15,35,70,.28));
 }
 #matApp .m10-colocado { animation: m10Pop .3s ease; }
+/* Ocupa el lugar de una pieza mientras se la arrastra, para que su zona
+   de origen no cambie de alto a mitad de gesto (ver activarArrastre). */
+#matApp .m10-marcador-espacio { visibility: hidden; }
 
 /* ---------- Flujo / info rapida (debajo de la escena) ---------- */
 #matApp .m10-flujo,
@@ -596,9 +613,10 @@
 }
 #matApp .m10-plato .m10-objeto { width: 27px; height: 27px; font-size: 1.4rem; }
 
-/* ---------- Grupos compactos (multiplicacion / division) ---------- */
+/* ---------- Grupos compactos (multiplicacion / division / resta) ---------- */
 #matApp .m10-grupo-cajas,
-#matApp .m10-paquete-peces {
+#matApp .m10-paquete-peces,
+#matApp .m10-pila-resta {
     min-width: 80px;
     min-height: 60px;
     padding: 7px 9px;
@@ -617,10 +635,13 @@
 }
 #matApp .m10-grupo-cajas { border: 3px solid #8b5cf6; color: #6d28d9; }
 #matApp .m10-paquete-peces { border: 3px solid #0ea5e9; color: #0369a1; }
+#matApp .m10-pila-resta { border: 3px solid #fb923c; color: #c2410c; }
+#matApp .m10-pila-resta.m10-pila-100 { border-color: #ea580c; background: #fff7ed; }
+#matApp .m10-pila-resta.m10-base { cursor: default; border-style: dashed; }
 #matApp .m10-grupo-iconos { display: flex; flex-wrap: wrap; justify-content: center; gap: 1px; max-width: 102px; line-height: 1; }
 #matApp .m10-grupo-iconos span { font-size: 1.1rem; }
 #matApp .m10-grupo-grande { font-size: 1rem; font-weight: 950; white-space: nowrap; }
-#matApp .m10-grupo-cajas > strong, #matApp .m10-paquete-peces > strong {
+#matApp .m10-grupo-cajas > strong, #matApp .m10-paquete-peces > strong, #matApp .m10-pila-resta > strong {
     font-size: .82rem; background: #f8fafc; border-radius: 999px; padding: 2px 8px;
 }
 #matApp .m10-vagon .m10-grupo-cajas, #matApp .m10-plato .m10-paquete-peces {
