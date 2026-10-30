@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-10-30T00:59:08Z",
+  "actualizado": "2026-10-30T19:22:07Z",
   "traducciones": [
     {
       "fuente": "diccionario",
@@ -232,7 +232,7 @@
       "categoria": "Economía",
       "ingles": "Saving",
       "aliases": [],
-      "definicionIngles": "It's money a person saves without spending it, to use later.\n\nExample: I have savings to buy a laptop."
+      "definicionIngles": "It's money that a person saves without spending it, to use later.\n\nExample: I have savings to buy a laptop."
     },
     {
       "fuente": "diccionario",
@@ -1248,7 +1248,7 @@
       "categoria": "Trámites",
       "ingles": "Cadastre",
       "aliases": [],
-      "definicionIngles": "Organized register of properties, land and their characteristics."
+      "definicionIngles": "Organized record of properties, land and their characteristics."
     },
     {
       "fuente": "diccionario",
@@ -3888,7 +3888,7 @@
       "categoria": "Filosofía",
       "ingles": "Philosophy",
       "aliases": [],
-      "definicionIngles": "Study of the fundamental principles about life, truth, and knowledge."
+      "definicionIngles": "Study of the fundamental principles of life, truth, and knowledge."
     },
     {
       "fuente": "diccionario",
