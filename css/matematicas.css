@@ -1,274 +1,396 @@
 /* ============================================================
-   LSPedia - Matemáticas Visuales V9 integrada
-   Scoped dentro de #matApp / clases matv9-*.
+   LSPedia - Matematicas V10 "premium"
+   ------------------------------------------------------------
+   Reescritura visual completa del juego de Matematicas.
+   Sigue viviendo dentro de #matApp (la misma caja que ya existe
+   en index.html), por eso TODO queda scoped bajo "#matApp" y no
+   puede afectar a ningun otro componente del sitio.
+
+   #matApp y las clases .mat-pantalla / .mat-pantalla-activa son
+   las que ya trae index.html tal cual estaba: se mantienen para
+   no romper el show/hide que ya usa matematicas.js.
+
+   Pensado para personas sordas que leen poco: todo se apoya en
+   iconos, color y tamano antes que en texto; las palabras que
+   quedan son cortas y van siempre acompanadas de un icono grande.
    ============================================================ */
 
 #matApp.mat-app {
-    --matv9-texto: #15324b;
-    --matv9-muted: #64748b;
-    --matv9-card: #ffffff;
-    --matv9-sombra: 0 10px 30px rgba(15, 23, 42, .10);
-    --matv9-azul: #2563eb;
-    --matv9-naranja: #f97316;
-    --matv9-morado: #8b5cf6;
-    --matv9-celeste: #0ea5e9;
-    max-width: 760px;
+    --m10-texto: #0f2740;
+    --m10-muted: #64748b;
+    --m10-card: #ffffff;
+    --m10-fondo: #f3f7ff;
+    --m10-borde: #e3eaf6;
+    --m10-sombra: 0 14px 34px rgba(15, 35, 70, .10);
+    --m10-sombra-sm: 0 6px 16px rgba(15, 35, 70, .09);
+    --m10-radio: 24px;
+    --m10-radio-sm: 16px;
+
+    --m10-suma: #2563eb;      --m10-suma-suave: #e3edff;
+    --m10-resta: #f97316;     --m10-resta-suave: #ffead4;
+    --m10-mult: #8b5cf6;      --m10-mult-suave: #ece4ff;
+    --m10-div: #06b6d4;       --m10-div-suave: #d7f6fb;
+    --m10-comparar: #ec4899;  --m10-comparar-suave: #ffe3f0;
+
+    --m10-ok: #16a34a;        --m10-ok-suave: #dcfce7;
+    --m10-mal: #dc2626;       --m10-mal-suave: #fee2e2;
+    --m10-dorado: #f59e0b;
+
+    max-width: 780px;
     margin: 0 auto;
-    padding: 12px 12px 44px;
-    color: var(--matv9-texto);
-    background: #f4f8ff;
-    border-radius: 28px;
+    padding: 14px 14px 46px;
+    color: var(--m10-texto);
+    background: linear-gradient(180deg, var(--m10-fondo) 0%, #eef3ff 100%);
+    border-radius: 30px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
 }
 
 #matApp .mat-pantalla { display: none; }
 #matApp .mat-pantalla.mat-pantalla-activa {
     display: block;
-    animation: matv9Aparecer .28s ease;
+    animation: m10Aparecer .3s cubic-bezier(.2,.8,.25,1);
 }
-@keyframes matv9Aparecer {
-    from { opacity: 0; transform: translateY(7px); }
-    to { opacity: 1; transform: translateY(0); }
+@keyframes m10Aparecer {
+    from { opacity: 0; transform: translateY(8px) scale(.99); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-#matApp .matv9-card {
-    background: var(--matv9-card);
-    border-radius: 22px;
-    padding: 15px;
-    box-shadow: var(--matv9-sombra);
+/* ---------- Tarjetas base ---------- */
+#matApp .m10-card {
+    background: var(--m10-card);
+    border: 1px solid var(--m10-borde);
+    border-radius: var(--m10-radio);
+    padding: 16px;
+    box-shadow: var(--m10-sombra-sm);
     margin-bottom: 12px;
 }
-#matApp .matv9-menu-encabezado {
+#matApp .m10-seccion-titulo {
+    font-weight: 900;
+    font-size: .98rem;
+    margin-bottom: 10px;
+    color: var(--m10-texto);
+}
+#matApp .m10-nota {
+    color: var(--m10-muted);
+    font-size: .82rem;
+    margin: 9px 0 0;
+    line-height: 1.35;
+}
+
+/* ---------- Encabezado del menu: mascota + titulo + estrellas ---------- */
+#matApp .m10-header-fila {
     display: flex;
     align-items: center;
     gap: 12px;
 }
-#matApp .matv9-titulo {
-    margin: 0 0 4px;
+#matApp .m10-header-textos { flex: 1; min-width: 0; }
+#matApp .m10-titulo {
+    margin: 0 0 2px;
     font-weight: 900;
-    font-size: 1.55rem;
+    font-size: 1.5rem;
+    letter-spacing: -.01em;
 }
-#matApp .matv9-subtitulo,
-#matApp .matv9-nota {
-    color: var(--matv9-muted);
-    line-height: 1.35;
+#matApp .m10-subtitulo {
+    margin: 0;
+    color: var(--m10-muted);
+    font-size: .88rem;
 }
-#matApp .matv9-subtitulo { margin: 0; font-size: .92rem; }
-#matApp .matv9-nota { margin: 9px 0 0; font-size: .8rem; }
-#matApp .matv9-menu-icono {
-    margin-left: auto;
-    font-size: 2rem;
-}
-#matApp .matv9-seccion-titulo {
+#matApp .m10-estrellas-total {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: linear-gradient(180deg, #fff7df, #ffedb0);
+    border: 1px solid #f3d27a;
+    color: #92670b;
     font-weight: 900;
-    margin-bottom: 9px;
+    font-size: .95rem;
+    padding: 7px 12px;
+    border-radius: 999px;
+    box-shadow: 0 3px 8px rgba(217, 163, 26, .25);
 }
 
-#matApp .matv9-operaciones {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 14px;
+/* ---------- Mascota (zorro) ---------- */
+#matApp .m10-mascota {
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.9rem;
+    background: radial-gradient(circle at 35% 30%, #ffedd0, #ffd79b 70%);
+    box-shadow: inset 0 0 0 3px rgba(255,255,255,.6), 0 6px 14px rgba(217, 123, 20, .25);
+    animation: m10MascotaFlotar 3.2s ease-in-out infinite;
 }
-#matApp .matv9-op {
-    border: 0;
-    border-radius: 20px;
-    min-height: 95px;
-    padding: 13px 8px;
-    color: #fff;
-    font-weight: 900;
-    box-shadow: 0 5px 14px rgba(15, 23, 42, .12);
-    touch-action: manipulation;
+#matApp .m10-mascota-mini {
+    width: 40px;
+    height: 40px;
+    font-size: 1.4rem;
 }
-#matApp .matv9-op:active { transform: scale(.97); }
-#matApp .matv9-op-simbolo {
-    display: block;
-    font-size: 2.25rem;
-    line-height: 1;
-    margin-bottom: 5px;
+#matApp .m10-mascota-cara { display: inline-block; transition: transform .25s ease; }
+@keyframes m10MascotaFlotar {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-4px) rotate(-4deg); }
 }
-#matApp .matv9-op-suma { background: #2563eb; }
-#matApp .matv9-op-resta { background: #f97316; }
-#matApp .matv9-op-mult { background: #8b5cf6; }
-#matApp .matv9-op-div { background: #0ea5e9; }
+#matApp .m10-mascota.m10-mascota-feliz { animation: m10MascotaSalta .5s ease; }
+#matApp .m10-mascota.m10-mascota-triste .m10-mascota-cara { transform: scale(.92) rotate(-6deg); }
+@keyframes m10MascotaSalta {
+    0% { transform: scale(1) translateY(0); }
+    35% { transform: scale(1.18) translateY(-10px) rotate(8deg); }
+    65% { transform: scale(1.05) translateY(2px) rotate(-4deg); }
+    100% { transform: scale(1) translateY(0); }
+}
 
-#matApp .matv9-modos {
+/* ---------- Niveles (3 tarjetas grandes: Facil / Medio / Dificil) ---------- */
+#matApp .m10-niveles {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 9px;
 }
-#matApp .matv9-modo,
-#matApp .matv9-nivel {
-    border: 2px solid #d9e3ef;
-    background: #fff;
-    color: var(--matv9-texto);
-    border-radius: 15px;
-    font-weight: 850;
-    touch-action: manipulation;
-}
-#matApp .matv9-modo {
-    padding: 12px 7px;
+#matApp .m10-nivel {
+    border: 2px solid var(--m10-borde);
+    background: #fbfdff;
+    border-radius: var(--m10-radio-sm);
+    padding: 13px 6px 11px;
     display: flex;
     flex-direction: column;
-    gap: 3px;
     align-items: center;
+    gap: 4px;
+    font-weight: 850;
+    color: var(--m10-texto);
+    touch-action: manipulation;
+    transition: transform .12s ease, border-color .15s ease, background-color .15s ease;
 }
-#matApp .matv9-modo.matv9-activo,
-#matApp .matv9-nivel.matv9-activo {
+#matApp .m10-nivel-icono { font-size: 1.7rem; line-height: 1; }
+#matApp .m10-nivel-texto { font-size: .86rem; }
+#matApp .m10-nivel:active { transform: scale(.96); }
+#matApp .m10-nivel.m10-activo {
     border-color: #2563eb;
-    background: #eff6ff;
-    color: #174ea6;
-}
-#matApp .matv9-niveles {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding-bottom: 4px;
-}
-#matApp .matv9-nivel {
-    flex: 0 0 auto;
-    min-width: 92px;
-    padding: 9px 10px;
-}
-#matApp .matv9-nivel small {
-    display: block;
-    color: var(--matv9-muted);
-    font-size: .72rem;
+    background: linear-gradient(180deg, #eef6ff, #e0edff);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, .18);
 }
 
-#matApp .matv9-juego-top {
+/* ---------- Modos (Practicar / Jugar) ---------- */
+#matApp .m10-modos {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 9px;
+}
+#matApp .m10-modo {
+    border: 2px solid var(--m10-borde);
+    background: #fbfdff;
+    border-radius: var(--m10-radio-sm);
+    padding: 13px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-weight: 850;
+    touch-action: manipulation;
+    transition: transform .12s ease, border-color .15s ease, background-color .15s ease;
+}
+#matApp .m10-modo-icono { font-size: 1.6rem; }
+#matApp .m10-modo:active { transform: scale(.96); }
+#matApp .m10-modo.m10-activo {
+    border-color: #16a34a;
+    background: linear-gradient(180deg, #eafff2, #dcfce7);
+    box-shadow: 0 4px 12px rgba(22, 163, 74, .18);
+}
+
+/* ---------- Operaciones (5 tarjetas con icono grande) ---------- */
+#matApp .m10-operaciones {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+#matApp .m10-op {
+    border: 0;
+    border-radius: 20px;
+    min-height: 108px;
+    padding: 14px 8px;
+    color: #fff;
+    font-weight: 900;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    box-shadow: 0 8px 18px rgba(15, 35, 70, .18);
+    touch-action: manipulation;
+    position: relative;
+    overflow: hidden;
+    transition: transform .14s ease, box-shadow .14s ease;
+}
+#matApp .m10-op::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, rgba(255,255,255,.28), rgba(255,255,255,0) 55%);
+    pointer-events: none;
+}
+#matApp .m10-op:active { transform: scale(.96); }
+#matApp .m10-op-emoji { font-size: 2.1rem; line-height: 1; }
+#matApp .m10-op-simbolo {
+    font-size: 1.1rem;
+    opacity: .92;
+}
+#matApp .m10-op-suma { background: linear-gradient(160deg, #3b82f6, #1d4ed8); }
+#matApp .m10-op-resta { background: linear-gradient(160deg, #fb923c, #ea580c); }
+#matApp .m10-op-mult { background: linear-gradient(160deg, #a78bfa, #7c3aed); }
+#matApp .m10-op-div { background: linear-gradient(160deg, #22d3ee, #0891b2); }
+#matApp .m10-op-comparar {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    min-height: 74px;
+    background: linear-gradient(160deg, #f472b6, #db2777);
+}
+#matApp .m10-op-comparar .m10-op-emoji { font-size: 1.8rem; }
+
+/* ---------- Pantalla de juego: barra superior ---------- */
+#matApp .m10-juego-top {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 8px;
+    gap: 10px;
+    margin-bottom: 9px;
 }
-#matApp .matv9-volver {
+#matApp .m10-volver {
     border: 0;
-    background: #eaf3ff;
+    background: #fff;
     color: #174ea6;
-    border-radius: 12px;
-    padding: 9px 12px;
+    border: 1px solid var(--m10-borde);
+    border-radius: 13px;
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
     font-weight: 900;
+    font-size: 1.1rem;
+    box-shadow: var(--m10-sombra-sm);
 }
-#matApp .matv9-juego-titulo {
-    flex: 1;
+#matApp .m10-juego-centro { flex: 1; min-width: 0; }
+#matApp .m10-juego-titulo {
     font-weight: 900;
+    font-size: 1.02rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
-#matApp .matv9-modo-pill {
-    background: #eef6ff;
-    color: #174ea6;
-    border-radius: 999px;
-    padding: 6px 10px;
-    font-size: .76rem;
-    font-weight: 900;
+#matApp .m10-estrellas-ronda {
+    display: flex;
+    gap: 2px;
+    margin-top: 2px;
+    font-size: 1rem;
+    line-height: 1;
+}
+#matApp .m10-estrella { opacity: .28; transition: opacity .2s ease, transform .2s ease; }
+#matApp .m10-estrella.m10-ganada { opacity: 1; animation: m10EstrellaPop .35s ease; }
+@keyframes m10EstrellaPop {
+    0% { transform: scale(.4) rotate(-20deg); }
+    60% { transform: scale(1.3) rotate(10deg); }
+    100% { transform: scale(1) rotate(0deg); }
 }
 
-#matApp .matv9-progreso,
-#matApp .matv9-timer-wrap {
-    height: 8px;
+/* ---------- Barras de progreso / tiempo ---------- */
+#matApp .m10-progreso,
+#matApp .m10-timer-wrap {
+    height: 9px;
     border-radius: 999px;
     overflow: hidden;
     background: #e2e8f0;
 }
-#matApp .matv9-progreso { margin-bottom: 6px; }
-#matApp .matv9-progreso > div {
+#matApp .m10-progreso { margin-bottom: 7px; }
+#matApp .m10-progreso > div {
     height: 100%;
     width: 0;
-    background: #2563eb;
+    background: linear-gradient(90deg, #60a5fa, #2563eb);
     transition: width .25s;
 }
-#matApp .matv9-timer-wrap { margin-bottom: 12px; }
-#matApp .matv9-timer {
+#matApp .m10-timer-wrap { margin-bottom: 12px; }
+#matApp .m10-timer {
     height: 100%;
     width: 100%;
     background: #22c55e;
     transition: width 1s linear;
 }
-#matApp .matv9-oculto { display: none !important; }
+#matApp .m10-oculto { display: none !important; }
 
-#matApp .matv9-info {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    color: #304e69;
-    font-size: .9rem;
-    font-weight: 800;
-    margin-bottom: 8px;
-}
-#matApp .matv9-ecuacion {
+/* ---------- Ecuacion / prompt ---------- */
+#matApp .m10-prompt { min-height: 4px; }
+#matApp .m10-ecuacion {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    gap: 9px;
-    padding: 10px 5px 13px;
-    font-size: 2rem;
+    gap: 10px;
+    padding: 6px 4px 16px;
+    font-size: 2.1rem;
     font-weight: 950;
 }
-#matApp .matv9-eq-a { color: #172033; }
-#matApp .matv9-eq-op {
-    min-width: 42px;
-    height: 42px;
-    border-radius: 14px;
+#matApp .m10-eq-num { color: #142338; }
+#matApp .m10-eq-op {
+    min-width: 44px;
+    height: 44px;
+    border-radius: 15px;
     color: #fff;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    animation: matv9Pulso 1.15s ease-in-out infinite;
+    animation: m10Pulso 1.2s ease-in-out infinite;
 }
-#matApp .matv9-eq-igual { color: #64748b; }
-#matApp .matv9-eq-r { min-width: 38px; text-align: center; color: #94a3b8; }
-#matApp .matv9-resultado-listo {
-    color: #16a34a;
-    animation: matv9Pop .35s ease;
-}
-@keyframes matv9Pulso { 50% { transform: scale(1.16) rotate(-4deg); } }
-@keyframes matv9Pop {
-    0% { transform: scale(.65); opacity: .3; }
+#matApp .m10-eq-igual { color: #94a3b8; }
+#matApp .m10-eq-r { min-width: 42px; text-align: center; color: #94a3b8; }
+#matApp .m10-eq-r.m10-eq-lista { color: var(--m10-ok); animation: m10Pop .35s ease; }
+@keyframes m10Pulso { 50% { transform: scale(1.14) rotate(-4deg); } }
+@keyframes m10Pop {
+    0% { transform: scale(.6); opacity: .3; }
     70% { transform: scale(1.16); }
     100% { transform: scale(1); opacity: 1; }
 }
 
-#matApp .matv9-escena {
+/* ---------- Escena ---------- */
+#matApp .m10-escena {
     position: relative;
-    min-height: 335px;
-    border-radius: 20px;
-    border: 2px solid #dbe5ef;
+    min-height: 320px;
+    border-radius: 22px;
+    border: 2px solid var(--m10-borde);
     background: #fbfdff;
-    padding: 14px;
+    padding: 16px 14px;
     overflow: hidden;
 }
-#matApp .matv9-escena.matv9-suma { border-color: #93c5fd; background: #f8fbff; }
-#matApp .matv9-escena.matv9-resta { border-color: #fdba74; background: #fffaf5; }
-#matApp .matv9-escena.matv9-multiplicacion { border-color: #c4b5fd; background: #fbfaff; }
-#matApp .matv9-escena.matv9-division { border-color: #67e8f9; background: #f7feff; }
+#matApp .m10-escena-suma { border-color: #bcd4ff; background: linear-gradient(180deg, #f5f9ff, #eef5ff); }
+#matApp .m10-escena-resta { border-color: #ffd1a8; background: linear-gradient(180deg, #fff9f3, #fff3e7); }
+#matApp .m10-escena-mult { border-color: #d7c7fb; background: linear-gradient(180deg, #faf8ff, #f4efff); }
+#matApp .m10-escena-div { border-color: #a0e9f5; background: linear-gradient(180deg, #f3fdff, #e9fbfd); }
+#matApp .m10-escena-comparar { border-color: #fac7df; background: linear-gradient(180deg, #fff6fa, #ffeef5); }
 
-#matApp .matv9-iconos {
+#matApp .m10-escena-iconos {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 8px;
-    font-size: 1.35rem;
+    gap: 10px;
+    font-size: 1.4rem;
     margin-bottom: 12px;
 }
-#matApp .matv9-flecha {
-    font-size: 1.65rem;
-    animation: matv9Flecha 1s ease-in-out infinite;
+#matApp .m10-escena-flecha {
+    font-size: 1.6rem;
+    animation: m10Flecha 1s ease-in-out infinite;
 }
-@keyframes matv9Flecha { 50% { transform: translateX(8px); } }
+@keyframes m10Flecha { 50% { transform: translateX(8px); } }
 
-#matApp .matv9-zonas {
+/* ---------- Zonas genericas (cesta, bandeja, destino) ---------- */
+#matApp .m10-zonas {
     display: flex;
     justify-content: center;
     align-items: flex-end;
-    gap: 12px;
+    gap: 14px;
     flex-wrap: wrap;
 }
-#matApp .matv9-zona {
-    min-width: 125px;
-    min-height: 108px;
-    border-radius: 18px;
-    padding: 12px;
+#matApp .m10-zona {
+    min-width: 128px;
+    min-height: 112px;
+    border-radius: 20px;
+    padding: 13px;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -276,212 +398,178 @@
     gap: 5px;
     position: relative;
 }
-#matApp .matv9-fuente-a {
-    background: #f1f5f9;
+#matApp .m10-zona-fuente-neutra {
+    background: #eef2f8;
     border: 3px dashed #94a3b8;
 }
-#matApp .matv9-fuente-b {
+#matApp .m10-zona-fuente-color {
     background: #eef6ff;
     border: 3px dashed #60a5fa;
 }
-#matApp .matv9-destino {
+#matApp .m10-zona-destino {
     background: #fff;
     border: 4px solid #2563eb;
     box-shadow: inset 0 0 0 5px #dbeafe;
-    min-width: 150px;
+    min-width: 155px;
 }
-#matApp .matv9-contador {
+#matApp .m10-contador {
     position: absolute;
-    top: -15px;
+    top: -16px;
     left: 50%;
     transform: translateX(-50%);
-    min-width: 38px;
-    min-height: 38px;
-    padding: 4px 9px;
+    min-width: 40px;
+    min-height: 40px;
+    padding: 4px 10px;
     border-radius: 999px;
     background: #fff;
     border: 3px solid #cbd5e1;
-    box-shadow: 0 3px 10px rgba(15, 23, 42, .12);
+    box-shadow: 0 4px 10px rgba(15, 35, 70, .14);
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 950;
+    font-size: 1.02rem;
     z-index: 5;
 }
-#matApp .matv9-azul { color: #2563eb; }
-#matApp .matv9-naranja { color: #f97316; }
+#matApp .m10-azul { color: #2563eb; }
+#matApp .m10-naranja { color: #ea580c; }
+#matApp .m10-morado { color: #7c3aed; }
+#matApp .m10-cian { color: #0891b2; }
+#matApp .m10-rosa { color: #db2777; }
 
-#matApp .matv9-objeto {
-    width: 46px;
-    height: 46px;
+/* ---------- Objetos arrastrables ---------- */
+#matApp .m10-objeto {
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2rem;
+    font-size: 2.05rem;
     user-select: none;
     -webkit-user-select: none;
     touch-action: none;
     cursor: grab;
     position: relative;
+    filter: drop-shadow(0 3px 3px rgba(15,35,70,.14));
 }
-#matApp .matv9-objeto-bloque {
+#matApp .m10-objeto-bloque {
     width: auto;
-    min-width: 52px;
-    height: 48px;
-    padding: 0 8px;
-    border-radius: 12px;
+    min-width: 54px;
+    height: 50px;
+    padding: 0 9px;
+    border-radius: 13px;
     background: #fff;
     border: 2px solid #94a3b8;
-    font-size: 1rem;
+    font-size: 1.02rem;
     font-weight: 950;
+    box-shadow: 0 3px 6px rgba(15,35,70,.1);
 }
-#matApp .matv9-base { opacity: .92; cursor: default; }
-#matApp .matv9-arrastrando {
+#matApp .m10-base { opacity: .94; cursor: default; }
+#matApp .m10-arrastrando {
     z-index: 999;
-    transform: scale(1.12);
-    filter: drop-shadow(0 9px 13px rgba(15,23,42,.25));
+    transform: scale(1.14);
+    filter: drop-shadow(0 10px 14px rgba(15,35,70,.28));
 }
-#matApp .matv9-colocado { animation: matv9Pop .3s ease; }
+#matApp .m10-colocado { animation: m10Pop .3s ease; }
 
-#matApp .matv9-flujo,
-#matApp .matv9-info-rapida {
-    margin-top: 12px;
+/* ---------- Flujo / info rapida (debajo de la escena) ---------- */
+#matApp .m10-flujo,
+#matApp .m10-info-rapida {
+    margin-top: 13px;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 7px;
+    gap: 8px;
     flex-wrap: wrap;
 }
-#matApp .matv9-flujo > span,
-#matApp .matv9-flujo > b,
-#matApp .matv9-flujo > strong,
-#matApp .matv9-info-rapida > span,
-#matApp .matv9-info-rapida > b,
-#matApp .matv9-info-rapida > strong {
+#matApp .m10-flujo > span,
+#matApp .m10-flujo > strong,
+#matApp .m10-info-rapida > span,
+#matApp .m10-info-rapida > strong {
     background: #fff;
-    border: 2px solid #dbe4ef;
+    border: 2px solid var(--m10-borde);
     border-radius: 999px;
-    padding: 6px 10px;
-    font-size: .86rem;
+    padding: 6px 11px;
+    font-size: .88rem;
     font-weight: 900;
     font-style: normal;
 }
-#matApp .matv9-flujo > i { font-style: normal; color: #64748b; }
+#matApp .m10-flujo > i { font-style: normal; color: var(--m10-muted); }
 
-#matApp .matv9-leon-zona {
-    background: #ffedd5;
+/* ---------- Leon (resta) ---------- */
+#matApp .m10-leon-zona {
+    background: linear-gradient(180deg, #fff1e0, #ffe3bf);
     border: 3px solid #fb923c;
-    min-width: 165px;
-    padding-top: 20px;
+    min-width: 168px;
+    padding-top: 22px;
 }
-#matApp .matv9-leon-box {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-}
-#matApp .matv9-leon-svg {
-    width: 150px;
-    height: 150px;
+#matApp .m10-leon-box { width: 100%; display: flex; justify-content: center; }
+#matApp .m10-leon-svg {
+    width: 152px;
+    height: 152px;
     overflow: visible;
-    filter: drop-shadow(0 4px 10px rgba(120,53,15,.18));
+    filter: drop-shadow(0 5px 10px rgba(120,53,15,.2));
 }
-#matApp .matv9-melena { fill: #b45309; stroke: #7c3f0f; stroke-width: 2; stroke-linejoin: round; }
-#matApp .matv9-oreja-ext { fill: #b45309; stroke: #7c3f0f; stroke-width: 2; }
-#matApp .matv9-oreja-int { fill: #f7b267; }
-#matApp .matv9-cara { fill: #f4a51c; stroke: #92400e; stroke-width: 4; }
-#matApp .matv9-hocico { fill: #fdf1c7; stroke: #e2b04a; stroke-width: 2; }
-#matApp .matv9-bigote {
-    stroke: #92400e;
-    stroke-width: 2;
-    stroke-linecap: round;
-    opacity: .55;
+#matApp .m10-melena { fill: #b45309; stroke: #7c3f0f; stroke-width: 2; stroke-linejoin: round; }
+#matApp .m10-oreja-ext { fill: #b45309; stroke: #7c3f0f; stroke-width: 2; }
+#matApp .m10-oreja-int { fill: #f7b267; }
+#matApp .m10-cara { fill: #f4a51c; stroke: #92400e; stroke-width: 4; }
+#matApp .m10-hocico { fill: #fdf1c7; stroke: #e2b04a; stroke-width: 2; }
+#matApp .m10-bigote { stroke: #92400e; stroke-width: 2; stroke-linecap: round; opacity: .55; }
+#matApp .m10-nariz { fill: #7c2d12; }
+#matApp .m10-ojo { fill: #1f2937; }
+#matApp .m10-ceja { stroke: #1f2937; stroke-width: 5; stroke-linecap: round; }
+#matApp .m10-boca-abierta path:first-child { fill: #7c2d12; }
+#matApp .m10-lengua { fill: #ef4444; }
+#matApp .m10-diente { fill: #fff; }
+#matApp .m10-boca-neutral, #matApp .m10-boca-feliz, #matApp .m10-ojo-feliz {
+    fill: none; stroke: #7c2d12; stroke-width: 4; stroke-linecap: round;
 }
-#matApp .matv9-nariz { fill: #7c2d12; }
-#matApp .matv9-ojo { fill: #1f2937; }
-#matApp .matv9-ceja {
-    stroke: #1f2937;
-    stroke-width: 5;
-    stroke-linecap: round;
-}
-#matApp .matv9-boca-abierta path:first-child { fill: #7c2d12; }
-#matApp .matv9-lengua { fill: #ef4444; }
-#matApp .matv9-diente { fill: #fff; }
-#matApp .matv9-boca-neutral,
-#matApp .matv9-boca-feliz,
-#matApp .matv9-ojo-feliz {
-    fill: none;
-    stroke: #7c2d12;
-    stroke-width: 4;
-    stroke-linecap: round;
-}
-#matApp .matv9-ojo-feliz { stroke: #1f2937; }
-#matApp .matv9-boca-neutral,
-#matApp .matv9-boca-feliz,
-#matApp .matv9-boca-abierta,
-#matApp .matv9-ojo-feliz { opacity: 0; }
+#matApp .m10-ojo-feliz { stroke: #1f2937; }
+#matApp .m10-boca-neutral, #matApp .m10-boca-feliz, #matApp .m10-boca-abierta, #matApp .m10-ojo-feliz { opacity: 0; }
+#matApp .m10-leon-enojado .m10-boca-abierta { opacity: 1; }
+#matApp .m10-leon-enojado .m10-ceja-i { transform: rotate(-18deg); transform-origin: 74px 72px; }
+#matApp .m10-leon-enojado .m10-ceja-d { transform: rotate(18deg); transform-origin: 106px 72px; }
+#matApp .m10-leon-neutral .m10-boca-neutral { opacity: 1; }
+#matApp .m10-leon-neutral .m10-ceja-i { transform: rotate(-6deg); transform-origin: 74px 72px; }
+#matApp .m10-leon-neutral .m10-ceja-d { transform: rotate(6deg); transform-origin: 106px 72px; }
+#matApp .m10-leon-feliz .m10-ojo { opacity: 0; }
+#matApp .m10-leon-feliz .m10-ojo-feliz, #matApp .m10-leon-feliz .m10-boca-feliz { opacity: 1; }
+#matApp .m10-leon-feliz .m10-ceja-i { transform: rotate(8deg); transform-origin: 74px 68px; }
+#matApp .m10-leon-feliz .m10-ceja-d { transform: rotate(-8deg); transform-origin: 106px 68px; }
+#matApp .m10-leon-mordisco { animation: m10Mordisco .34s ease; }
+@keyframes m10Mordisco { 50% { transform: scale(1.08) rotate(-4deg); } }
 
-#matApp .matv9-leon-enojado .matv9-boca-abierta { opacity: 1; }
-#matApp .matv9-leon-enojado .matv9-ceja-i {
-    transform: rotate(-18deg);
-    transform-origin: 74px 72px;
-}
-#matApp .matv9-leon-enojado .matv9-ceja-d {
-    transform: rotate(18deg);
-    transform-origin: 106px 72px;
-}
-#matApp .matv9-leon-neutral .matv9-boca-neutral { opacity: 1; }
-#matApp .matv9-leon-neutral .matv9-ceja-i {
-    transform: rotate(-6deg);
-    transform-origin: 74px 72px;
-}
-#matApp .matv9-leon-neutral .matv9-ceja-d {
-    transform: rotate(6deg);
-    transform-origin: 106px 72px;
-}
-#matApp .matv9-leon-feliz .matv9-ojo { opacity: 0; }
-#matApp .matv9-leon-feliz .matv9-ojo-feliz,
-#matApp .matv9-leon-feliz .matv9-boca-feliz { opacity: 1; }
-#matApp .matv9-leon-feliz .matv9-ceja-i {
-    transform: rotate(8deg);
-    transform-origin: 74px 68px;
-}
-#matApp .matv9-leon-feliz .matv9-ceja-d {
-    transform: rotate(-8deg);
-    transform-origin: 106px 68px;
-}
-#matApp .matv9-leon-mordisco { animation: matv9Mordisco .34s ease; }
-@keyframes matv9Mordisco { 50% { transform: scale(1.08) rotate(-4deg); } }
-
-#matApp .matv9-pool {
-    min-height: 92px;
-    background: #f1f5f9;
+/* ---------- Pool / tren / pinguinos (multiplicacion y division) ---------- */
+#matApp .m10-pool {
+    min-height: 94px;
+    background: #f1f5fb;
     border: 3px dashed #94a3b8;
-    border-radius: 17px;
-    padding: 10px;
+    border-radius: 18px;
+    padding: 11px;
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 4px;
+    gap: 5px;
     align-content: center;
     position: relative;
-    margin: 10px auto 14px;
+    margin: 10px auto 15px;
 }
-#matApp .matv9-tren,
-#matApp .matv9-pinguinos {
+#matApp .m10-tren, #matApp .m10-pinguinos {
     display: flex;
     justify-content: center;
     align-items: flex-end;
-    gap: 9px;
+    gap: 10px;
     flex-wrap: wrap;
 }
-#matApp .matv9-motor { font-size: 3.2rem; }
-#matApp .matv9-vagon {
-    min-width: 86px;
-    min-height: 78px;
+#matApp .m10-motor { font-size: 3.3rem; filter: drop-shadow(0 4px 5px rgba(15,35,70,.18)); }
+#matApp .m10-vagon {
+    min-width: 88px;
+    min-height: 80px;
     border: 3px solid #8b5cf6;
-    background: #ede9fe;
-    border-radius: 14px 14px 7px 7px;
-    padding: 10px 6px 6px;
+    background: linear-gradient(180deg, #f2ecff, #e7dcff);
+    border-radius: 15px 15px 8px 8px;
+    padding: 11px 6px 6px;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -489,23 +577,14 @@
     gap: 3px;
     position: relative;
 }
-#matApp .matv9-vagon .matv9-objeto {
-    width: 28px;
-    height: 28px;
-    font-size: 1.45rem;
-}
-#matApp .matv9-pinguino {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-}
-#matApp .matv9-pinguino-cara { font-size: 2.6rem; }
-#matApp .matv9-plato {
-    min-width: 82px;
-    min-height: 60px;
+#matApp .m10-vagon .m10-objeto { width: 29px; height: 29px; font-size: 1.45rem; }
+#matApp .m10-pinguino { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+#matApp .m10-pinguino-cara { font-size: 2.65rem; }
+#matApp .m10-plato {
+    min-width: 84px;
+    min-height: 62px;
     border: 3px solid #0ea5e9;
-    background: #cffafe;
+    background: linear-gradient(180deg, #ddfaff, #c6f3fb);
     border-radius: 999px;
     padding: 7px;
     display: flex;
@@ -515,14 +594,143 @@
     gap: 3px;
     position: relative;
 }
-#matApp .matv9-plato .matv9-objeto {
-    width: 27px;
-    height: 27px;
-    font-size: 1.4rem;
+#matApp .m10-plato .m10-objeto { width: 27px; height: 27px; font-size: 1.4rem; }
+
+/* ---------- Grupos compactos (multiplicacion / division) ---------- */
+#matApp .m10-grupo-cajas,
+#matApp .m10-paquete-peces {
+    min-width: 80px;
+    min-height: 60px;
+    padding: 7px 9px;
+    border-radius: 16px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+    box-shadow: 0 5px 11px rgba(15,35,70,.11);
+}
+#matApp .m10-grupo-cajas { border: 3px solid #8b5cf6; color: #6d28d9; }
+#matApp .m10-paquete-peces { border: 3px solid #0ea5e9; color: #0369a1; }
+#matApp .m10-grupo-iconos { display: flex; flex-wrap: wrap; justify-content: center; gap: 1px; max-width: 102px; line-height: 1; }
+#matApp .m10-grupo-iconos span { font-size: 1.1rem; }
+#matApp .m10-grupo-grande { font-size: 1rem; font-weight: 950; white-space: nowrap; }
+#matApp .m10-grupo-cajas > strong, #matApp .m10-paquete-peces > strong {
+    font-size: .82rem; background: #f8fafc; border-radius: 999px; padding: 2px 8px;
+}
+#matApp .m10-vagon .m10-grupo-cajas, #matApp .m10-plato .m10-paquete-peces {
+    transform: scale(.82); min-width: 70px;
 }
 
-#matApp .matv9-ayuda {
-    margin-top: 12px;
+/* ---------- Comparar: dos grupos lado a lado con balanza ---------- */
+#matApp .m10-comparar-filas {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+}
+#matApp .m10-comparar-caja {
+    flex: 1 1 0;
+    max-width: 230px;
+    min-height: 168px;
+    border-radius: 20px;
+    border: 3px solid #f0abcf;
+    background: linear-gradient(180deg, #fff, #fff0f7);
+    padding: 12px 10px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+#matApp .m10-comparar-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 30px;
+    gap: 4px;
+    place-items: center;
+    min-height: 66px;
+}
+#matApp .m10-comparar-grid span { font-size: 1.5rem; line-height: 1; }
+#matApp .m10-comparar-numero {
+    font-weight: 950;
+    font-size: 1.5rem;
+    color: #0f2740;
+    background: #fff;
+    border: 2px solid var(--m10-borde);
+    border-radius: 999px;
+    min-width: 46px;
+    text-align: center;
+    padding: 3px 10px;
+}
+#matApp .m10-comparar-vs {
+    flex-shrink: 0;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #fff;
+    border: 3px dashed #f472b6;
+    color: #db2777;
+    font-weight: 950;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ---------- Respuestas ---------- */
+#matApp .m10-respuestas {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 9px;
+    margin-top: 13px;
+}
+#matApp .m10-respuesta {
+    border: 2px solid var(--m10-borde);
+    background: #fff;
+    color: var(--m10-texto);
+    border-radius: 16px;
+    padding: 15px 6px;
+    font-size: 1.4rem;
+    font-weight: 950;
+    touch-action: manipulation;
+}
+#matApp .m10-respuesta.m10-correcta { background: var(--m10-ok-suave); border-color: var(--m10-ok); color: #14532d; }
+#matApp .m10-respuesta.m10-incorrecta { background: var(--m10-mal-suave); border-color: var(--m10-mal); color: #7f1d1d; }
+#matApp .m10-respuesta:active { transform: scale(.96); }
+
+#matApp .m10-feedback {
+    margin-top: 13px;
+    padding: 11px;
+    border-radius: 16px;
+    text-align: center;
+    font-weight: 900;
+    font-size: 1rem;
+}
+#matApp .m10-feedback-info { background: #eef6ff; color: #174ea6; }
+#matApp .m10-feedback-bien { background: var(--m10-ok-suave); color: #14532d; }
+#matApp .m10-feedback-mal { background: var(--m10-mal-suave); color: #7f1d1d; }
+
+#matApp .m10-siguiente {
+    width: 100%;
+    margin-top: 13px;
+    border: 0;
+    border-radius: 16px;
+    background: linear-gradient(180deg, #3b82f6, #1d4ed8);
+    color: #fff;
+    padding: 14px;
+    font-weight: 950;
+    font-size: 1.02rem;
+    box-shadow: 0 8px 16px rgba(29, 78, 216, .3);
+}
+
+/* ---------- Ayuda flotante bajo la escena ---------- */
+#matApp .m10-ayuda {
+    margin-top: 13px;
     border-radius: 16px;
     padding: 10px 12px;
     display: flex;
@@ -533,31 +741,29 @@
     font-size: .9rem;
     font-weight: 850;
 }
-#matApp .matv9-ayuda-practica { background: #eff6ff; color: #174ea6; }
-#matApp .matv9-ayuda-juego { background: #fff7ed; color: #9a3412; }
+#matApp .m10-ayuda-practica { background: #eef6ff; color: #174ea6; }
+#matApp .m10-ayuda-juego { background: #fff7ed; color: #9a3412; }
 
-#matApp .matv9-tutorial-badge {
+/* ---------- Tutorial (guia visual con mano) ---------- */
+#matApp .m10-tutorial-badge {
     width: max-content;
     max-width: 100%;
     margin: 0 auto 12px;
-    padding: 8px 12px;
+    padding: 8px 13px;
     border-radius: 999px;
     background: #e0f2fe;
     color: #075985;
     font-weight: 950;
 }
-#matApp .matv9-tutorial-fantasma,
-#matApp .matv9-tutorial-mano {
+#matApp .m10-tutorial-fantasma,
+#matApp .m10-tutorial-mano {
     position: absolute;
     z-index: 120;
     pointer-events: none;
-    filter: drop-shadow(0 6px 8px rgba(15,23,42,.22));
+    filter: drop-shadow(0 6px 8px rgba(15,35,70,.22));
 }
-#matApp .matv9-tutorial-mano {
-    z-index: 130;
-    font-size: 2.3rem;
-}
-#matApp .matv9-tutorial-paquete {
+#matApp .m10-tutorial-mano { z-index: 130; font-size: 2.3rem; }
+#matApp .m10-tutorial-paquete {
     background: #fff;
     color: #6d28d9;
     border: 3px solid #8b5cf6;
@@ -568,12 +774,10 @@
     width: auto !important;
     height: auto !important;
 }
-#matApp .matv9-tutorial-mover {
-    transition: transform .9s cubic-bezier(.2,.8,.25,1);
-}
-#matApp .matv9-tutorial-destino { animation: matv9Destino .8s ease-in-out 2; }
-@keyframes matv9Destino { 50% { box-shadow: 0 0 0 9px rgba(59,130,246,.18); } }
-#matApp .matv9-ahora-tu {
+#matApp .m10-tutorial-mover { transition: transform .9s cubic-bezier(.2,.8,.25,1); }
+#matApp .m10-tutorial-destino { animation: m10Destino .8s ease-in-out 2; }
+@keyframes m10Destino { 50% { box-shadow: 0 0 0 9px rgba(59,130,246,.18); } }
+#matApp .m10-ahora-tu {
     display: flex;
     justify-content: center;
     gap: 8px;
@@ -581,60 +785,14 @@
     font-size: 1.05rem;
     font-weight: 950;
     color: #166534;
-    animation: matv9Pop .35s ease;
+    animation: m10Pop .35s ease;
 }
-#matApp .matv9-tutorial-origen { width: 40px; height: 40px; }
-#matApp .matv9-foco { animation: matv9Foco 1s ease-in-out 2; }
-@keyframes matv9Foco { 50% { box-shadow: 0 0 0 7px rgba(139,92,246,.16); transform: translateY(-3px); } }
+#matApp .m10-foco { animation: m10Foco 1s ease-in-out 2; }
+@keyframes m10Foco { 50% { box-shadow: 0 0 0 7px rgba(139,92,246,.16); transform: translateY(-3px); } }
 
-#matApp .matv9-respuestas {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-top: 12px;
-}
-#matApp .matv9-respuesta {
-    border: 2px solid #dbe4ef;
-    background: #fff;
-    color: var(--matv9-texto);
-    border-radius: 15px;
-    padding: 14px 6px;
-    font-size: 1.35rem;
-    font-weight: 950;
-}
-#matApp .matv9-respuesta.matv9-correcta {
-    background: #dcfce7;
-    border-color: #16a34a;
-    color: #166534;
-}
-#matApp .matv9-respuesta.matv9-incorrecta {
-    background: #fee2e2;
-    border-color: #dc2626;
-    color: #991b1b;
-}
-#matApp .matv9-feedback {
-    margin-top: 12px;
-    padding: 10px;
-    border-radius: 15px;
-    text-align: center;
-    font-weight: 850;
-}
-#matApp .matv9-feedback-info { background: #eff6ff; color: #174ea6; }
-#matApp .matv9-feedback-bien { background: #dcfce7; color: #166534; }
-#matApp .matv9-feedback-mal { background: #fee2e2; color: #991b1b; }
-#matApp .matv9-siguiente {
-    width: 100%;
-    margin-top: 12px;
-    border: 0;
-    border-radius: 15px;
-    background: #2563eb;
-    color: #fff;
-    padding: 13px;
-    font-weight: 950;
-}
-
-#matApp .matv9-reaccion-ok,
-#matApp .matv9-reaccion-mal {
+/* ---------- Reacciones flotantes sobre la escena ---------- */
+#matApp .m10-reaccion-ok,
+#matApp .m10-reaccion-mal {
     position: absolute;
     left: 14px;
     right: 14px;
@@ -644,181 +802,98 @@
     padding: 14px 10px;
     text-align: center;
     font-weight: 950;
-    box-shadow: 0 8px 24px rgba(15,23,42,.18);
+    box-shadow: 0 10px 26px rgba(15,35,70,.2);
 }
-#matApp .matv9-reaccion-ok {
-    background: rgba(220,252,231,.98);
-    color: #166534;
-    animation: matv9Pop .35s ease;
-}
-#matApp .matv9-reaccion-mal {
-    background: rgba(254,226,226,.98);
-    color: #991b1b;
-    animation: matv9Tiemble .35s ease;
-}
-#matApp .matv9-reaccion-ok > div,
-#matApp .matv9-reaccion-mal > div {
-    font-size: 2rem;
-}
-@keyframes matv9Tiemble {
-    20% { transform: translateX(-8px); }
-    40% { transform: translateX(8px); }
-    60% { transform: translateX(-5px); }
-    80% { transform: translateX(5px); }
+#matApp .m10-reaccion-ok { background: rgba(220,252,231,.98); color: #166534; animation: m10Pop .35s ease; }
+#matApp .m10-reaccion-mal { background: rgba(254,226,226,.98); color: #991b1b; animation: m10Tiembla .35s ease; }
+#matApp .m10-reaccion-ok > div, #matApp .m10-reaccion-mal > div { font-size: 2.1rem; }
+@keyframes m10Tiembla {
+    20% { transform: translateX(-8px); } 40% { transform: translateX(8px); }
+    60% { transform: translateX(-5px); } 80% { transform: translateX(5px); }
 }
 
-.matv9-destello-error,
-.matv9-destello-exito,
-.matv9-cuenta-regresiva,
-.matv9-confeti {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
+/* ---------- Capas globales (confeti, destellos, cuenta regresiva) ---------- */
+.m10-destello-error, .m10-destello-exito, .m10-cuenta-regresiva, .m10-confeti {
+    position: fixed; inset: 0; pointer-events: none;
 }
-.matv9-destello-error {
+.m10-destello-error {
     z-index: 9998;
-    background: rgba(220,38,38,.52);
-    animation: matv9Rojo .42s ease-out forwards;
+    background: rgba(220,38,38,.5);
+    animation: m10Rojo .42s ease-out forwards;
 }
-@keyframes matv9Rojo {
-    0% { opacity: 0; }
-    15% { opacity: 1; }
-    45% { opacity: .82; }
-    100% { opacity: 0; }
-}
-.matv9-destello-exito {
+@keyframes m10Rojo { 0%{opacity:0;} 15%{opacity:1;} 45%{opacity:.8;} 100%{opacity:0;} }
+.m10-destello-exito {
     z-index: 9998;
-    background: radial-gradient(circle, rgba(255,255,255,.95) 0%, rgba(255,248,193,.88) 30%, rgba(255,215,0,.22) 70%, rgba(255,255,255,0) 100%);
-    animation: matv9FlashOk .85s ease-out forwards;
+    background: radial-gradient(circle, rgba(255,255,255,.95) 0%, rgba(255,248,193,.88) 30%, rgba(255,215,0,.2) 70%, rgba(255,255,255,0) 100%);
+    animation: m10FlashOk .85s ease-out forwards;
 }
-@keyframes matv9FlashOk {
-    0% { opacity: 0; }
-    12% { opacity: 1; }
-    45% { opacity: .9; }
-    100% { opacity: 0; }
+@keyframes m10FlashOk { 0%{opacity:0;} 12%{opacity:1;} 45%{opacity:.9;} 100%{opacity:0;} }
+.m10-confeti { z-index: 9999; overflow: hidden; }
+.m10-confeti-pieza {
+    position: absolute; top: -30px; width: 12px; height: 20px; border-radius: 3px;
+    animation-name: m10Caer; animation-timing-function: linear; animation-fill-mode: forwards;
 }
-.matv9-confeti {
-    z-index: 9999;
-    overflow: hidden;
-}
-.matv9-confeti-pieza {
-    position: absolute;
-    top: -30px;
-    width: 12px;
-    height: 20px;
-    border-radius: 3px;
-    animation-name: matv9Caer;
-    animation-timing-function: linear;
-    animation-fill-mode: forwards;
-}
-.matv9-confeti-pieza.matv9-serpentina {
-    width: 8px;
-    height: 30px;
-    border-radius: 999px;
-}
-@keyframes matv9Caer {
-    from { transform: translateY(-40px) rotate(0deg); }
-    to { transform: translateY(115vh) rotate(720deg); }
-}
+.m10-confeti-pieza.m10-serpentina { width: 8px; height: 30px; border-radius: 999px; }
+@keyframes m10Caer { from { transform: translateY(-40px) rotate(0deg); } to { transform: translateY(115vh) rotate(720deg); } }
 
-.matv9-cuenta-regresiva {
-    z-index: 9997;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(15,23,42,.18);
-    backdrop-filter: blur(1px);
+.m10-cuenta-regresiva {
+    z-index: 9997; display: flex; align-items: center; justify-content: center;
+    background: rgba(15,35,70,.18); backdrop-filter: blur(1px);
 }
-.matv9-cuenta-numero {
-    min-width: 150px;
-    min-height: 150px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    background: rgba(15,23,42,.82);
+.m10-cuenta-numero {
+    min-width: 150px; min-height: 150px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; background: rgba(15,35,70,.82);
     border: 6px solid rgba(255,255,255,.92);
     box-shadow: 0 18px 50px rgba(0,0,0,.28);
-    font-size: 6rem;
-    line-height: 1;
-    font-weight: 1000;
-    animation: matv9Cuenta .78s ease both;
+    font-size: 6rem; line-height: 1; font-weight: 1000;
+    animation: m10Cuenta .78s ease both;
 }
-.matv9-cuenta-numero.matv9-urgente { background: rgba(220,38,38,.9); }
-@keyframes matv9Cuenta {
+.m10-cuenta-numero.m10-urgente { background: rgba(220,38,38,.9); }
+@keyframes m10Cuenta {
     0% { transform: scale(.55); opacity: 0; }
     22% { transform: scale(1.12); opacity: 1; }
     75% { transform: scale(1); opacity: 1; }
     100% { transform: scale(.82); opacity: .15; }
 }
 
-#matApp .matv9-fin {
+/* ---------- Pantalla final de ronda ---------- */
+#matApp .m10-fin {
     text-align: center;
-    padding: 55px 10px;
+    padding: 36px 10px 10px;
 }
-#matApp .matv9-fin > div { font-size: 3.2rem; }
-#matApp .matv9-fin h3 { font-weight: 950; }
-#matApp .matv9-fin p { color: #64748b; font-weight: 800; }
-#matApp .matv9-fin-trofeo { font-size: 3rem; }
+#matApp .m10-fin-trofeo { font-size: 3.4rem; animation: m10TrofeoFlota 2.2s ease-in-out infinite; }
+@keyframes m10TrofeoFlota { 0%,100%{transform:translateY(0) rotate(0deg);} 50%{transform:translateY(-6px) rotate(-4deg);} }
+#matApp .m10-fin h3 { font-weight: 950; margin: 10px 0 2px; font-size: 1.5rem; }
+#matApp .m10-fin p { color: var(--m10-muted); font-weight: 800; margin: 0 0 10px; }
+#matApp .m10-fin-estrellas { font-size: 1.9rem; letter-spacing: 3px; margin: 6px 0 4px; }
+#matApp .m10-fin-total {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: linear-gradient(180deg, #fff7df, #ffedb0);
+    border: 1px solid #f3d27a; color: #92670b; font-weight: 900;
+    padding: 7px 14px; border-radius: 999px; margin-top: 6px;
+}
 
 @media (min-width: 560px) {
-    #matApp .matv9-operaciones { grid-template-columns: repeat(4, 1fr); }
+    #matApp .m10-operaciones { grid-template-columns: repeat(3, 1fr); }
+    #matApp .m10-op-comparar { grid-column: auto; flex-direction: column; min-height: 108px; }
+    #matApp .m10-op-comparar .m10-op-emoji { font-size: 2.1rem; }
 }
 @media (max-width: 390px) {
-    #matApp.mat-app { padding-left: 8px; padding-right: 8px; }
-    #matApp .matv9-objeto { width: 40px; height: 40px; font-size: 1.7rem; }
-    #matApp .matv9-ecuacion { font-size: 1.72rem; }
-    #matApp .matv9-zona { min-width: 105px; }
-    #matApp .matv9-leon-svg { width: 138px; height: 138px; }
+    #matApp.mat-app { padding-left: 9px; padding-right: 9px; }
+    #matApp .m10-objeto { width: 42px; height: 42px; font-size: 1.75rem; }
+    #matApp .m10-ecuacion { font-size: 1.76rem; }
+    #matApp .m10-zona { min-width: 108px; }
+    #matApp .m10-leon-svg { width: 140px; height: 140px; }
+    #matApp .m10-comparar-caja { max-width: 150px; min-height: 150px; }
 }
 
-
-/* Grupos compactos para multiplicación y división: evitan arrastrar
-   decenas o cientos de objetos uno por uno. */
-#matApp .matv9-grupo-cajas,
-#matApp .matv9-paquete-peces {
-    min-width: 78px;
-    min-height: 58px;
-    padding: 7px 9px;
-    border-radius: 15px;
-    background: #fff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    cursor: grab;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: none;
-    box-shadow: 0 4px 10px rgba(15,23,42,.10);
-}
-#matApp .matv9-grupo-cajas { border: 3px solid #8b5cf6; color: #6d28d9; }
-#matApp .matv9-paquete-peces { border: 3px solid #0ea5e9; color: #0369a1; }
-#matApp .matv9-grupo-iconos {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1px;
-    max-width: 100px;
-    line-height: 1;
-}
-#matApp .matv9-grupo-iconos span { font-size: 1.1rem; }
-#matApp .matv9-grupo-grande {
-    font-size: 1rem;
-    font-weight: 950;
-    white-space: nowrap;
-}
-#matApp .matv9-grupo-cajas > strong,
-#matApp .matv9-paquete-peces > strong {
-    font-size: .82rem;
-    background: #f8fafc;
-    border-radius: 999px;
-    padding: 2px 7px;
-}
-#matApp .matv9-vagon .matv9-grupo-cajas,
-#matApp .matv9-plato .matv9-paquete-peces {
-    transform: scale(.82);
-    min-width: 68px;
+@media (prefers-reduced-motion: reduce) {
+    #matApp .m10-mascota,
+    #matApp .m10-eq-op,
+    #matApp .m10-escena-flecha,
+    #matApp .m10-fin-trofeo,
+    .m10-cuenta-numero {
+        animation: none !important;
+    }
 }

@@ -1,40 +1,63 @@
 /* ============================================================
-   LSPedia - Matemáticas Visuales V9 integrada
+   LSPedia - Matematicas V10 "premium"
    ------------------------------------------------------------
    Se integra dentro de Herramientas > Jugar y conserva la API
-   pública esperada por js/script.js:
+   publica que ya usa js/script.js:
        MatematicasV2.iniciar()
        MatematicasV2.salir()
 
-   En Practicar aparece primero una guía visual con una mano.
-   En Jugar no hay tutorial y se usa tiempo + cuenta regresiva.
+   Diseñado para personas sordas que leen poco: numeros, iconos
+   y color llevan el peso de la informacion; el texto que queda
+   es minimo. "Practicar" muestra primero una guia visual con una
+   mano; "Jugar" quita la ayuda y agrega tiempo. Se agrego un
+   quinto modo, "Comparar" (mayor/menor/igual), pensado para
+   reforzar el sentido numerico sin depender de leer.
+
+   HistorialJuegosLSPedia (al final de este archivo) es codigo
+   compartido por TODOS los juegos de Herramientas > Jugar, no
+   solo por Matematicas: su contrato publico no cambia.
    ============================================================ */
 
 const MatematicasV2 = (function () {
     "use strict";
 
     const OPS = {
-        suma: { nombre: "Sumar", simbolo: "+", color: "#2563eb", colorSegundo: "#2563eb", clase: "matv9-suma" },
-        resta: { nombre: "Restar", simbolo: "−", color: "#f97316", colorSegundo: "#f97316", clase: "matv9-resta" },
-        multiplicacion: { nombre: "Multiplicar", simbolo: "×", color: "#8b5cf6", colorSegundo: "#8b5cf6", clase: "matv9-multiplicacion" },
-        division: { nombre: "Dividir", simbolo: "÷", color: "#0ea5e9", colorSegundo: "#0891b2", clase: "matv9-division" }
+        suma: {
+            nombre: "Sumar", simbolo: "+", colorSolido: "#2563eb",
+            clase: "m10-op-suma", claseEscena: "m10-escena-suma"
+        },
+        resta: {
+            nombre: "Restar", simbolo: "−", colorSolido: "#f97316",
+            clase: "m10-op-resta", claseEscena: "m10-escena-resta"
+        },
+        multiplicacion: {
+            nombre: "Multiplicar", simbolo: "×", colorSolido: "#8b5cf6",
+            clase: "m10-op-mult", claseEscena: "m10-escena-mult"
+        },
+        division: {
+            nombre: "Dividir", simbolo: "÷", colorSolido: "#06b6d4",
+            clase: "m10-op-div", claseEscena: "m10-escena-div"
+        },
+        comparar: {
+            nombre: "Comparar", simbolo: "⚖️", colorSolido: "#ec4899",
+            clase: "m10-op-comparar", claseEscena: "m10-escena-comparar"
+        }
     };
 
     const NIVELES = [
-        { n: 1, etiqueta: "Nivel 1", corto: "1–5", min: 1, max: 5, ayuda: "Cantidades pequeñas · más apoyo visual" },
-        { n: 2, etiqueta: "Nivel 2", corto: "1 cifra", min: 1, max: 9, ayuda: "Hasta 9 · menos ayuda" },
-        { n: 3, etiqueta: "Nivel 3", corto: "2 cifras", min: 10, max: 39, ayuda: "Decenas y unidades" },
-        { n: 4, etiqueta: "Nivel 4", corto: "2 cifras +", min: 20, max: 99, ayuda: "Más números · menos apoyo" },
-        { n: 5, etiqueta: "Nivel 5", corto: "3 cifras", min: 100, max: 299, ayuda: "Centenas, decenas y unidades" }
+        { n: 1, etiqueta: "Facil", icono: "🌱" },
+        { n: 2, etiqueta: "Medio", icono: "🌿" },
+        { n: 3, etiqueta: "Dificil", icono: "🌳" }
     ];
 
     const TEXTO_MODO = {
-        practicar: "Primero mira la mano guía. Después haz la operación y elige el resultado.",
-        jugar: "Sin tutorial. Resuelve antes de que termine el tiempo."
+        practicar: "La mano te muestra como hacerlo. Luego lo haces tu.",
+        jugar: "Sin ayuda. Resuelve antes de que se acabe el tiempo."
     };
 
-    const LS_NIVEL = "lspedia_mat_v9_nivel";
-    const LS_MODO = "lspedia_mat_v9_modo";
+    const LS_NIVEL = "lspedia_mat_v10_nivel";
+    const LS_MODO = "lspedia_mat_v10_modo";
+    const LS_ESTRELLAS = "lspedia_mat_v10_estrellas";
 
     const estado = {
         operacion: null,
@@ -42,10 +65,11 @@ const MatematicasV2 = (function () {
         nivel: 1,
         pregunta: 0,
         puntaje: 0,
+        estrellasRonda: [false, false, false, false, false],
         problema: null,
         timerId: null,
         tiempoRestante: 0,
-        tiempoMax: 18,
+        tiempoMax: 20,
         tutorialActivo: false,
         respondida: false,
         finalizada: false,
@@ -65,6 +89,260 @@ const MatematicasV2 = (function () {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
+    function barajar(arr) {
+        const copia = arr.slice();
+        for (let i = copia.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            const t = copia[i];
+            copia[i] = copia[j];
+            copia[j] = t;
+        }
+        return copia;
+    }
+
+    /* ---------- Estrellas totales: progreso que persiste entre visitas ---------- */
+    function leerEstrellasTotales() {
+        try {
+            const v = parseInt(localStorage.getItem(LS_ESTRELLAS), 10);
+            return v > 0 ? v : 0;
+        } catch (_) {
+            return 0;
+        }
+    }
+
+    function sumarEstrellasTotales(n) {
+        try {
+            const actual = leerEstrellasTotales() + n;
+            localStorage.setItem(LS_ESTRELLAS, String(actual));
+            return actual;
+        } catch (_) {
+            return leerEstrellasTotales();
+        }
+    }
+
+    function pintarEstrellasTotales() {
+        const el = $("m10EstrellasTotalNum");
+        if (el) el.textContent = String(leerEstrellasTotales());
+    }
+
+    /* ---------- Preferencias (nivel / modo elegidos) ---------- */
+    function cargarPreferencias() {
+        try {
+            const nivel = parseInt(localStorage.getItem(LS_NIVEL), 10);
+            if (nivel >= 1 && nivel <= 3) estado.nivel = nivel;
+            const modo = localStorage.getItem(LS_MODO);
+            if (modo === "practicar" || modo === "jugar") estado.modo = modo;
+        } catch (_) {}
+    }
+
+    function guardarPreferencias() {
+        try {
+            localStorage.setItem(LS_NIVEL, String(estado.nivel));
+            localStorage.setItem(LS_MODO, estado.modo);
+        } catch (_) {}
+    }
+
+    /* ---------- Construccion de la interfaz ---------- */
+    function construirUI() {
+        root = $("matApp");
+        menu = $("matMenu");
+        juego = $("matJuego");
+        if (!root || !menu || !juego) return false;
+
+        menu.innerHTML =
+            '<div class="m10-card">' +
+                '<div class="m10-header-fila">' +
+                    '<div class="m10-mascota" id="m10Mascota" aria-hidden="true"><span class="m10-mascota-cara">🦊</span></div>' +
+                    '<div class="m10-header-textos">' +
+                        '<h3 class="m10-titulo">Matematicas</h3>' +
+                        '<p class="m10-subtitulo">Toca, arrastra y aprende jugando</p>' +
+                    '</div>' +
+                    '<div class="m10-estrellas-total" aria-hidden="true">⭐ <span id="m10EstrellasTotalNum">0</span></div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="m10-card">' +
+                '<div class="m10-seccion-titulo">Nivel</div>' +
+                '<div class="m10-niveles" id="m10Niveles"></div>' +
+            '</div>' +
+            '<div class="m10-card">' +
+                '<div class="m10-seccion-titulo">Modo</div>' +
+                '<div class="m10-modos" id="m10Modos"></div>' +
+                '<p class="m10-nota" id="m10ModoAyuda"></p>' +
+            '</div>' +
+            '<div class="m10-card">' +
+                '<div class="m10-seccion-titulo">¿Que quieres practicar?</div>' +
+                '<div class="m10-operaciones" id="m10Operaciones"></div>' +
+            '</div>';
+
+        juego.innerHTML =
+            '<div class="m10-juego-top">' +
+                '<button type="button" id="m10Volver" class="m10-volver" aria-label="Volver">←</button>' +
+                '<div class="m10-juego-centro">' +
+                    '<div id="m10TituloJuego" class="m10-juego-titulo"></div>' +
+                    '<div id="m10EstrellasRonda" class="m10-estrellas-ronda" aria-hidden="true"></div>' +
+                '</div>' +
+                '<div class="m10-mascota m10-mascota-mini" id="m10MascotaMini" aria-hidden="true"><span class="m10-mascota-cara">🦊</span></div>' +
+            '</div>' +
+            '<div class="m10-progreso"><div id="m10Barra"></div></div>' +
+            '<div id="m10TimerWrap" class="m10-timer-wrap m10-oculto"><div id="m10Timer" class="m10-timer"></div></div>' +
+            '<div class="m10-card m10-juego-card">' +
+                '<div id="m10Prompt" class="m10-prompt"></div>' +
+                '<div id="m10Escena" class="m10-escena"></div>' +
+                '<div id="m10Respuestas"></div>' +
+                '<div id="m10Feedback"></div>' +
+                '<button type="button" id="m10Siguiente" class="m10-siguiente m10-oculto">Siguiente →</button>' +
+            '</div>';
+
+        enlazarUI();
+        renderizarNiveles();
+        renderizarModos();
+        renderizarOperaciones();
+        pintarEstrellasTotales();
+        estado.uiLista = true;
+        return true;
+    }
+
+    function asegurarUI() {
+        if (estado.uiLista && $("m10Escena") && $("m10Niveles")) return true;
+        cargarPreferencias();
+        return construirUI();
+    }
+
+    function enlazarUI() {
+        const volver = $("m10Volver");
+        if (volver) volver.addEventListener("click", volverMenu);
+
+        const siguiente = $("m10Siguiente");
+        if (siguiente) {
+            siguiente.addEventListener("click", () => {
+                if (estado.finalizada) {
+                    estado.finalizada = false;
+                    $("m10Siguiente").textContent = "Siguiente →";
+                    volverMenu();
+                } else {
+                    siguientePregunta();
+                }
+            });
+        }
+    }
+
+    function renderizarNiveles() {
+        const cont = $("m10Niveles");
+        if (!cont) return;
+        cont.innerHTML = "";
+        NIVELES.forEach((n) => {
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "m10-nivel" + (n.n === estado.nivel ? " m10-activo" : "");
+            btn.innerHTML = '<span class="m10-nivel-icono">' + n.icono + '</span><span class="m10-nivel-texto">' + n.etiqueta + '</span>';
+            btn.addEventListener("click", () => {
+                estado.nivel = n.n;
+                guardarPreferencias();
+                renderizarNiveles();
+            });
+            cont.appendChild(btn);
+        });
+    }
+
+    function renderizarModos() {
+        const cont = $("m10Modos");
+        if (!cont) return;
+        cont.innerHTML = "";
+        const modos = [
+            { id: "practicar", icono: "✋", texto: "Practicar" },
+            { id: "jugar", icono: "🎮", texto: "Jugar" }
+        ];
+        modos.forEach((m) => {
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "m10-modo" + (m.id === estado.modo ? " m10-activo" : "");
+            btn.innerHTML = '<span class="m10-modo-icono">' + m.icono + '</span><span>' + m.texto + '</span>';
+            btn.addEventListener("click", () => {
+                estado.modo = m.id;
+                guardarPreferencias();
+                renderizarModos();
+            });
+            cont.appendChild(btn);
+        });
+        const ayuda = $("m10ModoAyuda");
+        if (ayuda) ayuda.textContent = TEXTO_MODO[estado.modo];
+    }
+
+    function renderizarOperaciones() {
+        const cont = $("m10Operaciones");
+        if (!cont) return;
+        cont.innerHTML = "";
+        const datos = {
+            suma: { emoji: "🍎" }, resta: { emoji: "🥩" },
+            multiplicacion: { emoji: "📦" }, division: { emoji: "🐟" },
+            comparar: { emoji: "⚖️" }
+        };
+        Object.keys(OPS).forEach((clave) => {
+            const op = OPS[clave];
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "m10-op " + op.clase;
+            btn.setAttribute("aria-label", op.nombre);
+            btn.innerHTML =
+                '<span class="m10-op-emoji">' + datos[clave].emoji + '</span>' +
+                '<span>' + op.nombre + '</span>' +
+                '<span class="m10-op-simbolo">' + op.simbolo + '</span>';
+            btn.addEventListener("click", () => iniciarPartida(clave));
+            cont.appendChild(btn);
+        });
+    }
+
+    function mostrarMenu() {
+        detenerTimer();
+        ocultarCuentaRegresiva();
+        menu.classList.add("mat-pantalla-activa");
+        juego.classList.remove("mat-pantalla-activa");
+        renderizarNiveles();
+        renderizarModos();
+        pintarEstrellasTotales();
+        estado.finalizada = false;
+        const siguiente = $("m10Siguiente");
+        if (siguiente) siguiente.textContent = "Siguiente →";
+    }
+
+    function mostrarJuego() {
+        menu.classList.remove("mat-pantalla-activa");
+        juego.classList.add("mat-pantalla-activa");
+    }
+
+    function iniciarPartida(operacion, opciones = {}) {
+        estado.operacion = operacion;
+        estado.pregunta = 0;
+        estado.puntaje = 0;
+        estado.estrellasRonda = [false, false, false, false, false];
+        estado.respondida = false;
+        estado.finalizada = false;
+        if (!opciones.sinHistorial && window.HistorialJuegosLSPedia && typeof HistorialJuegosLSPedia.registrarPantallaMatematicas === "function") {
+            HistorialJuegosLSPedia.registrarPantallaMatematicas("partida", operacion);
+        }
+        mostrarJuego();
+        const nivelInfo = NIVELES[estado.nivel - 1];
+        $("m10TituloJuego").textContent = OPS[operacion].nombre + (nivelInfo ? " · " + nivelInfo.icono + " " + nivelInfo.etiqueta : "");
+        pintarEstrellasRonda();
+        siguientePregunta();
+    }
+
+    function volverMenu() {
+        detenerTimer();
+        ocultarCuentaRegresiva();
+        estado.tutorialActivo = false;
+
+        const params = new URLSearchParams(window.location.search);
+        const enPartidaHistorial = params.get("juego") === "matematicas" && params.get("pantalla") === "partida";
+        if (enPartidaHistorial && window.history.length > 1) {
+            window.history.back();
+            return;
+        }
+
+        mostrarMenu();
+    }
+
+    /* ---------- Generacion de problemas ---------- */
     function generarRestaSinPrestamo(total) {
         const centenas = Math.floor(total / 100) % 10;
         const decenas = Math.floor(total / 10) % 10;
@@ -84,296 +362,93 @@ const MatematicasV2 = (function () {
         return 1;
     }
 
-    function barajar(arr) {
-        const copia = arr.slice();
-        for (let i = copia.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            const t = copia[i];
-            copia[i] = copia[j];
-            copia[j] = t;
-        }
-        return copia;
-    }
-
-    function cargarPreferencias() {
-        try {
-            const nivel = parseInt(localStorage.getItem(LS_NIVEL), 10);
-            if (nivel >= 1 && nivel <= 5) estado.nivel = nivel;
-            const modo = localStorage.getItem(LS_MODO);
-            if (modo === "practicar" || modo === "jugar") estado.modo = modo;
-        } catch (_) {}
-    }
-
-    function guardarPreferencias() {
-        try {
-            localStorage.setItem(LS_NIVEL, String(estado.nivel));
-            localStorage.setItem(LS_MODO, estado.modo);
-        } catch (_) {}
-    }
-
-    function construirUI() {
-        root = $("matApp");
-        menu = $("matMenu");
-        juego = $("matJuego");
-        if (!root || !menu || !juego) return false;
-
-        menu.innerHTML = `
-            <div class="matv9-card matv9-menu-principal">
-                <div class="matv9-menu-encabezado">
-                    <div>
-                        <h3 class="matv9-titulo">Matemáticas</h3>
-                        <p class="matv9-subtitulo">Toca, arrastra y relaciona cantidad, número y símbolo.</p>
-                    </div>
-                    <span class="matv9-menu-icono" aria-hidden="true">🔢</span>
-                </div>
-
-                <div class="matv9-operaciones">
-                    <button type="button" class="matv9-op matv9-op-suma" data-mat-op="suma" aria-label="Sumar">
-                        <span class="matv9-op-simbolo">+</span><span>Sumar</span>
-                    </button>
-                    <button type="button" class="matv9-op matv9-op-resta" data-mat-op="resta" aria-label="Restar">
-                        <span class="matv9-op-simbolo">−</span><span>Restar</span>
-                    </button>
-                    <button type="button" class="matv9-op matv9-op-mult" data-mat-op="multiplicacion" aria-label="Multiplicar">
-                        <span class="matv9-op-simbolo">×</span><span>Multiplicar</span>
-                    </button>
-                    <button type="button" class="matv9-op matv9-op-div" data-mat-op="division" aria-label="Dividir">
-                        <span class="matv9-op-simbolo">÷</span><span>Dividir</span>
-                    </button>
-                </div>
-            </div>
-
-            <div class="matv9-card">
-                <div class="matv9-seccion-titulo">Modo</div>
-                <div class="matv9-modos">
-                    <button type="button" class="matv9-modo" data-mat-modo="practicar">✋<span>Practicar</span></button>
-                    <button type="button" class="matv9-modo" data-mat-modo="jugar">🎮<span>Jugar</span></button>
-                </div>
-                <p id="matv9ModoAyuda" class="matv9-nota"></p>
-            </div>
-
-            <div class="matv9-card">
-                <div class="matv9-seccion-titulo">Nivel</div>
-                <div id="matv9Niveles" class="matv9-niveles"></div>
-                <p id="matv9NivelAyuda" class="matv9-nota"></p>
-            </div>
-        `;
-
-        juego.innerHTML = `
-            <div class="matv9-juego-top">
-                <button type="button" id="matv9Volver" class="matv9-volver" aria-label="Volver">←</button>
-                <div id="matv9TituloJuego" class="matv9-juego-titulo"></div>
-                <div id="matv9ModoPill" class="matv9-modo-pill"></div>
-            </div>
-
-            <div class="matv9-progreso"><div id="matv9Barra"></div></div>
-            <div id="matv9TimerWrap" class="matv9-timer-wrap matv9-oculto"><div id="matv9Timer" class="matv9-timer"></div></div>
-
-            <div class="matv9-card matv9-juego-card">
-                <div class="matv9-info">
-                    <div id="matv9Score">⭐ 0 · Pregunta 1 de 5</div>
-                    <div id="matv9AyudaJuego"></div>
-                </div>
-                <div id="matv9Ecuacion" class="matv9-ecuacion"></div>
-                <div id="matv9Escena" class="matv9-escena"></div>
-                <div id="matv9Respuestas"></div>
-                <div id="matv9Feedback"></div>
-                <button type="button" id="matv9Siguiente" class="matv9-siguiente matv9-oculto">Siguiente →</button>
-            </div>
-        `;
-
-        enlazarUI();
-        renderizarNiveles();
-        renderizarModo();
-        estado.uiLista = true;
-        return true;
-    }
-
-    function asegurarUI() {
-        if (estado.uiLista && $("matv9Escena") && $("matv9Niveles")) return true;
-        cargarPreferencias();
-        return construirUI();
-    }
-
-    function enlazarUI() {
-        menu.querySelectorAll("[data-mat-op]").forEach((btn) => {
-            btn.addEventListener("click", () => iniciarPartida(btn.dataset.matOp));
-        });
-
-        menu.querySelectorAll("[data-mat-modo]").forEach((btn) => {
-            btn.addEventListener("click", () => {
-                estado.modo = btn.dataset.matModo;
-                guardarPreferencias();
-                renderizarModo();
-            });
-        });
-
-        $("matv9Volver").addEventListener("click", volverMenu);
-        $("matv9Siguiente").addEventListener("click", () => {
-            if (estado.finalizada) {
-                estado.finalizada = false;
-                $("matv9Siguiente").textContent = "Siguiente →";
-                volverMenu();
-            } else {
-                siguientePregunta();
-            }
-        });
-    }
-
-    function renderizarModo() {
-        if (!menu) return;
-        menu.querySelectorAll("[data-mat-modo]").forEach((btn) => {
-            btn.classList.toggle("matv9-activo", btn.dataset.matModo === estado.modo);
-        });
-        const ayuda = $("matv9ModoAyuda");
-        if (ayuda) ayuda.textContent = TEXTO_MODO[estado.modo];
-    }
-
-    function renderizarNiveles() {
-        const cont = $("matv9Niveles");
-        if (!cont) return;
-        cont.innerHTML = "";
-        NIVELES.forEach((n) => {
-            const btn = document.createElement("button");
-            btn.type = "button";
-            btn.className = "matv9-nivel" + (n.n === estado.nivel ? " matv9-activo" : "");
-            btn.innerHTML = `<span>${n.etiqueta}</span><small>${n.corto}</small>`;
-            btn.addEventListener("click", () => {
-                estado.nivel = n.n;
-                guardarPreferencias();
-                renderizarNiveles();
-            });
-            cont.appendChild(btn);
-        });
-        const ayuda = $("matv9NivelAyuda");
-        if (ayuda) ayuda.textContent = NIVELES[estado.nivel - 1].ayuda;
-    }
-
-    function mostrarMenu() {
-        detenerTimer();
-        ocultarCuentaRegresiva();
-        menu.classList.add("mat-pantalla-activa");
-        juego.classList.remove("mat-pantalla-activa");
-        renderizarModo();
-        renderizarNiveles();
-        estado.finalizada = false;
-        const siguiente = $("matv9Siguiente");
-        if (siguiente) siguiente.textContent = "Siguiente →";
-    }
-
-    function mostrarJuego() {
-        menu.classList.remove("mat-pantalla-activa");
-        juego.classList.add("mat-pantalla-activa");
-    }
-
-    function iniciarPartida(operacion, opciones = {}) {
-        estado.operacion = operacion;
-        estado.pregunta = 0;
-        estado.puntaje = 0;
-        estado.respondida = false;
-        estado.finalizada = false;
-        if (!opciones.sinHistorial && window.HistorialJuegosLSPedia && typeof HistorialJuegosLSPedia.registrarPantallaMatematicas === "function") {
-            HistorialJuegosLSPedia.registrarPantallaMatematicas("partida", operacion);
-        }
-        mostrarJuego();
-        $("matv9TituloJuego").textContent = OPS[operacion].nombre + " · Nivel " + estado.nivel;
-        $("matv9ModoPill").textContent = estado.modo === "practicar" ? "Practicar" : "Jugar";
-        siguientePregunta();
-    }
-
-    function volverMenu() {
-        detenerTimer();
-        ocultarCuentaRegresiva();
-        estado.tutorialActivo = false;
-
-        const params = new URLSearchParams(window.location.search);
-        const enPartidaHistorial = params.get("juego") === "matematicas" && params.get("pantalla") === "partida";
-        if (enPartidaHistorial && window.history.length > 1) {
-            window.history.back();
-            return;
-        }
-
-        mostrarMenu();
-    }
-
     function generarProblema() {
-        const nivel = NIVELES[estado.nivel - 1];
+        const nivel = estado.nivel;
         const op = estado.operacion;
 
         if (op === "suma") {
-            if (estado.nivel <= 2) {
-                const a = randInt(1, nivel.max);
-                const b = randInt(1, nivel.max);
+            if (nivel === 1) {
+                const a = randInt(1, 5), b = randInt(1, 5);
                 return { a, b, resultado: a + b };
             }
-            const a = randInt(nivel.min, nivel.max);
-            const b = randInt(estado.nivel === 3 ? 10 : 20, Math.min(nivel.max, estado.nivel === 5 ? 180 : 60));
+            if (nivel === 2) {
+                const a = randInt(3, 19), b = randInt(1, 9);
+                return { a, b, resultado: a + b };
+            }
+            const a = randInt(20, 180), b = randInt(10, 80);
             return { a, b, resultado: a + b };
         }
 
         if (op === "resta") {
-            if (estado.nivel <= 2) {
-                const a = randInt(3, nivel.max);
+            if (nivel === 1) {
+                const a = randInt(3, 5);
                 const b = randInt(1, a - 1);
                 return { a, b, resultado: a - b };
             }
-            let a = randInt(nivel.min, nivel.max);
-            // Evita números completamente redondos, porque con bloques
-            // 100/10/1 no habría una resta visual interesante sin préstamo.
-            if (a > 9 && a % 100 === 0) a += randInt(1, 9);
+            if (nivel === 2) {
+                const a = randInt(10, 39);
+                const b = generarRestaSinPrestamo(a);
+                return { a, b, resultado: a - b };
+            }
+            let a = randInt(100, 299);
+            if (a % 100 === 0) a += randInt(1, 9);
             const b = generarRestaSinPrestamo(a);
             return { a, b, resultado: a - b };
         }
 
         if (op === "multiplicacion") {
-            // En niveles altos NO se arrastran decenas de cajas una por una:
-            // cada pieza representa un grupo completo para mantener el juego fluido.
-            const grupos = estado.nivel === 1 ? randInt(2, 4)
-                : estado.nivel === 2 ? randInt(2, 5)
-                : estado.nivel === 3 ? randInt(3, 6)
-                : randInt(4, 8);
-            const cada = estado.nivel === 1 ? randInt(1, 3)
-                : estado.nivel === 2 ? randInt(2, 8)
-                : estado.nivel === 3 ? randInt(5, 15)
-                : estado.nivel === 4 ? randInt(10, 30)
-                : randInt(20, 60);
+            const grupos = nivel === 1 ? randInt(2, 4) : nivel === 2 ? randInt(3, 6) : randInt(4, 8);
+            const cada = nivel === 1 ? randInt(1, 3) : nivel === 2 ? randInt(3, 12) : randInt(10, 50);
             return { a: grupos, b: cada, resultado: grupos * cada };
         }
 
-        // División: el divisor es el número de pingüinos. En niveles altos
-        // cada pingüino recibe un paquete igual, evitando arrastrar cientos
-        // de peces uno por uno y permitiendo resultados de 2-3 cifras.
-        const grupos = estado.nivel === 1 ? randInt(2, 3)
-            : estado.nivel === 2 ? randInt(2, 4)
-            : estado.nivel === 3 ? randInt(3, 5)
-            : randInt(4, 8);
-        const cada = estado.nivel === 1 ? randInt(1, 3)
-            : estado.nivel === 2 ? randInt(2, 8)
-            : estado.nivel === 3 ? randInt(5, 15)
-            : estado.nivel === 4 ? randInt(10, 30)
-            : randInt(20, 60);
-        return { a: grupos * cada, b: grupos, resultado: cada };
+        if (op === "division") {
+            const grupos = nivel === 1 ? randInt(2, 3) : nivel === 2 ? randInt(3, 5) : randInt(4, 8);
+            const cada = nivel === 1 ? randInt(1, 3) : nivel === 2 ? randInt(3, 12) : randInt(10, 50);
+            return { a: grupos * cada, b: grupos, resultado: cada };
+        }
+
+        // comparar: dos cantidades independientes; a veces iguales a proposito
+        const tope = nivel === 1 ? 9 : nivel === 2 ? 30 : 200;
+        const a = randInt(1, tope);
+        let b;
+        if (Math.random() < 0.28) {
+            b = a;
+        } else {
+            do { b = randInt(1, tope); } while (b === a);
+        }
+        const simboloCorrecto = a > b ? ">" : a < b ? "<" : "=";
+        return { a, b, resultado: simboloCorrecto };
     }
 
-    function renderizarEcuacion() {
+    function renderizarPrompt() {
+        const cont = $("m10Prompt");
+        if (!cont) return;
+        if (estado.operacion === "comparar") {
+            cont.innerHTML = "";
+            return;
+        }
         const p = estado.problema;
         const op = OPS[estado.operacion];
-        $("matv9Ecuacion").innerHTML =
-            `<span class="matv9-eq-a">${p.a}</span>` +
-            `<span class="matv9-eq-op" style="background:${op.color}">${op.simbolo}</span>` +
-            `<span class="matv9-eq-b" style="color:${op.colorSegundo}">${p.b}</span>` +
-            `<span class="matv9-eq-igual">=</span>` +
-            `<span class="matv9-eq-r" id="matv9Resultado">?</span>`;
+        cont.innerHTML =
+            '<div class="m10-ecuacion">' +
+                '<span class="m10-eq-num">' + p.a + '</span>' +
+                '<span class="m10-eq-op" style="background:' + op.colorSolido + '">' + op.simbolo + '</span>' +
+                '<span class="m10-eq-num">' + p.b + '</span>' +
+                '<span class="m10-eq-igual">=</span>' +
+                '<span class="m10-eq-r" id="m10Resultado">?</span>' +
+            '</div>';
     }
 
-    function crearObjeto(icono, valor = 1) {
+    /* ---------- Piezas y arrastre (compartido por las 4 operaciones con manipulativos) ---------- */
+    function crearObjeto(icono, valor) {
         const el = document.createElement("div");
-        el.className = "matv9-objeto";
+        el.className = "m10-objeto";
         el.dataset.valor = String(valor);
         if (valor === 1) {
             el.textContent = icono;
         } else {
-            el.classList.add("matv9-objeto-bloque");
+            el.classList.add("m10-objeto-bloque");
             el.textContent = String(valor);
         }
         return el;
@@ -392,7 +467,7 @@ const MatematicasV2 = (function () {
     }
 
     function setContador(zona, n) {
-        const c = zona.querySelector(".matv9-contador");
+        const c = zona.querySelector(".m10-contador");
         if (c) c.textContent = String(n);
     }
 
@@ -407,7 +482,7 @@ const MatematicasV2 = (function () {
     function colocar(el, destino) {
         destino.appendChild(el);
         el.dataset.bloqueado = "1";
-        el.classList.add("matv9-colocado");
+        el.classList.add("m10-colocado");
         Object.assign(el.style, {
             position: "", left: "", top: "", width: "", height: "", margin: "", transition: ""
         });
@@ -431,7 +506,7 @@ const MatematicasV2 = (function () {
             let ly = e.clientY;
 
             escena.appendChild(el);
-            el.classList.add("matv9-arrastrando");
+            el.classList.add("m10-arrastrando");
             Object.assign(el.style, {
                 position: "absolute",
                 left: x0 + "px",
@@ -456,7 +531,7 @@ const MatematicasV2 = (function () {
                 el.removeEventListener("pointermove", mover);
                 el.removeEventListener("pointerup", soltar);
                 el.removeEventListener("pointercancel", soltar);
-                el.classList.remove("matv9-arrastrando");
+                el.classList.remove("m10-arrastrando");
 
                 const aceptado = onDrop(ev, el);
                 if (!aceptado) {
@@ -474,17 +549,18 @@ const MatematicasV2 = (function () {
         });
     }
 
+    /* ---------- Guia visual con mano (modo Practicar) ---------- */
     function mostrarBadgeTutorial(escena) {
         const badge = document.createElement("div");
-        badge.className = "matv9-tutorial-badge";
-        badge.innerHTML = "👀 <span>Guía visual</span>";
+        badge.className = "m10-tutorial-badge";
+        badge.innerHTML = "👀 <span>Mira primero</span>";
         escena.insertBefore(badge, escena.firstChild);
     }
 
     function mostrarAhoraTu(escena) {
         const el = document.createElement("div");
-        el.className = "matv9-ahora-tu";
-        el.innerHTML = "✋ <span>Ahora tú</span>";
+        el.className = "m10-ahora-tu";
+        el.innerHTML = "✋ <span>Ahora tu</span>";
         escena.appendChild(el);
         setTimeout(() => { if (el.parentNode) el.remove(); }, 1800);
     }
@@ -497,18 +573,18 @@ const MatematicasV2 = (function () {
         let fantasma;
         if (opciones.clonar) {
             fantasma = origen.cloneNode(true);
-            fantasma.classList.remove("matv9-arrastrando", "matv9-colocado");
-            fantasma.classList.add("matv9-tutorial-fantasma");
+            fantasma.classList.remove("m10-arrastrando", "m10-colocado");
+            fantasma.classList.add("m10-tutorial-fantasma");
             fantasma.style.width = rOrigen.width + "px";
             fantasma.style.height = rOrigen.height + "px";
         } else {
             fantasma = document.createElement("div");
-            fantasma.className = "matv9-tutorial-fantasma" + (opciones.paquete ? " matv9-tutorial-paquete" : "");
+            fantasma.className = "m10-tutorial-fantasma" + (opciones.paquete ? " m10-tutorial-paquete" : "");
             fantasma.textContent = contenido;
         }
 
         const mano = document.createElement("div");
-        mano.className = "matv9-tutorial-mano";
+        mano.className = "m10-tutorial-mano";
         mano.textContent = "👆";
 
         escena.appendChild(fantasma);
@@ -524,11 +600,11 @@ const MatematicasV2 = (function () {
         mano.style.left = (sx - 8) + "px";
         mano.style.top = (sy + 10) + "px";
 
-        destino.classList.add("matv9-tutorial-destino");
+        destino.classList.add("m10-tutorial-destino");
 
         requestAnimationFrame(() => {
-            fantasma.classList.add("matv9-tutorial-mover");
-            mano.classList.add("matv9-tutorial-mover");
+            fantasma.classList.add("m10-tutorial-mover");
+            mano.classList.add("m10-tutorial-mover");
             fantasma.style.transform = `translate(${tx - sx}px, ${ty - sy}px)`;
             mano.style.transform = `translate(${tx - sx}px, ${ty - sy}px)`;
         });
@@ -537,7 +613,7 @@ const MatematicasV2 = (function () {
             setTimeout(() => {
                 fantasma.remove();
                 mano.remove();
-                destino.classList.remove("matv9-tutorial-destino");
+                destino.classList.remove("m10-tutorial-destino");
                 resolve();
             }, 1150);
         });
@@ -557,11 +633,11 @@ const MatematicasV2 = (function () {
         estado.tutorialActivo = true;
         mostrarBadgeTutorial(escena);
         await tutorialMover(escena, objeto, leon, "🥩", { clonar: true });
-        const svg = $("matv9Leon");
+        const svg = $("m10Leon");
         if (svg) {
-            svg.setAttribute("class", "matv9-leon-svg matv9-leon-neutral");
+            svg.setAttribute("class", "m10-leon-svg m10-leon-neutral");
             setTimeout(() => {
-                if (svg) svg.setAttribute("class", "matv9-leon-svg matv9-leon-enojado");
+                if (svg) svg.setAttribute("class", "m10-leon-svg m10-leon-enojado");
             }, 650);
         }
         estado.tutorialActivo = false;
@@ -574,9 +650,9 @@ const MatematicasV2 = (function () {
         mostrarBadgeTutorial(escena);
 
         for (let i = 0; i < Math.min(vagones.length, 3); i++) {
-            vagones[i].zona.classList.add("matv9-foco");
+            vagones[i].zona.classList.add("m10-foco");
             await tutorialMover(escena, grupo, vagones[i].zona, "", { clonar: true });
-            vagones[i].zona.classList.remove("matv9-foco");
+            vagones[i].zona.classList.remove("m10-foco");
         }
 
         estado.tutorialActivo = false;
@@ -589,9 +665,9 @@ const MatematicasV2 = (function () {
         mostrarBadgeTutorial(escena);
 
         for (let i = 0; i < Math.min(pinguinos.length, 4); i++) {
-            pinguinos[i].unidad.classList.add("matv9-foco");
+            pinguinos[i].unidad.classList.add("m10-foco");
             await tutorialMover(escena, paquete, pinguinos[i].plato, "", { clonar: true });
-            pinguinos[i].unidad.classList.remove("matv9-foco");
+            pinguinos[i].unidad.classList.remove("m10-foco");
         }
 
         estado.tutorialActivo = false;
@@ -600,36 +676,37 @@ const MatematicasV2 = (function () {
 
     function ayudaModo(texto) {
         const d = document.createElement("div");
-        d.className = estado.modo === "practicar" ? "matv9-ayuda matv9-ayuda-practica" : "matv9-ayuda matv9-ayuda-juego";
-        d.innerHTML = `<span>${estado.modo === "practicar" ? "✋" : "🎮"}</span><span>${texto}</span>`;
-        $("matv9Escena").appendChild(d);
+        d.className = estado.modo === "practicar" ? "m10-ayuda m10-ayuda-practica" : "m10-ayuda m10-ayuda-juego";
+        d.innerHTML = '<span>' + (estado.modo === "practicar" ? "✋" : "🎮") + '</span><span>' + texto + '</span>';
+        $("m10Escena").appendChild(d);
     }
 
+    /* ---------- Suma ---------- */
     function renderSuma() {
         const p = estado.problema;
-        const escena = $("matv9Escena");
-        escena.className = "matv9-escena matv9-suma";
+        const escena = $("m10Escena");
+        escena.className = "m10-escena m10-escena-suma";
         escena.innerHTML =
-            `<div class="matv9-iconos">🍎 <span class="matv9-flecha">➜</span> 🧺</div>` +
-            `<div class="matv9-zonas"></div>` +
-            `<div class="matv9-flujo"><span>${p.a}</span><b class="matv9-azul">+</b><b class="matv9-azul">${p.b}</b><i>→</i><strong id="matv9SumaTotal">${p.a}</strong></div>`;
+            '<div class="m10-escena-iconos">🍎 <span class="m10-escena-flecha">➜</span> 🧺</div>' +
+            '<div class="m10-zonas"></div>' +
+            '<div class="m10-flujo"><span>' + p.a + '</span><strong class="m10-azul">+</strong><strong class="m10-azul">' + p.b + '</strong><i>→</i><strong id="m10SumaTotal">' + p.a + '</strong></div>';
 
-        const zonas = escena.querySelector(".matv9-zonas");
+        const zonas = escena.querySelector(".m10-zonas");
 
         const cesta = document.createElement("div");
-        cesta.className = "matv9-zona matv9-destino";
-        cesta.innerHTML = `<div class="matv9-contador">${p.a}</div>`;
+        cesta.className = "m10-zona m10-zona-destino";
+        cesta.innerHTML = '<div class="m10-contador">' + p.a + '</div>';
 
         const fuente = document.createElement("div");
-        fuente.className = "matv9-zona matv9-fuente-b";
-        fuente.innerHTML = `<div class="matv9-contador matv9-azul">${p.b}</div>`;
+        fuente.className = "m10-zona m10-zona-fuente-color";
+        fuente.innerHTML = '<div class="m10-contador m10-azul">' + p.b + '</div>';
 
         zonas.append(cesta, fuente);
 
         piezasCompactas(p.a).forEach((v) => {
             const o = crearObjeto("🍎", v);
             o.dataset.bloqueado = "1";
-            o.classList.add("matv9-base");
+            o.classList.add("m10-base");
             cesta.appendChild(o);
         });
 
@@ -648,7 +725,7 @@ const MatematicasV2 = (function () {
                 agregado += valor;
                 setContador(fuente, Math.max(0, p.b - agregado));
                 setContador(cesta, p.a + agregado);
-                $("matv9SumaTotal").textContent = String(p.a + agregado);
+                $("m10SumaTotal").textContent = String(p.a + agregado);
                 if (agregado === p.b) accionCompletada();
                 return true;
             });
@@ -656,22 +733,23 @@ const MatematicasV2 = (function () {
 
         if (estado.modo === "practicar") {
             tutorialSuma(escena, movibles[0] && movibles[0].el, cesta);
-            ayudaModo("Mira cómo la mano lleva la cantidad azul a la cesta. Después hazlo tú.");
+            ayudaModo("Mira como la mano lleva la manzana a la cesta. Luego hazlo tu.");
         } else {
-            ayudaModo("Junta rápido la cantidad azul con la cantidad inicial.");
+            ayudaModo("Junta rapido la cantidad con la cesta.");
         }
     }
 
+    /* ---------- Resta ---------- */
     function estadoLeon(comido, necesita) {
-        if (comido === 0) return "matv9-leon-enojado";
-        if (comido < necesita) return "matv9-leon-neutral";
-        return "matv9-leon-feliz";
+        if (comido === 0) return "m10-leon-enojado";
+        if (comido < necesita) return "m10-leon-neutral";
+        return "m10-leon-feliz";
     }
 
     function svgLeon() {
         return `
-        <svg viewBox="0 0 180 180" class="matv9-leon-svg matv9-leon-enojado" id="matv9Leon" role="img" aria-label="León hambriento">
-            <g class="matv9-melena">
+        <svg viewBox="0 0 180 180" class="m10-leon-svg m10-leon-enojado" id="m10Leon" role="img" aria-label="Leon hambriento">
+            <g class="m10-melena">
                 <path d="M90 8
                     C112 8 108 26 128 22
                     C148 18 150 -2 168 12
@@ -691,56 +769,56 @@ const MatematicasV2 = (function () {
                     C30 -2 32 18 52 22
                     C72 26 68 8 90 8 Z"/>
             </g>
-            <circle class="matv9-oreja-ext" cx="46" cy="44" r="17"/><circle class="matv9-oreja-ext" cx="134" cy="44" r="17"/>
-            <circle class="matv9-oreja-int" cx="46" cy="46" r="8"/><circle class="matv9-oreja-int" cx="134" cy="46" r="8"/>
-            <ellipse class="matv9-cara" cx="90" cy="94" rx="50" ry="46"/>
-            <path class="matv9-hocico" d="M90 92
+            <circle class="m10-oreja-ext" cx="46" cy="44" r="17"/><circle class="m10-oreja-ext" cx="134" cy="44" r="17"/>
+            <circle class="m10-oreja-int" cx="46" cy="46" r="8"/><circle class="m10-oreja-int" cx="134" cy="46" r="8"/>
+            <ellipse class="m10-cara" cx="90" cy="94" rx="50" ry="46"/>
+            <path class="m10-hocico" d="M90 92
                 C108 92 122 104 120 120
                 C118 134 105 142 90 142
                 C75 142 62 134 60 120
                 C58 104 72 92 90 92 Z"/>
-            <line class="matv9-bigote" x1="58" y1="112" x2="24" y2="106"/>
-            <line class="matv9-bigote" x1="58" y1="120" x2="22" y2="120"/>
-            <line class="matv9-bigote" x1="58" y1="128" x2="24" y2="134"/>
-            <line class="matv9-bigote" x1="122" y1="112" x2="156" y2="106"/>
-            <line class="matv9-bigote" x1="122" y1="120" x2="158" y2="120"/>
-            <line class="matv9-bigote" x1="122" y1="128" x2="156" y2="134"/>
-            <line class="matv9-ceja matv9-ceja-i" x1="62" y1="72" x2="82" y2="66"/>
-            <line class="matv9-ceja matv9-ceja-d" x1="98" y1="66" x2="118" y2="72"/>
-            <circle class="matv9-ojo matv9-ojo-i" cx="72" cy="82" r="6"/>
-            <circle class="matv9-ojo matv9-ojo-d" cx="108" cy="82" r="6"/>
-            <path class="matv9-ojo-feliz" d="M65 82 Q72 76 79 82"/>
-            <path class="matv9-ojo-feliz" d="M101 82 Q108 76 115 82"/>
-            <path class="matv9-nariz" d="M82 98 Q90 92 98 98 Q97 106 90 108 Q83 106 82 98 Z"/>
-            <g class="matv9-boca-abierta">
+            <line class="m10-bigote" x1="58" y1="112" x2="24" y2="106"/>
+            <line class="m10-bigote" x1="58" y1="120" x2="22" y2="120"/>
+            <line class="m10-bigote" x1="58" y1="128" x2="24" y2="134"/>
+            <line class="m10-bigote" x1="122" y1="112" x2="156" y2="106"/>
+            <line class="m10-bigote" x1="122" y1="120" x2="158" y2="120"/>
+            <line class="m10-bigote" x1="122" y1="128" x2="156" y2="134"/>
+            <line class="m10-ceja m10-ceja-i" x1="62" y1="72" x2="82" y2="66"/>
+            <line class="m10-ceja m10-ceja-d" x1="98" y1="66" x2="118" y2="72"/>
+            <circle class="m10-ojo m10-ojo-i" cx="72" cy="82" r="6"/>
+            <circle class="m10-ojo m10-ojo-d" cx="108" cy="82" r="6"/>
+            <path class="m10-ojo-feliz" d="M65 82 Q72 76 79 82"/>
+            <path class="m10-ojo-feliz" d="M101 82 Q108 76 115 82"/>
+            <path class="m10-nariz" d="M82 98 Q90 92 98 98 Q97 106 90 108 Q83 106 82 98 Z"/>
+            <g class="m10-boca-abierta">
                 <path d="M90 108 Q68 110 66 128 Q66 142 90 144 Q114 142 114 128 Q112 110 90 108 Z"/>
-                <ellipse class="matv9-lengua" cx="90" cy="130" rx="11" ry="7"/>
-                <path class="matv9-diente" d="M74 112 L80 112 L77 120 Z"/>
-                <path class="matv9-diente" d="M100 112 L106 112 L103 120 Z"/>
+                <ellipse class="m10-lengua" cx="90" cy="130" rx="11" ry="7"/>
+                <path class="m10-diente" d="M74 112 L80 112 L77 120 Z"/>
+                <path class="m10-diente" d="M100 112 L106 112 L103 120 Z"/>
             </g>
-            <path class="matv9-boca-neutral" d="M74 120 Q90 126 106 120"/>
-            <path class="matv9-boca-feliz" d="M66 108 Q90 134 114 108"/>
+            <path class="m10-boca-neutral" d="M74 120 Q90 126 106 120"/>
+            <path class="m10-boca-feliz" d="M66 108 Q90 134 114 108"/>
         </svg>`;
     }
 
     function renderResta() {
         const p = estado.problema;
-        const escena = $("matv9Escena");
-        escena.className = "matv9-escena matv9-resta";
+        const escena = $("m10Escena");
+        escena.className = "m10-escena m10-escena-resta";
         escena.innerHTML =
-            `<div class="matv9-iconos">🥩 <span class="matv9-flecha">➜</span> 🦁</div>` +
-            `<div class="matv9-zonas"></div>` +
-            `<div class="matv9-flujo"><span>${p.a}</span><b class="matv9-naranja">−</b><b class="matv9-naranja">${p.b}</b><i>→</i><strong id="matv9RestaQueda">${p.a}</strong></div>`;
+            '<div class="m10-escena-iconos">🥩 <span class="m10-escena-flecha">➜</span> 🦁</div>' +
+            '<div class="m10-zonas"></div>' +
+            '<div class="m10-flujo"><span>' + p.a + '</span><strong class="m10-naranja">−</strong><strong class="m10-naranja">' + p.b + '</strong><i>→</i><strong id="m10RestaQueda">' + p.a + '</strong></div>';
 
-        const zonas = escena.querySelector(".matv9-zonas");
+        const zonas = escena.querySelector(".m10-zonas");
 
         const bandeja = document.createElement("div");
-        bandeja.className = "matv9-zona matv9-fuente-a";
-        bandeja.innerHTML = `<div class="matv9-contador">${p.a}</div>`;
+        bandeja.className = "m10-zona m10-zona-fuente-neutra";
+        bandeja.innerHTML = '<div class="m10-contador">' + p.a + '</div>';
 
         const leon = document.createElement("div");
-        leon.className = "matv9-zona matv9-leon-zona";
-        leon.innerHTML = `<div class="matv9-contador matv9-naranja">0</div><div class="matv9-leon-box">${svgLeon()}</div>`;
+        leon.className = "m10-zona m10-leon-zona";
+        leon.innerHTML = '<div class="m10-contador m10-naranja">0</div><div class="m10-leon-box">' + svgLeon() + '</div>';
 
         zonas.append(bandeja, leon);
 
@@ -756,20 +834,20 @@ const MatematicasV2 = (function () {
             activarArrastre(el, escena, (_ev, obj) => {
                 if (!centroDentro(obj, leon)) return false;
                 if (comido + valor > p.b) {
-                    fallo("Demasiado.");
+                    fallo("Es demasiado.");
                     return false;
                 }
 
                 comido += valor;
-                leon.querySelector(".matv9-contador").textContent = String(comido);
-                bandeja.querySelector(".matv9-contador").textContent = String(p.a - comido);
-                $("matv9RestaQueda").textContent = String(p.a - comido);
+                leon.querySelector(".m10-contador").textContent = String(comido);
+                bandeja.querySelector(".m10-contador").textContent = String(p.a - comido);
+                $("m10RestaQueda").textContent = String(p.a - comido);
 
-                const svg = $("matv9Leon");
+                const svg = $("m10Leon");
                 if (svg) {
-                    svg.setAttribute("class", "matv9-leon-svg " + estadoLeon(comido, p.b) + " matv9-leon-mordisco");
+                    svg.setAttribute("class", "m10-leon-svg " + estadoLeon(comido, p.b) + " m10-leon-mordisco");
                     setTimeout(() => {
-                        if (svg) svg.setAttribute("class", "matv9-leon-svg " + estadoLeon(comido, p.b));
+                        if (svg) svg.setAttribute("class", "m10-leon-svg " + estadoLeon(comido, p.b));
                     }, 340);
                 }
 
@@ -782,20 +860,21 @@ const MatematicasV2 = (function () {
 
         if (estado.modo === "practicar") {
             tutorialResta(escena, piezas[0] && piezas[0].el, leon);
-            ayudaModo("Mira la mano. Luego alimenta al león hasta que se calme.");
+            ayudaModo("Mira la mano. Luego alimenta al leon con la cantidad correcta.");
         } else {
-            ayudaModo("Alimenta al león con la cantidad correcta antes de que termine el tiempo.");
+            ayudaModo("Dale de comer al leon la cantidad correcta antes de que acabe el tiempo.");
         }
     }
 
+    /* ---------- Multiplicacion y division: grupos compactos ---------- */
     function crearGrupoCajas(cantidad) {
         const grupo = document.createElement("div");
-        grupo.className = "matv9-grupo-cajas";
+        grupo.className = "m10-grupo-cajas";
         grupo.dataset.valor = String(cantidad);
 
         if (cantidad <= 8) {
             const iconos = document.createElement("div");
-            iconos.className = "matv9-grupo-iconos";
+            iconos.className = "m10-grupo-iconos";
             for (let i = 0; i < cantidad; i++) {
                 const s = document.createElement("span");
                 s.textContent = "📦";
@@ -803,7 +882,7 @@ const MatematicasV2 = (function () {
             }
             grupo.appendChild(iconos);
         } else {
-            grupo.innerHTML = `<span class="matv9-grupo-grande">📦 × ${cantidad}</span>`;
+            grupo.innerHTML = '<span class="m10-grupo-grande">📦 × ' + cantidad + '</span>';
         }
 
         const etiqueta = document.createElement("strong");
@@ -812,29 +891,50 @@ const MatematicasV2 = (function () {
         return grupo;
     }
 
+    function crearPaquetePeces(cantidad) {
+        const paquete = document.createElement("div");
+        paquete.className = "m10-paquete-peces";
+        paquete.dataset.valor = String(cantidad);
+
+        if (cantidad <= 6) {
+            const iconos = document.createElement("div");
+            iconos.className = "m10-grupo-iconos";
+            for (let i = 0; i < cantidad; i++) {
+                const s = document.createElement("span");
+                s.textContent = "🐟";
+                iconos.appendChild(s);
+            }
+            paquete.appendChild(iconos);
+        } else {
+            paquete.innerHTML = `<span class="m10-grupo-grande">🐟 🐟 🐟 …</span>`;
+        }
+
+        return paquete;
+    }
+
     function renderMultiplicacion() {
         const p = estado.problema;
-        const escena = $("matv9Escena");
-        escena.className = "matv9-escena matv9-multiplicacion";
+        const escena = $("m10Escena");
+        escena.className = "m10-escena m10-escena-mult";
         escena.innerHTML =
-            `<div class="matv9-iconos">📦 <span class="matv9-flecha">➜</span> 🚂</div>` +
-            `<div class="matv9-pool"><div class="matv9-contador">${p.a} grupos</div></div>` +
-            `<div class="matv9-tren"></div>` +
-            `<div class="matv9-info-rapida"><span>${p.a} grupos</span><b>×</b><span>${p.b} por grupo</span></div>`;
+            '<div class="m10-escena-iconos">📦 <span class="m10-escena-flecha">➜</span> 🚂</div>' +
+            '<div class="m10-pool"><div class="m10-contador">' + p.a + ' grupos</div></div>' +
+            '<div class="m10-tren"></div>' +
+            '<div class="m10-info-rapida"><span>' + p.a + ' grupos</span><strong>×</strong><span>' + p.b + ' en cada uno</span></div>';
 
-        const pool = escena.querySelector(".matv9-pool");
-        const tren = escena.querySelector(".matv9-tren");
+        const pool = escena.querySelector(".m10-pool");
+        const tren = escena.querySelector(".m10-tren");
 
         const motor = document.createElement("div");
-        motor.className = "matv9-motor";
+        motor.className = "m10-motor";
         motor.textContent = "🚂";
         tren.appendChild(motor);
 
         const vagones = [];
         for (let i = 0; i < p.a; i++) {
             const v = document.createElement("div");
-            v.className = "matv9-vagon";
-            v.innerHTML = `<div class="matv9-contador">0 / ${p.b}</div>`;
+            v.className = "m10-vagon";
+            v.innerHTML = '<div class="m10-contador">0 / ' + p.b + '</div>';
             tren.appendChild(v);
             vagones.push({ zona: v, lleno: false });
         }
@@ -854,8 +954,8 @@ const MatematicasV2 = (function () {
                         colocar(obj, v.zona);
                         v.lleno = true;
                         colocados++;
-                        v.zona.querySelector(".matv9-contador").textContent = String(p.b);
-                        pool.querySelector(".matv9-contador").textContent = `${p.a - colocados} grupos`;
+                        v.zona.querySelector(".m10-contador").textContent = String(p.b);
+                        pool.querySelector(".m10-contador").textContent = (p.a - colocados) + " grupos";
                         if (colocados === p.a) accionCompletada();
                         return true;
                     }
@@ -866,55 +966,34 @@ const MatematicasV2 = (function () {
 
         if (estado.modo === "practicar") {
             tutorialMultiplicacion(escena, grupos[0], vagones);
-            ayudaModo("La mano mueve un grupo completo a cada vagón. Después hazlo tú.");
+            ayudaModo("La mano lleva un grupo completo a cada vagon. Luego hazlo tu.");
         } else {
-            ayudaModo("Coloca un grupo igual en cada vagón.");
+            ayudaModo("Pon un grupo igual en cada vagon.");
         }
-    }
-
-    function crearPaquetePeces(cantidad) {
-        const paquete = document.createElement("div");
-        paquete.className = "matv9-paquete-peces";
-        paquete.dataset.valor = String(cantidad);
-
-        if (cantidad <= 6) {
-            const iconos = document.createElement("div");
-            iconos.className = "matv9-grupo-iconos";
-            for (let i = 0; i < cantidad; i++) {
-                const s = document.createElement("span");
-                s.textContent = "🐟";
-                iconos.appendChild(s);
-            }
-            paquete.appendChild(iconos);
-        } else {
-            paquete.innerHTML = `<span class="matv9-grupo-grande">🐟 🐟 🐟 …</span>`;
-        }
-
-        return paquete;
     }
 
     function renderDivision() {
         const p = estado.problema;
-        const escena = $("matv9Escena");
-        escena.className = "matv9-escena matv9-division";
+        const escena = $("m10Escena");
+        escena.className = "m10-escena m10-escena-div";
         escena.innerHTML =
-            `<div class="matv9-iconos">🐟 <span class="matv9-flecha">↘</span> 🐧 🐧 <span class="matv9-flecha">↙</span></div>` +
-            `<div class="matv9-pool"><div class="matv9-contador">${p.a} peces</div></div>` +
-            `<div class="matv9-pinguinos"></div>` +
-            `<div class="matv9-info-rapida"><span>${p.a} peces</span><b>÷</b><span>${p.b} pingüinos</span><strong>= igual</strong></div>`;
+            '<div class="m10-escena-iconos">🐟 <span class="m10-escena-flecha">↘</span> 🐧 🐧 <span class="m10-escena-flecha">↙</span></div>' +
+            '<div class="m10-pool"><div class="m10-contador">' + p.a + ' peces</div></div>' +
+            '<div class="m10-pinguinos"></div>' +
+            '<div class="m10-info-rapida"><span>' + p.a + ' peces</span><strong>÷</strong><span>' + p.b + ' pinguinos</span><strong>= igual</strong></div>';
 
-        const pool = escena.querySelector(".matv9-pool");
-        const fila = escena.querySelector(".matv9-pinguinos");
+        const pool = escena.querySelector(".m10-pool");
+        const fila = escena.querySelector(".m10-pinguinos");
         const pinguinos = [];
 
         for (let i = 0; i < p.b; i++) {
             const unidad = document.createElement("div");
-            unidad.className = "matv9-pinguino";
+            unidad.className = "m10-pinguino";
             unidad.innerHTML =
-                `<div class="matv9-pinguino-cara">🐧</div>` +
-                `<div class="matv9-plato"><div class="matv9-contador">0</div></div>`;
+                '<div class="m10-pinguino-cara">🐧</div>' +
+                '<div class="m10-plato"><div class="m10-contador">0</div></div>';
             fila.appendChild(unidad);
-            pinguinos.push({ unidad, plato: unidad.querySelector(".matv9-plato"), lleno: false });
+            pinguinos.push({ unidad, plato: unidad.querySelector(".m10-plato"), lleno: false });
         }
 
         const paquetes = [];
@@ -932,8 +1011,8 @@ const MatematicasV2 = (function () {
                         colocar(obj, pg.plato);
                         pg.lleno = true;
                         repartidos++;
-                        pg.plato.querySelector(".matv9-contador").textContent = String(p.resultado);
-                        pool.querySelector(".matv9-contador").textContent = `${Math.max(0, p.a - repartidos * p.resultado)} peces`;
+                        pg.plato.querySelector(".m10-contador").textContent = String(p.resultado);
+                        pool.querySelector(".m10-contador").textContent = Math.max(0, p.a - repartidos * p.resultado) + " peces";
                         if (repartidos === p.b) accionCompletada();
                         return true;
                     }
@@ -944,26 +1023,98 @@ const MatematicasV2 = (function () {
 
         if (estado.modo === "practicar") {
             tutorialDivision(escena, paquetes[0], pinguinos);
-            ayudaModo("La mano reparte paquetes iguales. Después da uno a cada pingüino.");
+            ayudaModo("La mano reparte paquetes iguales. Luego dale uno a cada pinguino.");
         } else {
-            ayudaModo("Reparte un paquete igual a cada pingüino.");
+            ayudaModo("Reparte un paquete igual a cada pinguino.");
         }
     }
 
+    /* ---------- Comparar: mayor, menor o igual ---------- */
+    function renderGrupoComparar(cantidad, icono) {
+        const wrap = document.createElement("div");
+        if (cantidad <= 6) {
+            wrap.className = "m10-comparar-grid";
+            for (let i = 0; i < cantidad; i++) {
+                const s = document.createElement("span");
+                s.textContent = icono;
+                wrap.appendChild(s);
+            }
+        } else {
+            wrap.className = "m10-comparar-grid";
+            wrap.style.display = "flex";
+            wrap.style.flexWrap = "wrap";
+            wrap.style.gap = "4px";
+            piezasCompactas(cantidad).forEach((v) => {
+                wrap.appendChild(crearObjeto(icono, v));
+            });
+        }
+        return wrap;
+    }
+
+    function renderComparar() {
+        const p = estado.problema;
+        const escena = $("m10Escena");
+        escena.className = "m10-escena m10-escena-comparar";
+        escena.innerHTML = '<div class="m10-escena-iconos">🔍 <span>¿Cual grupo tiene mas?</span></div><div class="m10-comparar-filas"></div>';
+
+        const filas = escena.querySelector(".m10-comparar-filas");
+
+        const cajaA = document.createElement("div");
+        cajaA.className = "m10-comparar-caja";
+        cajaA.appendChild(renderGrupoComparar(p.a, "⭐"));
+        const numA = document.createElement("div");
+        numA.className = "m10-comparar-numero";
+        numA.textContent = String(p.a);
+        cajaA.appendChild(numA);
+
+        const vs = document.createElement("div");
+        vs.className = "m10-comparar-vs";
+        vs.textContent = "?";
+
+        const cajaB = document.createElement("div");
+        cajaB.className = "m10-comparar-caja";
+        cajaB.appendChild(renderGrupoComparar(p.b, "🐠"));
+        const numB = document.createElement("div");
+        numB.className = "m10-comparar-numero";
+        numB.textContent = String(p.b);
+        cajaB.appendChild(numB);
+
+        filas.append(cajaA, vs, cajaB);
+
+        if (estado.modo === "practicar") {
+            ayudaModo("Cuenta las dos cajas y elige el signo correcto.");
+        } else {
+            ayudaModo("¿Cual tiene mas? Elige rapido.");
+        }
+
+        accionCompletada();
+    }
+
+    /* ---------- Reacciones, sonido y celebracion ---------- */
     function mostrarReaccion(ok, texto) {
-        const anteriorOk = document.querySelector(".matv9-reaccion-ok");
-        const anteriorMal = document.querySelector(".matv9-reaccion-mal");
+        const anteriorOk = document.querySelector(".m10-reaccion-ok");
+        const anteriorMal = document.querySelector(".m10-reaccion-mal");
         if (anteriorOk) anteriorOk.remove();
         if (anteriorMal) anteriorMal.remove();
 
         const el = document.createElement("div");
-        el.className = ok ? "matv9-reaccion-ok" : "matv9-reaccion-mal";
-        el.innerHTML = `<div>${ok ? "🥳👏🏻" : "😢👎🏻"}</div><span>${texto}</span>`;
-        $("matv9Escena").appendChild(el);
+        el.className = ok ? "m10-reaccion-ok" : "m10-reaccion-mal";
+        el.innerHTML = '<div>' + (ok ? "🥳👏🏻" : "😅👀") + '</div><span>' + texto + '</span>';
+        $("m10Escena").appendChild(el);
 
         if (!ok) {
             setTimeout(() => { if (el.parentNode) el.remove(); }, 1200);
         }
+    }
+
+    function mascotaReaccion(tipo) {
+        [$("m10Mascota"), $("m10MascotaMini")].forEach((el) => {
+            if (!el) return;
+            el.classList.remove("m10-mascota-feliz", "m10-mascota-triste");
+            void el.offsetWidth;
+            if (tipo === "feliz") el.classList.add("m10-mascota-feliz");
+            else if (tipo === "triste") el.classList.add("m10-mascota-triste");
+        });
     }
 
     function obtenerAudioCtx() {
@@ -1012,34 +1163,34 @@ const MatematicasV2 = (function () {
     }
 
     function destelloRojo() {
-        const viejo = document.querySelector(".matv9-destello-error");
+        const viejo = document.querySelector(".m10-destello-error");
         if (viejo) viejo.remove();
         const el = document.createElement("div");
-        el.className = "matv9-destello-error";
+        el.className = "m10-destello-error";
         document.body.appendChild(el);
         setTimeout(() => { if (el.parentNode) el.remove(); }, 500);
     }
 
     function destelloExito() {
-        const viejo = document.querySelector(".matv9-destello-exito");
+        const viejo = document.querySelector(".m10-destello-exito");
         if (viejo) viejo.remove();
         const el = document.createElement("div");
-        el.className = "matv9-destello-exito";
+        el.className = "m10-destello-exito";
         document.body.appendChild(el);
         setTimeout(() => { if (el.parentNode) el.remove(); }, 950);
     }
 
     function confeti() {
-        const viejo = document.querySelector(".matv9-confeti");
+        const viejo = document.querySelector(".m10-confeti");
         if (viejo) viejo.remove();
 
         const capa = document.createElement("div");
-        capa.className = "matv9-confeti";
+        capa.className = "m10-confeti";
         const colores = ["#ef4444", "#f59e0b", "#eab308", "#22c55e", "#06b6d4", "#3b82f6", "#8b5cf6", "#ec4899"];
 
         for (let i = 0; i < 38; i++) {
             const p = document.createElement("i");
-            p.className = "matv9-confeti-pieza" + (i % 3 === 0 ? " matv9-serpentina" : "");
+            p.className = "m10-confeti-pieza" + (i % 3 === 0 ? " m10-serpentina" : "");
             p.style.left = (Math.random() * 100) + "vw";
             p.style.background = colores[i % colores.length];
             p.style.animationDuration = (1.6 + Math.random() * 1.4) + "s";
@@ -1057,14 +1208,15 @@ const MatematicasV2 = (function () {
     }
 
     function feedback(clase, texto) {
-        const el = $("matv9Feedback");
-        el.className = "matv9-feedback " + clase;
+        const el = $("m10Feedback");
+        el.className = "m10-feedback " + clase;
         el.textContent = texto;
     }
 
     function fallo(texto) {
-        feedback("matv9-feedback-mal", texto || "Intenta otra vez.");
+        feedback("m10-feedback-mal", texto || "Intenta otra vez.");
         mostrarReaccion(false, texto || "Intenta otra vez.");
+        mascotaReaccion("triste");
         reproducirSonidoIncorrectoMat();
         vibrarError();
         destelloRojo();
@@ -1072,11 +1224,12 @@ const MatematicasV2 = (function () {
 
     function accionCompletada() {
         if (estado.respondida) return;
-        feedback("matv9-feedback-info", estado.modo === "practicar" ? "Ahora elige el resultado." : "Elige el resultado.");
+        feedback("m10-feedback-info", estado.modo === "practicar" ? "Ahora elige la respuesta." : "Elige la respuesta.");
         mostrarRespuestas();
     }
 
-    function opcionesRespuesta(correcto) {
+    /* ---------- Opciones de respuesta ---------- */
+    function opcionesRespuestaNumericas(correcto) {
         const valores = [correcto];
         const amplitud = Math.max(2, Math.round(correcto * 0.18));
         let intentos = 0;
@@ -1085,41 +1238,62 @@ const MatematicasV2 = (function () {
             const v = Math.max(0, correcto + randInt(-amplitud, amplitud));
             if (!valores.includes(v)) valores.push(v);
         }
-        return barajar(valores);
+        return barajar(valores).map((v) => ({ valor: v, texto: String(v) }));
+    }
+
+    function opcionesRespuestaComparar() {
+        return barajar([
+            { valor: "<", texto: "<" },
+            { valor: ">", texto: ">" },
+            { valor: "=", texto: "=" }
+        ]);
     }
 
     function mostrarRespuestas() {
-        const cont = $("matv9Respuestas");
-        if (cont.querySelector(".matv9-respuestas")) return;
+        const cont = $("m10Respuestas");
+        if (cont.querySelector(".m10-respuestas")) return;
+
+        const esComparar = estado.operacion === "comparar";
+        const correcto = estado.problema.resultado;
+        const opciones = esComparar ? opcionesRespuestaComparar() : opcionesRespuestaNumericas(correcto);
 
         const fila = document.createElement("div");
-        fila.className = "matv9-respuestas";
+        fila.className = "m10-respuestas";
 
-        opcionesRespuesta(estado.problema.resultado).forEach((v) => {
+        opciones.forEach((op) => {
             const btn = document.createElement("button");
             btn.type = "button";
-            btn.className = "matv9-respuesta";
-            btn.textContent = String(v);
+            btn.className = "m10-respuesta";
+            btn.textContent = op.texto;
 
             btn.addEventListener("click", () => {
                 if (estado.respondida) return;
 
-                if (v === estado.problema.resultado) {
+                if (op.valor === correcto) {
                     estado.respondida = true;
                     detenerTimer();
-                    btn.classList.add("matv9-correcta");
+                    btn.classList.add("m10-correcta");
                     fila.querySelectorAll("button").forEach((b) => { b.disabled = true; });
-                    $("matv9Resultado").textContent = String(v);
-                    $("matv9Resultado").classList.add("matv9-resultado-listo");
+
+                    if (esComparar) {
+                        const vs = document.querySelector("#m10Escena .m10-comparar-vs");
+                        if (vs) vs.textContent = String(op.valor);
+                    } else {
+                        const r = $("m10Resultado");
+                        if (r) { r.textContent = String(op.valor); r.classList.add("m10-eq-lista"); }
+                    }
+
+                    sumarEstrella();
                     estado.puntaje++;
-                    feedback("matv9-feedback-bien", "¡Excelente!");
-                    mostrarReaccion(true, "¡Excelente!");
+                    feedback("m10-feedback-bien", "¡Muy bien!");
+                    mostrarReaccion(true, "¡Muy bien!");
+                    mascotaReaccion("feliz");
                     reproducirSonidoCorrectoMat();
                     celebrar();
-                    $("matv9Siguiente").classList.remove("matv9-oculto");
+                    $("m10Siguiente").classList.remove("m10-oculto");
                 } else {
-                    btn.classList.add("matv9-incorrecta");
-                    fallo("Observa y prueba otra vez.");
+                    btn.classList.add("m10-incorrecta");
+                    fallo("Observa otra vez.");
                 }
             });
 
@@ -1129,19 +1303,40 @@ const MatematicasV2 = (function () {
         cont.appendChild(fila);
     }
 
+    /* ---------- Estrellas de la ronda actual ---------- */
+    function sumarEstrella() {
+        estado.estrellasRonda[estado.pregunta - 1] = true;
+        pintarEstrellasRonda();
+        sumarEstrellasTotales(1);
+        pintarEstrellasTotales();
+    }
+
+    function pintarEstrellasRonda() {
+        const cont = $("m10EstrellasRonda");
+        if (!cont) return;
+        cont.innerHTML = "";
+        for (let i = 0; i < 5; i++) {
+            const s = document.createElement("span");
+            s.className = "m10-estrella" + (estado.estrellasRonda[i] ? " m10-ganada" : "");
+            s.textContent = "⭐";
+            cont.appendChild(s);
+        }
+    }
+
+    /* ---------- Cuenta regresiva y temporizador (modo Jugar) ---------- */
     function mostrarCuentaRegresiva(n) {
-        let overlay = $("matv9CuentaRegresiva");
+        let overlay = $("m10CuentaRegresiva");
         if (!overlay) {
             overlay = document.createElement("div");
-            overlay.id = "matv9CuentaRegresiva";
-            overlay.className = "matv9-cuenta-regresiva";
+            overlay.id = "m10CuentaRegresiva";
+            overlay.className = "m10-cuenta-regresiva";
             document.body.appendChild(overlay);
         }
-        overlay.innerHTML = `<div class="matv9-cuenta-numero${n <= 3 ? " matv9-urgente" : ""}">${n}</div>`;
+        overlay.innerHTML = '<div class="m10-cuenta-numero' + (n <= 3 ? " m10-urgente" : "") + '">' + n + '</div>';
     }
 
     function ocultarCuentaRegresiva() {
-        const overlay = $("matv9CuentaRegresiva");
+        const overlay = $("m10CuentaRegresiva");
         if (overlay) overlay.remove();
     }
 
@@ -1155,18 +1350,19 @@ const MatematicasV2 = (function () {
 
     function iniciarTimer() {
         detenerTimer();
-        const wrap = $("matv9TimerWrap");
-        const barra = $("matv9Timer");
+        const wrap = $("m10TimerWrap");
+        const barra = $("m10Timer");
 
         if (estado.modo !== "jugar") {
-            wrap.classList.add("matv9-oculto");
+            wrap.classList.add("m10-oculto");
             return;
         }
 
-        wrap.classList.remove("matv9-oculto");
+        wrap.classList.remove("m10-oculto");
         barra.style.background = "#22c55e";
-        estado.tiempoMax = estado.nivel <= 2 ? 18 : estado.nivel === 3 ? 22 : 26;
-        estado.tiempoRestante = estado.tiempoMax;
+        const base = estado.operacion === "comparar" ? 12 : (estado.nivel === 1 ? 18 : estado.nivel === 2 ? 22 : 28);
+        estado.tiempoMax = base;
+        estado.tiempoRestante = base;
         barra.style.width = "100%";
 
         estado.timerId = setInterval(() => {
@@ -1184,9 +1380,9 @@ const MatematicasV2 = (function () {
 
             if (estado.tiempoRestante <= 0) {
                 detenerTimer();
-                $("matv9Respuestas").innerHTML = "";
-                fallo("Tiempo.");
-                $("matv9Siguiente").classList.remove("matv9-oculto");
+                $("m10Respuestas").innerHTML = "";
+                fallo("Se acabo el tiempo.");
+                $("m10Siguiente").classList.remove("m10-oculto");
             }
         }, 1000);
     }
@@ -1194,10 +1390,10 @@ const MatematicasV2 = (function () {
     function limpiarPregunta() {
         estado.tutorialActivo = false;
         estado.respondida = false;
-        $("matv9Respuestas").innerHTML = "";
-        $("matv9Feedback").innerHTML = "";
-        $("matv9Feedback").className = "";
-        $("matv9Siguiente").classList.add("matv9-oculto");
+        $("m10Respuestas").innerHTML = "";
+        $("m10Feedback").innerHTML = "";
+        $("m10Feedback").className = "";
+        $("m10Siguiente").classList.add("m10-oculto");
     }
 
     function siguientePregunta() {
@@ -1212,16 +1408,16 @@ const MatematicasV2 = (function () {
         estado.problema = generarProblema();
         limpiarPregunta();
 
-        $("matv9Barra").style.width = ((estado.pregunta - 1) / 5 * 100) + "%";
-        $("matv9Score").textContent = `⭐ ${estado.puntaje} · Pregunta ${estado.pregunta} de 5`;
-        $("matv9AyudaJuego").textContent = estado.modo === "practicar" ? "Tutorial + eliges al final" : "Con tiempo";
+        $("m10Barra").style.width = ((estado.pregunta - 1) / 5 * 100) + "%";
+        pintarEstrellasRonda();
 
-        renderizarEcuacion();
+        renderizarPrompt();
 
         if (estado.operacion === "suma") renderSuma();
         else if (estado.operacion === "resta") renderResta();
         else if (estado.operacion === "multiplicacion") renderMultiplicacion();
-        else renderDivision();
+        else if (estado.operacion === "division") renderDivision();
+        else renderComparar();
 
         iniciarTimer();
     }
@@ -1229,21 +1425,34 @@ const MatematicasV2 = (function () {
     function finalizar() {
         detenerTimer();
         estado.finalizada = true;
-        $("matv9Barra").style.width = "100%";
-        $("matv9Ecuacion").innerHTML = `<span class="matv9-fin-trofeo">🏆</span>`;
-        $("matv9Escena").className = "matv9-escena";
-        $("matv9Escena").innerHTML =
-            `<div class="matv9-fin"><div>🥳👏🏻</div><h3>${estado.puntaje} / 5</h3><p>Fin de la ronda</p></div>`;
-        $("matv9Respuestas").innerHTML = "";
-        $("matv9Feedback").innerHTML = "";
-        $("matv9TimerWrap").classList.add("matv9-oculto");
+        $("m10Barra").style.width = "100%";
+        $("m10Prompt").innerHTML = "";
+
+        const totalGanadas = estado.estrellasRonda.filter(Boolean).length;
+        const estrellasTexto = "⭐".repeat(totalGanadas) + "☆".repeat(5 - totalGanadas);
+        const trofeo = totalGanadas >= 4 ? "🏆" : totalGanadas >= 2 ? "🎉" : "💪";
+
+        $("m10Escena").className = "m10-escena";
+        $("m10Escena").innerHTML =
+            '<div class="m10-fin">' +
+                '<div class="m10-fin-trofeo">' + trofeo + '</div>' +
+                '<h3>' + totalGanadas + ' de 5</h3>' +
+                '<p>Ronda terminada</p>' +
+                '<div class="m10-fin-estrellas">' + estrellasTexto + '</div>' +
+                '<div class="m10-fin-total">⭐ ' + leerEstrellasTotales() + ' en total</div>' +
+            '</div>';
+        $("m10Respuestas").innerHTML = "";
+        $("m10Feedback").innerHTML = "";
+        $("m10TimerWrap").classList.add("m10-oculto");
+        mascotaReaccion(totalGanadas >= 3 ? "feliz" : null);
         celebrar();
 
-        const siguiente = $("matv9Siguiente");
-        siguiente.textContent = "Volver al menú";
-        siguiente.classList.remove("matv9-oculto");
+        const siguiente = $("m10Siguiente");
+        siguiente.textContent = "Volver al menu";
+        siguiente.classList.remove("m10-oculto");
     }
 
+    /* ---------- API publica ---------- */
     function iniciar() {
         if (!asegurarUI()) return;
         detenerTimer();
@@ -1285,14 +1494,18 @@ window.MatematicasV2 = MatematicasV2;
 /* ============================================================
    HISTORIAL INTERNO DE HERRAMIENTAS > JUGAR
    ------------------------------------------------------------
-   El botón/gesto Atrás del celular retrocede una pantalla:
-   partida Matemáticas -> menú Matemáticas -> menú de juegos -> Herramientas.
-   Los otros juegos también vuelven primero al menú de juegos.
+   Sin cambios: este modulo es compartido por TODOS los juegos de
+   Herramientas > Jugar (Completar, Unir, Quiz y Matematicas), no
+   solo por Matematicas, asi que se mantiene exactamente igual.
+
+   El boton/gesto Atras del celular retrocede una pantalla:
+   partida Matematicas -> menu Matematicas -> menu de juegos -> Herramientas.
+   Los otros juegos tambien vuelven primero al menu de juegos.
 
    El listener popstate usa CAPTURA para resolver las pantallas internas
    de Jugar antes que el router general de script.js. Solo intercepta
-   cuando el destino continúa dentro de ?vista=herramientas-jugar.
-   Si el destino ya es Herramientas u otra sección, deja actuar al router
+   cuando el destino continua dentro de ?vista=herramientas-jugar.
+   Si el destino ya es Herramientas u otra seccion, deja actuar al router
    principal normalmente.
    ============================================================ */
 const HistorialJuegosLSPedia = (function () {
@@ -1425,7 +1638,7 @@ const HistorialJuegosLSPedia = (function () {
     if (params.get("vista") !== "herramientas-jugar") return;
 
     // script.js se carga antes que matematicas.js. Dejamos que el
-    // router general reconstruya Herramientas > Jugar y después
+    // router general reconstruya Herramientas > Jugar y despues
     // restauramos la pantalla interna exacta indicada por la URL.
     setTimeout(() => {
         const actuales = new URLSearchParams(window.location.search);
@@ -1442,7 +1655,7 @@ const HistorialJuegosLSPedia = (function () {
     function volverAlMenuJuegosDesdeBoton() {
         const params = new URLSearchParams(window.location.search);
         if (params.get("vista") === "herramientas-jugar" && params.get("juego") && window.history.length > 1) {
-            // Un solo paso: partida -> menú del juego -> Jugar -> Herramientas.
+            // Un solo paso: partida -> menu del juego -> Jugar -> Herramientas.
             window.history.back();
             return;
         }
