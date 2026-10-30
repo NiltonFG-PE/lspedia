@@ -208,6 +208,28 @@ html[data-lsp-tema="dark"] #seccionQuiz .quiz-memoria-carta.acertada .quiz-memor
     border-color: #22c55e !important;
     color: #86efac !important;
 }
+html[data-lsp-tema="dark"] #seccionQuiz .alfab-nivel-hero-completar {
+    background: linear-gradient(135deg, #1f1708, #2a1a08) !important;
+    border-color: #4a3012 !important;
+}
+html[data-lsp-tema="dark"] #seccionQuiz .alfab-nivel-hero-unir {
+    background: linear-gradient(135deg, #07211d, #0a2a25) !important;
+    border-color: #0f4a40 !important;
+}
+html[data-lsp-tema="dark"] #seccionQuiz .alfab-nivel-hero-titulo {
+    color: #edf5ff !important;
+}
+html[data-lsp-tema="dark"] #seccionQuiz .alfab-nivel-hero-texto {
+    color: #9aabc0 !important;
+}
+html[data-lsp-tema="dark"] #seccionQuiz .alfab-nivel-hero-palabra span,
+html[data-lsp-tema="dark"] #seccionQuiz .alfab-nivel-hero-nodo {
+    background: #111c2f !important;
+    color: #e7eef8 !important;
+}
+html[data-lsp-tema="dark"] #seccionQuiz .alfab-nivel-hero-palabra span.alfab-nivel-hero-hueco {
+    color: transparent !important;
+}
 
 /* ============================================================
    MATEMÁTICAS
