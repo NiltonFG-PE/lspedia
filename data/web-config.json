@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "actualizadoEn": "2026-10-03T17:54:56.544Z",
+  "actualizadoEn": "2026-11-03T13:21:05.635Z",
   "header": {
     "logo": "video/lspedia_transparente.webm",
     "logoOscuro": "",
@@ -41,10 +41,11 @@
       "estilo": {
         "fuente": "inherit",
         "emoji": "",
-        "tituloColor": "#000000",
-        "acentoColor": "#000000",
-        "subtituloColor": "#000000",
-        "negrita": []
+        "tituloColor": "#17233c",
+        "acentoColor": "#268bff",
+        "subtituloColor": "#425466",
+        "negrita": [],
+        "aplicar": false
       },
       "avatar": "img/avatar_lupa.webm",
       "buscadorPlaceholder": "Buscar palabra",
@@ -62,10 +63,11 @@
       "estilo": {
         "fuente": "inherit",
         "emoji": "",
-        "tituloColor": "#000000",
-        "acentoColor": "#000000",
-        "subtituloColor": "#000000",
-        "negrita": []
+        "tituloColor": "#17233c",
+        "acentoColor": "#268bff",
+        "subtituloColor": "#425466",
+        "negrita": [],
+        "aplicar": false
       },
       "avatar": "img/avatar_lupa.webm",
       "buscadorPlaceholder": "Buscar palabra",
@@ -137,19 +139,19 @@
   },
   "aviso": {
     "activo": false,
-    "tipo": "info",
-    "titulo": "Hay 3 nuevos videos",
-    "mensaje": "REVISA AHORA",
+    "tipo": "nuevo",
+    "titulo": "Nuevos videos agregados",
+    "mensaje": "",
     "estilo": {
       "tituloNegrita": false,
-      "tituloCursiva": false,
+      "tituloCursiva": true,
       "mensajeNegrita": false,
       "mensajeCursiva": false
     },
     "botonTexto": "",
     "url": "",
-    "inicio": "2026-09-27T16:20",
-    "fin": "2026-09-27T16:25",
+    "inicio": "2026-11-03T08:15",
+    "fin": "2026-09-30T16:25",
     "frecuencia": "siempre"
   },
   "novedades": {
@@ -369,5 +371,6 @@
         "contenido": ""
       }
     ]
-  }
+  },
+  "textoEnriquecido": {}
 }
