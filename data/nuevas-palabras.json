@@ -1,9 +1,64 @@
 {
-  "generadoEn": "2026-11-03T20:26:22Z",
+  "generadoEn": "2026-11-03T20:37:27Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 239,
+  "maxItems": 244,
   "diasEtiquetaNuevo": 14,
   "items": [
+    {
+      "id": "",
+      "palabra": "Padrino",
+      "categoria": "Familia y relaciones personales",
+      "imagen": "img/vocabulario/padrino.webp",
+      "fecha": "2026-11-03T20:33:53Z",
+      "fechaPublicacion": "2026-11-03T05:00:00Z",
+      "publicadoEn": "2026-11-03T20:33:53Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Madrina",
+      "categoria": "Familia y relaciones personales",
+      "imagen": "img/vocabulario/madrina.webp",
+      "fecha": "2026-11-03T20:32:45Z",
+      "fechaPublicacion": "2026-11-03T05:00:00Z",
+      "publicadoEn": "2026-11-03T20:32:45Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Nieta",
+      "categoria": "Familia y relaciones personales",
+      "imagen": "img/vocabulario/nieta.webp",
+      "fecha": "2026-11-03T20:30:51Z",
+      "fechaPublicacion": "2026-11-03T05:00:00Z",
+      "publicadoEn": "2026-11-03T20:30:51Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Nieto",
+      "categoria": "Familia y relaciones personales",
+      "imagen": "img/vocabulario/nieto.webp",
+      "fecha": "2026-11-03T20:29:48Z",
+      "fechaPublicacion": "2026-11-03T05:00:00Z",
+      "publicadoEn": "2026-11-03T20:29:48Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Matrimonio",
+      "categoria": "Familia y relaciones personales",
+      "imagen": "img/vocabulario/matrimonio.webp",
+      "fecha": "2026-11-03T20:27:12Z",
+      "fechaPublicacion": "2026-11-03T05:00:00Z",
+      "publicadoEn": "2026-11-03T20:27:12Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
     {
       "id": "",
       "palabra": "Papá",
