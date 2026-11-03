@@ -1,9 +1,31 @@
 {
-  "generadoEn": "2026-11-03T04:40:34Z",
+  "generadoEn": "2026-11-03T04:58:08Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 222,
+  "maxItems": 224,
   "diasEtiquetaNuevo": 14,
   "items": [
+    {
+      "id": "",
+      "palabra": "Pero",
+      "categoria": "Comunicación",
+      "imagen": "img/vocabulario/pero.webp",
+      "fecha": "2026-11-03T04:57:46Z",
+      "fechaPublicacion": "2026-11-02T05:00:00Z",
+      "publicadoEn": "2026-11-03T04:57:46Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Luego",
+      "categoria": "Adverbios",
+      "imagen": "img/vocabulario/luego.webp",
+      "fecha": "2026-11-03T04:45:06Z",
+      "fechaPublicacion": "2026-11-02T05:00:00Z",
+      "publicadoEn": "2026-11-03T04:45:06Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
     {
       "id": "",
       "palabra": "Listo",

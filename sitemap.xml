@@ -491,6 +491,11 @@
         <priority>0.8</priority>
     </url>
     <url>
+        <loc>https://lspedia.site/vocabulario/luego-adverbios/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
         <loc>https://lspedia.site/vocabulario/amarillo-colores/</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
@@ -1132,6 +1137,11 @@
     </url>
     <url>
         <loc>https://lspedia.site/vocabulario/listo-adjetivos/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/vocabulario/pero-comunicacion/</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
