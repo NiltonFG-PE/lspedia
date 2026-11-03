@@ -3986,7 +3986,6 @@ function mostrarPalabraSimplificada(p, opciones = {}){
                 <h3 class="fw-bold mb-0" style="color: #0d6efd;">${escaparHtml(p.palabra)}</h3>
                 ${generarBotonCompartir()}
             </div>
-            ${bloqueDefinicionVocabulario}
             ${bloqueVariantes}
             <div class="row g-4 justify-content-center align-items-stretch">
                 <div class="col-lg-7 d-flex flex-column">
