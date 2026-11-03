@@ -3899,9 +3899,8 @@ function mostrarPalabraSimplificada(p, opciones = {}){
         buscar.blur();
         sugerencias.innerHTML = "";
         sugerencias.style.display = "none";
-        panelCategorias.innerHTML = "";
-        categoriaActualMostrada = null;
-    coleccionActualMostrada = null;
+        // En Vocabulario, las tarjetas de categorías deben permanecer visibles
+        // mientras se consulta una palabra. Solo se limpia el resultado anterior.
         ultimasPalabras.innerHTML = "";
         resultado.innerHTML = "";
     } else {
