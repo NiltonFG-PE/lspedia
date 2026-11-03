@@ -1,9 +1,64 @@
 {
-  "generadoEn": "2026-11-03T20:16:12Z",
+  "generadoEn": "2026-11-03T20:26:22Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 234,
+  "maxItems": 239,
   "diasEtiquetaNuevo": 14,
   "items": [
+    {
+      "id": "",
+      "palabra": "Papá",
+      "categoria": "Familia y relaciones personales",
+      "imagen": "img/vocabulario/papa.webp",
+      "fecha": "2026-11-03T20:23:32Z",
+      "fechaPublicacion": "2026-11-03T05:00:00Z",
+      "publicadoEn": "2026-11-03T20:23:32Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Mamá",
+      "categoria": "Familia y relaciones personales",
+      "imagen": "img/vocabulario/mama.webp",
+      "fecha": "2026-11-03T20:21:19Z",
+      "fechaPublicacion": "2026-11-03T05:00:00Z",
+      "publicadoEn": "2026-11-03T20:21:19Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Hija",
+      "categoria": "Familia y relaciones personales",
+      "imagen": "img/vocabulario/hija.webp",
+      "fecha": "2026-11-03T20:19:52Z",
+      "fechaPublicacion": "2026-11-03T05:00:00Z",
+      "publicadoEn": "2026-11-03T20:19:52Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Hijo",
+      "categoria": "Familia y relaciones personales",
+      "imagen": "img/vocabulario/hijo.webp",
+      "fecha": "2026-11-03T20:16:20Z",
+      "fechaPublicacion": "2026-11-03T05:00:00Z",
+      "publicadoEn": "2026-11-03T20:16:20Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Hermana",
+      "categoria": "Familia y relaciones personales",
+      "imagen": "img/vocabulario/hermana.webp",
+      "fecha": "2026-11-03T20:15:03Z",
+      "fechaPublicacion": "2026-11-03T05:00:00Z",
+      "publicadoEn": "2026-11-03T20:15:03Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
     {
       "id": "",
       "palabra": "Hermano",
