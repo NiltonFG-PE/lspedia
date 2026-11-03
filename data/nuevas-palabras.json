@@ -1,9 +1,119 @@
 {
-  "generadoEn": "2026-11-03T04:58:08Z",
+  "generadoEn": "2026-11-03T20:16:12Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 224,
+  "maxItems": 234,
   "diasEtiquetaNuevo": 14,
   "items": [
+    {
+      "id": "",
+      "palabra": "Hermano",
+      "categoria": "Familia y relaciones personales",
+      "imagen": "img/vocabulario/hermano.webp",
+      "fecha": "2026-11-03T20:12:12Z",
+      "fechaPublicacion": "2026-11-03T05:00:00Z",
+      "publicadoEn": "2026-11-03T20:12:12Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Cuñada",
+      "categoria": "Familia y relaciones personales",
+      "imagen": "img/vocabulario/cunada.webp",
+      "fecha": "2026-11-03T20:04:13Z",
+      "fechaPublicacion": "2026-11-03T05:00:00Z",
+      "publicadoEn": "2026-11-03T20:04:13Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Cuñado",
+      "categoria": "Familia y relaciones personales",
+      "imagen": "img/vocabulario/cunado.webp",
+      "fecha": "2026-11-03T20:02:31Z",
+      "fechaPublicacion": "2026-11-03T05:00:00Z",
+      "publicadoEn": "2026-11-03T20:02:31Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Conviviente",
+      "categoria": "Familia y relaciones personales",
+      "imagen": "img/vocabulario/conviviente.webp",
+      "fecha": "2026-11-03T19:56:40Z",
+      "fechaPublicacion": "2026-11-03T05:00:00Z",
+      "publicadoEn": "2026-11-03T19:56:40Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Compromiso amoroso",
+      "categoria": "Familia y relaciones personales",
+      "imagen": "img/vocabulario/compromiso-amoroso.webp",
+      "fecha": "2026-11-03T19:53:26Z",
+      "fechaPublicacion": "2026-11-03T05:00:00Z",
+      "publicadoEn": "2026-11-03T19:53:26Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Ahijada",
+      "categoria": "Familia y relaciones personales",
+      "imagen": "img/vocabulario/ahijada.webp",
+      "fecha": "2026-11-03T19:49:54Z",
+      "fechaPublicacion": "2026-11-03T05:00:00Z",
+      "publicadoEn": "2026-11-03T19:49:54Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Ahijado",
+      "categoria": "Familia y relaciones personales",
+      "imagen": "img/vocabulario/ahijado.webp",
+      "fecha": "2026-11-03T19:47:14Z",
+      "fechaPublicacion": "2026-11-03T05:00:00Z",
+      "publicadoEn": "2026-11-03T19:47:14Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Abuela",
+      "categoria": "Familia y relaciones personales",
+      "imagen": "img/vocabulario/abuela.webp",
+      "fecha": "2026-11-03T19:43:19Z",
+      "fechaPublicacion": "2026-11-03T05:00:00Z",
+      "publicadoEn": "2026-11-03T19:43:19Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Abuelo",
+      "categoria": "Familia y relaciones personales",
+      "imagen": "img/vocabulario/abuelo.webp",
+      "fecha": "2026-11-03T19:40:22Z",
+      "fechaPublicacion": "2026-11-03T05:00:00Z",
+      "publicadoEn": "2026-11-03T19:40:22Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Familia",
+      "categoria": "Familia y relaciones personales",
+      "imagen": "img/vocabulario/familia.webp",
+      "fecha": "2026-11-03T19:28:01Z",
+      "fechaPublicacion": "2026-11-03T05:00:00Z",
+      "publicadoEn": "2026-11-03T19:28:01Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
     {
       "id": "",
       "palabra": "Pero",
