@@ -1,9 +1,20 @@
 {
-  "generadoEn": "2026-11-03T04:29:14Z",
+  "generadoEn": "2026-11-03T04:40:34Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 221,
+  "maxItems": 222,
   "diasEtiquetaNuevo": 14,
   "items": [
+    {
+      "id": "",
+      "palabra": "Listo",
+      "categoria": "Adjetivos",
+      "imagen": "img/vocabulario/listo.webp",
+      "fecha": "2026-11-03T04:39:55Z",
+      "fechaPublicacion": "2026-11-02T05:00:00Z",
+      "publicadoEn": "2026-11-03T04:39:55Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
     {
       "id": "",
       "palabra": "Pronto",
