@@ -1,9 +1,31 @@
 {
-  "generadoEn": "2026-11-03T20:37:27Z",
+  "generadoEn": "2026-11-03T20:47:00Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 244,
+  "maxItems": 246,
   "diasEtiquetaNuevo": 14,
   "items": [
+    {
+      "id": "",
+      "palabra": "Yerno",
+      "categoria": "Familia y relaciones personales",
+      "imagen": "img/vocabulario/yerno.webp",
+      "fecha": "2026-11-03T20:44:00Z",
+      "fechaPublicacion": "2026-11-03T05:00:00Z",
+      "publicadoEn": "2026-11-03T20:44:00Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Nuera",
+      "categoria": "Familia y relaciones personales",
+      "imagen": "img/vocabulario/nuera.webp",
+      "fecha": "2026-11-03T20:39:15Z",
+      "fechaPublicacion": "2026-11-03T05:00:00Z",
+      "publicadoEn": "2026-11-03T20:39:15Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
     {
       "id": "",
       "palabra": "Padrino",
