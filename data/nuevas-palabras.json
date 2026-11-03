@@ -1,9 +1,20 @@
 {
-  "generadoEn": "2026-11-03T03:29:47Z",
+  "generadoEn": "2026-11-03T03:49:52Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 215,
+  "maxItems": 216,
   "diasEtiquetaNuevo": 14,
   "items": [
+    {
+      "id": "",
+      "palabra": "Ingresar",
+      "categoria": "Verbos",
+      "imagen": "img/vocabulario/ingresar.webp",
+      "fecha": "2026-11-03T03:49:13Z",
+      "fechaPublicacion": "2026-11-02T05:00:00Z",
+      "publicadoEn": "2026-11-03T03:49:13Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
     {
       "id": "",
       "palabra": "Derecha",
