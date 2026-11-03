@@ -746,7 +746,22 @@
         <priority>0.8</priority>
     </url>
     <url>
+        <loc>https://lspedia.site/vocabulario/hermana-familia-y-relaciones-personales/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
         <loc>https://lspedia.site/vocabulario/hermano-familia-y-relaciones-personales/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/vocabulario/mama-familia-y-relaciones-personales/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/vocabulario/papa-familia-y-relaciones-personales/</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
@@ -757,6 +772,16 @@
     </url>
     <url>
         <loc>https://lspedia.site/vocabulario/abuela-familia-y-relaciones-personales/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/vocabulario/hijo-familia-y-relaciones-personales/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/vocabulario/hija-familia-y-relaciones-personales/</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
