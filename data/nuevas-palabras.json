@@ -1,9 +1,20 @@
 {
-  "generadoEn": "2026-11-03T03:49:52Z",
+  "generadoEn": "2026-11-03T04:06:12Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 216,
+  "maxItems": 217,
   "diasEtiquetaNuevo": 14,
   "items": [
+    {
+      "id": "",
+      "palabra": "Siempre",
+      "categoria": "Adverbios",
+      "imagen": "img/vocabulario/siempre.webp",
+      "fecha": "2026-11-03T04:05:44Z",
+      "fechaPublicacion": "2026-11-02T05:00:00Z",
+      "publicadoEn": "2026-11-03T04:05:44Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
     {
       "id": "",
       "palabra": "Ingresar",
