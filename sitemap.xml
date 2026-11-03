@@ -461,6 +461,16 @@
         <priority>0.8</priority>
     </url>
     <url>
+        <loc>https://lspedia.site/vocabulario/arriba-adverbios/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/vocabulario/abajo-adverbios/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
         <loc>https://lspedia.site/vocabulario/amarillo-colores/</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
@@ -1077,6 +1087,11 @@
     </url>
     <url>
         <loc>https://lspedia.site/vocabulario/fuego-naturaleza/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/vocabulario/izquierda-adverbios/</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>

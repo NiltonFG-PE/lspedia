@@ -1,9 +1,42 @@
 {
-  "generadoEn": "2026-10-11T02:26:15Z",
+  "generadoEn": "2026-11-03T03:27:46Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 211,
+  "maxItems": 214,
   "diasEtiquetaNuevo": 14,
   "items": [
+    {
+      "id": "",
+      "palabra": "Izquierda",
+      "categoria": "Adverbios",
+      "imagen": "img/vocabulario/izquierda.webp",
+      "fecha": "2026-11-03T03:27:21Z",
+      "fechaPublicacion": "2026-11-02T05:00:00Z",
+      "publicadoEn": "2026-11-03T03:27:21Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Abajo",
+      "categoria": "Adverbios",
+      "imagen": "img/vocabulario/abajo.webp",
+      "fecha": "2026-11-03T03:14:29Z",
+      "fechaPublicacion": "2026-11-02T05:00:00Z",
+      "publicadoEn": "2026-11-03T03:14:29Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Arriba",
+      "categoria": "Adverbios",
+      "imagen": "img/vocabulario/arriba.webp",
+      "fecha": "2026-11-03T03:10:04Z",
+      "fechaPublicacion": "2026-11-02T05:00:00Z",
+      "publicadoEn": "2026-11-03T03:10:04Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
     {
       "id": "",
       "palabra": "Casi",
