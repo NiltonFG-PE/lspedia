@@ -1,9 +1,53 @@
 {
-  "generadoEn": "2026-11-03T04:06:12Z",
+  "generadoEn": "2026-11-03T04:29:14Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 217,
+  "maxItems": 221,
   "diasEtiquetaNuevo": 14,
   "items": [
+    {
+      "id": "",
+      "palabra": "Pronto",
+      "categoria": "Adverbios",
+      "imagen": "img/vocabulario/pronto.webp, img/vocabulario/pronto-2.webp",
+      "fecha": "2026-11-03T04:24:51Z",
+      "fechaPublicacion": "2026-11-02T05:00:00Z",
+      "publicadoEn": "2026-11-03T04:24:51Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Ya",
+      "categoria": "Adverbios",
+      "imagen": "img/vocabulario/ya.webp",
+      "fecha": "2026-11-03T04:19:57Z",
+      "fechaPublicacion": "2026-11-02T05:00:00Z",
+      "publicadoEn": "2026-11-03T04:19:57Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Faltar",
+      "categoria": "Verbos",
+      "imagen": "img/vocabulario/faltar.webp",
+      "fecha": "2026-11-03T04:17:04Z",
+      "fechaPublicacion": "2026-11-02T05:00:00Z",
+      "publicadoEn": "2026-11-03T04:17:04Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "A veces",
+      "categoria": "Adverbios",
+      "imagen": "img/vocabulario/a-veces.webp",
+      "fecha": "2026-11-03T04:12:51Z",
+      "fechaPublicacion": "2026-11-02T05:00:00Z",
+      "publicadoEn": "2026-11-03T04:12:51Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
     {
       "id": "",
       "palabra": "Siempre",
