@@ -5976,11 +5976,11 @@ function mostrarCategorias(){
         const icono = ICONOS_CATEGORIA_VOCABULARIO[nombreClave] || rutaIconoCategoriaDinamica(nombre);
         const emoji = EMOJIS_CATEGORIA_VOCABULARIO[nombreClave] || "📖";
         const iconoHtml = icono
-            ? `<img src="${icono}" alt="${nombre}" loading="lazy" style="width: 48px; height: 48px; object-fit: contain; margin-bottom: 8px;">`
-            : `<span style="font-size: 2rem; display: block; margin-bottom: 8px;">${emoji}</span>`;
+            ? `<img src="${icono}" alt="${nombre}" loading="lazy" style="width: 100%; height: 100%; max-width: 100%; max-height: 100%; object-fit: contain; display: block;">`
+            : `<span style="font-size: 2rem; line-height: 1;">${emoji}</span>`;
         const card = document.createElement("div");
         card.className = "col-4 col-md-3 animate-fade-in";
-        card.innerHTML = `<div class="card h-100 shadow-sm categoria-card" style="border-radius: 16px; border: 2px solid ${color.borde}; background-color: ${color.fondo};"><div class="card-body text-center py-4">${iconoHtml}<h5 class="mb-2 fw-bold" style="color: ${color.texto}; font-size: 1.25rem;">${nombre}</h5><p class="mb-0 fw-semibold" style="color: ${color.texto}; opacity: 0.85; font-size: 1rem;">${cantidad} palabras</p></div></div>`;
+        card.innerHTML = `<div class="card h-100 shadow-sm categoria-card" style="border-radius: 16px; border: 2px solid ${color.borde}; background-color: ${color.fondo};"><div class="card-body text-center py-4"><div class="categoria-card-icono" style="width:48px;height:48px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex:0 0 48px;">${iconoHtml}</div><h5 class="categoria-card-titulo mb-2 fw-bold" title="${escaparAtributoHtml(nombre)}" style="color: ${color.texto}; font-size: clamp(.78rem, 1.15vw, 1.05rem); line-height:1.2; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escaparHtml(nombre)}</h5><p class="mb-0 fw-semibold" style="color: ${color.texto}; opacity: 0.85; font-size: .9rem;">${cantidad} palabras</p></div></div>`;
         agregarBotonCompartirCategoria(card.querySelector(".categoria-card"), nombre, "vocabulario");
         card.onclick = () => mostrarCategoria(nombre);
         panelCategorias.appendChild(card);
