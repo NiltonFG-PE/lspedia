@@ -3206,8 +3206,30 @@ function buscarPalabras(){
                 const boton = document.createElement("button");
                 boton.className = "list-group-item list-group-item-action text-start";
                 boton.dataset.lspRef = obtenerIdPalabra(p);
-                boton.innerHTML = `<strong>${escaparHtml(p.palabra)}</strong> <span class="badge" style="font-size: 10px;">${escaparHtml(p.categoria.trim())}</span>`;
-                boton.onclick = () => mostrarPalabra(p);
+
+                // Mantiene el mismo formato visual de las sugerencias normales:
+                // miniatura de YouTube cuando existe y un marcador si no hay video.
+                const idVideoSugerencia = extraerIdYouTube(p.video);
+                const miniatura = idVideoSugerencia
+                    ? `<div class="sugerencia-thumb-wrap">
+                           <img src="https://i.ytimg.com/vi/${encodeURIComponent(idVideoSugerencia)}/mqdefault.jpg" alt="Seña de ${escaparAtributoHtml(p.palabra)}" loading="lazy" onerror="this.closest('.sugerencia-thumb-wrap').classList.add('sin-video');this.remove();">
+                           <span class="sugerencia-thumb-play">▶</span>
+                       </div>`
+                    : `<div class="sugerencia-thumb-wrap sin-video" aria-hidden="true">🤟</div>`;
+
+                boton.innerHTML = `
+                    <div class="sugerencia-fila">
+                        ${miniatura}
+                        <div class="sugerencia-texto">
+                            <strong>${escaparHtml(p.palabra)}</strong>
+                            <span class="badge" style="font-size: 10px;">${escaparHtml((p.categoria || "").trim())}</span>
+                        </div>
+                    </div>`;
+                boton.onclick = (evento) => {
+                    evento.preventDefault();
+                    evento.stopPropagation();
+                    mostrarPalabra(p);
+                };
                 sugerencias.appendChild(boton);
             });
             return;
