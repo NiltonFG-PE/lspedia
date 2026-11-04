@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-11-04T01:18:10Z",
+  "actualizado": "2026-11-04T09:11:21Z",
   "traducciones": [
     {
       "fuente": "diccionario",
@@ -232,7 +232,7 @@
       "categoria": "Economía",
       "ingles": "Saving",
       "aliases": [],
-      "definicionIngles": "It's money that a person saves without spending it, to use later.\n\nExample: I have savings to buy a laptop."
+      "definicionIngles": "It's money a person saves without spending it, to use later.\n\nExample: I have savings to buy a laptop."
     },
     {
       "fuente": "diccionario",
@@ -848,7 +848,7 @@
       "categoria": "Ciudad",
       "ingles": "Neighborhood",
       "aliases": [],
-      "definicionIngles": "It's the part of the city where a person lives, along with their neighbors.\n\nExample: Everyone knows each other in my neighborhood."
+      "definicionIngles": "It's the part of the city where a person lives, along with their neighbors.\n\nExample: In my neighborhood, everyone knows each other."
     },
     {
       "fuente": "diccionario",
@@ -912,7 +912,7 @@
       "categoria": "Transporte",
       "ingles": "Bicycle",
       "aliases": [],
-      "definicionIngles": "It's a two-wheeled vehicle that is propelled by pedaling.\n\nExample: I cycle to work every day."
+      "definicionIngles": "It's a two-wheeled vehicle that moves by pedaling.\n\nExample: I go to work by bicycle every day."
     },
     {
       "fuente": "diccionario",
@@ -1032,7 +1032,7 @@
       "categoria": "Tecnología",
       "ingles": "Bug",
       "aliases": [],
-      "definicionIngles": "A bug in a program that causes something to malfunction or malfunction unexpectedly."
+      "definicionIngles": "A bug in a program that causes something to work incorrectly or unexpectedly."
     },
     {
       "fuente": "diccionario",
@@ -1080,7 +1080,7 @@
       "categoria": "Transporte",
       "ingles": "Gearbox",
       "aliases": [],
-      "definicionIngles": "A set of gears that allows the force and speed transmitted to the wheels to be modified."
+      "definicionIngles": "Set of gears that allows modification of the force and speed transmitted to the wheels."
     },
     {
       "fuente": "diccionario",
@@ -2144,7 +2144,7 @@
       "categoria": "Política",
       "ingles": "Civil code",
       "aliases": [],
-      "definicionIngles": "Set of rules on people, family, contracts, property and other civil matters."
+      "definicionIngles": "A set of rules concerning people, family, contracts, property, and other civil matters."
     },
     {
       "fuente": "diccionario",
@@ -2376,7 +2376,7 @@
       "categoria": "Salud",
       "ingles": "Rest",
       "aliases": [],
-      "definicionIngles": "It's the time when the body relaxes and recovers energy.\n\nExample: I need rest because I worked a lot this week."
+      "definicionIngles": "This is the time when the body relaxes and recovers energy.\n\nExample: I need rest because I worked a lot this week."
     },
     {
       "fuente": "diccionario",
@@ -2558,7 +2558,7 @@
       "fuente": "diccionario",
       "palabra": "Dirección IP",
       "categoria": "Tecnología",
-      "ingles": "IP Address",
+      "ingles": "IP address",
       "aliases": [],
       "definicionIngles": "A number that identifies a device or connection within a network."
     },
@@ -4400,7 +4400,7 @@
       "categoria": "Comunicación",
       "ingles": "Audiovisual script",
       "aliases": [],
-      "definicionIngles": "A document that organizes what will be seen, heard, and said in an audiovisual production."
+      "definicionIngles": "Document that organizes what will be seen, heard, and said in an audiovisual production."
     },
     {
       "fuente": "diccionario",
@@ -4576,7 +4576,7 @@
       "categoria": "Salud",
       "ingles": "Hospital",
       "aliases": [],
-      "definicionIngles": "It's a large place where doctors treat and care for sick or injured people.\n\nExample: They took my grandfather to the hospital because he wasn't feeling well."
+      "definicionIngles": "It's a large place where doctors treat and heal sick or injured people.\n\nExample: They took my grandfather to the hospital because he wasn't feeling well."
     },
     {
       "fuente": "diccionario",
@@ -4736,7 +4736,7 @@
       "categoria": "Sociedad",
       "ingles": "Social inclusion",
       "aliases": [],
-      "definicionIngles": "Process to ensure that all people can participate and access opportunities and services without exclusion."
+      "definicionIngles": "Process to ensure that all people can participate in and access opportunities and services without exclusion."
     },
     {
       "fuente": "diccionario",
@@ -6104,7 +6104,7 @@
       "categoria": "Deportes",
       "ingles": "Game",
       "aliases": [],
-      "definicionIngles": "It's a game between two teams or two people in a sport.\n\nExample: We watched the soccer game on television."
+      "definicionIngles": "It's a game between two teams or people in a sport.\n\nExample: We watched the soccer game on television."
     },
     {
       "fuente": "diccionario",
@@ -6192,7 +6192,7 @@
       "categoria": "Ocio",
       "ingles": "Movie",
       "aliases": [],
-      "definicionIngles": "It's a story you see on television or at the movies, with moving images.\n\nExample: We saw an adventure movie on Saturday."
+      "definicionIngles": "It's a story that you see on television or at the movies, with moving images.\n\nExample: We saw an adventure movie on Saturday."
     },
     {
       "fuente": "diccionario",
@@ -6304,7 +6304,7 @@
       "categoria": "Comida",
       "ingles": "Fish",
       "aliases": [],
-      "definicionIngles": "It's fish that comes from the sea or river, and is widely used in Peruvian cuisine.\n\nFor example: Ceviche is made with fresh fish."
+      "definicionIngles": "It's fish that comes from the sea or rivers, and is widely used in Peruvian cuisine.\n\nFor example: Ceviche is made with fresh fish."
     },
     {
       "fuente": "diccionario",
@@ -7312,7 +7312,7 @@
       "categoria": "Ciudad",
       "ingles": "Municipal retreat",
       "aliases": [],
-      "definicionIngles": "Required distance between a building and certain limits of the land or public road."
+      "definicionIngles": "Required distance between a building and certain boundaries of the land or public road."
     },
     {
       "fuente": "diccionario",
@@ -7536,7 +7536,7 @@
       "categoria": "Salud",
       "ingles": "Sepsis",
       "aliases": [],
-      "definicionIngles": "A severe response of the body to an infection that can affect organs and be life-threatening."
+      "definicionIngles": "A severe bodily response to an infection that can affect organs and put life at risk."
     },
     {
       "fuente": "diccionario",
@@ -8000,7 +8000,7 @@
       "categoria": "Trabajo",
       "ingles": "Full-time",
       "aliases": [],
-      "definicionIngles": "Work that fulfills the full workday established by the company or the law."
+      "definicionIngles": "I work that fulfills the full workday established by the company or the law."
     },
     {
       "fuente": "diccionario",
@@ -8280,7 +8280,7 @@
       "categoria": "Familia",
       "ingles": "Aunt",
       "aliases": [],
-      "definicionIngles": "She's your dad's or mom's sister.\n\nExample: My aunt gave me a book for my birthday."
+      "definicionIngles": "She's your dad's or your mom's sister.\n\nExample: My aunt gave me a book for my birthday."
     },
     {
       "fuente": "diccionario",
@@ -8448,7 +8448,7 @@
       "categoria": "Ciudad",
       "ingles": "Natural ventilation",
       "aliases": [],
-      "definicionIngles": "Air movement that enters and exits a space without using mechanical equipment."
+      "definicionIngles": "Air movement that enters and exits a space without the use of mechanical equipment."
     },
     {
       "fuente": "diccionario",
@@ -8632,7 +8632,7 @@
       "categoria": "Deportes",
       "ingles": "Referee",
       "aliases": [],
-      "definicionIngles": "This is the person who officiates a match and decides whether something is allowed or not.\n\nExample: The referee called a foul in the match."
+      "definicionIngles": "It's the person who officiates a match and decides whether something is allowed or not.\n\nExample: The referee called a foul in the match."
     },
     {
       "fuente": "diccionario",
