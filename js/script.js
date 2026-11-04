@@ -729,7 +729,7 @@ function actualizarVistaUrl(vista){
 const TITULOS_PRINCIPALES = {
     diccionario: {
         titulo: '<span class="titulo-acento">Diccionario</span> de Lengua de Señas Peruana (LSP) y Español',
-        subtituloHtml: '<div class="aviso-mision-texto"><p class="aviso-mision-linea1">🔎 Busca una palabra y entiende su significado con videos en Lengua de Señas.<br>🧏🏻‍♂️🧏🏻‍♀️ Para personas sordas y para quienes quieren comunicarse mejor con ellas.</p><p class="aviso-mision-linea2">ℹ️ Diccionario de apoyo, no un curso de LSP.</p></div>'
+        subtituloHtml: '<div class="aviso-mision-texto"><p class="aviso-mision-linea1">🔎 Encuentra una palabra y descubre su significado con el apoyo de videos en Lengua de Señas Peruana (LSP).</p><p class="aviso-mision-publico">🧏🏻‍♂️🧏🏻‍♀️ Un espacio de consulta para personas sordas y oyentes que desean comprender mejor las palabras y comunicarse.</p></div>'
     },
     vocabulario: {
         titulo: '<span class="titulo-acento">Vocabulario</span> de Lengua de Señas Peruana (LSP)',
@@ -743,6 +743,7 @@ function actualizarTituloPrincipal(vista){
     const titulo = document.getElementById("tituloPrincipal");
     const subtitulo = document.getElementById("subtituloPrincipal");
     const listaVocab = document.getElementById("vocabularioIntroLista");
+    const colaboradorLSP = document.getElementById("lspModeloLinguistico");
     // innerHTML (no textContent): así se conserva el <span class="titulo-acento">
     // que colorea la primera palabra en cada vista.
     if(titulo) titulo.innerHTML = datos.titulo;
@@ -753,6 +754,7 @@ function actualizarTituloPrincipal(vista){
     // porque tiene su propio ícono + 2 párrafos, no es texto plano.
     if(subtitulo) subtitulo.classList.toggle("d-none", esVocabulario);
     if(listaVocab) listaVocab.classList.toggle("d-none", !esVocabulario);
+    if(colaboradorLSP) colaboradorLSP.classList.toggle("d-none", !esVocabulario);
     if(subtitulo && !esVocabulario && datos.subtituloHtml) subtitulo.innerHTML = window.LSPediaMision ? window.LSPediaMision.html() : datos.subtituloHtml;
 }
 
