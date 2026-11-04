@@ -49,6 +49,8 @@
     color:#172554;
 }
 #${CARD_ID}.is-hidden{display:none!important}
+/* Evita que la tarjeta aparezca expandida y luego se contraiga de golpe antes de que cargue aprendizaje-colapsable.js */
+#${CARD_ID}:not(.lsp-learning-collapse-ready){display:none!important}
 #${CARD_ID}::after{
     content:"";
     position:absolute;
@@ -342,7 +344,7 @@
 
         card = document.createElement('section');
         card.id = CARD_ID;
-        card.className = 'is-hidden';
+        card.className = 'is-hidden lsp-learning-collapsed';
         card.setAttribute('aria-label','Tu aprendizaje en Vocabulario');
         card.innerHTML = `
             <div class="vocab-learning-top">
@@ -462,9 +464,13 @@
 
     async function cargarTotales(){
         try {
-            const respuesta = await fetch('data/vocabulario.json?learning=' + Date.now(),{cache:'no-store'});
-            if(!respuesta.ok) return;
-            const datos = await respuesta.json();
+            const api = window.LSPediaVocabularioPublico;
+            let datos = (api && typeof api.obtener === 'function') ? api.obtener() : null;
+            if(!Array.isArray(datos) || !datos.length){
+                const respuesta = await fetch('data/vocabulario.json');
+                if(!respuesta.ok) return;
+                datos = await respuesta.json();
+            }
             if(!Array.isArray(datos)) return;
             totalVocabulario = datos.length;
             categoriasTotales = new Set(datos.map(function(x){ return String((x && x.categoria) || '').trim().toLowerCase(); }).filter(Boolean)).size;

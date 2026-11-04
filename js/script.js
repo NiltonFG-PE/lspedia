@@ -1043,17 +1043,11 @@ if (btnAceptarAvisoVocabulario && modalAvisoVocabulario) {
         destino.classList.remove("vocab-buscador-revelado");
         void destino.offsetWidth;
         destino.classList.add("vocab-buscador-revelado");
-        // En tablet, el título de Vocabulario y el avatar deben quedar
-        // visibles desde el inicio. No desplazar hasta el buscador.
-        if(esTabletRealLSPedia()) scrollArribaEstable();
-        else scrollAlPrimerResultado(destino);
+        // Siempre ubicar el scroll al principio de la página (donde está el título)
+        scrollArribaEstable();
 
         setTimeout(() => {
             destino.classList.remove("vocab-buscador-revelado");
-            if (buscarCategorias) {
-                try { buscarCategorias.focus({ preventScroll: true }); }
-                catch (_error) { buscarCategorias.focus(); }
-            }
         }, 320);
     });
 }
@@ -1149,10 +1143,8 @@ document.getElementById("btnCategorias").addEventListener("click", (e) => {
         // apuntando al techo de la página (top:0) en vez de a un elemento.
         scrollArribaEstable();
     } else if (!avisoVocabularioMostrado) {
-        // Tablet: mostrar el título entero junto al avatar; en celulares
-        // conservar el desplazamiento al buscador que ya estaba aprobado.
-        if(esTabletRealLSPedia()) scrollArribaEstable();
-        else scrollAlPrimerResultado(bloqueBuscadorCategorias || panelCategorias);
+        // Siempre llevar el scroll al principio de la página (donde está el título)
+        scrollArribaEstable();
         panelCategorias.classList.add("highlight-anim");
         seccionFavoritos.classList.add("highlight-anim");
         seccionHistorial.classList.add("highlight-anim");
@@ -1641,6 +1633,10 @@ function ocultarBloqueInicio(){
 
 function mostrarBloqueInicio(){
     document.body.classList.remove("lsp-inicio-oculto");
+    const colaboradorLSP = document.getElementById("lspModeloLinguistico");
+    if(colaboradorLSP) colaboradorLSP.classList.add("d-none");
+    const listaVocabulario = document.getElementById("vocabularioIntroLista");
+    if(listaVocabulario) listaVocabulario.classList.add("d-none");
     const titulo = document.getElementById("bloqueTituloPrincipal");
     if(titulo) titulo.style.display = "";
     const bloqueBuscador = document.getElementById("bloqueBuscador");

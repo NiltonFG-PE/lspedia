@@ -3517,24 +3517,20 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
 
 
     <script id="vocabulario-layout-movil">
-        /* En móvil, el orden visual aprobado es:
-           título + avatar -> buscador -> tarjeta informativa -> categorías.
-           En escritorio la lista vuelve a su contenedor original. */
+        /* En todas las pantallas de Vocabulario el orden visual es:
+           título + avatar -> buscador (#bloqueBuscadorCategorias) -> subtemas (#vocabularioIntroLista) -> tarjeta Carlos Díaz (#lspModeloLinguistico) -> categorías (#panelCategorias). */
         (function () {
-            const mediaMovil = window.matchMedia('(max-width: 991.98px)');
-
             function reubicarInfoVocabulario() {
                 const info = document.getElementById('vocabularioIntroLista');
-                const titulo = document.getElementById('bloqueTituloPrincipal');
                 const buscador = document.getElementById('bloqueBuscadorCategorias');
-                if (!info || !titulo || !buscador) return;
+                const carlos = document.getElementById('lspModeloLinguistico');
+                if (!info || !buscador) return;
 
-                if (mediaMovil.matches) {
-                    if (info.previousElementSibling !== buscador) {
-                        buscador.insertAdjacentElement('afterend', info);
-                    }
-                } else if (info.parentElement !== titulo) {
-                    titulo.appendChild(info);
+                if (info.previousElementSibling !== buscador) {
+                    buscador.insertAdjacentElement('afterend', info);
+                }
+                if (carlos && carlos.previousElementSibling !== info) {
+                    info.insertAdjacentElement('afterend', carlos);
                 }
             }
 
@@ -3542,12 +3538,6 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                 document.addEventListener('DOMContentLoaded', reubicarInfoVocabulario, { once: true });
             } else {
                 reubicarInfoVocabulario();
-            }
-
-            if (typeof mediaMovil.addEventListener === 'function') {
-                mediaMovil.addEventListener('change', reubicarInfoVocabulario);
-            } else if (typeof mediaMovil.addListener === 'function') {
-                mediaMovil.addListener(reubicarInfoVocabulario);
             }
         })();
     </script>
@@ -3559,7 +3549,7 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
            primera acción evidente al entrar a la sección. */
         @media (max-width: 991.98px) {
             body.vista-temas-movil #bloqueBuscadorCategorias {
-                margin-top: -24px !important;
+                margin-top: 4px !important;
             }
 
             body.vista-temas-movil #bloqueBuscadorCategorias .input-group {
@@ -3625,7 +3615,7 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
            clara también fuera del modo móvil. */
         @media (min-width: 992px) {
             body.vista-temas-movil #bloqueBuscadorCategorias {
-                margin-top: -72px !important;
+                margin-top: 8px !important;
                 margin-bottom: 18px !important;
             }
         }
@@ -3958,8 +3948,8 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
 
             /* --- Vocabulario: menos espacio desaprovechado arriba --- */
             body.vista-temas-movil #bloqueBuscadorCategorias {
-                margin-top: -30px !important;
-                margin-bottom: 8px !important;
+                margin-top: 4px !important;
+                margin-bottom: 10px !important;
             }
 
             body.vista-temas-movil #vocabularioIntroLista {
@@ -5034,42 +5024,7 @@ html[data-lsp-tema="dark"] .sena-ia-coming-icon{background:rgba(71,85,105,.2);co
 <div class="aviso-mision-texto"><p class="aviso-mision-linea1">🔎 Encuentra una palabra y descubre su significado con el apoyo de videos en Lengua de Señas Peruana (LSP).</p><p class="aviso-mision-publico">🧏🏻‍♂️🧏🏻‍♀️ Un espacio de consulta para personas sordas y oyentes que desean comprender mejor las palabras y comunicarse.</p></div>
 </div>
 
-                    <!-- Lista de introducción exclusiva de "Vocabulario": 3 ideas
-                         cortas con ícono + conector vertical punteado entre ellos,
-                         igual al diseño de referencia. Reemplaza al párrafo simple
-                         de arriba mientras esta vista está activa (se alternan por
-                         JS en actualizarTituloPrincipal(), script.js). -->
-                    <div class="vocab-intro-lista d-none" id="vocabularioIntroLista">
-                        <div class="vocab-intro-item">
-                            <span class="vocab-intro-icono" aria-hidden="true">🔎</span>
-                            <p class="vocab-intro-texto">Las palabras en español sirven como <strong>referencia</strong> para facilitar las búsquedas.</p>
-                        </div>
-                        <div class="vocab-intro-item">
-                            <span class="vocab-intro-icono" aria-hidden="true">💡</span>
-                            <p class="vocab-intro-texto">Las señas representan <strong>conceptos</strong>, no solo palabras.</p>
-                        </div>
-                        <div class="vocab-intro-item">
-                            <span class="vocab-intro-icono" aria-hidden="true">🌎</span>
-                            <p class="vocab-intro-texto">Las <strong>variantes regionales</strong> enriquecen la Lengua de señas.</p>
-                        </div>
-                        <div class="vocab-intro-item">
-                            <span class="vocab-intro-icono" aria-hidden="true">🤝</span>
-                            <p class="vocab-intro-texto">No basta aprender vocabulario, también <strong>requiere contacto</strong> con personas sordas.</p>
-                        </div>
-                    </div>
                 </div>
-
-        <section id="lspModeloLinguistico" class="lsp-modelo-linguistico my-3 mx-2 d-none" aria-label="Colaborador de Vocabulario">
-    <div class="lsp-modelo-linguistico-foto">
-        <img src="/assets/carlos-diaz-lsp.jpg" alt="Carlos Díaz, modelo lingüístico de Lengua de Señas Peruana" loading="lazy" decoding="async">
-    </div>
-    <div class="lsp-modelo-linguistico-info">
-        <span class="lsp-modelo-linguistico-etiqueta">COLABORADOR</span>
-        <h3>Carlos Díaz</h3>
-        <p class="lsp-modelo-linguistico-cargo">Modelo lingüístico de LSP <span class="lsp-modelo-linguistico-persona">· Persona sorda</span></p>
-        <p class="lsp-modelo-linguistico-descripcion">Su experiencia y conocimiento de la comunidad sorda enriquecen el contenido de LSPedia.</p>
-    </div>
-</section>
 
                 <div class="position-relative" id="bloqueBuscador">
                     <div class="buscador-indice-linea">
@@ -5277,16 +5232,147 @@ html[data-lsp-tema="dark"] .sena-ia-coming-icon{background:rgba(71,85,105,.2);co
         </div>
 
 
+        <!-- Subtemas / lista informativa de Vocabulario (debajo del buscador) -->
+        <div class="vocab-intro-lista d-none" id="vocabularioIntroLista">
+            <div class="vocab-intro-item">
+                <span class="vocab-intro-icono" aria-hidden="true">🔎</span>
+                <p class="vocab-intro-texto">Las palabras en español sirven como <strong>referencia</strong> para facilitar las búsquedas.</p>
+            </div>
+            <div class="vocab-intro-item">
+                <span class="vocab-intro-icono" aria-hidden="true">💡</span>
+                <p class="vocab-intro-texto">Las señas representan <strong>conceptos</strong>, no solo palabras.</p>
+            </div>
+            <div class="vocab-intro-item">
+                <span class="vocab-intro-icono" aria-hidden="true">🌎</span>
+                <p class="vocab-intro-texto">Las <strong>variantes regionales</strong> enriquecen la Lengua de señas.</p>
+            </div>
+            <div class="vocab-intro-item">
+                <span class="vocab-intro-icono" aria-hidden="true">🤝</span>
+                <p class="vocab-intro-texto">No basta aprender vocabulario, también <strong>requiere contacto</strong> con personas sordas.</p>
+            </div>
+        </div>
+
+        <!-- Tarjeta Colaborador Carlos Díaz: exclusivamente en Vocabulario, debajo del buscador y subtemas, y encima de Categorías -->
+        <section id="lspModeloLinguistico" class="lsp-modelo-linguistico my-3 d-none" aria-label="Colaborador de Vocabulario">
+            <div class="lsp-modelo-linguistico-foto">
+                <img src="/assets/carlos-diaz-lsp.jpg" alt="Carlos Díaz, modelo lingüístico de Lengua de Señas Peruana" width="88" height="88" loading="lazy" decoding="async">
+            </div>
+            <div class="lsp-modelo-linguistico-info">
+                <span class="lsp-modelo-linguistico-etiqueta">COLABORADOR</span>
+                <h3>Carlos Díaz</h3>
+                <p class="lsp-modelo-linguistico-cargo">Modelo lingüístico de LSP <span class="lsp-modelo-linguistico-persona">· Persona sorda</span></p>
+                <p class="lsp-modelo-linguistico-descripcion">Su experiencia y conocimiento de la comunidad sorda enriquecen el contenido de LSPedia.</p>
+            </div>
+        </section>
+
 <style>
-.lsp-modelo-linguistico{display:flex;align-items:center;gap:18px;max-width:720px;margin-left:auto!important;margin-right:auto!important;padding:14px 18px;background:#fff;border:1px solid #e7edf4;border-radius:18px;box-shadow:0 5px 18px rgba(0,48,104,.055)}
-.lsp-modelo-linguistico-foto{width:88px;height:88px;flex:0 0 88px;overflow:hidden;border-radius:50%;background:#eef2f6;border:3px solid #f2f5f9}
-.lsp-modelo-linguistico-foto img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 30%}
-.lsp-modelo-linguistico-info{min-width:0}
-.lsp-modelo-linguistico-etiqueta{display:block;margin-bottom:4px;color:#64748b;font-size:.66rem;font-weight:700;letter-spacing:.075em}
-.lsp-modelo-linguistico-info h3{margin:0;color:#003068;font-size:1.08rem;font-weight:700;line-height:1.25}
-.lsp-modelo-linguistico-cargo{margin:3px 0 5px;color:#2563eb;font-size:.88rem;font-weight:600}
-.lsp-modelo-linguistico-descripcion{margin:0;color:#586575;font-size:.82rem;line-height:1.45}
-@media(max-width:575.98px){.lsp-modelo-linguistico{gap:12px;padding:12px;border-radius:15px}.lsp-modelo-linguistico-foto{width:72px;height:72px;flex-basis:72px}.lsp-modelo-linguistico-etiqueta{font-size:.59rem}.lsp-modelo-linguistico-info h3{font-size:1rem}.lsp-modelo-linguistico-descripcion{font-size:.77rem}}
+/* En escritorio y tablet, #vocabularioIntroLista también se ve como tarjeta limpia debajo del buscador */
+body.vista-temas-movil #vocabularioIntroLista {
+    max-width: 720px;
+    margin: 0 auto 14px !important;
+    padding: 12px 18px;
+    border-radius: 18px;
+    border: 1px solid #d8e9fb;
+    background: linear-gradient(145deg, #fbfdff 0%, #f1f7fd 100%);
+    box-shadow: 0 6px 17px rgba(30, 91, 160, 0.06);
+}
+/* Garantía CSS: la tarjeta de Carlos Díaz SOLO puede verse cuando body tiene vista-temas-movil (Vocabulario) y no tiene d-none */
+body:not(.vista-temas-movil) #lspModeloLinguistico,
+body.lsp-inicio-oculto #lspModeloLinguistico {
+    display: none !important;
+}
+.lsp-modelo-linguistico {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    width: 100%;
+    max-width: 720px;
+    margin: 14px auto 20px !important;
+    padding: 16px 20px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    box-shadow: 0 6px 18px rgba(0, 48, 104, 0.06);
+    box-sizing: border-box;
+    clear: both;
+    position: relative;
+}
+.lsp-modelo-linguistico-foto {
+    width: 88px;
+    height: 88px;
+    flex: 0 0 88px;
+    overflow: hidden;
+    border-radius: 50%;
+    background: #eef2f6;
+    border: 3px solid #e0f2fe;
+}
+.lsp-modelo-linguistico-foto img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+}
+.lsp-modelo-linguistico-info {
+    flex: 1 1 auto;
+    min-width: 0;
+    text-align: left;
+}
+.lsp-modelo-linguistico-etiqueta {
+    display: block;
+    margin-bottom: 4px;
+    color: #64748b;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.075em;
+    text-transform: uppercase;
+}
+.lsp-modelo-linguistico-info h3 {
+    margin: 0;
+    color: #003068;
+    font-size: 1.12rem;
+    font-weight: 700;
+    line-height: 1.25;
+}
+.lsp-modelo-linguistico-cargo {
+    margin: 3px 0 5px;
+    color: #2563eb;
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+.lsp-modelo-linguistico-descripcion {
+    margin: 0;
+    color: #586575;
+    font-size: 0.84rem;
+    line-height: 1.45;
+}
+@media (max-width: 767.98px) {
+    .lsp-modelo-linguistico {
+        gap: 14px;
+        padding: 14px 16px;
+        border-radius: 16px;
+    }
+    .lsp-modelo-linguistico-foto {
+        width: 74px;
+        height: 74px;
+        flex: 0 0 74px;
+    }
+    .lsp-modelo-linguistico-etiqueta { font-size: 0.62rem; }
+    .lsp-modelo-linguistico-info h3 { font-size: 1.02rem; }
+    .lsp-modelo-linguistico-cargo { font-size: 0.83rem; }
+    .lsp-modelo-linguistico-descripcion { font-size: 0.79rem; }
+}
+@media (max-width: 480px) {
+    .lsp-modelo-linguistico {
+        flex-direction: column;
+        text-align: center;
+        padding: 16px 14px;
+        gap: 10px;
+    }
+    .lsp-modelo-linguistico-info {
+        text-align: center;
+    }
+}
 </style>
 
 <div id="panelCategorias" class="row g-2 mb-4 p-2"></div>
