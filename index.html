@@ -155,7 +155,7 @@
     <link rel="stylesheet" href="css/estilos.css?v=20260826">
     <link rel="stylesheet" href="css/quiz.css?v=20260925-3">
     <link rel="stylesheet" href="css/mejoras-producto.css?v=20260926-video-3">
-    <link rel="stylesheet" href="css/buscador-enfoque.css?v=20261103-vocabulario-1">
+    <link rel="stylesheet" href="css/buscador-enfoque.css?v=20261103-vocabulario-2">
     <link rel="stylesheet" href="css/miembros-acceso.css?v=20261009-4">
     <link rel="stylesheet" href="css/tablet-responsive.css?v=20261010-portrait-4">
 
@@ -3308,8 +3308,8 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
 
     <style id="vocabulario-buscador-protagonista">
         /* Vocabulario móvil — segunda afinación: avatar más discreto,
-           título mejor aprovechado, buscador primero y las 3 ideas en
-           una tarjeta vertical fácil de leer. */
+           título mejor aprovechado, buscador primero y la introducción en
+           una lista vertical fácil de leer. */
         @media (max-width: 991.98px) {
             body.vista-temas-movil #filaHeroPrincipal {
                 display: grid !important;
@@ -3453,9 +3453,8 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                 border-radius: 16px !important;
             }
 
-            /* Las 3 ideas pasan a UNA tarjeta vertical con 3 filas: evita
-               columnas angostas y texto amontonado. El pequeño script de
-               abajo coloca esta tarjeta justo después del buscador en móvil. */
+            /* Base de la introducción móvil. El orden semántico está en el HTML;
+               buscador-enfoque.css completa la distribución actual. */
             body.vista-temas-movil #vocabularioIntroLista {
                 display: flex;
                 flex-direction: column;
@@ -3516,31 +3515,6 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
     </style>
 
 
-    <script id="vocabulario-layout-movil">
-        /* En todas las pantallas de Vocabulario el orden visual es:
-           título + avatar -> buscador (#bloqueBuscadorCategorias) -> subtemas (#vocabularioIntroLista) -> tarjeta Carlos Díaz (#lspModeloLinguistico) -> categorías (#panelCategorias). */
-        (function () {
-            function reubicarInfoVocabulario() {
-                const info = document.getElementById('vocabularioIntroLista');
-                const buscador = document.getElementById('bloqueBuscadorCategorias');
-                const carlos = document.getElementById('lspModeloLinguistico');
-                if (!info || !buscador) return;
-
-                if (info.previousElementSibling !== buscador) {
-                    buscador.insertAdjacentElement('afterend', info);
-                }
-                if (carlos && carlos.previousElementSibling !== info) {
-                    info.insertAdjacentElement('afterend', carlos);
-                }
-            }
-
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', reubicarInfoVocabulario, { once: true });
-            } else {
-                reubicarInfoVocabulario();
-            }
-        })();
-    </script>
 
 
     <style id="vocabulario-ajuste-buscador-20260909">
@@ -4018,7 +3992,7 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                 transform: scale(0.97) !important;
             }
 
-            #btnMenuJuegoChatEspanol {
+            #btnHerrMovilChatEspanol {
                 background: #e8faf3 !important;
                 border-color: #a7e2cf !important;
             }
@@ -4533,6 +4507,7 @@ html[data-lsp-tema="dark"] .sena-ia-coming-icon{background:rgba(71,85,105,.2);co
         }
       }
     </style>
+    <link rel="stylesheet" href="css/chat-herramienta.css?v=20261104-1">
 </head>
 
 <body>
@@ -5107,6 +5082,25 @@ html[data-lsp-tema="dark"] .sena-ia-coming-icon{background:rgba(71,85,105,.2);co
                 <img id="avatarHeroFallback" class="avatar-hero-img" src="img/avatar_sin_fondo.png" width="2048" height="2048" alt="Personaje de LSPedia sosteniendo una lupa" decoding="async">
             </div>
 
+        <div class="vocab-intro-lista d-none" id="vocabularioIntroLista">
+            <div class="vocab-intro-item">
+                <span class="vocab-intro-icono" aria-hidden="true">🔎</span>
+                <p class="vocab-intro-texto">Las palabras en español sirven como <strong>referencia</strong> para facilitar las búsquedas.</p>
+            </div>
+            <div class="vocab-intro-item">
+                <span class="vocab-intro-icono" aria-hidden="true">💡</span>
+                <p class="vocab-intro-texto">Las señas representan <strong>conceptos</strong>, no solo palabras.</p>
+            </div>
+            <div class="vocab-intro-item">
+                <span class="vocab-intro-icono" aria-hidden="true">🌎</span>
+                <p class="vocab-intro-texto">Las <strong>variantes regionales</strong> enriquecen la Lengua de señas.</p>
+            </div>
+            <div class="vocab-intro-item">
+                <span class="vocab-intro-icono" aria-hidden="true">🤝</span>
+                <p class="vocab-intro-texto">No basta aprender vocabulario, también <strong>requiere contacto</strong> con personas sordas.</p>
+            </div>
+        </div>
+
         </div>
 
         <!-- Resultados de búsqueda del Diccionario: ahora aparecen ANTES de
@@ -5167,15 +5161,29 @@ html[data-lsp-tema="dark"] .sena-ia-coming-icon{background:rgba(71,85,105,.2);co
             </div>
         </div>
 
-        <!-- Vista "Vocabulario" (antes "Temas orden"): primero el buscador
-             exclusivo de esta vista (reemplaza al buscador general
+        <!-- Tarjeta Colaborador Carlos Díaz: exclusivamente en Vocabulario, después de la introducción y antes de la búsqueda y las categorías -->
+        <section id="lspModeloLinguistico" class="lsp-modelo-linguistico my-3 d-none" aria-label="Colaborador de Vocabulario">
+            <div class="lsp-modelo-linguistico-foto">
+                <img src="/assets/carlos-diaz-lsp.jpg" alt="Carlos Díaz, modelo lingüístico de Lengua de Señas Peruana" width="88" height="88" loading="lazy" decoding="async">
+            </div>
+            <div class="lsp-modelo-linguistico-info">
+                <span class="lsp-modelo-linguistico-etiqueta">COLABORADOR</span>
+                <h3>Carlos Díaz</h3>
+                <p class="lsp-modelo-linguistico-cargo">Modelo lingüístico de LSP <span class="lsp-modelo-linguistico-persona">· Persona sorda</span></p>
+                <p class="lsp-modelo-linguistico-descripcion">Su experiencia y conocimiento de la comunidad sorda enriquecen el contenido de LSPedia.</p>
+            </div>
+        </section>
+
+        <!-- Vista "Vocabulario": después de la introducción y el colaborador,
+             el buscador exclusivo de esta vista (reemplaza al buscador general
              #bloqueBuscador mientras está activa), luego las tarjetas de
              categoría, y al final los resultados/sugerencias de la
              búsqueda en #resultadoCategorias. Mismo orden en escritorio y
              en móvil (se muestra/oculta por JS, ver mostrarBuscadorDeCategorias
              y el listener de btnCategorias en script.js). -->
         <div class="row justify-content-center mb-3 d-none" id="bloqueBuscadorCategorias">
-            <div class="col-lg-8 position-relative">
+            <div class="col-lg-8 position-relative vocab-search-controls">
+                <div class="vocab-text-search position-relative">
                 <div class="buscador-indice-linea buscador-indice-linea-vocabulario">
                     <div id="filaBotonIndiceAlfabeticoVocabulario" class="indice-compacto-wrap">
                         <button type="button" class="indice-compacto-btn indice-compacto-btn-vocabulario" data-bs-toggle="collapse" data-bs-target="#indiceAlfabeticoVocabulario" aria-expanded="false" aria-controls="indiceAlfabeticoVocabulario" aria-label="Abrir índice alfabético de Vocabulario A a Z" title="Abrir índice alfabético de Vocabulario" id="btnToggleAbcVocabulario">
@@ -5194,7 +5202,13 @@ html[data-lsp-tema="dark"] .sena-ia-coming-icon{background:rgba(71,85,105,.2);co
                 </div>
                 <div id="sugerenciasCategorias" class="list-group mt-2 shadow-sm position-absolute w-100 z-3" style="border-radius: 15px; overflow: hidden; display: none;"></div>
 
-<div class="sena-ia-search-preview"><button id="btnBuscarSenaVocabulario" type="button" class="sena-ia-coming-btn sena-ia-icon-btn" disabled aria-label="Buscar por seña · Próximamente" title="Buscar por seña · Próximamente"><img class="sena-ia-hands-icon" src="img/icons/nav/senas-manos-azul.svg" alt="" width="32" height="32" decoding="async"><span class="sena-ia-search-label">Buscar por seña</span><span class="sena-ia-coming-badge">Próximamente</span></button></div>
+                </div>
+                <div class="sena-ia-search-preview">
+                    <button id="btnBuscarSenaVocabulario" type="button" class="sena-ia-coming-btn sena-ia-icon-btn" disabled aria-label="Buscar por seña · Próximamente" title="Buscar por seña · Próximamente">
+                        <span class="sena-ia-action-icon" aria-hidden="true"><img class="sena-ia-hands-icon" src="img/icons/nav/senas-manos-azul.svg" alt="" width="32" height="32" decoding="async"></span>
+                        <span class="sena-ia-action-copy"><span class="sena-ia-search-label">Buscar por seña</span><span class="sena-ia-coming-badge">Próximamente</span></span>
+                    </button>
+                </div>
                 <div id="filaIndiceAlfabeticoVocabulario" class="indice-compacto-desplegable indice-compacto-desplegable-vocabulario">
                     <div class="collapse" id="indiceAlfabeticoVocabulario">
                         <div class="indice-alfabetico indice-alfabetico-vocabulario">
@@ -5233,37 +5247,7 @@ html[data-lsp-tema="dark"] .sena-ia-coming-icon{background:rgba(71,85,105,.2);co
 
 
         <!-- Subtemas / lista informativa de Vocabulario (debajo del buscador) -->
-        <div class="vocab-intro-lista d-none" id="vocabularioIntroLista">
-            <div class="vocab-intro-item">
-                <span class="vocab-intro-icono" aria-hidden="true">🔎</span>
-                <p class="vocab-intro-texto">Las palabras en español sirven como <strong>referencia</strong> para facilitar las búsquedas.</p>
-            </div>
-            <div class="vocab-intro-item">
-                <span class="vocab-intro-icono" aria-hidden="true">💡</span>
-                <p class="vocab-intro-texto">Las señas representan <strong>conceptos</strong>, no solo palabras.</p>
-            </div>
-            <div class="vocab-intro-item">
-                <span class="vocab-intro-icono" aria-hidden="true">🌎</span>
-                <p class="vocab-intro-texto">Las <strong>variantes regionales</strong> enriquecen la Lengua de señas.</p>
-            </div>
-            <div class="vocab-intro-item">
-                <span class="vocab-intro-icono" aria-hidden="true">🤝</span>
-                <p class="vocab-intro-texto">No basta aprender vocabulario, también <strong>requiere contacto</strong> con personas sordas.</p>
-            </div>
-        </div>
 
-        <!-- Tarjeta Colaborador Carlos Díaz: exclusivamente en Vocabulario, debajo del buscador y subtemas, y encima de Categorías -->
-        <section id="lspModeloLinguistico" class="lsp-modelo-linguistico my-3 d-none" aria-label="Colaborador de Vocabulario">
-            <div class="lsp-modelo-linguistico-foto">
-                <img src="/assets/carlos-diaz-lsp.jpg" alt="Carlos Díaz, modelo lingüístico de Lengua de Señas Peruana" width="88" height="88" loading="lazy" decoding="async">
-            </div>
-            <div class="lsp-modelo-linguistico-info">
-                <span class="lsp-modelo-linguistico-etiqueta">COLABORADOR</span>
-                <h3>Carlos Díaz</h3>
-                <p class="lsp-modelo-linguistico-cargo">Modelo lingüístico de LSP <span class="lsp-modelo-linguistico-persona">· Persona sorda</span></p>
-                <p class="lsp-modelo-linguistico-descripcion">Su experiencia y conocimiento de la comunidad sorda enriquecen el contenido de LSPedia.</p>
-            </div>
-        </section>
 
 <style>
 /* En escritorio y tablet, #vocabularioIntroLista también se ve como tarjeta limpia debajo del buscador */
@@ -5495,6 +5479,16 @@ body.lsp-inicio-oculto #lspModeloLinguistico {
             <div class="row g-3" id="herramientasMenuMovilRow">
 
                 <div class="col-12">
+                    <a href="herramientas/chat-espanol.html" id="btnHerrMovilChatEspanol" class="herr-movil-btn herr-movil-btn-chat w-100">
+                        <span class="herr-movil-ola" aria-hidden="true"></span>
+                        <span class="herr-movil-icono herr-chat-icon" aria-hidden="true"><span class="jp-chat-phone"><i class="jp-chat-top"></i><i class="jp-chat-msg jp-chat-msg-a">Hola 👋</i><i class="jp-chat-msg jp-chat-msg-b">¡Hola!</i><i class="jp-chat-cursor">✎</i></span></span>
+                        <span class="herr-movil-textos"><span class="herr-movil-texto">Chat en Español</span><span class="herr-movil-desc">Practica conversaciones y mejora tu escritura · Gratis</span></span>
+                        <span class="herr-movil-flecha" aria-hidden="true">→</span>
+                    </a>
+                </div>
+
+
+                <div class="col-12">
                     <button type="button" id="btnHerrMovilAlfabetizacion" class="herr-movil-btn herr-movil-btn-alfabetizacion w-100">
                         <span class="herr-movil-ola" aria-hidden="true"></span>
                         <span class="herr-movil-icono" aria-hidden="true"><img src="img/categorias/alfabeto_y_números.webp" alt="" loading="lazy"></span>
@@ -5708,20 +5702,6 @@ body.lsp-inicio-oculto #lspModeloLinguistico {
                                 <span class="fw-bold juego-titulo">Sopa de Señas</span>
                                 <span class="juego-desc">Encuentra palabras por temas</span>
                             </a>
-                        </div>
-                        <div class="col-6 col-md-3 menu-juego-col">
-                            <button type="button" class="quiz-selector-btn menu-juego-btn w-100 h-100" id="btnMenuJuegoChatEspanol" aria-label="Juego Chat en Español">
-                                <span class="juego-preview preview-chat-espanol" aria-hidden="true">
-                                    <span class="jp-chat-phone">
-                                        <i class="jp-chat-top"></i>
-                                        <i class="jp-chat-msg jp-chat-msg-a">Hola 👋</i>
-                                        <i class="jp-chat-msg jp-chat-msg-b">¡Hola!</i>
-                                        <i class="jp-chat-cursor">✎</i>
-                                    </span>
-                                </span>
-                                <span class="fw-bold juego-titulo">Chat en Español</span>
-                                <span class="juego-desc">Conversa, escribe y mejora</span>
-                            </button>
                         </div>
                         <div class="col-6 col-md-3 menu-juego-col">
                             <button type="button" class="quiz-selector-btn menu-juego-btn w-100 h-100" id="btnMenuJuegoCompletar" aria-label="Juego Completar la palabra">
