@@ -3,50 +3,30 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#1d4ed8">
+  <meta name="theme-color" content="#075e54">
   <meta name="description" content="Practica conversaciones y mejora tus respuestas en español escrito, paso a paso y gratis, con LSPedia.">
   <title>Chat en Español | LSPedia</title>
   <link rel="icon" href="../img/favicon.png">
-  <link rel="stylesheet" href="../css/chat-espanol.css?v=20261104-2">
+  <link rel="stylesheet" href="../css/chat-espanol.css?v=20261104-visual-3">
 </head>
 <body>
   <noscript><p>Activa JavaScript para practicar. <a href="../?vista=herramientas">Volver a Herramientas</a>.</p></noscript>
   <main id="chatGame" class="chat-game">
-    <section id="screenHome" class="screen screen-home">
+    <section id="screenHome" class="screen screen-home" aria-label="Elegir una conversación">
       <header class="home-topbar">
-        <button id="btnBackLspedia" class="back-lspedia" type="button">← Herramientas</button>
+        <button id="btnBackLspedia" class="back-lspedia" type="button"><span aria-hidden="true">←</span> Herramientas</button>
         <div class="brand-mini"><img src="../img/favicon.png" alt="" width="32" height="32"><strong>LSPedia</strong></div>
-        <button id="btnHelp" class="text-button" type="button">Cómo practicar</button>
+        <button id="btnHelp" class="help-button" type="button"><span aria-hidden="true">?</span> Ayuda</button>
       </header>
+      <div class="home-title"><div><span class="section-kicker">APRENDE CONVERSANDO</span><h1>Chat en español</h1></div><span class="simulation-badge"><span aria-hidden="true">💬</span> Chat de práctica</span></div>
       <div class="home-scroll">
-        <section class="hero-card">
-          <div class="hero-copy">
-            <span class="eyebrow">ESCRIBE CON MÁS CONFIANZA</span>
-            <h1>Chat en Español</h1>
-            <p>Practica qué responder en situaciones de la vida diaria. Recibe una pista, escribe tu idea y mejora tu mensaje a tu ritmo.</p>
-            <button id="btnStartRecommended" class="action-primary start-button" type="button">Empezar una práctica →</button>
-            <p id="recommendedLabel" class="recommended-label"></p>
-            <span class="hero-note">Gratis · Todo por escrito · Sin límite de reintentos</span>
-          </div>
-          <div class="hero-example" aria-hidden="true">
-            <span class="example-label">ASÍ VAS A PRACTICAR</span>
-            <div class="example-message">¿A qué hora llegas?</div>
-            <div class="example-message example-answer">Llegaré cerca de las cinco.</div>
-            <div class="example-insight"><span>✎</span><p>Una respuesta útil añade<br><strong>el dato que te preguntan.</strong></p></div>
-          </div>
-        </section>
-        <ol class="how-it-works" aria-label="Pasos de cada práctica">
-          <li><span>1</span><div><strong>Lee el mensaje</strong><small>Piensa qué te preguntan.</small></div></li>
-          <li><span>2</span><div><strong>Escribe tu respuesta</strong><small>Usa una pista si la necesitas.</small></div></li>
-          <li><span>3</span><div><strong>Revisa y mejora</strong><small>Vuelve a escribir o continúa.</small></div></li>
-        </ol>
-        <section id="scenarioSection" class="home-section scenario-section" aria-labelledby="scenarioTitle">
-          <div class="section-heading"><div><span class="section-kicker">O ELIGE UNA SITUACIÓN</span><h2 id="scenarioTitle">¿Qué quieres practicar?</h2></div><span id="homeProgress" class="mini-progress">0 / 25 practicadas</span></div>
+        <section id="scenarioSection" class="scenario-section" aria-labelledby="scenarioTitle">
+          <div class="section-heading"><h2 id="scenarioTitle">Elige un chat</h2><span id="homeProgress" class="mini-progress">0 / 25</span></div>
+          <label class="scenario-search-label" for="scenarioSearch"><span aria-hidden="true">⌕</span><input id="scenarioSearch" class="scenario-search" type="search" placeholder="Buscar: familia, compras…" aria-label="Buscar una situación" autocomplete="off"></label>
           <div id="levelGrid" class="level-grid" aria-label="Elegir nivel de práctica"></div>
-          <div class="scenario-filter"><label class="scenario-search-label" for="scenarioSearch">Buscar en todas las situaciones</label><input id="scenarioSearch" class="scenario-search" type="search" placeholder="Familia, compras, trabajo…" autocomplete="off"></div>
           <div class="results-heading"><span id="levelBadge" class="level-badge">Nivel 1</span><span id="scenarioCount" class="search-count" role="status"></span></div>
           <div id="scenarioGrid" class="scenario-grid"></div>
-        </section>
+          <details class="practice-settings"><summary><span aria-hidden="true">⚙</span> Opciones y privacidad</summary>
         <details class="home-section mode-section">
           <summary>Más opciones de práctica <span>IA local opcional</span></summary>
           <p>La práctica guiada ya está lista. Puedes probar una conversación más libre con IA local si tu equipo lo permite.</p>
@@ -61,41 +41,56 @@
             <p id="aiStatus" role="status">IA local desactivada. No se descarga nada hasta que pulses el botón.</p>
           </div>
         </details>
-        <div class="privacy-foot"><p>La LSP tiene su propia gramática. Aquí practicamos español escrito. Usa datos inventados. Solo guardamos las prácticas completadas y el último nivel en este navegador.</p><button id="btnResetProgress" class="text-button" type="button">Borrar mi progreso</button></div>
+            <div class="privacy-foot"><p>Este chat es una simulación. Nadie recibe tus mensajes. Usa datos inventados.</p><p>La LSP tiene su propia gramática. Aquí practicas español escrito. Solo se guarda tu progreso en este navegador.</p><button id="btnResetProgress" class="text-button" type="button">Borrar mi progreso</button></div>
+          </details>
+        </section>
+        <section class="welcome-pane" aria-labelledby="welcomeTitle">
+          <div class="welcome-intro"><span class="welcome-symbol" aria-hidden="true">💬</span><h2 id="welcomeTitle">Un mensaje a la vez</h2><p>Mira el ejemplo. Después, prueba tú.</p></div>
+          <div class="demo-chat" aria-label="Ejemplo de conversación">
+            <div class="demo-header"><span class="demo-avatar" aria-hidden="true">👩</span><div><strong>Mamá</strong><span>Ejemplo · no es un chat real</span></div><span class="demo-heart" aria-hidden="true">♡</span></div>
+            <div class="demo-messages"><span class="day-chip">Hoy</span><div class="demo-bubble demo-in"><span>¿A qué hora llegas?</span><small>16:30</small></div><div class="demo-bubble demo-out"><span>A las 5 😊</span><small>16:31 <b aria-hidden="true">✓✓</b></small></div><div class="demo-tip"><span aria-hidden="true">👍</span> Una frase corta está bien.</div></div>
+            <div class="demo-composer" aria-hidden="true"><span>Escribe un mensaje…</span><b>➤</b></div>
+          </div>
+          <ol class="how-it-works" aria-label="Pasos de cada práctica"><li><span aria-hidden="true">👀</span><strong>1. Mira</strong></li><li><span aria-hidden="true">✍️</span><strong>2. Escribe</strong></li><li><span aria-hidden="true">✅</span><strong>3. Revisa</strong></li></ol>
+          <button id="btnStartRecommended" class="action-primary start-button" type="button"><span aria-hidden="true">💬</span> Empezar un chat <span aria-hidden="true">→</span></button>
+          <p id="recommendedLabel" class="recommended-label"></p>
+          <span class="hero-note">Sin audio · A tu ritmo · Gratis</span>
+        </section>
       </div>
     </section>
     <section id="screenChat" class="screen screen-chat hidden" aria-label="Conversación de práctica">
       <header class="chat-topbar">
-        <button id="btnChatBack" class="chat-back" type="button">← Situaciones</button>
+        <button id="btnChatBack" class="chat-back" type="button" aria-label="Volver a los chats"><span aria-hidden="true">←</span><span class="back-label"> Chats</span></button>
         <div id="contactAvatar" class="contact-avatar" aria-hidden="true">🙂</div>
         <div class="contact-main"><strong id="contactName">Contacto</strong><span id="contactStatus">Práctica guiada · simulación</span></div>
-        <button id="btnChatMenu" class="chat-menu" type="button">Mi objetivo</button>
+        <button id="btnChatMenu" class="chat-menu" type="button"><span aria-hidden="true">ⓘ</span> Ayuda</button>
       </header>
       <div class="lesson-strip">
         <div class="lesson-heading"><strong id="lessonSituation">Situación</strong><span id="turnCounter" class="turn-counter">1 / 6</span></div>
         <div class="lesson-progress" aria-hidden="true"><div id="lessonProgress"></div></div>
-        <ol class="practice-steps" aria-label="Pasos de tu respuesta"><li id="stepRead"><span>1</span> Lee</li><li id="stepWrite" aria-current="step"><span>2</span> Escribe</li><li id="stepReview"><span>3</span> Revisa</li></ol>
+        <ol class="practice-steps" aria-label="Pasos de tu respuesta"><li id="stepRead"><span aria-hidden="true">👀</span> Mira</li><li id="stepWrite" aria-current="step"><span aria-hidden="true">✍️</span> Escribe</li><li id="stepReview"><span aria-hidden="true">✅</span> Revisa</li></ol>
         <span id="lessonScore" class="sr-only">0 respuestas practicadas</span>
       </div>
-      <div id="messages" class="messages" role="log" aria-live="polite" aria-relevant="additions"></div>
+      <div id="messages" class="messages" tabindex="-1" role="log" aria-live="polite" aria-relevant="additions"></div>
       <div id="smartBar" class="smart-bar">
-        <div class="smart-tip"><strong>Tu objetivo ahora</strong><span id="smartTipText">Responde con tus propias palabras.</span></div>
-        <button id="btnWildcard" class="wildcard-btn" type="button">Necesito una pista</button>
+        <div class="smart-tip"><strong><span aria-hidden="true">💡</span> Tu turno</strong><span id="smartTipText">Responde con tus propias palabras.</span></div>
+        <button id="btnWildcard" class="wildcard-btn" type="button"><span aria-hidden="true">💡</span> Pista</button>
       </div>
       <div id="wildcardPanel" class="wildcard-panel hidden" aria-labelledby="helpTitle">
-        <div class="wildcard-head"><strong id="helpTitle">Construye tu respuesta</strong><button id="btnCloseWildcard" type="button" aria-label="Cerrar las pistas">×</button></div>
+        <div class="wildcard-head"><strong id="helpTitle">💡 Una ayuda para escribir</strong><button id="btnCloseWildcard" type="button" aria-label="Cerrar las pistas">×</button></div>
         <div id="wildcardOptions" class="wildcard-options"></div>
       </div>
       <div id="reviewActions" class="review-actions hidden" aria-label="Elige qué hacer con tu respuesta">
-        <button id="btnRewrite" class="action-primary" type="button">Mejorar mi respuesta</button>
-        <button id="btnContinue" class="action-secondary" type="button">Continuar →</button>
+        <button id="btnRewrite" class="action-secondary" type="button"><span aria-hidden="true">✍️</span> Editar</button>
+        <button id="btnContinue" class="action-primary" type="button">Continuar →</button>
       </div>
+      <div id="typingIndicator" class="typing-indicator hidden" role="status"><span class="typing-dots" aria-hidden="true"><i></i><i></i><i></i></span><span id="typingLabel">Escribiendo…</span></div>
       <div id="busyStatus" class="busy-status hidden" role="status">Preparando respuesta… <button id="btnCancelResponse" class="text-button" type="button">Cancelar y volver a escribir</button></div>
       <footer id="composerWrap" class="composer-wrap">
         <label class="composer-label" for="messageInput">Tu respuesta</label>
         <div class="composer">
-          <textarea id="messageInput" rows="2" maxlength="600" placeholder="Escribe lo que tú responderías…" autocomplete="off" autocapitalize="sentences" spellcheck="true" aria-describedby="composerNote"></textarea>
-          <button id="btnSend" class="send-btn" type="button">Revisar mi respuesta <span aria-hidden="true">→</span></button>
+          <textarea id="messageInput" rows="1" maxlength="600" placeholder="Escribe un mensaje…" autocomplete="off" autocapitalize="sentences" spellcheck="true" aria-describedby="composerNote"></textarea>
+          <button id="btnSend" class="send-btn" type="button" aria-label="Enviar mi mensaje para practicar"><svg aria-hidden="true" viewBox="0 0 24 24" width="24" height="24"><path d="M3 3l19 9L3 21l3-8 10-1-10-1z" fill="currentColor"/></svg><span>Enviar</span></button>
         </div>
         <div class="composer-note"><span id="composerNote">Puedes responder con una frase corta.</span><span id="charCount">0/600</span></div>
       </footer>
@@ -114,6 +109,7 @@
   <script src="../js/chat-espanol-core.js?v=20261104-2"></script>
   <script src="../js/chat-espanol-data.js?v=20261104-1"></script>
   <script src="../js/chat-espanol-local.js?v=20261104-1"></script>
-  <script src="../js/chat-espanol.js?v=20261104-2"></script>
+  <script src="../js/chat-espanol.js?v=20261104-visual-3"></script>
 </body>
 </html>
+

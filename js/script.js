@@ -5683,6 +5683,17 @@ function centrarResultadoCompartidoSuave(el){
 // no vuelve al inicio mientras la ficha ya está abierta.
 let secuenciaScrollAutomatico = 0;
 
+// Un ajuste de carga nunca debe competir con la intención de la persona.
+// Cancelamos tanto la espera inicial como la vigilancia de la ficha o del
+// menú al usar rueda, gesto táctil, barra de desplazamiento o teclado.
+function cancelarScrollAutomaticoPorInteraccion(evento){
+    if(evento.type === "keydown" && !["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home", "End", " "].includes(evento.key)) return;
+    secuenciaScrollAutomatico++;
+}
+["wheel", "touchstart", "pointerdown", "keydown"].forEach(tipo => {
+    document.addEventListener(tipo, cancelarScrollAutomaticoPorInteraccion, { passive: true, capture: true });
+});
+
 function scrollAlPrimerResultado(el){
     if(!el) return;
     const secuencia = ++secuenciaScrollAutomatico;

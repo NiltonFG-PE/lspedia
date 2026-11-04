@@ -51,8 +51,8 @@ test('progreso valida niveles e IDs y descarta datos personales/otras propiedade
   assert.equal(core.safeProgress({lastLevel:-1},[]).lastLevel,1);
 });
 // Minimal DOM: test actual orchestration and race guards without network or a browser.
-function harness(){
-  const els=new Map(),saved=[];
+function harness(options={}){
+  const els=new Map(),saved=[],timers=new Map();let timerId=0;
   class Element{
     constructor(id=''){this.id=id;this.style={};this.dataset={};this.events={};this.children=[];this.value='';this.disabled=false;this.checked=false;this.isConnected=true;this.scrollHeight=200;this.attributes={};const set=new Set();this.classList={add:x=>set.add(x),remove:x=>set.delete(x),contains:x=>set.has(x),toggle:(x,on)=>on?set.add(x):set.delete(x)};}
     set innerHTML(v){this.html=v;this.children=[];const re=/<button\b([^>]*)>([\s\S]*?)<\/button>/g;let m;while((m=re.exec(v))){const b=new Element();b.textContent=m[2].replace(/<[^>]+>/g,'');b.tagName='BUTTON';b.className=(m[1].match(/class="([^"]*)"/)||[])[1]||'';for(const d of m[1].matchAll(/data-([\w-]+)="([^"]*)"/g))b.dataset[d[1]]=d[2];this.children.push(b);}}
@@ -74,10 +74,10 @@ function harness(){
   for(const id of ['screenChat','modal','busyStatus','reviewActions','wildcardPanel','btnStopAI'])el(id).classList.add('hidden');
   let aiReady=false,response=()=>Promise.resolve('{"reply":"Gracias. ¿Algo más?","suggestion":"","explanation":"Tu mensaje es breve."}');
   const ai={isReady:()=>aiReady,activate:async()=>{aiReady=true;},stop:()=>{aiReady=false;},reset:async()=>{},reply:(...args)=>response(...args)};
-  const ctx={document,location:{href:''},window:null,LSPChatCore:core,LSPChatData:data,LSPChatLocal:ai,localStorage:{getItem:()=>null,setItem:(k,v)=>saved.push(JSON.parse(v))},requestAnimationFrame:f=>f(),setTimeout:()=>1,clearTimeout(){},matchMedia:()=>({matches:true}),addEventListener(){}};ctx.window=ctx;
+  const ctx={document,location:{href:''},window:null,LSPChatCore:core,LSPChatData:data,LSPChatLocal:ai,localStorage:{getItem:()=>null,setItem:(k,v)=>saved.push(JSON.parse(v))},requestAnimationFrame:f=>f(),setTimeout:fn=>{timers.set(++timerId,fn);return timerId;},clearTimeout:id=>timers.delete(id),matchMedia:()=>({matches:options.reducedMotion!==false}),addEventListener(){}};ctx.window=ctx;
   const source=fs.readFileSync(path.join(dir,'js/chat-espanol.js'),'utf8').replace('renderHome();\n})();','globalThis.testing={state,startScenario,sendMessage,rewrite,continueConversation,backHome,openHelp,renderScenarios,activateLocalAI,disableLocalAI,finishScenario,recommendedScenario,fillExample,cancelResponse};\nrenderHome();\n})();');
   vm.runInNewContext(source,ctx);
-  return {app:ctx.testing,el,saved,setAI(value,fn){aiReady=value;if(fn)response=fn;radios[0].checked=!value;radios[1].checked=value;}};
+  return {app:ctx.testing,el,saved,timers,flush(){const pending=[...timers.values()];timers.clear();pending.forEach(fn=>fn());},setAI(value,fn){aiReady=value;if(fn)response=fn;radios[0].checked=!value;radios[1].checked=value;}};
 }
 test('envío, reintento y continuar solo cuentan una respuesta aceptada',async()=>{
   const {app,el}=harness();app.startScenario('casa-mama');el('messageInput').value='No, todavía no salí.';
@@ -204,4 +204,31 @@ test('cancelar IA recupera el borrador exacto y descarta la respuesta tardía',a
   const {app,el,setAI}=harness();let resolve;setAI(true,()=>new Promise(r=>{resolve=r;}));app.startScenario('casa-mama');el('messageInput').value='No iré hoy. Voy mañana.';const task=app.sendMessage();app.cancelResponse();
   assert.equal(el('messageInput').value,'No iré hoy. Voy mañana.');assert.equal(app.state.busy,false);assert.equal(app.state.mode,'guided');assert.equal(el('composerWrap').classList.contains('hidden'),false);
   resolve('{"reply":"Respuesta tardía","suggestion":"","explanation":""}');await task;assert.equal(app.state.pending,null);
+});
+
+
+test('animación de respuesta bloquea dobles envíos y devuelve el editor al terminar',async()=>{
+  const {app,el,flush}=harness({reducedMotion:false});app.startScenario('casa-mama');
+  el('messageInput').value='Sí, ya salí.';await app.sendMessage();app.continueConversation();
+  assert.equal(app.state.busy,true);assert.equal(el('messageInput').disabled,true);
+  assert.equal(el('typingIndicator').classList.contains('hidden'),false);
+  app.continueConversation();assert.equal(app.state.accepted,1);
+  flush();assert.equal(app.state.busy,false);assert.equal(el('messageInput').disabled,false);
+  assert.equal(el('typingIndicator').classList.contains('hidden'),true);
+  assert.ok(el('messages').children.at(-1).innerHTML.includes('¿En qué parte estás ahora?'));
+});
+test('salir durante escribiendo cancela el mensaje pendiente y no contamina otro chat',async()=>{
+  const {app,el,timers,flush}=harness({reducedMotion:false});app.startScenario('casa-mama');
+  el('messageInput').value='Sí, ya salí.';await app.sendMessage();app.continueConversation();
+  const stale=[...timers.values()].at(-1);
+  app.backHome();assert.equal(timers.size,0);assert.equal(el('typingIndicator').classList.contains('hidden'),true);
+  app.startScenario('bodega-pan');const before=el('messages').children.length;
+  stale();flush();assert.equal(app.state.scenario.id,'bodega-pan');assert.equal(el('messages').children.length,before);
+  assert.equal(app.state.busy,false);
+});
+test('movimiento reducido entrega la respuesta sin temporizador ni indicador',async()=>{
+  const {app,el,timers}=harness();app.startScenario('casa-mama');
+  el('messageInput').value='Sí.';await app.sendMessage();app.continueConversation();
+  assert.equal(timers.size,0);assert.equal(app.state.busy,false);assert.equal(app.state.turn,1);
+  assert.equal(el('typingIndicator').classList.contains('hidden'),true);
 });
