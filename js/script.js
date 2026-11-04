@@ -1615,6 +1615,10 @@ function ocultarBloqueInicio(){
     // vuelve a mostrarla únicamente cuando la vista activa es Vocabulario.
     const listaVocabulario = document.getElementById("vocabularioIntroLista");
     if(listaVocabulario) listaVocabulario.classList.add("d-none");
+    // La tarjeta de Carlos pertenece únicamente a Vocabulario; se oculta
+    // también al entrar en Herramientas o Sobre Nosotros.
+    const colaboradorLSP = document.getElementById("lspModeloLinguistico");
+    if(colaboradorLSP) colaboradorLSP.classList.add("d-none");
     const filaBotonIndice = document.getElementById("filaBotonIndiceAlfabetico");
     if(filaBotonIndice) filaBotonIndice.style.display = "none";
     const filaIndice = document.getElementById("filaIndiceAlfabetico");
