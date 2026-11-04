@@ -55,11 +55,16 @@ function harness(){
   const els=new Map(),saved=[];
   class Element{
     constructor(id=''){this.id=id;this.style={};this.dataset={};this.events={};this.children=[];this.value='';this.disabled=false;this.checked=false;this.isConnected=true;this.scrollHeight=200;this.attributes={};const set=new Set();this.classList={add:x=>set.add(x),remove:x=>set.delete(x),contains:x=>set.has(x),toggle:(x,on)=>on?set.add(x):set.delete(x)};}
-    set innerHTML(v){this.html=v;this.children=[];const re=/<button\b([^>]*)>([\s\S]*?)<\/button>/g;let m;while((m=re.exec(v))){const b=new Element();b.textContent=m[2].replace(/<[^>]+>/g,'');for(const d of m[1].matchAll(/data-([\w-]+)="([^"]*)"/g))b.dataset[d[1]]=d[2];this.children.push(b);}}
+    set innerHTML(v){this.html=v;this.children=[];const re=/<button\b([^>]*)>([\s\S]*?)<\/button>/g;let m;while((m=re.exec(v))){const b=new Element();b.textContent=m[2].replace(/<[^>]+>/g,'');b.tagName='BUTTON';b.className=(m[1].match(/class="([^"]*)"/)||[])[1]||'';for(const d of m[1].matchAll(/data-([\w-]+)="([^"]*)"/g))b.dataset[d[1]]=d[2];this.children.push(b);}}
     get innerHTML(){return this.html||'';}
-    appendChild(e){this.children.push(e);return e;}setAttribute(k,v){this.attributes[k]=v;}
-    addEventListener(e,f){this.events[e]=f;}querySelectorAll(){return this.children;}
-    querySelector(selector){return this.children.find(c=>selector.includes(c.dataset.level||'never'))||null;}
+    appendChild(e){this.children.push(e);return e;}setAttribute(k,v){this.attributes[k]=v;}removeAttribute(k){delete this.attributes[k];}
+    addEventListener(e,f){this.events[e]=f;}querySelectorAll(selector){
+      const all=this.children.flatMap(c=>[c,...c.querySelectorAll('*')]);
+      if(selector==='*')return all;
+      if(selector.startsWith('.'))return all.filter(c=>(c.className||'').split(' ').includes(selector.slice(1)));
+      return all.filter(c=>c.tagName==='BUTTON');
+    }
+    querySelector(selector){return selector.startsWith('[data-level')?this.children.find(c=>selector.includes(c.dataset.level||'never'))||null:this.querySelectorAll(selector)[0]||null;}
     focus(){document.activeElement=this;}scrollTo(){}scrollIntoView(){}
   }
   function el(id){if(!els.has(id))els.set(id,new Element(id));return els.get(id);}
@@ -70,7 +75,7 @@ function harness(){
   let aiReady=false,response=()=>Promise.resolve('{"reply":"Gracias. ¿Algo más?","suggestion":"","explanation":"Tu mensaje es breve."}');
   const ai={isReady:()=>aiReady,activate:async()=>{aiReady=true;},stop:()=>{aiReady=false;},reset:async()=>{},reply:(...args)=>response(...args)};
   const ctx={document,location:{href:''},window:null,LSPChatCore:core,LSPChatData:data,LSPChatLocal:ai,localStorage:{getItem:()=>null,setItem:(k,v)=>saved.push(JSON.parse(v))},requestAnimationFrame:f=>f(),setTimeout:()=>1,clearTimeout(){},matchMedia:()=>({matches:true}),addEventListener(){}};ctx.window=ctx;
-  const source=fs.readFileSync(path.join(dir,'js/chat-espanol.js'),'utf8').replace('renderHome();\n})();','globalThis.testing={state,startScenario,sendMessage,rewrite,continueConversation,backHome,openHelp,renderScenarios,activateLocalAI,disableLocalAI,finishScenario};\nrenderHome();\n})();');
+  const source=fs.readFileSync(path.join(dir,'js/chat-espanol.js'),'utf8').replace('renderHome();\n})();','globalThis.testing={state,startScenario,sendMessage,rewrite,continueConversation,backHome,openHelp,renderScenarios,activateLocalAI,disableLocalAI,finishScenario,recommendedScenario,fillExample,cancelResponse};\nrenderHome();\n})();');
   vm.runInNewContext(source,ctx);
   return {app:ctx.testing,el,saved,setAI(value,fn){aiReady=value;if(fn)response=fn;radios[0].checked=!value;radios[1].checked=value;}};
 }
@@ -143,4 +148,60 @@ test('cancelar una activación anterior no destruye una activación nueva',{time
 });
 test('tiempo de espera agotado libera worker y devuelve control',{timeout:2000},async()=>{
   const {api,workers,timers}=localHarness();const loading=api.activate();timers.values().next().value();await assert.rejects(loading);assert.equal(workers[0].terminated,true);assert.equal(timers.size,0);
+});
+test('la pista depende de lo que preguntan, no de la respuesta modelo',()=>{
+  const cases=[['¿A qué hora llegas?','time'],['¿Para qué día necesitas el pasaje?','time'],['¿Dónde estás ahora?','place'],['¿A qué ciudad desea viajar?','destination'],['¿Por qué prefieres ese día?','reason'],['¿Cuántos panes quieres?','quantity'],['¿Prefieres efectivo o tarjeta?','choice'],['Hola. ¿Ya saliste?','confirm']];
+  for(const [prompt,kind] of cases){const guide=core.responseGuide({prompt,model:'Ayer no fui.'});assert.equal(guide.kind,kind,prompt);assert.ok(guide.aim&&guide.check);}
+});
+test('al pedir una hora, orienta a añadir el dato sin inventarlo',()=>{
+  const turn={prompt:'¿A qué hora llegas?'};
+  const feedback=core.communicationFeedback('Sí',turn);assert.equal(feedback.label,'Añade el dato que te piden');assert.match(feedback.focus,/hora/);assert.ok(!feedback.focus.includes('cinco'));
+  assert.equal(core.communicationFeedback('No lo sé todavía.',turn).label,'Puedes expresar una duda');
+  assert.equal(core.communicationFeedback('No, gracias.',{prompt:'¿Quieres ayuda?'}).label,'Una respuesta breve puede servir');
+});
+test('todas las situaciones tienen una orientación legible sin cambiar su texto',()=>{
+  for(const s of data.scenarios)for(const turn of s.turns){const original=JSON.stringify(turn);const guide=core.responseGuide(turn);assert.ok(guide.aim.length<150&&guide.check.length<180);assert.equal(JSON.stringify(turn),original);}
+});
+test('empezar lleva a una situación del nivel elegido todavía no completada',()=>{
+  const {app,el}=harness();const first=app.recommendedScenario();app.state.progress.completed.push(first.id);
+  const next=app.recommendedScenario();assert.notEqual(first.id,next.id);el('btnStartRecommended').events.click();assert.equal(app.state.scenario.id,next.id);
+});
+test('la navegación alterna escritura, pistas y revisión sin controles duplicados',async()=>{
+  const {app,el}=harness();app.startScenario('casa-mama');assert.equal(el('composerWrap').classList.contains('hidden'),false);
+  assert.equal(el('stepWrite').attributes['aria-current'],'step');app.openHelp();assert.equal(el('composerWrap').classList.contains('hidden'),true);
+  el('wildcardOptions').children[0].events.click();assert.equal(el('composerWrap').classList.contains('hidden'),false);
+  el('messageInput').value='todavia no';await app.sendMessage();assert.equal(el('composerWrap').classList.contains('hidden'),true);assert.equal(el('reviewActions').classList.contains('hidden'),false);
+  assert.equal(el('stepReview').attributes['aria-current'],'step');assert.equal(el('stepWrite').attributes['aria-current'],undefined);
+  app.rewrite();assert.equal(el('composerWrap').classList.contains('hidden'),false);assert.equal(el('reviewActions').classList.contains('hidden'),true);
+});
+test('editar la propuesta rellena el editor y requiere una nueva revisión',async()=>{
+  const {app,el}=harness();app.startScenario('casa-mama');el('messageInput').value='no puedo';await app.sendMessage();
+  const proposal=el('messages').querySelector('.edit-proposal');assert.ok(proposal);proposal.events.click();
+  assert.equal(el('messageInput').value,'No puedo.');assert.equal(app.state.pending,null);assert.equal(app.state.accepted,0);assert.equal(app.state.attempts,1);assert.equal(proposal.disabled,true);
+});
+test('un ejemplo no sustituye silenciosamente un borrador',()=>{
+  const {app,el}=harness();app.startScenario('casa-mama');el('messageInput').value='Mi idea original';app.fillExample('Otro texto');
+  assert.equal(el('messageInput').value,'Mi idea original');assert.equal(el('modal').classList.contains('hidden'),false);
+  el('modalActions').children[0].events.click();assert.equal(el('messageInput').value,'Mi idea original');
+  app.fillExample('Otro texto');el('modalActions').children[1].events.click();assert.equal(el('messageInput').value,'Otro texto');assert.equal(app.state.attempts,0);
+});
+test('ejemplos de confirmación permiten aceptar, rechazar o no saber',()=>{
+  const {app,el}=harness();app.startScenario('casa-mama');app.openHelp();el('wildcardOptions').querySelector('.show-examples').events.click();
+  const examples=el('helpExamples').children.map(c=>c.textContent);assert.ok(examples.includes('No.'));assert.ok(examples.includes('Todavía no lo sé.'));
+});
+test('el resumen compara la primera versión con la última sin persistir mensajes',async()=>{
+  const {app,el,saved}=harness();app.startScenario('casa-mama');el('messageInput').value='si';await app.sendMessage();app.rewrite();el('messageInput').value='Sí, ya salí de casa.';await app.sendMessage();app.continueConversation();
+  assert.equal(app.state.samples.length,1);assert.equal(app.state.samples[0].before,'si');assert.equal(app.state.samples[0].after,'Sí, ya salí de casa.');
+  while(app.state.turn<app.state.scenario.turns.length){el('messageInput').value=app.state.scenario.turns[app.state.turn].model;await app.sendMessage();app.continueConversation();}
+  assert.ok(el('modalBody').innerHTML.includes('Sí, ya salí de casa.'));assert.equal(JSON.stringify(saved).includes('Sí, ya salí de casa.'),false);
+  app.backHome();assert.equal(app.state.samples.length,0);
+});
+test('botones de propuestas anteriores no alteran la respuesta actual',async()=>{
+  const {app,el}=harness();app.startScenario('casa-mama');el('messageInput').value='no';await app.sendMessage();const old=el('messages').querySelector('.edit-proposal');app.continueConversation();
+  el('messageInput').value='en casa';await app.sendMessage();const pending=app.state.pending;assert.equal(old.disabled,true);old.events.click();assert.equal(app.state.pending,pending);
+});
+test('cancelar IA recupera el borrador exacto y descarta la respuesta tardía',async()=>{
+  const {app,el,setAI}=harness();let resolve;setAI(true,()=>new Promise(r=>{resolve=r;}));app.startScenario('casa-mama');el('messageInput').value='No iré hoy. Voy mañana.';const task=app.sendMessage();app.cancelResponse();
+  assert.equal(el('messageInput').value,'No iré hoy. Voy mañana.');assert.equal(app.state.busy,false);assert.equal(app.state.mode,'guided');assert.equal(el('composerWrap').classList.contains('hidden'),false);
+  resolve('{"reply":"Respuesta tardía","suggestion":"","explanation":""}');await task;assert.equal(app.state.pending,null);
 });

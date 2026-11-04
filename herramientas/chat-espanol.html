@@ -3,150 +3,117 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#075e54">
-  <meta name="description" content="Chat en Español de LSPedia: practica conversaciones reales y aprende a escribir mejor en español del Perú.">
+  <meta name="theme-color" content="#1d4ed8">
+  <meta name="description" content="Practica conversaciones y mejora tus respuestas en español escrito, paso a paso y gratis, con LSPedia.">
   <title>Chat en Español | LSPedia</title>
   <link rel="icon" href="../img/favicon.png">
-  <link rel="stylesheet" href="../css/chat-espanol.css?v=20261104-1">
+  <link rel="stylesheet" href="../css/chat-espanol.css?v=20261104-2">
 </head>
 <body>
   <noscript><p>Activa JavaScript para practicar. <a href="../?vista=herramientas">Volver a Herramientas</a>.</p></noscript>
   <main id="chatGame" class="chat-game">
     <section id="screenHome" class="screen screen-home">
       <header class="home-topbar">
-        <button id="btnBackLspedia" class="back-lspedia" type="button" aria-label="Volver a LSPedia">‹</button>
-        <div class="brand-mini">
-          <img src="../img/favicon.png" alt="" width="38" height="38">
-          <div><strong>LSPedia</strong><span>Herramienta de escritura</span></div>
-        </div>
-        <button id="btnHelp" class="icon-soft" type="button" aria-label="Cómo practicar">?</button>
+        <button id="btnBackLspedia" class="back-lspedia" type="button">← Herramientas</button>
+        <div class="brand-mini"><img src="../img/favicon.png" alt="" width="32" height="32"><strong>LSPedia</strong></div>
+        <button id="btnHelp" class="text-button" type="button">Cómo practicar</button>
       </header>
-
       <div class="home-scroll">
         <section class="hero-card">
-          <div class="hero-orb" aria-hidden="true">
-            <span class="bubble-demo bubble-demo-a">Hola 👋</span>
-            <span class="bubble-demo bubble-demo-b">¡Hola! ¿Cómo estás?</span>
-            <span class="hero-pencil">✎</span>
-          </div>
           <div class="hero-copy">
-            <span class="eyebrow">🇵🇪 Español del Perú</span>
+            <span class="eyebrow">ESCRIBE CON MÁS CONFIANZA</span>
             <h1>Chat en Español</h1>
-            <p>Practica situaciones de la vida diaria, escribe a tu ritmo y revisa tus mensajes paso a paso. Todo por escrito y gratis.</p>
-            <div class="hero-chips">
-              <span>💬 25 situaciones diferentes</span>
-              <span>✍️ Revisión paso a paso</span>
-              <span>💡 Pistas y ejemplos</span>
-            </div>
+            <p>Practica qué responder en situaciones de la vida diaria. Recibe una pista, escribe tu idea y mejora tu mensaje a tu ritmo.</p>
+            <button id="btnStartRecommended" class="action-primary start-button" type="button">Empezar una práctica →</button>
+            <p id="recommendedLabel" class="recommended-label"></p>
+            <span class="hero-note">Gratis · Todo por escrito · Sin límite de reintentos</span>
+          </div>
+          <div class="hero-example" aria-hidden="true">
+            <span class="example-label">ASÍ VAS A PRACTICAR</span>
+            <div class="example-message">¿A qué hora llegas?</div>
+            <div class="example-message example-answer">Llegaré cerca de las cinco.</div>
+            <div class="example-insight"><span>✎</span><p>Una respuesta útil añade<br><strong>el dato que te preguntan.</strong></p></div>
           </div>
         </section>
-
-        <section class="home-section mode-section" aria-labelledby="modeTitle">
-          <div class="section-heading"><div><span class="section-kicker">A tu ritmo</span><h2 id="modeTitle">Elige cómo practicar</h2></div><span class="free-badge">Gratis</span></div>
-          <div class="mode-options">
-            <label class="mode-option"><input type="radio" name="practiceMode" value="guided" checked><span><strong>Práctica guiada</strong><small>25 situaciones, ejemplos y revisión básica. Sin descargas adicionales.</small></span></label>
-            <label class="mode-option"><input id="modeAI" type="radio" name="practiceMode" value="ai" disabled><span><strong>Conversación con IA local <em>Experimental</em></strong><small>Respuestas nuevas según lo que escribas. Actívala abajo en un equipo compatible.</small></span></label>
-          </div>
-          <details class="local-ai-options"><summary>Activar IA local opcional</summary>
-            <p>La primera vez necesita una descarga grande (cientos de MB o más), espacio y un navegador compatible con WebGPU. Conviene usar Wi-Fi y una computadora. Puede ser lenta en celulares y cometer errores. La práctica guiada funciona sin activarla.</p>
-            <p>El modelo se descarga de proveedores públicos; tus mensajes se procesan en este dispositivo. No necesitas cuenta, clave de API ni suscripción. La descarga usa tu conexión a internet.</p>
-            <div class="local-ai-actions"><button id="btnActivateAI" class="action-primary" type="button">Descargar y activar IA local</button><button id="btnStopAI" class="action-secondary hidden" type="button">Cancelar / desactivar</button></div>
-            <p id="aiStatus" role="status" aria-live="polite">IA local desactivada. No se descarga nada hasta que pulses el botón.</p>
-          </details>
-        </section>
-
-        <section class="home-section">
-          <div class="section-heading">
-            <div><span class="section-kicker">Paso 1</span><h2>Elige un nivel</h2></div>
-            <div id="homeProgress" class="mini-progress">0 completadas</div>
-          </div>
-          <div id="levelGrid" class="level-grid"></div>
-        </section>
-
-        <section id="scenarioSection" class="home-section scenario-section">
-          <div class="section-heading">
-            <div><span class="section-kicker">Paso 2</span><h2 id="scenarioTitle">Elige una conversación</h2></div>
-            <span id="levelBadge" class="level-badge">Nivel 1</span>
-          </div>
-          <label class="scenario-search-label" for="scenarioSearch">Buscar una situación en todos los niveles</label>
-          <input id="scenarioSearch" class="scenario-search" type="search" placeholder="Familia, trabajo, compras…" autocomplete="off">
-          <div id="scenarioCount" class="search-count" role="status"></div>
+        <ol class="how-it-works" aria-label="Pasos de cada práctica">
+          <li><span>1</span><div><strong>Lee el mensaje</strong><small>Piensa qué te preguntan.</small></div></li>
+          <li><span>2</span><div><strong>Escribe tu respuesta</strong><small>Usa una pista si la necesitas.</small></div></li>
+          <li><span>3</span><div><strong>Revisa y mejora</strong><small>Vuelve a escribir o continúa.</small></div></li>
+        </ol>
+        <section id="scenarioSection" class="home-section scenario-section" aria-labelledby="scenarioTitle">
+          <div class="section-heading"><div><span class="section-kicker">O ELIGE UNA SITUACIÓN</span><h2 id="scenarioTitle">¿Qué quieres practicar?</h2></div><span id="homeProgress" class="mini-progress">0 / 25 practicadas</span></div>
+          <div id="levelGrid" class="level-grid" aria-label="Elegir nivel de práctica"></div>
+          <div class="scenario-filter"><label class="scenario-search-label" for="scenarioSearch">Buscar en todas las situaciones</label><input id="scenarioSearch" class="scenario-search" type="search" placeholder="Familia, compras, trabajo…" autocomplete="off"></div>
+          <div class="results-heading"><span id="levelBadge" class="level-badge">Nivel 1</span><span id="scenarioCount" class="search-count" role="status"></span></div>
           <div id="scenarioGrid" class="scenario-grid"></div>
         </section>
-      <div class="privacy-foot"><p>La LSP tiene su propia gramática. Aquí practicamos español escrito, sin audio y sin límite de reintentos. Usa datos inventados. Guardamos solo las prácticas completadas y el último nivel en este navegador.</p><button id="btnResetProgress" class="text-button" type="button">Borrar mi progreso</button></div>
+        <details class="home-section mode-section">
+          <summary>Más opciones de práctica <span>IA local opcional</span></summary>
+          <p>La práctica guiada ya está lista. Puedes probar una conversación más libre con IA local si tu equipo lo permite.</p>
+          <div class="mode-options">
+            <label class="mode-option"><input type="radio" name="practiceMode" value="guided" checked><span><strong>Práctica guiada</strong><small>Preguntas preparadas, pistas y revisión básica.</small></span></label>
+            <label class="mode-option"><input id="modeAI" type="radio" name="practiceMode" value="ai" disabled><span><strong>IA local · Experimental</strong><small>Genera respuestas nuevas. Necesita activarse primero.</small></span></label>
+          </div>
+          <div class="local-ai-options">
+            <p>La IA necesita una descarga grande, espacio y un navegador compatible. Conviene usar Wi-Fi y una computadora. Puede ser lenta y cometer errores. La práctica guiada funciona sin activarla.</p>
+            <p>El modelo se descarga de proveedores públicos; tus mensajes se procesan en tu dispositivo. No necesitas cuenta ni suscripción.</p>
+            <div class="local-ai-actions"><button id="btnActivateAI" class="action-secondary" type="button">Descargar y activar IA local</button><button id="btnStopAI" class="action-secondary hidden" type="button">Cancelar / desactivar</button></div>
+            <p id="aiStatus" role="status">IA local desactivada. No se descarga nada hasta que pulses el botón.</p>
+          </div>
+        </details>
+        <div class="privacy-foot"><p>La LSP tiene su propia gramática. Aquí practicamos español escrito. Usa datos inventados. Solo guardamos las prácticas completadas y el último nivel en este navegador.</p><button id="btnResetProgress" class="text-button" type="button">Borrar mi progreso</button></div>
       </div>
     </section>
-
-    <section id="screenChat" class="screen screen-chat hidden" aria-label="Conversación">
+    <section id="screenChat" class="screen screen-chat hidden" aria-label="Conversación de práctica">
       <header class="chat-topbar">
-        <button id="btnChatBack" class="chat-back" type="button" aria-label="Volver">‹</button>
-        <div id="contactAvatar" class="contact-avatar">🙂</div>
-        <div class="contact-main">
-          <strong id="contactName">Contacto</strong>
-          <span id="contactStatus">Práctica guiada · simulación</span>
-        </div>
-        <div class="chat-actions">
-          <span id="turnCounter" class="turn-counter">1/6</span>
-          <button id="btnChatMenu" class="chat-menu" type="button" aria-label="Información de la práctica">⋮</button>
-        </div>
+        <button id="btnChatBack" class="chat-back" type="button">← Situaciones</button>
+        <div id="contactAvatar" class="contact-avatar" aria-hidden="true">🙂</div>
+        <div class="contact-main"><strong id="contactName">Contacto</strong><span id="contactStatus">Práctica guiada · simulación</span></div>
+        <button id="btnChatMenu" class="chat-menu" type="button">Mi objetivo</button>
       </header>
-
       <div class="lesson-strip">
-        <div class="lesson-progress"><div id="lessonProgress"></div></div>
-        <div class="lesson-meta">
-          <span id="lessonSituation">Situación</span>
-          <span id="lessonScore">✍️ 0</span>
-        </div>
-        <details class="writing-guide"><summary>Guía para construir tu mensaje</summary><p>Piensa: ¿qué quiero comunicar?, ¿qué dato necesita la otra persona?, ¿se entiende mi idea? Puedes escribir una frase corta. No todas las frases necesitan sujeto explícito, hora o conector.</p></details>
+        <div class="lesson-heading"><strong id="lessonSituation">Situación</strong><span id="turnCounter" class="turn-counter">1 / 6</span></div>
+        <div class="lesson-progress" aria-hidden="true"><div id="lessonProgress"></div></div>
+        <ol class="practice-steps" aria-label="Pasos de tu respuesta"><li id="stepRead"><span>1</span> Lee</li><li id="stepWrite" aria-current="step"><span>2</span> Escribe</li><li id="stepReview"><span>3</span> Revisa</li></ol>
+        <span id="lessonScore" class="sr-only">0 respuestas practicadas</span>
       </div>
-
       <div id="messages" class="messages" role="log" aria-live="polite" aria-relevant="additions"></div>
-
       <div id="smartBar" class="smart-bar">
-        <button id="btnWildcard" class="wildcard-btn" type="button"><span>💡</span><b>Ayuda</b><small>Pistas y ejemplos</small></button>
-        <div class="smart-tip"><span>✨</span><span id="smartTipText">Escribe como tú responderías.</span></div>
+        <div class="smart-tip"><strong>Tu objetivo ahora</strong><span id="smartTipText">Responde con tus propias palabras.</span></div>
+        <button id="btnWildcard" class="wildcard-btn" type="button">Necesito una pista</button>
       </div>
-
-      <div id="wildcardPanel" class="wildcard-panel hidden" aria-live="polite">
-        <div class="wildcard-head"><strong>Usa una pista o adapta un ejemplo</strong><button id="btnCloseWildcard" type="button" aria-label="Cerrar">×</button></div>
+      <div id="wildcardPanel" class="wildcard-panel hidden" aria-labelledby="helpTitle">
+        <div class="wildcard-head"><strong id="helpTitle">Construye tu respuesta</strong><button id="btnCloseWildcard" type="button" aria-label="Cerrar las pistas">×</button></div>
         <div id="wildcardOptions" class="wildcard-options"></div>
       </div>
-
-      <div id="reviewActions" class="review-actions hidden" aria-label="Después de revisar">
-        <button id="btnRewrite" class="action-secondary" type="button">Volver a escribir</button>
-        <button id="btnContinue" class="action-primary" type="button">Continuar conversación →</button>
+      <div id="reviewActions" class="review-actions hidden" aria-label="Elige qué hacer con tu respuesta">
+        <button id="btnRewrite" class="action-primary" type="button">Mejorar mi respuesta</button>
+        <button id="btnContinue" class="action-secondary" type="button">Continuar →</button>
       </div>
       <div id="busyStatus" class="busy-status hidden" role="status">Preparando respuesta… <button id="btnCancelResponse" class="text-button" type="button">Cancelar y volver a escribir</button></div>
-      <footer class="composer-wrap">
+      <footer id="composerWrap" class="composer-wrap">
+        <label class="composer-label" for="messageInput">Tu respuesta</label>
         <div class="composer">
-          <textarea id="messageInput" rows="1" maxlength="600" placeholder="Escribe un mensaje…" autocomplete="off" autocapitalize="sentences" spellcheck="true" aria-label="Escribe tu respuesta"></textarea>
-          <button id="btnSend" class="send-btn" type="button" aria-label="Enviar mensaje">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20.5 21 12 3 3.5v6.6l12 1.9-12 1.9z"/></svg>
-          </button>
+          <textarea id="messageInput" rows="2" maxlength="600" placeholder="Escribe lo que tú responderías…" autocomplete="off" autocapitalize="sentences" spellcheck="true" aria-describedby="composerNote"></textarea>
+          <button id="btnSend" class="send-btn" type="button">Revisar mi respuesta <span aria-hidden="true">→</span></button>
         </div>
-        <div class="composer-note"><span id="composerNote">Escribe con tus palabras. Enter envía; Mayús + Enter añade una línea.</span> <span id="charCount">0/600</span></div>
+        <div class="composer-note"><span id="composerNote">Puedes responder con una frase corta.</span><span id="charCount">0/600</span></div>
       </footer>
     </section>
-
-    <div id="typingOverlay" class="typing-overlay hidden" aria-hidden="true">
-      <span></span><span></span><span></span>
-    </div>
-
     <div id="modal" tabindex="-1" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
       <div class="modal-card">
         <button id="modalClose" class="modal-close" type="button" aria-label="Cerrar">×</button>
-        <div id="modalIcon" class="modal-icon">💬</div>
+        <div id="modalIcon" class="modal-icon" aria-hidden="true">💬</div>
         <h2 id="modalTitle">Cómo practicar</h2>
         <div id="modalBody" class="modal-body"></div>
         <div id="modalActions" class="modal-actions"></div>
       </div>
     </div>
-
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
   </main>
-  <script src="../js/chat-espanol-core.js?v=20261104-1"></script>
+  <script src="../js/chat-espanol-core.js?v=20261104-2"></script>
   <script src="../js/chat-espanol-data.js?v=20261104-1"></script>
   <script src="../js/chat-espanol-local.js?v=20261104-1"></script>
-  <script src="../js/chat-espanol.js?v=20261104-1"></script>
+  <script src="../js/chat-espanol.js?v=20261104-2"></script>
 </body>
 </html>

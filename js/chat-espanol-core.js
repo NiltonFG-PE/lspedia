@@ -55,6 +55,40 @@ function decision(text){
   if(/^(si|claro|de acuerdo)(\s|$)/.test(n))return "yes";
   return "other";
 }
+// A writing aid, not an automatic assessment of language ability.
+// The guide describes the task; it never rewrites the user's facts to fit an example.
+function responseGuide(turn={}){
+  const full=String(turn.prompt||"");
+  const question=full.match(/¿([^?]+)\?/);
+  const p=normalize(question?question[1]:full);
+  const spec=(kind,aim,starter,check)=>({kind,aim,starter,check});
+  if(/por que|que razon|que motivo/.test(p))return spec("reason","Explica el motivo de tu respuesta.","Porque ","¿Expliqué por qué?");
+  if(/que hora|cuando|para que dia|cuanto tiempo|desde cuando/.test(p))return spec("time","Indica una hora, un día o un tiempo aproximado.",/desde cuando/.test(p)?"Desde ":/para que dia/.test(p)?"Para el ":"Aproximadamente ","¿Dije cuándo o cuánto tiempo? También puedo decir que aún no lo sé.");
+  if(/a que ciudad|a donde/.test(p))return spec("destination","Di a qué lugar quieres ir.",/ciudad|viajar/.test(p)?"Quiero viajar a ":"Voy a ","¿Nombré el lugar al que quiero ir?");
+  if(/donde|en que parte|cual.*direccion/.test(p))return spec("place","Indica un lugar o una referencia.",/estas|esta ahora/.test(p)?"Estoy en ":"El lugar es ","¿La otra persona puede saber de qué lugar hablo?");
+  if(/cuant[oa]s?\b/.test(p))return spec("quantity","Indica una cantidad o explica si aún no la sabes.","Necesito ","¿Dije la cantidad y de qué se trata?");
+  if(/\bo\b/.test(p)&&question)return spec("choice","Elige una opción o explica que prefieres otra.","Prefiero ","¿Se entiende qué opción quiero?");
+  if(/^(ya|puede|puedes|tiene|tienes|quiere|quieres|desea|necesita|hay|es|esta|ha|acepta|podemos|lleva|cambio|cambiaron|vas a|vas|has)\b/.test(p)&&question)return spec("confirm","Acepta, rechaza o explica si todavía no lo sabes.","Sí, ","¿Se entiende mi decisión? Una respuesta corta también puede servir.");
+  if(/que.*pasa|problema|dificultad|que ocurrio/.test(p))return spec("explain","Cuenta qué ocurre y añade un detalle útil.","Lo que pasa es que ","¿Expliqué qué ocurre y qué ayuda necesito?");
+  if(/como|que parte|que informacion/.test(p))return spec("detail","Explica tu idea con un detalle que ayude a entenderla.","Creo que ","¿Añadí el dato que necesita la otra persona?");
+  if(/que.*(?:llevar|necesita|necesitas|desea|quieres)|en que puedo ayudar/.test(p))return spec("request","Di qué necesitas y, si hace falta, cuánto o para cuándo.","Quisiera ","¿Se entiende qué estoy pidiendo?");
+  return spec("open","Responde a la idea del mensaje con tus propias palabras.","", "¿Mi mensaje dice lo que quiero comunicar?");
+}
+function communicationFeedback(text,turn={}){
+  const guide=responseGuide(turn), n=normalize(text);
+  const uncertain=/\b(no se|no lo se|no estoy segur[oa]|aun no se|todavia no se|no recuerdo|no tengo esa informacion)\b/.test(n);
+  const shortConfirm=/^(si|no|bien|claro|ok|de acuerdo|gracias|si gracias|no gracias)$/.test(n);
+  let focus=guide.check, label="Comprueba tu idea";
+  if(uncertain){label="Puedes expresar una duda";focus="Está bien decir que aún no lo sabes. Si quieres, añade cómo podrías confirmarlo.";}
+  else if(shortConfirm&&["time","place","destination","quantity","reason","choice"].includes(guide.kind)){
+    label="Añade el dato que te piden";
+    const missing={time:"una hora, un día o un tiempo",place:"un lugar",destination:"el lugar al que quieres ir",quantity:"una cantidad",reason:"el motivo",choice:"la opción que prefieres"}[guide.kind];
+    focus="Te están pidiendo "+missing+". Puedes añadirlo o explicar que todavía no lo sabes.";
+  }else if(shortConfirm&&guide.kind==="confirm"){
+    label="Una respuesta breve puede servir";focus="Puedes aceptar o rechazar con pocas palabras. Añade un detalle solo si ayuda a entender tu decisión.";
+  }
+  return {label,focus,guide};
+}
 function nextGuided(scenario,index,text,memory={}){
   let next=index+1, closing="";
   const choice=decision(text), n=normalize(text);
@@ -81,6 +115,6 @@ function safeProgress(raw,ids){
   const value=raw&&typeof raw==="object"?raw:{};
   return {completed:[...new Set(Array.isArray(value.completed)?value.completed:[])].filter(id=>typeof id==="string"&&ids.includes(id)),lastLevel:Math.min(5,Math.max(1,Math.trunc(Number(value.lastLevel)||1)))};
 }
-const api={normalize,tokens,escapeHTML,review,decision,nextGuided,parseAI,safeProgress};
+const api={normalize,tokens,escapeHTML,review,decision,nextGuided,parseAI,safeProgress,responseGuide,communicationFeedback};
 if(typeof module==="object"&&module.exports)module.exports=api;else root.LSPChatCore=api;
 })(typeof globalThis!=="undefined"?globalThis:this);

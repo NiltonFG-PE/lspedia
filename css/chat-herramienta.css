@@ -1,11 +1,11 @@
 /* Icono de Chat reutilizado sin depender de que se cargue el módulo Jugar. */
-#herramientasMenuMovil .herr-movil-btn-chat{text-decoration:none;--herr-flecha-color:#075e54;--herr-glow:rgba(7,94,84,.12);--herr-glow-fuerte:rgba(7,94,84,.2)}
-.herr-movil-btn-chat .herr-movil-texto{color:#075e54}.herr-movil-btn-chat .herr-movil-ola{background:linear-gradient(135deg,#b8eadb,#13987d)}
-.herr-chat-icon{background:#dcf5ed;overflow:visible}
-.herr-chat-icon .jp-chat-phone{display:block;position:relative;width:52px;height:57px;border-radius:11px;background:#efeae2;border:3px solid #163b3a;box-shadow:0 4px 8px #163b3a24;overflow:hidden}
-.herr-chat-icon .jp-chat-top{position:absolute;left:0;right:0;top:0;height:11px;background:#075e54}
-.herr-chat-icon .jp-chat-top:after{content:"";position:absolute;left:5px;top:3px;width:4px;height:4px;border-radius:50%;background:#d9fdd3}
+#herramientasMenuMovil .herr-movil-btn-chat{text-decoration:none;--herr-flecha-color:#1d4ed8;--herr-glow:rgba(29,78,216,.12);--herr-glow-fuerte:rgba(29,78,216,.2)}
+.herr-movil-btn-chat .herr-movil-texto{color:#1d4ed8}.herr-movil-btn-chat .herr-movil-ola{background:linear-gradient(135deg,#93c5fd,#2563eb)}
+.herr-chat-icon{background:#dbeafe;overflow:visible}
+.herr-chat-icon .jp-chat-phone{display:block;position:relative;width:52px;height:57px;border-radius:11px;background:#eff6ff;border:3px solid #1e3a8a;box-shadow:0 4px 8px #1e3a8a24;overflow:hidden}
+.herr-chat-icon .jp-chat-top{position:absolute;left:0;right:0;top:0;height:11px;background:#1d4ed8}
+.herr-chat-icon .jp-chat-top:after{content:"";position:absolute;left:5px;top:3px;width:4px;height:4px;border-radius:50%;background:#dbeafe}
 .herr-chat-icon .jp-chat-msg{position:absolute;font-style:normal;font-size:7px;font-weight:800;line-height:1;padding:4px;border-radius:5px;white-space:nowrap}
-.herr-chat-icon .jp-chat-msg-a{left:3px;top:16px;background:white;color:#243b4b}.herr-chat-icon .jp-chat-msg-b{right:3px;top:30px;background:#d9fdd3;color:#214039}
-.herr-chat-icon .jp-chat-cursor{position:absolute;right:2px;bottom:1px;width:14px;height:14px;border-radius:50%;display:grid;place-items:center;background:#00856e;color:white;font-size:10px;font-style:normal}
-html[data-lsp-tema="dark"] .herr-movil-btn-chat .herr-movil-texto{color:#94e8d1}
+.herr-chat-icon .jp-chat-msg-a{left:3px;top:16px;background:white;color:#243b4b}.herr-chat-icon .jp-chat-msg-b{right:3px;top:30px;background:#dbeafe;color:#1e3a8a}
+.herr-chat-icon .jp-chat-cursor{position:absolute;right:2px;bottom:1px;width:14px;height:14px;border-radius:50%;display:grid;place-items:center;background:#2563eb;color:white;font-size:10px;font-style:normal}
+html[data-lsp-tema="dark"] .herr-movil-btn-chat .herr-movil-texto{color:#93c5fd}
