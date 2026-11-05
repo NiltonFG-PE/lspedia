@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-11-04T17:15:26Z",
+  "actualizado": "2026-11-05T03:29:44Z",
   "traducciones": [
     {
       "fuente": "diccionario",
@@ -264,7 +264,7 @@
       "categoria": "Salud",
       "ingles": "Allergy",
       "aliases": [],
-      "definicionIngles": "This is when the body reacts badly to something, like food or dust, causing discomfort.\n\nExample: I have a dust allergy, that's why I sneeze a lot."
+      "definicionIngles": "This occurs when the body reacts adversely to something, such as food or dust, causing discomfort.\n\nExample: I have a dust allergy, that's why I sneeze a lot."
     },
     {
       "fuente": "diccionario",
@@ -4352,7 +4352,7 @@
       "categoria": "Economía",
       "ingles": "Assessment",
       "aliases": [],
-      "definicionIngles": "Charge or tax that is applied to something."
+      "definicionIngles": "A charge or tax that is applied to something."
     },
     {
       "fuente": "diccionario",
@@ -6104,7 +6104,7 @@
       "categoria": "Deportes",
       "ingles": "Game",
       "aliases": [],
-      "definicionIngles": "It's a game between two teams or people in a sport.\n\nExample: We watched the soccer game on television."
+      "definicionIngles": "It's a game between two teams or two people in a sport.\n\nExample: We watched the soccer game on television."
     },
     {
       "fuente": "diccionario",
@@ -6158,7 +6158,7 @@
       "fuente": "diccionario",
       "palabra": "Patrimonio contable",
       "categoria": "Economía",
-      "ingles": "Accounting equity",
+      "ingles": "accounting equity",
       "aliases": [],
       "definicionIngles": "Economic value resulting from assets less liabilities."
     },
@@ -6222,7 +6222,7 @@
       "fuente": "diccionario",
       "palabra": "Percepción tributaria",
       "categoria": "Economía",
-      "ingles": "Tax perception",
+      "ingles": "Tax collection",
       "aliases": [],
       "definicionIngles": "Additional amount that is charged in advance in some transactions with respect to taxes."
     },
@@ -7312,7 +7312,7 @@
       "categoria": "Ciudad",
       "ingles": "Municipal retreat",
       "aliases": [],
-      "definicionIngles": "Required distance between a building and certain limits of the land or public road."
+      "definicionIngles": "Required distance between a building and certain boundaries of the land or public road."
     },
     {
       "fuente": "diccionario",
