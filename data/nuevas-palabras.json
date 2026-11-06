@@ -1,9 +1,119 @@
 {
-  "generadoEn": "2026-11-03T20:47:00Z",
+  "generadoEn": "2026-11-06T15:28:53Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 246,
+  "maxItems": 256,
   "diasEtiquetaNuevo": 14,
   "items": [
+    {
+      "id": "",
+      "palabra": "Pareja",
+      "categoria": "Familia y relaciones personales",
+      "imagen": "img/vocabulario/pareja.webp",
+      "fecha": "2026-11-06T15:25:28Z",
+      "fechaPublicacion": "2026-11-06T05:00:00Z",
+      "publicadoEn": "2026-11-06T15:25:28Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Novios",
+      "categoria": "Familia y relaciones personales",
+      "imagen": "img/vocabulario/novio.webp",
+      "fecha": "2026-11-06T15:18:30Z",
+      "fechaPublicacion": "2026-11-06T05:00:00Z",
+      "publicadoEn": "2026-11-06T15:18:30Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Prima",
+      "categoria": "Familia y relaciones personales",
+      "imagen": "img/vocabulario/prima.webp",
+      "fecha": "2026-11-06T15:16:33Z",
+      "fechaPublicacion": "2026-11-06T05:00:00Z",
+      "publicadoEn": "2026-11-06T15:16:33Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Primo",
+      "categoria": "Familia y relaciones personales",
+      "imagen": "img/vocabulario/primo.webp",
+      "fecha": "2026-11-06T15:15:18Z",
+      "fechaPublicacion": "2026-11-06T05:00:00Z",
+      "publicadoEn": "2026-11-06T15:15:18Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Suegra",
+      "categoria": "Familia y relaciones personales",
+      "imagen": "img/vocabulario/suegra.webp",
+      "fecha": "2026-11-06T15:12:29Z",
+      "fechaPublicacion": "2026-11-06T05:00:00Z",
+      "publicadoEn": "2026-11-06T15:12:29Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Suegro",
+      "categoria": "Familia y relaciones personales",
+      "imagen": "img/vocabulario/suegro.webp",
+      "fecha": "2026-11-06T15:08:32Z",
+      "fechaPublicacion": "2026-11-06T05:00:00Z",
+      "publicadoEn": "2026-11-06T15:08:32Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Tía",
+      "categoria": "Familia y relaciones personales",
+      "imagen": "img/vocabulario/tia.webp",
+      "fecha": "2026-11-06T15:06:26Z",
+      "fechaPublicacion": "2026-11-06T05:00:00Z",
+      "publicadoEn": "2026-11-06T15:06:26Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Tío",
+      "categoria": "Familia y relaciones personales",
+      "imagen": "img/vocabulario/tio.webp",
+      "fecha": "2026-11-06T15:05:02Z",
+      "fechaPublicacion": "2026-11-06T05:00:00Z",
+      "publicadoEn": "2026-11-06T15:05:02Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Viuda",
+      "categoria": "Familia y relaciones personales",
+      "imagen": "img/vocabulario/viuda.webp",
+      "fecha": "2026-11-06T15:01:22Z",
+      "fechaPublicacion": "2026-11-06T05:00:00Z",
+      "publicadoEn": "2026-11-06T15:01:22Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
+    {
+      "id": "",
+      "palabra": "Viudo",
+      "categoria": "Familia y relaciones personales",
+      "imagen": "img/vocabulario/viudo.webp",
+      "fecha": "2026-11-06T14:59:54Z",
+      "fechaPublicacion": "2026-11-06T05:00:00Z",
+      "publicadoEn": "2026-11-06T14:59:54Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "vocabulario"
+    },
     {
       "id": "",
       "palabra": "Yerno",
