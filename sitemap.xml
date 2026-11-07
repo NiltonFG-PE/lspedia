@@ -791,7 +791,7 @@
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://lspedia.site/vocabulario/pareja-familia-y-relaciones-personales/</loc>
+        <loc>https://lspedia.site/vocabulario/enamorados-familia-y-relaciones-personales/</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
@@ -857,6 +857,26 @@
     </url>
     <url>
         <loc>https://lspedia.site/vocabulario/hija-familia-y-relaciones-personales/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/vocabulario/esposo-familia-y-relaciones-personales/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/vocabulario/esposa-familia-y-relaciones-personales/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/vocabulario/sobrino-familia-y-relaciones-personales/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/vocabulario/sobrina-familia-y-relaciones-personales/</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
