@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-11-06T01:32:28Z",
+  "actualizado": "2026-11-07T16:26:35Z",
   "traducciones": [
     {
       "fuente": "diccionario",
@@ -232,7 +232,7 @@
       "categoria": "Economía",
       "ingles": "Saving",
       "aliases": [],
-      "definicionIngles": "It's money that a person saves without spending it, to use later.\n\nExample: I have savings to buy a laptop."
+      "definicionIngles": "It's money a person saves without spending it, to use later.\n\nExample: I have savings to buy a laptop."
     },
     {
       "fuente": "diccionario",
@@ -264,7 +264,7 @@
       "categoria": "Salud",
       "ingles": "Allergy",
       "aliases": [],
-      "definicionIngles": "This occurs when the body reacts adversely to something, such as food or dust, causing discomfort.\n\nExample: I have a dust allergy, that's why I sneeze a lot."
+      "definicionIngles": "This is when the body reacts badly to something, like food or dust, causing discomfort.\n\nExample: I have a dust allergy, that's why I sneeze a lot."
     },
     {
       "fuente": "diccionario",
@@ -848,7 +848,7 @@
       "categoria": "Ciudad",
       "ingles": "Neighborhood",
       "aliases": [],
-      "definicionIngles": "It's the part of the city where a person lives, along with their neighbors.\n\nExample: Everyone knows each other in my neighborhood."
+      "definicionIngles": "It's the part of the city where a person lives, along with their neighbors.\n\nExample: In my neighborhood, everyone knows each other."
     },
     {
       "fuente": "diccionario",
@@ -1376,7 +1376,7 @@
       "categoria": "Tecnología",
       "ingles": "Electrical circuit",
       "aliases": [],
-      "definicionIngles": "A closed path through which an electric current can flow."
+      "definicionIngles": "A closed path through which electric current can flow."
     },
     {
       "fuente": "diccionario",
@@ -2376,7 +2376,7 @@
       "categoria": "Salud",
       "ingles": "Rest",
       "aliases": [],
-      "definicionIngles": "This is the time when the body relaxes and recovers energy.\n\nExample: I need rest because I worked a lot this week."
+      "definicionIngles": "It's the time when the body relaxes and recovers energy.\n\nExample: I need rest because I worked a lot this week."
     },
     {
       "fuente": "diccionario",
@@ -6104,7 +6104,7 @@
       "categoria": "Deportes",
       "ingles": "Game",
       "aliases": [],
-      "definicionIngles": "It's a game between two teams or two people in a sport.\n\nExample: We watched the soccer game on television."
+      "definicionIngles": "It's a game between two teams or people in a sport.\n\nExample: We watched the soccer game on television."
     },
     {
       "fuente": "diccionario",
@@ -6408,7 +6408,7 @@
       "categoria": "Ciencia",
       "ingles": "Technical drawing",
       "aliases": [],
-      "definicionIngles": "Drawing with measurements and details used to manufacture, build or install something."
+      "definicionIngles": "A drawing with measurements and details used to manufacture, build, or install something."
     },
     {
       "fuente": "diccionario",
