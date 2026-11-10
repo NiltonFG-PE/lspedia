@@ -1,4 +1,4 @@
-﻿{
+{
   "version": 2,
   "actualizadoEn": "2026-11-03T13:21:05.635Z",
   "header": {
@@ -36,8 +36,8 @@
   },
   "heroes": {
     "diccionario": {
-      "titulo": "Diccionario visual de espa�ol con apoyo en Lengua de Se�as Peruana (LSP)",
-      "subtitulo": "?? Busca una palabra y entiende su significado con videos en Lengua de Se�as.\n?????????????? Para personas sordas y para quienes quieren comunicarse mejor con ellas.\n?? Diccionario de apoyo, no un curso de LSP.",
+      "titulo": "Diccionario visual de español con apoyo en Lengua de Señas Peruana (LSP)",
+      "subtitulo": "🔎 Busca una palabra y entiende su significado con videos en Lengua de Señas.\n🧏🏻‍♂️🧏🏻‍♀️ Para personas sordas y para quienes quieren comunicarse mejor con ellas.\nℹ️ Diccionario de apoyo, no un curso de LSP.",
       "estilo": {
         "fuente": "inherit",
         "emoji": "",
@@ -50,7 +50,7 @@
       "avatar": "img/avatar_lupa.webm",
       "buscadorPlaceholder": "Buscar palabra",
       "categoriasIniciales": 10,
-      "sugerenciasLabel": "? Palabras sugeridas",
+      "sugerenciasLabel": "⭐ Palabras sugeridas",
       "sugerencias": [],
       "mostrarSugerencias": true,
       "mostrarSenalDia": true,
@@ -58,8 +58,8 @@
       "mostrarEstadisticas": true
     },
     "vocabulario": {
-      "titulo": "Vocabulario de Lengua de Se�as Peruana (LSP)",
-      "subtitulo": "Las palabras en espa�ol sirven como referencia para facilitar las b�squedas.\nLas se�as representan conceptos, no solo palabras.\nLas variantes regionales enriquecen la Lengua de se�as.\nEl aprendizaje tambi�n requiere contacto con personas sordas.",
+      "titulo": "Vocabulario de Lengua de Señas Peruana (LSP)",
+      "subtitulo": "Las palabras en español sirven como referencia para facilitar las búsquedas.\nLas señas representan conceptos, no solo palabras.\nLas variantes regionales enriquecen la Lengua de señas.\nEl aprendizaje también requiere contacto con personas sordas.",
       "estilo": {
         "fuente": "inherit",
         "emoji": "",
@@ -81,7 +81,7 @@
     "whatsapp": "51928789623"
   },
   "footer": {
-    "copyright": "� 2026 LSPedia � Nilton F. G. Todos los derechos reservados.",
+    "copyright": "© 2026 LSPedia — Nilton F. G. Todos los derechos reservados.",
     "legalTexto": "Legal y privacidad",
     "anioAutomatico": true
   },
@@ -106,9 +106,9 @@
   "acciones": {
     "sugerir": {
       "nombre": "Sugerir palabra",
-      "contenido": "�Falta un t�rmino? Env�anos tu propuesta.",
+      "contenido": "¿Falta un término? Envíanos tu propuesta.",
       "url": "",
-      "icono": "??",
+      "icono": "💡",
       "visible": true,
       "nuevaPestana": true
     },
@@ -116,7 +116,7 @@
       "nombre": "Enviar una idea",
       "contenido": "Comparte sugerencias para mejorar LSPedia.",
       "url": "",
-      "icono": "??",
+      "icono": "💬",
       "visible": true,
       "nuevaPestana": true
     },
@@ -124,15 +124,15 @@
       "nombre": "Apoyar LSPedia",
       "contenido": "Ayuda a mantener el proyecto gratuito y en crecimiento.",
       "url": "",
-      "icono": "??",
+      "icono": "❤️",
       "visible": true,
       "nuevaPestana": true
     },
     "interprete": {
-      "nombre": "Contratar un int�rprete",
-      "contenido": "Solicita servicios de interpretaci�n en LSP.",
+      "nombre": "Contratar un intérprete",
+      "contenido": "Solicita servicios de interpretación en LSP.",
       "url": "",
-      "icono": "??",
+      "icono": "🎤",
       "visible": true,
       "nuevaPestana": true
     }
@@ -157,54 +157,25 @@
   "novedades": {
     "activo": false,
     "titulo": "Lo nuevo en LSPedia",
-    "items": [
-      {
-        "titulo": "?? Nuevo juego: Adivina qu� soy",
-        "descripcion": "Mira las se�as y mueve el celular para adivinar la palabra. �Un juego divertido para toda la familia!",
-        "fecha": "2026-11-01",
-        "url": "",
-        "esNuevo": true
-      },
-      {
-        "titulo": "?? Chat en Espa�ol mejorado",
-        "descripcion": "Practica conversaciones escritas en espa�ol con ejemplos visuales y apoyo en LSP.",
-        "fecha": "2026-10-20",
-        "url": "",
-        "esNuevo": true
-      },
-      {
-        "titulo": "?? Se�as con IA (Beta)",
-        "descripcion": "Experimenta con el reconocimiento de se�as usando inteligencia artificial. �Funci�n experimental!",
-        "fecha": "2026-10-10",
-        "url": "",
-        "esNuevo": false
-      },
-      {
-        "titulo": "?? Juego de Matem�ticas",
-        "descripcion": "Aprende a sumar, restar, multiplicar y dividir con apoyo en Lengua de Se�as Peruana.",
-        "fecha": "2026-09-25",
-        "url": "",
-        "esNuevo": false
-      }
-    ]
+    "items": []
   },
   "herramientas": {
     "alfabeto": {
-      "nombre": "Alfabeto y n�meros",
-      "descripcion": "Mira, reconoce y practica letras y n�meros",
-      "icono": "??",
+      "nombre": "Alfabeto y números",
+      "descripcion": "Mira, reconoce y practica letras y números",
+      "icono": "🔤",
       "orden": 1,
       "activo": true
     },
     "jugar": {
       "nombre": "Jugar",
       "descripcion": "Aprende tocando, ordenando y resolviendo",
-      "icono": "??",
+      "icono": "🎮",
       "orden": 2,
       "activo": true
     },
     "subtitulos": {
-      "nombre": "Subt�tulos",
+      "nombre": "Subtítulos",
       "descripcion": "Convierte la voz en texto en tiempo real",
       "icono": "CC",
       "orden": 3,
@@ -213,9 +184,9 @@
   },
   "juegos": {
     "adivina": {
-      "nombre": "Adivina qu� soy",
-      "descripcion": "Mira las se�as y mueve el celular",
-      "icono": "??",
+      "nombre": "Adivina qué soy",
+      "descripcion": "Mira las señas y mueve el celular",
+      "icono": "🎭",
       "orden": 1,
       "etiqueta": "",
       "activo": true
@@ -223,15 +194,15 @@
     "caras": {
       "nombre": "Caras y gestos",
       "descripcion": "Mira, expresa y adivina",
-      "icono": "??",
+      "icono": "😀",
       "orden": 2,
       "etiqueta": "",
       "activo": true
     },
     "chat": {
-      "nombre": "Chat en Espa�ol",
+      "nombre": "Chat en Español",
       "descripcion": "Conversa, escribe y mejora",
-      "icono": "??",
+      "icono": "💬",
       "orden": 3,
       "etiqueta": "",
       "activo": true
@@ -239,7 +210,7 @@
     "completar": {
       "nombre": "Completar la palabra",
       "descripcion": "Lleva la letra al espacio",
-      "icono": "??",
+      "icono": "🔤",
       "orden": 4,
       "etiqueta": "",
       "activo": true
@@ -247,7 +218,7 @@
     "unir": {
       "nombre": "Unir con flechas",
       "descripcion": "Arrastra y conecta",
-      "icono": "??",
+      "icono": "🔗",
       "orden": 5,
       "etiqueta": "",
       "activo": true
@@ -255,23 +226,23 @@
     "quiz": {
       "nombre": "Quiz",
       "descripcion": "Mira, piensa y elige",
-      "icono": "?",
+      "icono": "❓",
       "orden": 6,
       "etiqueta": "",
       "activo": true
     },
     "matematicas": {
-      "nombre": "Matem�ticas",
+      "nombre": "Matemáticas",
       "descripcion": "Junta, quita, agrupa y reparte",
-      "icono": "?",
+      "icono": "➗",
       "orden": 7,
       "etiqueta": "",
       "activo": true
     },
     "carrera": {
-      "nombre": "Carrera matem�tica",
+      "nombre": "Carrera matemática",
       "descripcion": "Corre, esquiva y resuelve",
-      "icono": "???",
+      "icono": "🏎️",
       "orden": 8,
       "etiqueta": "",
       "activo": true
@@ -279,15 +250,15 @@
     "oraciones": {
       "nombre": "Oraciones",
       "descripcion": "Ordena y escribe ideas",
-      "icono": "??",
+      "icono": "📝",
       "orden": 9,
       "etiqueta": "",
       "activo": true
     }
   },
   "seo": {
-    "titulo": "LSPedia - Diccionario visual de espa�ol con apoyo en Lengua de Se�as Peruana",
-    "descripcion": "Diccionario visual gratuito para aprender y comprender palabras en espa�ol con apoyo de videos en Lengua de Se�as Peruana (LSP).",
+    "titulo": "LSPedia - Diccionario visual de español con apoyo en Lengua de Señas Peruana",
+    "descripcion": "Diccionario visual gratuito para aprender y comprender palabras en español con apoyo de videos en Lengua de Señas Peruana (LSP).",
     "sitio": "LSPedia",
     "imagenCompartir": "https://lspedia.site/img/lspedia.png"
   },
@@ -295,7 +266,7 @@
     "activo": true,
     "titulo": "Instalar LSPedia",
     "subtitulo": "Usar como app",
-    "ayuda": "Si no aparece la ventana de instalaci�n, abre el men� del navegador y elige Instalar aplicaci�n o Agregar a pantalla de inicio."
+    "ayuda": "Si no aparece la ventana de instalación, abre el menú del navegador y elige Instalar aplicación o Agregar a pantalla de inicio."
   },
   "mantenimiento": {
     "modo": "normal",
@@ -311,62 +282,62 @@
   "legal": {
     "responsable": "Nilton L. F. G.",
     "correo": "proyectolspedia@gmail.com",
-    "intro": "Informaci�n clara sobre el uso de LSPedia, el tratamiento de datos personales, los formularios, los servicios externos y la propiedad intelectual.",
+    "intro": "Información clara sobre el uso de LSPedia, el tratamiento de datos personales, los formularios, los servicios externos y la propiedad intelectual.",
     "secciones": [
       {
         "clave": "responsable",
-        "titulo": "?? Responsable de LSPedia",
-        "contenido": "LSPedia es un proyecto independiente administrado por Nilton L. F. G. Esta informaci�n se aplica al sitio oficial lspedia.site y a los formularios gestionados por LSPedia."
+        "titulo": "👤 Responsable de LSPedia",
+        "contenido": "LSPedia es un proyecto independiente administrado por Nilton L. F. G. Esta información se aplica al sitio oficial lspedia.site y a los formularios gestionados por LSPedia."
       },
       {
         "clave": "datos",
-        "titulo": "?? Datos personales",
-        "contenido": "LSPedia procura recopilar �nicamente los datos necesarios.\n\n- No vendemos datos personales.\n- Las respuestas no se publican autom�ticamente.\n- No env�es datos sensibles innecesarios."
+        "titulo": "🔐 Datos personales",
+        "contenido": "LSPedia procura recopilar únicamente los datos necesarios.\n\n- No vendemos datos personales.\n- Las respuestas no se publican automáticamente.\n- No envíes datos sensibles innecesarios."
       },
       {
         "clave": "formularios",
-        "titulo": "?? Formularios de sugerencias",
-        "contenido": "Los formularios pueden recibir nombre, correo electr�nico, tipo de propuesta y el contenido de la sugerencia. Se utilizan para revisar la propuesta, gestionar la comunicaci�n y responder cuando corresponda. Las respuestas pueden almacenarse mediante Google Forms y Google Sheets."
+        "titulo": "📝 Formularios de sugerencias",
+        "contenido": "Los formularios pueden recibir nombre, correo electrónico, tipo de propuesta y el contenido de la sugerencia. Se utilizan para revisar la propuesta, gestionar la comunicación y responder cuando corresponda. Las respuestas pueden almacenarse mediante Google Forms y Google Sheets."
       },
       {
         "clave": "conservacion",
-        "titulo": "??? Conservaci�n de la informaci�n",
-        "contenido": "Los datos se conservan solo durante el tiempo razonablemente necesario para gestionar la sugerencia y responder. Cuando dejan de ser necesarios, pueden eliminarse o anonimizarse. Como criterio interno, LSPedia procura revisar los datos identificativos dentro de los 12 meses posteriores a la �ltima interacci�n."
+        "titulo": "🗂️ Conservación de la información",
+        "contenido": "Los datos se conservan solo durante el tiempo razonablemente necesario para gestionar la sugerencia y responder. Cuando dejan de ser necesarios, pueden eliminarse o anonimizarse. Como criterio interno, LSPedia procura revisar los datos identificativos dentro de los 12 meses posteriores a la última interacción."
       },
       {
         "clave": "arco",
-        "titulo": "?? Derechos sobre tus datos (ARCO)",
-        "contenido": "Puedes solicitar acceso, rectificaci�n, cancelaci�n u oposici�n respecto de tus datos personales escribiendo al correo de privacidad."
+        "titulo": "✉️ Derechos sobre tus datos (ARCO)",
+        "contenido": "Puedes solicitar acceso, rectificación, cancelación u oposición respecto de tus datos personales escribiendo al correo de privacidad."
       },
       {
         "clave": "terceros",
-        "titulo": "?? Servicios externos",
-        "contenido": "LSPedia puede utilizar Google Forms, Google Sheets, YouTube, GitHub y otros proveedores t�cnicos. Cada proveedor puede aplicar sus propias condiciones y pol�ticas."
+        "titulo": "🌐 Servicios externos",
+        "contenido": "LSPedia puede utilizar Google Forms, Google Sheets, YouTube, GitHub y otros proveedores técnicos. Cada proveedor puede aplicar sus propias condiciones y políticas."
       },
       {
         "clave": "cookies",
-        "titulo": "?? Anal�tica y almacenamiento local",
-        "contenido": "LSPedia puede utilizar herramientas de medici�n como Google Analytics y almacenamiento local del dispositivo para mejorar la experiencia y conocer de forma estad�stica el uso del sitio."
+        "titulo": "📊 Analítica y almacenamiento local",
+        "contenido": "LSPedia puede utilizar herramientas de medición como Google Analytics y almacenamiento local del dispositivo para mejorar la experiencia y conocer de forma estadística el uso del sitio."
       },
       {
         "clave": "menores",
-        "titulo": "?? Menores de edad",
-        "contenido": "LSPedia no necesita que un menor entregue datos personales innecesarios. Si eres menor y un formulario solicita informaci�n personal, pide ayuda a tu padre, madre o tutor cuando corresponda."
+        "titulo": "🧒 Menores de edad",
+        "contenido": "LSPedia no necesita que un menor entregue datos personales innecesarios. Si eres menor y un formulario solicita información personal, pide ayuda a tu padre, madre o tutor cuando corresponda."
       },
       {
         "clave": "terminos",
-        "titulo": "?? T�rminos de uso",
-        "contenido": "LSPedia ofrece contenido educativo e informativo. El uso del sitio debe ser l�cito y respetuoso. No se permite intentar da�ar, interferir o acceder sin autorizaci�n a los sistemas del proyecto."
+        "titulo": "📘 Términos de uso",
+        "contenido": "LSPedia ofrece contenido educativo e informativo. El uso del sitio debe ser lícito y respetuoso. No se permite intentar dañar, interferir o acceder sin autorización a los sistemas del proyecto."
       },
       {
         "clave": "licencia",
-        "titulo": "�? Propiedad intelectual y licencia",
-        "contenido": "LSPedia, su dise�o, c�digo y materiales propios est�n protegidos por las normas aplicables de propiedad intelectual. El contenido de terceros conserva la titularidad y condiciones de sus respectivos autores o proveedores."
+        "titulo": "©️ Propiedad intelectual y licencia",
+        "contenido": "LSPedia, su diseño, código y materiales propios están protegidos por las normas aplicables de propiedad intelectual. El contenido de terceros conserva la titularidad y condiciones de sus respectivos autores o proveedores."
       },
       {
         "clave": "cambios",
-        "titulo": "?? Cambios en esta informaci�n",
-        "contenido": "Esta informaci�n puede actualizarse cuando cambien las funciones de LSPedia, sus formularios, los proveedores tecnol�gicos o las obligaciones aplicables."
+        "titulo": "🔄 Cambios en esta información",
+        "contenido": "Esta información puede actualizarse cuando cambien las funciones de LSPedia, sus formularios, los proveedores tecnológicos o las obligaciones aplicables."
       }
     ]
   },
@@ -377,25 +348,25 @@
     "secciones": [
       {
         "tiempo": 0,
-        "titulo": "?? Un punto importante",
+        "titulo": "⚠️ Un punto importante",
         "imagen": "",
         "contenido": ""
       },
       {
         "tiempo": 85,
-        "titulo": "? �Qu� es LSPedia?",
+        "titulo": "❓ ¿Qué es LSPedia?",
         "imagen": "",
         "contenido": ""
       },
       {
         "tiempo": 185,
-        "titulo": "?? Un proyecto que crece gracias a tu apoyo",
+        "titulo": "🌱 Un proyecto que crece gracias a tu apoyo",
         "imagen": "",
         "contenido": ""
       },
       {
         "tiempo": 396,
-        "titulo": "?? Tus ideas, opiniones, consejos o cualquier otra forma de ayudar y apoyar son muy bienvenidos",
+        "titulo": "💌 Tus ideas, opiniones, consejos o cualquier otra forma de ayudar y apoyar son muy bienvenidos",
         "imagen": "",
         "contenido": ""
       }
