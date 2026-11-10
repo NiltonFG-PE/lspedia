@@ -107,7 +107,7 @@
     "sugerir": {
       "nombre": "Sugerir palabra",
       "contenido": "�Falta un t�rmino? Env�anos tu propuesta.",
-      "url": "mailto:proyectolspedia@gmail.com?subject=Sugerencia%20de%20palabra%20para%20LSPedia",
+      "url": "",
       "icono": "??",
       "visible": true,
       "nuevaPestana": true
@@ -115,7 +115,7 @@
     "idea": {
       "nombre": "Enviar una idea",
       "contenido": "Comparte sugerencias para mejorar LSPedia.",
-      "url": "mailto:proyectolspedia@gmail.com?subject=Idea%20para%20mejorar%20LSPedia",
+      "url": "",
       "icono": "??",
       "visible": true,
       "nuevaPestana": true
@@ -123,7 +123,7 @@
     "apoyar": {
       "nombre": "Apoyar LSPedia",
       "contenido": "Ayuda a mantener el proyecto gratuito y en crecimiento.",
-      "url": "https://wa.me/51928789623?text=Hola%2C%20quiero%20apoyar%20el%20proyecto%20LSPedia",
+      "url": "",
       "icono": "??",
       "visible": true,
       "nuevaPestana": true
@@ -131,7 +131,7 @@
     "interprete": {
       "nombre": "Contratar un int�rprete",
       "contenido": "Solicita servicios de interpretaci�n en LSP.",
-      "url": "https://wa.me/51928789623?text=Hola%2C%20necesito%20contratar%20un%20int%C3%A9rprete%20de%20Lengua%20de%20Se%C3%B1as%20Peruana",
+      "url": "",
       "icono": "??",
       "visible": true,
       "nuevaPestana": true
