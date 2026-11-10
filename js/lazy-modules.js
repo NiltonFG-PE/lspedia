@@ -33,6 +33,11 @@
             js: 'js/subtitulos.js?v=20260926-1',
             css: 'css/subtitulos.css?v=20260926-1',
             global: 'SubtitulosV2'
+        },
+        quiz: {
+            js: 'js/quiz.js?v=20260922-2',
+            css: 'css/quiz.css?v=20260925-3',
+            global: 'QuizV2'
         }
     };
 
@@ -221,6 +226,8 @@
                 return ['matematicas'];
             case 'btnMenuJuegoOraciones':
                 return ['oraciones'];
+            case 'btnMenuJuegoQuiz':
+                return ['quiz'];
             default:
                 return [];
         }
@@ -233,7 +240,8 @@
         '#btnMenuJuegoCompletar',
         '#btnMenuJuegoUnir',
         '#btnMenuJuegoMatematicas',
-        '#btnMenuJuegoOraciones'
+        '#btnMenuJuegoOraciones',
+        '#btnMenuJuegoQuiz'
     ].join(',');
 
     // Interceptamos el primer clic ANTES que los listeners de script.js.
@@ -298,6 +306,7 @@
             if (juego === 'completar' || juego === 'unir') necesarios.push('alfabetizacion');
             if (juego === 'matematicas') necesarios.push('matematicas');
             if (juego === 'oraciones') necesarios.push('oraciones');
+            if (juego === 'quiz') necesarios.push('quiz');
         }
 
         if (necesarios.length) cargarVarios([...new Set(necesarios)]).catch(() => {});

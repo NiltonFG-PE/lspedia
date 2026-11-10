@@ -1,4 +1,4 @@
-{
+﻿{
   "version": 2,
   "actualizadoEn": "2026-11-03T13:21:05.635Z",
   "header": {
@@ -107,7 +107,7 @@
     "sugerir": {
       "nombre": "Sugerir palabra",
       "contenido": "¿Falta un término? Envíanos tu propuesta.",
-      "url": "",
+      "url": "mailto:proyectolspedia@gmail.com?subject=Sugerencia%20de%20palabra%20para%20LSPedia",
       "icono": "💡",
       "visible": true,
       "nuevaPestana": true
@@ -115,7 +115,7 @@
     "idea": {
       "nombre": "Enviar una idea",
       "contenido": "Comparte sugerencias para mejorar LSPedia.",
-      "url": "",
+      "url": "mailto:proyectolspedia@gmail.com?subject=Idea%20para%20mejorar%20LSPedia",
       "icono": "💬",
       "visible": true,
       "nuevaPestana": true
@@ -123,7 +123,7 @@
     "apoyar": {
       "nombre": "Apoyar LSPedia",
       "contenido": "Ayuda a mantener el proyecto gratuito y en crecimiento.",
-      "url": "",
+      "url": "https://wa.me/51928789623?text=Hola%2C%20quiero%20apoyar%20el%20proyecto%20LSPedia",
       "icono": "❤️",
       "visible": true,
       "nuevaPestana": true
@@ -131,7 +131,7 @@
     "interprete": {
       "nombre": "Contratar un intérprete",
       "contenido": "Solicita servicios de interpretación en LSP.",
-      "url": "",
+      "url": "https://wa.me/51928789623?text=Hola%2C%20necesito%20contratar%20un%20int%C3%A9rprete%20de%20Lengua%20de%20Se%C3%B1as%20Peruana",
       "icono": "🎤",
       "visible": true,
       "nuevaPestana": true
@@ -155,9 +155,38 @@
     "frecuencia": "siempre"
   },
   "novedades": {
-    "activo": false,
+    "activo": true,
     "titulo": "Lo nuevo en LSPedia",
-    "items": []
+    "items": [
+      {
+        "titulo": "🎭 Nuevo juego: Adivina qué soy",
+        "descripcion": "Mira las señas y mueve el celular para adivinar la palabra. ¡Un juego divertido para toda la familia!",
+        "fecha": "2026-11-01",
+        "url": "",
+        "esNuevo": true
+      },
+      {
+        "titulo": "💬 Chat en Español mejorado",
+        "descripcion": "Practica conversaciones escritas en español con ejemplos visuales y apoyo en LSP.",
+        "fecha": "2026-10-20",
+        "url": "",
+        "esNuevo": true
+      },
+      {
+        "titulo": "🤖 Señas con IA (Beta)",
+        "descripcion": "Experimenta con el reconocimiento de señas usando inteligencia artificial. ¡Función experimental!",
+        "fecha": "2026-10-10",
+        "url": "",
+        "esNuevo": false
+      },
+      {
+        "titulo": "📐 Juego de Matemáticas",
+        "descripcion": "Aprende a sumar, restar, multiplicar y dividir con apoyo en Lengua de Señas Peruana.",
+        "fecha": "2026-09-25",
+        "url": "",
+        "esNuevo": false
+      }
+    ]
   },
   "herramientas": {
     "alfabeto": {
