@@ -3771,11 +3771,6 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
                 transform: scale(0.97) !important;
             }
 
-            #btnHerrMovilChatEspanol {
-                background: #eff6ff !important;
-                border-color: #bfdbfe !important;
-            }
-
             #btnMenuJuegoCompletar {
                 background: #eef6ff !important;
                 border-color: #bfdbfe !important;
