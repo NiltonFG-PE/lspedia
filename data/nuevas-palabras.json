@@ -1,9 +1,20 @@
 {
-  "generadoEn": "2026-11-11T16:31:32Z",
+  "generadoEn": "2026-11-11T16:40:03Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 264,
+  "maxItems": 265,
   "diasEtiquetaNuevo": 14,
   "items": [
+    {
+      "id": "eficiencia",
+      "palabra": "Eficiencia",
+      "categoria": "Trabajo",
+      "imagen": "img/diccionario/eficiencia.webp",
+      "fecha": "2026-11-11T16:39:31Z",
+      "fechaPublicacion": "2026-11-11T17:00:00Z",
+      "publicadoEn": "2026-11-11T16:39:31Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "diccionario"
+    },
     {
       "id": "curriculum",
       "palabra": "Currículum",
