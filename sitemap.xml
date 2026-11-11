@@ -136,6 +136,11 @@
         <priority>0.8</priority>
     </url>
     <url>
+        <loc>https://lspedia.site/diccionario/horario/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
         <loc>https://lspedia.site/diccionario/tesis/</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
@@ -1377,6 +1382,11 @@
     </url>
     <url>
         <loc>https://lspedia.site/categoria/diccionario/tecnologia/</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://lspedia.site/categoria/diccionario/trabajo/</loc>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
     </url>
