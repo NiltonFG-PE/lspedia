@@ -1309,3 +1309,44 @@ body.video-palabra-pantalla-completa-activa {
         padding-inline: 3px !important;
     }
 }
+
+
+/* ============================================================
+   FIX_FULLSCREEN_CONTROLES_CENTRADOS_20261111
+   Evita que la barra de controles se ancle al 50% desde su borde
+   izquierdo y termine cortada fuera de la pantalla en Android.
+   Conserva la cuadrícula y los controles de velocidad.
+   ============================================================ */
+@media (pointer: coarse) and (orientation: portrait) {
+    :is(#reproductorPalabraWrap, #reproductorSugeridaWrap).video-palabra-pantalla-completa > .video-palabra-controles-pantalla-completa,
+    :is(#reproductorPalabraWrap, #reproductorSugeridaWrap).video-palabra-pantalla-completa:fullscreen > .video-palabra-controles-pantalla-completa,
+    :is(#reproductorPalabraWrap, #reproductorSugeridaWrap).video-palabra-pantalla-completa:-webkit-full-screen > .video-palabra-controles-pantalla-completa {
+        position: absolute !important;
+        left: 50% !important;
+        right: auto !important;
+        width: min(440px, calc(100vw - 24px)) !important;
+        max-width: calc(100vw - 24px) !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+        display: grid !important;
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        justify-content: stretch !important;
+        align-items: center !important;
+        transform: translateX(-50%) !important;
+        overflow: visible !important;
+    }
+
+    :is(#reproductorPalabraWrap, #reproductorSugeridaWrap).video-palabra-pantalla-completa > .video-palabra-controles-pantalla-completa > .btn {
+        box-sizing: border-box !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }
+
+    :is(#reproductorPalabraWrap, #reproductorSugeridaWrap).video-palabra-pantalla-completa > .video-palabra-controles-pantalla-completa .controles-video-velocidad {
+        grid-column: span 2 !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+    }
+}
