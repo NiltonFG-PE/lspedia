@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-11-07T04:44:32Z",
+  "generadoEn": "2026-11-11T13:41:38Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
   "maxItems": 260,
   "diasEtiquetaNuevo": 14,
@@ -1270,12 +1270,12 @@
       "fuente": "vocabulario"
     },
     {
-      "id": "camara-gesell",
-      "palabra": "Cámara Gesell",
-      "categoria": "Legal",
-      "imagen": "img/diccionario/camara-gesell.webp",
-      "fecha": "2026-09-26T05:00:00Z",
-      "fechaPublicacion": "2026-09-26T05:00:00Z",
+      "id": "neurodivergente",
+      "palabra": "Neurodivergente",
+      "categoria": "Psicología",
+      "imagen": "img/diccionario/neurodivergente.webp, img/diccionario/neurodivergente-2.webp",
+      "fecha": "2026-09-26T17:53:16Z",
+      "fechaPublicacion": "2026-09-26T17:53:16Z",
       "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
@@ -1285,19 +1285,19 @@
       "palabra": "Facilitador",
       "categoria": "Educación",
       "imagen": "img/diccionario/facilitador.webp, img/diccionario/facilitador-2.webp",
-      "fecha": "2026-09-26T05:00:00Z",
-      "fechaPublicacion": "2026-09-26T05:00:00Z",
+      "fecha": "2026-09-26T16:14:55Z",
+      "fechaPublicacion": "2026-09-26T16:14:55Z",
       "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"
     },
     {
-      "id": "neurodivergente",
-      "palabra": "Neurodivergente",
-      "categoria": "Psicología",
-      "imagen": "img/diccionario/neurodivergente.webp, img/diccionario/neurodivergente-2.webp",
-      "fecha": "2026-09-26T05:00:00Z",
-      "fechaPublicacion": "2026-09-26T05:00:00Z",
+      "id": "camara-gesell",
+      "palabra": "Cámara Gesell",
+      "categoria": "Legal",
+      "imagen": "img/diccionario/camara-gesell.webp",
+      "fecha": "2026-09-26T05:21:50Z",
+      "fechaPublicacion": "2026-09-26T05:21:50Z",
       "publicadoEn": "",
       "origenFecha": "fechaPublicacion",
       "fuente": "diccionario"

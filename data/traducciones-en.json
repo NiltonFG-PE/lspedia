@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-11-10T23:21:02Z",
+  "actualizado": "2026-11-11T13:41:39Z",
   "traducciones": [
     {
       "fuente": "diccionario",
@@ -232,7 +232,7 @@
       "categoria": "Economía",
       "ingles": "Saving",
       "aliases": [],
-      "definicionIngles": "It's money that a person saves without spending it, to use later.\n\nExample: I have savings to buy a laptop."
+      "definicionIngles": "It's money a person saves without spending it, to use later.\n\nExample: I have savings to buy a laptop."
     },
     {
       "fuente": "diccionario",
@@ -264,7 +264,7 @@
       "categoria": "Salud",
       "ingles": "Allergy",
       "aliases": [],
-      "definicionIngles": "This occurs when the body reacts adversely to something, such as food or dust, causing discomfort.\n\nExample: I have a dust allergy, that's why I sneeze a lot."
+      "definicionIngles": "This is when the body reacts badly to something, like food or dust, causing discomfort.\n\nExample: I have a dust allergy, that's why I sneeze a lot."
     },
     {
       "fuente": "diccionario",
@@ -376,7 +376,7 @@
       "categoria": "Salud",
       "ingles": "Anemia",
       "aliases": [],
-      "definicionIngles": "A health problem in which the blood has little hemoglobin or few healthy red blood cells."
+      "definicionIngles": "A health problem in which the blood has low hemoglobin or few healthy red blood cells."
     },
     {
       "fuente": "diccionario",
@@ -912,7 +912,7 @@
       "categoria": "Transporte",
       "ingles": "Bicycle",
       "aliases": [],
-      "definicionIngles": "It's a two-wheeled vehicle that moves by pedaling.\n\nExample: I go to work by bicycle every day."
+      "definicionIngles": "It's a two-wheeled vehicle that is propelled by pedaling.\n\nExample: I cycle to work every day."
     },
     {
       "fuente": "diccionario",
@@ -1384,7 +1384,7 @@
       "categoria": "Tiempo",
       "ingles": "Appointment",
       "aliases": [],
-      "definicionIngles": "It's an agreed-upon time to meet someone, for example, a doctor or someone in an office, at a specific hour.\n\nExample: I have a dentist appointment tomorrow at three."
+      "definicionIngles": "It's an agreed-upon time to meet someone, for example, a doctor or someone in an office, at a specific time.\n\nExample: I have a dentist appointment tomorrow at three."
     },
     {
       "fuente": "diccionario",
@@ -3000,7 +3000,7 @@
       "categoria": "Trabajo",
       "ingles": "Sales funnel",
       "aliases": [],
-      "definicionIngles": "Representation of the stages a person goes through from learning about an offer until they make a purchase."
+      "definicionIngles": "Representation of the stages a person goes through from the moment they learn about an offer until they make a purchase."
     },
     {
       "fuente": "diccionario",
@@ -4352,7 +4352,7 @@
       "categoria": "Economía",
       "ingles": "Assessment",
       "aliases": [],
-      "definicionIngles": "Charge or tax that is applied to something."
+      "definicionIngles": "A charge or tax that is applied to something."
     },
     {
       "fuente": "diccionario",
@@ -4560,7 +4560,7 @@
       "categoria": "Trabajo",
       "ingles": "Schedule",
       "aliases": [],
-      "definicionIngles": "These are the hours a person is required to be at work or school.\n\nExample: My work schedule is from eight in the morning to five in the afternoon."
+      "definicionIngles": "A schedule is a word that encompasses everything related to time, primarily used to describe a table or time period that organizes when activities occur, although it also refers to the clock hand that marks the hours and serves to describe the direction or division of time.\n\nExample: My work schedule is from eight in the morning to five in the afternoon."
     },
     {
       "fuente": "diccionario",
@@ -5232,7 +5232,7 @@
       "categoria": "Tecnología",
       "ingles": "Logo",
       "aliases": [],
-      "definicionIngles": "Graphic representation based primarily on letters or words that identifies a brand or project."
+      "definicionIngles": "A graphic representation based primarily on letters or words that identifies a brand or project."
     },
     {
       "fuente": "diccionario",
@@ -6104,7 +6104,7 @@
       "categoria": "Deportes",
       "ingles": "Game",
       "aliases": [],
-      "definicionIngles": "It's a game between two teams or two people in a sport.\n\nExample: We watched the soccer game on television."
+      "definicionIngles": "It's a game between two teams or people in a sport.\n\nExample: We watched the soccer game on television."
     },
     {
       "fuente": "diccionario",
@@ -6222,7 +6222,7 @@
       "fuente": "diccionario",
       "palabra": "Percepción tributaria",
       "categoria": "Economía",
-      "ingles": "Tax collection",
+      "ingles": "Tax perception",
       "aliases": [],
       "definicionIngles": "Additional amount that is charged in advance in some transactions with respect to taxes."
     },
@@ -7504,7 +7504,7 @@
       "categoria": "Universidad",
       "ingles": "Semester",
       "aliases": [],
-      "definicionIngles": "It's one of the two parts into which a university academic year is divided.\n\nExample: This semester I'm taking five courses."
+      "definicionIngles": "It's one of the two parts into which a university year is divided.\n\nExample: This semester I'm taking five courses."
     },
     {
       "fuente": "diccionario",
@@ -8280,7 +8280,7 @@
       "categoria": "Familia",
       "ingles": "Aunt",
       "aliases": [],
-      "definicionIngles": "She's your dad's or your mom's sister.\n\nExample: My aunt gave me a book for my birthday."
+      "definicionIngles": "She's your dad's or mom's sister.\n\nExample: My aunt gave me a book for my birthday."
     },
     {
       "fuente": "diccionario",
