@@ -1,9 +1,20 @@
 {
-  "generadoEn": "2026-11-11T16:20:18Z",
+  "generadoEn": "2026-11-11T16:24:38Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 261,
+  "maxItems": 262,
   "diasEtiquetaNuevo": 14,
   "items": [
+    {
+      "id": "contrato",
+      "palabra": "Contrato",
+      "categoria": "Trabajo",
+      "imagen": "img/diccionario/contrato.webp",
+      "fecha": "2026-11-11T16:23:58Z",
+      "fechaPublicacion": "2026-11-11T17:00:00Z",
+      "publicadoEn": "2026-11-11T16:23:58Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "diccionario"
+    },
     {
       "id": "horario",
       "palabra": "Horario",
