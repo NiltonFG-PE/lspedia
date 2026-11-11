@@ -1,9 +1,20 @@
 {
-  "generadoEn": "2026-11-11T16:29:09Z",
+  "generadoEn": "2026-11-11T16:31:32Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 263,
+  "maxItems": 264,
   "diasEtiquetaNuevo": 14,
   "items": [
+    {
+      "id": "curriculum",
+      "palabra": "Currículum",
+      "categoria": "Trabajo",
+      "imagen": "img/diccionario/curriculum.webp",
+      "fecha": "2026-11-11T16:31:03Z",
+      "fechaPublicacion": "2026-11-11T17:00:00Z",
+      "publicadoEn": "2026-11-11T16:31:03Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "diccionario"
+    },
     {
       "id": "renunciar",
       "palabra": "Renunciar",
