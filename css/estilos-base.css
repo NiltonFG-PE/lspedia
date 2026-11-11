@@ -2384,3 +2384,115 @@ img.lspedia-imagen-fallback {
         font-size: .95rem;
     }
 }
+
+
+/* ============================================================
+   FIX FULLSCREEN VIDEO — controles centrados en móviles
+   Los controles se mueven dentro del contenedor del video al abrir
+   pantalla completa. El contenedor debe apilar video + controles,
+   no colocarlos como dos columnas (que recortaba los botones a la derecha).
+   ============================================================ */
+.video-palabra-pantalla-completa {
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    gap: 10px;
+    padding: max(8px, env(safe-area-inset-top)) 0
+             max(10px, env(safe-area-inset-bottom)) !important;
+    box-sizing: border-box !important;
+    overflow: auto !important;
+}
+
+.video-palabra-pantalla-completa iframe {
+    display: block !important;
+    flex: 0 1 auto !important;
+    min-width: 0 !important;
+    max-width: 100vw !important;
+    max-height: calc(100dvh - 118px) !important;
+    margin: 0 auto !important;
+}
+
+.video-palabra-pantalla-completa .video-palabra-controles-pantalla-completa {
+    position: relative !important;
+    inset: auto !important;
+    display: flex !important;
+    flex: 0 0 auto !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 7px !important;
+    width: min(96vw, 620px) !important;
+    max-width: 96vw !important;
+    min-width: 0 !important;
+    margin: 0 auto !important;
+    padding: 9px 10px !important;
+    box-sizing: border-box !important;
+    border-radius: 18px !important;
+    background: rgba(15, 23, 42, .82) !important;
+    z-index: 1085 !important;
+}
+
+.video-palabra-pantalla-completa .video-palabra-controles-pantalla-completa > * {
+    flex: 0 0 auto;
+    min-width: 0;
+}
+
+.video-palabra-pantalla-completa .video-palabra-controles-pantalla-completa .controles-video-velocidad {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    max-width: 100%;
+}
+
+.video-palabra-pantalla-completa .video-palabra-controles-pantalla-completa button {
+    white-space: nowrap;
+    touch-action: manipulation;
+}
+
+@media (max-width: 700px) {
+    .video-palabra-pantalla-completa {
+        justify-content: center !important;
+        gap: 8px;
+    }
+
+    .video-palabra-pantalla-completa iframe {
+        width: 100% !important;
+        height: auto !important;
+        max-height: calc(100dvh - 125px) !important;
+    }
+
+    .video-palabra-pantalla-completa .video-palabra-controles-pantalla-completa {
+        width: calc(100vw - 20px) !important;
+        max-width: calc(100vw - 20px) !important;
+        gap: 6px !important;
+        padding: 8px !important;
+        border-radius: 16px !important;
+    }
+
+    .video-palabra-pantalla-completa .video-palabra-controles-pantalla-completa .controles-video-texto {
+        display: none !important;
+    }
+}
+
+@media (max-height: 430px) {
+    .video-palabra-pantalla-completa {
+        flex-direction: row !important;
+        gap: 8px;
+    }
+
+    .video-palabra-pantalla-completa iframe {
+        width: auto !important;
+        height: calc(100dvh - 16px) !important;
+        max-height: calc(100dvh - 16px) !important;
+        max-width: calc(100vw - 105px) !important;
+    }
+
+    .video-palabra-pantalla-completa .video-palabra-controles-pantalla-completa {
+        width: min(100px, 24vw) !important;
+        max-width: 24vw !important;
+        max-height: calc(100dvh - 16px);
+        overflow-y: auto;
+        flex-direction: column !important;
+    }
+}
