@@ -1,9 +1,20 @@
 {
-  "generadoEn": "2026-11-11T16:24:38Z",
+  "generadoEn": "2026-11-11T16:29:09Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 262,
+  "maxItems": 263,
   "diasEtiquetaNuevo": 14,
   "items": [
+    {
+      "id": "renunciar",
+      "palabra": "Renunciar",
+      "categoria": "Trabajo",
+      "imagen": "img/diccionario/renunciar.webp",
+      "fecha": "2026-11-11T16:28:33Z",
+      "fechaPublicacion": "2026-11-11T17:00:00Z",
+      "publicadoEn": "2026-11-11T16:28:33Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "diccionario"
+    },
     {
       "id": "contrato",
       "palabra": "Contrato",
