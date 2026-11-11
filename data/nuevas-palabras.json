@@ -1,9 +1,20 @@
 {
-  "generadoEn": "2026-11-11T13:41:38Z",
+  "generadoEn": "2026-11-11T16:20:18Z",
   "metodo": "fechaPublicacion-mixto-con-respaldo-imagen-git-e-historial",
-  "maxItems": 260,
+  "maxItems": 261,
   "diasEtiquetaNuevo": 14,
   "items": [
+    {
+      "id": "horario",
+      "palabra": "Horario",
+      "categoria": "Trabajo",
+      "imagen": "img/diccionario/horario.webp",
+      "fecha": "2026-11-11T16:19:51Z",
+      "fechaPublicacion": "2026-11-11T17:00:00Z",
+      "publicadoEn": "2026-11-11T16:19:51Z",
+      "origenFecha": "publicadoEn",
+      "fuente": "diccionario"
+    },
     {
       "id": "",
       "palabra": "Sobrina",
