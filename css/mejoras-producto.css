@@ -1350,3 +1350,50 @@ body.video-palabra-pantalla-completa-activa {
         box-sizing: border-box !important;
     }
 }
+
+
+/* ============================================================
+   FIX_FULLSCREEN_CONTROLES_HORIZONTAL_20261113
+   Con el celular acostado la barra de controles salía como una columna
+   alta con su borde izquierdo en el centro de la pantalla: el
+   translateX(-50%) se anulaba (compatibilidad-captura-movil.css) y la
+   regla de "pantallas bajas" de estilos-base.css la apilaba en vertical.
+   Se veía muy a la derecha y, en pantallas bajas, podía cortarse abajo.
+   Ahora es una fila centrada y pegada al borde inferior, igual que en
+   vertical, que pasa a una segunda línea si no cabe.
+   ============================================================ */
+@media (pointer: coarse) and (orientation: landscape) {
+    :is(#reproductorPalabraWrap, #reproductorSugeridaWrap).video-palabra-pantalla-completa > .video-palabra-controles-pantalla-completa,
+    :is(#reproductorPalabraWrap, #reproductorSugeridaWrap).video-palabra-pantalla-completa:fullscreen > .video-palabra-controles-pantalla-completa,
+    :is(#reproductorPalabraWrap, #reproductorSugeridaWrap).video-palabra-pantalla-completa:-webkit-full-screen > .video-palabra-controles-pantalla-completa {
+        position: absolute !important;
+        left: 50% !important;
+        right: auto !important;
+        top: auto !important;
+        bottom: calc(8px + env(safe-area-inset-bottom, 0px)) !important;
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        align-items: center !important;
+        width: max-content !important;
+        max-width: calc(100vw - 16px - 2 * max(env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px))) !important;
+        min-width: 0 !important;
+        max-height: none !important;
+        box-sizing: border-box !important;
+        overflow: visible !important;
+        transform: translateX(-50%) !important;
+    }
+
+    :is(#reproductorPalabraWrap, #reproductorSugeridaWrap).video-palabra-pantalla-completa > .video-palabra-controles-pantalla-completa > .btn {
+        width: auto !important;
+        min-width: 42px !important;
+        max-width: 100% !important;
+    }
+
+    :is(#reproductorPalabraWrap, #reproductorSugeridaWrap).video-palabra-pantalla-completa > .video-palabra-controles-pantalla-completa .controles-video-velocidad {
+        grid-column: auto !important;
+        width: auto !important;
+        min-width: max-content !important;
+    }
+}

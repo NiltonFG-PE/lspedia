@@ -4754,42 +4754,53 @@ function configurarControlesVideo() {
     const btnPantallaCompleta = document.getElementById("btnPalabraFullscreen");
     if (!btnRetroceder || !btnAvanzar || !btnPlayPause || !btnReiniciar || !btnVelocidadLenta || !btnVelocidadRapida || !ytPlayerPalabra) return;
 
-    if (btnPantallaCompleta) {
-        btnPantallaCompleta.addEventListener("click", () => toggleVideoPalabraPantallaCompleta("reproductorPalabraWrap", "btnPalabraFullscreen"));
-    }
+    // Esta función corre cada vez que un reproductor avisa "listo" (onReady). Si la
+    // ficha se dibuja dos veces seguidas (por ejemplo, al abrir un enlace compartido),
+    // llegan dos avisos sobre los MISMOS botones y cada clic quedaba enganchado dos
+    // veces: pausar/iniciar se anulaba solo, ⏪/⏩ saltaban el doble y el botón de
+    // pantalla completa abría y cerraba a la vez (el video quedaba a pantalla completa
+    // sin su barra de controles). Los botones ya enganchados se marcan para hacerlo
+    // una sola vez; una ficha nueva trae botones nuevos y se engancha por su cuenta.
+    if (btnPlayPause.dataset.lspClicsListos !== "1") {
+        btnPlayPause.dataset.lspClicsListos = "1";
 
-    btnRetroceder.addEventListener("click", () => {
-        const tiempoActual = ytPlayerPalabra.getCurrentTime();
-        ytPlayerPalabra.seekTo(Math.max(0, tiempoActual - 1), true);
-    });
-
-    btnAvanzar.addEventListener("click", () => {
-        const tiempoActual = ytPlayerPalabra.getCurrentTime();
-        const duracion = ytPlayerPalabra.getDuration();
-        ytPlayerPalabra.seekTo(Math.min(duracion, tiempoActual + 3), true);
-    });
-
-    btnPlayPause.addEventListener("click", () => {
-        const estado = ytPlayerPalabra.getPlayerState();
-        if (estado === YT.PlayerState.PLAYING) {
-            ytPlayerPalabra.pauseVideo();
-        } else {
-            ytPlayerPalabra.playVideo();
+        if (btnPantallaCompleta) {
+            btnPantallaCompleta.addEventListener("click", () => toggleVideoPalabraPantallaCompleta("reproductorPalabraWrap", "btnPalabraFullscreen"));
         }
-    });
 
-    btnReiniciar.addEventListener("click", () => {
-        ytPlayerPalabra.seekTo(0, true);
-        ytPlayerPalabra.playVideo();
-    });
+        btnRetroceder.addEventListener("click", () => {
+            const tiempoActual = ytPlayerPalabra.getCurrentTime();
+            ytPlayerPalabra.seekTo(Math.max(0, tiempoActual - 1), true);
+        });
+
+        btnAvanzar.addEventListener("click", () => {
+            const tiempoActual = ytPlayerPalabra.getCurrentTime();
+            const duracion = ytPlayerPalabra.getDuration();
+            ytPlayerPalabra.seekTo(Math.min(duracion, tiempoActual + 3), true);
+        });
+
+        btnPlayPause.addEventListener("click", () => {
+            const estado = ytPlayerPalabra.getPlayerState();
+            if (estado === YT.PlayerState.PLAYING) {
+                ytPlayerPalabra.pauseVideo();
+            } else {
+                ytPlayerPalabra.playVideo();
+            }
+        });
+
+        btnReiniciar.addEventListener("click", () => {
+            ytPlayerPalabra.seekTo(0, true);
+            ytPlayerPalabra.playVideo();
+        });
+
+        btnVelocidadLenta.addEventListener("click", () => cambiarVelocidadPalabra(-1));
+        btnVelocidadRapida.addEventListener("click", () => cambiarVelocidadPalabra(1));
+    }
 
     // Cada video nuevo arranca en 1x, igual que antes con el <select selected>.
     palabraVelocidadIndex = VELOCIDADES_PALABRA.indexOf(1);
     ytPlayerPalabra.setPlaybackRate(1);
     actualizarLabelVelocidadPalabra();
-
-    btnVelocidadLenta.addEventListener("click", () => cambiarVelocidadPalabra(-1));
-    btnVelocidadRapida.addEventListener("click", () => cambiarVelocidadPalabra(1));
 }
 
 function cambiarVelocidadPalabra(delta) {
@@ -5700,6 +5711,26 @@ function cancelarScrollAutomaticoPorInteraccion(evento){
     document.addEventListener(tipo, cancelarScrollAutomaticoPorInteraccion, { passive: true, capture: true });
 });
 
+// Salto de scroll realmente instantáneo. Bootstrap trae ":root{scroll-behavior:
+// smooth}", y con eso scrollTo({behavior:"auto"}) deja de ser instantáneo:
+// arranca una animación de desplazamiento. Como la vigilancia de
+// scrollAlPrimerResultado() repite el salto en cada cuadro mientras la ficha
+// todavía no llegó a su lugar, esa animación se reiniciaba una y otra vez (de
+// 3 a 13 veces al abrir un video) y se veía como un rebote rápido y seguido.
+// Con "auto" puesto en el propio <html> mientras dura la llamada, el salto es
+// inmediato; después se devuelve el valor que <html> tenía.
+function saltarSinAnimacion(top){
+    const raiz = document.documentElement;
+    const estilo = raiz && raiz.style;
+    const previo = estilo ? estilo.scrollBehavior : "";
+    if (estilo) estilo.scrollBehavior = "auto";
+    try {
+        window.scrollTo({ top: top, behavior: "auto" });
+    } finally {
+        if (estilo) estilo.scrollBehavior = previo;
+    }
+}
+
 function scrollAlPrimerResultado(el){
     if(!el) return;
     const secuencia = ++secuenciaScrollAutomatico;
@@ -5773,7 +5804,10 @@ function scrollAlPrimerResultado(el){
         // deja ventana para esa pelea: la posición queda fijada de una vez
         // (además, en estilos.css se desactivó overflow-anchor en <html>
         // para eliminar el reajuste automático de raíz).
-        window.scrollTo({ top: calcularDestino(), behavior: "auto" });
+        //
+        // Ojo: "auto" no basta para que sea instantáneo, porque Bootstrap
+        // declara scroll-behavior:smooth en <html> (ver saltarSinAnimacion).
+        saltarSinAnimacion(calcularDestino());
 
         // En vez de revisar solo en 3 momentos puntuales (150/500/900ms),
         // se vigila el scroll frame a frame durante ~1.2s después del
@@ -5805,7 +5839,7 @@ function scrollAlPrimerResultado(el){
                 ? navbarEl.getBoundingClientRect().height
                 : 0;
             if (bounds.top < -5 || bounds.top > 120 + altoNavbarFijo) {
-                window.scrollTo({ top: calcularDestino(), behavior: "auto" });
+                saltarSinAnimacion(calcularDestino());
             }
             if (transcurrido < DURACION_VIGILANCIA_MS) {
                 requestAnimationFrame(vigilarYCorregir);

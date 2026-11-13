@@ -949,6 +949,14 @@ iframe {
     background-color: #000;
     aspect-ratio: 16 / 9; /* valor por defecto mientras se confirma el real */
 }
+/* Casi siempre la caja ya nace con la proporción correcta (js/lspedia-media.js
+   recuerda la de cada video y la última vista). Cuando no es así (el primer
+   video vertical de una visita, por ejemplo), pasa de una proporción a otra con
+   una transición corta en vez de saltar de golpe. En pantalla completa no aplica,
+   y con "reducir movimiento" accesibilidad-segura.css la deja casi instantánea. */
+.reproductor-palabra-wrap:not(.video-palabra-pantalla-completa) {
+    transition: aspect-ratio .3s cubic-bezier(.22, 1, .36, 1);
+}
 .reproductor-palabra-wrap iframe {
     position: absolute;
     inset: 0;

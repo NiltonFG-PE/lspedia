@@ -28,11 +28,28 @@
     let cerrando = false;
     let temporizadorControles = null;
 
+    function esHorizontal() {
+        return window.matchMedia('(orientation: landscape)').matches;
+    }
+
+    // El botón de girar siempre ofrece el giro contrario a la posición actual del
+    // celular: "Horizontal" estando de pie y "Vertical" estando acostado. Antes decía
+    // siempre "Horizontal" y, ya en horizontal, volvía a bloquear ese mismo modo.
+    function actualizarBotonGirar() {
+        if (!estado || !estado.botonGirar) return;
+        const horizontal = esHorizontal();
+        const ayuda = horizontal ? 'Volver a vertical' : 'Abrir video en horizontal';
+        estado.botonGirar.textContent = horizontal ? '↻ Vertical' : '↻ Horizontal';
+        estado.botonGirar.title = ayuda;
+        estado.botonGirar.setAttribute('aria-label', ayuda);
+    }
+
     function mostrarControles() {
         if (!estado) return;
+        actualizarBotonGirar();
         estado.wrap.classList.remove('lsp-controles-ocultos');
         window.clearTimeout(temporizadorControles);
-        if (window.matchMedia('(orientation: landscape)').matches) {
+        if (esHorizontal()) {
             temporizadorControles = window.setTimeout(function () {
                 if (estado) estado.wrap.classList.add('lsp-controles-ocultos');
             }, 3500);
@@ -204,19 +221,21 @@
             const botonGirar = document.createElement('button');
             botonGirar.type = 'button';
             botonGirar.className = 'btn lsp-video-girar';
-            botonGirar.textContent = '↻ Horizontal';
-            botonGirar.title = 'Abrir video en horizontal';
-            botonGirar.setAttribute('aria-label', 'Abrir video en horizontal');
             controles.insertBefore(botonGirar, btn);
             botonGirar.addEventListener('click', async function () {
                 mostrarControles();
+                // Se pide el lado contrario al actual. La etiqueta no se cambia aquí:
+                // el giro tarda un instante y mostrarControles() la actualiza sola
+                // cuando el celular termina de girar (resize / orientationchange).
+                const destino = esHorizontal() ? 'portrait' : 'landscape';
                 if (screen.orientation && screen.orientation.lock) {
-                    try { await screen.orientation.lock('landscape'); mostrarControles(); return; }
+                    try { await screen.orientation.lock(destino); mostrarControles(); return; }
                     catch (_error) { /* Algunos navegadores no permiten bloquear el giro. */ }
                 }
                 botonGirar.textContent = '↻ Gira el celular';
             });
             estado.botonGirar = botonGirar;
+            actualizarBotonGirar();
         }
         // Los toques dentro del iframe de YouTube no llegan al documento padre.
         // Solo mientras los controles están ocultos, esta capa recibe el primer

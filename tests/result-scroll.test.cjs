@@ -63,3 +63,41 @@ test('una tecla que no desplaza no cancela el ajuste de carga',()=>{
     const s=scenario();s.context.scrollArribaEstable();s.input('keydown','a');s.flush();
     assert.ok(s.scrolls.length);assert.ok(s.scrolls.every(top=>top===0));
 });
+
+// Bootstrap trae ":root{scroll-behavior:smooth}". Con eso, scrollTo({behavior:"auto"})
+// NO es instantáneo: arranca una animación, y la vigilancia (que repite el salto en
+// cada cuadro mientras la ficha todavía no llegó) la reinicia una y otra vez. Se
+// veía como un rebote rápido y seguido al abrir un video. Estas pruebas fijan que
+// el salto a la ficha sea de verdad instantáneo y que <html> quede como estaba.
+function escenarioConEstiloRaiz(estiloInicial){
+    const frames=[],comportamientos=[];let now=0;
+    const raiz={scrollHeight:2400,scrollTop:0,style:{scrollBehavior:estiloInicial}};
+    const window={pageYOffset:0,visualViewport:{height:700},scrollTo({top}){comportamientos.push(raiz.style.scrollBehavior);this.pageYOffset=top;}};
+    const header={getBoundingClientRect:()=>({height:80})};
+    const document={documentElement:raiz,querySelector:()=>header,addEventListener:()=>{}};
+    const context={window,document,getComputedStyle:()=>({position:'fixed'}),performance:{now:()=>now},requestAnimationFrame:fn=>frames.push(fn)};
+    vm.createContext(context);vm.runInContext(helpers,context);
+    const result={getBoundingClientRect:()=>({top:900-window.pageYOffset})};
+    return {context,result,raiz,comportamientos,flush(){for(let i=0;frames.length&&i<500;i++){now+=16;frames.shift()();}assert.equal(frames.length,0);}};
+}
+
+test('el salto a la ficha es instantáneo aunque el CSS global pida desplazamiento suave',()=>{
+    const s=escenarioConEstiloRaiz('');
+    s.context.scrollAlPrimerResultado(s.result);s.flush();
+    assert.ok(s.comportamientos.length>=1);
+    assert.ok(s.comportamientos.every(c=>c==='auto'),'scroll-behavior en <html> durante cada salto: '+JSON.stringify(s.comportamientos));
+});
+
+test('después de cada salto <html> recupera el scroll-behavior que tenía',()=>{
+    for(const previo of ['','smooth','auto']){
+        const s=escenarioConEstiloRaiz(previo);
+        s.context.scrollAlPrimerResultado(s.result);s.flush();
+        assert.equal(s.raiz.style.scrollBehavior,previo);
+    }
+});
+
+test('con un <html> sin style (como en las pruebas antiguas) el salto sigue funcionando',()=>{
+    const s=scenario();
+    s.context.scrollAlPrimerResultado(s.result);s.flush();
+    assert.ok(s.scrolls.length);assert.equal(s.window.pageYOffset,804);
+});
