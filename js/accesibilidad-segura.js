@@ -49,7 +49,7 @@
 
   function asegurarSaltoContenido(){
     if(document.querySelector('.lspedia-skip-link'))return;
-    const main=document.querySelector('main');
+    const main=document.querySelector('main')||document.querySelector('[role="main"]');
     if(!main)return;
     if(!main.id)main.id='contenidoPrincipal';
     if(!main.hasAttribute('tabindex'))main.setAttribute('tabindex','-1');

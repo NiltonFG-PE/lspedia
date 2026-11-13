@@ -548,10 +548,8 @@
         const boton = document.createElement('button');
         boton.type = 'button';
         boton.className = 'lsp-nueva-palabra';
-        boton.setAttribute('aria-label', 'Abrir ' + nombre + ' en ' + (x.fuente === 'vocabulario' ? 'Vocabulario' : 'Diccionario'));
         if(seleccionar){
             const elegida = seleccionadas.has(claveFicha(x));
-            boton.setAttribute('aria-label', 'Seleccionar ' + nombre + ' en ' + (x.fuente === 'vocabulario' ? 'Vocabulario' : 'Diccionario'));
             boton.setAttribute('aria-pressed', String(elegida));
             boton.classList.toggle('lsp-nueva-seleccionada', elegida);
             const marca = document.createElement('span');
@@ -581,7 +579,7 @@
         const img = document.createElement('img');
         img.className = 'lsp-nueva-thumb';
         img.src = miniatura(x);
-        img.alt = 'Miniatura de ' + nombre;
+        img.alt = ''; // decorativa: el nombre de la palabra ya está en el texto del botón
         img.loading = 'lazy';
         img.decoding = 'async';
         img.addEventListener('error', () => {
@@ -593,7 +591,7 @@
 
         const fuente = document.createElement('span');
         fuente.className = 'lsp-nueva-badge';
-        fuente.textContent = etiquetaFuente;
+        fuente.textContent = etiquetaFuente + ' '; // el espacio final no se ve, pero separa las etiquetas en el nombre accesible
 
         boton.append(thumbWrap, fuente);
         if(esNuevo(x.registro.fecha)){

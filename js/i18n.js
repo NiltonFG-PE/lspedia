@@ -135,7 +135,7 @@
         'Logo LSPedia animado':'Animated LSPedia logo','Navegación principal':'Main navigation',
         'Acceso directo a Vocabulario':'Shortcut to Vocabulary','Acceso directo a Herramientas':'Shortcut to Tools','Acceso directo a Jugar':'Shortcut to Games',
         'Mostrar u ocultar accesos rápidos':'Show or hide quick links','Contraer Descubre':'Collapse Discover',
-        'Ver palabra':'View word','Ver la palabra completa':'View the full word entry','Ver palabra de ayer':"View yesterday's word",
+        'Ver palabra':'View word','Ver la palabra completa':'View the full word entry','Video: ver la palabra completa':'Video: view the full word entry','Ver palabra de ayer':"View yesterday's word",
         'Ver la palabra del día anterior':"View the previous day's word",'Volver a hoy':'Back to today',"Volver a la palabra de hoy":"Back to today's word",
         'Abrir índice alfabético A a Z':'Open A–Z alphabetical index','Abrir índice alfabético':'Open alphabetical index',
         'Borrar búsqueda':'Clear search','Personaje de LSPedia sosteniendo una lupa':'LSPedia character holding a magnifying glass',
@@ -350,7 +350,7 @@
         wrap.className = 'lspedia-idioma-selector';
         wrap.setAttribute('role','group');
         wrap.setAttribute('aria-label','Idioma / Language');
-        wrap.innerHTML = '<button type="button" class="lspedia-idioma-btn" data-idioma="es" aria-label="Español">ES</button><button type="button" class="lspedia-idioma-btn" data-idioma="en" aria-label="English">EN</button>';
+        wrap.innerHTML = '<button type="button" class="lspedia-idioma-btn" data-idioma="es" aria-label="ES, Español">ES</button><button type="button" class="lspedia-idioma-btn" data-idioma="en" aria-label="EN, English">EN</button>';
         wrap.addEventListener('click', (e) => {
             const btn = e.target.closest('[data-idioma]');
             if(!btn) return;

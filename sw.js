@@ -12,7 +12,7 @@
    - El panel /admin/ y los laboratorios quedan fuera del fallback público.
    ============================================================ */
 
-const VERSION_APP = "v308-controles-video-fullscreen-movil";
+const VERSION_APP = "v309";
 const PREFIJO_CACHE = "lspedia-shell-";
 const PREFIJO_RUNTIME = "lspedia-runtime-";
 const CACHE_NOMBRE = PREFIJO_CACHE + VERSION_APP;
@@ -37,6 +37,12 @@ const ARCHIVOS_CASCARON = [
     "css/aprendizaje-unificado.css",
     "css/aprendizaje-colapsable.css",
     "css/accesibilidad-segura.css",
+    "css/correcciones-premium.css",
+    "css/fonts-poppins.css",
+    "fonts/poppins/poppins-latin-500-normal.woff2",
+    "fonts/poppins/poppins-latin-600-normal.woff2",
+    "fonts/poppins/poppins-latin-700-normal.woff2",
+    "vendor/bootstrap/5.3.7/css/bootstrap.min.css",
     "css/vocabulario-layout.css",
     "css/fab-dock-delgado.css",
     "css/modo-oscuro.css",
@@ -196,6 +202,19 @@ self.addEventListener("fetch", (event) => {
     }
 
     event.respondWith((async () => {
+        // Librerías de terceros alojadas aquí (vendor/<nombre>/<versión>/...): la versión va en la
+        // ruta, así que un archivo nunca cambia bajo la misma URL. Se sirven de caché sin esperar
+        // a la red; si no están, se piden y se guardan.
+        if (url.pathname.startsWith("/vendor/")) {
+            const guardado = await caches.match(request);
+            if (guardado) return guardado;
+            const respuesta = await fetchConReintento(request).catch(() => null);
+            if (!respuesta) return Response.error();
+            const runtime = await caches.open(CACHE_RUNTIME);
+            runtime.put(request, respuesta.clone());
+            return respuesta;
+        }
+
         // JS/CSS/JSON críticos también son network-first para que una nueva
         // versión entre en vigor en la misma visita. La caché queda como
         // respaldo offline, no como fuente prioritaria de código obsoleto.

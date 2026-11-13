@@ -2846,7 +2846,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // hacía que una colección se vaciara o se repintara varias veces.
         });
     } else {
-        console.warn("QuizV2 no está disponible: las categorías no podrán mostrar palabras de la Vocabulario.");
+        console.debug("QuizV2 aún no está cargado: las categorías mostrarán sus palabras cuando termine de cargar.");
     }
 });
 
@@ -3464,7 +3464,7 @@ async function ejecutarBusquedaDirecta() {
     <div class="card shadow-sm mb-4 border-0 animate-fade-in" style="border-radius: 15px; background-color: #f8f9fa;">
         <div class="card-body p-5 text-center">
             <div style="width: 140px; height: 140px; margin: 0 auto 10px;">
-                <video autoplay muted loop playsinline disablepictureinpicture poster="img/avatar_sin_fondo.png" aria-label="Personaje de LSPedia buscando con una lupa, sin encontrar resultados" style="width: 100%; height: 100%; object-fit: contain;">
+                <video autoplay muted loop playsinline disablepictureinpicture poster="img/avatar_sin_fondo.webp" aria-label="Personaje de LSPedia buscando con una lupa, sin encontrar resultados" style="width: 100%; height: 100%; object-fit: contain;">
                     <source src="img/avatar_lupa.webm" type="video/webm">
                 </video>
             </div>

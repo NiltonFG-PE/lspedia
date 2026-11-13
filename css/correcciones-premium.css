@@ -1,0 +1,134 @@
+/* LSPedia · correcciones de accesibilidad y pulido en móvil.
+
+   Va en un archivo aparte a propósito: si algo no te convence, borras la línea
+   <link ... correcciones-premium.css> del index.html y todo vuelve a como estaba.
+
+   Qué arregla:
+   1. Contraste de textos pequeños (WCAG 1.4.3, mínimo 4.5:1).
+   2. Barra inferior del móvil: los nombres ya no se cortan en pantallas angostas.
+   3. Tarjetas de Herramientas: el texto no pasa por debajo de la flecha.
+   4. Saltos de diseño (CLS) al cargar la página de inicio. */
+
+
+/* ---------------------------------------------------------------------------
+   1) CONTRASTE
+   Los textos ya tenían su color propio; lo que los dejaba por debajo de 4.5:1
+   era la opacidad (0.75 y 0.85) que se les aplicaba encima.
+   --------------------------------------------------------------------------- */
+.categoria-dicc-cantidad {
+  opacity: 1;
+}
+.categoria-card .card-body p[style*="opacity"] {
+  opacity: 1 !important;
+}
+
+/* Estos colores sí eran demasiado claros sobre su fondo. Se oscurecen
+   solo en el tema claro; el tema oscuro conserva los suyos. */
+html:not([data-lsp-tema="dark"]) .stats-header-marca {
+  color: #0369a1;
+}
+html:not([data-lsp-tema="dark"]) .herr-movil-btn-subtitulos .herr-movil-texto {
+  color: #b45309;
+}
+html:not([data-lsp-tema="dark"]) .herr-movil-btn-alfabetizacion .herr-movil-texto {
+  color: #047857;
+}
+html:not([data-lsp-tema="dark"]) .sena-ia-coming-copy p {
+  color: #5b6b82;
+}
+html:not([data-lsp-tema="dark"]) .miembros-access-status {
+  color: #566880;
+}
+html:not([data-lsp-tema="dark"]) .mi-lsp-visual-btn small,
+html:not([data-lsp-tema="dark"]) .mi-lsp-card-main small {
+  color: #5f6f84;
+}
+/* Tarjeta «Saludos» (verde sobre verde claro): con #15803d llega a 4.46:1 y el texto pequeño
+   no alcanza el 4.5:1; con #166534 llega a 6.35:1. El color lo escribe script.js dentro de la tarjeta,
+   por eso se reconoce por su valor. En modo oscuro la tarjeta cambia de fondo y el verde original
+   se lee mejor, así que ahí no se toca. Si algún día script.js cambia ese color, esta regla deja de
+   aplicarse sola y vuelve a verse el color de script.js. */
+html:not([data-lsp-tema="dark"]) .categoria-dicc-card [style*="#15803d"] {
+  color: #166534 !important;
+}
+
+
+/* ---------------------------------------------------------------------------
+   2) BARRA INFERIOR (móvil)
+   Con 12px fijos, "Herramientas" y "Sobre Nosotros" se cortaban con "…" en
+   pantallas de 360 a 412px, que son las más comunes en Android. El tamaño ahora
+   se ajusta al ancho disponible: 12px desde 412px hacia arriba y nunca menos de
+   9px (solo llega ahí en pantallas de 320px).
+   --------------------------------------------------------------------------- */
+@media (max-width: 480px) {
+  #mobileBottomNav .mbn-item {
+    padding-left: 1px !important;
+    padding-right: 1px !important;
+  }
+  #mobileBottomNav .mbn-item .mbn-label,
+  html.modo-movil-real body #mobileBottomNav .mbn-item .mbn-label {
+    font-size: clamp(9px, calc(3.3vw - 1.4px), 12px) !important;
+    letter-spacing: 0 !important;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   3) TARJETAS DE HERRAMIENTAS (móvil muy angosto)
+   La flecha circular ocupa los últimos ~58px de la tarjeta. En pantallas de
+   menos de 375px algunos textos largos llegaban hasta debajo de ella. Se deja
+   ese espacio libre; el texto simplemente baja a otra línea si hace falta.
+   --------------------------------------------------------------------------- */
+@media (max-width: 374.98px) {
+  .herr-movil-btn .herr-movil-textos {
+    padding-right: 44px;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   4) SALTO DE DISEÑO AL CARGAR (CLS)
+   El panel de categorías del Diccionario arranca con un cargador de ~80px y,
+   cuando llegan los datos, crece hasta 290-440px y empuja todo lo que está
+   debajo. Se reserva el espacio desde el principio (valores medidos con las
+   categorías ya pintadas, un poco por debajo para no dejar huecos).
+   align-content evita que las tarjetas se estiren si algún día hay menos.
+   --------------------------------------------------------------------------- */
+#panelCategoriasDiccionario {
+  align-content: flex-start;
+  min-height: 322px;
+}
+@media (min-width: 577px) {
+  #panelCategoriasDiccionario {
+    min-height: 430px;
+  }
+}
+@media (min-width: 992px) {
+  #panelCategoriasDiccionario {
+    min-height: 288px;
+  }
+}
+
+/* Lo mismo con «Tu aprendizaje / Nuevas palabras»: es el salto más grande de la
+   página (entre 330 y 376px según el ancho). El marcador mide casi lo mismo que
+   la sección real y desaparece en cuanto ésta existe. En las otras vistas
+   (Vocabulario, Herramientas, Nosotros) nunca se muestra. */
+#lspReservaInicio {
+  min-height: 326px;
+}
+@media (max-width: 374.98px) {
+  #lspReservaInicio {
+    min-height: 343px;
+  }
+}
+@media (min-width: 768px) {
+  #lspReservaInicio {
+    min-height: 370px;
+  }
+}
+#lspMejorasInicio ~ #lspReservaInicio,
+html.lsp-vista-sin-descubre #lspReservaInicio,
+body.lsp-inicio-oculto #lspReservaInicio,
+body.vista-temas-movil #lspReservaInicio {
+  display: none;
+}

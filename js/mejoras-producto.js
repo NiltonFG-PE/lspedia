@@ -219,7 +219,7 @@
         cargar('js/youtube-diagnostico.js?v=20260916-1');
 
         function cargarMejorasConCore(){
-            cargar('js/accesibilidad-segura.js?v=20261007-light-1');
+            cargar('js/accesibilidad-segura.js?v=20261113-1');
             cargar('js/seo-institucional.js?v=20260914-1');
             cargar('js/juegos-banco-compartido.js?v=20261007-light-1');
             cargar('js/a-z-movil.js?v=20260914');
@@ -229,8 +229,8 @@
         cargar('js/optimizacion-errores.js?v=20260914-1', function(){
             cargar('js/rendimiento-movil.js?v=20261007-light-1', function(){
                 cargar('js/mejoras-producto-base.js?v=20260914', function(){
-                    cargar('js/lo-nuevo.js?v=20261010-reloj-1');
-                    cargar('js/i18n.js?v=20261024-textos-1', function(){
+                    cargar('js/lo-nuevo.js?v=20261113-1');
+                    cargar('js/i18n.js?v=20261113-1', function(){
                         cargar('js/i18n-restaurar.js?v=20261003-mision-2', function(){
                             cargar('js/i18n-auto.js?v=20260925-3', function(){
                                 cargar('js/i18n-nosotros.js?v=20261024-textos-1', function(){
