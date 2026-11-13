@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-11-13T16:22:35Z",
+  "actualizado": "2026-11-13T22:37:38Z",
   "traducciones": [
     {
       "fuente": "diccionario",
@@ -376,7 +376,7 @@
       "categoria": "Salud",
       "ingles": "Anemia",
       "aliases": [],
-      "definicionIngles": "A health problem in which the blood has little hemoglobin or few healthy red blood cells."
+      "definicionIngles": "A health problem in which the blood has low hemoglobin or few healthy red blood cells."
     },
     {
       "fuente": "diccionario",
@@ -912,7 +912,7 @@
       "categoria": "Transporte",
       "ingles": "Bicycle",
       "aliases": [],
-      "definicionIngles": "It's a two-wheeled vehicle that is propelled by pedaling.\n\nExample: I cycle to work every day."
+      "definicionIngles": "It's a two-wheeled vehicle that moves by pedaling.\n\nExample: I go to work by bicycle every day."
     },
     {
       "fuente": "diccionario",
@@ -1376,7 +1376,7 @@
       "categoria": "Tecnología",
       "ingles": "Electrical circuit",
       "aliases": [],
-      "definicionIngles": "A closed path through which an electric current can flow."
+      "definicionIngles": "A closed path through which electric current can flow."
     },
     {
       "fuente": "diccionario",
@@ -6222,7 +6222,7 @@
       "fuente": "diccionario",
       "palabra": "Percepción tributaria",
       "categoria": "Economía",
-      "ingles": "Tax collection",
+      "ingles": "Tax perception",
       "aliases": [],
       "definicionIngles": "Additional amount that is charged in advance in some transactions with respect to taxes."
     },
@@ -6358,7 +6358,7 @@
       "fuente": "diccionario",
       "palabra": "Plan contable",
       "categoria": "Economía",
-      "ingles": "accounting plan",
+      "ingles": "Accounting plan",
       "aliases": [],
       "definicionIngles": "Organized list of accounts used to record economic transactions."
     },
