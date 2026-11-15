@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-11-14T10:31:49Z",
+  "actualizado": "2026-11-15T17:10:29Z",
   "traducciones": [
     {
       "fuente": "diccionario",
@@ -912,7 +912,7 @@
       "categoria": "Transporte",
       "ingles": "Bicycle",
       "aliases": [],
-      "definicionIngles": "It's a two-wheeled vehicle that moves by pedaling.\n\nExample: I go to work by bicycle every day."
+      "definicionIngles": "It's a two-wheeled vehicle that is propelled by pedaling.\n\nExample: I cycle to work every day."
     },
     {
       "fuente": "diccionario",
@@ -6358,7 +6358,7 @@
       "fuente": "diccionario",
       "palabra": "Plan contable",
       "categoria": "Economía",
-      "ingles": "Accounting plan",
+      "ingles": "accounting plan",
       "aliases": [],
       "definicionIngles": "Organized list of accounts used to record economic transactions."
     },
@@ -6568,7 +6568,7 @@
       "categoria": "Comunicación",
       "ingles": "Ask",
       "aliases": [],
-      "definicionIngles": "It's asking someone for information about something you don't know.\n\nExample: I asked the teacher about the homework."
+      "definicionIngles": "It's asking someone else for information about something you don't know.\n\nExample: I asked the teacher about the homework."
     },
     {
       "fuente": "diccionario",
@@ -7504,7 +7504,7 @@
       "categoria": "Universidad",
       "ingles": "Semester",
       "aliases": [],
-      "definicionIngles": "It's one of the two parts into which a university year is divided.\n\nExample: This semester I'm taking five courses."
+      "definicionIngles": "It's one of the two parts into which a university academic year is divided.\n\nExample: This semester I'm taking five courses."
     },
     {
       "fuente": "diccionario",
@@ -7928,7 +7928,7 @@
       "categoria": "Psicología",
       "ingles": "Therapist",
       "aliases": [],
-      "definicionIngles": "Professional who accompanies a person in a process of treatment or therapeutic support."
+      "definicionIngles": "Professional who accompanies a person in a treatment or therapeutic support process."
     },
     {
       "fuente": "diccionario",
