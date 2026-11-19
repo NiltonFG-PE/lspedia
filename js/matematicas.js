@@ -45,13 +45,13 @@ const MatematicasV2 = (function () {
     };
 
     const NIVELES = [
-        { n: 1, etiqueta: "Facil", icono: "🌱" },
+        { n: 1, etiqueta: "Fácil", icono: "🌱" },
         { n: 2, etiqueta: "Medio", icono: "🌿" },
-        { n: 3, etiqueta: "Dificil", icono: "🌳" }
+        { n: 3, etiqueta: "Difícil", icono: "🌳" }
     ];
 
     const TEXTO_MODO = {
-        practicar: "La mano te muestra como hacerlo. Luego lo haces tu.",
+        practicar: "La mano te muestra cómo hacerlo. Luego lo haces tú.",
         jugar: "Sin ayuda. Resuelve antes de que se acabe el tiempo."
     };
 
@@ -154,7 +154,7 @@ const MatematicasV2 = (function () {
                 '<div class="m10-header-fila">' +
                     '<div class="m10-mascota" id="m10Mascota" aria-hidden="true"><span class="m10-mascota-cara">🦊</span></div>' +
                     '<div class="m10-header-textos">' +
-                        '<h3 class="m10-titulo">Matematicas</h3>' +
+                        '<h3 class="m10-titulo">Matemáticas</h3>' +
                         '<p class="m10-subtitulo">Toca, arrastra y aprende jugando</p>' +
                     '</div>' +
                     '<div class="m10-estrellas-total" aria-hidden="true">⭐ <span id="m10EstrellasTotalNum">0</span></div>' +
@@ -170,7 +170,7 @@ const MatematicasV2 = (function () {
                 '<p class="m10-nota" id="m10ModoAyuda"></p>' +
             '</div>' +
             '<div class="m10-card">' +
-                '<div class="m10-seccion-titulo">¿Que quieres practicar?</div>' +
+                '<div class="m10-seccion-titulo">¿Qué quieres practicar?</div>' +
                 '<div class="m10-operaciones" id="m10Operaciones"></div>' +
             '</div>';
 
@@ -758,9 +758,9 @@ const MatematicasV2 = (function () {
 
         if (estado.modo === "practicar") {
             tutorialSuma(escena, movibles[0] && movibles[0].el, cesta);
-            ayudaModo("Mira como la mano lleva la manzana a la cesta. Luego hazlo tu.");
+            ayudaModo("Mira cómo la mano lleva la manzana a la cesta. Luego hazlo tú.");
         } else {
-            ayudaModo("Junta rapido la cantidad con la cesta.");
+            ayudaModo("Junta rápido la cantidad con la cesta.");
         }
     }
 
@@ -1152,7 +1152,7 @@ const MatematicasV2 = (function () {
         const p = estado.problema;
         const escena = $("m10Escena");
         escena.className = "m10-escena m10-escena-comparar";
-        escena.innerHTML = '<div class="m10-escena-iconos">🔍 <span>¿Cual grupo tiene mas?</span></div><div class="m10-comparar-filas"></div>';
+        escena.innerHTML = '<div class="m10-escena-iconos">🔍 <span>¿Cuál grupo tiene más?</span></div><div class="m10-comparar-filas"></div>';
 
         const filas = escena.querySelector(".m10-comparar-filas");
 
@@ -1181,7 +1181,7 @@ const MatematicasV2 = (function () {
         if (estado.modo === "practicar") {
             ayudaModo("Cuenta las dos cajas y elige el signo correcto.");
         } else {
-            ayudaModo("¿Cual tiene mas? Elige rapido.");
+            ayudaModo("¿Cuál tiene más? Elige rápido.");
         }
 
         accionCompletada();

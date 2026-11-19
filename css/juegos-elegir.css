@@ -11,3 +11,11 @@
 .lsp-elegir-juego--oscuro:hover{background:rgba(255,255,255,.18);color:#fff}
 /* La flecha y el «?» no se encogen cuando la cabecera va justa en celular. */
 .topbar>.round,.topbar>.round-btn,.topbar>.icon-button{flex-shrink:0}
+/* Pantallas muy angostas (320–380 px): se oculta el texto de la marca para que el botón «?»
+   y el resto de la cabecera no se salgan de la pantalla. El logo se queda. */
+@media (max-width:380px){
+.topbar{gap:6px}
+.topbar .brand{font-size:0;gap:0}
+.topbar .brand span,.topbar .brand small{display:none}
+.topbar>.lsp-elegir-juego{padding:0 9px;font-size:11.5px}
+}

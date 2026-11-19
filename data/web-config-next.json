@@ -162,21 +162,21 @@
   "herramientas": {
     "alfabeto": {
       "nombre": "Alfabeto y números",
-      "descripcion": "Mira, reconoce y practica letras y números",
+      "descripcion": "Practica letras y números",
       "icono": "🔤",
       "orden": 1,
       "activo": true
     },
     "jugar": {
       "nombre": "Jugar",
-      "descripcion": "Aprende tocando, ordenando y resolviendo",
+      "descripcion": "Aprende jugando y resolviendo",
       "icono": "🎮",
       "orden": 2,
       "activo": true
     },
     "subtitulos": {
       "nombre": "Subtítulos",
-      "descripcion": "Convierte la voz en texto en tiempo real",
+      "descripcion": "Convierte la voz en texto",
       "icono": "CC",
       "orden": 3,
       "activo": true

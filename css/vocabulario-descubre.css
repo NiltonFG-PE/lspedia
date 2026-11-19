@@ -333,3 +333,285 @@ html[data-lsp-tema="dark"] .categorias-ver-mas:hover { background: #1d3050; }
 @media (prefers-reduced-motion: reduce) {
     .categorias-ver-mas, .categorias-ver-mas-flecha { transition: none; }
 }
+
+/* VOCABULARIO_MOVIL_COMPACTO_V1_20261119
+   Solo celular (hasta 575 px). Se achican Descubre, el avatar, el título y la
+   introducción, y la tarjeta de Carlos pierde su texto largo, para que el
+   buscador de Vocabulario quede visible sin tener que bajar mucho.
+   No cambia escritorio, tablet ni Diccionario. */
+@media (max-width: 575.98px) {
+    /* Encabezado: Descubre más bajita y avatar más pequeño. */
+    html body.vista-temas-movil:not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal {
+        /* Descubre y el avatar comparten la fila por igual y miden lo mismo de alto. */
+        --vocab-hero-alto: 92px;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+        gap: 6px 8px !important;
+        align-items: center !important;
+        margin-top: 0 !important;
+    }
+    html body.vista-temas-movil #contenidoPrincipalApp #filaHeroPrincipal > #senalDelDia .dia-rect-card {
+        height: var(--vocab-hero-alto);
+        min-height: 0;
+    }
+    html body.vista-temas-movil #contenidoPrincipalApp #colAvatarHero {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        height: var(--vocab-hero-alto);
+    }
+    html body.vista-temas-movil #contenidoPrincipalApp #colAvatarHero .avatar-hero-img {
+        height: var(--vocab-hero-alto) !important;
+        width: auto !important;
+        max-width: 100% !important;
+        object-fit: contain;
+    }
+    html body.vista-temas-movil #contenidoPrincipalApp #filaHeroPrincipal > #senalDelDia { min-height: 0 !important; height: var(--vocab-hero-alto); }
+    html body.vista-temas-movil #contenidoPrincipalApp #senalDelDia .dia-rect-card { height: 100% !important; min-height: 0 !important; }
+    html body.vista-temas-movil #contenidoPrincipalApp #senalDelDia .dia-rect-media {
+        flex: 0 0 38px !important;
+        width: 38px !important;
+        height: 38px;
+        aspect-ratio: 1 / 1 !important;
+        margin: 0 0 0 6px !important;
+        align-self: center !important;
+        border-radius: 8px !important;
+    }
+    html body.vista-temas-movil #contenidoPrincipalApp #senalDelDia .dia-rect-media-play { font-size: 8px; }
+    html body.vista-temas-movil #contenidoPrincipalApp #senalDelDia .dia-rect-body {
+        flex: 1 1 0;
+        min-width: 0;
+        padding: 6px 6px 6px 7px;
+        justify-content: center;
+        gap: 2px;
+    }
+    html body.vista-temas-movil #contenidoPrincipalApp #senalDelDia .dia-rect-nav { margin: 0 14px 0 0; gap: 3px; flex-wrap: nowrap; }
+    html body.vista-temas-movil #contenidoPrincipalApp #senalDelDia .dia-rect-nav-btn { width: 20px !important; height: 20px !important; min-width: 0 !important; min-height: 0 !important; padding: 0 !important; font-size: 8px; flex: 0 0 20px; border-radius: 6px; }
+    html body.vista-temas-movil #contenidoPrincipalApp #senalDelDia .dia-rect-label { font-size: 8.5px; white-space: nowrap; }
+    html body.vista-temas-movil #contenidoPrincipalApp #senalDelDia .dia-rect-badge { display: none !important; }
+    html body.vista-temas-movil #contenidoPrincipalApp #senalDelDia .dia-rect-titulo {
+        font-size: 12px !important;
+        line-height: 1.15;
+        margin: 0 0 3px !important;
+        padding: 0 !important;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow-wrap: normal;
+        word-break: normal;
+        hyphens: none;
+    }
+    html body.vista-temas-movil #contenidoPrincipalApp #senalDelDia .dia-rect-body #btnVerDelDia {
+        align-self: flex-start;
+        min-width: 0 !important;
+        min-height: 0 !important;
+        height: auto !important;
+        padding: 3px 12px !important;
+        font-size: 10px !important;
+        line-height: 1.2 !important;
+        border-radius: 8px !important;
+    }
+    /* El botón de contraer pasa a la esquina, más pequeño, para no tapar el rótulo. */
+    html body.vista-temas-movil #contenidoPrincipalApp #senalDelDia #btnCerrarDelDia {
+        top: 4px !important;
+        right: 4px !important;
+        width: 18px !important;
+        height: 18px !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+        padding: 0 !important;
+        font-size: 7px !important;
+        background-size: 7px !important;
+    }
+
+    /* Título y subtemas un poco más pequeños. */
+    html body.vista-temas-movil #contenidoPrincipalApp #tituloPrincipal {
+        font-size: clamp(1.1rem, 5.6vw, 1.3rem) !important;
+        line-height: 1.2 !important;
+    }
+    html body.vista-temas-movil #contenidoPrincipalApp #bloqueTituloPrincipal { margin-bottom: 0 !important; }
+    html body.vista-temas-movil #contenidoPrincipalApp #bloqueTituloPrincipal .titulo-raya { margin: 8px auto 0 !important; }
+    html body.vista-temas-movil #contenidoPrincipalApp #vocabularioIntroLista {
+        padding: 10px 12px !important;
+        gap: 5px !important;
+    }
+    html body.vista-temas-movil #contenidoPrincipalApp #vocabularioIntroLista .vocab-intro-item { gap: 8px !important; }
+    html body.vista-temas-movil #contenidoPrincipalApp #vocabularioIntroLista .vocab-intro-texto {
+        font-size: clamp(.72rem, 3.15vw, .8rem) !important;
+        line-height: 1.32 !important;
+    }
+    html body.vista-temas-movil #contenidoPrincipalApp #vocabularioIntroLista .vocab-intro-icono {
+        transform: scale(.88);
+        transform-origin: center;
+    }
+
+    /* Tarjeta de Carlos: una sola fila corta, sin el texto largo. */
+    html body.vista-temas-movil #contenidoPrincipalApp #lspModeloLinguistico {
+        flex-direction: row !important;
+        align-items: center !important;
+        text-align: left !important;
+        gap: 10px !important;
+        padding: 8px 12px !important;
+        margin: 4px auto 8px !important;
+        border-radius: 14px !important;
+    }
+    html body.vista-temas-movil #lspModeloLinguistico .lsp-modelo-linguistico-foto {
+        flex: 0 0 46px !important;
+        width: 46px !important;
+        height: 46px !important;
+        border-width: 2px;
+    }
+    html body.vista-temas-movil #lspModeloLinguistico .lsp-modelo-linguistico-info { text-align: left !important; }
+    html body.vista-temas-movil #lspModeloLinguistico .lsp-modelo-linguistico-descripcion { display: none !important; }
+    html body.vista-temas-movil #lspModeloLinguistico .lsp-modelo-linguistico-etiqueta { margin-bottom: 1px; font-size: .58rem; }
+    html body.vista-temas-movil #lspModeloLinguistico .lsp-modelo-linguistico-info h3 { font-size: .95rem; }
+    html body.vista-temas-movil #lspModeloLinguistico .lsp-modelo-linguistico-cargo { margin: 1px 0 0; font-size: .76rem; line-height: 1.25; }
+}
+
+/* CATEGORIAS_ARMONIA_V1_20261119
+   Las tarjetas de categoría de Vocabulario y de Diccionario miden lo mismo: mismo ancho
+   (sin relleno extra en Vocabulario), misma altura y el mismo espacio entre ellas.
+   Los nombres largos usan dos renglones en lugar de cortarse con «…». */
+#panelCategorias { padding: 0 !important; }
+#panelCategorias .categoria-card,
+#panelCategoriasDiccionario .categoria-dicc-card {
+    height: 132px;
+    min-height: 132px;
+}
+#panelCategorias .categoria-card .card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    text-align: left !important;
+    padding: 10px 12px !important;
+}
+#panelCategorias .categoria-card .categoria-card-icono { margin-left: 0 !important; margin-right: 0 !important; }
+#panelCategorias .categoria-card .categoria-card-titulo {
+    white-space: normal !important;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    margin-bottom: 4px !important;
+    text-align: left;
+    max-width: 100%;
+}
+#panelCategorias .categoria-card .card-body > p { font-size: .85rem !important; line-height: 1.2; }
+@media (max-width: 575.98px) {
+    /* Mismo margen lateral que la cuadrícula de Diccionario (la fila de Bootstrap resta 4 px a cada lado). */
+    html body #contenidoPrincipalApp #panelCategorias,
+    html body.vista-temas-movil #contenidoPrincipalApp #panelCategorias {
+        width: auto !important;
+        max-width: none !important;
+        margin-left: -4px !important;
+        margin-right: -4px !important;
+    }
+    #panelCategorias .categoria-card,
+    #panelCategoriasDiccionario .categoria-dicc-card {
+        height: 116px;
+        min-height: 116px;
+    }
+    #panelCategorias .categoria-card .categoria-card-icono {
+        width: 42px !important;
+        height: 42px !important;
+        flex-basis: 42px !important;
+        margin-bottom: 5px !important;
+    }
+    #panelCategorias .categoria-card .card-body { padding: 8px 10px !important; }
+    #panelCategorias .categoria-card .categoria-card-titulo { font-size: .78rem !important; line-height: 1.15 !important; }
+    #panelCategorias .categoria-card .card-body > p { font-size: .76rem !important; }
+}
+
+/* JUGAR_SIN_HUECO_V1_20261119
+   Al abrir Jugar quedaban cajas vacías de Vocabulario (con margen) encima del título y
+   dejaban un hueco de unos 150 px. Mientras Jugar está abierto esas cajas vacías se ocultan.
+   Si el navegador no entiende :has(), simplemente no cambia nada. */
+html body #contenidoPrincipalApp:has(> #seccionQuiz:not(.d-none)) > :is(#filaHeroPrincipal, #resultado, #ultimasPalabras, #panelCategorias, #resultadoCategorias, #ultimasPalabrasCategorias),
+html body #contenidoPrincipalApp:has(> #seccionQuiz:not(.d-none)) > .row.justify-content-center:not(:has(#quizMenuJuegos)):not(#filaHeroPrincipal) {
+    display: none !important;
+}
+
+/* DESCUBRE_MOVIL_MINIATURA_V2_20261119
+   Celular: la miniatura del video ocupa todo el alto de la tarjeta (antes era un cuadrito
+   de 38 px tapado por el ▶), el texto y los botones de atrás y Ver son más pequeños,
+   y la tarjeta se puede deslizar a los lados para cambiar de palabra. */
+#senalDelDia .dia-rect-card { touch-action: pan-y; }
+#senalDelDia .dia-rect-card.dia-desliza-der { animation: diaDeslizaDer .22s ease-out; }
+#senalDelDia .dia-rect-card.dia-desliza-izq { animation: diaDeslizaIzq .22s ease-out; }
+@keyframes diaDeslizaDer { from { transform: translateX(-14px); opacity: .55; } to { transform: none; opacity: 1; } }
+@keyframes diaDeslizaIzq { from { transform: translateX(14px); opacity: .55; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+    #senalDelDia .dia-rect-card.dia-desliza-der,
+    #senalDelDia .dia-rect-card.dia-desliza-izq { animation: none; }
+}
+@media (max-width: 575.98px) {
+    html body.vista-temas-movil #contenidoPrincipalApp #senalDelDia .dia-rect-card { overflow: hidden; }
+    html body.vista-temas-movil #contenidoPrincipalApp #senalDelDia .dia-rect-media {
+        flex: 0 0 54px !important;
+        width: 54px !important;
+        height: auto !important;
+        aspect-ratio: auto !important;
+        align-self: stretch !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        position: relative;
+        background: #0b1d3f;
+    }
+    html body.vista-temas-movil #contenidoPrincipalApp #senalDelDia .dia-rect-media-img {
+        position: absolute;
+        inset: 0;
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover;
+        opacity: 1 !important;
+        border-radius: 0 !important;
+    }
+    html body.vista-temas-movil #contenidoPrincipalApp #senalDelDia .dia-rect-media-play {
+        position: absolute !important;
+        top: auto !important;
+        left: auto !important;
+        right: 4px !important;
+        bottom: 4px !important;
+        transform: none !important;
+        width: 15px !important;
+        height: 15px !important;
+        display: grid !important;
+        place-items: center;
+        border-radius: 50% !important;
+        background: rgba(15, 23, 42, .72) !important;
+        color: #fff !important;
+        font-size: 6px !important;
+        padding: 0 0 0 1px !important;
+        box-shadow: none !important;
+    }
+    html body.vista-temas-movil #contenidoPrincipalApp #senalDelDia .dia-rect-body { padding: 5px 5px 5px 7px; gap: 1px; }
+    html body.vista-temas-movil #contenidoPrincipalApp #senalDelDia .dia-rect-nav { margin: 0 12px 0 0; gap: 3px; }
+    html body.vista-temas-movil #contenidoPrincipalApp #senalDelDia .dia-rect-nav-btn {
+        flex: 0 0 15px !important;
+        width: 15px !important;
+        height: 15px !important;
+        min-width: 15px !important;
+        max-width: 15px !important;
+        font-size: 6.5px !important;
+        border-radius: 50% !important;
+        padding: 0 !important;
+    }
+    html body.vista-temas-movil #contenidoPrincipalApp #senalDelDia .dia-rect-label { font-size: 7.5px !important; letter-spacing: 0 !important; }
+    html body.vista-temas-movil #contenidoPrincipalApp #senalDelDia .dia-rect-titulo { font-size: 10.5px !important; margin: 0 0 2px !important; }
+    html body.vista-temas-movil #contenidoPrincipalApp #senalDelDia .dia-rect-body #btnVerDelDia {
+        font-size: 8.5px !important;
+        padding: 2px 10px !important;
+        border-radius: 7px !important;
+        gap: 0 !important;
+    }
+    html body.vista-temas-movil #contenidoPrincipalApp #senalDelDia .dia-rect-body #btnVerDelDia::after { display: none !important; content: none !important; }
+    html body.vista-temas-movil #contenidoPrincipalApp #senalDelDia #btnCerrarDelDia {
+        width: 15px !important;
+        height: 15px !important;
+        min-width: 15px !important;
+        min-height: 15px !important;
+        top: 3px !important;
+        right: 3px !important;
+    }
+}

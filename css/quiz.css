@@ -873,3 +873,16 @@
 @media(prefers-reduced-motion:reduce){
     .menu-juego-anim .jp-carrera-car{animation:none!important}
 }
+/* JUEGOS_FEEDBACK_VISUAL_V2_20261119
+   Aviso de acierto / error: símbolo grande, color y palabra (no depende del sonido). */
+.lsp-game-reaccion>div.lsp-game-badge{display:flex;flex-direction:column;align-items:center;gap:8px;padding:18px 28px 16px;border-radius:28px;background:#fff;font-size:1rem;box-shadow:0 18px 46px rgba(15,23,42,.28);animation:lspBadgeEntra .5s cubic-bezier(.34,1.56,.64,1)}
+.lsp-game-badge-icono{display:grid;place-items:center;width:84px;height:84px;border-radius:50%;font-size:3rem;font-weight:900;line-height:1;color:#fff}
+.lsp-game-badge-texto{font-size:1.15rem;font-weight:800;letter-spacing:.01em}
+.lsp-game-badge-ok{border:4px solid #22c55e}.lsp-game-badge-ok .lsp-game-badge-icono{background:linear-gradient(135deg,#4ade80,#16a34a);box-shadow:0 0 0 8px rgba(34,197,94,.2)}.lsp-game-badge-ok .lsp-game-badge-texto{color:#166534}
+.lsp-game-badge-error{border:4px solid #ef4444;animation:lspBadgeEntra .4s ease,lspBadgeTiembla .45s .2s ease}.lsp-game-badge-error .lsp-game-badge-icono{background:linear-gradient(135deg,#f87171,#dc2626);box-shadow:0 0 0 8px rgba(239,68,68,.2)}.lsp-game-badge-error .lsp-game-badge-texto{color:#991b1b}
+@keyframes lspBadgeEntra{0%{transform:scale(.4);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes lspBadgeTiembla{0%,100%{transform:translateX(0)}20%{transform:translateX(-9px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(4px)}}
+.lsp-game-confeti i{animation:lspGameCaerV4 var(--dur,1.6s) cubic-bezier(.3,.6,.5,1) forwards}
+@keyframes lspGameCaerV4{0%{transform:translate(0,0) rotate(0)}100%{transform:translate(var(--dx,0),112vh) rotate(700deg)}}
+@media (max-width:480px){.lsp-game-badge-icono{width:68px;height:68px;font-size:2.4rem}.lsp-game-reaccion>div.lsp-game-badge{padding:14px 22px 12px}}
+@media (prefers-reduced-motion:reduce){.lsp-game-reaccion>div.lsp-game-badge,.lsp-game-badge-error{animation:none!important}}

@@ -217,3 +217,76 @@ html[data-lsp-tema="dark"] body #herramientasMenuMovil .herr-movil-btn:hover,
 html[data-lsp-tema="dark"] body #herramientasMenuMovil .herr-movil-btn:focus-visible {
     border-color: var(--herr-flecha-color, #5b9dff) !important;
 }
+
+/* RECURSOS_TAMANO_UNIFORME_V1_20261119
+   Todas las tarjetas de Recursos miden lo mismo (Chat, Alfabeto, Jugar, Subtítulos,
+   Libros y Señas a texto y voz). Los subtítulos se cortan en 2 renglones como máximo
+   y la etiqueta «Próximamente» va arriba a la derecha, como la flecha de las demás. */
+html body #herramientasMenuMovil .herr-movil-btn,
+html body #herramientasMenuMovil .herramientas-proximamente-senas .sena-ia-coming-card {
+    min-height: 172px;
+    height: 100%;
+}
+html body #herramientasMenuMovil .herr-movil-icono,
+html body #herramientasMenuMovil .herramientas-proximamente-senas .sena-ia-coming-icon {
+    flex: 0 0 auto;
+}
+html body #herramientasMenuMovil .herr-movil-desc,
+html body #herramientasMenuMovil .herramientas-proximamente-senas .sena-ia-coming-copy p {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+}
+html body #herramientasMenuMovil .herramientas-proximamente-senas .miembros-access-status {
+    position: absolute;
+    top: 12px;
+    right: 10px;
+    margin: 0;
+    padding: 3px 8px;
+    font-size: .62rem;
+    line-height: 1.3;
+}
+@media (min-width: 700px) {
+    html body #herramientasMenuMovil .herr-movil-btn,
+    html body #herramientasMenuMovil .herramientas-proximamente-senas .sena-ia-coming-card {
+        min-height: 170px;
+    }
+    html body #herramientasMenuMovil .herramientas-proximamente-senas .miembros-access-status {
+        top: 18px;
+        right: 16px;
+        padding: 4px 10px;
+        font-size: .7rem;
+    }
+}
+/* Íconos de Chat en Español y Libros digitales: ilustración sobre cuadro de color, como los demás. */
+html body #herramientasMenuMovil .herr-chat-icon { overflow: hidden; }
+html body #herramientasMenuMovil .herr-chat-icon img,
+html body #herramientasMenuMovil .herr-libro-icono img {
+    width: 74%;
+    height: 74%;
+    object-fit: contain;
+}
+@media (max-width: 380px) {
+    html body #herramientasMenuMovil .herr-movil-btn,
+    html body #herramientasMenuMovil .herramientas-proximamente-senas .sena-ia-coming-card {
+        min-height: 182px;
+    }
+}
+@media (max-width: 430px) {
+    html body #herramientasMenuMovil .herramientas-proximamente-senas .miembros-access-status {
+        top: 11px;
+        right: 8px;
+        padding: 2px 6px;
+        font-size: .58rem;
+        gap: 0;
+    }
+    html body #herramientasMenuMovil .herramientas-proximamente-senas .miembros-access-status::before { display: none; }
+}
+@media (min-width: 700px) and (max-width: 999.98px) {
+    html body #herramientasMenuMovil .herr-movil-btn,
+    html body #herramientasMenuMovil .herramientas-proximamente-senas .sena-ia-coming-card {
+        min-height: 182px;
+    }
+}

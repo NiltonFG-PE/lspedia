@@ -311,7 +311,7 @@
                         cargar('js/i18n-restaurar.js?v=20261003-mision-2', function(){
                             cargar('js/i18n-auto.js?v=20260925-3', function(){
                                 cargar('js/i18n-nosotros.js?v=20261024-textos-1', function(){
-                                    cargar('js/i18n-completo.js?v=20261119-3', function(){
+                                    cargar('js/i18n-completo.js?v=20261119-4', function(){
                                         agregarFacebookRedesSociales();
                                         cargar('js/buscador-visual.js?v=20260914');
                                     });
@@ -323,4 +323,35 @@
             });
         });
     }, 1000);
+})();
+/* Descubre: deslizar la tarjeta a los lados cambia de palabra (ayer / hoy).
+   Usa los mismos botones de la tarjeta, así que respeta lo que ya hacen. */
+(function(){
+    'use strict';
+    var inicio = null;
+    function tarjeta(evento){
+        return evento.target && evento.target.closest ? evento.target.closest('#senalDelDia .dia-rect-card') : null;
+    }
+    document.addEventListener('touchstart', function(evento){
+        var t = evento.touches && evento.touches[0];
+        if(!t || evento.touches.length > 1 || !tarjeta(evento)){ inicio = null; return; }
+        inicio = { x: t.clientX, y: t.clientY, t: Date.now() };
+    }, { passive: true });
+    document.addEventListener('touchend', function(evento){
+        if(!inicio) return;
+        var t = evento.changedTouches && evento.changedTouches[0];
+        var origen = inicio; inicio = null;
+        if(!t) return;
+        var dx = t.clientX - origen.x, dy = t.clientY - origen.y;
+        if(Math.abs(dx) < 36 || Math.abs(dx) < Math.abs(dy) * 1.4 || Date.now() - origen.t > 800) return;
+        var id = dx > 0 ? 'btnSenalAnterior' : 'btnSenalSiguiente';
+        var boton = document.getElementById(id);
+        var card = document.querySelector('#senalDelDia .dia-rect-card');
+        if(!boton || !card || boton.classList.contains('d-none')) return;
+        boton.click();
+        card.classList.remove('dia-desliza-der', 'dia-desliza-izq');
+        void card.offsetWidth;
+        card.classList.add(dx > 0 ? 'dia-desliza-der' : 'dia-desliza-izq');
+    }, { passive: true });
+    document.addEventListener('touchcancel', function(){ inicio = null; }, { passive: true });
 })();

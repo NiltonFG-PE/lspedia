@@ -1310,26 +1310,35 @@ if(btnQuizFullscreen) btnQuizFullscreen.addEventListener("click", alternarPantal
 // --- LENGUAJE VISUAL COMÚN DE LOS JUEGOS ---
 const FeedbackJuegosLSPedia = (function(){
     function limpiar(clase){ document.querySelectorAll("."+clase).forEach(n=>n.remove()); }
-    function reaccion(emoji,duracion=720){
+    // Aviso grande y claro (símbolo + color + palabra), pensado para quien aprende con la vista.
+    function reaccion(tipo,duracion=900){
         limpiar("lsp-game-reaccion");
-        const capa=document.createElement("div"); capa.className="lsp-game-reaccion";
-        capa.innerHTML="<div>"+emoji+"</div>"; document.body.appendChild(capa);
+        const ok=tipo==="ok";
+        const capa=document.createElement("div"); capa.className="lsp-game-reaccion"; capa.setAttribute("aria-hidden","true");
+        capa.innerHTML='<div class="lsp-game-badge '+(ok?"lsp-game-badge-ok":"lsp-game-badge-error")+'">'
+            +'<span class="lsp-game-badge-icono">'+(ok?"✓":"✕")+'</span>'
+            +'<span class="lsp-game-badge-texto">'+(ok?"¡Muy bien!":"Intenta otra vez")+'</span></div>';
+        document.body.appendChild(capa);
         setTimeout(()=>capa.remove(),duracion);
     }
     function confeti(){
         limpiar("lsp-game-confeti");
         const capa=document.createElement("div"); capa.className="lsp-game-confeti";
-        const colores=["#ef4444","#f59e0b","#22c55e","#06b6d4","#3b82f6","#8b5cf6","#ec4899"];
-        for(let i=0;i<18;i++){
+        const colores=["#ef4444","#f59e0b","#facc15","#22c55e","#06b6d4","#3b82f6","#8b5cf6","#ec4899"];
+        for(let i=0;i<34;i++){
             const p=document.createElement("i"); p.style.left=(Math.random()*100)+"vw";
-            p.style.background=colores[i%colores.length]; p.style.animationDelay=(Math.random()*.16)+"s";
+            p.style.background=colores[i%colores.length]; p.style.animationDelay=(Math.random()*.28)+"s";
+            p.style.setProperty("--dx",(Math.random()*120-60).toFixed(0)+"px");
+            const t=7+Math.random()*7; p.style.width=t+"px"; p.style.height=(i%3===0?t:t*1.9)+"px";
+            if(i%3===0) p.style.borderRadius="50%";
+            p.style.animationDuration=(1.25+Math.random()*.7)+"s";
             capa.appendChild(p);
         }
-        document.body.appendChild(capa); setTimeout(()=>capa.remove(),1700);
+        document.body.appendChild(capa); setTimeout(()=>capa.remove(),2100);
     }
     function flash(clase,ms){ limpiar(clase); const n=document.createElement("div"); n.className=clase; document.body.appendChild(n); setTimeout(()=>n.remove(),ms); }
-    function correcto(opciones={}){ flash("lsp-game-flash-ok",760); reaccion("🥳👏🏻"); if(opciones.confeti!==false) confeti(); }
-    function error(){ flash("lsp-game-flash-error",520); reaccion("😢👎🏻",650); if(navigator.vibrate){try{navigator.vibrate([150,60,150])}catch(_){}} }
+    function correcto(opciones={}){ flash("lsp-game-flash-ok",760); reaccion("ok"); if(opciones.confeti!==false) confeti(); }
+    function error(){ flash("lsp-game-flash-error",520); reaccion("error",800); if(navigator.vibrate){try{navigator.vibrate([150,60,150])}catch(_){}} }
     return {correcto,error};
 })();
 window.FeedbackJuegosLSPedia=FeedbackJuegosLSPedia;

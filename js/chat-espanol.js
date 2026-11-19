@@ -166,12 +166,64 @@ function continueConversation(){
   $("typingLabel").textContent=state.scenario.name+" está escribiendo…";
   show("typingIndicator",true);scrollBottom();replyTimer=setTimeout(deliver,650);
 }
+// Dibujitos de apoyo para palabras frecuentes: ayudan a quien lee poco a reconocer la idea.
+const PALABRA_ICONO={agua:"💧",casa:"🏠",bus:"🚌",pan:"🍞",hora:"🕒",dni:"🪪",tarjeta:"💳",pagar:"💵",pagare:"💵",pago:"💵",soles:"💵",dinero:"💵",hola:"👋",gracias:"🙏",favor:"🙏",perfecto:"👍",bien:"👍",claro:"✅",correo:"✉️",cita:"📅",fecha:"📅",dia:"📅",dias:"📅",viernes:"📅",sabado:"📅",martes:"📅",manana:"🌅",tarde:"🌇",noche:"🌙",trabajo:"💼",comida:"🍽️",leche:"🥛",tomate:"🍅",medicamentos:"💊",luz:"💡",telefono:"📱",profesora:"👩‍🏫",grupo:"👥",receta:"📋",viajar:"🧳",terminal:"🚏",reserva:"🗓️",mensaje:"💬",documentos:"📄",documento:"📄",informacion:"ℹ️",ayuda:"🙋",plaza:"📍",centro:"📍",llegar:"📍",llegare:"📍",llegue:"📍",estare:"📌",botella:"🍼",tiempo:"⏳",minutos:"⏳",compras:"🛒",comprar:"🛒",entrada:"🎟️",recibo:"🧾",confirmacion:"✅",listo:"✅",ayer:"⏪",ahora:"▶️",despues:"⏩",antes:"⏪"};
+function wordBankFor(turn){
+  if(!turn?.model)return [];
+  const words=turn.model.split(/\s+/).filter(Boolean);
+  const seen=new Set(words.map(normalize));
+  const extra=[];
+  for(const alt of (turn.alternatives||[]).slice(0,2))for(const w of alt.split(/\s+/).filter(Boolean)){
+    const n=normalize(w);if(n&&!seen.has(n)&&extra.length<4){seen.add(n);extra.push(w);}
+  }
+  return [...words,...extra].slice(0,16);
+}
+function buildWordBank(turn){
+  try{return buildWordBankUnsafe(turn);}catch(_){return null;}
+}
+function buildWordBankUnsafe(turn){
+  const words=wordBankFor(turn);if(words.length<2)return null;
+  const box=document.createElement("div");box.className="word-bank";
+  box.innerHTML=`<strong>🧩 Arma tu mensaje</strong><p>Toca las palabras en el orden que quieras. No hace falta escribir.</p>
+    <div class="wb-built" aria-live="polite"><span class="wb-empty">Tu mensaje aparece aquí</span></div>
+    <div class="wb-actions"><button class="text-button wb-undo" type="button" disabled>↩ Quitar la última</button><button class="action-primary wb-use" type="button" disabled>Usar mi mensaje</button></div>
+    <div class="wb-chips" role="group" aria-label="Palabras para armar tu mensaje"></div>`;
+  const chips=box.querySelector(".wb-chips"),built=box.querySelector(".wb-built"),undo=box.querySelector(".wb-undo"),use=box.querySelector(".wb-use");
+  const picked=[];
+  words.forEach((w,i)=>{
+    const icon=PALABRA_ICONO[normalize(w).split(" ")[0]]||"";
+    const b=document.createElement("button");b.type="button";b.className="wb-chip"+(icon?" has-icon":"");b.dataset.i=i;
+    b.innerHTML=(icon?`<span class="wb-icon" aria-hidden="true">${icon}</span>`:"")+`<span class="wb-word">${esc(w.replace(/^[¿¡]+/,""))}</span>`;
+    chips.appendChild(b);
+  });
+  function text(){return picked.map(i=>words[i]).join(" ").replace(/\s+/g," ").trim();}
+  function refresh(){
+    built.innerHTML="";
+    if(!picked.length){built.innerHTML='<span class="wb-empty">Tu mensaje aparece aquí</span>';}
+    picked.forEach((i,pos)=>{
+      const pill=document.createElement("button");pill.type="button";pill.className="wb-pill";pill.textContent=words[i].replace(/^[¿¡]+/,"");
+      pill.setAttribute("aria-label","Quitar "+words[i]);
+      pill.addEventListener("click",()=>{picked.splice(pos,1);refresh();});
+      built.appendChild(pill);
+    });
+    chips.querySelectorAll(".wb-chip").forEach(c=>{const used=picked.includes(Number(c.dataset.i));c.disabled=used;c.classList.toggle("used",used);});
+    undo.disabled=!picked.length;use.disabled=!picked.length;
+  }
+  chips.addEventListener("click",e=>{
+    const c=e.target.closest(".wb-chip");if(!c||c.disabled)return;
+    picked.push(Number(c.dataset.i));refresh();
+  });
+  undo.addEventListener("click",()=>{picked.pop();refresh();});
+  use.addEventListener("click",()=>{if(picked.length)fillExample(text());});
+  return box;
+}
 function openHelp(){
   const turn=currentTurn();if(!turn||state.busy||state.pending||state.finished)return;
   state.hints++;
   const guide=responseGuide(turn);
   const starters=guide.kind==="confirm"?["Sí, ","No, ","Todavía no "]:[guide.starter||"Quisiera "];
   $("wildcardOptions").innerHTML=`<p class="help-prompt">${esc(turn.prompt)}</p><div class="help-aim"><strong>👀 Te preguntan</strong><p>${esc(guide.aim)}</p></div><div><strong>✍️ Empieza así</strong><p>Toca una frase y complétala.</p><div class="starter-actions">${starters.map(t=>`<button class="action-secondary use-starter" type="button">${esc(t)}…</button>`).join("")}<button class="text-button show-examples" type="button" aria-expanded="false">Ver ejemplos</button></div></div><div id="helpExamples" class="help-examples hidden"></div>`;
+  if(state.mode==="guided"){const bank=buildWordBank(turn);if(bank)$("wildcardOptions").insertBefore(bank,$("helpExamples"));}
   $("wildcardOptions").querySelectorAll(".use-starter").forEach((b,i)=>b.addEventListener("click",()=>fillExample(starters[i])));
   const examplesButton=$("wildcardOptions").querySelector(".show-examples");
   examplesButton.addEventListener("click",()=>{
