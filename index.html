@@ -155,15 +155,16 @@
     <link rel="preload" href="fonts/poppins/poppins-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="css/fonts-poppins.css?v=20261113-1">
     <link href="vendor/bootstrap/5.3.7/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/estilos.css?v=20261119">
-    <link rel="stylesheet" href="css/quiz.css?v=20261119-1">
+    <link rel="stylesheet" href="css/estilos.css?v=20261119-logo1">
+    <link rel="stylesheet" href="css/quiz.css?v=20261119-3">
     <link rel="stylesheet" href="css/mejoras-producto.css?v=20261119-1">
     <link rel="stylesheet" href="css/buscador-enfoque.css?v=20261119-dic-1">
     <link rel="stylesheet" href="css/miembros-acceso.css?v=20261009-4">
     <link rel="stylesheet" href="css/tablet-responsive.css?v=20261010-portrait-4">
-    <link rel="stylesheet" href="css/estilos-inline-extraidos.css?v=20261119-1">
+    <link rel="stylesheet" href="css/estilos-inline-extraidos.css?v=20261119-2">
     <link rel="stylesheet" href="css/correcciones-premium.css?v=20261119-1">
-    <link rel="stylesheet" href="css/creador-card.css?v=20261119-3">
+    <link rel="stylesheet" href="css/creador-card.css?v=20261119-5">
+    <link rel="stylesheet" href="css/nosotros-video-flotante.css?v=20261119-1">
     <link rel="stylesheet" href="css/libro-acceso.css?v=20261119-1">
     <link rel="stylesheet" href="css/recursos-grid.css?v=20261119-3">
     <link rel="stylesheet" href="css/fab-redes.css?v=20261119-1">
@@ -542,8 +543,8 @@
                         <span class="lsp-creador-etiqueta">Creador de LSPedia</span>
                         <h3 class="lsp-creador-nombre">Nilton Fernández G.</h3>
                         <p class="lsp-creador-roles" aria-label="Intérprete y traductor de LSP, creador audiovisual y de web no-code">
-                            <span class="lsp-creador-rol lsp-creador-rol-interprete">Intérprete y traductor de LSP</span>
-                            <span class="lsp-creador-rol lsp-creador-rol-creador">Creador audiovisual y de web no-code</span>
+                            <span class="lsp-creador-rol lsp-creador-rol-interprete" title="Intérprete y traductor de LSP"><span class="lsp-creador-largo">Intérprete y traductor de LSP</span><span class="lsp-creador-corto" aria-hidden="true">Intérprete de LSP</span></span>
+                            <span class="lsp-creador-rol lsp-creador-rol-creador" title="Creador audiovisual y de web no-code"><span class="lsp-creador-largo">Creador audiovisual y de web no-code</span><span class="lsp-creador-corto" aria-hidden="true">Creador audiovisual y no-code</span></span>
                         </p>
                     </div>
                 </section>
@@ -1249,6 +1250,18 @@
                         <div class="text-center mb-2">
                             <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill btn-volver-menu-juegos">↩ Elegir otro juego</button>
                         </div>
+                        <div class="quiz-hero">
+                            <span class="quiz-hero-orbe" aria-hidden="true"></span>
+                            <div class="quiz-hero-texto-wrap">
+                                <p class="quiz-hero-kicker">Mira · Piensa · Elige</p>
+                                <h3 class="quiz-hero-titulo">Quiz de señas</h3>
+                                <p class="quiz-hero-texto">Mira el video y elige la respuesta correcta.</p>
+                            </div>
+                            <div class="quiz-hero-ejemplo" aria-hidden="true">
+                                <span class="quiz-hero-video">▶</span>
+                                <span class="quiz-hero-opciones"><i>Casa</i><i class="quiz-hero-ok">Hola ✓</i><i>Gato</i></span>
+                            </div>
+                        </div>
                         <p class="text-muted small text-center mb-4">Elige el nivel y el modo de juego para tu ronda de práctica.</p>
 
                         <div class="quiz-inicio-rapido quiz-inicio-rapido-tres mb-3">
@@ -1810,7 +1823,7 @@
             <div class="nosotros-contenido mx-auto" style="max-width: 760px;">
 
                 <div class="nosotros-video-wrap nosotros-fijo mb-4" id="nosotrosVideoWrap">
-                    <div class="nosotros-arrastre" id="nosotrosArrastre" title="Mantené presionado y arrastrá para mover el video" aria-label="Mover la ventana de video" role="button" tabindex="0">⠿ ⠿ ⠿</div>
+                    <div class="nosotros-arrastre" id="nosotrosArrastre" title="Mantén presionado y arrastra para mover el video" aria-label="Mover la ventana de video" role="button" tabindex="0"><span class="nosotros-arrastre-grip" aria-hidden="true">⠿ ⠿ ⠿</span><span class="nosotros-arrastre-titulo">Video · Sobre Nosotros</span><button type="button" id="btnNosotrosMini" class="nosotros-mini-btn" aria-pressed="false" title="Reducir el video" aria-label="Reducir el video">–</button></div>
                     <div class="controles-video d-flex align-items-center justify-content-center gap-2 mb-2 flex-nowrap">
                         <button type="button" class="btn btn-sm btn-outline-secondary" id="btnRetroceder10Nosotros" title="Retroceder 3 segundos" aria-label="Retroceder 3 segundos">⏪ <span class="controles-video-texto">3s</span></button>
                         <button type="button" class="btn btn-sm btn-primary" id="btnPlayPauseNosotros" title="Reproducir o pausar" aria-label="Reproducir o pausar"><span class="nosotros-icono-iniciar">▶</span> <span class="controles-video-texto">Iniciar</span></button>
@@ -2054,7 +2067,7 @@
     <!-- script.js: 350 KB — mayor ganancia de rendimiento al diferir.
          Con defer se descarga en paralelo al HTML pero ejecuta tras el parseo
          completo, en el mismo orden relativo que los scripts anteriores. -->
-    <script defer src="js/script.js?v=20261119-5"></script>
+    <script defer src="js/script.js?v=20261119-9"></script>
     <script defer src="js/ficha-navegacion-ui.js?v=20261119-1"></script>
     <script defer src="js/vocabulario-publico.js?v=20261007-1"></script>
     <script defer src="js/buscador-predictivo.js?v=20260925-1"></script>
@@ -2295,7 +2308,7 @@
     </div>
 </footer>
 
-<script defer src="js/mejoras-producto.js?v=20261119-3"></script>
+<script defer src="js/mejoras-producto.js?v=20261119-6"></script>
 <script defer src="js/buscador-enfoque.js?v=20261119-1"></script>
 </body>
 </html>

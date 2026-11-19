@@ -107,7 +107,9 @@
                         );
                     });
                 });
-                if(relevante) setTimeout(sincronizar, 0);
+                // Se sincroniza ya, en la misma tarea del cambio, para que «Mi LSPedia» se oculte
+                // antes del primer dibujo y la pantalla no dé un salto al abrir Recursos.
+                if(relevante){ sincronizar(); setTimeout(sincronizar, 0); }
             });
             observer.observe(document.documentElement, {
                 childList: true,

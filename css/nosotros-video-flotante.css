@@ -1,0 +1,90 @@
+/* LSPedia — video flotante de «Sobre Nosotros»
+   Reproductor que flota sobre el texto para verlo mientras se lee. Tarjeta clara con barra
+   superior azul marino (arrastrar + reducir), y modo reducido para dejar más texto a la vista.
+   Los controles del video no se tocan. */
+html body #nosotrosVideoWrap.nosotros-fijo {
+    z-index: 1036; /* por encima de la barra inferior del celular, para poder dejarlo abajo */
+    padding: 0 8px 8px;
+    border: 1px solid #d6e2f3;
+    border-radius: 20px;
+    background: #ffffff;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    box-shadow: 0 22px 46px -14px rgba(15, 23, 42, .42), 0 4px 12px rgba(15, 23, 42, .12);
+}
+html body #nosotrosVideoWrap.nosotros-fijo.nosotros-arrastrando {
+    box-shadow: 0 30px 60px -14px rgba(15, 23, 42, .5), 0 6px 16px rgba(15, 23, 42, .16);
+}
+html body #nosotrosArrastre {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    height: 36px;
+    margin: 0 -8px 8px;
+    padding: 0 8px 0 12px;
+    border-radius: 19px 19px 0 0;
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .01em;
+    line-height: 1;
+    text-align: left;
+}
+html body #nosotrosArrastre:hover { background: linear-gradient(135deg, #0b1220 0%, #1d4ed8 100%); color: #fff; }
+html body #nosotrosArrastre .nosotros-arrastre-grip { flex: 0 0 auto; color: rgba(255, 255, 255, .6); letter-spacing: 2px; font-size: 11px; }
+html body #nosotrosArrastre .nosotros-arrastre-titulo { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+html body #nosotrosArrastre .nosotros-mini-btn {
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .16);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1;
+    cursor: pointer;
+    touch-action: manipulation;
+    transition: background-color .15s, transform .12s;
+}
+html body #nosotrosArrastre .nosotros-mini-btn:hover { background: rgba(255, 255, 255, .3); }
+html body #nosotrosArrastre .nosotros-mini-btn:active { transform: scale(.92); }
+html body #nosotrosArrastre .nosotros-mini-btn:focus-visible { outline: 3px solid #ffc107; outline-offset: 2px; }
+html body #nosotrosVideoWrap #nosotrosVideoRatio { border-radius: 14px !important; box-shadow: none !important; }
+
+/* Posición por defecto: justo debajo de la barra superior (la mide script.js). */
+@media (min-width: 1200px) { html body #nosotrosVideoWrap.nosotros-fijo { top: var(--nosotros-top, 117px); } }
+@media (max-width: 1199.98px) { html body #nosotrosVideoWrap.nosotros-fijo { top: var(--nosotros-top, 96px); } }
+html.nosotros-layout-ancho body #nosotrosVideoWrap.nosotros-fijo:not(.nosotros-pantalla-completa) { top: var(--nosotros-top, 117px); }
+
+/* Modo reducido: ventana chica con lo esencial (retroceder, reproducir/pausar, avanzar). */
+html body #nosotrosVideoWrap.nosotros-fijo.nosotros-mini:not(.nosotros-pantalla-completa) {
+    width: min(272px, calc(100% - 24px));
+    max-width: 272px;
+}
+html.nosotros-layout-ancho body #nosotrosVideoWrap.nosotros-fijo.nosotros-mini:not(.nosotros-pantalla-completa) {
+    width: 320px;
+    max-width: 320px;
+    flex: 0 0 320px;
+}
+html body #nosotrosVideoWrap.nosotros-mini:not(.nosotros-pantalla-completa) #btnReiniciarNosotros,
+html body #nosotrosVideoWrap.nosotros-mini:not(.nosotros-pantalla-completa) .controles-video-velocidad,
+html body #nosotrosVideoWrap.nosotros-mini:not(.nosotros-pantalla-completa) #btnNosotrosPantallaCompleta { display: none !important; }
+html body #nosotrosVideoWrap.nosotros-mini:not(.nosotros-pantalla-completa) .controles-video { justify-content: center; margin-bottom: 6px !important; }
+
+/* Pantalla completa: sin barra superior ni marco. */
+html body #nosotrosVideoWrap.nosotros-pantalla-completa { border: 0; border-radius: 0; padding: 0; box-shadow: none; }
+
+/* Modo oscuro */
+html[data-lsp-tema="dark"] body #nosotrosVideoWrap.nosotros-fijo:not(.nosotros-pantalla-completa) {
+    background: #172436;
+    border-color: #30435a;
+    box-shadow: 0 22px 46px -14px rgba(0, 0, 0, .6), 0 4px 12px rgba(0, 0, 0, .3);
+}
+@media (prefers-reduced-motion: reduce) { html body #nosotrosArrastre .nosotros-mini-btn { transition: none; } }

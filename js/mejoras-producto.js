@@ -291,7 +291,7 @@
         }
 
         cargar('js/categorias-compartir.js?v=20260915d');
-        cargar('js/mi-lspedia-secciones.js?v=20260930-1');
+        cargar('js/mi-lspedia-secciones.js?v=20261119-1');
         cargar('js/social-invitacion.js?v=20261024-pausa-1');
         cargar('js/youtube-diagnostico.js?v=20260916-1');
 
@@ -307,7 +307,7 @@
             cargar('js/rendimiento-movil.js?v=20261007-light-1', function(){
                 cargar('js/mejoras-producto-base.js?v=20261119-3', function(){
                     cargar('js/lo-nuevo.js?v=20261119-1');
-                    cargar('js/i18n.js?v=20261119-1', function(){
+                    cargar('js/i18n.js?v=20261119-3', function(){
                         cargar('js/i18n-restaurar.js?v=20261003-mision-2', function(){
                             cargar('js/i18n-auto.js?v=20260925-3', function(){
                                 cargar('js/i18n-nosotros.js?v=20261024-textos-1', function(){

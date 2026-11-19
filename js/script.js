@@ -1745,21 +1745,30 @@ function centrarHerramientasEnPantalla(elemento){
 
     // Espera dos frames para que ocultar/mostrar los módulos termine de
     // recalcular alturas antes de decidir dónde subir.
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-        window.scrollTo({
-            top: calcularDestino(),
-            behavior: reducirMovimiento ? "auto" : "smooth"
-        });
+    // Posición inmediata, antes del primer dibujo: el menú aparece ya en su sitio y la pantalla
+    // no se desplaza ni da saltos (antes subía con una animación después de aparecer).
+    // Va en una microtarea: así corre justo después de que los demás módulos terminan de
+    // ocultar sus bloques (por ejemplo «Mi LSPedia») y el cálculo usa el alto ya definitivo.
+    Promise.resolve().then(() => {
+        try { window.scrollTo({ top: calcularDestino(), behavior: "instant" }); } catch(_e) {}
+    });
 
-        // Si fuentes o iconos cambian un poco el alto, ajusta una sola vez
-        // al terminar la animación para que el espacio quede exacto.
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+        // Si al terminar de acomodarse el alto cambió un poco, se corrige sin animación.
+        const destinoInicial = calcularDestino();
+        const actualInicial = window.pageYOffset || document.documentElement.scrollTop || 0;
+        if(Math.abs(actualInicial - destinoInicial) > 2){
+            window.scrollTo({ top: destinoInicial, behavior: "instant" });
+        }
+
+        // Último ajuste por si fuentes o iconos cambian el alto.
         setTimeout(() => {
             const destino = calcularDestino();
             const actual = window.pageYOffset || document.documentElement.scrollTop || 0;
             if(Math.abs(actual - destino) > 8){
                 window.scrollTo({
                     top: destino,
-                    behavior: reducirMovimiento ? "auto" : "smooth"
+                    behavior: "instant"
                 });
             }
         }, 420);
@@ -4268,13 +4277,37 @@ window.saltarVideoNosotros = saltarVideoNosotros;
 // cambia según el ancho de pantalla (el video es 16:9 dentro de un
 // contenedor de ancho variable) y según si el texto de los botones se
 // oculta en celulares chicos (ver los estilos de .controles-video).
-function ajustarEspacioVideoNosotros() {
+function ajustarEspacioVideoNosotros(compensarScroll) {
     const video = document.getElementById("nosotrosVideoWrap");
     const texto = document.getElementById("nosotrosTextoBajoVideo");
     if (!video || !texto) return;
-    const alturaVideo = video.getBoundingClientRect().height;
+    // Posición por defecto: justo debajo de la barra superior, sea cual sea su alto.
+    const barraSuperior = document.querySelector("nav.navbar");
+    if (barraSuperior) {
+        const posicionBarra = getComputedStyle(barraSuperior).position;
+        if (posicionBarra === "fixed" || posicionBarra === "sticky") {
+            const extra = window.innerWidth >= 1200 ? 12 : 4;
+            video.style.setProperty("--nosotros-top", (Math.round(barraSuperior.getBoundingClientRect().bottom) + extra) + "px");
+        }
+    }
+    const rectVideo = video.getBoundingClientRect();
+    const alturaVideo = rectVideo.height;
     if (alturaVideo > 0) {
-        texto.style.paddingTop = (alturaVideo + 24) + "px";
+        // Si la persona ya movió el video hacia abajo, no tiene sentido seguir reservándole
+        // espacio arriba del texto: el hueco en blanco solo estorbaría la lectura.
+        let reservar = true;
+        const anchoLayout = document.documentElement.classList.contains("nosotros-layout-ancho");
+        if (!anchoLayout && nosotrosPosicionGuardada && getComputedStyle(video).position === "fixed" && !video.classList.contains("nosotros-pantalla-completa")) {
+            const base = barraSuperior ? Math.round(barraSuperior.getBoundingClientRect().bottom) : 0;
+            reservar = rectVideo.top < base + 60;
+        }
+        const antes = parseFloat(texto.style.paddingTop) || 0;
+        const despues = reservar ? alturaVideo + 24 : 16;
+        texto.style.paddingTop = despues + "px";
+        // Si ya se estaba leyendo más abajo, se compensa el scroll para que el texto no salte.
+        if (compensarScroll && antes && antes !== despues && window.scrollY > 0) {
+            window.scrollBy({ top: despues - antes, left: 0, behavior: "instant" });
+        }
     }
 }
 window.addEventListener("resize", () => {
@@ -4498,12 +4531,38 @@ function configurarArrastreNosotros() {
     const barraControles = wrap ? wrap.querySelector(".controles-video") : null;
     if (!wrap || !manija) return;
 
+    // Límites del arrastre: la ventana puede bajar hasta dejar a la vista solo su barra
+    // superior (así se puede ver mejor el texto y siempre se puede volver a subir), y
+    // moverse a los lados dejando al menos una parte visible. Hacia arriba no pasa de
+    // la barra de navegación.
+    function limitesArrastre() {
+        const visibleLado = 96;
+        const visibleAbajo = 44;
+        const navbar = document.querySelector("nav.navbar");
+        let minY = 4;
+        if (navbar) {
+            const posicion = getComputedStyle(navbar).position;
+            if (posicion === "fixed" || posicion === "sticky") minY = Math.round(navbar.getBoundingClientRect().bottom) + 4;
+        }
+        // En el celular, la barra inferior de navegación queda por delante: el video no debe bajar de ahí.
+        let tope = window.innerHeight;
+        const barraInferior = document.getElementById("mobileBottomNav");
+        if (barraInferior && getComputedStyle(barraInferior).display !== "none") {
+            const rb = barraInferior.getBoundingClientRect();
+            if (rb.height > 0 && rb.top > 0) tope = Math.min(tope, Math.round(rb.top));
+        }
+        return {
+            minX: -(wrap.offsetWidth - visibleLado),
+            maxX: window.innerWidth - visibleLado,
+            minY: minY,
+            maxY: Math.max(minY, tope - visibleAbajo)
+        };
+    }
+
     function moverA(x, y) {
-        const margen = 4;
-        const maxX = Math.max(margen, window.innerWidth - wrap.offsetWidth - margen);
-        const maxY = Math.max(margen, window.innerHeight - wrap.offsetHeight - margen);
-        const nuevoX = Math.max(margen, Math.min(x, maxX));
-        const nuevoY = Math.max(margen, Math.min(y, maxY));
+        const lim = limitesArrastre();
+        const nuevoX = Math.max(lim.minX, Math.min(x, lim.maxX));
+        const nuevoY = Math.max(lim.minY, Math.min(y, lim.maxY));
         // En el layout ancho de escritorio el video arranca con
         // "position: sticky" (ver CSS de "nosotros-layout-ancho"). Al
         // arrastrarlo se pasa a "fixed" en línea (pesa más que el CSS)
@@ -4532,10 +4591,14 @@ function configurarArrastreNosotros() {
         nosotrosArrastrando = false;
         wrap.classList.remove("nosotros-arrastrando");
         try { elemento.releasePointerCapture(e.pointerId); } catch (err) { /* ya liberado */ }
+        ajustarEspacioVideoNosotros(true);
     }
 
     // Mango dedicado (la barrita "⠿ ⠿ ⠿"): arrastra desde cualquier punto.
-    manija.addEventListener("pointerdown", (e) => empezarArrastre(e, manija));
+    manija.addEventListener("pointerdown", (e) => {
+        if (e.target.closest && e.target.closest(".nosotros-mini-btn")) return;
+        empezarArrastre(e, manija);
+    });
     manija.addEventListener("pointermove", (e) => {
         if (nosotrosArrastrando) moverA(e.clientX - nosotrosArrastreOffsetX, e.clientY - nosotrosArrastreOffsetY);
     });
@@ -4558,6 +4621,30 @@ function configurarArrastreNosotros() {
         barraControles.addEventListener("pointerup", (e) => soltar(e, barraControles));
         barraControles.addEventListener("pointercancel", (e) => soltar(e, barraControles));
     }
+
+    // Botón «–» de la barra: reduce la ventana (deja lo esencial) o la vuelve a ampliar.
+    const btnMini = document.getElementById("btnNosotrosMini");
+    function aplicarModoReducido(reducido) {
+        wrap.classList.toggle("nosotros-mini", reducido);
+        if (btnMini) {
+            btnMini.textContent = reducido ? "▢" : "–";
+            btnMini.title = reducido ? "Ampliar el video" : "Reducir el video";
+            btnMini.setAttribute("aria-label", btnMini.title);
+            btnMini.setAttribute("aria-pressed", reducido ? "true" : "false");
+        }
+        try { sessionStorage.setItem("lspedia_nosotros_mini", reducido ? "1" : "0"); } catch (_e) {}
+        if (nosotrosPosicionGuardada) moverA(nosotrosPosicionGuardada.left, nosotrosPosicionGuardada.top);
+        setTimeout(ajustarEspacioVideoNosotros, 60);
+    }
+    if (btnMini) {
+        btnMini.addEventListener("click", (e) => {
+            e.stopPropagation();
+            aplicarModoReducido(!wrap.classList.contains("nosotros-mini"));
+        });
+    }
+    let reducidoGuardado = false;
+    try { reducidoGuardado = sessionStorage.getItem("lspedia_nosotros_mini") === "1"; } catch (_e) {}
+    if (reducidoGuardado) aplicarModoReducido(true);
 
     // Si la ventana del navegador cambia de tamaño (o gira el celular) y
     // la posición guardada queda fuera del área visible, se reubica

@@ -336,3 +336,14 @@ html.modo-movil-real .carrusel-apoyo-visual .carousel-control-next { display: no
         min-height: 32px !important;
     }
 }
+
+/* LOGO_CABECERA_MAS_A_LA_IZQUIERDA_V1_20261119
+   Celular: el logo animado queda un poco más cerca de la esquina izquierda. Está
+   posicionado de forma absoluta, así que moverlo no cambia el espacio ni la posición
+   del selector de idioma, el modo oscuro ni los demás botones. */
+@media (max-width: 767.98px) {
+    html.modo-movil-real body nav.navbar .navbar-brand,
+    html body nav.navbar .navbar-brand {
+        left: calc(50% - 24px - clamp(14px, 6vw, 26px)) !important;
+    }
+}

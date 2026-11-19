@@ -886,3 +886,88 @@
 @keyframes lspGameCaerV4{0%{transform:translate(0,0) rotate(0)}100%{transform:translate(var(--dx,0),112vh) rotate(700deg)}}
 @media (max-width:480px){.lsp-game-badge-icono{width:68px;height:68px;font-size:2.4rem}.lsp-game-reaccion>div.lsp-game-badge{padding:14px 22px 12px}}
 @media (prefers-reduced-motion:reduce){.lsp-game-reaccion>div.lsp-game-badge,.lsp-game-badge-error{animation:none!important}}
+
+/* QUIZ_INICIO_HERO_V1_20261119
+   La pantalla de inicio del Quiz tiene la misma tarjeta de bienvenida que Completar y Unir:
+   color propio, título claro y un mini ejemplo de cómo se juega. */
+#quizIntro .quiz-hero{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:14px;margin:0 0 16px;padding:18px 20px;border-radius:20px;border:1px solid #ddd6fe;background:linear-gradient(135deg,#f5f3ff 0%,#ede9fe 55%,#e0e7ff 100%);box-shadow:0 10px 24px -16px rgba(91,33,182,.45)}
+#quizIntro .quiz-hero-orbe{position:absolute;right:-34px;top:-44px;width:130px;height:130px;border-radius:50%;background:rgba(124,58,237,.1);pointer-events:none}
+#quizIntro .quiz-hero-texto-wrap{position:relative;flex:1 1 auto;min-width:0}
+#quizIntro .quiz-hero-kicker{margin:0 0 4px;font-size:.68rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#6d28d9}
+#quizIntro .quiz-hero-titulo{margin:0 0 4px;font-size:1.3rem;font-weight:800;color:#1e1b4b;line-height:1.15}
+#quizIntro .quiz-hero-texto{margin:0;font-size:.86rem;line-height:1.35;color:#4c4a6b}
+#quizIntro .quiz-hero-ejemplo{position:relative;flex:0 0 auto;display:flex;align-items:center;gap:8px}
+#quizIntro .quiz-hero-video{display:grid;place-items:center;width:46px;height:46px;border-radius:12px;background:#1e1b4b;color:#fff;font-size:.95rem;box-shadow:0 6px 12px -6px rgba(30,27,75,.6)}
+#quizIntro .quiz-hero-opciones{display:flex;flex-direction:column;gap:3px}
+#quizIntro .quiz-hero-opciones i{font-style:normal;font-size:.62rem;font-weight:800;line-height:1;padding:4px 9px;border-radius:7px;background:#fff;color:#475569;border:1.5px solid #e2e8f0;white-space:nowrap}
+#quizIntro .quiz-hero-opciones i.quiz-hero-ok{border-color:#16a34a;background:#dcfce7;color:#166534;animation:quizHeroOk 3.6s ease-in-out infinite}
+@keyframes quizHeroOk{0%,55%,100%{transform:scale(1)}65%{transform:scale(1.09)}75%{transform:scale(1)}}
+@media (max-width:420px){#quizIntro .quiz-hero{padding:14px 14px;gap:10px}#quizIntro .quiz-hero-titulo{font-size:1.12rem}#quizIntro .quiz-hero-texto{font-size:.78rem}#quizIntro .quiz-hero-video{width:38px;height:38px}}
+html[data-lsp-tema="dark"] #quizIntro .quiz-hero{background:linear-gradient(135deg,#2e1065 0%,#3b1d7a 60%,#1e1b4b 100%);border-color:#5b21b6}
+html[data-lsp-tema="dark"] #quizIntro .quiz-hero-titulo{color:#f5f3ff}
+html[data-lsp-tema="dark"] #quizIntro .quiz-hero-texto{color:#ddd6fe}
+html[data-lsp-tema="dark"] #quizIntro .quiz-hero-kicker{color:#c4b5fd}
+@media (prefers-reduced-motion:reduce){#quizIntro .quiz-hero-opciones i.quiz-hero-ok{animation:none}}
+
+/* JUEGOS_BOTONES_UNIFICADOS_V1_20261119
+   «Elegir otro juego» (azul) y «Salir» (rojo) se ven igual en todos los juegos de Recursos → Jugar
+   y en las páginas sueltas (ver css/juegos-elegir.css). */
+#seccionQuiz .btn-volver-menu-juegos,
+#seccionQuiz .quiz-btn-salir {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 40px;
+    padding: 0 15px;
+    border: 2px solid;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+    transform: none;
+    transition: background-color .15s, border-color .15s, transform .12s, box-shadow .15s;
+}
+#seccionQuiz .btn-volver-menu-juegos {
+    background: #eff6ff;
+    border-color: #93c5fd;
+    color: #1d4ed8;
+    box-shadow: none;
+}
+#seccionQuiz .btn-volver-menu-juegos:hover { background: #dbeafe; border-color: #60a5fa; color: #1e40af; transform: none; }
+#seccionQuiz .quiz-btn-salir {
+    background: #dc2626;
+    border-color: #b91c1c;
+    color: #fff;
+    box-shadow: 0 4px 10px -5px rgba(220, 38, 38, .6);
+}
+#seccionQuiz .quiz-btn-salir:hover { background: #b91c1c; color: #fff; }
+#seccionQuiz .btn-volver-menu-juegos:active,
+#seccionQuiz .quiz-btn-salir:active { transform: scale(.96); }
+#seccionQuiz .btn-volver-menu-juegos:focus-visible,
+#seccionQuiz .quiz-btn-salir:focus-visible { outline: 3px solid #f5b400; outline-offset: 2px; }
+@media (pointer: coarse) {
+    #seccionQuiz .btn-volver-menu-juegos,
+    #seccionQuiz .quiz-btn-salir { min-height: 44px; }
+}
+@media (max-width: 420px) {
+    #seccionQuiz .btn-volver-menu-juegos,
+    #seccionQuiz .quiz-btn-salir { padding: 0 12px; font-size: 12.5px; }
+}
+html[data-lsp-tema="dark"] #seccionQuiz .btn-volver-menu-juegos {
+    background: rgba(96, 165, 250, .16) !important;
+    border-color: #60a5fa !important;
+    color: #dbeafe !important;
+}
+html[data-lsp-tema="dark"] #seccionQuiz .quiz-btn-salir {
+    background: #dc2626 !important;
+    border-color: #f87171 !important;
+    color: #fff !important;
+}
+@media (prefers-reduced-motion: reduce) {
+    #seccionQuiz .btn-volver-menu-juegos,
+    #seccionQuiz .quiz-btn-salir { transition: none; }
+    #seccionQuiz .btn-volver-menu-juegos:active,
+    #seccionQuiz .quiz-btn-salir:active { transform: none; }
+}

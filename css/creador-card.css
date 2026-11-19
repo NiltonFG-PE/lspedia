@@ -120,3 +120,69 @@ html[data-lsp-tema="dark"] #lspCreador .lsp-creador-nombre { color: #e1edff; }
 html[data-lsp-tema="dark"] #lspCreador .lsp-creador-etiqueta { color: #aabdd3; }
 html[data-lsp-tema="dark"] #lspCreador .lsp-creador-rol-interprete { background: #1d3a66; color: #a9ccff; }
 html[data-lsp-tema="dark"] #lspCreador .lsp-creador-rol-creador    { background: #123f36; color: #8fe0c6; }
+
+/* CREADOR_COMPACTO_V1_20261119
+   La tarjeta de Nilton mide lo mismo que el buscador del Diccionario (50 px) y la foto
+   ya no lleva aro ni brillo amarillo. Misma información: nombre, «Creador de LSPedia»
+   y sus dos roles. */
+#lspCreador.lsp-creador:not(.d-none) {
+    gap: 10px;
+    height: 50px;
+    min-height: 0;
+    margin: 0 0 12px;
+    padding: 0 12px 0 8px;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(27, 58, 105, .07);
+}
+#lspCreador .lsp-creador-foto {
+    flex: 0 0 36px;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    background: transparent;
+    box-shadow: none;
+}
+#lspCreador .lsp-creador-foto img {
+    border: 2px solid #fff;
+    box-shadow: 0 1px 5px rgba(15, 23, 42, .22);
+}
+#lspCreador .lsp-creador-info {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3px;
+    overflow: hidden;
+}
+#lspCreador .lsp-creador-info > .lsp-creador-etiqueta,
+#lspCreador .lsp-creador-info > .lsp-creador-nombre { display: inline; }
+/* Nombre y etiqueta comparten la primera línea. */
+#lspCreador .lsp-creador-info { flex-flow: row wrap; align-content: center; column-gap: 8px; row-gap: 2px; }
+#lspCreador .lsp-creador-nombre { order: 1; margin: 0; font-size: .92rem; line-height: 1.1; white-space: nowrap; }
+#lspCreador .lsp-creador-etiqueta { order: 2; margin: 0; font-size: .58rem; line-height: 1.1; align-self: center; white-space: nowrap; }
+#lspCreador .lsp-creador-roles { order: 3; flex: 0 0 100%; flex-wrap: nowrap; gap: 4px; }
+#lspCreador .lsp-creador-rol { padding: 2px 8px; font-size: .64rem; line-height: 1.25; white-space: nowrap; }
+@media (max-width: 575.98px) {
+    #lspCreador.lsp-creador:not(.d-none) { height: 50px; margin-bottom: 8px; padding: 0 8px 0 7px; border-radius: 14px; gap: 8px; }
+    #lspCreador .lsp-creador-foto { flex-basis: 36px; width: 36px; height: 36px; }
+    #lspCreador .lsp-creador-nombre { font-size: .88rem; }
+    #lspCreador .lsp-creador-etiqueta { font-size: .54rem; }
+    #lspCreador .lsp-creador-rol { padding: 2px 6px; font-size: .58rem; white-space: nowrap; }
+    #lspCreador .lsp-creador-roles { gap: 3px; }
+}
+@media (max-width: 360px) {
+    #lspCreador .lsp-creador-rol { white-space: nowrap; font-size: .54rem; padding: 2px 5px; }
+    #lspCreador .lsp-creador-etiqueta { display: none; }
+}
+
+/* Alineación y versión corta de los roles en celular (los textos completos siguen en pantallas grandes). */
+#lspCreador .lsp-creador-info { justify-content: flex-start; align-items: center; text-align: left; }
+#lspCreador .lsp-creador-corto { display: none; }
+@media (max-width: 575.98px) {
+    #lspCreador .lsp-creador-largo { display: none; }
+    #lspCreador .lsp-creador-corto { display: inline; }
+}
+@media (max-width: 360px) {
+    #lspCreador .lsp-creador-rol { font-size: .56rem; padding: 2px 5px; }
+}

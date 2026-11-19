@@ -518,6 +518,22 @@ const OracionesV2 = (function(){
       contenedor.className="d-none";
       seccion.appendChild(contenedor);
     }
+    // «Elegir otro juego» fuera del shadow DOM, igual que en los demás juegos de Jugar.
+    if(!document.getElementById("oracionesAcciones")){
+      const barra=document.createElement("div");
+      barra.id="oracionesAcciones";
+      barra.className="text-center mb-2 d-none";
+      const boton=document.createElement("button");
+      boton.type="button";
+      boton.className="btn btn-outline-secondary btn-sm rounded-pill btn-volver-menu-juegos";
+      boton.textContent="↩ Elegir otro juego";
+      boton.addEventListener("click",()=>{
+        if(window.HistorialJuegosLSPedia && typeof HistorialJuegosLSPedia.volverAlMenuJuegosDesdeBoton==="function") HistorialJuegosLSPedia.volverAlMenuJuegosDesdeBoton();
+        else if(typeof mostrarMenuJuegos==="function") mostrarMenuJuegos();
+      });
+      barra.appendChild(boton);
+      seccion.insertBefore(barra,contenedor);
+    }
     if(!contenedor.shadowRoot){
       shadow=contenedor.attachShadow({mode:"open"});
       shadow.innerHTML="<style>"+ESTILOS+"</style>"+MARCADO;
@@ -534,6 +550,8 @@ const OracionesV2 = (function(){
       observer=new MutationObserver(()=>{
         const seccionOculta=seccion.classList.contains("d-none");
         const appOculta=contenedor.classList.contains("d-none");
+        const barraAcciones=document.getElementById("oracionesAcciones");
+        if(barraAcciones) barraAcciones.classList.toggle("d-none",seccionOculta||appOculta);
         if((seccionOculta||appOculta) && juego) juego.detener();
       });
       observer.observe(contenedor,{attributes:true,attributeFilter:["class"]});

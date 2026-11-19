@@ -1,21 +1,39 @@
-/* Botón «↩ Elegir otro juego» de las páginas de juego sueltas (Adivina quién
-   soy, Caras y gestos, Sopa de Señas, Carrera matemática). Mismo aspecto de
-   píldora que el botón de los juegos del menú «Recursos → Jugar». */
-.lsp-elegir-juego{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:34px;padding:0 14px;border:1px solid #6c757d;border-radius:999px;background:transparent;color:#6c757d;font-family:inherit;font-weight:600;font-size:13px;line-height:1;text-decoration:none;white-space:nowrap;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent;transition:background-color .15s,color .15s}
-.lsp-elegir-juego:hover{background:#6c757d;color:#fff}
-.lsp-elegir-juego:focus-visible{outline:3px solid #f5b400;outline-offset:2px}
-.topbar>.lsp-elegir-juego{margin-left:auto}
-.topbar>.lsp-elegir-juego+#help{margin-left:0}
-@media (max-width:420px){.lsp-elegir-juego{padding:0 11px;font-size:12px}}
-.lsp-elegir-juego--oscuro{border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.07);color:#fff}
-.lsp-elegir-juego--oscuro:hover{background:rgba(255,255,255,.18);color:#fff}
+/* Botones de salida de TODOS los juegos (mismo diseño en las páginas sueltas y dentro de
+   Recursos → Jugar):
+     «↩ Elegir otro juego»  → azul, vuelve a la lista de juegos.
+     «⏻ Salir»              → rojo, sale de los juegos hacia Recursos.
+   Mismo alto, mismas esquinas y misma tipografía en celular y escritorio. */
+.lsp-ja{display:inline-flex;align-items:center;gap:8px;flex-wrap:nowrap;flex-shrink:0}
+.lsp-elegir-juego,.lsp-salir-juego{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:40px;padding:0 15px;border:2px solid;border-radius:999px;font-family:inherit;font-weight:700;font-size:13px;line-height:1;text-decoration:none;white-space:nowrap;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background-color .15s,border-color .15s,transform .12s,box-shadow .15s}
+.lsp-elegir-juego{color:#1d4ed8;border-color:#93c5fd;background:#eff6ff}
+.lsp-elegir-juego:hover{background:#dbeafe;border-color:#60a5fa;color:#1e40af}
+.lsp-salir-juego{color:#fff;border-color:#b91c1c;background:#dc2626;box-shadow:0 4px 10px -5px rgba(220,38,38,.6)}
+.lsp-salir-juego:hover{background:#b91c1c;color:#fff}
+.lsp-elegir-juego:active,.lsp-salir-juego:active{transform:scale(.96)}
+.lsp-elegir-juego:focus-visible,.lsp-salir-juego:focus-visible{outline:3px solid #f5b400;outline-offset:2px}
+.lsp-ja-corto{display:none}
+/* Sobre fondos oscuros: el azul se aclara, el rojo se mantiene. */
+.lsp-elegir-juego--oscuro{color:#dbeafe;border-color:#60a5fa;background:rgba(96,165,250,.16)}
+.lsp-elegir-juego--oscuro:hover{background:rgba(96,165,250,.3);color:#fff}
+.lsp-elegir-juego--oscuro~.lsp-salir-juego,.lsp-ja--oscuro .lsp-salir-juego{border-color:#f87171}
+.topbar>.lsp-ja{margin-left:auto}
+.topbar>.lsp-ja+#help,.topbar>.lsp-ja+.topr{margin-left:0}
+/* Pantallas táctiles: zona de toque de 44 px. */
+@media (pointer:coarse){.lsp-elegir-juego,.lsp-salir-juego{min-height:44px}}
+/* Celular: texto corto «Otro juego» y la flecha de atrás se oculta (hace lo mismo). */
+@media (max-width:480px){
+  .lsp-ja-largo{display:none}.lsp-ja-corto{display:inline}
+  .lsp-elegir-juego,.lsp-salir-juego{padding:0 11px;font-size:12px}
+  .lsp-ja{gap:6px}
+  .topbar>.lsp-flecha-atras{display:none}
+  .topbar .brand small,.topbar .brand span:last-child:not(:first-child){display:none}
+}
+@media (max-width:340px){.lsp-elegir-juego,.lsp-salir-juego{padding:0 9px;font-size:11.5px}}
+@media (prefers-reduced-motion:reduce){.lsp-elegir-juego,.lsp-salir-juego{transition:none}.lsp-elegir-juego:active,.lsp-salir-juego:active{transform:none}}
 /* La flecha y el «?» no se encogen cuando la cabecera va justa en celular. */
 .topbar>.round,.topbar>.round-btn,.topbar>.icon-button{flex-shrink:0}
-/* Pantallas muy angostas (320–380 px): se oculta el texto de la marca para que el botón «?»
-   y el resto de la cabecera no se salgan de la pantalla. El logo se queda. */
+/* Pantallas muy angostas: la cabecera deja solo el logo para que quepan los dos botones. */
 @media (max-width:380px){
-.topbar{gap:6px}
-.topbar .brand{font-size:0;gap:0}
-.topbar .brand span,.topbar .brand small{display:none}
-.topbar>.lsp-elegir-juego{padding:0 9px;font-size:11.5px}
+  .topbar .brand{font-size:0!important;gap:0!important}
+  .topbar .brand strong,.topbar .brand span,.topbar .brand small{display:none!important}
 }

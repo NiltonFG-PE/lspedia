@@ -113,6 +113,7 @@
         'Oraciones':'Sentences','Ordena ideas y conversa mejor':'Organize ideas and communicate better',
         'Preparando el juego…':'Preparing the game…','↩ Elegir otro juego':'↩ Choose another game',
         'Elige el nivel y el modo de juego para tu ronda de práctica.':'Choose the level and game mode for your practice round.',
+        'Quiz de señas':'Sign quiz','Video · Sobre Nosotros':'Video · About us','Mira el video y elige la respuesta correcta.':'Watch the video and choose the right answer.','Mira · Piensa · Elige':'Watch · Think · Choose',
         '🌱 Elegir nivel':'🌱 Choose level','🎲 Modo de juego':'🎲 Game mode','Nivel':'Level','Modo de juego':'Game mode',
         'Pregunta 1':'Question 1','Fácil':'Easy','Medio':'Medium','Difícil':'Hard','Básico':'Basic',
         '↩ Menú':'↩ Menu','Intentos: 0':'Attempts: 0','¡Ronda completada!':'Round complete!',

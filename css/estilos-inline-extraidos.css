@@ -3456,7 +3456,14 @@ html.modo-movil-real #herramientasMenuMovil:not(.d-none) {
            Transición breve entre Diccionario, Vocabulario, Herramientas y
            Nosotros. Solo se anima el contenido; las barras de navegación
            permanecen fijas para conservar sensación de aplicación nativa. */
+        /* will-change con transform crea un "bloque contenedor" para los hijos con
+           position:fixed: el video flotante de Sobre Nosotros dejaba de flotar y se iba
+           con el scroll de la página. Solo se activa durante la transición. */
         #contenidoPrincipalApp {
+            will-change: auto;
+        }
+        #contenidoPrincipalApp.lsp-seccion-saliendo,
+        #contenidoPrincipalApp.lsp-seccion-entrando {
             will-change: opacity, transform;
         }
 

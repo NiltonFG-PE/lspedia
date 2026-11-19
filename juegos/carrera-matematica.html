@@ -23,6 +23,7 @@
     #game-container { position: relative; width: 100%; height: 100%; overflow: hidden; background: #6fb7e8; }
     canvas#gameCanvas { display: block; width: 100%; height: 100%; }
     button { font-family: var(--font); }
+    .lsp-ja--carrera { position: absolute; top: calc(env(safe-area-inset-top, 0px) + 10px); left: 10px; z-index: 45; }
     .lspedia-back { position: absolute; top: calc(env(safe-area-inset-top, 0px) + 10px); left: 10px; z-index: 45; min-height: 44px; padding: 0 14px; border: 1px solid rgba(255,255,255,.3); border-radius: 14px; background: rgba(27,34,48,.82); color: #fff; font-weight: 700; cursor: pointer; backdrop-filter: blur(6px); box-shadow: 0 6px 18px rgba(0,0,0,.25); }
     /* Debajo de «← LSPedia»: la esquina superior derecha la ocupa «Pantalla completa». */
     .lspedia-elegir { top: calc(env(safe-area-inset-top, 0px) + 62px); }
@@ -282,6 +283,7 @@
     @media (prefers-reduced-motion: reduce) { .anim-tilt, .anim-car, .anim-pulse, .anim-blink, .lvl.next, #turbo-box.ready { animation: none; } }
   </style>
 <script src="../js/volver-atras.js?v=1"></script>
+<link rel="stylesheet" href="../css/juegos-elegir.css?v=5">
 </head>
 <body>
   <div id="game-container">
@@ -354,8 +356,7 @@
 
     <!-- 1. Inicio -->
     <div class="screen" id="start-screen">
-      <button type="button" class="lspedia-back" id="lspediaBack" aria-label="Volver a LSPedia">← LSPedia</button>
-      <button type="button" class="lspedia-back lspedia-elegir" id="lspediaElegir">↩ Elegir otro juego</button>
+      <div class="lsp-ja lsp-ja--oscuro lsp-ja--carrera"><button type="button" class="lsp-elegir-juego lsp-elegir-juego--oscuro" id="lspediaElegir">↩ <span class="lsp-ja-largo">Elegir otro juego</span><span class="lsp-ja-corto">Otro juego</span></button><button type="button" class="lsp-salir-juego" id="lspediaBack" aria-label="Salir de los juegos">⏻ Salir</button></div>
       <div class="tutorial">
         <div class="tut-card">
           <svg viewBox="0 0 100 100">
@@ -2257,10 +2258,11 @@ document.getElementById('restartBtn').onclick = () => startLevel(currentLevel.n)
 // de juegos de Recursos) en vez de abrir LSPedia de nuevo. La página añade una
 // entrada propia (ver «Botón Atrás del móvil»), por eso pasosPropios: 1.
 const volverAlMenuDeJuegos = () => LSPediaVolver('../?vista=herramientas-jugar', { pasosPropios: 1 });
-['lspediaBack', 'lspediaElegir'].forEach((id) => {
-  const boton = document.getElementById(id);
-  if (boton) boton.addEventListener('click', volverAlMenuDeJuegos);
-});
+const botonElegirJuego = document.getElementById('lspediaElegir');
+if (botonElegirJuego) botonElegirJuego.addEventListener('click', volverAlMenuDeJuegos);
+// «Salir» lleva a Recursos (igual que «Salir» dentro de Jugar).
+const botonSalirJuegos = document.getElementById('lspediaBack');
+if (botonSalirJuegos) botonSalirJuegos.addEventListener('click', () => { location.href = '../?vista=herramientas'; });
  
 // Botón Atrás del móvil: retrocede dentro del juego sin cerrar la página.
 history.replaceState({ ...(history.state||{}), carreraLspedia:true }, '', location.href);
