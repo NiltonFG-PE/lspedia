@@ -456,25 +456,116 @@ html.modo-movil-real body.lsp-inicio-oculto:not(.vista-temas-movil):not(.senal-c
   }
 }
 
-/* En tablet vertical sin tarjeta Descubre (Diccionario o Vocabulario),
-   evitar que el avatar quede flotando solo arriba a la derecha con un hueco vacío */
+/* En tablet vertical y horizontal (Diccionario y Vocabulario), integrar el avatar
+   a la mano derecha del título y subtítulo, alineado y sin duplicarse */
 @media (min-width: 768px) and (min-height: 480px) and (orientation: portrait) {
-  html.modo-movil-real body.vista-temas-movil #filaHeroPrincipal > #colAvatarHero:not(.oculto-por-seccion),
-  html.modo-movil-real body.senal-cerrada #filaHeroPrincipal > #colAvatarHero:not(.oculto-por-seccion) {
-    display: none !important;
+  /* Anular order-first de Bootstrap en < 992px para que el avatar nunca salte arriba */
+  html.modo-movil-real body #filaHeroPrincipal > #colAvatarHero {
+    order: 0 !important;
   }
-  html.modo-movil-real body.vista-temas-movil #filaHeroPrincipal,
-  html.modo-movil-real body.senal-cerrada #filaHeroPrincipal {
-    grid-template-columns: minmax(0, 1fr) !important;
-    grid-template-areas: "titulo" !important;
+  html.modo-movil-real body #filaHeroPrincipal > .col-lg-6 {
+    order: 0 !important;
   }
+
+  /* VOCABULARIO (tablet vertical): título a la izquierda, avatar a la derecha, lista intro abajo */
+  html.modo-movil-real body.vista-temas-movil #filaHeroPrincipal {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) clamp(128px, 21vw, 175px) !important;
+    grid-template-areas:
+      "titulo avatar"
+      "intro intro" !important;
+    column-gap: 18px !important;
+    row-gap: 14px !important;
+    align-items: center !important;
+    margin: 0 0 18px !important;
+  }
+  html.modo-movil-real body.vista-temas-movil #filaHeroPrincipal > #vocabularioIntroLista {
+    grid-area: intro !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  /* DICCIONARIO (tablet vertical): bloque de título + subtítulo a la izquierda, avatar a la derecha */
+  html.modo-movil-real body.senal-cerrada:not(.vista-temas-movil) #filaHeroPrincipal {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) clamp(128px, 21vw, 175px) !important;
+    grid-template-areas: "titulo avatar" !important;
+    column-gap: 18px !important;
+    row-gap: 0 !important;
+    align-items: start !important;
+    margin: 0 0 22px !important;
+  }
+
+  /* Avatar integrado a la derecha del título/subtítulo */
+  html.modo-movil-real body.vista-temas-movil:not(.lsp-inicio-oculto) #filaHeroPrincipal > #colAvatarHero:not(.oculto-por-seccion),
+  html.modo-movil-real body.senal-cerrada:not(.lsp-inicio-oculto) #filaHeroPrincipal > #colAvatarHero:not(.oculto-por-seccion) {
+    grid-area: avatar !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    align-self: start !important;
+    justify-self: center !important;
+    width: 100% !important;
+    max-width: 175px !important;
+    margin: 4px 0 0 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+  html.modo-movil-real body.vista-temas-movil:not(.lsp-inicio-oculto) #filaHeroPrincipal > #colAvatarHero:not(.oculto-por-seccion) {
+    align-self: center !important;
+    margin-top: 0 !important;
+  }
+  html.modo-movil-real body #filaHeroPrincipal > #colAvatarHero .avatar-hero-img {
+    width: 100% !important;
+    max-width: 165px !important;
+    height: auto !important;
+    max-height: 175px !important;
+    object-fit: contain !important;
+  }
+
+  /* Título y rayita amarilla alineados a la izquierda junto al avatar */
   html.modo-movil-real body.vista-temas-movil #bloqueTituloPrincipal,
   html.modo-movil-real body.senal-cerrada #bloqueTituloPrincipal {
-    text-align: center !important;
-    margin-bottom: 14px !important;
+    text-align: left !important;
+    margin: 0 0 12px !important;
   }
   html.modo-movil-real body.vista-temas-movil #tituloPrincipal,
   html.modo-movil-real body.senal-cerrada #tituloPrincipal {
-    text-align: center !important;
+    text-align: left !important;
+  }
+  html.modo-movil-real body.vista-temas-movil #bloqueTituloPrincipal .titulo-raya,
+  html.modo-movil-real body.senal-cerrada #bloqueTituloPrincipal .titulo-raya {
+    margin-left: 0 !important;
+    margin-right: auto !important;
+  }
+}
+
+/* Tablet horizontal (landscape): también mantener el avatar integrado a la derecha */
+@media (min-width: 768px) and (min-height: 480px) and (orientation: landscape) {
+  html.modo-movil-real body #filaHeroPrincipal > #colAvatarHero,
+  html.modo-movil-real body #filaHeroPrincipal > .col-lg-6 {
+    order: 0 !important;
+  }
+  html.modo-movil-real body.vista-temas-movil #filaHeroPrincipal {
+    grid-template-columns: minmax(0, 1fr) clamp(130px, 14vw, 180px) !important;
+    grid-template-areas:
+      "titulo avatar"
+      "intro intro" !important;
+    column-gap: 22px !important;
+    row-gap: 14px !important;
+    align-items: center !important;
+  }
+  html.modo-movil-real body.vista-temas-movil #filaHeroPrincipal > #vocabularioIntroLista {
+    grid-area: intro !important;
+    width: 100% !important;
+  }
+  html.modo-movil-real body.vista-temas-movil #bloqueTituloPrincipal,
+  html.modo-movil-real body.senal-cerrada #bloqueTituloPrincipal {
+    text-align: left !important;
+  }
+  html.modo-movil-real body.vista-temas-movil #bloqueTituloPrincipal .titulo-raya,
+  html.modo-movil-real body.senal-cerrada #bloqueTituloPrincipal .titulo-raya {
+    margin-left: 0 !important;
+    margin-right: auto !important;
   }
 }

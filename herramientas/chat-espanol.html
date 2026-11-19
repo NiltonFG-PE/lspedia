@@ -8,13 +8,34 @@
   <title>Chat en Español | LSPedia</title>
   <link rel="icon" href="../img/favicon.png">
   <link rel="stylesheet" href="../css/chat-espanol.css?v=20261119-banco-1">
+  <style>
+    .home-topbar .back-lspedia.btn-salir-rojo {
+      background: #dc2626 !important;
+      color: #ffffff !important;
+      border: 1px solid #b91c1c !important;
+      border-radius: 999px !important;
+      padding: 0.42rem 0.95rem !important;
+      font-weight: 700 !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 0.35rem !important;
+      box-shadow: 0 2px 8px rgba(220, 38, 38, 0.25) !important;
+      transition: background-color 0.18s ease, transform 0.15s ease !important;
+    }
+    .home-topbar .back-lspedia.btn-salir-rojo:hover,
+    .home-topbar .back-lspedia.btn-salir-rojo:focus-visible {
+      background: #b91c1c !important;
+      color: #ffffff !important;
+      transform: translateY(-1px);
+    }
+  </style>
 </head>
 <body>
   <noscript><p>Activa JavaScript para practicar. <a href="../?vista=herramientas">Volver a Recursos</a>.</p></noscript>
   <main id="chatGame" class="chat-game">
     <section id="screenHome" class="screen screen-home" aria-label="Elegir una conversación">
       <header class="home-topbar">
-        <button id="btnBackLspedia" class="back-lspedia" type="button"><span aria-hidden="true">←</span> Recursos</button>
+        <button id="btnBackLspedia" class="back-lspedia btn-salir-rojo" type="button"><span aria-hidden="true">←</span> Salir</button>
         <div class="brand-mini"><img src="../img/favicon.png" alt="" width="32" height="32"><strong>LSPedia</strong></div>
         <button id="btnHelp" class="help-button" type="button"><span aria-hidden="true">?</span> Ayuda</button>
       </header>
@@ -111,6 +132,24 @@
   <script src="../js/chat-espanol-data.js?v=20261104-1"></script>
   <script src="../js/chat-espanol-local.js?v=20261104-1"></script>
   <script src="../js/chat-espanol.js?v=20261119-banco-1"></script>
+  <script>
+    (function () {
+      var btn = document.getElementById("btnBackLspedia");
+      if (!btn) return;
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        try {
+          var mismoOrigen = document.referrer && document.referrer.indexOf(window.location.origin) === 0;
+          if (mismoOrigen && window.history.length > 1) {
+            window.history.back();
+            return;
+          }
+        } catch (_e) {}
+        window.location.href = "../?vista=herramientas";
+      }, true);
+    })();
+  </script>
 </body>
 </html>
 

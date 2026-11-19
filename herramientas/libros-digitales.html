@@ -12,12 +12,34 @@
   <link rel="stylesheet" href="../css/libros-biblioteca.css?v=3">
   <script src="../js/volver-atras.js?v=1"></script>
   <script defer src="../js/libros-biblioteca.js?v=1"></script>
+  <style>
+    .bib-barra .bib-volver.btn-salir-rojo {
+      background: #dc2626 !important;
+      color: #ffffff !important;
+      border: 1px solid #b91c1c !important;
+      border-radius: 999px !important;
+      padding: 0.42rem 0.95rem !important;
+      font-weight: 700 !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 0.35rem !important;
+      text-decoration: none !important;
+      box-shadow: 0 2px 8px rgba(220, 38, 38, 0.25) !important;
+      transition: background-color 0.18s ease, transform 0.15s ease !important;
+    }
+    .bib-barra .bib-volver.btn-salir-rojo:hover,
+    .bib-barra .bib-volver.btn-salir-rojo:focus-visible {
+      background: #b91c1c !important;
+      color: #ffffff !important;
+      transform: translateY(-1px);
+    }
+  </style>
 </head>
 <body class="biblioteca">
   <noscript><p class="bib-noscript">Activa JavaScript para ver los libros. <a href="../?vista=herramientas">Volver a Recursos</a>.</p></noscript>
 
   <header class="bib-barra">
-    <a class="bib-volver" id="btnVolver" href="../?vista=herramientas" data-volver><span aria-hidden="true">←</span> Recursos</a>
+    <a class="bib-volver btn-salir-rojo" id="btnVolver" href="../?vista=herramientas"><span aria-hidden="true">←</span> Salir</a>
     <div class="bib-marca"><img src="../img/favicon.png" alt="" width="28" height="28"><span>LSPedia</span></div>
   </header>
 
@@ -28,5 +50,23 @@
     <ul class="bib-estante" id="estante" aria-labelledby="bibTitulo" aria-busy="true"></ul>
     <p class="bib-estado" id="bibEstado" role="status" aria-live="polite">Cargando libros…</p>
   </main>
+  <script>
+    (function () {
+      var btn = document.getElementById("btnVolver");
+      if (!btn) return;
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        try {
+          var mismoOrigen = document.referrer && document.referrer.indexOf(window.location.origin) === 0;
+          if (mismoOrigen && window.history.length > 1) {
+            window.history.back();
+            return;
+          }
+        } catch (_e) {}
+        window.location.href = "../?vista=herramientas";
+      }, true);
+    })();
+  </script>
 </body>
 </html>
