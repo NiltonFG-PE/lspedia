@@ -26,7 +26,7 @@
         catch(_e){return false;}
     })();
 
-    const PAUSA_ACTIVIDAD=12000;
+    const PAUSA_ACTIVIDAD=4000;
     let ultimaActividad=INICIO;
     let puntos=0;
     let scrollContado=false;
@@ -130,7 +130,7 @@
         if(visible||tarjeta||desintegrando||sesionCompleta()||bloqueadoTemporalmente())return false;
         if(!MODO_PRUEBA&&leerLocalNumero(NEXT_KEY)>ahora())return false;
         const transcurrido=ahora()-INICIO;
-        return(transcurrido>=15000&&puntos>=2)||transcurrido>=25000;
+        return(transcurrido>=6000&&puntos>=1)||transcurrido>=10000;
     }
 
     function actualizarTextos(){
@@ -318,7 +318,18 @@
         if(window.visualViewport)window.visualViewport.addEventListener('resize',function(){if(!tecladoVirtualVisible())evaluar();},{passive:true});
     }
 
+    function esMovilOTablet(){
+        try{
+            var ua=navigator.userAgent||'';
+            var esIpadOS=(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+            return document.documentElement.classList.contains('modo-movil-real')
+                || /Mobi|Android|iPhone|iPad|iPod/i.test(ua)
+                || esIpadOS;
+        }catch(_e){return false;}
+    }
+
     function cargarRepeticionInstalacion(){
+        if(!esMovilOTablet())return;
         if(document.querySelector('script[data-lspedia-pwa-repeat]'))return;
         const s=document.createElement('script');
         s.src='js/pwa-repeat.js?v=20261002-1';
@@ -331,9 +342,9 @@
         cargarRepeticionInstalacion();
         observarInteres();
         if(sesionCompleta()||(!MODO_PRUEBA&&leerLocalNumero(NEXT_KEY)>ahora()))return;
-        setTimeout(function(){puntos=Math.max(puntos,1);evaluar();},15000);
-        temporizador=setTimeout(evaluar,17000);
-        setTimeout(evaluar,25000);
+        setTimeout(function(){puntos=Math.max(puntos,1);evaluar();},6000);
+        temporizador=setTimeout(evaluar,7000);
+        setTimeout(evaluar,10000);
     }
 
     window.LSPediaSocialInvite={
