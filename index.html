@@ -155,7 +155,7 @@
     <link rel="preload" href="fonts/poppins/poppins-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="css/fonts-poppins.css?v=20261113-1">
     <link href="vendor/bootstrap/5.3.7/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/estilos.css?v=20261119-tablet-ios-1">
+    <link rel="stylesheet" href="css/estilos.css?v=20261119-tablet-ios-2">
     <link rel="stylesheet" href="css/quiz.css?v=20261119-3">
     <link rel="stylesheet" href="css/mejoras-producto.css?v=20261119-1">
     <link rel="stylesheet" href="css/buscador-enfoque.css?v=20261119-dic-1">
@@ -2342,5 +2342,55 @@
 
 <script defer src="js/mejoras-producto.js?v=20261119-7"></script>
 <script defer src="js/buscador-enfoque.js?v=20261119-1"></script>
+<script id="lsp-nav-movil-scroll">
+(function () {
+    'use strict';
+    var nav = document.getElementById('mobileBottomNav');
+    if (!nav) return;
+
+    var ultimoY = window.scrollY || 0;
+    var timerMostrar = 0;
+
+    function esSoloMovil() {
+        return window.matchMedia('(max-width: 767.98px)').matches;
+    }
+
+    function mostrarNav() {
+        nav.classList.remove('lsp-nav-oculta-scroll');
+    }
+
+    function alHacerScroll() {
+        if (!esSoloMovil()) {
+            clearTimeout(timerMostrar);
+            mostrarNav();
+            return;
+        }
+        var yActual = window.scrollY || document.documentElement.scrollTop || 0;
+        var delta = yActual - ultimoY;
+        ultimoY = yActual;
+
+        // Si está al inicio de la página, siempre visible
+        if (yActual <= 24) {
+            clearTimeout(timerMostrar);
+            mostrarNav();
+            return;
+        }
+
+        // Al deslizar la pantalla hacia arriba (bajar contenido: delta > 4), ocultar la barra
+        if (delta > 4) {
+            nav.classList.add('lsp-nav-oculta-scroll');
+        }
+
+        // Volver a mostrar automáticamente cuando el usuario se detiene
+        clearTimeout(timerMostrar);
+        timerMostrar = setTimeout(mostrarNav, 260);
+    }
+
+    window.addEventListener('scroll', alHacerScroll, { passive: true });
+    window.addEventListener('resize', function () {
+        if (!esSoloMovil()) mostrarNav();
+    }, { passive: true });
+})();
+</script>
 </body>
 </html>

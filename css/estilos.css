@@ -363,3 +363,16 @@ html.lsp-ios-video-fallback #logoLspediaFallback,
 html.lsp-ios-video-fallback #avatarHeroFallback {
     display: block !important;
 }
+
+/* === MÓVIL: ocultar barra de navegación inferior al deslizar y mostrar al detenerse === */
+@media (max-width: 767.98px) {
+    #mobileBottomNav {
+        transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.22s ease !important;
+        will-change: transform, opacity;
+    }
+    #mobileBottomNav.lsp-nav-oculta-scroll {
+        transform: translateY(calc(100% + 24px)) !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+}
