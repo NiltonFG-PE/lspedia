@@ -1,0 +1,173 @@
+/* LSPedia — escritorio: categorías más pequeñas y más numerosas, y márgenes del Diccionario
+   iguales a los de Vocabulario, con el buscador como protagonista.
+   Solo pantallas de escritorio (≥ 992 px). El celular y las tablets reales (html.modo-movil-real)
+   no se tocan: ahí siguen las 3 columnas del diseño móvil. */
+
+@media (min-width: 992px) {
+
+    /* ===== 1) Categorías: 6 columnas en vez de 4, tarjetas más pequeñas y casi cuadradas ===== */
+    html:not(.modo-movil-real) #contenidoPrincipalApp #panelCategorias,
+    html:not(.modo-movil-real) #contenidoPrincipalApp #panelCategoriasDiccionario {
+        --bs-gutter-x: .75rem;
+        --bs-gutter-y: .75rem;
+    }
+    html:not(.modo-movil-real) #contenidoPrincipalApp #panelCategorias > .col-md-3,
+    html:not(.modo-movil-real) #contenidoPrincipalApp #panelCategoriasDiccionario > .col-md-3 {
+        flex: 0 0 auto;
+        width: 16.666667%;
+        max-width: 16.666667%;
+    }
+    /* El encabezado «Categorías» y el botón «Ver más» siguen ocupando toda la fila. */
+    html:not(.modo-movil-real) #contenidoPrincipalApp #panelCategorias > .col-12,
+    html:not(.modo-movil-real) #contenidoPrincipalApp #panelCategoriasDiccionario > .col-12 {
+        flex: 0 0 100%;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* Vocabulario */
+    html:not(.modo-movil-real) #panelCategorias .categoria-card { border-radius: 14px !important; }
+    html:not(.modo-movil-real) #panelCategorias .categoria-card .card-body.py-4 {
+        padding: 14px 10px 12px !important;
+        text-align: left !important;
+    }
+    html:not(.modo-movil-real) #panelCategorias .categoria-card-icono {
+        width: 42px !important;
+        height: 42px !important;
+        flex-basis: 42px !important;
+        margin: 0 0 10px !important;
+    }
+    html:not(.modo-movil-real) #panelCategorias .categoria-card-titulo {
+        margin-bottom: 3px !important;
+        font-size: .92rem !important;
+        white-space: normal !important;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        line-height: 1.2 !important;
+        min-height: 2.4em;
+    }
+    html:not(.modo-movil-real) #panelCategorias .categoria-card p { font-size: .78rem !important; }
+
+    /* Diccionario */
+    html:not(.modo-movil-real) #panelCategoriasDiccionario .categoria-dicc-card {
+        min-height: 132px;
+        padding: 12px 10px;
+        border-radius: 14px;
+    }
+    html:not(.modo-movil-real) #panelCategoriasDiccionario .categoria-dicc-icono-img { width: 40px; height: 40px; }
+    html:not(.modo-movil-real) #panelCategoriasDiccionario .categoria-dicc-icono { font-size: 2rem; }
+
+    /* El botón de compartir se achica para que no tape el nombre en tarjetas angostas. */
+    html:not(.modo-movil-real) #panelCategorias .categoria-card > button,
+    html:not(.modo-movil-real) #panelCategoriasDiccionario .categoria-dicc-card > button {
+        transform: scale(.82);
+        transform-origin: top right;
+    }
+
+    /* ===== 2) Diccionario: mismos márgenes laterales que Vocabulario (1040 px centrados) ===== */
+    html.lsp-en-diccionario:not(.modo-movil-real) #contenidoPrincipalApp { --vocab-ancho: 1040px; }
+
+    html.lsp-en-diccionario:not(.modo-movil-real) body #contenidoPrincipalApp #filaHeroPrincipal {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) 210px !important;
+        column-gap: 32px !important;
+        row-gap: 0 !important;
+        align-items: center !important;
+        width: 100% !important;
+        max-width: var(--vocab-ancho, 1040px) !important;
+        margin: 8px auto 22px !important;
+        padding: 0 !important;
+        --bs-gutter-x: 0;
+        --bs-gutter-y: 0;
+    }
+    /* La columna del texto se «deshace» para poder colocar el buscador a todo el ancho, bajo el avatar. */
+    html.lsp-en-diccionario:not(.modo-movil-real) body #contenidoPrincipalApp #filaHeroPrincipal > .col-lg-6 {
+        display: contents !important;
+    }
+    html.lsp-en-diccionario:not(.modo-movil-real) body #contenidoPrincipalApp #filaHeroPrincipal > .col-lg-6 > * {
+        grid-column: 1 / -1;
+        min-width: 0;
+    }
+    html.lsp-en-diccionario:not(.modo-movil-real) body #contenidoPrincipalApp #bloqueTituloPrincipal {
+        grid-column: 1 !important;
+        grid-row: 1;
+        margin-bottom: 14px !important;
+    }
+    html.lsp-en-diccionario:not(.modo-movil-real) body #contenidoPrincipalApp #lspCreador {
+        grid-column: 1 !important;
+        grid-row: 2;
+    }
+    html.lsp-en-diccionario:not(.modo-movil-real) body #contenidoPrincipalApp #filaHeroPrincipal > #colAvatarHero:not(.oculto-por-seccion) {
+        grid-column: 2 !important;
+        grid-row: 1 / span 2 !important;
+        align-self: center !important;
+        justify-self: center !important;
+        order: 0 !important;
+        display: flex !important;
+        justify-content: center !important;
+        width: 100% !important;
+        max-width: 210px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    html.lsp-en-diccionario:not(.modo-movil-real) body #contenidoPrincipalApp #colAvatarHero .avatar-hero-img {
+        width: 100% !important;
+        height: auto !important;
+        max-width: 210px !important;
+        max-height: 250px !important;
+        object-fit: contain;
+    }
+    html.lsp-en-diccionario:not(.modo-movil-real) body #contenidoPrincipalApp #filaHeroPrincipal > .col-lg-6 > #bloqueBuscador {
+        grid-column: 1 / -1;
+        grid-row: 3;
+        margin-top: 6px;
+    }
+
+    /* Las tarjetas de categoría quedan alineadas con los bordes del encabezado y del buscador. */
+    html.lsp-en-diccionario:not(.modo-movil-real) #contenidoPrincipalApp #filaCategoriasDiccionario { --bs-gutter-x: 0; }
+    html.lsp-en-diccionario:not(.modo-movil-real) #contenidoPrincipalApp #filaCategoriasDiccionario > .col-12 { padding-left: 0; padding-right: 0; }
+
+    /* El resto de la vista (resultados, categorías) queda en la misma columna centrada. */
+    html.lsp-en-diccionario:not(.modo-movil-real) #contenidoPrincipalApp #filaCategoriasDiccionario,
+    html.lsp-en-diccionario:not(.modo-movil-real) #contenidoPrincipalApp #ultimasPalabras {
+        width: 100%;
+        max-width: var(--vocab-ancho, 1040px);
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    /* ===== 3) Buscador del Diccionario como protagonista ===== */
+    html.lsp-en-diccionario:not(.modo-movil-real) #bloqueBuscador > .lsp-dic-fila-busqueda {
+        grid-template-columns: minmax(0, 1fr) clamp(190px, 22%, 232px);
+        gap: 12px 16px;
+    }
+    html.lsp-en-diccionario:not(.modo-movil-real) #bloqueBuscador .buscador-indice-linea { gap: 12px; }
+    html.lsp-en-diccionario:not(.modo-movil-real) body #bloqueBuscador .indice-compacto-btn {
+        width: 68px !important;
+        min-width: 68px !important;
+        min-height: 68px;
+        padding: 0 !important;
+        border-width: 2.5px;
+    }
+    html.lsp-en-diccionario:not(.modo-movil-real) #bloqueBuscador .indice-compacto-az { font-size: 1.05rem; }
+    html.lsp-en-diccionario:not(.modo-movil-real) #bloqueBuscador .input-group {
+        min-height: 68px;
+        border-width: 2.5px !important;
+        box-shadow: 0 10px 26px rgba(255, 193, 7, .28), 0 2px 6px rgba(15, 23, 42, .08) !important;
+    }
+    html.lsp-en-diccionario:not(.modo-movil-real) #bloqueBuscador #buscar {
+        min-height: 64px;
+        font-size: 1.28rem !important;
+        padding-inline: 26px !important;
+    }
+    html.lsp-en-diccionario:not(.modo-movil-real) #bloqueBuscador #btnBuscar {
+        min-width: 92px;
+        padding-inline: 26px !important;
+    }
+    html.lsp-en-diccionario:not(.modo-movil-real) #bloqueBuscador #btnBuscar span { font-size: 1.6rem !important; }
+    html.lsp-en-diccionario:not(.modo-movil-real) body #bloqueBuscador #btnBuscarSenaDiccionario:disabled {
+        min-height: 68px;
+        border-radius: 999px;
+    }
+}

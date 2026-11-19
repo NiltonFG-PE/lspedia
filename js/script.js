@@ -5707,7 +5707,7 @@ document.addEventListener("DOMContentLoaded", observarTarjetasEstaticas);
 
 // Recuerda si el panel está expandido (mostrando TODAS las categorías) o
 // contraído (mostrando solo las 12 primeras: 4 filas x 3 columnas en
-// celular). La constante LIMITE_CATEGORIAS_VISIBLES se comparte con
+// celular). La función limiteCategoriasVisibles() se comparte con
 // Vocabulario (ver pintarCategoriasVocabulario).
 let categoriasDiccionarioExpandido = false;
 
@@ -5759,11 +5759,11 @@ function renderCategoriasDiccionario(){
     const nombresCategorias = [...nombreVisible.values()]
         .sort((a, b) => a.localeCompare(b, "es"));
 
-    const hayCategoriasOcultas = nombresCategorias.length > LIMITE_CATEGORIAS_VISIBLES;
+    const hayCategoriasOcultas = nombresCategorias.length > limiteCategoriasVisibles();
     const mostrarTodas = categoriasDiccionarioExpandido && hayCategoriasOcultas;
     const visibles = (mostrarTodas || !hayCategoriasOcultas)
         ? nombresCategorias
-        : nombresCategorias.slice(0, LIMITE_CATEGORIAS_VISIBLES);
+        : nombresCategorias.slice(0, limiteCategoriasVisibles());
 
     // El índice de color se calcula sobre la lista COMPLETA (no sobre la
     // visible), así cada categoría conserva siempre el mismo color sin
@@ -5771,7 +5771,7 @@ function renderCategoriasDiccionario(){
     const fragmento = document.createDocumentFragment();
     visibles.forEach((nombre, indice) => {
         const tarjeta = crearTarjetaCategoriaDiccionario(nombre, indice, conteo.get(nombre.toLowerCase()) || 0);
-        tarjeta.dataset.categoriaExtra = indice >= LIMITE_CATEGORIAS_VISIBLES ? "1" : "";
+        tarjeta.dataset.categoriaExtra = indice >= limiteCategoriasVisibles() ? "1" : "";
         fragmento.appendChild(tarjeta);
     });
 
@@ -5783,8 +5783,8 @@ function renderCategoriasDiccionario(){
         columnaBoton = crearBotonVerMasCategorias(categoriasDiccionarioExpandido, () => {
             categoriasDiccionarioExpandido = !categoriasDiccionarioExpandido;
             if(categoriasDiccionarioExpandido){
-                nombresCategorias.slice(LIMITE_CATEGORIAS_VISIBLES).forEach((nombre, i) => {
-                    const indice = LIMITE_CATEGORIAS_VISIBLES + i;
+                nombresCategorias.slice(limiteCategoriasVisibles()).forEach((nombre, i) => {
+                    const indice = limiteCategoriasVisibles() + i;
                     const tarjeta = crearTarjetaCategoriaDiccionario(nombre, indice, conteo.get(nombre.toLowerCase()) || 0);
                     tarjeta.dataset.categoriaExtra = "1";
                     panelCategoriasDiccionario.insertBefore(tarjeta, columnaBoton);
@@ -6220,7 +6220,12 @@ function mostrarCategorias(){
 // hasta que se pide verlas, así que la vista inicial es más liviana.
 // Ambos paneles llevan data-lsp-categorias-nativas="1" para que la capa
 // antigua de js/web-premium-extras.js no vuelva a ocultar tarjetas encima.
-const LIMITE_CATEGORIAS_VISIBLES = 12;
+// En escritorio (≥ 992 px) las tarjetas son más pequeñas y caben 6 por fila, así que se
+// muestran 18 (3 filas). En celular y tablet real siguen siendo 12.
+function limiteCategoriasVisibles(){
+    const escritorio = window.innerWidth >= 992 && !document.documentElement.classList.contains("modo-movil-real");
+    return escritorio ? 18 : 12;
+}
 const CLASE_COLUMNA_CATEGORIA = "col-4 col-md-3 animate-fade-in";
 let categoriasVocabularioExpandido = false;
 
@@ -6271,18 +6276,20 @@ function crearTarjetaCategoriaVocabulario(nombre, indice, cantidad){
     return card;
 }
 
+let ultimasCategoriasVocabulario = null;
 function pintarCategoriasVocabulario(categorias, conteo){
     const panel = panelCategorias;
     if(!panel) return;
+    ultimasCategoriasVocabulario = { categorias, conteo };
     panel.dataset.lspCategoriasNativas = "1";
-    const hayOcultas = categorias.length > LIMITE_CATEGORIAS_VISIBLES;
-    const inicial = hayOcultas ? categorias.slice(0, LIMITE_CATEGORIAS_VISIBLES) : categorias;
+    const hayOcultas = categorias.length > limiteCategoriasVisibles();
+    const inicial = hayOcultas ? categorias.slice(0, limiteCategoriasVisibles()) : categorias;
     const fragmento = document.createDocumentFragment();
     if(categorias.length) fragmento.appendChild(crearEncabezadoCategorias());
 
     const construir = (lista, desde) => lista.map((nombre, i) => {
         const tarjeta = crearTarjetaCategoriaVocabulario(nombre, desde + i, conteo.get(nombre) || 0);
-        tarjeta.dataset.categoriaExtra = desde >= LIMITE_CATEGORIAS_VISIBLES ? "1" : "";
+        tarjeta.dataset.categoriaExtra = desde >= limiteCategoriasVisibles() ? "1" : "";
         return tarjeta;
     });
     construir(inicial, 0).forEach((t) => fragmento.appendChild(t));
@@ -6292,7 +6299,7 @@ function pintarCategoriasVocabulario(categorias, conteo){
         columnaBoton = crearBotonVerMasCategorias(false, () => {
             categoriasVocabularioExpandido = !categoriasVocabularioExpandido;
             if(categoriasVocabularioExpandido){
-                const extras = construir(categorias.slice(LIMITE_CATEGORIAS_VISIBLES), LIMITE_CATEGORIAS_VISIBLES);
+                const extras = construir(categorias.slice(limiteCategoriasVisibles()), limiteCategoriasVisibles());
                 extras.forEach((t) => {
                     panel.insertBefore(t, columnaBoton);
                     observarEntradaAnimada(t.querySelector(".categoria-card"));
@@ -6307,6 +6314,23 @@ function pintarCategoriasVocabulario(categorias, conteo){
     panel.replaceChildren(fragmento);
     panel.querySelectorAll(".categoria-card").forEach(observarEntradaAnimada);
 }
+
+// Si la ventana cruza el límite entre celular y escritorio (o se gira una tablet), cambia la
+// cantidad de tarjetas visibles (12 ↔ 18): se vuelven a dibujar las dos cuadrículas.
+let limiteCategoriasDibujado = limiteCategoriasVisibles();
+let temporizadorLimiteCategorias = null;
+window.addEventListener("resize", () => {
+    clearTimeout(temporizadorLimiteCategorias);
+    temporizadorLimiteCategorias = setTimeout(() => {
+        const limiteActual = limiteCategoriasVisibles();
+        if(limiteActual === limiteCategoriasDibujado) return;
+        limiteCategoriasDibujado = limiteActual;
+        categoriasVocabularioExpandido = false;
+        categoriasDiccionarioExpandido = false;
+        if(ultimasCategoriasVocabulario) pintarCategoriasVocabulario(ultimasCategoriasVocabulario.categorias, ultimasCategoriasVocabulario.conteo);
+        renderCategoriasDiccionario();
+    }, 180);
+});
 
 // --- BUSCADOR EXCLUSIVO DE "VOCABULARIO" (antes "Temas orden") ---
 // Reemplaza al buscador general (#buscar) mientras esta vista está
