@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-11-19T13:17:10Z",
+  "actualizado": "2026-11-19T15:22:37Z",
   "traducciones": [
     {
       "fuente": "diccionario",
@@ -264,7 +264,7 @@
       "categoria": "Salud",
       "ingles": "Allergy",
       "aliases": [],
-      "definicionIngles": "This occurs when the body reacts adversely to something, such as food or dust, causing discomfort.\n\nExample: I have a dust allergy, that's why I sneeze a lot."
+      "definicionIngles": "This is when the body reacts badly to something, like food or dust, causing discomfort.\n\nExample: I have a dust allergy, that's why I sneeze a lot."
     },
     {
       "fuente": "diccionario",
@@ -1248,7 +1248,7 @@
       "categoria": "Trámites",
       "ingles": "Cadastre",
       "aliases": [],
-      "definicionIngles": "Organized record of properties, land and their characteristics."
+      "definicionIngles": "Organized register of properties, land and their characteristics."
     },
     {
       "fuente": "diccionario",
@@ -1384,7 +1384,7 @@
       "categoria": "Tiempo",
       "ingles": "Appointment",
       "aliases": [],
-      "definicionIngles": "It's an agreed-upon time to meet someone, for example, a doctor or someone in an office, at a specific hour.\n\nExample: I have a dentist appointment tomorrow at three."
+      "definicionIngles": "It's an agreed-upon time to meet someone, for example, a doctor or someone in an office, at a specific time.\n\nExample: I have a dentist appointment tomorrow at three."
     },
     {
       "fuente": "diccionario",
@@ -3000,7 +3000,7 @@
       "categoria": "Trabajo",
       "ingles": "Sales funnel",
       "aliases": [],
-      "definicionIngles": "Representation of the stages a person goes through from learning about an offer until they make a purchase."
+      "definicionIngles": "Representation of the stages a person goes through from the moment they learn about an offer until they make a purchase."
     },
     {
       "fuente": "diccionario",
@@ -3888,7 +3888,7 @@
       "categoria": "Filosofía",
       "ingles": "Philosophy",
       "aliases": [],
-      "definicionIngles": "Study of the fundamental principles of life, truth, and knowledge."
+      "definicionIngles": "Study of the fundamental principles about life, truth, and knowledge."
     },
     {
       "fuente": "diccionario",
