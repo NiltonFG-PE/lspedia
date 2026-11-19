@@ -1704,6 +1704,12 @@ function mostrarBloqueInicio(){
     if(senal) senal.style.display = "";
 }
 
+// Lleva Recursos a la parte de arriba de la pantalla, con un pequeño
+// espacio bajo la barra superior, para que el bloque se vea completo y no
+// quede pegado al borde. (Antes se centraba en el área visible y, cuando el
+// bloque era casi tan alto como la pantalla, quedaba a unos 7 px del borde.)
+const ESPACIO_SUPERIOR_RECURSOS = 18;
+
 function centrarHerramientasEnPantalla(elemento){
     if(!elemento) return;
 
@@ -1713,43 +1719,35 @@ function centrarHerramientasEnPantalla(elemento){
     function calcularDestino(){
         const rect = elemento.getBoundingClientRect();
         const scrollActual = window.pageYOffset || document.documentElement.scrollTop || 0;
-        const viewport = window.visualViewport ? window.visualViewport.height : window.innerHeight;
 
+        // Alto de la barra superior solo si está fija o pegajosa: si va en
+        // el flujo normal ya se fue con el scroll y no hay que descontarla.
         const navbar = document.querySelector("nav.navbar");
-        const navRect = navbar ? navbar.getBoundingClientRect() : null;
-        const altoSuperior = navbar && getComputedStyle(navbar).position === "fixed" && navRect
-            ? Math.max(0, navRect.height)
-            : 0;
+        let altoSuperior = 0;
+        if(navbar){
+            const posicion = getComputedStyle(navbar).position;
+            if(posicion === "fixed" || posicion === "sticky"){
+                altoSuperior = Math.max(0, navbar.getBoundingClientRect().height);
+            }
+        }
 
-        const barraInferior = document.getElementById("mobileBottomNav");
-        const bottomRect = barraInferior && !barraInferior.classList.contains("d-none")
-            ? barraInferior.getBoundingClientRect()
-            : null;
-        const altoInferior = bottomRect && bottomRect.height > 0 ? bottomRect.height : 0;
-
-        const centroVisible = altoSuperior + Math.max(
-            0,
-            (viewport - altoSuperior - altoInferior) / 2
-        );
-        const centroElemento = rect.top + (rect.height / 2);
-
-        return Math.max(0, scrollActual + centroElemento - centroVisible);
+        return Math.max(0, scrollActual + rect.top - altoSuperior - ESPACIO_SUPERIOR_RECURSOS);
     }
 
     // Espera dos frames para que ocultar/mostrar los módulos termine de
-    // recalcular alturas antes de decidir dónde centrar Herramientas.
+    // recalcular alturas antes de decidir dónde subir.
     requestAnimationFrame(() => requestAnimationFrame(() => {
         window.scrollTo({
             top: calcularDestino(),
             behavior: reducirMovimiento ? "auto" : "smooth"
         });
 
-        // Si fuentes/iconos cambian un poco el alto del selector, ajusta una
-        // sola vez al terminar la animación para mantenerlo realmente centrado.
+        // Si fuentes o iconos cambian un poco el alto, ajusta una sola vez
+        // al terminar la animación para que el espacio quede exacto.
         setTimeout(() => {
             const destino = calcularDestino();
             const actual = window.pageYOffset || document.documentElement.scrollTop || 0;
-            if(Math.abs(actual - destino) > 20){
+            if(Math.abs(actual - destino) > 8){
                 window.scrollTo({
                     top: destino,
                     behavior: reducirMovimiento ? "auto" : "smooth"
@@ -5338,7 +5336,7 @@ function filtrarPorLetra(letra, opciones = {}) {
     }
     const filtradas = App.datos.filter(p => p.palabra.toUpperCase().startsWith(letra.toUpperCase()));
     if (filtradas.length === 0) {
-        resultado.innerHTML = `<div class="alert alert-light border text-center text-muted small py-3" style="border-radius: 12px;">No hay resultados con <strong>${letra}</strong>.</div>`;
+        resultado.innerHTML = `<div class="alert alert-light border text-center text-muted small py-3" style="border-radius: 12px;">No hay resultados con <strong>${escaparHtml(letra)}</strong>.</div>`;
         return;
     }
     // Mismo estilo de tarjeta que usa filtrarPorCategoriaDiccionario():
@@ -5611,84 +5609,100 @@ function observarTarjetasEstaticas(){
 }
 document.addEventListener("DOMContentLoaded", observarTarjetasEstaticas);
 
-const LIMITE_CATEGORIAS_DICCIONARIO = 5;
-
 // Recuerda si el panel está expandido (mostrando TODAS las categorías) o
-// contraído (mostrando solo el adelanto), para que renderCategoriasDiccionario()
-// pueda redibujarse respetando el estado actual.
+// contraído (mostrando solo las 12 primeras: 4 filas x 3 columnas en
+// celular). La constante LIMITE_CATEGORIAS_VISIBLES se comparte con
+// Vocabulario (ver pintarCategoriasVocabulario).
 let categoriasDiccionarioExpandido = false;
+
+function crearTarjetaCategoriaDiccionario(nombre, indice, cantidad){
+    const info = infoCategoriaDiccionario(nombre, indice);
+    const iconoHtml = info.icono
+        ? `<img src="${escaparAtributoHtml(info.icono)}" class="categoria-dicc-icono-img" alt="${escaparAtributoHtml(nombre)}" loading="lazy" decoding="async">`
+        : `<span class="categoria-dicc-icono" aria-hidden="true">📁</span>`;
+    const cantidadTexto = cantidad === 1 ? "1 palabra" : `${cantidad} palabras`;
+    const card = document.createElement("div");
+    card.className = CLASE_COLUMNA_CATEGORIA;
+    card.innerHTML = `
+        <div class="card h-100 categoria-dicc-card" style="border-color: ${info.borde}; background-color: ${info.fondo};">
+            ${iconoHtml}
+            <div>
+                <div class="categoria-dicc-nombre" style="color: ${info.texto};">${escaparHtml(nombre)}</div>
+                <div class="categoria-dicc-desc">${escaparHtml(info.descripcion)}</div>
+                <div class="categoria-dicc-cantidad" style="color: ${info.texto};">${cantidadTexto}</div>
+            </div>
+            <span class="categoria-dicc-flecha" style="color: ${info.texto};" aria-hidden="true">›</span>
+        </div>`;
+    const tarjeta = card.querySelector(".categoria-dicc-card");
+    agregarBotonCompartirCategoria(tarjeta, nombre, "diccionario");
+    tarjeta.onclick = () => filtrarPorCategoriaDiccionario(nombre);
+    return card;
+}
 
 function renderCategoriasDiccionario(){
     if(!panelCategoriasDiccionario) return;
-    panelCategoriasDiccionario.innerHTML = "";
+    panelCategoriasDiccionario.dataset.lspCategoriasNativas = "1";
     // Categorías reales, tomadas de la columna "categoria" de cada palabra
     // (Diccionario de Sheets), sin duplicados y ordenadas alfabéticamente.
+    // Una sola pasada cuenta las palabras de cada categoría; antes se
+    // recorría todo el Diccionario (más de 1.700 filas) por cada tarjeta.
     // String(p.categoria) en vez de p.categoria.trim() directo: así, si
     // algún dato llega desde el Sheet como número, booleano u otro tipo
     // que no sea texto, no se rompe con ".trim() is not a function" y
     // tumba a toda la función (lo que dejaba el panel pegado en
     // "Cargando categorías…" para siempre).
-    const nombresCategorias = [...new Set(
-        (App.datos || [])
-            .filter(p => p.categoria && String(p.categoria).trim())
-            .map(p => String(p.categoria).trim())
-    )].sort((a, b) => a.localeCompare(b, "es"));
+    const conteo = new Map();
+    const nombreVisible = new Map();
+    (App.datos || []).forEach((p) => {
+        const nombre = p && p.categoria != null ? String(p.categoria).trim() : "";
+        if(!nombre) return;
+        const clave = nombre.toLowerCase();
+        conteo.set(clave, (conteo.get(clave) || 0) + 1);
+        if(!nombreVisible.has(clave)) nombreVisible.set(clave, nombre);
+    });
+    const nombresCategorias = [...nombreVisible.values()]
+        .sort((a, b) => a.localeCompare(b, "es"));
 
-    const hayCategoriasOcultas = nombresCategorias.length > LIMITE_CATEGORIAS_DICCIONARIO;
-    const listaAMostrar = (categoriasDiccionarioExpandido || !hayCategoriasOcultas)
+    const hayCategoriasOcultas = nombresCategorias.length > LIMITE_CATEGORIAS_VISIBLES;
+    const mostrarTodas = categoriasDiccionarioExpandido && hayCategoriasOcultas;
+    const visibles = (mostrarTodas || !hayCategoriasOcultas)
         ? nombresCategorias
-        : nombresCategorias.slice(0, LIMITE_CATEGORIAS_DICCIONARIO);
+        : nombresCategorias.slice(0, LIMITE_CATEGORIAS_VISIBLES);
 
-    listaAMostrar.forEach((nombre) => {
-        // El índice de color se calcula sobre la lista COMPLETA (no sobre
-        // la visible), así cada categoría conserva siempre el mismo color
-        // sin importar si el panel está expandido o contraído.
-        const indice = nombresCategorias.indexOf(nombre);
-        const info = infoCategoriaDiccionario(nombre, indice);
-        const iconoHtml = info.icono
-            ? `<img src="${info.icono}" class="categoria-dicc-icono-img" alt="${nombre}" loading="lazy">`
-            : `<span class="categoria-dicc-icono">📁</span>`;
-        const cantidad = (App.datos || []).filter(p => p.categoria && String(p.categoria).trim().toLowerCase() === nombre.toLowerCase()).length;
-        const cantidadTexto = cantidad === 1 ? "1 palabra" : `${cantidad} palabras`;
-        const card = document.createElement("div");
-        card.className = "col-4 col-md-4 col-lg-2 animate-fade-in";
-        card.innerHTML = `
-            <div class="card h-100 categoria-dicc-card" style="border-color: ${info.borde}; background-color: ${info.fondo};">
-                ${iconoHtml}
-                <div>
-                    <div class="categoria-dicc-nombre" style="color: ${info.texto};">${nombre}</div>
-                    <div class="categoria-dicc-desc">${info.descripcion}</div>
-                    <div class="categoria-dicc-cantidad" style="color: ${info.texto};">${cantidadTexto}</div>
-                </div>
-                <span class="categoria-dicc-flecha" style="color: ${info.texto};">›</span>
-            </div>`;
-        agregarBotonCompartirCategoria(card.querySelector(".categoria-dicc-card"), nombre, "diccionario");
-        card.querySelector(".categoria-dicc-card").onclick = () => filtrarPorCategoriaDiccionario(nombre);
-        panelCategoriasDiccionario.appendChild(card);
-        observarEntradaAnimada(card.querySelector(".categoria-dicc-card"));
+    // El índice de color se calcula sobre la lista COMPLETA (no sobre la
+    // visible), así cada categoría conserva siempre el mismo color sin
+    // importar si el panel está expandido o contraído.
+    const fragmento = document.createDocumentFragment();
+    visibles.forEach((nombre, indice) => {
+        const tarjeta = crearTarjetaCategoriaDiccionario(nombre, indice, conteo.get(nombre.toLowerCase()) || 0);
+        tarjeta.dataset.categoriaExtra = indice >= LIMITE_CATEGORIAS_VISIBLES ? "1" : "";
+        fragmento.appendChild(tarjeta);
     });
 
-    // Tarjeta "Ver todas las categorías" / "Ver menos": SIEMPRE se
-    // muestra al final del panel. Si hay categorías escondidas, alterna
-    // entre el adelanto y la lista completa dentro del mismo panel (ya no
-    // navega a otra vista); si no hay ninguna escondida, sigue visible
-    // pero no hace nada al tocarla (ya se ven todas).
-    const cardVerTodas = document.createElement("div");
-    cardVerTodas.className = "col-4 col-md-4 col-lg-2 animate-fade-in";
-    const texto = categoriasDiccionarioExpandido ? "Ver menos" : "Ver todas las categorías";
-    const rotacionFlecha = categoriasDiccionarioExpandido ? "transform: rotate(-90deg);" : "";
-    cardVerTodas.innerHTML = `
-        <div class="card h-100 categoria-dicc-card card-ver-todas">
-            <span class="categoria-dicc-flecha" style="${rotacionFlecha}">›</span>
-            <div class="categoria-dicc-nombre" style="color: var(--primary-color); font-size: 0.82rem;">${texto}</div>
-        </div>`;
-    cardVerTodas.querySelector(".categoria-dicc-card").onclick = () => {
-        if (!hayCategoriasOcultas) return;
-        categoriasDiccionarioExpandido = !categoriasDiccionarioExpandido;
-        renderCategoriasDiccionario();
-    };
-    panelCategoriasDiccionario.appendChild(cardVerTodas);
-    observarEntradaAnimada(cardVerTodas.querySelector(".categoria-dicc-card"));
+    // Botón "Ver más" / "Ver menos": solo aparece si hay más de 12
+    // categorías. Al expandir se agregan las que faltan sin volver a
+    // dibujar las 12 primeras (no se repite su animación ni salta el scroll).
+    let columnaBoton = null;
+    if(hayCategoriasOcultas){
+        columnaBoton = crearBotonVerMasCategorias(categoriasDiccionarioExpandido, () => {
+            categoriasDiccionarioExpandido = !categoriasDiccionarioExpandido;
+            if(categoriasDiccionarioExpandido){
+                nombresCategorias.slice(LIMITE_CATEGORIAS_VISIBLES).forEach((nombre, i) => {
+                    const indice = LIMITE_CATEGORIAS_VISIBLES + i;
+                    const tarjeta = crearTarjetaCategoriaDiccionario(nombre, indice, conteo.get(nombre.toLowerCase()) || 0);
+                    tarjeta.dataset.categoriaExtra = "1";
+                    panelCategoriasDiccionario.insertBefore(tarjeta, columnaBoton);
+                    observarEntradaAnimada(tarjeta.querySelector(".categoria-dicc-card"));
+                });
+            } else {
+                panelCategoriasDiccionario.querySelectorAll('[data-categoria-extra="1"]').forEach((t) => t.remove());
+            }
+            return categoriasDiccionarioExpandido;
+        });
+        fragmento.appendChild(columnaBoton);
+    }
+    panelCategoriasDiccionario.replaceChildren(fragmento);
+    panelCategoriasDiccionario.querySelectorAll(".categoria-dicc-card").forEach(observarEntradaAnimada);
 }
 
 // Hace scroll hasta el elemento indicado, esperando primero a que el
@@ -6024,7 +6038,7 @@ function filtrarPorCategoriaDiccionario(nombre, opciones = {}){
     }
     const filtradas = App.datos.filter(p => String(p.categoria || "").trim().toLowerCase() === nombre.trim().toLowerCase());
     if (filtradas.length === 0) {
-        resultadoCategoriasDiccionario.innerHTML = `<div class="alert alert-light border text-center text-muted small py-3" style="border-radius: 12px;">No hay palabras en la categoría <strong>${nombre}</strong> todavía.</div>`;
+        resultadoCategoriasDiccionario.innerHTML = `<div class="alert alert-light border text-center text-muted small py-3" style="border-radius: 12px;">No hay palabras en la categoría <strong>${escaparHtml(nombre)}</strong> todavía.</div>`;
         if (!opciones.sinScroll) scrollAlPrimerResultado(resultadoCategoriasDiccionario);
         return;
     }
@@ -6085,27 +6099,117 @@ function mostrarCategorias(){
     if (window.QuizV2 && typeof QuizV2.asegurarBancoCargado === "function") {
         QuizV2.asegurarBancoCargado();
     }
+    // Una sola pasada para contar palabras por categoría (antes se recorría
+    // todo el vocabulario una vez por cada tarjeta) y sin categorías vacías.
     const datosVocabulario = obtenerDatosVocabulario();
-    const categories = [...new Set(datosVocabulario.map(p => String(p.categoria).trim()))].sort();
-    categories.forEach((nombre, indice)=>{
-        const cantidad = datosVocabulario.filter(p => String(p.categoria).trim() === nombre).length;
-        const color = COLORES_CATEGORIAS[indice % COLORES_CATEGORIAS.length];
-        const nombreClave = nombre.trim().toLowerCase();
-        const icono = ICONOS_CATEGORIA_VOCABULARIO[nombreClave] || rutaIconoCategoriaDinamica(nombre);
-        const emoji = EMOJIS_CATEGORIA_VOCABULARIO[nombreClave] || "📖";
-        const iconoHtml = icono
-            ? `<img src="${icono}" alt="${nombre}" loading="lazy" style="width: 100%; height: 100%; max-width: 100%; max-height: 100%; object-fit: contain; display: block;">`
-            : `<span style="font-size: 2rem; line-height: 1;">${emoji}</span>`;
-        const card = document.createElement("div");
-        card.className = "col-4 col-md-3 animate-fade-in";
-        card.innerHTML = `<div class="card h-100 shadow-sm categoria-card" style="border-radius: 16px; border: 2px solid ${color.borde}; background-color: ${color.fondo};"><div class="card-body text-center py-4"><div class="categoria-card-icono" style="width:48px;height:48px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex:0 0 48px;">${iconoHtml}</div><h5 class="categoria-card-titulo mb-2 fw-bold" title="${escaparAtributoHtml(nombre)}" style="color: ${color.texto}; font-size: clamp(.78rem, 1.15vw, 1.05rem); line-height:1.2; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escaparHtml(nombre)}</h5><p class="mb-0 fw-semibold" style="color: ${color.texto}; opacity: 0.85; font-size: .9rem;">${cantidad} palabras</p></div></div>`;
-        agregarBotonCompartirCategoria(card.querySelector(".categoria-card"), nombre, "vocabulario");
-        card.onclick = () => mostrarCategoria(nombre);
-        panelCategorias.appendChild(card);
-        observarEntradaAnimada(card.querySelector(".categoria-card"));
+    const conteoPorCategoria = new Map();
+    datosVocabulario.forEach((p) => {
+        const nombre = String(p && p.categoria != null ? p.categoria : "").trim();
+        if(!nombre) return;
+        conteoPorCategoria.set(nombre, (conteoPorCategoria.get(nombre) || 0) + 1);
     });
+    const categories = [...conteoPorCategoria.keys()].sort((a, b) => a.localeCompare(b, "es"));
+    categoriasVocabularioExpandido = false;
+    pintarCategoriasVocabulario(categories, conteoPorCategoria);
     categoriaActualMostrada = null;
     coleccionActualMostrada = null;
+}
+
+// ------------------------------------------------------------------
+// Cuadrícula de categorías (Vocabulario y Diccionario)
+// ------------------------------------------------------------------
+// Se muestran 12 tarjetas: 4 filas x 3 columnas en celular y 3 filas x 4
+// columnas en pantallas más anchas. Si hay más, aparece el botón "Ver más"
+// (y "Ver menos" al expandir). Las tarjetas extra no existen en el DOM
+// hasta que se pide verlas, así que la vista inicial es más liviana.
+// Ambos paneles llevan data-lsp-categorias-nativas="1" para que la capa
+// antigua de js/web-premium-extras.js no vuelva a ocultar tarjetas encima.
+const LIMITE_CATEGORIAS_VISIBLES = 12;
+const CLASE_COLUMNA_CATEGORIA = "col-4 col-md-3 animate-fade-in";
+let categoriasVocabularioExpandido = false;
+
+function crearEncabezadoCategorias(){
+    const columna = document.createElement("div");
+    columna.className = "col-12 categorias-seccion-columna";
+    columna.innerHTML = '<div class="categorias-seccion-header"><span class="categorias-seccion-icono" aria-hidden="true">📁</span><h2 class="categorias-seccion-titulo">Categorías</h2></div>';
+    return columna;
+}
+
+function crearBotonVerMasCategorias(expandido, alAlternar){
+    const columna = document.createElement("div");
+    columna.className = "col-12 categorias-ver-mas-columna";
+    const boton = document.createElement("button");
+    boton.type = "button";
+    boton.className = "categorias-ver-mas";
+    const texto = document.createElement("span");
+    texto.className = "categorias-ver-mas-texto";
+    const flecha = document.createElement("span");
+    flecha.className = "categorias-ver-mas-flecha";
+    flecha.setAttribute("aria-hidden", "true");
+    flecha.textContent = "⌄";
+    boton.append(texto, flecha);
+    const aplicar = (abierto) => {
+        texto.textContent = abierto ? "Ver menos" : "Ver más";
+        boton.setAttribute("aria-expanded", abierto ? "true" : "false");
+        boton.classList.toggle("categorias-ver-mas-abierto", abierto);
+    };
+    aplicar(expandido);
+    boton.addEventListener("click", () => aplicar(alAlternar()));
+    columna.appendChild(boton);
+    return columna;
+}
+
+function crearTarjetaCategoriaVocabulario(nombre, indice, cantidad){
+    const color = COLORES_CATEGORIAS[indice % COLORES_CATEGORIAS.length];
+    const nombreClave = nombre.trim().toLowerCase();
+    const icono = ICONOS_CATEGORIA_VOCABULARIO[nombreClave] || rutaIconoCategoriaDinamica(nombre);
+    const emoji = EMOJIS_CATEGORIA_VOCABULARIO[nombreClave] || "📖";
+    const iconoHtml = icono
+        ? `<img src="${escaparAtributoHtml(icono)}" alt="${escaparAtributoHtml(nombre)}" loading="lazy" decoding="async" style="width: 100%; height: 100%; max-width: 100%; max-height: 100%; object-fit: contain; display: block;">`
+        : `<span style="font-size: 2rem; line-height: 1;">${emoji}</span>`;
+    const card = document.createElement("div");
+    card.className = CLASE_COLUMNA_CATEGORIA;
+    card.innerHTML = `<div class="card h-100 shadow-sm categoria-card" style="border-radius: 16px; border: 2px solid ${color.borde}; background-color: ${color.fondo};"><div class="card-body text-center py-4"><div class="categoria-card-icono" style="width:48px;height:48px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex:0 0 48px;">${iconoHtml}</div><h5 class="categoria-card-titulo mb-2 fw-bold" title="${escaparAtributoHtml(nombre)}" style="color: ${color.texto}; font-size: clamp(.78rem, 1.15vw, 1.05rem); line-height:1.2; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escaparHtml(nombre)}</h5><p class="mb-0 fw-semibold" style="color: ${color.texto}; opacity: 0.85; font-size: .9rem;">${cantidad === 1 ? "1 palabra" : cantidad + " palabras"}</p></div></div>`;
+    agregarBotonCompartirCategoria(card.querySelector(".categoria-card"), nombre, "vocabulario");
+    card.onclick = () => mostrarCategoria(nombre);
+    return card;
+}
+
+function pintarCategoriasVocabulario(categorias, conteo){
+    const panel = panelCategorias;
+    if(!panel) return;
+    panel.dataset.lspCategoriasNativas = "1";
+    const hayOcultas = categorias.length > LIMITE_CATEGORIAS_VISIBLES;
+    const inicial = hayOcultas ? categorias.slice(0, LIMITE_CATEGORIAS_VISIBLES) : categorias;
+    const fragmento = document.createDocumentFragment();
+    if(categorias.length) fragmento.appendChild(crearEncabezadoCategorias());
+
+    const construir = (lista, desde) => lista.map((nombre, i) => {
+        const tarjeta = crearTarjetaCategoriaVocabulario(nombre, desde + i, conteo.get(nombre) || 0);
+        tarjeta.dataset.categoriaExtra = desde >= LIMITE_CATEGORIAS_VISIBLES ? "1" : "";
+        return tarjeta;
+    });
+    construir(inicial, 0).forEach((t) => fragmento.appendChild(t));
+
+    let columnaBoton = null;
+    if(hayOcultas){
+        columnaBoton = crearBotonVerMasCategorias(false, () => {
+            categoriasVocabularioExpandido = !categoriasVocabularioExpandido;
+            if(categoriasVocabularioExpandido){
+                const extras = construir(categorias.slice(LIMITE_CATEGORIAS_VISIBLES), LIMITE_CATEGORIAS_VISIBLES);
+                extras.forEach((t) => {
+                    panel.insertBefore(t, columnaBoton);
+                    observarEntradaAnimada(t.querySelector(".categoria-card"));
+                });
+            } else {
+                panel.querySelectorAll('[data-categoria-extra="1"]').forEach((t) => t.remove());
+            }
+            return categoriasVocabularioExpandido;
+        });
+        fragmento.appendChild(columnaBoton);
+    }
+    panel.replaceChildren(fragmento);
+    panel.querySelectorAll(".categoria-card").forEach(observarEntradaAnimada);
 }
 
 // --- BUSCADOR EXCLUSIVO DE "VOCABULARIO" (antes "Temas orden") ---
@@ -6974,7 +7078,7 @@ function mostrarFavoritos(){
     listaFavoritos.innerHTML = obtenerFavoritos().length === 0 ? '<p class="text-muted small">Aún no tienes favoritos.</p>' : "";
     obtenerFavoritos().forEach(nombre => {
         const p = buscarPalabraPorReferencia(nombre, App.datos);
-        if(p){ const col = document.createElement("div"); col.className="col-6 col-md-3"; col.innerHTML=`<div class="card h-100 shadow-sm border-0" style="border-radius: 12px;"><div class="card-body text-center py-2"><h6 class="mb-0 fw-bold small text-primary">${p.palabra}</h6></div></div>`; col.onclick=()=>mostrarPalabra(p); listaFavoritos.appendChild(col); }
+        if(p){ const col = document.createElement("div"); col.className="col-6 col-md-3"; col.innerHTML=`<div class="card h-100 shadow-sm border-0" style="border-radius: 12px;"><div class="card-body text-center py-2"><h6 class="mb-0 fw-bold small text-primary">${escaparHtml(p.palabra)}</h6></div></div>`; col.onclick=()=>mostrarPalabra(p); listaFavoritos.appendChild(col); }
     });
 }
 function agregarAHistorial(n){ let h = JSON.parse(localStorage.getItem(CLAVE_HISTORIAL) || "[]"); h = h.filter(i=>i!==n); h.unshift(n); if(h.length>12) h.pop(); localStorage.setItem(CLAVE_HISTORIAL, JSON.stringify(h)); }
@@ -6992,7 +7096,7 @@ function renderizarListaHistorial(){
     listaHistorial.innerHTML = historial.length === 0 ? '<p class="text-muted small mb-0">Aún no tienes búsquedas recientes.</p>' : "";
     historial.forEach(nombre => {
         const p = buscarPalabraPorReferencia(nombre, App.datos);
-        if(p){ const col = document.createElement("div"); col.className="col-6 col-md-3"; col.innerHTML=`<div class="card h-100 shadow-sm border-0" style="border-radius: 12px;"><div class="card-body text-center py-2"><h6 class="mb-0 fw-bold small text-primary">${p.palabra}</h6></div></div>`; col.onclick=()=>mostrarPalabra(p); listaHistorial.appendChild(col); }
+        if(p){ const col = document.createElement("div"); col.className="col-6 col-md-3"; col.innerHTML=`<div class="card h-100 shadow-sm border-0" style="border-radius: 12px;"><div class="card-body text-center py-2"><h6 class="mb-0 fw-bold small text-primary">${escaparHtml(p.palabra)}</h6></div></div>`; col.onclick=()=>mostrarPalabra(p); listaHistorial.appendChild(col); }
     });
 }
 

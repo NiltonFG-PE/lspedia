@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const TITULO='Diccionario visual de español con apoyo en Lengua de Señas Peruana (LSP)';
+  const TITULO='Diccionario de Lengua de Señas Peruana (LSP) y Español';
   const DESCRIPCION='LSPedia es un diccionario visual gratuito de español que ayuda a comprender palabras y conceptos con apoyo de imágenes y videos en Lengua de Señas Peruana (LSP).';
 
   function definirH1(){
@@ -14,8 +14,8 @@
     h1.textContent='';
     const destacado=document.createElement('span');
     destacado.className='titulo-acento';
-    destacado.textContent='Diccionario visual';
-    h1.append(destacado,document.createTextNode(' de español con apoyo en Lengua de Señas Peruana (LSP)'));
+    destacado.textContent='Diccionario';
+    h1.append(destacado,document.createTextNode(' de Lengua de Señas Peruana (LSP) y Español'));
   }
 
   function agregarWebApplication(){

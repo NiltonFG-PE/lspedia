@@ -303,7 +303,7 @@
 
     if (!document.querySelector('script[data-lspedia-web-premium-extras]')) {
       const premium = document.createElement('script');
-      premium.src = 'js/web-premium-extras.js?v=20261008-catalogo-2';
+      premium.src = 'js/web-premium-extras.js?v=20261119-nativas-1';
       premium.async = true;
       premium.dataset.lspediaWebPremiumExtras = '1';
       premium.onerror = function () {

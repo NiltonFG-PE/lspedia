@@ -155,7 +155,7 @@
     <link rel="preload" href="fonts/poppins/poppins-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="css/fonts-poppins.css?v=20261113-1">
     <link href="vendor/bootstrap/5.3.7/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/estilos.css?v=20260826">
+    <link rel="stylesheet" href="css/estilos.css?v=20261119">
     <link rel="stylesheet" href="css/quiz.css?v=20260925-3">
     <link rel="stylesheet" href="css/mejoras-producto.css?v=20261119-1">
     <link rel="stylesheet" href="css/buscador-enfoque.css?v=20261119-dic-1">
@@ -163,11 +163,11 @@
     <link rel="stylesheet" href="css/tablet-responsive.css?v=20261010-portrait-4">
     <link rel="stylesheet" href="css/estilos-inline-extraidos.css?v=20261119-1">
     <link rel="stylesheet" href="css/correcciones-premium.css?v=20261119-1">
-    <link rel="stylesheet" href="css/creador-card.css?v=20261119-2">
+    <link rel="stylesheet" href="css/creador-card.css?v=20261119-3">
     <link rel="stylesheet" href="css/libro-acceso.css?v=20261119-1">
     <link rel="stylesheet" href="css/recursos-grid.css?v=20261119-1">
     <link rel="stylesheet" href="css/fab-redes.css?v=20261119-1">
-    <link rel="stylesheet" href="css/vocabulario-descubre.css?v=20261119-9">
+    <link rel="stylesheet" href="css/vocabulario-descubre.css?v=20261119-11">
 
     <!-- Preconnect: adelanta la conexión a Google para que el Quiz cargue más rápido -->
     <link rel="preconnect" href="https://script.google.com">
@@ -521,7 +521,7 @@
 
             <div class="col-lg-6">
                 <div class="text-center text-lg-start header-minimal mb-3" id="bloqueTituloPrincipal">
-                    <h1 class="tracking-tight" id="tituloPrincipal"><span class="titulo-acento">Diccionario visual</span> de español con apoyo en Lengua de Señas Peruana (LSP)</h1>
+                    <h1 class="tracking-tight" id="tituloPrincipal"><span class="titulo-acento">Diccionario</span> de Lengua de Señas Peruana (LSP) y Español</h1>
                     <span class="titulo-raya" aria-hidden="true"></span>
                     <!-- Misión del Diccionario: mismo contenido y presentación que navegación, idioma y Publicador. -->
                               <div class="aviso-mision" id="subtituloPrincipal">
@@ -539,6 +539,7 @@
                         <img src="assets/nilton-fernandez-lsp.jpg" alt="Nilton Fernández G." width="72" height="72" loading="lazy" decoding="async">
                     </div>
                     <div class="lsp-creador-info">
+                        <span class="lsp-creador-etiqueta">Creador de LSPedia</span>
                         <h3 class="lsp-creador-nombre">Nilton Fernández G.</h3>
                         <p class="lsp-creador-roles" aria-label="Intérprete y traductor de LSP, creador audiovisual y web no-code">
                             <span class="lsp-creador-rol lsp-creador-rol-interprete">Intérprete y traductor de LSP</span>
@@ -2045,7 +2046,7 @@
     <!-- Bootstrap: carga diferida con defer para no bloquear el primer pintado.
          lazy-modules.js ya intercepta clics antes que script.js, así que el
          orden lógico se mantiene aunque todos ejecuten tras el parseo del HTML. -->
-    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <script defer src="vendor/bootstrap/5.3.7/js/bootstrap.bundle.min.js"></script>
     <script defer src="js/lazy-modules.js?v=20261119-2"></script>
     <script defer src="js/lspedia-media.js?v=20261113-2"></script>
     <script defer src="js/lspedia-core.js?v=20261010-rich-1"></script>
@@ -2053,7 +2054,7 @@
     <!-- script.js: 350 KB — mayor ganancia de rendimiento al diferir.
          Con defer se descarga en paralelo al HTML pero ejecuta tras el parseo
          completo, en el mismo orden relativo que los scripts anteriores. -->
-    <script defer src="js/script.js?v=20261119-3"></script>
+    <script defer src="js/script.js?v=20261119-4"></script>
     <script defer src="js/ficha-navegacion-ui.js?v=20261119-1"></script>
     <script defer src="js/vocabulario-publico.js?v=20261007-1"></script>
     <script defer src="js/buscador-predictivo.js?v=20260925-1"></script>

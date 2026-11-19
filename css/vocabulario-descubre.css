@@ -282,3 +282,54 @@ html body.vista-temas-movil #contenidoPrincipalApp #lspMejorasInicio {
         padding: 0 !important;
     }
 }
+
+/* Categorías (Vocabulario y Diccionario): cuadrícula de 12 visibles
+   (3 columnas x 4 filas en celular, 4 columnas x 3 filas desde tablet) y
+   botón "Ver más / Ver menos" centrado debajo. Si hay 12 o menos
+   categorías el botón no se dibuja. */
+.categorias-seccion-columna { margin-bottom: 2px; }
+.categorias-ver-mas-columna {
+    grid-column: 1 / -1; /* ocupa toda la fila si el panel es una grilla */
+    width: 100%;
+    flex: 0 0 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 6px;
+}
+.categorias-ver-mas {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 9px 22px;
+    border: 1.5px solid #bcd3f5;
+    border-radius: 999px;
+    background: #fff;
+    color: #1556c0;
+    font-size: .92rem;
+    font-weight: 800;
+    letter-spacing: .01em;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(21, 86, 192, .10);
+    transition: background-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+.categorias-ver-mas:hover { background: #eef5ff; box-shadow: 0 6px 18px rgba(21, 86, 192, .16); }
+.categorias-ver-mas:active { transform: translateY(1px); }
+.categorias-ver-mas:focus-visible { outline: 3px solid #7fb0ff; outline-offset: 3px; }
+.categorias-ver-mas-flecha {
+    display: inline-block;
+    font-size: 1.15rem;
+    line-height: 1;
+    transition: transform .22s ease;
+}
+.categorias-ver-mas-abierto .categorias-ver-mas-flecha { transform: rotate(180deg); }
+html[data-lsp-tema="dark"] .categorias-ver-mas {
+    background: #172436;
+    border-color: #30435a;
+    color: #a9ccff;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .28);
+}
+html[data-lsp-tema="dark"] .categorias-ver-mas:hover { background: #1d3050; }
+@media (prefers-reduced-motion: reduce) {
+    .categorias-ver-mas, .categorias-ver-mas-flecha { transition: none; }
+}

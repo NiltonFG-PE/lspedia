@@ -48,6 +48,18 @@ body.lsp-inicio-oculto #lspCreador {
     text-align: left;
 }
 
+/* Etiqueta superior, igual que «COLABORADOR» en la tarjeta de Carlos Díaz */
+#lspCreador .lsp-creador-etiqueta {
+    display: block;
+    margin-bottom: 4px;
+    color: #64748b;
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .075em;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
 #lspCreador .lsp-creador-nombre {
     margin: 0 0 7px;
     font-size: 1.12rem;
@@ -89,6 +101,7 @@ body.lsp-inicio-oculto #lspCreador {
         width: 60px;
         height: 60px;
     }
+    #lspCreador .lsp-creador-etiqueta { font-size: .62rem; }
     #lspCreador .lsp-creador-nombre { font-size: 1.02rem; }
     #lspCreador .lsp-creador-rol { padding: 3px 9px; font-size: .72rem; }
 }
@@ -104,5 +117,6 @@ html[data-lsp-tema="dark"] #lspCreador.lsp-creador {
 }
 html[data-lsp-tema="dark"] #lspCreador .lsp-creador-foto img { border-color: #172436; }
 html[data-lsp-tema="dark"] #lspCreador .lsp-creador-nombre { color: #e1edff; }
+html[data-lsp-tema="dark"] #lspCreador .lsp-creador-etiqueta { color: #aabdd3; }
 html[data-lsp-tema="dark"] #lspCreador .lsp-creador-rol-interprete { background: #1d3a66; color: #a9ccff; }
 html[data-lsp-tema="dark"] #lspCreador .lsp-creador-rol-creador    { background: #123f36; color: #8fe0c6; }

@@ -36,7 +36,7 @@
   },
   "heroes": {
     "diccionario": {
-      "titulo": "Diccionario visual de español con apoyo en Lengua de Señas Peruana (LSP)",
+      "titulo": "Diccionario de Lengua de Señas Peruana (LSP) y Español",
       "subtitulo": "Entiende el significado de las palabras en español con videos en Lengua de Señas Peruana (LSP). Pensado para personas sordas y para quienes quieren comunicarse mejor con ellas.\nEs un diccionario de apoyo, no un curso de LSP.",
       "estilo": {
         "fuente": "inherit",

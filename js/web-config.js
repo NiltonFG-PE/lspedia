@@ -69,7 +69,7 @@ function titulo(el,tipo,t){
   const actual=el.textContent.replace(/\s+/g,' ').trim();
   if(actual===t.replace(/\s+/g,' ').trim())return;
   el.textContent='';
-  const p=t.split(/\s+/).filter(Boolean),n=tipo==='diccionario'&&p.length>1?2:1,s=document.createElement('span');
+  const p=t.split(/\s+/).filter(Boolean),n=1,s=document.createElement('span');
   s.className='titulo-acento';s.textContent=p.slice(0,n).join(' ');el.appendChild(s);
   if(p.length>n)el.appendChild(document.createTextNode(' '+p.slice(n).join(' ')));
 }

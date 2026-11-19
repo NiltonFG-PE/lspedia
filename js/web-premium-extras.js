@@ -137,6 +137,7 @@
 
   function mejorarCategorias(panelId,tipo,intentos){
     intentos=Number(intentos)||0;const panel=document.getElementById(panelId);if(!panel){if(intentos<12)setTimeout(()=>mejorarCategorias(panelId,tipo,intentos+1),260);return;}
+    if(panel.dataset.lspCategoriasNativas==='1')return;
     let toggle=encontrarToggle(panel);if(!toggle){if(intentos<12)setTimeout(()=>mejorarCategorias(panelId,tipo,intentos+1),260);return;}
     if(!panelPreparado.has(panelId)&&/ver\s+todas/i.test(texto(toggle.textContent))){panelPreparado.add(panelId);try{toggle.click();}catch(_e){}setTimeout(()=>mejorarCategorias(panelId,tipo,0),70);return;}
     asegurarEstilos();toggle=encontrarToggle(panel);if(!toggle)return;const tw=wrapperDirecto(panel,toggle);if(!tw)return;

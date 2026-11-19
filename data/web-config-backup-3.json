@@ -36,7 +36,7 @@
   },
   "heroes": {
     "diccionario": {
-      "titulo": "Diccionario visual de español con apoyo en Lengua de Señas Peruana (LSP)",
+      "titulo": "Diccionario de Lengua de Señas Peruana (LSP) y Español",
       "subtitulo": "Diccionario visual de español con apoyo en Lengua de Señas Peruana.\nSu función es facilitar la comprensión de palabras y significados.\nNo es un curso, ni enseñamos LSP.",
       "estilo": {
         "fuente": "inherit",

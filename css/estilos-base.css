@@ -1529,7 +1529,7 @@ body.nosotros-pantalla-completa-activa {
    ============================================================ */
 @media (max-width: 576px) {
     /* 3 columnas en móvil (sobreescribe col-6 que da JS) */
-    #panelCategoriasDiccionario > div {
+    #panelCategoriasDiccionario > div:not(.categorias-ver-mas-columna) {
         width: 33.3333% !important;
         flex: 0 0 33.3333% !important;
         max-width: 33.3333% !important;

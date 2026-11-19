@@ -256,7 +256,7 @@
     cargarCss('css/aprendizaje-unificado.css?v=20260916-2');
     cargarCss('css/aprendizaje-colapsable.css?v=20260916-1');
     cargarCss('css/mejoras-maestras.css?v=20260914');
-    cargarCss('css/vocabulario-layout.css?v=20260915-2');
+    cargarCss('css/vocabulario-layout.css?v=20261119-1');
     cargarCss('css/modo-oscuro.css?v=20260916-2');
     cargarCss('css/header-responsive-fix.css?v=20261006-1');
     cargarCss('css/buscador-dropdown-premium.css?v=20261006-5');
@@ -297,7 +297,7 @@
 
         function cargarMejorasConCore(){
             cargar('js/accesibilidad-segura.js?v=20261113-1');
-            cargar('js/seo-institucional.js?v=20260914-1');
+            cargar('js/seo-institucional.js?v=20261119-1');
             cargar('js/juegos-banco-compartido.js?v=20261007-light-1');
             cargar('js/a-z-movil.js?v=20260914');
         }

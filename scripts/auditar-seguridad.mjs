@@ -5,6 +5,9 @@ import path from 'node:path';
 const RAIZ = process.cwd();
 const EXT = new Set(['.js', '.mjs', '.html', '.gs', '.json', '.yml', '.yaml']);
 const IGNORAR = new Set(['.git', 'node_modules', '.cache']);
+// Bootstrap (JS de terceros, versión fija y copia local): su sanitizador menciona
+// "javascript:" justamente para bloquearlo, así que el auditor lo marcaría por error.
+const TERCEROS_FIJOS = ['vendor/bootstrap/'];
 const hallazgos = [];
 
 function archivos(dir) {
@@ -13,7 +16,8 @@ function archivos(dir) {
     if (IGNORAR.has(ent.name)) continue;
     const p = path.join(dir, ent.name);
     if (ent.isDirectory()) out.push(...archivos(p));
-    else if (EXT.has(path.extname(ent.name).toLowerCase())) out.push(p);
+    else if (EXT.has(path.extname(ent.name).toLowerCase())
+      && !TERCEROS_FIJOS.some((r) => p.split(path.sep).join('/').includes(r))) out.push(p);
   }
   return out;
 }
