@@ -34,7 +34,9 @@
     transform: none !important;
     margin: 0 auto 0 0 !important;
     padding: 0 !important;
-    max-width: calc(100% - 200px) !important;
+    max-width: calc(100% - 140px) !important;
+    width: auto !important;
+    overflow: visible !important;
     height: 76px !important;
     display: flex !important;
     justify-content: flex-start !important;
@@ -45,8 +47,8 @@
   html.modo-movil-real body nav.navbar .navbar-brand video,
   html.modo-movil-real body nav.navbar .navbar-brand img {
     width: auto !important;
-    height: 68px !important;
-    max-width: min(240px, 100%) !important;
+    height: 62px !important;
+    max-width: min(260px, 100%) !important;
     object-fit: contain !important;
     object-position: left center !important;
   }
@@ -266,7 +268,6 @@
     overflow: visible !important;
   }
   html.modo-movil-real body:not(.vista-temas-movil):not(.senal-cerrada) #colAvatarHero .avatar-hero-img {
-    display: block !important;
     width: 100% !important;
     max-width: 142px !important;
     height: auto !important;
@@ -333,7 +334,6 @@ html.modo-movil-real body.lsp-inicio-oculto #filaHeroPrincipal {
     overflow: visible !important;
   }
   html.modo-movil-real body #filaHeroPrincipal > #colAvatarHero:not(.oculto-por-seccion) .avatar-hero-img {
-    display: block !important;
     width: auto !important;
     height: clamp(130px, 18vw, 180px) !important;
     max-width: 100% !important;
@@ -415,7 +415,6 @@ html.modo-movil-real body.lsp-inicio-oculto #filaHeroPrincipal {
     margin: 0 !important;
   }
   html.modo-movil-real body #filaHeroPrincipal > #colAvatarHero:not(.oculto-por-seccion) .avatar-hero-img {
-    display: block !important;
     width: auto !important;
     height: clamp(120px, 12vw, 180px) !important;
     max-width: 100% !important;
@@ -428,4 +427,54 @@ html.modo-movil-real body.lsp-inicio-oculto #filaHeroPrincipal {
 html.modo-movil-real body.lsp-inicio-oculto #filaHeroPrincipal,
 html.modo-movil-real body.lsp-inicio-oculto:not(.vista-temas-movil):not(.senal-cerrada) #filaHeroPrincipal {
   display: none !important;
+}
+
+/* === FIX TABLET + iOS (2026-11-19): logo completo, avatar único y ubicación limpia === */
+@media (min-width: 768px) and (min-height: 480px) {
+  /* Nunca mostrar video + fallback al mismo tiempo en tablet ni en iPadOS */
+  html:not(.lsp-ios-video-fallback).modo-movil-real nav.navbar .navbar-brand video.lsp-ios-alpha-video,
+  html:not(.lsp-ios-video-fallback).modo-movil-real #colAvatarHero video.lsp-ios-alpha-video {
+    display: block !important;
+  }
+  html:not(.lsp-ios-video-fallback).modo-movil-real #logoLspediaFallback,
+  html:not(.lsp-ios-video-fallback).modo-movil-real #avatarHeroFallback {
+    display: none !important;
+  }
+  html.lsp-ios-video-fallback.modo-movil-real nav.navbar .navbar-brand video.lsp-ios-alpha-video,
+  html.lsp-ios-video-fallback.modo-movil-real #colAvatarHero video.lsp-ios-alpha-video {
+    display: none !important;
+  }
+  html.lsp-ios-video-fallback.modo-movil-real #logoLspediaFallback,
+  html.lsp-ios-video-fallback.modo-movil-real #avatarHeroFallback {
+    display: block !important;
+  }
+
+  /* Evitar desborde del avatar en tablet */
+  html.modo-movil-real body #filaHeroPrincipal > #colAvatarHero {
+    overflow: hidden !important;
+    max-width: 100% !important;
+  }
+}
+
+/* En tablet vertical sin tarjeta Descubre (Diccionario o Vocabulario),
+   evitar que el avatar quede flotando solo arriba a la derecha con un hueco vacío */
+@media (min-width: 768px) and (min-height: 480px) and (orientation: portrait) {
+  html.modo-movil-real body.vista-temas-movil #filaHeroPrincipal > #colAvatarHero:not(.oculto-por-seccion),
+  html.modo-movil-real body.senal-cerrada #filaHeroPrincipal > #colAvatarHero:not(.oculto-por-seccion) {
+    display: none !important;
+  }
+  html.modo-movil-real body.vista-temas-movil #filaHeroPrincipal,
+  html.modo-movil-real body.senal-cerrada #filaHeroPrincipal {
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-areas: "titulo" !important;
+  }
+  html.modo-movil-real body.vista-temas-movil #bloqueTituloPrincipal,
+  html.modo-movil-real body.senal-cerrada #bloqueTituloPrincipal {
+    text-align: center !important;
+    margin-bottom: 14px !important;
+  }
+  html.modo-movil-real body.vista-temas-movil #tituloPrincipal,
+  html.modo-movil-real body.senal-cerrada #tituloPrincipal {
+    text-align: center !important;
+  }
 }

@@ -56,7 +56,6 @@
 
     html body nav.navbar .navbar-brand video,
     html body nav.navbar .navbar-brand img {
-        display: block !important;
         width: auto !important;
         height: 60px !important;
         max-width: 195px !important;
@@ -181,7 +180,6 @@ html.modo-movil-real nav.navbar .navbar-brand {
 
 html.modo-movil-real nav.navbar .navbar-brand video,
 html.modo-movil-real nav.navbar .navbar-brand img {
-    display: block !important;
     width: auto !important;
     height: 60px !important;
     max-width: 195px !important;
@@ -346,4 +344,22 @@ html.modo-movil-real .carrusel-apoyo-visual .carousel-control-next { display: no
     html body nav.navbar .navbar-brand {
         left: calc(50% - 24px - clamp(14px, 6vw, 26px)) !important;
     }
+}
+
+/* === CONTROL VIDEO VS FALLBACK iOS (evita duplicar logo y avatar en Safari/iPad/Android) === */
+html:not(.lsp-ios-video-fallback) nav.navbar .navbar-brand video.lsp-ios-alpha-video,
+html:not(.lsp-ios-video-fallback) #colAvatarHero video.lsp-ios-alpha-video {
+    display: block !important;
+}
+html:not(.lsp-ios-video-fallback) #logoLspediaFallback,
+html:not(.lsp-ios-video-fallback) #avatarHeroFallback {
+    display: none !important;
+}
+html.lsp-ios-video-fallback nav.navbar .navbar-brand video.lsp-ios-alpha-video,
+html.lsp-ios-video-fallback #colAvatarHero video.lsp-ios-alpha-video {
+    display: none !important;
+}
+html.lsp-ios-video-fallback #logoLspediaFallback,
+html.lsp-ios-video-fallback #avatarHeroFallback {
+    display: block !important;
 }
