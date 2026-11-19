@@ -1,9 +1,10 @@
-/* Reutiliza los paneles y el motor de coincidencias, incluso en el overlay móvil. */
+/* Reutiliza los paneles y el motor de coincidencias, incluso en el overlay móvil.
+   Las palabras de inicio («Puedes empezar con…») solo se ofrecen en Vocabulario;
+   el Diccionario ya no las muestra. */
 (function () {
     'use strict';
     function iniciar() {
-        [['buscar', 'sugerencias', 'btnBuscar'],
-         ['buscarCategorias', 'sugerenciasCategorias', 'btnBuscarCategorias']].forEach(function (ids) {
+        [['buscarCategorias', 'sugerenciasCategorias', 'btnBuscarCategorias']].forEach(function (ids) {
             const input = document.getElementById(ids[0]);
             const panel = document.getElementById(ids[1]);
             const buscar = document.getElementById(ids[2]);

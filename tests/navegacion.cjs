@@ -203,6 +203,23 @@ const server = http.createServer((req, res) => {
         assert.equal(await page.locator('.stats-panel-destacado').isVisible(), true, 'Estadísticas vuelven en Vocabulario');
         console.log('PASS: Diccionario sin Descubre/Estadísticas y desde arriba');
 
+        // Diccionario: «Buscar por seña» a la derecha de la lupa (como en Vocabulario) y sin «Puedes empezar con…».
+        await page.locator('#btnInicio').click();
+        await page.waitForFunction(() => /diccionario/.test(location.search));
+        await page.waitForTimeout(600);
+        const cajaLupa = await page.locator('#btnBuscar').boundingBox();
+        const cajaSena = await page.locator('#btnBuscarSenaDiccionario').boundingBox();
+        assert.ok(cajaSena, 'Buscar por seña se ve en Diccionario');
+        assert.ok(cajaSena.x >= cajaLupa.x + cajaLupa.width, 'Buscar por seña queda a la derecha de la lupa');
+        assert.ok(Math.abs((cajaSena.y + cajaSena.height / 2) - (cajaLupa.y + cajaLupa.height / 2)) < 8, 'Buscar por seña va en el mismo renglón que la lupa');
+        await page.evaluate(() => document.getElementById('buscar').focus());
+        await page.waitForTimeout(700);
+        assert.equal(await page.locator('#sugerencias .lsp-sugerencias-inicio').count(), 0, 'Diccionario no ofrece «Puedes empezar con…»');
+        await page.evaluate(() => document.activeElement.blur());
+        await page.locator('#btnCategorias').click();
+        await page.waitForFunction(() => document.body.classList.contains('vista-temas-movil'));
+        console.log('PASS: Diccionario con «Buscar por seña» junto a la lupa y sin «Puedes empezar con…»');
+
         // Orden de la página de inicio: encabezado → colaborador → buscador → Lo nuevo → categorías → estadísticas → Mi LSPedia.
         await page.waitForSelector('#lspNuevasCard', {state:'visible', timeout:15000});
         const orden = ['#filaHeroPrincipal', '#lspModeloLinguistico', '#bloqueBuscadorCategorias', '#lspNuevasCard', '#panelCategorias', '.stats-panel-destacado', '#miLspediaHub'];
@@ -420,6 +437,124 @@ const server = http.createServer((req, res) => {
         assert.equal(menu, true, 'El menú contextual debe estar bloqueado en el libro');
         assert.equal(await page.locator('#libro img').count(), 0, 'Las páginas no deben ser <img>');
         console.log('PASS: visor de libro (páginas, zoom, miniaturas, sonido y bloqueos)');
+
+        // Sonido de página: suave como el de un libro (grave, sin clic ni siseo agudo). Se renderiza el sonido real del visor sin conexión.
+        {
+            const sonido = await pagina();
+            await sonido.page.addInitScript(() => {
+                window.__ctxs = [];
+                window.AudioContext = function() {
+                    const c = new OfflineAudioContext(1, 39690, 44100);
+                    c.resume = () => Promise.resolve();
+                    window.__ctxs.push(c);
+                    return c;
+                };
+            });
+            await sonido.page.goto(base + '/herramientas/libro-digital.html?libro=algebra-en-lsp', {waitUntil:'domcontentloaded'});
+            await sonido.page.waitForFunction(() => window.LSPediaLibro && typeof window.LSPediaLibro.alternarSonido === 'function');
+            const muestras = await sonido.page.evaluate(async () => {
+                const L = window.LSPediaLibro;
+                if (L.sonido()) L.alternarSonido();
+                L.alternarSonido();
+                if (!window.__ctxs.length) return null;
+                const buf = await window.__ctxs[0].startRendering();
+                return Array.from(buf.getChannelData(0));
+            });
+            await sonido.context.close();
+            assert.ok(muestras && muestras.length >= 32768, 'El visor genera el sonido de página');
+            const n = 32768, tasa = 44100;
+            const re = Float64Array.from(muestras.slice(0, n)), im = new Float64Array(n);
+            for (let i = 1, j = 0; i < n; i++) { // FFT radix-2
+                let bit = n >> 1;
+                for (; j & bit; bit >>= 1) j ^= bit;
+                j ^= bit;
+                if (i < j) { [re[i], re[j]] = [re[j], re[i]]; }
+            }
+            for (let len = 2; len <= n; len <<= 1) {
+                const ang = -2 * Math.PI / len;
+                for (let i = 0; i < n; i += len) {
+                    for (let k = 0; k < len / 2; k++) {
+                        const wr = Math.cos(ang * k), wi = Math.sin(ang * k);
+                        const ur = re[i + k], ui = im[i + k];
+                        const vr = re[i + k + len / 2] * wr - im[i + k + len / 2] * wi;
+                        const vi = re[i + k + len / 2] * wi + im[i + k + len / 2] * wr;
+                        re[i + k] = ur + vr; im[i + k] = ui + vi;
+                        re[i + k + len / 2] = ur - vr; im[i + k + len / 2] = ui - vi;
+                    }
+                }
+            }
+            let energia = 0, ponderada = 0, agudos = 0;
+            for (let k = 1; k < n / 2; k++) {
+                const f = k * tasa / n, e = re[k] * re[k] + im[k] * im[k];
+                energia += e; ponderada += f * e;
+                if (f >= 4000) agudos += e;
+            }
+            const centroide = ponderada / energia;
+            const pico = Math.max(...muestras.map(Math.abs));
+            const rms = (desde, largo) => Math.sqrt(muestras.slice(desde, desde + largo).reduce((a, v) => a + v * v, 0) / largo);
+            let rmsMax = 0;
+            for (let i = 0; i + 882 <= muestras.length; i += 882) rmsMax = Math.max(rmsMax, rms(i, 882));
+            assert.ok(pico < 0.35, 'El sonido de página no debe ser fuerte (pico ' + pico.toFixed(2) + ')');
+            assert.ok(rmsMax > 0.01, 'El sonido de página debe oírse');
+            assert.ok(centroide < 2000, 'El sonido de página debe ser grave y suave, no un siseo (centro ' + Math.round(centroide) + ' Hz)');
+            assert.ok(agudos / energia < 0.05, 'Casi sin energía por encima de 4 kHz');
+            assert.ok(rms(0, 350) < rmsMax * 0.2, 'Entra con suavidad, sin clic');
+        }
+        console.log('PASS: sonido de página suave (grave, sin siseo ni clic)');
+
+        // Visor en celular: pantalla completa en la barra (a la mano) y zoom pellizcando con dos dedos.
+        for (const ancho of [320, 360, 390]) {
+            const movil = await pagina({viewport:{width:ancho, height:800}, isMobile:true, hasTouch:true, deviceScaleFactor:2});
+            await movil.page.goto(base + '/herramientas/libro-digital.html?libro=algebra-en-lsp', {waitUntil:'domcontentloaded'});
+            await movil.page.waitForFunction(() => document.getElementById('estado')?.classList.contains('oculto'));
+            await movil.page.waitForTimeout(600);
+            const caja = await movil.page.evaluate(() => {
+                const b = document.getElementById('btnPantalla').getBoundingClientRect();
+                const barra = document.getElementById('herramientas').getBoundingClientRect();
+                return {visible: !document.getElementById('btnPantalla').hidden && getComputedStyle(document.getElementById('btnPantalla')).display !== 'none',
+                        x: b.left, r: b.right, barraIzq: barra.left, barraDer: barra.right, ancho: window.innerWidth, scroll: document.documentElement.scrollWidth};
+            });
+            assert.equal(caja.visible, true, 'Pantalla completa se ve en la barra del celular (' + ancho + ' px)');
+            assert.ok(caja.barraIzq >= 0 && caja.barraDer <= ancho, 'La barra de controles cabe en ' + ancho + ' px');
+            assert.equal(caja.scroll, ancho, 'El visor no se ensancha más que la pantalla en ' + ancho + ' px');
+            if (ancho === 390) {
+                const cdp = await movil.context.newCDPSession(movil.page);
+                const toque = (tipo, puntos) => cdp.send('Input.dispatchTouchEvent', {type: tipo, touchPoints: puntos.map((q, i) => ({x: q[0], y: q[1], id: i, radiusX: 8, radiusY: 8, force: 1}))});
+                const estado = () => movil.page.evaluate(() => ({zoom: window.LSPediaLibro.zoomActual(), pagina: window.LSPediaLibro.actual()}));
+                const espera = (ms) => new Promise((r) => setTimeout(r, ms));
+                const inicial = await estado();
+                assert.equal(inicial.zoom, 1);
+                // pellizcar hacia afuera con el libro a tamaño normal: acerca y no pasa páginas
+                await toque('touchStart', [[165, 420], [225, 420]]);
+                for (let i = 1; i <= 8; i++) { await toque('touchMove', [[165 - i * 9, 420], [225 + i * 9, 420]]); await espera(16); }
+                await toque('touchEnd', []);
+                await espera(300);
+                const acercado = await estado();
+                assert.ok(acercado.zoom > 1.5, 'Pellizcar hacia afuera acerca el libro (zoom ' + acercado.zoom + ')');
+                assert.equal(acercado.pagina, inicial.pagina, 'Pellizcar no debe pasar de página');
+                // pellizcar hacia adentro: vuelve al tamaño normal
+                await toque('touchStart', [[95, 420], [295, 420]]);
+                for (let i = 1; i <= 14; i++) { await toque('touchMove', [[95 + i * 7, 420], [295 - i * 7, 420]]); await espera(16); }
+                await toque('touchEnd', []);
+                await espera(400);
+                const normal = await estado();
+                assert.equal(normal.zoom, 1, 'Pellizcar hacia adentro vuelve al 100 %');
+                assert.equal(normal.pagina, inicial.pagina);
+                // un toque rápido con dos dedos tampoco pasa de página
+                await toque('touchStart', [[175, 420], [215, 420]]);
+                await toque('touchMove', [[176, 420], [216, 420]]);
+                await toque('touchEnd', []);
+                await espera(900);
+                assert.equal((await estado()).pagina, inicial.pagina, 'Un toque con dos dedos no pasa de página');
+                // y deslizar con un dedo sigue pasando páginas
+                await toque('touchStart', [[330, 420]]);
+                await toque('touchMove', [[250, 420]]); await toque('touchMove', [[170, 420]]); await toque('touchMove', [[90, 420]]);
+                await toque('touchEnd', []);
+                await movil.page.waitForFunction((p0) => window.LSPediaLibro.actual() > p0, inicial.pagina, {timeout: 4000});
+            }
+            await movil.context.close();
+        }
+        console.log('PASS: visor en celular: pantalla completa en la barra y zoom con dos dedos');
 
         // Contenido (índice del PDF): una entrada lleva a su página.
         assert.ok(datosLibro.indice.length > 5, 'El libro trae índice');

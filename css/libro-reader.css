@@ -410,6 +410,12 @@ body.lector {
     .lector-pagina { padding: 0 4px; font-size: 0.82rem; }
     .lector-pagina input { width: 2.7em; height: 30px; }
 }
+/* Celulares muy angostos (320 px): la barra de controles, con pantalla completa incluida, debe caber. */
+@media (max-width: 340px) {
+    .lector-herramientas { padding: 4px; }
+    .lector-btn { min-width: 33px; height: 36px; }
+    .lector-pagina input { width: 2.4em; }
+}
 @media (max-height: 520px) and (orientation: landscape) {
     .lector-barra { padding-top: 4px; padding-bottom: 4px; }
     .lector-escena { padding-top: 0; padding-bottom: 4px; }

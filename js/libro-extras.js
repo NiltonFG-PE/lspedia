@@ -616,7 +616,6 @@
         $('mnuZoomMas').addEventListener('click', () => { LB.acercar(); pintarMenu(); });
         $('mnuZoomValor').addEventListener('click', () => { LB.restablecerZoom(); pintarMenu(); });
         $('mnuSonido').addEventListener('click', () => { LB.alternarSonido(); pintarMenu(); });
-        $('mnuPantalla').addEventListener('click', cerrarYHacer(() => { $('btnPantalla').click(); }));
         $('mnuCompartir').addEventListener('click', cerrarYHacer(compartirPagina));
         $('mnuVista').addEventListener('click', () => aplicarVista(!LB.vistaUna(), true));
         $('mnuAuto').addEventListener('click', () => { alternarAuto(); });
@@ -624,7 +623,6 @@
         menu.querySelectorAll('.lector-segmentos button').forEach((b) => {
             b.addEventListener('click', () => aplicarColor(b.getAttribute('data-color'), true));
         });
-        if (!(document.fullscreenEnabled || document.webkitFullscreenEnabled)) $('mnuPantalla').hidden = true;
 
         $('btnCerrarAyuda').addEventListener('click', cerrarAyuda);
         $('dlgAyuda').addEventListener('click', (e) => { if (e.target === $('dlgAyuda')) cerrarAyuda(); });

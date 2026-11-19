@@ -74,7 +74,14 @@
         if ((e.ctrlKey || e.metaKey) && /^[spuca]$/i.test(e.key)) e.preventDefault();
     });
 
-    /* ---------- Sonido de página (sintetizado, sin archivos) ---------- */
+    /* ---------- Sonido de página (sintetizado, sin archivos) ----------
+       Un «fsshh» suave de papel, como al pasar la hoja de un libro: ruido rosado
+       (grave, sin el siseo agudo del ruido blanco) que sube y se apaga despacio,
+       un filtro que se abre y se cierra mientras la hoja se mueve y un roce muy
+       leve cuando se posa. Cada vuelta suena un poquito distinta.
+       Para cambiarlo: VOLUMEN_PAGINA (fuerza) y BRILLO_PAGINA (más alto = más agudo). */
+    const VOLUMEN_PAGINA = 0.24;
+    const BRILLO_PAGINA = 1;
     function sonidoPagina() {
         if (!sonidoActivo) return;
         const ahora = Date.now();
@@ -85,27 +92,55 @@
             if (!Contexto) return;
             audio = audio || new Contexto();
             if (audio.state === 'suspended') audio.resume();
-            const duracion = 0.34;
-            const muestras = Math.floor(audio.sampleRate * duracion);
-            const buffer = audio.createBuffer(1, muestras, audio.sampleRate);
+            const tasa = audio.sampleRate;
+            const duracion = 0.55;
+            const muestras = Math.floor(tasa * duracion);
+            const buffer = audio.createBuffer(1, muestras, tasa);
             const datos = buffer.getChannelData(0);
+            let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0, pico = 0;
             for (let i = 0; i < muestras; i++) {
-                const t = i / muestras;
-                const ataque = t < 0.05 ? t / 0.05 : 1;
-                datos[i] = (Math.random() * 2 - 1) * Math.pow(1 - t, 2.4) * ataque;
+                const s = i / tasa;
+                const blanco = Math.random() * 2 - 1;
+                b0 = 0.99886 * b0 + blanco * 0.0555179;
+                b1 = 0.99332 * b1 + blanco * 0.0750759;
+                b2 = 0.96900 * b2 + blanco * 0.1538520;
+                b3 = 0.86650 * b3 + blanco * 0.3104856;
+                b4 = 0.55000 * b4 + blanco * 0.5329522;
+                b5 = -0.7616 * b5 - blanco * 0.0168980;
+                const rosa = b0 + b1 + b2 + b3 + b4 + b5 + b6 + blanco * 0.5362;
+                b6 = blanco * 0.115926;
+                const sube = s < 0.16 ? 0.5 * (1 - Math.cos(Math.PI * s / 0.16)) : 1;
+                const baja = Math.exp(-Math.max(0, s - 0.16) / 0.12);
+                const roce = 0.22 * Math.exp(-Math.pow((s - 0.33) / 0.035, 2));
+                const fin = Math.min(1, (duracion - s) / 0.04);
+                const v = rosa * (sube * baja + roce) * fin;
+                datos[i] = v;
+                const a = Math.abs(v);
+                if (a > pico) pico = a;
             }
+            if (pico > 0) for (let i = 0; i < muestras; i++) datos[i] /= pico;
+
             const fuente = audio.createBufferSource();
             fuente.buffer = buffer;
-            const filtro = audio.createBiquadFilter();
-            filtro.type = 'bandpass';
-            filtro.frequency.value = 2300;
-            filtro.Q.value = 0.7;
+            fuente.playbackRate.value = 0.94 + Math.random() * 0.12;
+            const quitaGraves = audio.createBiquadFilter();
+            quitaGraves.type = 'highpass';
+            quitaGraves.frequency.value = 220;
+            quitaGraves.Q.value = 0.5;
+            const quitaAgudos = audio.createBiquadFilter();
+            quitaAgudos.type = 'lowpass';
+            quitaAgudos.Q.value = 0.4;
+            const t0 = audio.currentTime;
+            quitaAgudos.frequency.setValueAtTime(1200 * BRILLO_PAGINA, t0);
+            quitaAgudos.frequency.linearRampToValueAtTime(3000 * BRILLO_PAGINA, t0 + 0.14);
+            quitaAgudos.frequency.exponentialRampToValueAtTime(1000 * BRILLO_PAGINA, t0 + duracion);
             const volumen = audio.createGain();
-            volumen.gain.value = 0.22;
-            fuente.connect(filtro);
-            filtro.connect(volumen);
+            volumen.gain.value = VOLUMEN_PAGINA * (0.92 + Math.random() * 0.16);
+            fuente.connect(quitaGraves);
+            quitaGraves.connect(quitaAgudos);
+            quitaAgudos.connect(volumen);
             volumen.connect(audio.destination);
-            fuente.start();
+            fuente.start(t0);
         } catch (_e) { /* el sonido es opcional */ }
     }
 
@@ -444,14 +479,11 @@
         const escena = $('escena');
         const punteros = new Map();
         let inicio = null;
-        let distanciaInicial = 0;
-        let zoomInicial = 1;
+        let pellizcando = false; // dos dedos haciendo zoom ahora mismo
+        let bloqueando = false;  // el gesto de dos dedos sigue vivo: el libro no debe enterarse
+        let pz = null;           // datos del pellizco en curso
 
-        function distancia() {
-            const v = Array.from(punteros.values());
-            return Math.hypot(v[0].x - v[1].x, v[0].y - v[1].y);
-        }
-
+        /* Arrastre con un dedo (o el mouse) cuando hay zoom. */
         escena.addEventListener('pointerdown', (e) => {
             if (zoom <= 1 || (e.target.closest && e.target.closest('button, a.enlace-libro'))) return;
             try { escena.setPointerCapture(e.pointerId); } catch (_e) { /* sin captura */ }
@@ -459,18 +491,12 @@
             if (punteros.size === 1) {
                 inicio = { x: e.clientX, y: e.clientY, px: panX, py: panY };
                 escena.classList.add('lector-arrastrando');
-            } else if (punteros.size === 2) {
-                distanciaInicial = distancia();
-                zoomInicial = zoom;
             }
         });
         escena.addEventListener('pointermove', (e) => {
             if (!punteros.has(e.pointerId)) return;
             punteros.set(e.pointerId, { x: e.clientX, y: e.clientY });
-            if (punteros.size === 2 && distanciaInicial > 0) {
-                zoom = Math.max(1, Math.min(ZOOM_MAX, zoomInicial * (distancia() / distanciaInicial)));
-                aplicarZoom(false);
-            } else if (punteros.size === 1 && inicio) {
+            if (punteros.size === 1 && inicio && !pellizcando) {
                 panX = inicio.px + (e.clientX - inicio.x);
                 panY = inicio.py + (e.clientY - inicio.y);
                 aplicarZoom(false);
@@ -483,7 +509,6 @@
                 inicio = { x: resto.x, y: resto.y, px: panX, py: panY };
             } else if (punteros.size === 0) {
                 inicio = null;
-                distanciaInicial = 0;
                 escena.classList.remove('lector-arrastrando');
             }
         }
@@ -502,6 +527,80 @@
                 aplicarZoom(false);
             }
         }, { passive: false });
+
+        /* Zoom con dos dedos (pellizcar). Funciona también con el libro a tamaño normal:
+           se escuchan los toques en la ventana, antes que StPageFlip, para que el pellizco
+           no pase ni gire páginas. El zoom se hace alrededor del punto entre los dedos. */
+        function dosDedosEnEscena(toques) {
+            return toques.length >= 2 && escena.contains(toques[0].target) && escena.contains(toques[1].target);
+        }
+        function iniciarPellizco(toques) {
+            const capa = $('capaZoom');
+            const r = capa.getBoundingClientRect();
+            const a = toques[0], b = toques[1];
+            const cx = (a.clientX + b.clientX) / 2;
+            const cy = (a.clientY + b.clientY) / 2;
+            const ox = r.left + r.width / 2 - panX;
+            const oy = r.top + r.height / 2 - panY;
+            pz = {
+                d0: Math.max(10, Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY)),
+                z0: zoom,
+                qx: (cx - ox - panX) / zoom,
+                qy: (cy - oy - panY) / zoom,
+                ox: ox,
+                oy: oy
+            };
+            pellizcando = true;
+        }
+        function moverPellizco(toques) {
+            const a = toques[0], b = toques[1];
+            const d = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+            zoom = Math.max(1, Math.min(ZOOM_MAX, pz.z0 * (d / pz.d0)));
+            panX = (a.clientX + b.clientX) / 2 - pz.ox - zoom * pz.qx;
+            panY = (a.clientY + b.clientY) / 2 - pz.oy - zoom * pz.qy;
+            aplicarZoom(false);
+        }
+        function soltarGiroDelLibro() {
+            // Si el primer dedo ya había empezado a doblar una página, se termina ese gesto
+            // (si no, la página quedaría doblada a medias al soltar).
+            try {
+                if (pf && typeof pf.getState === 'function' && pf.getState() === 'user_fold') pf.userStop({ x: 0, y: 0 }, false);
+            } catch (_e) { /* sin acción */ }
+        }
+        window.addEventListener('touchstart', (e) => {
+            if (!bloqueando) {
+                if (!dosDedosEnEscena(e.touches)) return;
+                bloqueando = true;
+                soltarGiroDelLibro();
+                iniciarPellizco(e.touches);
+            } else if (!pellizcando && dosDedosEnEscena(e.touches)) {
+                iniciarPellizco(e.touches);
+            }
+            e.stopPropagation();
+            if (e.cancelable) e.preventDefault();
+        }, { capture: true, passive: false });
+        window.addEventListener('touchmove', (e) => {
+            if (!bloqueando) return;
+            e.stopPropagation();
+            if (e.cancelable) e.preventDefault();
+            if (pellizcando && pz && e.touches.length >= 2) moverPellizco(e.touches);
+        }, { capture: true, passive: false });
+        function terminarToque(e) {
+            if (!bloqueando) return;
+            e.stopPropagation();
+            if (e.cancelable) e.preventDefault();
+            if (e.touches.length < 2) { pellizcando = false; pz = null; }
+            if (e.touches.length === 0) {
+                bloqueando = false;
+                if (zoom < 1.08) { zoom = 1; aplicarZoom(true); } // casi al tamaño normal: vuelve a 100 %
+            }
+        }
+        window.addEventListener('touchend', terminarToque, { capture: true, passive: false });
+        window.addEventListener('touchcancel', terminarToque, { capture: true, passive: false });
+        // Safari de iPhone/iPad trae su propio gesto de pellizco; se deja solo el del libro.
+        ['gesturestart', 'gesturechange', 'gestureend'].forEach((nombre) => {
+            escena.addEventListener(nombre, (e) => e.preventDefault());
+        });
     }
 
     /* ---------- Pantalla completa ---------- */
@@ -575,7 +674,8 @@
             width: libro.ancho,
             height: libro.alto,
             size: 'stretch',
-            minWidth: 360,
+            // En celulares angostos (≤ 360 px) el libro no debe ser más ancho que la pantalla.
+            minWidth: Math.max(240, Math.min(360, window.innerWidth - 16)),
             maxWidth: 1400,
             minHeight: 480,
             maxHeight: 2200,

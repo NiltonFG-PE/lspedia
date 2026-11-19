@@ -349,3 +349,74 @@ html[data-lsp-tema="dark"] body.vista-temas-movil #contenidoPrincipalApp #btnBus
     border-color: #365072;
 }
 html[data-lsp-tema="dark"] #btnBuscarSenaVocabulario .sena-ia-action-icon { background: #2b4568; }
+
+/* BUSCAR_POR_SENA_DICCIONARIO_V1
+   «Buscar por seña» a la derecha de la lupa del Diccionario, igual que en Vocabulario.
+   En celular (< 768 px) baja debajo del buscador a todo el ancho, como en Vocabulario. */
+#bloqueBuscador > .lsp-dic-fila-busqueda {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    align-items: stretch;
+    width: 100%;
+    min-width: 0;
+}
+#bloqueBuscador > .lsp-dic-fila-busqueda > .buscador-indice-linea { min-width: 0; }
+#bloqueBuscador > .lsp-dic-fila-busqueda > .sena-ia-search-preview {
+    display: flex;
+    margin: 0;
+    min-width: 0;
+}
+html body #bloqueBuscador #btnBuscarSenaDiccionario:disabled {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    width: 100%;
+    min-height: 44px;
+    padding: 6px 14px 6px 8px;
+    gap: 10px;
+    border: 1px solid #cadcf3;
+    border-radius: 999px;
+    background: #edf4ff;
+    color: #23456c;
+    box-shadow: none;
+    text-align: left;
+    cursor: default;
+}
+#btnBuscarSenaDiccionario .sena-ia-action-icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 30px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #dceaff;
+}
+#btnBuscarSenaDiccionario .sena-ia-hands-icon { width: 22px; height: 22px; flex: 0 0 22px; }
+#btnBuscarSenaDiccionario .sena-ia-action-copy {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-width: 0;
+}
+#btnBuscarSenaDiccionario .sena-ia-search-label { font-size: .82rem; font-weight: 700; white-space: nowrap; }
+#btnBuscarSenaDiccionario .sena-ia-coming-badge { padding: 1px 7px; font-size: .6rem; line-height: 1.4; }
+@media (min-width: 768px) {
+    #bloqueBuscador > .lsp-dic-fila-busqueda {
+        grid-template-columns: minmax(0, 1fr) clamp(176px, 30%, 205px);
+        gap: 10px 14px;
+    }
+    html body #bloqueBuscador #btnBuscarSenaDiccionario:disabled { min-height: 52px; padding: 6px 12px 6px 8px; }
+    #btnBuscarSenaDiccionario .sena-ia-action-icon { flex-basis: 36px; width: 36px; height: 36px; }
+    #btnBuscarSenaDiccionario .sena-ia-hands-icon { width: 26px; height: 26px; flex-basis: 26px; }
+    #btnBuscarSenaDiccionario .sena-ia-action-copy { flex-direction: column; align-items: flex-start; justify-content: center; gap: 3px; }
+}
+html[data-lsp-tema="dark"] body #bloqueBuscador #btnBuscarSenaDiccionario:disabled {
+    color: #dbeaff;
+    background: #1d304c;
+    border-color: #365072;
+}
+html[data-lsp-tema="dark"] #btnBuscarSenaDiccionario .sena-ia-action-icon { background: #2b4568; }
