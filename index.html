@@ -2348,15 +2348,47 @@
     var nav = document.getElementById('mobileBottomNav');
     if (!nav) return;
 
-    var ultimoY = window.scrollY || 0;
+    var ultimoY = 0;
+    var toqueY = null;
     var timerMostrar = 0;
+    var oculta = false;
 
     function esSoloMovil() {
-        return window.matchMedia('(max-width: 767.98px)').matches;
+        return window.innerWidth <= 767.98;
+    }
+
+    function obtenerScrollY() {
+        return window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    }
+
+    function asegurarTransicion() {
+        nav.style.setProperty('transition', 'transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.22s ease', 'important');
+        nav.style.setProperty('will-change', 'transform, opacity', 'important');
+    }
+
+    function ocultarNav() {
+        if (!esSoloMovil()) return;
+        asegurarTransicion();
+        oculta = true;
+        nav.classList.add('lsp-nav-oculta-scroll');
+        nav.style.setProperty('transform', 'translateY(calc(100% + 36px))', 'important');
+        nav.style.setProperty('opacity', '0', 'important');
+        nav.style.setProperty('pointer-events', 'none', 'important');
     }
 
     function mostrarNav() {
+        if (!oculta && !nav.classList.contains('lsp-nav-oculta-scroll')) return;
+        asegurarTransicion();
+        oculta = false;
         nav.classList.remove('lsp-nav-oculta-scroll');
+        nav.style.removeProperty('transform');
+        nav.style.removeProperty('opacity');
+        nav.style.removeProperty('pointer-events');
+    }
+
+    function programarMostrar(ms) {
+        clearTimeout(timerMostrar);
+        timerMostrar = setTimeout(mostrarNav, ms || 380);
     }
 
     function alHacerScroll() {
@@ -2365,30 +2397,51 @@
             mostrarNav();
             return;
         }
-        var yActual = window.scrollY || document.documentElement.scrollTop || 0;
+        var yActual = obtenerScrollY();
         var delta = yActual - ultimoY;
         ultimoY = yActual;
 
-        // Si está al inicio de la página, siempre visible
-        if (yActual <= 24) {
+        if (yActual <= 16) {
             clearTimeout(timerMostrar);
             mostrarNav();
             return;
         }
 
-        // Al deslizar la pantalla hacia arriba (bajar contenido: delta > 4), ocultar la barra
-        if (delta > 4) {
-            nav.classList.add('lsp-nav-oculta-scroll');
+        // Deslizar pantalla hacia arriba (bajar contenido: delta > 2)
+        if (delta > 2) {
+            ocultarNav();
         }
-
-        // Volver a mostrar automáticamente cuando el usuario se detiene
-        clearTimeout(timerMostrar);
-        timerMostrar = setTimeout(mostrarNav, 260);
+        programarMostrar(420);
     }
 
+    // Respaldo táctil directo (funciona incluso si el navegador no dispara scroll continuo)
+    document.addEventListener('touchstart', function (e) {
+        if (!esSoloMovil() || !e.touches || e.touches.length !== 1) return;
+        toqueY = e.touches[0].clientY;
+    }, { passive: true });
+
+    document.addEventListener('touchmove', function (e) {
+        if (!esSoloMovil() || toqueY === null || !e.touches || e.touches.length !== 1) return;
+        var dy = toqueY - e.touches[0].clientY; // positivo = dedo desliza hacia arriba
+        if (dy > 14 && obtenerScrollY() > 10) {
+            ocultarNav();
+            programarMostrar(420);
+        }
+        toqueY = e.touches[0].clientY;
+    }, { passive: true });
+
+    document.addEventListener('touchend', function () {
+        toqueY = null;
+        if (oculta) programarMostrar(380);
+    }, { passive: true });
+
     window.addEventListener('scroll', alHacerScroll, { passive: true });
+    document.addEventListener('scroll', alHacerScroll, { passive: true, capture: true });
     window.addEventListener('resize', function () {
-        if (!esSoloMovil()) mostrarNav();
+        if (!esSoloMovil()) {
+            clearTimeout(timerMostrar);
+            mostrarNav();
+        }
     }, { passive: true });
 })();
 </script>
