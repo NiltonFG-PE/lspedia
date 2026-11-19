@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
  "version": 1,
  "libros": [
   {
@@ -11,4 +12,18 @@
    "publicado": false
   }
  ]
+=======
+  "version": 1,
+  "libros": [
+    {
+      "id": "algebra-en-lsp",
+      "carpeta": "algebra-en-lsp",
+      "titulo": "Álgebra en Lengua de Señas Peruana (LSP)",
+      "autor": "Antonio Baca Sánchez; Lucero Hijar A.",
+      "paginas": 122,
+      "portada": "portada.webp",
+      "publicado": false
+    }
+  ]
+>>>>>>> 7c0f5d594809d4a8283642ac30ec0c21b9d621b8
 }
