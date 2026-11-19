@@ -24,8 +24,10 @@
     canvas#gameCanvas { display: block; width: 100%; height: 100%; }
     button { font-family: var(--font); }
     .lspedia-back { position: absolute; top: calc(env(safe-area-inset-top, 0px) + 10px); left: 10px; z-index: 45; min-height: 44px; padding: 0 14px; border: 1px solid rgba(255,255,255,.3); border-radius: 14px; background: rgba(27,34,48,.82); color: #fff; font-weight: 700; cursor: pointer; backdrop-filter: blur(6px); box-shadow: 0 6px 18px rgba(0,0,0,.25); }
-    .lspedia-back:active { transform: scale(.96); }
-    .lspedia-back:focus-visible { outline: 3px solid #ffc93c; outline-offset: 3px; }
+    /* Debajo de «← LSPedia»: la esquina superior derecha la ocupa «Pantalla completa». */
+    .lspedia-elegir { top: calc(env(safe-area-inset-top, 0px) + 62px); }
+    .lspedia-back:active, .lspedia-elegir:active { transform: scale(.96); }
+    .lspedia-back:focus-visible, .lspedia-elegir:focus-visible { outline: 3px solid #ffc93c; outline-offset: 3px; }
 
     .display-mode-wrap { width:min(100%,520px); display:flex; flex-direction:column; align-items:center; gap:8px; padding:10px 12px; border-radius:18px; background:rgba(35,43,58,.9); border:1px solid rgba(255,255,255,.12); box-shadow:0 8px 24px rgba(0,0,0,.24); }
     .display-mode-label { font-size:.85rem; font-weight:700; color:#dbe7f7; text-align:center; }
@@ -279,6 +281,7 @@
 
     @media (prefers-reduced-motion: reduce) { .anim-tilt, .anim-car, .anim-pulse, .anim-blink, .lvl.next, #turbo-box.ready { animation: none; } }
   </style>
+<script src="../js/volver-atras.js?v=1"></script>
 </head>
 <body>
   <div id="game-container">
@@ -352,6 +355,7 @@
     <!-- 1. Inicio -->
     <div class="screen" id="start-screen">
       <button type="button" class="lspedia-back" id="lspediaBack" aria-label="Volver a LSPedia">← LSPedia</button>
+      <button type="button" class="lspedia-back lspedia-elegir" id="lspediaElegir">↩ Elegir otro juego</button>
       <div class="tutorial">
         <div class="tut-card">
           <svg viewBox="0 0 100 100">
@@ -2249,13 +2253,13 @@ document.getElementById('overMap').onclick = () => { buildMap(); showScreen('map
 document.getElementById('winRetry').onclick = () => startLevel(currentLevel.n);
 document.getElementById('winNext').onclick = () => startLevel(Math.min(currentLevel.n + 1, LEVELS.length));
 document.getElementById('restartBtn').onclick = () => startLevel(currentLevel.n);
-const lspediaBack = document.getElementById('lspediaBack');
-if (lspediaBack) lspediaBack.addEventListener('click', () => {
-  const volver = '../?vista=herramientas-jugar';
-  try {
-    if (document.referrer && new URL(document.referrer).origin === location.origin && history.length > 1) history.back();
-    else location.href = volver;
-  } catch (e) { location.href = volver; }
+// «← LSPedia» y «Elegir otro juego» salen con UN paso atrás del historial (al menú
+// de juegos de Recursos) en vez de abrir LSPedia de nuevo. La página añade una
+// entrada propia (ver «Botón Atrás del móvil»), por eso pasosPropios: 1.
+const volverAlMenuDeJuegos = () => LSPediaVolver('../?vista=herramientas-jugar', { pasosPropios: 1 });
+['lspediaBack', 'lspediaElegir'].forEach((id) => {
+  const boton = document.getElementById(id);
+  if (boton) boton.addEventListener('click', volverAlMenuDeJuegos);
 });
  
 // Botón Atrás del móvil: retrocede dentro del juego sin cerrar la página.
@@ -2277,7 +2281,8 @@ window.addEventListener('popstate', () => {
   } else if (!document.getElementById('win-screen').hidden || !document.getElementById('gameover-screen').hidden) {
     showScreen('map-screen');
   } else {
-    location.href = '../?vista=herramientas-jugar';
+    // Sin nada más que cerrar: un paso atrás, al menú de juegos.
+    LSPediaVolver('../?vista=herramientas-jugar');
     return;
   }
   history.pushState({ carreraLspedia:true }, '', location.href);

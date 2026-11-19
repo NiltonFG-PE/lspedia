@@ -5,17 +5,19 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0e1c33">
   <meta name="robots" content="noindex">
-  <meta name="description" content="Lee el libro digital de LSPedia en pantalla: pasa las páginas, acerca con zoom y escucha el sonido del libro. Gratis y sin descarga.">
+  <meta name="description" content="Lee el libro digital de LSPedia en pantalla: pasa las páginas, usa los botones del libro, busca palabras, guarda marcadores y acerca con zoom. Gratis y sin descarga.">
   <title>Libro digital | LSPedia</title>
   <link rel="icon" href="../img/favicon.png">
   <link rel="stylesheet" href="../css/fonts-poppins.css?v=20261113-1">
-  <link rel="stylesheet" href="../css/libro-reader.css?v=20261119-1">
+  <link rel="stylesheet" href="../css/libro-reader.css?v=20261119-2">
+  <link rel="stylesheet" href="../css/libro-panel.css?v=20261119-1">
+  <script src="../js/volver-atras.js?v=1"></script>
 </head>
-<body class="lector">
-  <noscript><p class="lector-noscript">Activa JavaScript para leer el libro. <a href="../?vista=herramientas">Volver a Recursos</a>.</p></noscript>
+<body class="lector" data-color="normal">
+  <noscript><p class="lector-noscript">Activa JavaScript para leer el libro. <a href="libros-digitales.html">Volver a Libros digitales</a>.</p></noscript>
 
   <header class="lector-barra">
-    <a class="lector-volver" id="btnVolver" href="../?vista=herramientas"><span aria-hidden="true">←</span> Recursos</a>
+    <a class="lector-volver" id="btnVolver" href="libros-digitales.html" data-volver><span aria-hidden="true">←</span> Libros</a>
     <div class="lector-titulo">
       <strong id="tituloLibro">Libro digital</strong>
       <span id="autorLibro" hidden></span>
@@ -23,64 +25,221 @@
     <div class="lector-marca"><img src="../img/favicon.png" alt="" width="28" height="28"><span>LSPedia</span></div>
   </header>
 
-  <main class="lector-escena" id="escena">
-    <button class="lector-flecha lector-flecha-prev" id="btnPrev" type="button" aria-label="Página anterior" disabled>
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
-    </button>
+  <div class="lector-cuerpo" id="cuerpo">
+    <!-- Panel lateral: Contenido, Buscar y Marcadores -->
+    <aside class="lector-panel" id="panelLateral" aria-label="Contenido, búsqueda y marcadores" hidden>
+      <div class="lector-panel-cab">
+        <div class="lector-tabs" role="tablist" aria-label="Secciones del panel">
+          <button class="lector-tab" id="tabContenido" type="button" role="tab" aria-selected="true" aria-controls="vistaContenido">Contenido</button>
+          <button class="lector-tab" id="tabBuscar" type="button" role="tab" aria-selected="false" aria-controls="vistaBuscar" tabindex="-1">Buscar</button>
+          <button class="lector-tab" id="tabMarcadores" type="button" role="tab" aria-selected="false" aria-controls="vistaMarcadores" tabindex="-1">Marcadores</button>
+        </div>
+        <button class="lector-btn lector-panel-cerrar" id="btnCerrarPanel" type="button" aria-label="Cerrar el panel" title="Cerrar (Esc)">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
 
-    <div class="lector-zoom" id="capaZoom">
-      <div class="libro" id="libro"></div>
-    </div>
+      <div class="lector-panel-cuerpo">
+        <div id="vistaContenido" role="tabpanel" aria-labelledby="tabContenido">
+          <ol class="lector-contenido" id="listaContenido"></ol>
+          <p class="lector-panel-vacio" id="vacioContenido" hidden>Este libro no tiene índice. Usa las miniaturas para recorrer las páginas.</p>
+        </div>
 
-    <button class="lector-flecha lector-flecha-next" id="btnNext" type="button" aria-label="Página siguiente" disabled>
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
-    </button>
+        <div id="vistaBuscar" role="tabpanel" aria-labelledby="tabBuscar" hidden>
+          <form class="lector-buscar" id="formBuscar" role="search" autocomplete="off">
+            <label class="lector-solo-lectores" for="inpBuscar">Buscar en el libro</label>
+            <input id="inpBuscar" type="search" placeholder="Buscar en el libro…" maxlength="80" enterkeyhint="search" spellcheck="false">
+            <button class="lector-btn" type="submit" aria-label="Buscar" title="Buscar">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg>
+            </button>
+          </form>
+          <p class="lector-panel-info" id="infoBuscar" role="status" aria-live="polite">Escribe una palabra o una frase, por ejemplo «exponente» o «ley de signos».</p>
+          <ul class="lector-resultados" id="listaResultados"></ul>
+        </div>
 
-    <div class="lector-estado" id="estado" role="status" aria-live="polite">
-      <span class="lector-spinner" aria-hidden="true"></span>
-      <span id="estadoTexto">Cargando libro…</span>
-      <button type="button" id="btnReintentar" class="lector-reintentar" hidden>Intentar de nuevo</button>
-    </div>
-  </main>
+        <div id="vistaMarcadores" role="tabpanel" aria-labelledby="tabMarcadores" hidden>
+          <p class="lector-panel-vacio" id="vacioMarcadores">Aún no tienes marcadores. Toca el ícono del marcador en la barra de abajo para guardar la página donde estás.</p>
+          <ul class="lector-marcadores" id="listaMarcadores"></ul>
+        </div>
+      </div>
+    </aside>
+
+    <main class="lector-escena" id="escena">
+      <button class="lector-flecha lector-flecha-prev" id="btnPrev" type="button" aria-label="Página anterior" disabled>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+
+      <div class="lector-zoom" id="capaZoom">
+        <div class="libro" id="libro"></div>
+      </div>
+
+      <button class="lector-flecha lector-flecha-next" id="btnNext" type="button" aria-label="Página siguiente" disabled>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+      </button>
+
+      <!-- Navegación entre resultados de la búsqueda -->
+      <div class="lector-resultado-barra" id="barraResultados" hidden>
+        <button class="lector-btn" id="btnResultadoPrev" type="button" aria-label="Resultado anterior" title="Resultado anterior">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+        </button>
+        <span id="textoResultado" role="status" aria-live="polite">Resultado 1 de 1</span>
+        <button class="lector-btn" id="btnResultadoSig" type="button" aria-label="Resultado siguiente" title="Resultado siguiente">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        </button>
+        <button class="lector-btn" id="btnResultadoCerrar" type="button" aria-label="Quitar los resaltados de la búsqueda" title="Quitar resaltados">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+
+      <div class="lector-estado" id="estado" role="status" aria-live="polite">
+        <span class="lector-spinner" aria-hidden="true"></span>
+        <span id="estadoTexto">Cargando libro…</span>
+        <button type="button" id="btnReintentar" class="lector-reintentar" hidden>Intentar de nuevo</button>
+      </div>
+    </main>
+  </div>
 
   <section class="lector-miniaturas" id="panelMiniaturas" aria-label="Páginas del libro" hidden>
     <div class="lector-miniaturas-lista" id="listaMiniaturas"></div>
   </section>
 
+  <div class="lector-aviso" id="aviso" role="status" aria-live="polite" hidden>
+    <span id="avisoTexto"></span>
+    <button type="button" class="lector-aviso-accion" id="avisoAccion" hidden></button>
+  </div>
+
+  <!-- Menú «Más» -->
+  <div class="lector-menu" id="menuMas" aria-label="Más opciones" hidden>
+    <div class="lector-menu-grupo lector-solo-movil" role="group" aria-label="Zoom">
+      <span class="lector-menu-etiqueta">Zoom</span>
+      <div class="lector-menu-zoom">
+        <button class="lector-btn" id="mnuZoomMenos" type="button" aria-label="Alejar"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2M8.2 11h5.6"/></svg></button>
+        <button class="lector-btn lector-zoom-valor" id="mnuZoomValor" type="button" aria-label="Volver al tamaño normal">100%</button>
+        <button class="lector-btn" id="mnuZoomMas" type="button" aria-label="Acercar"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2M8.2 11h5.6M11 8.2v5.6"/></svg></button>
+      </div>
+    </div>
+
+    <button class="lector-menu-item lector-solo-movil" id="mnuSonido" type="button" aria-pressed="true">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5H4z"/><path d="M15.5 9a4 4 0 010 6M18 6.5a7.5 7.5 0 010 11"/></svg>
+      <span>Sonido de las páginas</span><b id="estadoSonido">Sí</b>
+    </button>
+    <button class="lector-menu-item lector-solo-movil" id="mnuPantalla" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+      <span>Pantalla completa</span>
+    </button>
+
+    <button class="lector-menu-item" id="mnuCompartir" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="12" r="2.2"/><circle cx="18" cy="6" r="2.2"/><circle cx="18" cy="18" r="2.2"/><path d="M8 11l8-4M8 13l8 4"/></svg>
+      <span>Compartir esta página</span>
+    </button>
+    <button class="lector-menu-item lector-solo-ancho" id="mnuVista" type="button" aria-pressed="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="3.5" width="10" height="17" rx="1.6"/></svg>
+      <span>Ver una sola página</span><b id="estadoVista">No</b>
+    </button>
+    <button class="lector-menu-item" id="mnuAuto" type="button" aria-pressed="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M10 8.5l5 3.5-5 3.5z"/></svg>
+      <span>Pasar páginas solo (cada 10 s)</span><b id="estadoAuto">No</b>
+    </button>
+
+    <div class="lector-menu-grupo" role="group" aria-label="Color de las páginas">
+      <span class="lector-menu-etiqueta">Color de las páginas</span>
+      <div class="lector-segmentos">
+        <button type="button" data-color="normal" aria-pressed="true">Normal</button>
+        <button type="button" data-color="calido" aria-pressed="false">Cálido</button>
+        <button type="button" data-color="tenue" aria-pressed="false">Tenue</button>
+      </div>
+    </div>
+
+    <button class="lector-menu-item" id="mnuAyuda" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.5a2.5 2.5 0 114 2c-.9.6-1.6 1.1-1.6 2.2M12 16.8h.01"/></svg>
+      <span>Atajos y ayuda</span>
+    </button>
+  </div>
+
   <nav class="lector-herramientas" id="herramientas" aria-label="Controles del libro">
+    <button class="lector-btn" id="btnContenido" type="button" aria-label="Contenido del libro" aria-expanded="false" aria-controls="panelLateral" title="Contenido (I)">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.6" cy="6" r="0.6"/><circle cx="4.6" cy="12" r="0.6"/><circle cx="4.6" cy="18" r="0.6"/></svg>
+    </button>
+    <button class="lector-btn" id="btnBuscar" type="button" aria-label="Buscar en el libro" title="Buscar (/)">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg>
+    </button>
+    <button class="lector-btn" id="btnMarcador" type="button" aria-label="Marcar esta página" aria-pressed="false" title="Marcar esta página (M)">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10a1 1 0 011 1v15l-6-4-6 4V5a1 1 0 011-1z"/></svg>
+    </button>
     <button class="lector-btn" id="btnMiniaturas" type="button" aria-label="Ver todas las páginas" aria-expanded="false" aria-controls="panelMiniaturas" title="Ver todas las páginas">
       <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.2"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.2"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.2"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.2"/></svg>
     </button>
 
-    <label class="lector-pagina" title="Ir a una página">
+    <span class="lector-sep" aria-hidden="true"></span>
+
+    <label class="lector-pagina" title="Ir a una página (G)">
       <span class="lector-solo-lectores">Página</span>
       <input id="inpPagina" type="number" min="1" value="1" inputmode="numeric" autocomplete="off" aria-describedby="totalPaginas">
       <span id="totalPaginas">/ 1</span>
     </label>
 
-    <span class="lector-sep" aria-hidden="true"></span>
+    <span class="lector-sep lector-solo-escritorio" aria-hidden="true"></span>
 
-    <button class="lector-btn" id="btnZoomMenos" type="button" aria-label="Alejar" title="Alejar (−)">
+    <button class="lector-btn lector-solo-escritorio" id="btnZoomMenos" type="button" aria-label="Alejar" title="Alejar (−)">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2M8.2 11h5.6"/></svg>
     </button>
-    <button class="lector-btn lector-zoom-valor" id="btnZoomRestablecer" type="button" aria-label="Volver al tamaño normal" title="Tamaño normal (0)">100%</button>
-    <button class="lector-btn" id="btnZoomMas" type="button" aria-label="Acercar" title="Acercar (+)">
+    <button class="lector-btn lector-zoom-valor lector-solo-escritorio" id="btnZoomRestablecer" type="button" aria-label="Volver al tamaño normal" title="Tamaño normal (0)">100%</button>
+    <button class="lector-btn lector-solo-escritorio" id="btnZoomMas" type="button" aria-label="Acercar" title="Acercar (+)">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2M8.2 11h5.6M11 8.2v5.6"/></svg>
     </button>
 
-    <span class="lector-sep" aria-hidden="true"></span>
+    <span class="lector-sep lector-solo-escritorio" aria-hidden="true"></span>
 
-    <button class="lector-btn" id="btnSonido" type="button" aria-label="Silenciar sonido de las páginas" aria-pressed="true" title="Sonido de las páginas">
+    <button class="lector-btn lector-solo-escritorio" id="btnSonido" type="button" aria-label="Silenciar sonido de las páginas" aria-pressed="true" title="Sonido de las páginas">
       <svg class="ico-sonido-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5H4z"/><path d="M15.5 9a4 4 0 010 6M18 6.5a7.5 7.5 0 010 11"/></svg>
       <svg class="ico-sonido-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5H4z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></svg>
     </button>
-    <button class="lector-btn" id="btnPantalla" type="button" aria-label="Pantalla completa" title="Pantalla completa">
+    <button class="lector-btn lector-solo-escritorio" id="btnPantalla" type="button" aria-label="Pantalla completa" title="Pantalla completa (F)">
       <svg class="ico-pantalla-abrir" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
       <svg class="ico-pantalla-cerrar" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>
     </button>
+
+    <span class="lector-sep" aria-hidden="true"></span>
+
+    <button class="lector-btn" id="btnMas" type="button" aria-label="Más opciones" aria-expanded="false" aria-controls="menuMas" title="Más opciones">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg>
+    </button>
   </nav>
 
+  <!-- Atajos y ayuda -->
+  <dialog class="lector-dialogo" id="dlgAyuda" aria-labelledby="ayudaTitulo">
+    <div class="lector-dialogo-cab">
+      <h2 id="ayudaTitulo">Cómo usar el libro</h2>
+      <button class="lector-btn" id="btnCerrarAyuda" type="button" aria-label="Cerrar la ayuda"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="lector-dialogo-cuerpo">
+      <p id="ayudaLibro" class="lector-dialogo-libro"></p>
+      <h3>Con el dedo o el mouse</h3>
+      <ul>
+        <li><strong>Botones del libro:</strong> toca «Índice», «Fórmulas», las pestañas de capítulos o cualquier entrada del índice y el libro te lleva a esa página.</li>
+        <li><strong>Pasar páginas:</strong> desliza, arrastra una esquina o usa las flechas de los lados.</li>
+        <li><strong>Zoom:</strong> pellizca con dos dedos, o usa los botones + y −; con zoom, arrastra para moverte.</li>
+        <li><strong>Marcador:</strong> guarda la página donde estás y vuelve a ella desde «Marcadores».</li>
+        <li><strong>Seguir leyendo:</strong> el libro recuerda la última página que leíste en este dispositivo.</li>
+      </ul>
+      <h3>Atajos del teclado</h3>
+      <dl class="lector-atajos">
+        <div><dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>Página anterior / siguiente</dd></div>
+        <div><dt><kbd>Inicio</kbd> <kbd>Fin</kbd></dt><dd>Primera / última página</dd></div>
+        <div><dt><kbd>G</kbd></dt><dd>Ir a una página</dd></div>
+        <div><dt><kbd>I</kbd></dt><dd>Contenido</dd></div>
+        <div><dt><kbd>/</kbd> o <kbd>Ctrl</kbd> + <kbd>F</kbd></dt><dd>Buscar en el libro</dd></div>
+        <div><dt><kbd>M</kbd></dt><dd>Marcar esta página</dd></div>
+        <div><dt><kbd>+</kbd> <kbd>−</kbd> <kbd>0</kbd></dt><dd>Acercar, alejar, tamaño normal</dd></div>
+        <div><dt><kbd>F</kbd></dt><dd>Pantalla completa</dd></div>
+        <div><dt><kbd>Esc</kbd></dt><dd>Cerrar paneles o quitar el zoom</dd></div>
+        <div><dt><kbd>?</kbd></dt><dd>Abrir esta ayuda</dd></div>
+      </dl>
+    </div>
+  </dialog>
+
   <script src="../vendor/page-flip/2.0.7/page-flip.browser.js"></script>
-  <script src="../js/libro-reader.js?v=20261119-1"></script>
+  <script src="../js/libro-reader.js?v=20261119-3"></script>
+  <script src="../js/libro-extras.js?v=20261119-2"></script>
 </body>
 </html>

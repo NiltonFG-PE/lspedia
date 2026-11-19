@@ -873,6 +873,12 @@ function activarBotonMenu(idActivo){
     document.querySelectorAll(".navbar-nav .nav-link").forEach((link) => {
         link.classList.toggle("active", link.id === idActivo);
     });
+    // Descubre y Estadísticas son propios de Inicio (Vocabulario). En
+    // Diccionario no se muestran y la cabecera reutiliza el diseño de
+    // "título + avatar" que ya existe para cuando Descubre está cerrado.
+    const enDiccionario = idActivo === "btnInicio";
+    document.documentElement.classList.toggle("lsp-en-diccionario", enDiccionario);
+    document.body.classList.toggle("senal-cerrada", enDiccionario);
     // Si el menú superior está desplegado como lista (pantalla angosta o
     // ventana del navegador achicada a la mitad, ver ☰ en el HTML), se
     // cierra solo al elegir una sección, en vez de quedarse abierto
@@ -951,11 +957,18 @@ function irAlBuscador(opciones = {}){
     desplegarIndiceAlfabetico();
     if (sugerencias) sugerencias.innerHTML = "";
     if (buscar) buscar.value = "";
-    if (buscar && !opciones.sinEnfoque) {
-        buscar.scrollIntoView({ behavior: "smooth", block: "center" });
-        setTimeout(() => buscar.focus(), 250);
-    } else if (opciones.irArriba) {
+    // Diccionario siempre se abre desde arriba, con el título a la vista.
+    // Antes el buscador se centraba en pantalla con scrollIntoView() y, al
+    // venir de una página larga (Vocabulario), el título quedaba cortado
+    // arriba. El enfoque del buscador ya no desplaza la página
+    // (preventScroll) y en pantallas táctiles no se enfoca solo, para que
+    // no salte el teclado y tape el contenido.
+    if (!opciones.sinEnfoque || opciones.irArriba) {
         window.scrollTo({ top: 0, behavior: "auto" });
+    }
+    if (buscar && !opciones.sinEnfoque) {
+        const tactil = !!(window.matchMedia && window.matchMedia("(pointer: coarse)").matches);
+        if (!tactil) setTimeout(() => buscar.focus({ preventScroll: true }), 250);
     }
 }
 

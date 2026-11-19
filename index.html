@@ -157,17 +157,17 @@
     <link href="vendor/bootstrap/5.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/estilos.css?v=20260826">
     <link rel="stylesheet" href="css/quiz.css?v=20260925-3">
-    <link rel="stylesheet" href="css/mejoras-producto.css?v=20261113-2">
+    <link rel="stylesheet" href="css/mejoras-producto.css?v=20261119-1">
     <link rel="stylesheet" href="css/buscador-enfoque.css?v=20261103-vocabulario-2">
     <link rel="stylesheet" href="css/miembros-acceso.css?v=20261009-4">
     <link rel="stylesheet" href="css/tablet-responsive.css?v=20261010-portrait-4">
     <link rel="stylesheet" href="css/estilos-inline-extraidos.css?v=20261119-1">
     <link rel="stylesheet" href="css/correcciones-premium.css?v=20261119-1">
-    <link rel="stylesheet" href="css/creador-card.css?v=20261119-1">
+    <link rel="stylesheet" href="css/creador-card.css?v=20261119-2">
     <link rel="stylesheet" href="css/libro-acceso.css?v=20261119-1">
     <link rel="stylesheet" href="css/recursos-grid.css?v=20261119-1">
     <link rel="stylesheet" href="css/fab-redes.css?v=20261119-1">
-    <link rel="stylesheet" href="css/vocabulario-descubre.css?v=20261119-2">
+    <link rel="stylesheet" href="css/vocabulario-descubre.css?v=20261119-4">
 
     <!-- Preconnect: adelanta la conexión a Google para que el Quiz cargue más rápido -->
     <link rel="preconnect" href="https://script.google.com">
@@ -531,7 +531,7 @@
                 </div>
 
                 <!-- Tarjeta del creador (Nilton Fernández G.): solo en Diccionario, justo encima del buscador.
-                     Muestra su nombre y sus tres roles, nada más. script.js la muestra u oculta junto con
+                     Muestra su nombre y sus dos roles, nada más. script.js la muestra u oculta junto con
                      el título de la vista (ver actualizarTituloPrincipal, ocultarBloqueInicio y mostrarPalabra).
                      Estilos: css/creador-card.css -->
                 <section id="lspCreador" class="lsp-creador d-none" aria-label="Creador de LSPedia">
@@ -540,10 +540,9 @@
                     </div>
                     <div class="lsp-creador-info">
                         <h3 class="lsp-creador-nombre">Nilton Fernández G.</h3>
-                        <p class="lsp-creador-roles" aria-label="Intérprete de LSP, traductor y creador de LSPedia">
-                            <span class="lsp-creador-rol lsp-creador-rol-interprete">Intérprete de LSP</span>
-                            <span class="lsp-creador-rol lsp-creador-rol-traductor">Traductor</span>
-                            <span class="lsp-creador-rol lsp-creador-rol-creador">Creador de LSPedia</span>
+                        <p class="lsp-creador-roles" aria-label="Intérprete y traductor de LSP, creador audiovisual y web no-code">
+                            <span class="lsp-creador-rol lsp-creador-rol-interprete">Intérprete y traductor de LSP</span>
+                            <span class="lsp-creador-rol lsp-creador-rol-creador">Creador audiovisual y web no-code</span>
                         </p>
                     </div>
                 </section>
@@ -928,9 +927,10 @@
                     </a>
                 </div>
 
-                <!-- Libro digital: lector premium dentro de LSPedia (solo lectura:
-                     pasar páginas, zoom y sonido; sin descarga). Página propia en
-                     herramientas/libro-digital.html, igual que Chat en Español. -->
+                <!-- Libros digitales: biblioteca (herramientas/libros-digitales.html) con
+                     los libros de libros/catalogo.json. Al elegir uno se abre el lector
+                     (herramientas/libro-digital.html?libro=<id>): solo lectura, sin
+                     descarga. Páginas propias, igual que Chat en Español. -->
 
                 <div class="col-12">
                     <button type="button" id="btnHerrMovilAlfabetizacion" class="herr-movil-btn herr-movil-btn-alfabetizacion w-100">
@@ -966,10 +966,10 @@
                 </div>
 
                 <div class="col-12 herramientas-libro-digital">
-                    <a href="herramientas/libro-digital.html" id="btnHerrMovilLibro" class="herr-movil-btn herr-movil-btn-libro w-100">
+                    <a href="herramientas/libros-digitales.html" id="btnHerrMovilLibro" class="herr-movil-btn herr-movil-btn-libro w-100">
                         <span class="herr-movil-ola" aria-hidden="true"></span>
                         <span class="herr-movil-icono herr-libro-icono" aria-hidden="true"><svg viewBox="0 0 48 48" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M24 11c-3.6-2.6-8.4-3.6-14-3v27c5.6-.6 10.4.4 14 3 3.6-2.6 8.4-3.6 14-3V8c-5.6-.6-10.4.4-14 3z"/><path d="M24 11v27"/><path d="M15 16.5c2-.3 3.8 0 5 .7M15 22c2-.3 3.8 0 5 .7M28 17.2c1.2-.7 3-1 5-.7M28 22.7c1.2-.7 3-1 5-.7"/></svg></span>
-                        <span class="herr-movil-textos"><span class="herr-movil-texto">Libro digital</span><span class="herr-movil-desc">Lee, haz zoom y pasa las páginas · Gratis</span></span>
+                        <span class="herr-movil-textos"><span class="herr-movil-texto">Libros digitales</span><span class="herr-movil-desc">Elige un libro y léelo en pantalla · Gratis</span></span>
                         <span class="herr-movil-flecha" aria-hidden="true">→</span>
                     </a>
                 </div>
@@ -2038,14 +2038,14 @@
          lazy-modules.js ya intercepta clics antes que script.js, así que el
          orden lógico se mantiene aunque todos ejecuten tras el parseo del HTML. -->
     <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
-    <script defer src="js/lazy-modules.js?v=20261119-1"></script>
+    <script defer src="js/lazy-modules.js?v=20261119-2"></script>
     <script defer src="js/lspedia-media.js?v=20261113-2"></script>
     <script defer src="js/lspedia-core.js?v=20261010-rich-1"></script>
     <script defer src="js/busqueda-core.js?v=20261007-preguntas-1"></script>
     <!-- script.js: 350 KB — mayor ganancia de rendimiento al diferir.
          Con defer se descarga en paralelo al HTML pero ejecuta tras el parseo
          completo, en el mismo orden relativo que los scripts anteriores. -->
-    <script defer src="js/script.js?v=20261119-2"></script>
+    <script defer src="js/script.js?v=20261119-3"></script>
     <script defer src="js/ficha-navegacion-ui.js?v=20261119-1"></script>
     <script defer src="js/vocabulario-publico.js?v=20261007-1"></script>
     <script defer src="js/buscador-predictivo.js?v=20260925-1"></script>
@@ -2286,7 +2286,7 @@
     </div>
 </footer>
 
-<script defer src="js/mejoras-producto.js?v=20261119-1"></script>
+<script defer src="js/mejoras-producto.js?v=20261119-2"></script>
 <script defer src="js/buscador-enfoque.js?v=20261008-6"></script>
 </body>
 </html>

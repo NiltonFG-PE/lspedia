@@ -1,0 +1,168 @@
+/* LSPedia — biblioteca «Libros digitales» (herramientas/libros-digitales.html).
+   Fondo blanco; el lector (css/libro-reader.css) sigue siendo la sala oscura
+   para leer, así las tapas resaltan en la biblioteca y las páginas en el libro. */
+
+:root {
+    --bib-fondo: #ffffff;
+    --bib-borde: #d9e3f1;
+    --bib-texto: #14284b;
+    --bib-suave: #5b6b83;
+    --bib-acento: #ffc933;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { min-height: 100%; background: var(--bib-fondo); }
+
+body.biblioteca {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    background: var(--bib-fondo);
+    color: var(--bib-texto);
+    font-family: "Poppins", system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.bib-noscript { margin: 0; padding: 14px 18px; background: #fff3cd; color: #5c4400; }
+.bib-noscript a { color: inherit; font-weight: 600; }
+
+/* ---------- Barra superior ---------- */
+.bib-barra {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 14px 20px;
+    padding-top: max(14px, env(safe-area-inset-top));
+}
+.bib-volver {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border: 1px solid var(--bib-borde);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--bib-texto);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.15s;
+}
+.bib-volver:hover { background: #f1f6fd; color: var(--bib-texto); }
+.bib-marca { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.95rem; color: var(--bib-texto); }
+.bib-marca img { border-radius: 7px; }
+
+/* ---------- Cuerpo ---------- */
+.bib-cuerpo {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 18px 20px 56px;
+    padding-bottom: max(56px, env(safe-area-inset-bottom));
+}
+.bib-titulo {
+    margin: 8px 0 6px;
+    font-size: clamp(1.9rem, 5.4vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+}
+.bib-sub { margin: 0 0 30px; max-width: 46ch; color: var(--bib-suave); font-size: 1rem; line-height: 1.5; }
+
+/* ---------- Estante ---------- */
+.bib-estante {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 176px), 200px));
+    gap: 34px 28px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.bib-libro {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    height: 100%;
+    color: inherit;
+    text-decoration: none;
+    border-radius: 10px;
+}
+.bib-libro:focus-visible { outline: 3px solid var(--bib-acento); outline-offset: 6px; }
+
+/* Tapa con lomo: un degradado a la izquierda imita el pliegue del libro. */
+.bib-tapa {
+    position: relative;
+    display: block;
+    aspect-ratio: 1600 / 2263;
+    border-radius: 3px 8px 8px 3px;
+    background: #fbfaf6;
+    box-shadow: 0 1px 3px rgba(20, 40, 75, 0.25), 0 16px 30px -12px rgba(20, 40, 75, 0.5);
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+.bib-tapa::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.38) 0, rgba(255, 255, 255, 0.22) 2.2%, rgba(0, 0, 0, 0.12) 4.5%, transparent 9%);
+    pointer-events: none;
+}
+.bib-tapa img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: inherit; -webkit-user-drag: none; }
+.bib-tapa-vacia { display: grid; place-items: center; background: linear-gradient(160deg, #24508f, #0e1c33); }
+.bib-tapa-vacia::before { content: "📖"; font-size: 2.4rem; }
+.bib-libro:hover .bib-tapa,
+.bib-libro:focus-visible .bib-tapa {
+    transform: translateY(-6px);
+    box-shadow: 0 2px 5px rgba(20, 40, 75, 0.25), 0 24px 38px -12px rgba(20, 40, 75, 0.55);
+}
+
+.bib-datos { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.bib-libro-titulo { font-size: 0.98rem; font-weight: 600; line-height: 1.3; }
+.bib-libro-autor { color: var(--bib-suave); font-size: 0.82rem; line-height: 1.4; }
+.bib-libro-pie {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 8px;
+    color: var(--bib-suave);
+    font-size: 0.8rem;
+}
+.bib-leer {
+    padding: 6px 16px;
+    border-radius: 999px;
+    background: var(--bib-acento);
+    color: #1b2230;
+    font-weight: 700;
+    font-size: 0.82rem;
+}
+.bib-libro:hover .bib-leer { background: #ffb800; }
+
+/* ---------- Estados ---------- */
+.bib-estado { margin: 8px 0 0; color: var(--bib-suave); font-size: 0.95rem; }
+.bib-estado[hidden] { display: none; }
+.bib-estado-error { color: #b42318; }
+.bib-reintentar {
+    margin-left: 6px;
+    padding: 6px 14px;
+    border: 1px solid var(--bib-borde);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--bib-texto);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+.bib-reintentar:hover { background: #f1f6fd; }
+
+@media (max-width: 480px) {
+    .bib-barra, .bib-cuerpo { padding-left: 16px; padding-right: 16px; }
+    .bib-estante { grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr)); gap: 28px 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .bib-tapa, .bib-volver { transition: none; }
+    .bib-libro:hover .bib-tapa, .bib-libro:focus-visible .bib-tapa { transform: none; }
+}

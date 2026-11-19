@@ -270,7 +270,7 @@ $("btnActivateAI").addEventListener("click",activateLocalAI);
 $("btnStopAI").addEventListener("click",disableLocalAI);
 $("btnCancelResponse").addEventListener("click",cancelResponse);
 $("scenarioSearch").addEventListener("input",renderScenarios);
-$("btnBackLspedia").addEventListener("click",()=>{localAI.stop();location.href="../?vista=herramientas";});
+$("btnBackLspedia").addEventListener("click",()=>{localAI.stop();if(window.LSPediaVolver)LSPediaVolver("../?vista=herramientas");else location.href="../?vista=herramientas";});
 $("btnHelp").addEventListener("click",showHelpModal);
 $("btnChatBack").addEventListener("click",()=>{
   if(state.accepted||state.pending||$("messageInput").value.trim())showModal("↩","Volver a las situaciones","<p>Al salir se borran los mensajes de esta práctica. Las situaciones ya completadas se conservan.</p>",[{label:"Seguir practicando",action:hideModal},{label:"Volver a situaciones",secondary:true,action:backHome}]);

@@ -68,12 +68,13 @@
 
         if (
             vista === 'nosotros' ||
+            vista === 'diccionario' ||
             vista.indexOf('herramientas') === 0
         ) return true;
 
         // Respaldo para navegación sin recarga: script.js marca el botón
         // superior activo aunque esté oculto en móvil.
-        const ids = ['btnHerramientas', 'btnSobreNosotros'];
+        const ids = ['btnInicio', 'btnHerramientas', 'btnSobreNosotros'];
         return ids.some((id) => {
             const boton = document.getElementById(id);
             return !!(boton && boton.classList.contains('active'));

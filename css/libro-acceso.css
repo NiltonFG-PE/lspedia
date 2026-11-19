@@ -1,5 +1,5 @@
-/* LSPedia — acceso al Libro digital desde Recursos (#btnHerrMovilLibro).
-   El visor en sí vive en herramientas/libro-digital.html (css/libro-reader.css).
+/* LSPedia — acceso a Libros digitales desde Recursos (#btnHerrMovilLibro).
+   La biblioteca vive en herramientas/libros-digitales.html y el visor en herramientas/libro-digital.html (css/libro-reader.css).
    La forma de la tarjeta la define css/recursos-grid.css; aquí solo el color. */
 
 #herramientasMenuMovil .herr-movil-btn-libro {

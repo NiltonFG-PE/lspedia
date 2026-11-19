@@ -1,6 +1,6 @@
 /* LSPedia — Recursos en cuadrícula
    Las tarjetas de Recursos (Chat en Español, Alfabeto y números, Jugar,
-   Subtítulos, Libro digital y los avisos "Próximamente") pasan de una
+   Subtítulos, Libros digitales y los avisos "Próximamente") pasan de una
    columna de barras anchas a una cuadrícula:
    - celular: 2 columnas
    - tablet y computadora: 3 columnas
@@ -33,7 +33,7 @@ html body #herramientasMenuMovil #herramientasMenuMovilRow > * {
     grid-column: 1 / -1;
 }
 /* El orden de Alfabeto, Jugar y Subtítulos (1, 2, 3) lo pone data/web-config.json
-   con la propiedad "order". El Libro digital va justo después de ellos. */
+   con la propiedad "order". Libros digitales va justo después de ellos. */
 #herramientasMenuMovilRow > .herramientas-libro-digital {
     order: 3;
 }

@@ -42,20 +42,21 @@
     /* El espacio entre la introducción y el avatar ya no lo da el gap de la
        cuadrícula (es 0 para que no quede un hueco cuando Descubre se oculta). */
     html body.vista-temas-movil #contenidoPrincipalApp #vocabularioIntroLista {
-        padding-right: 28px !important;
+        margin-right: 28px !important;
+        width: auto !important;
     }
 }
 
 /* ---------- Celular y tablet ---------- */
 @media (max-width: 991.98px) {
     html body.vista-temas-movil:not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal {
-        /* La columna del avatar se ajusta a su imagen; el resto es para Descubre. */
-        grid-template-columns: minmax(0, 1fr) auto !important;
+        /* Mismas proporciones que tenía Diccionario: tarjeta angosta y avatar grande. */
+        grid-template-columns: minmax(0, 1fr) clamp(118px, 38.5vw, 160px) !important;
         grid-template-areas:
             "carta avatar"
             "titulo titulo"
             "intro intro" !important;
-        gap: 14px 10px !important;
+        gap: 14px 6px !important;
         align-items: center !important;
         margin-top: 4px !important;
     }
@@ -71,12 +72,23 @@
 
     html body.vista-temas-movil #contenidoPrincipalApp #colAvatarHero .avatar-hero-img {
         width: auto !important;
-        height: clamp(96px, 24vw, 150px) !important;
+        height: clamp(112px, 35vw, 150px) !important;
+        max-width: 100% !important;
         max-height: none !important;
     }
     html body.vista-temas-movil #contenidoPrincipalApp #filaHeroPrincipal > #colAvatarHero:not(.oculto-por-seccion) {
-        width: auto !important;
-        justify-self: end !important;
+        width: 100% !important;
+        max-width: none !important;
+        justify-self: stretch !important;
+    }
+
+    /* Título centrado, igual que Diccionario en celular. */
+    html body.vista-temas-movil #contenidoPrincipalApp #bloqueTituloPrincipal,
+    html body.vista-temas-movil #contenidoPrincipalApp #tituloPrincipal {
+        text-align: center !important;
+    }
+    html body.vista-temas-movil #contenidoPrincipalApp #bloqueTituloPrincipal .titulo-raya {
+        margin: 12px auto 0 !important;
     }
 
     /* Descubre oculto: el título pasa arriba a la izquierda y el avatar a su lado. */
@@ -89,6 +101,40 @@
     html body.vista-temas-movil:not(.lsp-inicio-oculto) #contenidoPrincipalApp #senalDelDia[style*="display: none"] ~ #vocabularioIntroLista {
         grid-area: 2 / 1 / 3 / 3 !important;
     }
+}
+
+/* ---------- Introducción de Vocabulario: fondito y renglones juntos ----------
+   Mismo recuadro que la introducción de Diccionario (#subtituloPrincipal):
+   degradado claro, borde fino y filete ámbar arriba. */
+html body.vista-temas-movil #contenidoPrincipalApp #vocabularioIntroLista {
+    box-sizing: border-box !important;
+    padding: 14px 16px !important;
+    gap: 8px !important;
+    border: 1px solid #dce6f4 !important;
+    border-top: 3px solid #eabf39 !important;
+    border-radius: 18px !important;
+    background: linear-gradient(125deg, #ffffff 0%, #f5f9ff 76%, #fff9e8 100%) !important;
+    box-shadow: 0 10px 26px rgba(24, 55, 100, .07), inset 0 1px 0 #fff !important;
+}
+html body.vista-temas-movil #contenidoPrincipalApp #vocabularioIntroLista .vocab-intro-item {
+    gap: 9px !important;
+    padding: 0 !important;
+}
+html body.vista-temas-movil #contenidoPrincipalApp #vocabularioIntroLista .vocab-intro-texto {
+    padding: 1px 0 0 !important;
+    font-size: .86rem !important;
+    line-height: 1.38 !important;
+}
+@media (max-width: 575.98px) {
+    html body.vista-temas-movil #contenidoPrincipalApp #vocabularioIntroLista .vocab-intro-texto {
+        font-size: clamp(.8rem, 3.5vw, .88rem) !important;
+    }
+}
+html[data-lsp-tema="dark"] body.vista-temas-movil #contenidoPrincipalApp #vocabularioIntroLista {
+    border-color: #2b4868 !important;
+    border-top-color: #ffc107 !important;
+    background: linear-gradient(135deg, #1d2330, #171f2d) !important;
+    box-shadow: inset 0 0 0 1px rgba(255, 193, 7, .08) !important;
 }
 
 /* ---------- Texto de la tarjeta (Vocabulario y Diccionario) ----------
@@ -108,13 +154,19 @@
 @media (max-width: 575.98px) {
     #senalDelDia .dia-rect-titulo { font-size: clamp(13px, 3.7vw, 16px); }
 }
-/* En Diccionario (celular) la tarjeta es más angosta que en Vocabulario: se reduce
-   un poco el título para que palabras largas como «Currículum» no se partan. */
+/* Con la tarjeta angosta del celular, palabras largas como «Currículum» no se parten. */
 @media (max-width: 430px) {
-    body:not(.vista-temas-movil):not(.senal-cerrada) #senalDelDia .dia-rect-titulo {
+    #senalDelDia .dia-rect-titulo {
         font-size: clamp(11.5px, 3.2vw, 14px) !important;
         padding-right: 0 !important;
     }
+}
+/* Descubre y Estadísticas son propios de Inicio (Vocabulario): en Diccionario
+   no se muestran (script.js marca <html> con .lsp-en-diccionario). */
+html.lsp-en-diccionario #senalDelDia,
+html.lsp-en-diccionario .stats-header,
+html.lsp-en-diccionario .stats-panel-destacado {
+    display: none !important;
 }
 
 /* ---------- «Lo nuevo» (debajo del buscador) ----------

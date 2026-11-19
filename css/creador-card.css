@@ -1,7 +1,8 @@
 /* LSPedia — tarjeta del creador (Diccionario)
    Va dentro del encabezado del Diccionario, justo encima del buscador, y
-   muestra solo el nombre y los tres roles: intérprete de LSP, traductor y
-   creador de LSPedia. script.js le quita o pone "d-none" según la vista. */
+   muestra solo el nombre y dos roles: intérprete y traductor de LSP, y
+   creador audiovisual y web no-code. script.js le quita o pone "d-none"
+   según la vista. */
 
 /* Garantía CSS: nunca se ve en Vocabulario ni en Recursos / Sobre nosotros. */
 body.vista-temas-movil #lspCreador,
@@ -28,8 +29,8 @@ body.lsp-inicio-oculto #lspCreador {
     height: 72px;
     padding: 3px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #ffd54a, #1976f3);
-    box-shadow: 0 4px 12px rgba(25, 118, 243, .22);
+    background: #ffc107;
+    box-shadow: 0 4px 12px rgba(255, 193, 7, .3);
 }
 
 #lspCreador .lsp-creador-foto img {
@@ -74,7 +75,6 @@ body.lsp-inicio-oculto #lspCreador {
 }
 
 #lspCreador .lsp-creador-rol-interprete { background: #e4efff; color: #1556c0; }
-#lspCreador .lsp-creador-rol-traductor  { background: #fff3c7; color: #8a5400; }
 #lspCreador .lsp-creador-rol-creador    { background: #e1f5ee; color: #0b6b55; }
 
 @media (max-width: 575.98px) {
@@ -92,6 +92,9 @@ body.lsp-inicio-oculto #lspCreador {
     #lspCreador .lsp-creador-nombre { font-size: 1.02rem; }
     #lspCreador .lsp-creador-rol { padding: 3px 9px; font-size: .72rem; }
 }
+@media (max-width: 360px) {
+    #lspCreador .lsp-creador-rol { white-space: normal; }
+}
 
 /* Modo oscuro */
 html[data-lsp-tema="dark"] #lspCreador.lsp-creador {
@@ -102,5 +105,4 @@ html[data-lsp-tema="dark"] #lspCreador.lsp-creador {
 html[data-lsp-tema="dark"] #lspCreador .lsp-creador-foto img { border-color: #172436; }
 html[data-lsp-tema="dark"] #lspCreador .lsp-creador-nombre { color: #e1edff; }
 html[data-lsp-tema="dark"] #lspCreador .lsp-creador-rol-interprete { background: #1d3a66; color: #a9ccff; }
-html[data-lsp-tema="dark"] #lspCreador .lsp-creador-rol-traductor  { background: #4a3a10; color: #ffd978; }
 html[data-lsp-tema="dark"] #lspCreador .lsp-creador-rol-creador    { background: #123f36; color: #8fe0c6; }

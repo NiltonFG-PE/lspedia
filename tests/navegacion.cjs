@@ -186,6 +186,23 @@ const server = http.createServer((req, res) => {
         assert.equal(new URL(page.url()).search, '');
         console.log('PASS: Vocabulario es la página de inicio con Descubre y Estadísticas');
 
+        // Diccionario: sin Descubre ni Estadísticas (son de Inicio) y se abre desde arriba, con el título a la vista.
+        await page.waitForSelector('#lspNuevasCard', {state:'visible', timeout:15000});
+        await page.evaluate(() => window.scrollTo(0, 600));
+        await page.locator('#btnInicio').click();
+        await page.waitForFunction(() => /diccionario/.test(location.search));
+        await page.waitForTimeout(600);
+        assert.equal(await page.locator('#senalDelDia').isVisible(), false, 'Descubre no va en Diccionario');
+        assert.equal(await page.locator('.stats-header').isVisible(), false, 'Estadísticas no van en Diccionario');
+        assert.equal(await page.locator('.stats-panel-destacado').isVisible(), false, 'Estadísticas no van en Diccionario');
+        assert.ok(await page.evaluate(() => window.scrollY) < 5, 'Diccionario se abre desde arriba');
+        assert.ok((await page.locator('#bloqueTituloPrincipal').boundingBox()).y >= 0, 'El título de Diccionario queda a la vista');
+        await page.locator('#btnCategorias').click();
+        await page.waitForFunction(() => document.body.classList.contains('vista-temas-movil'));
+        assert.equal(await page.locator('#senalDelDia').isVisible(), true, 'Descubre vuelve en Vocabulario');
+        assert.equal(await page.locator('.stats-panel-destacado').isVisible(), true, 'Estadísticas vuelven en Vocabulario');
+        console.log('PASS: Diccionario sin Descubre/Estadísticas y desde arriba');
+
         // Orden de la página de inicio: encabezado → colaborador → buscador → Lo nuevo → categorías → estadísticas → Mi LSPedia.
         await page.waitForSelector('#lspNuevasCard', {state:'visible', timeout:15000});
         const orden = ['#filaHeroPrincipal', '#lspModeloLinguistico', '#bloqueBuscadorCategorias', '#lspNuevasCard', '#panelCategorias', '.stats-panel-destacado', '#miLspediaHub'];
@@ -214,9 +231,9 @@ const server = http.createServer((req, res) => {
         assert.equal(await page.locator('#lspCreador').isVisible(), true);
         const textoCreador = await page.locator('#lspCreador').innerText();
         assert.match(textoCreador, /Nilton Fernández G\./);
-        assert.match(textoCreador, /Intérprete de LSP/);
-        assert.match(textoCreador, /Traductor/);
-        assert.match(textoCreador, /Creador de LSPedia/);
+        assert.match(textoCreador, /Intérprete y traductor de LSP/);
+        assert.match(textoCreador, /Creador audiovisual y web no-code/);
+        assert.doesNotMatch(textoCreador, /Creador de LSPedia/);
         assert.doesNotMatch(textoCreador, /Soy el creador|CREADOR/, 'La tarjeta solo lleva nombre y roles');
         const cajaCreador = await page.locator('#lspCreador').boundingBox();
         const cajaBuscador = await page.locator('#bloqueBuscador').boundingBox();
@@ -274,9 +291,9 @@ const server = http.createServer((req, res) => {
         await page.goto(base + '/?vista=diccionario', {waitUntil:'domcontentloaded'});
         await page.waitForFunction(() => window.App?.estadoDatos === 'listo' && document.querySelector('.lspedia-idioma-btn[data-idioma="en"]'));
         await page.locator('.lspedia-idioma-btn[data-idioma="en"]').click();
-        await page.waitForFunction(() => /Translator/.test(document.getElementById('lspCreador')?.innerText || ''));
-        assert.match(await page.locator('#lspCreador').innerText(), /LSP interpreter/);
-        assert.match(await page.locator('#lspCreador').innerText(), /Creator of LSPedia/);
+        await page.waitForFunction(() => /translator/.test(document.getElementById('lspCreador')?.innerText || ''));
+        assert.match(await page.locator('#lspCreador').innerText(), /LSP interpreter and translator/);
+        assert.match(await page.locator('#lspCreador').innerText(), /Audiovisual and no-code web creator/);
         console.log('PASS: tarjeta del creador traducida al inglés');
         await context.close();
 
@@ -323,14 +340,15 @@ const server = http.createServer((req, res) => {
         console.log('PASS: menú inferior del celular siempre visible');
         await context.close();
 
-        // Recursos: cuadrícula de tarjetas (también en pantallas anchas) con el Libro digital.
+        // Recursos: cuadrícula de tarjetas (también en pantallas anchas) con Libros digitales.
         ({context, page} = await pagina());
         await page.goto(base, {waitUntil:'domcontentloaded'});
         await page.waitForFunction(() => window.App?.estadoDatos === 'listo');
         await page.locator('#btnHerramientas').click();
         await page.waitForFunction(() => !document.getElementById('herramientasMenuMovil')?.classList.contains('d-none'));
         assert.equal(await page.locator('#btnHerrMovilLibro').isVisible(), true);
-        assert.equal(await page.locator('#btnHerrMovilLibro').getAttribute('href'), 'herramientas/libro-digital.html');
+        assert.equal(await page.locator('#btnHerrMovilLibro').getAttribute('href'), 'herramientas/libros-digitales.html');
+        assert.match(await page.locator('#btnHerrMovilLibro').innerText(), /Libros digitales/);
         const columnas = await page.evaluate(() => getComputedStyle(document.getElementById('herramientasMenuMovilRow')).gridTemplateColumns.split(' ').length);
         assert.equal(columnas, 3, 'Recursos debe tener 3 columnas en pantallas anchas');
         await page.waitForTimeout(1200); // termina la animación de entrada
@@ -338,7 +356,7 @@ const server = http.createServer((req, res) => {
         assert.equal(new Set(posiciones).size, 1, 'Las tres primeras tarjetas van en la misma fila');
         await page.locator('#btnCategorias').click();
         await page.waitForFunction(() => document.getElementById('herramientasMenuMovil')?.classList.contains('d-none'));
-        console.log('PASS: Recursos en cuadrícula de 3 columnas con el Libro digital');
+        console.log('PASS: Recursos en cuadrícula de 3 columnas con Libros digitales');
         await context.close();
 
         ({context, page} = await pagina({viewport:{width:390,height:844},isMobile:true,hasTouch:true}));
@@ -353,20 +371,43 @@ const server = http.createServer((req, res) => {
         console.log('PASS: Recursos en cuadrícula de 2 columnas en celular');
         await context.close();
 
-        // Visor del libro digital: páginas, zoom, miniaturas y sonido.
+        // Libros digitales: la biblioteca muestra las tapas y el libro se abre solo al elegirlo.
+        const idLibro = 'algebra-en-lsp';
+        const carpetaLibro = path.join(root, 'libros', idLibro);
+        const datosLibro = JSON.parse(fs.readFileSync(path.join(carpetaLibro, 'libro.json'), 'utf8'));
+        const textoLibro = JSON.parse(fs.readFileSync(path.join(carpetaLibro, 'texto.json'), 'utf8'));
+        const catalogo = JSON.parse(fs.readFileSync(path.join(root, 'libros', 'catalogo.json'), 'utf8'));
+        assert.ok(catalogo.libros.some(l => l.id === idLibro), 'El libro está en el catálogo');
+        const total = datosLibro.paginas.length;
         ({context, page} = await pagina());
-        await page.goto(base + '/herramientas/libro-digital.html', {waitUntil:'domcontentloaded'});
+        await page.goto(base + '/?vista=herramientas', {waitUntil:'domcontentloaded'});
+        await page.waitForFunction(() => window.App?.estadoDatos === 'listo');
+        await page.waitForFunction(() => !document.getElementById('herramientasMenuMovil')?.classList.contains('d-none'));
+        await page.evaluate(() => { window.__spaOriginal = true; });
+        await page.locator('#btnHerrMovilLibro').click();
+        await page.waitForFunction(() => location.pathname.endsWith('/herramientas/libros-digitales.html'));
+        await page.waitForSelector('.bib-libro');
+        assert.equal(await page.locator('.bib-libro').count(), catalogo.libros.length);
+        assert.match(await page.locator('.bib-libro-titulo').first().innerText(), /Álgebra/);
+        assert.equal(await page.locator('#libro').count(), 0, 'La biblioteca no abre ningún libro por sí sola');
+        assert.equal(await page.evaluate(() => getComputedStyle(document.body).backgroundColor), 'rgb(255, 255, 255)', 'La biblioteca tiene fondo blanco');
+        await page.waitForFunction(() => { const i = document.querySelector('.bib-tapa img'); return i && i.complete && i.naturalWidth > 0; });
+        console.log('PASS: Libros digitales: biblioteca con tapas, fondo blanco y sin abrir libros solos');
+
+        // Visor del libro: páginas, zoom, miniaturas, sonido, contenido, búsqueda, marcadores y botones del PDF.
+        await page.locator('.bib-libro').first().click();
+        await page.waitForFunction(() => location.search === '?libro=algebra-en-lsp');
         await page.waitForFunction(() => document.getElementById('estado')?.classList.contains('oculto'));
-        assert.equal(await page.locator('#totalPaginas').innerText(), '/ 8');
+        assert.equal(await page.locator('#totalPaginas').innerText(), '/ ' + total);
         assert.equal(await page.locator('#btnPrev').isDisabled(), true);
         await page.locator('#btnNext').click();
-        await page.waitForFunction(() => document.getElementById('inpPagina').value === '2');
+        await page.waitForFunction(() => Number(document.getElementById('inpPagina').value) >= 2);
         await page.locator('#btnZoomMas').click();
         assert.equal(await page.locator('#btnZoomRestablecer').innerText(), '150%');
         await page.locator('#btnZoomRestablecer').click();
         assert.equal(await page.locator('#btnZoomRestablecer').innerText(), '100%');
         await page.locator('#btnMiniaturas').click();
-        assert.equal(await page.locator('.lector-mini').count(), 8);
+        assert.equal(await page.locator('.lector-mini').count(), total);
         await page.locator('.lector-mini').nth(5).click();
         await page.waitForFunction(() => Number(document.getElementById('inpPagina').value) >= 5);
         await page.locator('#btnSonido').click();
@@ -379,6 +420,59 @@ const server = http.createServer((req, res) => {
         assert.equal(menu, true, 'El menú contextual debe estar bloqueado en el libro');
         assert.equal(await page.locator('#libro img').count(), 0, 'Las páginas no deben ser <img>');
         console.log('PASS: visor de libro (páginas, zoom, miniaturas, sonido y bloqueos)');
+
+        // Contenido (índice del PDF): una entrada lleva a su página.
+        assert.ok(datosLibro.indice.length > 5, 'El libro trae índice');
+        await page.locator('#btnContenido').click();
+        await page.waitForSelector('.lector-item-contenido');
+        assert.equal(await page.locator('.lector-item-contenido').count(), datosLibro.indice.length);
+        const entrada = datosLibro.indice.find(e => e[2] > 12);
+        const posEntrada = datosLibro.indice.indexOf(entrada);
+        await page.locator('.lector-item-contenido').nth(posEntrada).click();
+        await page.waitForFunction(p => { const v = Number(document.getElementById('inpPagina').value); return v >= p - 1 && v <= p + 1; }, entrada[2]);
+        console.log('PASS: contenido del libro lleva a la página indicada');
+
+        // Búsqueda: una palabra real del libro da resultados.
+        const lineaBusqueda = textoLibro.paginas[30].find(l => /^[A-Za-zÁÉÍÓÚáéíóúñÑ]{7,}/.test(l[4]));
+        const palabraBusqueda = lineaBusqueda[4].match(/[A-Za-zÁÉÍÓÚáéíóúñÑ]{7,}/)[0];
+        await page.locator('#tabBuscar').click();
+        await page.locator('#inpBuscar').fill(palabraBusqueda);
+        await page.waitForSelector('.lector-resultado', {timeout: 15000});
+        assert.ok(await page.locator('.lector-resultado').count() >= 1, 'La búsqueda encuentra «' + palabraBusqueda + '»');
+        await page.locator('.lector-resultado').first().click();
+        await page.waitForTimeout(500);
+        console.log('PASS: búsqueda en el texto del libro');
+
+        // Marcadores: marcar la página y verla en la lista.
+        await page.locator('#btnMarcador').click();
+        assert.equal(await page.locator('#btnMarcador').getAttribute('aria-pressed'), 'true');
+        await page.locator('#btnContenido').click();
+        await page.locator('#tabMarcadores').click();
+        assert.equal(await page.locator('#listaMarcadores li').count(), 1);
+        console.log('PASS: marcadores del libro');
+
+        // Botones del PDF: una zona con destino numérico lleva a su página.
+        const paginaConBoton = Object.keys(datosLibro.enlaces).map(Number).find(n => n > 6 && datosLibro.enlaces[n].some(z => typeof z[4] === 'number' && z[4] > 8));
+        const zonaBoton = datosLibro.enlaces[paginaConBoton].find(z => typeof z[4] === 'number' && z[4] > 8);
+        await page.evaluate(n => window.LSPediaLibro.irA(n - 1), paginaConBoton);
+        await page.waitForSelector('.enlace-libro[data-ir="' + (zonaBoton[4] - 1) + '"]', {state: 'attached'});
+        await page.evaluate(d => document.querySelector('.enlace-libro[data-ir="' + d + '"]').click(), zonaBoton[4] - 1);
+        await page.waitForFunction(p => { const v = Number(document.getElementById('inpPagina').value); return v >= p - 1 && v <= p + 1; }, zonaBoton[4]);
+        console.log('PASS: botones del PDF funcionan dentro del visor');
+
+        // Atrás: libro → biblioteca → Recursos, un paso a la vez y sin recargar la página de Recursos.
+        await page.locator('#btnVolver').click();
+        await page.waitForFunction(() => location.pathname.endsWith('/herramientas/libros-digitales.html'));
+        await page.locator('#btnVolver').click();
+        await page.waitForFunction(() => location.search === '?vista=herramientas');
+        console.log('PASS: atrás del libro y de la biblioteca vuelve paso a paso');
+        await context.close();
+
+        // El visor sin ?libro lleva a la biblioteca.
+        ({context, page} = await pagina());
+        await page.goto(base + '/herramientas/libro-digital.html', {waitUntil:'domcontentloaded'});
+        await page.waitForFunction(() => location.pathname.endsWith('/herramientas/libros-digitales.html'));
+        console.log('PASS: el visor sin libro abre la biblioteca');
         await context.close();
 
         assert.deepEqual(errores, [], 'Errores JavaScript en la página');

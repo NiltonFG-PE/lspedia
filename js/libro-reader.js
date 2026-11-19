@@ -1,7 +1,13 @@
-/* LSPedia — visor del libro digital
-   Lee libro/libro.json, arma las páginas con StPageFlip (vendor/page-flip) y
+/* LSPedia — visor del libro digital (núcleo)
+   Lee libros/<id>/libro.json, arma las páginas con StPageFlip (vendor/page-flip) y
    ofrece: pasar páginas (clic, arrastre, flechas, teclado), zoom con
    arrastre y pinza, miniaturas, ir a una página, sonido y pantalla completa.
+   También dibuja encima de cada página los botones y enlaces del PDF original
+   (Índice, pestañas de capítulos, enlaces web) como zonas tocables, recuerda
+   la última página leída y abre en la página de ?pagina=N.
+
+   Las funciones extra (contenido, búsqueda, marcadores, menú «Más», ayuda)
+   viven en js/libro-extras.js y usan la API pública window.LSPediaLibro.
 
    Protección (solo disuasoria): sin menú contextual, sin arrastrar, sin
    selección ni impresión, páginas como imágenes de fondo (no <img>) y una
@@ -10,8 +16,18 @@
     'use strict';
 
     const $ = (id) => document.getElementById(id);
-    const BASE = '../libro/';
+    // Cada libro vive en libros/<id>/ y se abre con herramientas/libro-digital.html?libro=<id>.
+    // Sin un id válido se muestra la biblioteca (libros-digitales.html).
+    const ID_LIBRO = (function () {
+        try {
+            const v = String(new URLSearchParams(window.location.search).get('libro') || '').toLowerCase();
+            return /^[a-z0-9][a-z0-9-]{0,60}$/.test(v) ? v : '';
+        } catch (_e) { return ''; }
+    })();
+    if (!ID_LIBRO) { window.location.replace('libros-digitales.html'); return; }
+    const BASE = '../libros/' + ID_LIBRO + '/';
     const CLAVE_SONIDO = 'lspedia_libro_sonido';
+    const CLAVE_PAGINA = 'lspedia_libro_pagina_';
     const PASOS_ZOOM = [1, 1.5, 2, 3];
     const ZOOM_MAX = 4;
     const NOMBRE_VALIDO = /^[\w\-. ]+\.(webp|jpe?g|png|avif)$/i;
@@ -31,6 +47,9 @@
     let audio = null;
     let ultimoSonido = 0;
     let miniaturasListas = false;
+    let vistaUna = false;
+    let inicio = { tipo: '', pagina: 0 };
+    const escuchas = { cambio: [], listo: [] };
 
     /* ---------- Almacenamiento (puede estar bloqueado) ---------- */
     function leer(clave) {
@@ -114,6 +133,52 @@
         mostrarEstado('No pudimos cargar el libro. Revisa tu conexión e inténtalo otra vez.', true);
     }
 
+    function entero(v, min, max) {
+        const n = Math.round(Number(v));
+        return Number.isFinite(n) ? Math.max(min, Math.min(max, n)) : null;
+    }
+    // Índice del PDF: [[nivel, título, página], ...] con páginas desde 1.
+    function limpiarIndice(lista, cantidad) {
+        if (!Array.isArray(lista)) return [];
+        const salida = [];
+        lista.slice(0, 600).forEach((fila) => {
+            if (!Array.isArray(fila)) return;
+            const nivel = entero(fila[0], 1, 4);
+            const pagina = entero(fila[2], 1, cantidad);
+            const titulo = String(fila[1] || '').trim().slice(0, 140);
+            if (nivel && pagina && titulo) salida.push({ nivel: nivel, titulo: titulo, pagina: pagina });
+        });
+        return salida;
+    }
+    // Botones del PDF por página: { "11": [[x, y, ancho, alto, destino], ...] } (milésimas de la página).
+    function limpiarEnlaces(mapa, cantidad) {
+        const salida = {};
+        if (!mapa || typeof mapa !== 'object') return salida;
+        Object.keys(mapa).forEach((clave) => {
+            const n = parseInt(clave, 10);
+            if (!(n >= 1 && n <= cantidad) || !Array.isArray(mapa[clave])) return;
+            const zonas = [];
+            mapa[clave].slice(0, 400).forEach((z) => {
+                if (!Array.isArray(z) || z.length < 5) return;
+                const x = entero(z[0], 0, 1000), y = entero(z[1], 0, 1000);
+                const w = entero(z[2], 1, 1000), h = entero(z[3], 1, 1000);
+                if (x === null || y === null || w === null || h === null) return;
+                let destino = null;
+                if (typeof z[4] === 'number') {
+                    destino = entero(z[4], 1, cantidad);
+                } else if (typeof z[4] === 'string' && z[4].length <= 400) {
+                    try {
+                        const u = new URL(z[4]);
+                        if (u.protocol === 'https:' || u.protocol === 'http:') destino = u.href;
+                    } catch (_e) { destino = null; }
+                }
+                if (destino !== null) zonas.push({ x: x, y: y, w: w, h: h, destino: destino });
+            });
+            if (zonas.length) salida[n - 1] = zonas;
+        });
+        return salida;
+    }
+
     function validarLibro(datos) {
         if (!datos || !Array.isArray(datos.paginas) || !datos.paginas.length) throw new Error('libro.json sin páginas');
         if (!datos.paginas.every((n) => typeof n === 'string' && NOMBRE_VALIDO.test(n))) throw new Error('nombre de página no válido');
@@ -121,8 +186,15 @@
         if (!CARPETA_VALIDA.test(carpeta)) throw new Error('carpeta no válida');
         const mini = typeof datos.miniaturas === 'string' ? datos.miniaturas : '';
         if (mini && !CARPETA_VALIDA.test(mini)) throw new Error('carpeta de miniaturas no válida');
+        const cantidad = datos.paginas.length;
+        const titulo = String(datos.titulo || 'Libro digital').slice(0, 120);
+        const id = String(datos.id || titulo).toLowerCase().replace(/[^a-z0-9_-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'libro';
         return {
-            titulo: String(datos.titulo || 'Libro digital').slice(0, 120),
+            id: id,
+            indice: limpiarIndice(datos.indice, cantidad),
+            enlaces: limpiarEnlaces(datos.enlaces, cantidad),
+            texto: typeof datos.texto === 'string' && /^[\w\-. ]+\.json$/i.test(datos.texto) ? datos.texto : '',
+            titulo: titulo,
             autor: String(datos.autor || '').slice(0, 120),
             ancho: Number(datos.ancho) > 0 ? Number(datos.ancho) : 1000,
             alto: Number(datos.alto) > 0 ? Number(datos.alto) : 1414,
@@ -146,7 +218,11 @@
                 if (!r.ok) throw new Error('HTTP ' + r.status);
                 return r.json();
             })
-            .then((datos) => { libro = validarLibro(datos); iniciarLector(); })
+            .then((datos) => {
+                libro = validarLibro(datos);
+                document.title = libro.titulo + ' | LSPedia';
+                iniciarLector();
+            })
             .catch(errorCarga);
     }
 
@@ -165,9 +241,38 @@
             img.setAttribute('role', 'img');
             img.setAttribute('aria-label', 'Página ' + (i + 1) + ' de ' + total);
             hoja.appendChild(img);
+            crearEnlaces(hoja, i);
             contenedor.appendChild(hoja);
             paginas.push({ el: hoja, img: img, pedida: false });
         }
+    }
+
+    // Botones y enlaces del PDF original, como zonas tocables sobre la página.
+    function crearEnlaces(hoja, i) {
+        const zonas = libro.enlaces[i];
+        if (!zonas) return;
+        zonas.forEach((z) => {
+            const a = document.createElement('a');
+            a.className = 'enlace-libro';
+            a.style.left = (z.x / 10) + '%';
+            a.style.top = (z.y / 10) + '%';
+            a.style.width = (z.w / 10) + '%';
+            a.style.height = (z.h / 10) + '%';
+            if (typeof z.destino === 'number') {
+                a.href = '#pagina-' + z.destino;
+                a.setAttribute('data-ir', String(z.destino - 1));
+                a.title = 'Ir a la página ' + z.destino;
+                a.setAttribute('aria-label', 'Ir a la página ' + z.destino);
+            } else {
+                a.href = z.destino;
+                a.target = '_blank';
+                a.rel = 'noopener noreferrer';
+                a.className += ' enlace-externo';
+                a.title = 'Abrir en una pestaña nueva';
+                a.setAttribute('aria-label', 'Abrir enlace externo en una pestaña nueva');
+            }
+            hoja.appendChild(a);
+        });
     }
 
     function cargarImagen(i) {
@@ -226,13 +331,31 @@
             if (esta) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
         });
         cargarCercanas(actual);
+        if (actual > 0) guardar(CLAVE_PAGINA + libro.id, String(actual));
+        escuchas.cambio.forEach((fn) => { try { fn(actual); } catch (e) { if (window.console) console.warn(e); } });
     }
 
-    function irA(n) {
+    function irA(n, animar) {
         if (!pf) return;
         const destino = Math.max(0, Math.min(total - 1, n));
-        pf.turnToPage(destino);
+        if (animar && !reducirMovimiento && destino !== actual) {
+            try { pf.flip(destino); } catch (_e) { pf.turnToPage(destino); }
+        } else {
+            pf.turnToPage(destino);
+        }
         sincronizar();
+    }
+
+    // Vista de una página o de libro abierto (dos páginas).
+    function fijarVista(una) {
+        vistaUna = !!una;
+        if (!pf) return;
+        try {
+            const ajustes = pf.getSettings();
+            if (!ajustes.__minWidthOriginal) ajustes.__minWidthOriginal = ajustes.minWidth;
+            ajustes.minWidth = vistaUna ? 100000 : ajustes.__minWidthOriginal;
+        } catch (_e) { /* versión sin getSettings */ }
+        reajustar();
     }
 
     /* ---------- Miniaturas ---------- */
@@ -330,7 +453,7 @@
         }
 
         escena.addEventListener('pointerdown', (e) => {
-            if (zoom <= 1 || (e.target.closest && e.target.closest('button'))) return;
+            if (zoom <= 1 || (e.target.closest && e.target.closest('button, a.enlace-libro'))) return;
             try { escena.setPointerCapture(e.pointerId); } catch (_e) { /* sin captura */ }
             punteros.set(e.pointerId, { x: e.clientX, y: e.clientY });
             if (punteros.size === 1) {
@@ -472,7 +595,17 @@
         pf.on('changeOrientation', sincronizar);
         pf.on('changeState', (e) => { if (e.data === 'flipping') sonidoPagina(); });
 
-        cargarCercanas(0);
+        // Página inicial: ?pagina=N, o la última que se leyó en este navegador.
+        const pedida = parseInt(new URLSearchParams(window.location.search).get('pagina'), 10);
+        const guardada = parseInt(leer(CLAVE_PAGINA + libro.id), 10);
+        if (pedida >= 1 && pedida <= total) {
+            inicio = { tipo: 'url', pagina: pedida };
+        } else if (guardada >= 1 && guardada < total - 1) {
+            inicio = { tipo: 'guardada', pagina: guardada + 1 };
+        }
+        if (inicio.pagina > 1) pf.turnToPage(inicio.pagina - 1);
+
+        cargarCercanas(Math.max(0, inicio.pagina - 1));
         sincronizar();
         aplicarZoom(false);
 
@@ -481,13 +614,26 @@
         Promise.race([
             Promise.all([cargarImagen(0), cargarImagen(1), cargarImagen(2)]),
             new Promise((r) => setTimeout(r, 6000))
-        ]).then(() => { ocultarEstado(); reajustar(); });
+        ]).then(() => {
+            ocultarEstado();
+            reajustar();
+            escuchas.listo.forEach((fn) => { try { fn(); } catch (e) { if (window.console) console.warn(e); } });
+            escuchas.listo.length = 0;
+        });
 
         if ('ResizeObserver' in window) new ResizeObserver(reajustar).observe($('escena'));
     }
 
     /* ---------- Controles ---------- */
     function instalarControles() {
+        // Botones del PDF (Índice, pestañas de capítulos…): se saltan con animación.
+        $('libro').addEventListener('click', (e) => {
+            const enlace = e.target.closest && e.target.closest('a.enlace-libro[data-ir]');
+            if (!enlace) return;
+            e.preventDefault();
+            irA(parseInt(enlace.getAttribute('data-ir'), 10), true);
+        });
+
         $('btnPrev').addEventListener('click', () => { if (pf) pf.flipPrev(); });
         $('btnNext').addEventListener('click', () => { if (pf) pf.flipNext(); });
         $('btnMiniaturas').addEventListener('click', () => alternarMiniaturas());
@@ -527,6 +673,8 @@
 
         document.addEventListener('keydown', (e) => {
             if (esCampoDeTexto(e.target) || e.altKey || e.ctrlKey || e.metaKey) return;
+            // Dentro del panel, el menú o la ayuda las teclas son de esos controles.
+            if (e.target.closest && e.target.closest('#panelLateral, #menuMas, dialog')) return;
             switch (e.key) {
                 case 'ArrowLeft': case 'PageUp': if (pf) pf.flipPrev(); e.preventDefault(); break;
                 case 'ArrowRight': case 'PageDown': case ' ': if (pf) pf.flipNext(); e.preventDefault(); break;
@@ -547,6 +695,37 @@
         window.addEventListener('resize', reajustar);
         window.addEventListener('orientationchange', () => setTimeout(reajustar, 250));
     }
+
+    // API para js/libro-extras.js
+    window.LSPediaLibro = {
+        datos: () => libro,
+        idCarpeta: () => ID_LIBRO,
+        base: () => BASE,
+        actual: () => actual,
+        total: () => total,
+        inicio: () => inicio,
+        orientacion: () => (pf ? pf.getOrientation() : 'portrait'),
+        irA: irA,
+        siguiente: () => { if (pf) pf.flipNext(); },
+        anterior: () => { if (pf) pf.flipPrev(); },
+        esUltima: esUltima,
+        elementoPagina: (i) => (paginas[i] ? paginas[i].el : null),
+        zoomActual: () => zoom,
+        acercar: acercar,
+        alejar: alejar,
+        restablecerZoom: restablecerZoom,
+        fijarVista: fijarVista,
+        vistaUna: () => vistaUna,
+        reajustar: reajustar,
+        pantallaCompleta: pantallaCompleta,
+        sonido: () => sonidoActivo,
+        alternarSonido: () => { $('btnSonido').click(); return sonidoActivo; },
+        alCambiar: (fn) => { escuchas.cambio.push(fn); },
+        alEstarListo: (fn) => { if (pf && $('estado').classList.contains('oculto')) fn(); else escuchas.listo.push(fn); },
+        urlMiniatura: urlMiniatura,
+        leer: leer,
+        guardar: guardar
+    };
 
     sonidoActivo = leer(CLAVE_SONIDO) !== '0';
     pintarSonido();

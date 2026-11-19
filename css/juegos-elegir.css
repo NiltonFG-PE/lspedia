@@ -1,0 +1,13 @@
+/* Botón «↩ Elegir otro juego» de las páginas de juego sueltas (Adivina quién
+   soy, Caras y gestos, Sopa de Señas, Carrera matemática). Mismo aspecto de
+   píldora que el botón de los juegos del menú «Recursos → Jugar». */
+.lsp-elegir-juego{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:34px;padding:0 14px;border:1px solid #6c757d;border-radius:999px;background:transparent;color:#6c757d;font-family:inherit;font-weight:600;font-size:13px;line-height:1;text-decoration:none;white-space:nowrap;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent;transition:background-color .15s,color .15s}
+.lsp-elegir-juego:hover{background:#6c757d;color:#fff}
+.lsp-elegir-juego:focus-visible{outline:3px solid #f5b400;outline-offset:2px}
+.topbar>.lsp-elegir-juego{margin-left:auto}
+.topbar>.lsp-elegir-juego+#help{margin-left:0}
+@media (max-width:420px){.lsp-elegir-juego{padding:0 11px;font-size:12px}}
+.lsp-elegir-juego--oscuro{border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.07);color:#fff}
+.lsp-elegir-juego--oscuro:hover{background:rgba(255,255,255,.18);color:#fff}
+/* La flecha y el «?» no se encogen cuando la cabecera va justa en celular. */
+.topbar>.round,.topbar>.round-btn,.topbar>.icon-button{flex-shrink:0}

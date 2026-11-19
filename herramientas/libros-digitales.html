@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="es-PE">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="robots" content="noindex">
+  <meta name="description" content="Biblioteca de libros digitales de LSPedia: elige un libro y léelo en pantalla, gratis y sin descargar.">
+  <title>Libros digitales | LSPedia</title>
+  <link rel="icon" href="../img/favicon.png">
+  <link rel="stylesheet" href="../css/fonts-poppins.css?v=20261113-1">
+  <link rel="stylesheet" href="../css/libros-biblioteca.css?v=2">
+  <script src="../js/volver-atras.js?v=1"></script>
+  <script defer src="../js/libros-biblioteca.js?v=1"></script>
+</head>
+<body class="biblioteca">
+  <noscript><p class="bib-noscript">Activa JavaScript para ver los libros. <a href="../?vista=herramientas">Volver a Recursos</a>.</p></noscript>
+
+  <header class="bib-barra">
+    <a class="bib-volver" id="btnVolver" href="../?vista=herramientas" data-volver><span aria-hidden="true">←</span> Recursos</a>
+    <div class="bib-marca"><img src="../img/favicon.png" alt="" width="28" height="28"><span>LSPedia</span></div>
+  </header>
+
+  <main class="bib-cuerpo">
+    <h1 class="bib-titulo" id="bibTitulo">Libros digitales</h1>
+    <p class="bib-sub">Elige un libro y léelo en pantalla. Gratis y sin descargar nada.</p>
+
+    <ul class="bib-estante" id="estante" aria-labelledby="bibTitulo" aria-busy="true"></ul>
+    <p class="bib-estado" id="bibEstado" role="status" aria-live="polite">Cargando libros…</p>
+  </main>
+</body>
+</html>
