@@ -305,6 +305,11 @@
     const navInferior = document.getElementById("mobileBottomNav");
     if (!navInferior) return;
 
+    // En celular los botones del menú de abajo se quedan SIEMPRE a la vista.
+    // Si algún día se prefiere que se escondan al bajar y reaparezcan al subir
+    // (comportamiento "tipo app"), basta con poner esta constante en true.
+    const OCULTAR_AL_BAJAR = false;
+
     let ultimoScrollY = window.scrollY || window.pageYOffset || 0;
     let rafScroll = 0;
     let noOcultarHasta = 0;
@@ -315,6 +320,10 @@
 
     function actualizarNavPorScroll() {
         rafScroll = 0;
+        if (!OCULTAR_AL_BAJAR) {
+            mostrarNavInferior();
+            return;
+        }
         const y = Math.max(0, window.scrollY || window.pageYOffset || 0);
         const ahora = performance.now();
         const delta = y - ultimoScrollY;

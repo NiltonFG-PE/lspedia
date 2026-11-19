@@ -231,19 +231,12 @@
             }
         }
 
-        /* Vista "Temas" en móvil: al tocar TEMAS solo deben quedar visibles
-           el buscador, el índice A-Z, las categorías, Mis Favoritos y Mi
-           Historial. La seña de hoy/ayer y el bloque de Estadísticas se
-           ocultan (script.js agrega/quita la clase "vista-temas-movil" en
-           <body>). Solo aplica en móvil/tablet: en escritorio no cambia
-           nada. */
-        @media (max-width: 1199.98px) {
-            body.vista-temas-movil #senalDelDia,
-            body.vista-temas-movil .stats-header,
-            body.vista-temas-movil .stats-panel-destacado {
-                display: none !important;
-            }
-        }
+        /* Vista "Temas" en móvil (script.js agrega/quita la clase
+           "vista-temas-movil" en <body>). Vocabulario es la página de
+           inicio: se ven el bloque de Estadísticas y también Descubre
+           (la tarjeta alterna palabras de Vocabulario y Diccionario). El
+           orden del encabezado de esa vista está en
+           css/vocabulario-descubre.css. */
 
         /* ============================================================
            TARJETAS DE ESTADÍSTICAS (Palabras / Categorías / Videos):
@@ -2732,11 +2725,6 @@ html.modo-escritorio-forzado nav.navbar {
 html.modo-escritorio-forzado nav.navbar .container {
     justify-content: space-between !important;
 }
-html.modo-escritorio-forzado body.vista-temas-movil #senalDelDia,
-html.modo-escritorio-forzado body.vista-temas-movil .stats-header,
-html.modo-escritorio-forzado body.vista-temas-movil .stats-panel-destacado {
-    display: none !important;
-}
 /* El selector de 3 botones grandes de Herramientas (Subtítulos, Jugar,
    Alfabetización) ahora también se usa en escritorio (ver
    esVistaMovilHerramientas() en script.js): por eso ya NO se oculta
@@ -2801,11 +2789,6 @@ html.modo-movil-real #herramientasMenuMovil,
 html.modo-movil-real #seccionSubtitulos,
 html.modo-movil-real #seccionNosotros {
     scroll-margin-top: 96px !important;
-}
-html.modo-movil-real body.vista-temas-movil #senalDelDia,
-html.modo-movil-real body.vista-temas-movil .stats-header,
-html.modo-movil-real body.vista-temas-movil .stats-panel-destacado {
-    display: none !important;
 }
 /* El selector de 3 botones grandes de Herramientas trae la clase
    Bootstrap "d-xl-none", que lo esconde apenas el ancho llega a

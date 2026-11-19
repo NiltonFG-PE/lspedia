@@ -129,7 +129,7 @@ function fromDatabase(row) {
 function renderNavigation() {
   const internal = Boolean(session && (!$('admin').hidden || selected));
   $('memberBack').hidden = !internal; $('exitMembers').hidden = internal;
-  $('exitMembers').textContent = session ? 'Salir a Herramientas ↗' : '← Volver a LSPedia';
+  $('exitMembers').textContent = session ? 'Salir a Recursos ↗' : '← Volver a LSPedia';
   $('memberBack').textContent = !$('admin').hidden ? '← Volver a la biblioteca' : '← Zona de miembros';
   $('openFavorites').setAttribute('aria-pressed',String(selected==='@favorites')); $('openRecent').setAttribute('aria-pressed',String(selected==='@recent'));
   $('sectionPanel').hidden = !selected; $('categories').hidden = Boolean(selected); $('libraryWelcome').hidden = Boolean(selected);

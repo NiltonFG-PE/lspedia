@@ -161,8 +161,13 @@
     <link rel="stylesheet" href="css/buscador-enfoque.css?v=20261103-vocabulario-2">
     <link rel="stylesheet" href="css/miembros-acceso.css?v=20261009-4">
     <link rel="stylesheet" href="css/tablet-responsive.css?v=20261010-portrait-4">
-    <link rel="stylesheet" href="css/estilos-inline-extraidos.css?v=20261109">
-    <link rel="stylesheet" href="css/correcciones-premium.css?v=20261113-1">
+    <link rel="stylesheet" href="css/estilos-inline-extraidos.css?v=20261119-1">
+    <link rel="stylesheet" href="css/correcciones-premium.css?v=20261119-1">
+    <link rel="stylesheet" href="css/creador-card.css?v=20261119-1">
+    <link rel="stylesheet" href="css/libro-acceso.css?v=20261119-1">
+    <link rel="stylesheet" href="css/recursos-grid.css?v=20261119-1">
+    <link rel="stylesheet" href="css/fab-redes.css?v=20261119-1">
+    <link rel="stylesheet" href="css/vocabulario-descubre.css?v=20261119-2">
 
     <!-- Preconnect: adelanta la conexión a Google para que el Quiz cargue más rápido -->
     <link rel="preconnect" href="https://script.google.com">
@@ -374,13 +379,16 @@
             </button>
             <div class="collapse navbar-collapse" id="menuPrincipal">
                 <ul class="navbar-nav ms-auto">
+                    <!-- Vocabulario es ahora la página de inicio (primera y activa).
+                         Los identificadores no cambian: #btnCategorias = Vocabulario,
+                         #btnInicio = Diccionario, #btnHerramientas = Recursos. -->
+                    <li class="nav-item"><a class="nav-link active" href="#" id="btnCategorias"><span class="nav-icono" aria-hidden="true" style="-webkit-mask-image:url('img/icons/nav/icono-vocabulario.webp'); mask-image:url('img/icons/nav/icono-vocabulario.webp');"></span> Vocabulario</a></li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="#" id="btnInicio">
+                        <a class="nav-link" href="#" id="btnInicio">
                             <span id="iconoInicio" class="nav-icono" aria-hidden="true" style="-webkit-mask-image:url('img/icons/nav/icono-diccionario.webp'); mask-image:url('img/icons/nav/icono-diccionario.webp');"></span> Diccionario
                         </a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="#" id="btnCategorias"><span class="nav-icono" aria-hidden="true" style="-webkit-mask-image:url('img/icons/nav/icono-vocabulario.webp'); mask-image:url('img/icons/nav/icono-vocabulario.webp');"></span> Vocabulario</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" id="btnHerramientas"><span class="nav-icono" aria-hidden="true" style="-webkit-mask-image:url('img/icons/nav/icono-herramientas.webp'); mask-image:url('img/icons/nav/icono-herramientas.webp');"></span> Herramientas</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" id="btnHerramientas"><span class="nav-icono" aria-hidden="true" style="-webkit-mask-image:url('img/icons/nav/icono-herramientas.webp'); mask-image:url('img/icons/nav/icono-herramientas.webp');"></span> Recursos</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" id="btnSobreNosotros"><span class="nav-icono" aria-hidden="true" style="-webkit-mask-image:url('img/icons/nav/icono-nosotros.png'); mask-image:url('img/icons/nav/icono-nosotros.png');"></span> Sobre Nosotros</a></li>
                 </ul>
             </div>
@@ -394,23 +402,23 @@
          en un solo lugar (script.js). "Sobre Nosotros" queda fuera de
          esta barra (menos usado) y sigue disponible en el menú ☰. -->
     <nav class="mobile-bottom-nav d-xl-none" id="mobileBottomNav" aria-label="Navegación principal">
-        <button type="button" class="mbn-item active" data-vinculado="btnInicio">
-            <span class="mbn-icon-wrap">
-                <span class="mbn-icon mbn-icon-img" style="-webkit-mask-image:url('img/icons/nav/icono-diccionario.webp'); mask-image:url('img/icons/nav/icono-diccionario.webp');" aria-hidden="true"></span>
-            </span>
-            <span class="mbn-label">Diccionario</span>
-        </button>
-        <button type="button" class="mbn-item" data-vinculado="btnCategorias">
+        <button type="button" class="mbn-item active" data-vinculado="btnCategorias">
             <span class="mbn-icon-wrap">
                 <span class="mbn-icon mbn-icon-img" style="-webkit-mask-image:url('img/icons/nav/icono-vocabulario.webp'); mask-image:url('img/icons/nav/icono-vocabulario.webp');" aria-hidden="true"></span>
             </span>
             <span class="mbn-label">Vocabulario</span>
         </button>
+        <button type="button" class="mbn-item" data-vinculado="btnInicio">
+            <span class="mbn-icon-wrap">
+                <span class="mbn-icon mbn-icon-img" style="-webkit-mask-image:url('img/icons/nav/icono-diccionario.webp'); mask-image:url('img/icons/nav/icono-diccionario.webp');" aria-hidden="true"></span>
+            </span>
+            <span class="mbn-label">Diccionario</span>
+        </button>
         <button type="button" class="mbn-item" data-vinculado="btnHerramientas">
             <span class="mbn-icon-wrap">
                 <span class="mbn-icon mbn-icon-img" style="-webkit-mask-image:url('img/icons/nav/icono-herramientas.webp'); mask-image:url('img/icons/nav/icono-herramientas.webp');" aria-hidden="true"></span>
             </span>
-            <span class="mbn-label">Herramientas</span>
+            <span class="mbn-label">Recursos</span>
         </button>
         <button type="button" class="mbn-item" data-vinculado="btnSobreNosotros">
             <span class="mbn-icon-wrap">
@@ -430,48 +438,53 @@
          móvil/tablet los oculta directamente el CSS (queda la barra
          inferior tipo app en su lugar). -->
     <!-- ================================================================
-         MENÚ FLOTANTE DE ACCESOS RÁPIDOS ("speed dial"): un solo botón
-         principal (mano 🤟🏻) que despliega, con animación, la listita de
-         accesos directos (Jugar, Herramientas, Vocabulario y Apoyar
-         LSPedia). El estado abierto/cerrado se guarda en localStorage
-         para recordarlo la próxima vez que la persona entre al sitio
-         (ver script al final del archivo). En móvil/tablet se oculta
-         vía CSS (queda la barra inferior tipo app en su lugar). -->
+         MENÚ FLOTANTE (versión web): un solo botón principal (mano 🤟🏻)
+         que despliega, con animación, dos cosas y nada más: apoyar
+         LSPedia con una donación y las redes sociales para seguir al
+         creador (mismas cuentas que el pie de página). El estado
+         abierto/cerrado se guarda en localStorage (ver script al final
+         del archivo). En móvil/tablet se oculta vía CSS (queda la barra
+         inferior tipo app en su lugar). Estilos de las redes:
+         css/fab-redes.css. Orden de abajo hacia arriba: --fab-orden.
+         ================================================================ -->
     <div class="fab-menu" id="fabMenuAccesos">
 
         <div class="fab-menu-lista" id="fabMenuLista">
 
-            <div class="fab-item" style="--fab-orden:4;">
+            <div class="fab-item" style="--fab-orden:1;">
                 <span class="fab-item-etiqueta">Apoyar LSPedia</span>
                 <button type="button" id="btnAccesoApoyar" class="fab-item-btn fab-item-btn-corazon" title="Apoyar LSPedia" aria-label="Apoyar LSPedia" data-bs-toggle="modal" data-bs-target="#modalDonacion">
                     <span aria-hidden="true">❤️</span>
                 </button>
             </div>
 
-            <div class="fab-item" style="--fab-orden:3;">
-                <span class="fab-item-etiqueta">Ir a Vocabulario</span>
-                <button type="button" id="btnAccesoTemas" class="fab-item-btn fab-item-btn-vocabulario" title="Ir a Vocabulario" aria-label="Acceso directo a Vocabulario">
-                    <span class="fab-item-icono-img" style="background-image:url('img/categorias/Vocabulario_Icono.webp');" aria-hidden="true"></span>
-                </button>
-            </div>
-
             <div class="fab-item" style="--fab-orden:2;">
-                <span class="fab-item-etiqueta">Ir a Herramientas</span>
-                <button type="button" id="btnAccesoHerramientas" class="fab-item-btn fab-item-btn-herramientas" title="Ir a Herramientas" aria-label="Acceso directo a Herramientas">
-                    <span class="fab-item-icono-img" style="background-image:url('img/categorias/Herramientas.webp');" aria-hidden="true"></span>
-                </button>
+                <span class="fab-item-etiqueta">Síguenos en TikTok</span>
+                <a href="https://www.tiktok.com/@lspedia" target="_blank" rel="noopener" id="btnAccesoRedTikTok" class="fab-item-btn fab-item-btn-red fab-item-btn-tiktok" title="Síguenos en TikTok" aria-label="Síguenos en TikTok">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.6 5.82c-.7-.77-1.14-1.75-1.24-2.82h-3.1v13.44c0 1.5-1.22 2.72-2.72 2.72a2.72 2.72 0 0 1-2.72-2.72 2.72 2.72 0 0 1 2.72-2.72c.29 0 .56.04.82.12v-3.14a5.9 5.9 0 0 0-.82-.06A5.86 5.86 0 0 0 3.68 16.5a5.86 5.86 0 0 0 5.86 5.86 5.86 5.86 0 0 0 5.86-5.86V9.01a8.9 8.9 0 0 0 5.2 1.67V7.58a5.8 5.8 0 0 1-4-1.76z"/></svg>
+                </a>
             </div>
-
-            <div class="fab-item" style="--fab-orden:1;">
-                <span class="fab-item-etiqueta">Ir a Jugar</span>
-                <button type="button" id="btnAccesoJugar" class="fab-item-btn fab-item-btn-jugar" title="Ir a Jugar" aria-label="Acceso directo a Jugar">
-                    <span class="fab-item-icono-img" style="background-image:url('img/categorias/juegos.webp');" aria-hidden="true"></span>
-                </button>
+            <div class="fab-item" style="--fab-orden:3;">
+                <span class="fab-item-etiqueta">Síguenos en Instagram</span>
+                <a href="https://www.instagram.com/lspedia_sign" target="_blank" rel="noopener" id="btnAccesoRedInstagram" class="fab-item-btn fab-item-btn-red fab-item-btn-instagram" title="Síguenos en Instagram" aria-label="Síguenos en Instagram">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.55.22.95.47 1.37.89.42.42.67.82.89 1.37.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.55-.47.95-.89 1.37-.42.42-.82.67-1.37.89-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.69 3.69 0 0 1-1.37-.89 3.69 3.69 0 0 1-.89-1.37c-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.55.47-.95.89-1.37.42-.42.82-.67 1.37-.89.42-.16 1.06-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07M12 0C8.74 0 8.33.01 7.05.07c-1.28.06-2.15.26-2.91.56-.79.31-1.46.72-2.13 1.38A5.86 5.86 0 0 0 .63 4.14c-.3.76-.5 1.63-.56 2.91C.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.28.26 2.15.56 2.91.31.79.72 1.46 1.38 2.13.66.66 1.34 1.07 2.13 1.38.76.3 1.63.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.28-.06 2.15-.26 2.91-.56.79-.31 1.46-.72 2.13-1.38a5.86 5.86 0 0 0 1.38-2.13c.3-.76.5-1.63.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.28-.26-2.15-.56-2.91a5.86 5.86 0 0 0-1.38-2.13A5.86 5.86 0 0 0 19.86.63c-.76-.3-1.63-.5-2.91-.56C15.67.01 15.26 0 12 0z"/><path fill="currentColor" d="M12 5.84A6.16 6.16 0 1 0 18.16 12 6.16 6.16 0 0 0 12 5.84zm0 10.16A4 4 0 1 1 16 12a4 4 0 0 1-4 4zM18.41 4.15a1.44 1.44 0 1 0 1.44 1.44 1.44 1.44 0 0 0-1.44-1.44z"/></svg>
+                </a>
             </div>
-
+            <div class="fab-item" style="--fab-orden:4;">
+                <span class="fab-item-etiqueta">Síguenos en YouTube</span>
+                <a href="https://www.youtube.com/@LSPedia-sign" target="_blank" rel="noopener" id="btnAccesoRedYouTube" class="fab-item-btn fab-item-btn-red fab-item-btn-youtube" title="Síguenos en YouTube" aria-label="Síguenos en YouTube">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.51 3.5 12 3.5 12 3.5s-7.51 0-9.38.55A3.02 3.02 0 0 0 .5 6.19 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.81 3.02 3.02 0 0 0 2.12 2.14c1.87.55 9.38.55 9.38.55s7.51 0 9.38-.55a3.02 3.02 0 0 0 2.12-2.14A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.81zM9.6 15.6V8.4l6.27 3.6z"/></svg>
+                </a>
+            </div>
+            <div class="fab-item" style="--fab-orden:5;">
+                <span class="fab-item-etiqueta">Síguenos en Facebook</span>
+                <a href="https://www.facebook.com/lspedia.sign" target="_blank" rel="noopener noreferrer" id="btnAccesoRedFacebook" class="fab-item-btn fab-item-btn-red fab-item-btn-facebook" title="Síguenos en Facebook" aria-label="Síguenos en Facebook">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.414c0-3.025 1.792-4.697 4.533-4.697 1.313 0 2.686.236 2.686.236v2.971h-1.513c-1.49 0-1.956.931-1.956 1.887v2.262h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>
+                </a>
+            </div>
         </div>
 
-        <button type="button" id="btnToggleAccesos" class="fab-menu-toggle" title="Mostrar u ocultar accesos rápidos" aria-label="Mostrar u ocultar accesos rápidos" aria-expanded="false">
+        <button type="button" id="btnToggleAccesos" class="fab-menu-toggle" title="Apoyar y seguir a LSPedia" aria-label="Apoyar y seguir a LSPedia" aria-expanded="false">
             <span class="fab-menu-toggle-icono" id="fabMenuToggleIcono" aria-hidden="true">🤟🏻</span>
         </button>
 
@@ -516,6 +529,24 @@
 </div>
 
                 </div>
+
+                <!-- Tarjeta del creador (Nilton Fernández G.): solo en Diccionario, justo encima del buscador.
+                     Muestra su nombre y sus tres roles, nada más. script.js la muestra u oculta junto con
+                     el título de la vista (ver actualizarTituloPrincipal, ocultarBloqueInicio y mostrarPalabra).
+                     Estilos: css/creador-card.css -->
+                <section id="lspCreador" class="lsp-creador d-none" aria-label="Creador de LSPedia">
+                    <div class="lsp-creador-foto">
+                        <img src="assets/nilton-fernandez-lsp.jpg" alt="Nilton Fernández G." width="72" height="72" loading="lazy" decoding="async">
+                    </div>
+                    <div class="lsp-creador-info">
+                        <h3 class="lsp-creador-nombre">Nilton Fernández G.</h3>
+                        <p class="lsp-creador-roles" aria-label="Intérprete de LSP, traductor y creador de LSPedia">
+                            <span class="lsp-creador-rol lsp-creador-rol-interprete">Intérprete de LSP</span>
+                            <span class="lsp-creador-rol lsp-creador-rol-traductor">Traductor</span>
+                            <span class="lsp-creador-rol lsp-creador-rol-creador">Creador de LSPedia</span>
+                        </p>
+                    </div>
+                </section>
 
                 <div class="position-relative" id="bloqueBuscador">
                     <div class="buscador-indice-linea">
@@ -618,11 +649,6 @@
         </div>
 
         </div>
-
-        <!-- Reserva el hueco de «Tu aprendizaje / Nuevas palabras». Esa sección la crea mejoras-producto-base.js
-             justo después del hero y, al aparecer, empujaba todo lo de abajo unos 330px. En cuanto existe la
-             sección, este marcador se oculta solo (ver css/correcciones-premium.css). -->
-        <div id="lspReservaInicio" aria-hidden="true"></div>
 
         <!-- Resultados de búsqueda del Diccionario: ahora aparecen ANTES de
              la sección Categorías (justo debajo del Índice Alfabético), no
@@ -767,6 +793,12 @@
         </div>
 
 
+        <!-- Reserva el hueco de «Lo nuevo» (sección #lspMejorasInicio, que crea mejoras-producto-base.js
+             justo debajo del buscador de Vocabulario). Al aparecer, esa sección empujaba hacia abajo las
+             categorías y las estadísticas unos 330px; este marcador mide casi lo mismo y se oculta solo en
+             cuanto la sección existe (ver css/correcciones-premium.css). Solo se muestra en Vocabulario. -->
+        <div id="lspReservaInicio" aria-hidden="true"></div>
+
         <!-- Subtemas / lista informativa de Vocabulario (debajo del buscador) -->
 
 <div id="panelCategorias" class="row g-2 mb-4 p-2"></div>
@@ -878,16 +910,27 @@
              (fondo negro, texto blanco grande).
              ============================================================ -->
         <!-- ============================================================
-             MENÚ DE HERRAMIENTAS (solo móvil/tablet). Al tocar
-             "Herramientas" en la barra inferior aparece primero este
-             selector con 3 botones grandes; recién al presionar uno se
-             carga y muestra el módulo correspondiente (ver script.js).
-             En escritorio (d-xl-none) no se usa: ahí los 3 bloques se
-             siguen mostrando juntos, uno debajo del otro, como antes.
+             MENÚ DE RECURSOS (computadora, tablet y celular). Al abrir
+             "Recursos" aparece primero esta cuadrícula de tarjetas (3
+             columnas en pantallas anchas, 2 en celular); recién al tocar
+             una se carga y muestra el módulo correspondiente (ver
+             script.js). El diseño de la cuadrícula está en
+             css/recursos-grid.css.
              ============================================================ -->
-        <div id="herramientasMenuMovil" class="d-none d-xl-none mb-4">
+        <div id="herramientasMenuMovil" class="d-none mb-4">
             <div class="row g-3" id="herramientasMenuMovilRow">
+                <div class="col-12">
+                    <a href="herramientas/chat-espanol.html" id="btnHerrMovilChatEspanol" class="herr-movil-btn herr-movil-btn-chat w-100">
+                        <span class="herr-movil-ola" aria-hidden="true"></span>
+                        <span class="herr-movil-icono herr-chat-icon" aria-hidden="true"><span class="jp-chat-phone"><i class="jp-chat-top"></i><i class="jp-chat-msg jp-chat-msg-a">Hola 👋</i><i class="jp-chat-msg jp-chat-msg-b">¡Hola!</i><i class="jp-chat-cursor">✎</i></span></span>
+                        <span class="herr-movil-textos"><span class="herr-movil-texto">Chat en Español</span><span class="herr-movil-desc">Practica conversaciones y mejora tu escritura · Gratis</span></span>
+                        <span class="herr-movil-flecha" aria-hidden="true">→</span>
+                    </a>
+                </div>
 
+                <!-- Libro digital: lector premium dentro de LSPedia (solo lectura:
+                     pasar páginas, zoom y sonido; sin descarga). Página propia en
+                     herramientas/libro-digital.html, igual que Chat en Español. -->
 
                 <div class="col-12">
                     <button type="button" id="btnHerrMovilAlfabetizacion" class="herr-movil-btn herr-movil-btn-alfabetizacion w-100">
@@ -899,6 +942,7 @@
                         <span class="herr-movil-flecha" aria-hidden="true">→</span>
                     </button>
                 </div>
+
                 <div class="col-12">
                     <button type="button" id="btnHerrMovilJugar" class="herr-movil-btn herr-movil-btn-jugar w-100">
                         <span class="herr-movil-ola" aria-hidden="true"></span>
@@ -911,15 +955,6 @@
                 </div>
 
                 <div class="col-12">
-                    <a href="herramientas/chat-espanol.html" id="btnHerrMovilChatEspanol" class="herr-movil-btn herr-movil-btn-chat w-100">
-                        <span class="herr-movil-ola" aria-hidden="true"></span>
-                        <span class="herr-movil-icono herr-chat-icon" aria-hidden="true"><span class="jp-chat-phone"><i class="jp-chat-top"></i><i class="jp-chat-msg jp-chat-msg-a">Hola 👋</i><i class="jp-chat-msg jp-chat-msg-b">¡Hola!</i><i class="jp-chat-cursor">✎</i></span></span>
-                        <span class="herr-movil-textos"><span class="herr-movil-texto">Chat en Español</span><span class="herr-movil-desc">Practica conversaciones y mejora tu escritura · Gratis</span></span>
-                        <span class="herr-movil-flecha" aria-hidden="true">→</span>
-                    </a>
-                </div>
-
-                <div class="col-12">
                     <button type="button" id="btnHerrMovilSubtitulos" class="herr-movil-btn herr-movil-btn-subtitulos w-100">
                         <span class="herr-movil-ola" aria-hidden="true"></span>
                         <span class="herr-movil-icono" aria-hidden="true"><img src="img/categorias/Subtítulos.webp" alt="" loading="lazy"></span>
@@ -929,7 +964,18 @@
                         <span class="herr-movil-flecha" aria-hidden="true">→</span>
                     </button>
                 </div>
+
+                <div class="col-12 herramientas-libro-digital">
+                    <a href="herramientas/libro-digital.html" id="btnHerrMovilLibro" class="herr-movil-btn herr-movil-btn-libro w-100">
+                        <span class="herr-movil-ola" aria-hidden="true"></span>
+                        <span class="herr-movil-icono herr-libro-icono" aria-hidden="true"><svg viewBox="0 0 48 48" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M24 11c-3.6-2.6-8.4-3.6-14-3v27c5.6-.6 10.4.4 14 3 3.6-2.6 8.4-3.6 14-3V8c-5.6-.6-10.4.4-14 3z"/><path d="M24 11v27"/><path d="M15 16.5c2-.3 3.8 0 5 .7M15 22c2-.3 3.8 0 5 .7M28 17.2c1.2-.7 3-1 5-.7M28 22.7c1.2-.7 3-1 5-.7"/></svg></span>
+                        <span class="herr-movil-textos"><span class="herr-movil-texto">Libro digital</span><span class="herr-movil-desc">Lee, haz zoom y pasa las páginas · Gratis</span></span>
+                        <span class="herr-movil-flecha" aria-hidden="true">→</span>
+                    </a>
+                </div>
+
 <div class="col-12 herramientas-proximamente-senas"><article id="senasTextoVozMovil" class="sena-ia-coming-card" aria-labelledby="senasTextoVozMovilTitulo"><span class="sena-ia-coming-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7l1.5-2h5L16 7h3a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/><circle cx="12" cy="13" r="3.5"/></svg></span><div class="sena-ia-coming-copy"><h3 id="senasTextoVozMovilTitulo">Señas a texto y voz</h3><p>Haz señas ante la cámara para convertirlas en texto y escucharlas en voz alta.</p></div><span class="miembros-access-status">Próximamente</span></article></div>
+
                 <div class="col-12 herramientas-proximamente-miembros"><a href="miembros/" id="btnZonaMiembros" class="miembros-access"><span class="miembros-access-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><path d="M12 14v3"/></svg></span><span class="miembros-access-copy"><span class="miembros-access-title">Zona de miembros</span></span><span class="miembros-access-status">Próximamente</span></a></div>
             </div>
         </div>
@@ -1992,15 +2038,15 @@
          lazy-modules.js ya intercepta clics antes que script.js, así que el
          orden lógico se mantiene aunque todos ejecuten tras el parseo del HTML. -->
     <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
-    <script defer src="js/lazy-modules.js?v=20261008-compacto-1"></script>
+    <script defer src="js/lazy-modules.js?v=20261119-1"></script>
     <script defer src="js/lspedia-media.js?v=20261113-2"></script>
     <script defer src="js/lspedia-core.js?v=20261010-rich-1"></script>
     <script defer src="js/busqueda-core.js?v=20261007-preguntas-1"></script>
     <!-- script.js: 350 KB — mayor ganancia de rendimiento al diferir.
          Con defer se descarga en paralelo al HTML pero ejecuta tras el parseo
          completo, en el mismo orden relativo que los scripts anteriores. -->
-    <script defer src="js/script.js?v=20261113-2"></script>
-    <script defer src="js/ficha-navegacion-ui.js?v=20261109-1"></script>
+    <script defer src="js/script.js?v=20261119-2"></script>
+    <script defer src="js/ficha-navegacion-ui.js?v=20261119-1"></script>
     <script defer src="js/vocabulario-publico.js?v=20261007-1"></script>
     <script defer src="js/buscador-predictivo.js?v=20260925-1"></script>
     <script>
@@ -2137,33 +2183,12 @@
          estado guardado en localStorage. -->
     <script>
         (function () {
-            // Menú flotante de accesos rápidos ("speed dial"): el botón
-            // principal (🤟🏻) despliega/cierra la listita de accesos
-            // (Jugar, Herramientas, Vocabulario, Apoyar LSPedia). El
+            // Menú flotante ("speed dial"): el botón principal (🤟🏻)
+            // despliega/cierra la lista con Apoyar LSPedia (donaciones) y
+            // las redes sociales. El
             // estado abierto/cerrado se recuerda en localStorage para que
             // la próxima visita respete cómo lo dejó la persona.
             const CLAVE_FAB_ABIERTO = "lspedia_fab_menu_abierto";
-
-            const btnAccesoHerramientas = document.getElementById("btnAccesoHerramientas");
-            if (btnAccesoHerramientas) {
-                btnAccesoHerramientas.addEventListener("click", () => {
-                    // Lleva directo al contenido de "Herramientas" (Subtítulos,
-                    // Jugar y Alfabetización), simulando el clic del botón real
-                    // del menú para no duplicar lógica.
-                    const link = document.getElementById("btnHerramientas");
-                    if (link) link.click();
-                });
-            }
-
-            const btnAccesoTemas = document.getElementById("btnAccesoTemas");
-            if (btnAccesoTemas) {
-                btnAccesoTemas.addEventListener("click", () => {
-                    // Lleva directo al contenido de "Temas orden", simulando el
-                    // clic del botón real del menú para no duplicar lógica.
-                    const link = document.getElementById("btnCategorias");
-                    if (link) link.click();
-                });
-            }
 
             const fabMenu = document.getElementById("fabMenuAccesos");
             const btnToggleAccesos = document.getElementById("btnToggleAccesos");
@@ -2261,7 +2286,7 @@
     </div>
 </footer>
 
-<script defer src="js/mejoras-producto.js?v=20261113-1"></script>
+<script defer src="js/mejoras-producto.js?v=20261119-1"></script>
 <script defer src="js/buscador-enfoque.js?v=20261008-6"></script>
 </body>
 </html>

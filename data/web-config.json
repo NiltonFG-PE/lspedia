@@ -6,8 +6,8 @@
     "logoOscuro": "",
     "logoEscala": 100,
     "orden": [
-      "diccionario",
       "vocabulario",
+      "diccionario",
       "herramientas",
       "nosotros"
     ],
@@ -23,7 +23,7 @@
         "visible": true
       },
       "herramientas": {
-        "texto": "Herramientas",
+        "texto": "Recursos",
         "icono": "img/icons/nav/icono-herramientas.webp",
         "visible": true
       },

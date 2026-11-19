@@ -4,34 +4,65 @@
 (function(){
     'use strict';
 
+    // ------------------------------------------------------------------
+    // DESCUBRE (tarjeta de la palabra del día)
+    // Se ve en Vocabulario y en Diccionario y alterna palabras de las dos
+    // fuentes: los días pares muestra una palabra del Diccionario y los
+    // impares una de Vocabulario (ayer y hoy suelen ser de fuentes
+    // distintas). Solo entran palabras con video. Para que la palabra de
+    // hoy no cambie sola mientras se cargan los datos, la fuente se decide
+    // por la fecha y no por lo que ya haya llegado.
+    // ------------------------------------------------------------------
+    const DESFASE_PERU_MS = 5 * 60 * 60 * 1000;
+    const TEXTO_SIN_DEFINICION = 'Mira la seña en video y descubre cómo se dice.';
+    let offsetDescubre = 0;
+    let palabraDescubre = null;
+    let fuenteDescubre = 'diccionario';
+
+    function tieneVideo(palabra){
+        const video = String((palabra && palabra.video) || '').trim();
+        if(!video) return false;
+        if(typeof window.extraerIdYouTube === 'function') return !!window.extraerIdYouTube(video);
+        return true;
+    }
+
+    function ocultarDescubre(){
+        const tarjeta = document.getElementById('senalDelDia');
+        if(tarjeta) tarjeta.style.display = 'none';
+    }
+
     function abrirDescubreEnDiccionario(palabra){
         if(!palabra) return;
         if(typeof window.irAlBuscador === 'function'){
             window.irAlBuscador({ sinEnfoque: true, irArriba: false });
         }
-        const tarjeta = document.getElementById('senalDelDia');
-        if(tarjeta) tarjeta.style.display = 'none';
+        ocultarDescubre();
         window.scrollTo({ top: 0, behavior: 'smooth' });
         if(typeof window.mostrarPalabra === 'function') window.mostrarPalabra(palabra, { enCategorias: false });
     }
 
-    function fijarNavegacionDescubre(){
-        const app = window.App;
-        if(!app || !Array.isArray(app.datos)) return;
-        const titulo = document.getElementById('tituloDelDia');
-        if(!titulo) return;
-        const nombre = String(titulo.textContent || '').trim().replace(/^[“\"]|[”\"]$/g, '');
-        if(!nombre) return;
-        const normalizar = function(valor){
-            return String(valor || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
-        };
-        const palabra = app.datos.find(function(item){
-            return item && normalizar(item.palabra) === normalizar(nombre);
-        });
+    function abrirDescubreEnVocabulario(palabra){
         if(!palabra) return;
+        const referencia = typeof window.obtenerIdPalabra === 'function'
+            ? window.obtenerIdPalabra(palabra)
+            : palabra.palabra;
+        ocultarDescubre();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        // Lleva solo a la sección de Vocabulario si la persona estaba en Diccionario.
+        if(typeof window.mostrarPalabraVocabularioPorReferencia === 'function'
+            && window.mostrarPalabraVocabularioPorReferencia(referencia)) return;
+        window.location.href = window.location.pathname
+            + '?vista=vocabulario&p=' + encodeURIComponent(referencia || palabra.palabra)
+            + '&fuente=vocabulario';
+    }
+
+    function fijarNavegacionDescubre(){
+        if(!palabraDescubre) return;
+        const palabra = palabraDescubre;
         const abrir = function(evento){
             if(evento){ evento.preventDefault(); evento.stopPropagation(); }
-            abrirDescubreEnDiccionario(palabra);
+            if(fuenteDescubre === 'vocabulario') abrirDescubreEnVocabulario(palabra);
+            else abrirDescubreEnDiccionario(palabra);
         };
         const boton = document.getElementById('btnVerDelDia');
         if(boton) boton.onclick = abrir;
@@ -42,37 +73,83 @@
         }
     }
 
-    function activarDescubreSoloConVideo(){
-        const original = window.mostrarSenalDelDia;
-        if(typeof original !== 'function' || original.__lspediaSoloVideos) return;
+    // Indica de qué sección es la palabra y deja un texto útil si no tiene definición.
+    function completarTarjetaDescubre(palabra, fuente){
+        const insignia = document.getElementById('categoriaDelDia');
+        if(insignia){
+            const categoria = String(palabra.categoria || '').trim();
+            const seccion = fuente === 'vocabulario' ? 'Vocabulario' : 'Diccionario';
+            insignia.textContent = categoria ? seccion + ' · ' + categoria : seccion;
+        }
+        const descripcion = document.getElementById('descripcionDelDia');
+        if(descripcion && !String(descripcion.textContent || '').trim()){
+            descripcion.textContent = TEXTO_SIN_DEFINICION;
+        }
+    }
 
-        function mostrarDescubreSoloConVideo(){
+    function activarDescubreMezclado(){
+        const original = window.mostrarSenalDelDia;
+        if(typeof original !== 'function' || original.__lspediaDescubreMezclado) return;
+
+        function mostrarDescubreMezclado(offset){
             const app = window.App;
-            if(!app || !Array.isArray(app.datos)) return original.apply(this, arguments);
-            const datosCompletos = app.datos;
-            const palabrasConVideo = datosCompletos.filter(function(palabra){
-                const video = String((palabra && palabra.video) || '').trim();
-                if(!video) return false;
-                if(typeof window.extraerIdYouTube === 'function') return !!window.extraerIdYouTube(video);
-                return true;
-            });
-            if(!palabrasConVideo.length){
-                const tarjeta = document.getElementById('senalDelDia');
-                if(tarjeta) tarjeta.style.display = 'none';
+            if(!app || !Array.isArray(app.datos) || !app.datos.length) return original.apply(this, arguments);
+            if(typeof offset === 'number') offsetDescubre = offset;
+
+            const numeroDia = Math.floor((Date.now() - DESFASE_PERU_MS) / 86400000) - offsetDescubre;
+            const esDiaVocabulario = (((numeroDia % 2) + 2) % 2) === 1;
+
+            const api = window.LSPediaVocabularioPublico;
+            const estadoVocabulario = api && typeof api.estado === 'function' ? api.estado() : 'error';
+            const delDiccionario = app.datos.filter(tieneVideo);
+            const delVocabulario = estadoVocabulario === 'listo' ? api.obtener().filter(tieneVideo) : [];
+
+            // Hoy toca Vocabulario pero aún se está descargando: se espera (el aviso
+            // "listo/error" vuelve a llamar a esta función) en vez de mostrar otra palabra.
+            if(esDiaVocabulario && estadoVocabulario === 'cargando'){
+                if(api && typeof api.cargar === 'function') api.cargar();
                 return;
             }
-            app.datos = palabrasConVideo;
+
+            let fuente = esDiaVocabulario ? 'vocabulario' : 'diccionario';
+            let lista = fuente === 'vocabulario' ? delVocabulario : delDiccionario;
+            if(!lista.length){
+                fuente = fuente === 'vocabulario' ? 'diccionario' : 'vocabulario';
+                lista = fuente === 'vocabulario' ? delVocabulario : delDiccionario;
+            }
+            if(!lista.length){
+                ocultarDescubre();
+                return;
+            }
+
+            const posicion = Math.floor(numeroDia / 2);
+            const palabra = lista[((posicion % lista.length) + lista.length) % lista.length];
+            palabraDescubre = palabra;
+            fuenteDescubre = fuente;
+
+            // El original elige por fecha dentro de App.datos: se le entrega solo la
+            // palabra ya elegida para que dibuje exactamente esa.
+            const datosCompletos = app.datos;
+            app.datos = [palabra];
             try {
-                const resultado = original.apply(this, arguments);
+                const resultado = original.call(this, offsetDescubre);
+                completarTarjetaDescubre(palabra, fuente);
                 fijarNavegacionDescubre();
                 return resultado;
             }
             finally { app.datos = datosCompletos; }
         }
 
-        mostrarDescubreSoloConVideo.__lspediaSoloVideos = true;
-        window.mostrarSenalDelDia = mostrarDescubreSoloConVideo;
-        if(window.App && Array.isArray(window.App.datos) && window.App.datos.length) mostrarDescubreSoloConVideo();
+        mostrarDescubreMezclado.__lspediaDescubreMezclado = true;
+        window.mostrarSenalDelDia = mostrarDescubreMezclado;
+
+        // Cuando Vocabulario termina de cargar (o falla) se repinta para usar sus palabras.
+        const repintar = function(){
+            if(window.App && Array.isArray(window.App.datos) && window.App.datos.length) mostrarDescubreMezclado();
+        };
+        document.addEventListener('lspedia:vocabularioPublicoListo', repintar);
+        document.addEventListener('lspedia:vocabularioPublicoError', repintar);
+        repintar();
     }
 
     function activarAutoScrollIndiceDiccionario(){
@@ -170,7 +247,7 @@
         }
     }
 
-    activarDescubreSoloConVideo();
+    activarDescubreMezclado();
     activarAutoScrollIndiceDiccionario();
     desactivarAvisoModalVocabulario();
     agregarFacebookRedesSociales();
@@ -228,13 +305,13 @@
 
         cargar('js/optimizacion-errores.js?v=20260914-1', function(){
             cargar('js/rendimiento-movil.js?v=20261007-light-1', function(){
-                cargar('js/mejoras-producto-base.js?v=20260914', function(){
-                    cargar('js/lo-nuevo.js?v=20261113-1');
-                    cargar('js/i18n.js?v=20261113-1', function(){
+                cargar('js/mejoras-producto-base.js?v=20261119-3', function(){
+                    cargar('js/lo-nuevo.js?v=20261119-1');
+                    cargar('js/i18n.js?v=20261119-1', function(){
                         cargar('js/i18n-restaurar.js?v=20261003-mision-2', function(){
                             cargar('js/i18n-auto.js?v=20260925-3', function(){
                                 cargar('js/i18n-nosotros.js?v=20261024-textos-1', function(){
-                                    cargar('js/i18n-completo.js?v=20261024-textos-1', function(){
+                                    cargar('js/i18n-completo.js?v=20261119-1', function(){
                                         agregarFacebookRedesSociales();
                                         cargar('js/buscador-visual.js?v=20260914');
                                     });

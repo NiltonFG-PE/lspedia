@@ -48,14 +48,16 @@
     // ---------------------------------------------------------
     // AISLAMIENTO VISUAL DE SECCIONES
     // ---------------------------------------------------------
-    // "Descubre / Seña del día" pertenece exclusivamente al Diccionario.
+    // "Descubre" se muestra en Vocabulario y en Diccionario (alterna palabras
+    // de ambas fuentes). Fuera de ellas (Recursos y Sobre nosotros) permanece
+    // oculto.
     // script.js tiene una red de seguridad que, si palabras.json tarda o
     // falla, convierte esa tarjeta en "No se pudo cargar / Sin conexión".
     // Antes esa red podía ejecutarse mientras el usuario estaba dentro de
-    // Herramientas y volver a mostrar la tarjeta encima del menú al salir de
+    // Recursos y volver a mostrar la tarjeta encima del menú al salir de
     // Alfabeto y números. Esta clase actúa como última barrera visual: aunque
-    // otro código intente cambiar el style inline de #senalDelDia, fuera del
-    // Diccionario permanece oculto mediante !important.
+    // otro código intente cambiar el style inline de #senalDelDia, fuera de
+    // Vocabulario y Diccionario permanece oculto mediante !important.
     const CLASE_SIN_DESCUBRE = 'lsp-vista-sin-descubre';
 
     function vistaDebeOcultarDescubre() {
@@ -65,15 +67,13 @@
         } catch (_e) {}
 
         if (
-            vista === 'vocabulario' ||
-            vista === 'temas' ||
             vista === 'nosotros' ||
             vista.indexOf('herramientas') === 0
         ) return true;
 
         // Respaldo para navegación sin recarga: script.js marca el botón
         // superior activo aunque esté oculto en móvil.
-        const ids = ['btnCategorias', 'btnHerramientas', 'btnSobreNosotros'];
+        const ids = ['btnHerramientas', 'btnSobreNosotros'];
         return ids.some((id) => {
             const boton = document.getElementById(id);
             return !!(boton && boton.classList.contains('active'));

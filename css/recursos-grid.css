@@ -1,0 +1,219 @@
+/* LSPedia — Recursos en cuadrícula
+   Las tarjetas de Recursos (Chat en Español, Alfabeto y números, Jugar,
+   Subtítulos, Libro digital y los avisos "Próximamente") pasan de una
+   columna de barras anchas a una cuadrícula:
+   - celular: 2 columnas
+   - tablet y computadora: 3 columnas
+   Cada tarjeta se ve en vertical (icono, título, descripción) y conserva el
+   color propio de la herramienta y su botón de flecha. Va después de los
+   demás CSS y usa selectores con más peso para ganarles sin tocarlos. */
+
+#herramientasMenuMovil {
+    width: min(100%, 1040px);
+}
+
+/* ---------- La fila de Bootstrap se convierte en cuadrícula ---------- */
+html body #herramientasMenuMovil #herramientasMenuMovilRow {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    align-items: stretch;
+    margin: 0;
+    --bs-gutter-x: 0;
+    --bs-gutter-y: 0;
+}
+html body #herramientasMenuMovil #herramientasMenuMovilRow > * {
+    width: auto;
+    max-width: none;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+}
+#herramientasMenuMovilRow > .herramientas-proximamente-miembros {
+    grid-column: 1 / -1;
+}
+/* El orden de Alfabeto, Jugar y Subtítulos (1, 2, 3) lo pone data/web-config.json
+   con la propiedad "order". El Libro digital va justo después de ellos. */
+#herramientasMenuMovilRow > .herramientas-libro-digital {
+    order: 3;
+}
+@media (min-width: 700px) {
+    html body #herramientasMenuMovil #herramientasMenuMovilRow {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+    }
+}
+
+/* ---------- Tarjeta vertical ---------- */
+html body #herramientasMenuMovil .herr-movil-btn {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 14px;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    padding: 20px 18px 18px;
+    border-radius: 22px;
+    text-align: left;
+    overflow: hidden;
+    background-image: linear-gradient(165deg, #ffffff 0%, #f5f8fc 100%);
+    border: 1px solid rgba(148, 163, 184, 0.22) !important;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 10px 26px rgba(15, 23, 42, 0.08) !important;
+}
+html body #herramientasMenuMovil .herr-movil-btn:hover,
+html body #herramientasMenuMovil .herr-movil-btn:focus-visible {
+    transform: translateY(-3px);
+    box-shadow: 0 0 0 4px var(--herr-glow, rgba(15, 23, 42, 0.08)),
+                0 16px 34px var(--herr-glow-fuerte, rgba(15, 23, 42, 0.16)) !important;
+}
+html body #herramientasMenuMovil .herr-movil-btn:focus-visible {
+    outline: 3px solid var(--herr-flecha-color, #1d4ed8);
+    outline-offset: 3px;
+}
+html body #herramientasMenuMovil .herr-movil-btn:active {
+    transform: scale(0.98) !important;
+}
+
+/* La "ola" de color pasa a ser un círculo en la esquina superior derecha,
+   con la flecha encima. */
+html body #herramientasMenuMovil .herr-movil-ola {
+    top: -54px;
+    right: -54px;
+    bottom: auto;
+    width: 140px;
+    height: 140px;
+}
+html body #herramientasMenuMovil .herr-movil-flecha {
+    top: 14px;
+    right: 14px;
+    width: 34px;
+    height: 34px;
+    font-size: 16px;
+    transform: none;
+}
+html body #herramientasMenuMovil .herr-movil-btn:hover .herr-movil-flecha,
+html body #herramientasMenuMovil .herr-movil-btn:focus-visible .herr-movil-flecha {
+    transform: translateX(3px);
+}
+
+html body #herramientasMenuMovil .herr-movil-icono {
+    width: 60px;
+    height: 60px;
+    border-radius: 18px;
+}
+html body #herramientasMenuMovil .herr-movil-textos {
+    width: 100%;
+    padding-right: 0;
+}
+html body #herramientasMenuMovil .herr-movil-texto {
+    font-size: 1.06rem;
+    line-height: 1.2;
+    letter-spacing: 0;
+}
+html body #herramientasMenuMovil .herr-movil-desc {
+    max-width: none;
+    margin-top: 6px;
+    font-size: 0.8rem;
+    line-height: 1.42;
+    font-weight: 500;
+}
+
+/* ---------- "Próximamente" como una tarjeta más de la cuadrícula ---------- */
+html body #herramientasMenuMovil .herramientas-proximamente-senas .sena-ia-coming-card {
+    position: relative;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 14px;
+    height: 100%;
+    min-height: 0;
+    padding: 20px 18px 18px;
+    border-radius: 22px;
+}
+html body #herramientasMenuMovil .herramientas-proximamente-senas .sena-ia-coming-icon {
+    flex: 0 0 auto;
+    width: 60px;
+    height: 60px;
+    border-radius: 18px;
+}
+html body #herramientasMenuMovil .herramientas-proximamente-senas .sena-ia-coming-copy {
+    flex: 0 1 auto;
+    width: 100%;
+}
+html body #herramientasMenuMovil .herramientas-proximamente-senas .sena-ia-coming-copy h3 {
+    font-size: 1.02rem;
+    margin-bottom: 6px;
+}
+html body #herramientasMenuMovil .herramientas-proximamente-senas .sena-ia-coming-copy p {
+    font-size: 0.8rem;
+    line-height: 1.42;
+}
+html body #herramientasMenuMovil .herramientas-proximamente-senas .miembros-access-status {
+    align-self: flex-start;
+    margin: auto 0 0;
+}
+/* En pantallas más anchas la etiqueta cabe arriba a la derecha, igual que
+   la flecha de las demás tarjetas. */
+@media (min-width: 700px) {
+    html body #herramientasMenuMovil .herramientas-proximamente-senas .miembros-access-status {
+        position: absolute;
+        top: 18px;
+        right: 16px;
+        margin: 0;
+    }
+}
+
+/* ---------- Celular ---------- */
+@media (max-width: 699.98px) {
+    html body #herramientasMenuMovil .herr-movil-btn,
+    html body #herramientasMenuMovil .herramientas-proximamente-senas .sena-ia-coming-card {
+        min-height: 0;
+        padding: 16px 14px 14px;
+        gap: 12px;
+        border-radius: 20px;
+    }
+    html body #herramientasMenuMovil .herr-movil-icono,
+    html body #herramientasMenuMovil .herramientas-proximamente-senas .sena-ia-coming-icon {
+        width: 54px;
+        height: 54px;
+        border-radius: 16px;
+    }
+    html body #herramientasMenuMovil .herr-movil-ola {
+        top: -50px;
+        right: -50px;
+        width: 118px;
+        height: 118px;
+    }
+    html body #herramientasMenuMovil .herr-movil-flecha {
+        top: 10px;
+        right: 10px;
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
+    }
+    html body #herramientasMenuMovil .herr-movil-texto { font-size: 0.98rem; }
+    html body #herramientasMenuMovil .herr-movil-desc { font-size: 0.74rem; }
+    html body #herramientasMenuMovil .herramientas-proximamente-senas .sena-ia-coming-copy h3 { font-size: 0.95rem; }
+    html body #herramientasMenuMovil .herramientas-proximamente-senas .sena-ia-coming-copy p { font-size: 0.74rem; }
+}
+
+/* ---------- Animación de entrada: una sola secuencia al abrir Recursos ---------- */
+#herramientasMenuMovil:not(.d-none) .col-12:nth-child(4) { animation-delay: 0.28s; }
+#herramientasMenuMovil:not(.d-none) .col-12:nth-child(5) { animation-delay: 0.36s; }
+#herramientasMenuMovil:not(.d-none) .col-12:nth-child(6) { animation-delay: 0.44s; }
+#herramientasMenuMovil:not(.d-none) .col-12:nth-child(7) { animation-delay: 0.52s; }
+
+@media (prefers-reduced-motion: reduce) {
+    html body #herramientasMenuMovil .herr-movil-btn:hover,
+    html body #herramientasMenuMovil .herr-movil-btn:focus-visible { transform: none; }
+}
+
+/* ---------- Modo oscuro ---------- */
+html[data-lsp-tema="dark"] body #herramientasMenuMovil .herr-movil-btn:hover,
+html[data-lsp-tema="dark"] body #herramientasMenuMovil .herr-movil-btn:focus-visible {
+    border-color: var(--herr-flecha-color, #5b9dff) !important;
+}

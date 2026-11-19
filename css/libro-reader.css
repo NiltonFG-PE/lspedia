@@ -1,0 +1,438 @@
+/* LSPedia — visor del libro digital (herramientas/libro-digital.html)
+   Escena oscura para leer, libro al centro, barra de controles flotante.
+   Protección: solo disuasoria (sin menú contextual, sin arrastrar, sin
+   selección ni impresión). No puede impedir capturas de pantalla. */
+
+:root {
+    --lector-fondo-1: #1b3a68;
+    --lector-fondo-2: #0e1c33;
+    --lector-fondo-3: #08111f;
+    --lector-vidrio: rgba(10, 20, 36, 0.74);
+    --lector-borde: rgba(255, 255, 255, 0.13);
+    --lector-texto: #eaf1fb;
+    --lector-texto-suave: #a9bbd3;
+    --lector-acento: #5b9dff;
+    --lector-papel: #fbfaf6;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { height: 100%; margin: 0; }
+
+body.lector {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    overscroll-behavior: none;
+    background:
+        radial-gradient(1300px 760px at 50% 30%, var(--lector-fondo-1) 0%, var(--lector-fondo-2) 58%, var(--lector-fondo-3) 100%);
+    color: var(--lector-texto);
+    font-family: "Poppins", system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.lector-noscript { margin: 0; padding: 14px 18px; background: #fff3cd; color: #5c4400; }
+.lector-noscript a { color: inherit; font-weight: 600; }
+
+.lector-solo-lectores {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* ---------- Barra superior ---------- */
+.lector-barra {
+    flex: 0 0 auto;
+    display: grid;
+    grid-template-columns: 1fr minmax(0, 2fr) 1fr;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 18px;
+    padding-top: max(12px, env(safe-area-inset-top));
+}
+.lector-volver {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--lector-borde);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--lector-texto);
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+.lector-volver:hover { background: rgba(255, 255, 255, 0.14); color: var(--lector-texto); }
+.lector-titulo { min-width: 0; text-align: center; line-height: 1.25; }
+.lector-titulo strong {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 1.02rem;
+    font-weight: 600;
+}
+.lector-titulo span {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--lector-texto-suave);
+    font-size: 0.8rem;
+}
+.lector-marca {
+    justify-self: end;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--lector-texto-suave);
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+.lector-marca img { border-radius: 8px; }
+
+/* ---------- Escena ---------- */
+.lector-escena {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 6px 72px 10px;
+    touch-action: none;
+}
+.lector-zoom {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-origin: 50% 50%;
+    will-change: transform;
+}
+.lector-zoom.lector-zoom-animado { transition: transform 0.22s ease; }
+.libro {
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+    /* StPageFlip fija su propio "transform" en este elemento, por eso el
+       desplazamiento se hace con "left". */
+    position: relative;
+    left: var(--libro-desplaza, 0px);
+    transition: left 0.5s cubic-bezier(0.22, 0.9, 0.28, 1);
+}
+/* Con zoom el libro no recibe toques; la escena arrastra y hace pinza. */
+.libro.libro-sin-eventos { pointer-events: none; }
+.lector-escena.lector-arrastrable { cursor: grab; }
+.lector-escena.lector-arrastrando { cursor: grabbing; }
+
+/* Marca de agua tenue, solo sobre las páginas (texto oscuro, casi invisible
+   sobre el fondo oscuro de la escena). */
+.lector-zoom.con-marca::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 5;
+    background-image: var(--lector-marca-img);
+    background-size: 280px 200px;
+    opacity: 0.9;
+}
+
+/* Páginas: imagen de fondo (no <img>) para que no haya "guardar imagen". */
+.pagina {
+    background-color: var(--lector-papel);
+    overflow: hidden;
+}
+.pagina-img {
+    position: absolute;
+    inset: 0;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+.pagina-img.lista { opacity: 1; }
+.pagina[data-density="hard"] { background-color: #16345f; }
+.pagina::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+.pagina.--left::after { background: linear-gradient(270deg, rgba(0, 0, 0, 0.16) 0%, rgba(0, 0, 0, 0) 9%); }
+.pagina.--right::after { background: linear-gradient(90deg, rgba(0, 0, 0, 0.16) 0%, rgba(0, 0, 0, 0) 9%); }
+
+@media (min-width: 900px) and (hover: hover) {
+    .libro { filter: drop-shadow(0 26px 30px rgba(0, 0, 0, 0.42)); }
+}
+
+/* ---------- Flechas laterales ---------- */
+.lector-flecha {
+    position: absolute;
+    top: 50%;
+    z-index: 6;
+    width: 46px;
+    height: 46px;
+    margin-top: -23px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px solid var(--lector-borde);
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--lector-texto);
+    cursor: pointer;
+    transition: background 0.2s ease, opacity 0.2s ease;
+}
+.lector-flecha svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.lector-flecha-prev { left: 14px; }
+.lector-flecha-next { right: 14px; }
+.lector-flecha:hover:not(:disabled) { background: rgba(255, 255, 255, 0.18); }
+.lector-flecha:disabled { opacity: 0.25; cursor: default; }
+
+/* ---------- Estado de carga / error ---------- */
+.lector-estado {
+    position: absolute;
+    inset: 0;
+    z-index: 8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 24px;
+    text-align: center;
+    font-size: 0.98rem;
+    color: var(--lector-texto);
+    transition: opacity 0.3s ease;
+}
+.lector-estado.oculto { opacity: 0; pointer-events: none; }
+.lector-spinner {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.18);
+    border-top-color: var(--lector-acento);
+    animation: lectorGirar 0.9s linear infinite;
+}
+.lector-estado.con-error .lector-spinner { display: none; }
+.lector-reintentar {
+    padding: 10px 22px;
+    border-radius: 999px;
+    border: 0;
+    background: var(--lector-acento);
+    color: #06142b;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+@keyframes lectorGirar { to { transform: rotate(360deg); } }
+
+/* ---------- Miniaturas ---------- */
+.lector-miniaturas {
+    flex: 0 0 auto;
+    margin: 0 auto 10px;
+    width: min(100% - 24px, 980px);
+    padding: 12px 14px;
+    border-radius: 18px;
+    border: 1px solid var(--lector-borde);
+    background: var(--lector-vidrio);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+}
+.lector-miniaturas[hidden] { display: none; }
+.lector-miniaturas-lista {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 4px 2px 8px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+.lector-mini {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--lector-texto-suave);
+    font: inherit;
+    font-size: 0.76rem;
+    cursor: pointer;
+}
+.lector-mini-img {
+    display: block;
+    width: 74px;
+    aspect-ratio: var(--lector-prop, 0.707);
+    border-radius: 4px;
+    background-color: #fbfaf6;
+    background-size: cover;
+    background-position: center;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    transition: outline-color 0.2s ease, transform 0.2s ease;
+}
+.lector-mini:hover .lector-mini-img { transform: translateY(-2px); }
+.lector-mini.actual { color: var(--lector-texto); font-weight: 600; }
+.lector-mini.actual .lector-mini-img { outline-color: var(--lector-acento); }
+
+/* ---------- Barra de controles ---------- */
+.lector-herramientas {
+    flex: 0 0 auto;
+    align-self: center;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0 12px;
+    margin-bottom: max(14px, env(safe-area-inset-bottom));
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--lector-borde);
+    background: var(--lector-vidrio);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+}
+.lector-btn {
+    display: grid;
+    place-items: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--lector-texto);
+    font: inherit;
+    cursor: pointer;
+    transition: background 0.18s ease;
+}
+.lector-btn:hover { background: rgba(255, 255, 255, 0.14); }
+.lector-btn[aria-expanded="true"],
+.lector-btn.activo { background: rgba(91, 157, 255, 0.25); }
+.lector-btn svg,
+.lector-btn svg * { pointer-events: none; }
+.lector-btn svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.lector-zoom-valor { padding: 0 8px; font-size: 0.8rem; font-weight: 600; min-width: 52px; }
+
+.lector-pagina {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 8px;
+    font-size: 0.9rem;
+    color: var(--lector-texto-suave);
+    -webkit-user-select: text;
+    user-select: text;
+}
+.lector-pagina input {
+    width: 3.1em;
+    height: 32px;
+    padding: 0 4px;
+    border-radius: 8px;
+    border: 1px solid var(--lector-borde);
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--lector-texto);
+    font: inherit;
+    font-weight: 600;
+    text-align: center;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+.lector-pagina input::-webkit-outer-spin-button,
+.lector-pagina input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.lector-sep { width: 1px; height: 22px; margin: 0 4px; background: var(--lector-borde); }
+
+/* Íconos que cambian de estado */
+#btnSonido .ico-sonido-off, #btnSonido[aria-pressed="false"] .ico-sonido-on { display: none; }
+#btnSonido[aria-pressed="false"] .ico-sonido-off { display: block; }
+#btnPantalla .ico-pantalla-cerrar { display: none; }
+#btnPantalla.activo .ico-pantalla-abrir { display: none; }
+#btnPantalla.activo .ico-pantalla-cerrar { display: block; }
+#btnPantalla[hidden] { display: none; }
+
+/* Foco visible */
+.lector-btn:focus-visible,
+.lector-flecha:focus-visible,
+.lector-volver:focus-visible,
+.lector-mini:focus-visible,
+.lector-reintentar:focus-visible,
+.lector-pagina input:focus-visible {
+    outline: 3px solid var(--lector-acento);
+    outline-offset: 2px;
+}
+
+/* ---------- Tablet / móvil ---------- */
+@media (max-width: 899.98px) {
+    .lector-escena { padding: 4px 8px 8px; }
+    .lector-flecha { width: 40px; height: 40px; margin-top: -20px; background: rgba(8, 17, 31, 0.55); }
+    .lector-flecha-prev { left: 6px; }
+    .lector-flecha-next { right: 6px; }
+}
+@media (max-width: 640px) {
+    .lector-barra { grid-template-columns: auto minmax(0, 1fr) auto; padding: 8px 12px; padding-top: max(8px, env(safe-area-inset-top)); gap: 8px; }
+    .lector-volver { padding: 7px 12px; font-size: 0.82rem; }
+    .lector-marca span { display: none; }
+    .lector-titulo strong { font-size: 0.92rem; }
+    .lector-herramientas { gap: 0; padding: 4px 6px; }
+    .lector-btn { min-width: 38px; height: 38px; }
+    .lector-btn svg { width: 20px; height: 20px; }
+    .lector-zoom-valor { display: none; }
+    .lector-sep { margin: 0 2px; }
+    .lector-pagina { padding: 0 4px; font-size: 0.82rem; }
+    .lector-pagina input { width: 2.7em; height: 30px; }
+}
+@media (max-height: 520px) and (orientation: landscape) {
+    .lector-barra { padding-top: 4px; padding-bottom: 4px; }
+    .lector-escena { padding-top: 0; padding-bottom: 4px; }
+    .lector-herramientas { margin-bottom: 6px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .lector-spinner { animation-duration: 2.4s; }
+    .lector-zoom.lector-zoom-animado,
+    .libro,
+    .pagina-img,
+    .lector-mini-img { transition: none; }
+}
+
+/* ---------- Impresión: el libro es solo para leer en pantalla ---------- */
+@media print {
+    body.lector > * { display: none !important; }
+    body.lector::after {
+        content: "Este libro es solo para leer en pantalla.";
+        display: block;
+        padding: 32px;
+        color: #000;
+        font-family: sans-serif;
+        font-size: 18px;
+    }
+}

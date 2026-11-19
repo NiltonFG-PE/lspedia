@@ -1,0 +1,106 @@
+/* LSPedia — tarjeta del creador (Diccionario)
+   Va dentro del encabezado del Diccionario, justo encima del buscador, y
+   muestra solo el nombre y los tres roles: intérprete de LSP, traductor y
+   creador de LSPedia. script.js le quita o pone "d-none" según la vista. */
+
+/* Garantía CSS: nunca se ve en Vocabulario ni en Recursos / Sobre nosotros. */
+body.vista-temas-movil #lspCreador,
+body.lsp-inicio-oculto #lspCreador {
+    display: none !important;
+}
+
+#lspCreador.lsp-creador:not(.d-none) {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    margin: 0 0 16px;
+    padding: 12px 18px 12px 14px;
+    border: 1px solid #dbe6f5;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #ffffff 0%, #f3f8ff 100%);
+    box-shadow: 0 6px 18px rgba(27, 58, 105, .08);
+}
+
+#lspCreador .lsp-creador-foto {
+    flex: 0 0 72px;
+    width: 72px;
+    height: 72px;
+    padding: 3px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ffd54a, #1976f3);
+    box-shadow: 0 4px 12px rgba(25, 118, 243, .22);
+}
+
+#lspCreador .lsp-creador-foto img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center 28%;
+}
+
+#lspCreador .lsp-creador-info {
+    min-width: 0;
+    text-align: left;
+}
+
+#lspCreador .lsp-creador-nombre {
+    margin: 0 0 7px;
+    font-size: 1.12rem;
+    font-weight: 800;
+    letter-spacing: -.01em;
+    line-height: 1.2;
+    color: #14284b;
+}
+
+#lspCreador .lsp-creador-roles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0;
+}
+
+#lspCreador .lsp-creador-rol {
+    display: inline-block;
+    padding: 4px 11px;
+    border-radius: 999px;
+    font-size: .78rem;
+    font-weight: 700;
+    line-height: 1.3;
+    white-space: nowrap;
+}
+
+#lspCreador .lsp-creador-rol-interprete { background: #e4efff; color: #1556c0; }
+#lspCreador .lsp-creador-rol-traductor  { background: #fff3c7; color: #8a5400; }
+#lspCreador .lsp-creador-rol-creador    { background: #e1f5ee; color: #0b6b55; }
+
+@media (max-width: 575.98px) {
+    #lspCreador.lsp-creador:not(.d-none) {
+        gap: 12px;
+        margin-bottom: 14px;
+        padding: 10px 12px;
+        border-radius: 18px;
+    }
+    #lspCreador .lsp-creador-foto {
+        flex-basis: 60px;
+        width: 60px;
+        height: 60px;
+    }
+    #lspCreador .lsp-creador-nombre { font-size: 1.02rem; }
+    #lspCreador .lsp-creador-rol { padding: 3px 9px; font-size: .72rem; }
+}
+
+/* Modo oscuro */
+html[data-lsp-tema="dark"] #lspCreador.lsp-creador {
+    background: linear-gradient(135deg, #172436 0%, #1b2d44 100%);
+    border-color: #30435a;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .28);
+}
+html[data-lsp-tema="dark"] #lspCreador .lsp-creador-foto img { border-color: #172436; }
+html[data-lsp-tema="dark"] #lspCreador .lsp-creador-nombre { color: #e1edff; }
+html[data-lsp-tema="dark"] #lspCreador .lsp-creador-rol-interprete { background: #1d3a66; color: #a9ccff; }
+html[data-lsp-tema="dark"] #lspCreador .lsp-creador-rol-traductor  { background: #4a3a10; color: #ffd978; }
+html[data-lsp-tema="dark"] #lspCreador .lsp-creador-rol-creador    { background: #123f36; color: #8fe0c6; }

@@ -1,0 +1,16 @@
+/* LSPedia — acceso al Libro digital desde Recursos (#btnHerrMovilLibro).
+   El visor en sí vive en herramientas/libro-digital.html (css/libro-reader.css).
+   La forma de la tarjeta la define css/recursos-grid.css; aquí solo el color. */
+
+#herramientasMenuMovil .herr-movil-btn-libro {
+    text-decoration: none;
+    --herr-flecha-color: #be123c;
+    --herr-glow: rgba(190, 18, 60, 0.14);
+    --herr-glow-fuerte: rgba(190, 18, 60, 0.24);
+}
+.herr-movil-btn-libro .herr-movil-icono { background-color: #ffe4e9; color: #be123c; }
+.herr-movil-btn-libro .herr-movil-texto { color: #be123c; }
+.herr-movil-btn-libro .herr-movil-ola { background: linear-gradient(135deg, #fda4af, #e11d48); }
+.herr-libro-icono svg { display: block; }
+html[data-lsp-tema="dark"] .herr-movil-btn-libro .herr-movil-icono { background-color: #4a1d2c; color: #fda4af; }
+html[data-lsp-tema="dark"] .herr-movil-btn-libro .herr-movil-texto { color: #fda4af; }

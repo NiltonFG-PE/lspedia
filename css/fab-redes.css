@@ -1,0 +1,55 @@
+/* LSPedia — botones de redes sociales del menú flotante (versión web).
+   El panel muestra solo dos cosas: Apoyar LSPedia (corazón) y las redes
+   sociales para seguir al creador. Cada red usa el color de su marca con
+   el ícono en blanco, igual que en el pie de página.
+   El tamaño y la forma de los botones los define fab-dock-delgado.css; acá
+   solo se añade el color y se corrige que son enlaces (<a>) y no botones. */
+
+#fabMenuAccesos a.fab-item-btn-red {
+    text-decoration: none;
+    color: #fff;
+    border-color: rgba(255, 255, 255, .55);
+}
+
+#fabMenuAccesos a.fab-item-btn-red svg {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 28px;
+    height: 28px;
+    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .25));
+}
+
+#fabMenuAccesos .fab-item-btn-tiktok {
+    background: linear-gradient(145deg, #2a2a33, #050507);
+}
+
+#fabMenuAccesos .fab-item-btn-instagram {
+    background: radial-gradient(circle at 30% 108%, #fdf497 0%, #fdf497 6%, #fd5949 42%, #d6249f 62%, #285aeb 92%);
+}
+
+#fabMenuAccesos .fab-item-btn-youtube {
+    background: linear-gradient(145deg, #ff3b3b, #c4000a);
+}
+
+#fabMenuAccesos .fab-item-btn-facebook {
+    background: linear-gradient(145deg, #2f8cff, #0b5fd0);
+}
+
+/* Al pasar el cursor, un brillo suave del color de cada marca. */
+#fabMenuAccesos .fab-item-btn-tiktok:hover,
+#fabMenuAccesos .fab-item-btn-tiktok:focus-visible {
+    box-shadow: 0 12px 24px rgba(5, 5, 7, .38);
+}
+#fabMenuAccesos .fab-item-btn-instagram:hover,
+#fabMenuAccesos .fab-item-btn-instagram:focus-visible {
+    box-shadow: 0 12px 24px rgba(214, 36, 159, .38);
+}
+#fabMenuAccesos .fab-item-btn-youtube:hover,
+#fabMenuAccesos .fab-item-btn-youtube:focus-visible {
+    box-shadow: 0 12px 24px rgba(220, 0, 15, .38);
+}
+#fabMenuAccesos .fab-item-btn-facebook:hover,
+#fabMenuAccesos .fab-item-btn-facebook:focus-visible {
+    box-shadow: 0 12px 24px rgba(11, 95, 208, .38);
+}

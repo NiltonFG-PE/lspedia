@@ -31,6 +31,17 @@
         if(panel && panel.children.length && visible(panel)) return false;
         return true;
     }
+    // Vocabulario es la página de inicio: allí se ve «Lo nuevo» (debajo del buscador).
+    // Se muestra solo en la pantalla principal de Vocabulario, no cuando hay una
+    // categoría o una ficha abierta, y nunca en Diccionario.
+    function esInicioVocabulario(){
+        const buscador=$('bloqueBuscadorCategorias');
+        if(!visible(buscador)) return false;
+        // En Vocabulario el panel de categorías siempre está visible (incluso con
+        // una categoría abierta); lo que cambia es #resultadoCategorias.
+        if($('resultadoCategorias') && $('resultadoCategorias').children.length) return false;
+        return true;
+    }
     function seccionActual(){
         const ids=[['seccionAlfabetizacion','alfabetizacion'],['seccionQuiz','quiz'],['seccionJuegos','juegos'],['seccionSubtitulos','subtitulos'],['seccionNosotros','nosotros']];
         for(const [id,nombre] of ids){ if(visible($(id))) return nombre; }
@@ -140,7 +151,10 @@
         actualizarTarjetaModo();
         gtagEvento('learning_mode_step',{action:'finish'});
         if(volverInicio){
-            if(typeof window.irAlBuscador==='function') window.irAlBuscador();
+            // La página de inicio ahora es Vocabulario.
+            const inicio=$('btnCategorias');
+            if(inicio) inicio.click();
+            else if(typeof window.irAlBuscador==='function') window.irAlBuscador();
             else location.href=location.pathname;
         }
     }
@@ -191,7 +205,9 @@
     }
 
     function asegurarInicio(){
-        const hero=$('filaHeroPrincipal'); if(!hero) return null;
+        // «Lo nuevo» va justo debajo del buscador de Vocabulario (después de la tarjeta
+        // del colaborador y antes de Categorías). Si ese bloque aún no existe, se usa el hero.
+        const ancla=$('bloqueBuscadorCategorias')||$('filaHeroPrincipal'); if(!ancla) return null;
         let sec=$('lspMejorasInicio');
         if(sec) return sec;
         sec=document.createElement('section');
@@ -201,7 +217,7 @@
           '<article class="lsp-mejora-card lsp-aprendizaje-unificado" id="lspModoCard"><div class="lsp-mejora-head"><h2 class="lsp-mejora-titulo"><span class="lsp-mejora-icono">📘</span>Tu aprendizaje</h2></div><p class="lsp-mejora-sub">Recorre el Diccionario palabra por palabra cuando tú quieras.</p><div class="lsp-aprender-estado" id="lspModoEstado"></div><button class="lsp-aprender-btn" id="lspModoBtn" type="button">Empezar a aprender</button><div class="lsp-aprender-meta" id="lspModoMeta">Tú decides cuándo entrar. Tu avance se guarda solo en este dispositivo.</div></article>'+
           '<article class="lsp-mejora-card" id="lspNuevasCard"><div class="lsp-mejora-head"><h2 class="lsp-mejora-titulo"><span class="lsp-mejora-icono">✨</span>Nuevas palabras</h2></div><p class="lsp-mejora-sub">Descubre palabras publicadas recientemente en el Diccionario.</p><div class="lsp-nuevas-lista" id="lspNuevasLista"><span class="lsp-mejora-sub">Cargando…</span></div></article>'+
           '</div>';
-        hero.insertAdjacentElement('afterend',sec);
+        ancla.insertAdjacentElement('afterend',sec);
         $('lspModoBtn').onclick=iniciarOContinuar;
         return sec;
     }
@@ -291,7 +307,8 @@
         try{const r=await fetch('data/nuevas-palabras.json?_='+Date.now(),{cache:'no-store'});if(r.ok){const d=await r.json();nuevas=Array.isArray(d.items)?d.items:[];}}catch(_e){nuevas=[];}
         renderNuevas();
     }
-    function sincronizarInicio(){const sec=asegurarInicio();if(sec)sec.style.display=esInicioDiccionario()?'':'none';actualizarTarjetaModo();}
+    // «Lo nuevo» es exclusivo de la página de inicio (Vocabulario): nunca se muestra en Diccionario.
+    function sincronizarInicio(){const sec=asegurarInicio();if(sec)sec.style.display=esInicioVocabulario()?'':'none';actualizarTarjetaModo();}
 
     function palabraActualCompartir(){
         const params=new URLSearchParams(location.search);
@@ -322,7 +339,7 @@
         asegurarInicio();actualizarTarjetaModo();cargarNuevas();sincronizarInicio();
         const resultado=$('resultado');
         if(resultado){observerResultado=new MutationObserver(()=>{renderBarraAprender();sincronizarInicio();});observerResultado.observe(resultado,{childList:true,subtree:false});}
-        ['panelCategorias','resultadoCategoriasDiccionario','bloqueBuscador','bloqueBuscadorCategorias'].forEach(id=>{const n=$(id);if(n)new MutationObserver(sincronizarInicio).observe(n,{attributes:true,childList:true,attributeFilter:['class','style']});});
+        ['panelCategorias','resultadoCategorias','resultadoCategoriasDiccionario','bloqueBuscador','bloqueBuscadorCategorias'].forEach(id=>{const n=$(id);if(n)new MutationObserver(sincronizarInicio).observe(n,{attributes:true,childList:true,attributeFilter:['class','style']});});
         window.addEventListener('popstate',()=>setTimeout(()=>{sincronizarInicio();renderBarraAprender();},30));
         document.addEventListener('lspedia:datosListos',()=>{actualizarTarjetaModo();renderNuevas();sincronizarInicio();renderBarraAprender();});
         setTimeout(()=>{sincronizarInicio();renderBarraAprender();},250);

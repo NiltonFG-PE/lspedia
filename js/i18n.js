@@ -68,9 +68,9 @@
     };
 
     const UI_EN = {
-        'Diccionario':'Dictionary','Vocabulario':'Vocabulary','Herramientas':'Tools','Sobre Nosotros':'About us','Nosotros':'About us',
+        'Diccionario':'Dictionary','Vocabulario':'Vocabulary','Herramientas':'Tools','Recursos':'Resources','Sobre Nosotros':'About us','Nosotros':'About us',
         'Desarrollado con corazón':'Made with care','Apoyar LSPedia':'Support LSPedia','Ir a Vocabulario':'Go to Vocabulary',
-        'Ir a Herramientas':'Go to Tools','Ir a Jugar':'Go to Games','🎥 VIDEO':'🎥 VIDEO','✨ Descubre':'✨ Discover',
+        'Ir a Herramientas':'Go to Tools','Ir a Recursos':'Go to Resources','Ir a Jugar':'Go to Games','🎥 VIDEO':'🎥 VIDEO','✨ Descubre':'✨ Discover',
         'Cargando...':'Loading...','Cargando…':'Loading…','Cargando la palabra de hoy…':"Loading today's word…",
         'Un momento, estamos trayendo el contenido.':'One moment, we are loading the content.','Ver':'View',
         'Diccionario visual':'Visual dictionary','Índice':'Index','Categorías':'Categories','Cargando categorías…':'Loading categories…',
@@ -133,7 +133,7 @@
         'Categoría:':'Category:','¿Quisiste decir...?':'Did you mean...?',
         'LSPedia está preparando el contenido':'LSPedia is preparing the content',
         'Logo LSPedia animado':'Animated LSPedia logo','Navegación principal':'Main navigation',
-        'Acceso directo a Vocabulario':'Shortcut to Vocabulary','Acceso directo a Herramientas':'Shortcut to Tools','Acceso directo a Jugar':'Shortcut to Games',
+        'Acceso directo a Vocabulario':'Shortcut to Vocabulary','Acceso directo a Herramientas':'Shortcut to Tools','Acceso directo a Recursos':'Shortcut to Resources','Acceso directo a Jugar':'Shortcut to Games',
         'Mostrar u ocultar accesos rápidos':'Show or hide quick links','Contraer Descubre':'Collapse Discover',
         'Ver palabra':'View word','Ver la palabra completa':'View the full word entry','Video: ver la palabra completa':'Video: view the full word entry','Ver palabra de ayer':"View yesterday's word",
         'Ver la palabra del día anterior':"View the previous day's word",'Volver a hoy':'Back to today',"Volver a la palabra de hoy":"Back to today's word",

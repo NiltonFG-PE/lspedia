@@ -25,7 +25,7 @@
 
     function urlCompartirNovedades(fichas){
         const url = new URL(location.pathname, location.origin);
-        url.searchParams.set('vista', 'diccionario');
+        url.searchParams.set('vista', 'vocabulario');
         url.searchParams.set('novedades', 'compartidas');
         fichas.forEach(x => url.searchParams.append('nuevo', claveFicha(x)));
         url.hash = 'lspNuevasCard';

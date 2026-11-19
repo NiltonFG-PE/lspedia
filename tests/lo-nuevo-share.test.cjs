@@ -25,7 +25,7 @@ test('enlace conserva origen, referencia y orden de las fichas seleccionadas',()
     const {context}=environment();
     const url=new URL(context.urlCompartirNovedades([ficha,{...ficha,fuente:'diccionario',palabra:{id:'¿cómo? & ayuda'}}]));
     assert.equal(url.origin,'https://lspedia.site');
-    assert.equal(url.searchParams.get('vista'),'diccionario');
+    assert.equal(url.searchParams.get('vista'),'vocabulario');
     assert.deepEqual(url.searchParams.getAll('nuevo'),['vocabulario:generoso-adjetivos','diccionario:¿cómo? & ayuda']);
     assert.equal(url.hash,'#lspNuevasCard');
     assert.equal(url.searchParams.has('p'),false);

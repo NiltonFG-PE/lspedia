@@ -712,11 +712,21 @@ function registrarUrlEnHistorial(nuevaUrl, estado = {}){
     window.history.pushState(estado, '', nuevaUrl);
 }
 
+// Vocabulario es la página de inicio: la URL base ("/") y cualquier enlace sin
+// vista, palabra, letra ni categoría de Diccionario abren Vocabulario.
+// Diccionario tiene su propia URL (?vista=diccionario) para que recargar la
+// página o usar Atrás/Adelante no cambie de pantalla.
+function urlSinDestinoInicial(params){
+    return !params.get("p")
+        && !params.get("vista")
+        && !params.get("letra")
+        && !params.get("categoriaDiccionario");
+}
+
 function actualizarVistaUrl(vista){
-    const nuevaUrl = vista
-        ? (window.location.pathname + "?vista=" + encodeURIComponent(vista))
-        : window.location.pathname;
-    registrarUrlEnHistorial(nuevaUrl, { tipo: "vista", vista: vista || "diccionario" });
+    const vistaUrl = vista || "diccionario";
+    const nuevaUrl = window.location.pathname + "?vista=" + encodeURIComponent(vistaUrl);
+    registrarUrlEnHistorial(nuevaUrl, { tipo: "vista", vista: vistaUrl });
 }
 
 // El título y subtítulo de arriba del todo cambian según la vista:
@@ -744,10 +754,14 @@ function actualizarTituloPrincipal(vista){
     const subtitulo = document.getElementById("subtituloPrincipal");
     const listaVocab = document.getElementById("vocabularioIntroLista");
     const colaboradorLSP = document.getElementById("lspModeloLinguistico");
+    const creadorLSP = document.getElementById("lspCreador");
     // innerHTML (no textContent): así se conserva el <span class="titulo-acento">
     // que colorea la primera palabra en cada vista.
     if(titulo) titulo.innerHTML = datos.titulo;
     const esVocabulario = vista === "vocabulario";
+    // La tarjeta del creador pertenece solo al Diccionario (la de Carlos Díaz,
+    // solo a Vocabulario).
+    if(creadorLSP) creadorLSP.classList.toggle("d-none", esVocabulario);
     // En Vocabulario, la lista con íconos (arriba, en el HTML) reemplaza
     // al aviso "No enseñamos lengua de señas" (Diccionario); en
     // Diccionario es al revés. El aviso usa innerHTML (no textContent)
@@ -916,7 +930,7 @@ function irAlBuscador(opciones = {}){
     document.body.classList.remove("vista-temas-movil");
     actualizarTituloPrincipal("diccionario");
     activarBotonMenu("btnInicio");
-    actualizarVistaUrl(null);
+    actualizarVistaUrl("diccionario");
     mostrarBloqueInicio();
 
     try {
@@ -1078,24 +1092,13 @@ document.getElementById("btnCategorias").addEventListener("click", (e) => {
     // Vista "Vocabulario/Temas": usa su propio buscador y categorías.
     // El índice A-Z pertenece solo al Diccionario y se oculta por completo.
     // La clase también controla el layout móvil de esta vista.
-    // el CSS (@media max-width 1199.98px) para ocultar la seña del
-    // día/ayer y el panel de Estadísticas; también aplica en escritorio.
     document.body.classList.add("vista-temas-movil");
-    // Los 3 bloques de arriba (seña del día, cabecera de stats y panel de
-    // stats) solo se ocultaban vía CSS con la clase "vista-temas-movil"
-    // dentro de "@media (max-width: 1199.98px)". En escritorio ancho
-    // (>=1200px) esa regla no aplica y nada más los tapaba, así que
-    // mostrarBloqueInicio() los volvía a mostrar sin condición y
-    // descuadraban el layout de tarjetas de Vocabulario/Temas (bug
-    // reportado: la tarjeta reaparecía arriba de las categorías en
-    // escritorio). Se ocultan acá explícitamente, sin depender del ancho
-    // de pantalla, igual que ya se hace más abajo con el índice A-Z.
+    // Vocabulario es la página de inicio: aquí SÍ se ven Estadísticas, Lo nuevo,
+    // Mi LSPedia y también Descubre (la tarjeta alterna palabras de Vocabulario
+    // y de Diccionario; ver mejoras-producto.js). Se vuelve a mostrar por si una
+    // ficha abierta antes la había ocultado.
     const senalTemas = document.getElementById("senalDelDia");
-    if (senalTemas) senalTemas.style.display = "none";
-    const statsHeaderTemas = document.querySelector(".stats-header");
-    if (statsHeaderTemas) statsHeaderTemas.style.display = "none";
-    const statsPanelTemas = document.querySelector(".stats-panel-destacado");
-    if (statsPanelTemas) statsPanelTemas.style.display = "none";
+    if (senalTemas) senalTemas.style.display = "";
     colapsarIndiceAlfabetico();
     // El botón A-Z compacto y sus letras no deben verse dentro de
     // Vocabulario/Temas. Se ocultan en cualquier tamaño; Inicio los vuelve a
@@ -1515,6 +1518,12 @@ function ocultarSeccionHerramientas(){
 // (ver el media query "max-width: 1199.98px" del CSS, equivalente al
 // breakpoint "xl" de Bootstrap).
 function esVistaMovilHerramientas(){
+    // Recursos abre siempre primero la cuadrícula de tarjetas (computadora,
+    // tablet y celular): aprovecha mejor el espacio que apilar los módulos.
+    // Las reglas de abajo se conservan por si algún día se vuelve al diseño
+    // anterior de escritorio (módulos apilados).
+    return true;
+    // eslint-disable-next-line no-unreachable
     // En la versión de escritorio, Herramientas también usa el selector
     // de 3 botones grandes (Subtítulos / Jugar / Alfabetización), igual
     // que en móvil, sin importar el ancho de la ventana.
@@ -1617,6 +1626,9 @@ function ocultarBloqueInicio(){
     // también al entrar en Herramientas o Sobre Nosotros.
     const colaboradorLSP = document.getElementById("lspModeloLinguistico");
     if(colaboradorLSP) colaboradorLSP.classList.add("d-none");
+    // La tarjeta del creador pertenece solo al Diccionario.
+    const creadorLSP = document.getElementById("lspCreador");
+    if(creadorLSP) creadorLSP.classList.add("d-none");
     const filaBotonIndice = document.getElementById("filaBotonIndiceAlfabetico");
     if(filaBotonIndice) filaBotonIndice.style.display = "none";
     const filaIndice = document.getElementById("filaIndiceAlfabetico");
@@ -1809,8 +1821,8 @@ function mostrarSeccionHerramientas(){
         return;
     }
 
-    // EN ESCRITORIO: se mantiene el comportamiento anterior, los 3
-    // bloques se muestran juntos, uno debajo del otro.
+    // EN ESCRITORIO (ya no se usa: esVistaMovilHerramientas() siempre es
+    // true): los 3 bloques se muestran juntos, uno debajo del otro.
     if(menuMovil) menuMovil.classList.add("d-none");
 
     // 1) Subtítulos
@@ -2352,6 +2364,11 @@ function procesarDatosApp(data) {
             mostrarFavoritos();
 
             const urlParams = new URLSearchParams(window.location.search);
+            // Enlaces antiguos de «novedades compartidas» apuntaban a Diccionario;
+            // «Lo nuevo» ahora vive solo en Vocabulario (página de inicio).
+            if (urlParams.get("vista") === "diccionario" && urlParams.getAll("nuevo").length) {
+                urlParams.set("vista", "vocabulario");
+            }
             const palabraEnUrl = urlParams.get("p");
             // La vista destino se lee ANTES de pintar la seña del día: si
             // el usuario en realidad va a "Temas orden", "Herramientas" o
@@ -2360,8 +2377,18 @@ function procesarDatosApp(data) {
             // siempre y recién después se simulaba el clic a la otra
             // sección, lo que dejaba ver un parpadeo con contenido
             // mezclado (título de Diccionario + tarjetas de Vocabulario).
-            const vistaEnUrlPrevia = urlParams.get("vista");
+            // Vocabulario es la página de inicio: sin vista/palabra/letra/
+            // categoría en la URL se abre Vocabulario (ver urlSinDestinoInicial).
+            const inicioEnVocabulario = urlSinDestinoInicial(urlParams);
+            const vistaEnUrlPrevia = inicioEnVocabulario ? "vocabulario" : urlParams.get("vista");
             if (!palabraEnUrl && (vistaEnUrlPrevia === "vocabulario" || vistaEnUrlPrevia === "temas" || vistaEnUrlPrevia === "nosotros" || (vistaEnUrlPrevia && vistaEnUrlPrevia.indexOf("herramientas") === 0))) {
+                // Vocabulario también lleva la tarjeta Descubre: se pinta antes de
+                // ocultar el bloque de inicio (el clic a Vocabulario la vuelve a mostrar).
+                if (vistaEnUrlPrevia === "vocabulario" || vistaEnUrlPrevia === "temas") {
+                    try { mostrarSenalDelDia(); } catch (errorSenalVocabulario) {
+                        console.error("No se pudo pintar Descubre en Vocabulario:", errorSenalVocabulario);
+                    }
+                }
                 ocultarBloqueInicio();
             } else {
                 mostrarSenalDelDia();
@@ -2385,6 +2412,9 @@ function procesarDatosApp(data) {
                         enCategorias: true
                     });
                 } else {
+                    // La página arranca marcada en Vocabulario; una ficha del
+                    // Diccionario debe dejar marcado "Diccionario" en el menú.
+                    activarBotonMenu("btnInicio");
                     restaurarPalabraDesdeUrl(palabraEnUrl, {
                         noActualizarHistorial: true,
                         fuente: "diccionario",
@@ -2396,7 +2426,7 @@ function procesarDatosApp(data) {
                 // el usuario estaba en "Temas orden" o "Herramientas" antes
                 // del refresh (ver actualizarVistaUrl) y lo deja ahí mismo
                 // en vez de mandarlo siempre a Inicio.
-                const vistaEnUrl = urlParams.get("vista");
+                const vistaEnUrl = vistaEnUrlPrevia;
                 const letraEnUrl = urlParams.get("letra");
                 const categoriaDiccionarioEnUrl = urlParams.get("categoriaDiccionario");
                 // Esta navegación es una RESTAURACIÓN de la URL que ya
@@ -2408,6 +2438,10 @@ function procesarDatosApp(data) {
                 } else if (categoriaDiccionarioEnUrl) {
                     irAlBuscador({ sinEnfoque: true, irArriba: true });
                     filtrarPorCategoriaDiccionario(categoriaDiccionarioEnUrl, { noActualizarHistorial: true });
+                } else if (vistaEnUrl === "diccionario") {
+                    // Diccionario ya no es la pantalla por defecto: tiene su
+                    // propia URL (?vista=diccionario).
+                    irAlBuscador({ sinEnfoque: true, irArriba: true });
                 } else if (vistaEnUrl === "vocabulario" || vistaEnUrl === "temas") {
                     const btnCategorias = document.getElementById("btnCategorias");
                     // Apertura por enlace directo: no mostrar el aviso modal ni
@@ -2551,10 +2585,15 @@ document.addEventListener("DOMContentLoaded", () => {
 const statCardPalabras = document.getElementById("statCardPalabras");
 if (statCardPalabras) {
     statCardPalabras.addEventListener("click", () => {
-        const indice = document.getElementById("indiceAlfabetico");
+        // Estadísticas se ven tanto en Vocabulario (inicio) como en
+        // Diccionario: cada vista abre su propio índice A-Z.
+        const enVocabulario = document.body.classList.contains("vista-temas-movil");
+        const indice = document.getElementById(enVocabulario ? "indiceAlfabeticoVocabulario" : "indiceAlfabetico");
+        const botonIndice = document.getElementById(enVocabulario ? "btnToggleAbcVocabulario" : "btnToggleAbc");
+        if (!indice || !botonIndice) return;
         const yaAbierto = indice.classList.contains("show");
         if (!yaAbierto) {
-            document.getElementById("btnToggleAbc").click();
+            botonIndice.click();
         }
         indice.scrollIntoView({ behavior: "smooth", block: "center" });
     });
@@ -2570,7 +2609,9 @@ if (statCardCategorias) {
         // pantalla, así que solo se hace scroll y un resalte breve para
         // que la persona lo ubique, igual que hace la tarjeta "PALABRAS"
         // con el índice A-Z.
-        const panel = document.getElementById("filaCategoriasDiccionario");
+        // En Vocabulario (inicio) las categorías viven en #panelCategorias.
+        const enVocabularioCat = document.body.classList.contains("vista-temas-movil");
+        const panel = document.getElementById(enVocabularioCat ? "panelCategorias" : "filaCategoriasDiccionario");
         if (panel) {
             // Antes usaba block:"center": como el panel es alto (header +
             // grid de tarjetas), centrarlo
@@ -3699,6 +3740,15 @@ function mostrarPalabra(p, opciones = {}){
         return;
     }
 
+    // Vocabulario es la página de inicio y desde ella (Lo nuevo, Mi LSPedia,
+    // Descubre...) se pueden abrir fichas del Diccionario. Esa ficha se pinta
+    // en la vista Diccionario, así que primero se pasa a esa vista; si no, el
+    // resultado quedaba dentro de la pantalla de Vocabulario y borraba sus
+    // categorías.
+    if(!opciones.enCategorias && document.body.classList.contains("vista-temas-movil")){
+        irAlBuscador({ sinEnfoque: true });
+    }
+
     // opciones.enCategorias === true  ->  este resultado viene de la vista
     // "Temas orden" (categorías): se pinta dentro de #resultadoCategorias,
     // con el botón "Atrás" arriba (incluso arriba del video), en vez de en
@@ -3728,6 +3778,8 @@ function mostrarPalabra(p, opciones = {}){
         // aparecer al regresar al inicio (ver mostrarBloqueInicio()).
         const filaCategoriasDicc = document.getElementById("filaCategoriasDiccionario");
         if(filaCategoriasDicc) filaCategoriasDicc.style.display = "none";
+        const creadorResultado = document.getElementById("lspCreador");
+        if(creadorResultado) creadorResultado.classList.add("d-none");
         const statsPanelResultado = document.querySelector(".stats-panel-destacado");
         if(statsPanelResultado) statsPanelResultado.style.display = "none";
         const statsHeaderResultado = document.querySelector(".stats-header");
@@ -6803,8 +6855,17 @@ function restaurarInterfazDesdeHistorial(estado = {}){
             return;
         }
 
-        // Sin parámetros = Diccionario / Inicio.
-        irAlBuscador({ sinEnfoque: true, irArriba: true });
+        // Diccionario tiene su propia URL (?vista=diccionario).
+        if(vista === "diccionario") {
+            irAlBuscador({ sinEnfoque: true, irArriba: true });
+            return;
+        }
+
+        // Sin parámetros = página de inicio (Vocabulario).
+        const botonInicio = document.getElementById("btnCategorias");
+        saltarScrollAlAbrirVocabulario = true;
+        omitirAvisoVocabularioUnaVez = true;
+        if(botonInicio) botonInicio.click();
     } finally {
         restaurandoHistorialNavegador = false;
     }

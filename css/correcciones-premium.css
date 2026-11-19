@@ -109,12 +109,17 @@ html:not([data-lsp-tema="dark"]) .categoria-dicc-card [style*="#15803d"] {
   }
 }
 
-/* Lo mismo con «Tu aprendizaje / Nuevas palabras»: es el salto más grande de la
-   página (entre 330 y 376px según el ancho). El marcador mide casi lo mismo que
-   la sección real y desaparece en cuanto ésta existe. En las otras vistas
-   (Vocabulario, Herramientas, Nosotros) nunca se muestra. */
+/* Lo mismo con «Lo nuevo» (sección #lspMejorasInicio): es el salto más grande de la
+   página (entre 330 y 376px según el ancho). Va debajo del buscador de Vocabulario;
+   el marcador mide casi lo mismo que la sección real y desaparece en cuanto ésta
+   existe. Solo se muestra en Vocabulario: en Diccionario, Recursos y Sobre nosotros
+   «Lo nuevo» no existe. */
 #lspReservaInicio {
+  display: none;
   min-height: 326px;
+}
+body.vista-temas-movil:not(.lsp-inicio-oculto) #lspReservaInicio {
+  display: block;
 }
 @media (max-width: 374.98px) {
   #lspReservaInicio {
@@ -126,9 +131,8 @@ html:not([data-lsp-tema="dark"]) .categoria-dicc-card [style*="#15803d"] {
     min-height: 370px;
   }
 }
-#lspMejorasInicio ~ #lspReservaInicio,
+body.vista-temas-movil #lspMejorasInicio ~ #lspReservaInicio,
 html.lsp-vista-sin-descubre #lspReservaInicio,
-body.lsp-inicio-oculto #lspReservaInicio,
-body.vista-temas-movil #lspReservaInicio {
+body.lsp-inicio-oculto #lspReservaInicio {
   display: none;
 }
