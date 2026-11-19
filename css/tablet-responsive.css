@@ -495,22 +495,73 @@ html.modo-movil-real body.lsp-inicio-oculto:not(.vista-temas-movil):not(.senal-c
     margin: 0 !important;
   }
 
-  /* DICCIONARIO (tablet vertical): bloque título/subtítulo a la izquierda, avatar a la derecha */
+  /* DICCIONARIO (tablet vertical): título + subtítulo a la izquierda y avatar a la derecha a su altura,
+     mientras la tarjeta del creador y el buscador ocupan todo el ancho debajo (display: contents) */
+  html.modo-movil-real.lsp-en-diccionario body:not(.vista-temas-movil):not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal,
   html.modo-movil-real body.senal-cerrada:not(.vista-temas-movil):not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal {
     display: grid !important;
-    grid-template-columns: minmax(0, 1fr) clamp(130px, 22vw, 180px) !important;
-    grid-template-areas: "titulo avatar" !important;
+    grid-template-columns: minmax(0, 1fr) clamp(145px, 22vw, 195px) !important;
+    grid-template-areas: none !important;
     column-gap: 18px !important;
-    row-gap: 0 !important;
-    align-items: start !important;
+    row-gap: 12px !important;
+    align-items: center !important;
     margin: 0 0 22px !important;
   }
+  html.modo-movil-real.lsp-en-diccionario body:not(.vista-temas-movil):not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal > .col-lg-6,
   html.modo-movil-real body.senal-cerrada:not(.vista-temas-movil):not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal > .col-lg-6 {
-    grid-area: titulo !important;
+    display: contents !important;
+  }
+  html.modo-movil-real.lsp-en-diccionario body:not(.vista-temas-movil):not(.lsp-inicio-oculto) #contenidoPrincipalApp #bloqueTituloPrincipal,
+  html.modo-movil-real body.senal-cerrada:not(.vista-temas-movil):not(.lsp-inicio-oculto) #contenidoPrincipalApp #bloqueTituloPrincipal {
     grid-column: 1 !important;
     grid-row: 1 !important;
-    max-width: 100% !important;
-    justify-self: stretch !important;
+    grid-area: 1 / 1 / 2 / 2 !important;
+    align-self: center !important;
+    text-align: left !important;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+  html.modo-movil-real.lsp-en-diccionario body:not(.vista-temas-movil):not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal > #colAvatarHero:not(.oculto-por-seccion),
+  html.modo-movil-real body.senal-cerrada:not(.vista-temas-movil):not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal > #colAvatarHero:not(.oculto-por-seccion) {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    grid-area: 1 / 2 / 2 / 3 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    align-self: center !important;
+    justify-self: center !important;
+    width: 100% !important;
+    max-width: 195px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  html.modo-movil-real.lsp-en-diccionario body:not(.vista-temas-movil) #contenidoPrincipalApp #lspCreador,
+  html.modo-movil-real body.senal-cerrada:not(.vista-temas-movil) #contenidoPrincipalApp #lspCreador {
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+  html.modo-movil-real.lsp-en-diccionario body:not(.vista-temas-movil) #contenidoPrincipalApp #bloqueBuscador,
+  html.modo-movil-real body.senal-cerrada:not(.vista-temas-movil) #contenidoPrincipalApp #bloqueBuscador {
+    grid-column: 1 / -1 !important;
+    grid-row: 3 !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+  html.modo-movil-real.lsp-en-diccionario body:not(.vista-temas-movil) #contenidoPrincipalApp #bloqueEjemplos,
+  html.modo-movil-real body.senal-cerrada:not(.vista-temas-movil) #contenidoPrincipalApp #bloqueEjemplos {
+    grid-column: 1 / -1 !important;
+    grid-row: 4 !important;
+    width: 100% !important;
+  }
+  html.modo-movil-real.lsp-en-diccionario body:not(.vista-temas-movil) #contenidoPrincipalApp #tituloPrincipal {
+    text-align: left !important;
+  }
+  html.modo-movil-real.lsp-en-diccionario body:not(.vista-temas-movil) #contenidoPrincipalApp #bloqueTituloPrincipal .titulo-raya {
+    margin-left: 0 !important;
+    margin-right: auto !important;
   }
 
   /* Avatar integrado en fila 1 columna 2 */
