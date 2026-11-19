@@ -220,6 +220,35 @@ const server = http.createServer((req, res) => {
         await page.waitForFunction(() => document.body.classList.contains('vista-temas-movil'));
         console.log('PASS: Diccionario con «Buscar por seña» junto a la lupa y sin «Puedes empezar con…»');
 
+        // Diccionario en celular: el avatar va a la derecha del título (integrado al texto) y la introducción
+        // ocupa todo el ancho debajo. En escritorio el encabezado usa el mismo ancho que las categorías.
+        // Cada tamaño se mide en una página nueva (la vista móvil de búsqueda reacciona a los cambios de tamaño).
+        async function medirDiccionario(opciones) {
+            const aparte = await pagina(opciones);
+            try {
+                await aparte.page.goto(base + '/?vista=diccionario', {waitUntil:'domcontentloaded'});
+                await aparte.page.waitForFunction(() => document.documentElement.classList.contains('lsp-en-diccionario') && document.querySelector('#panelCategoriasDiccionario'));
+                await aparte.page.waitForTimeout(900);
+                return await aparte.page.evaluate(() => {
+                    const caja = (sel) => { const e = document.querySelector(sel); if (!e) return null; const r = e.getBoundingClientRect(); return { izq: r.left, der: r.right, top: r.top + scrollY, bottom: r.bottom + scrollY, ancho: r.width }; };
+                    return { titulo: caja('#tituloPrincipal'), avatar: caja('#colAvatarHero .avatar-hero-img'), intro: caja('#subtituloPrincipal'), buscador: caja('.buscador-indice-linea'), creador: caja('#lspCreador'), categorias: caja('.categorias-seccion-header'), ancho: document.documentElement.scrollWidth };
+                });
+            } finally { await aparte.context.close(); }
+        }
+        const cel = await medirDiccionario({viewport:{width:360,height:740}, isMobile:true, hasTouch:true, deviceScaleFactor:2});
+        assert.ok(cel.titulo && cel.avatar && cel.intro, 'Diccionario móvil: título, avatar e introducción existen');
+        assert.ok(cel.avatar.izq >= cel.titulo.izq + 150, 'Diccionario móvil: el avatar queda a la derecha del título');
+        assert.ok(cel.avatar.top < cel.titulo.bottom && cel.avatar.bottom > cel.titulo.top, 'Diccionario móvil: el avatar va en la misma franja que el título');
+        assert.ok(cel.avatar.bottom <= cel.intro.top + 1, 'Diccionario móvil: el avatar queda encima de la introducción');
+        assert.ok(cel.intro.ancho > 300 && cel.creador.ancho > 300, 'Diccionario móvil: introducción y creador ocupan todo el ancho');
+        assert.ok(cel.ancho <= 360, 'Diccionario móvil: sin desborde horizontal');
+        const esc = await medirDiccionario({viewport:{width:1366,height:800}});
+        assert.ok(Math.abs(esc.titulo.izq - esc.categorias.izq) < 12, 'Diccionario escritorio: el título alinea con las categorías');
+        assert.ok(esc.avatar.der > esc.categorias.der - 80, 'Diccionario escritorio: el avatar llega al margen derecho de las categorías');
+        assert.ok(esc.buscador.ancho > 560, 'Diccionario escritorio: el buscador es largo');
+        assert.ok(esc.intro.ancho > 800 && Math.abs(esc.creador.ancho - esc.intro.ancho) < 1, 'Diccionario escritorio: introducción y creador usan el mismo ancho');
+        console.log('PASS: Diccionario: avatar a la derecha en celular y encabezado a todo el ancho en escritorio');
+
         // Orden de la página de inicio: encabezado → colaborador → buscador → Lo nuevo → categorías → estadísticas → Mi LSPedia.
         await page.waitForSelector('#lspNuevasCard', {state:'visible', timeout:15000});
         const orden = ['#filaHeroPrincipal', '#lspModeloLinguistico', '#bloqueBuscadorCategorias', '#lspNuevasCard', '#panelCategorias', '.stats-panel-destacado', '#miLspediaHub'];

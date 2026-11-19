@@ -177,3 +177,108 @@ html body.vista-temas-movil #contenidoPrincipalApp #lspMejorasInicio {
     max-width: var(--vocab-ancho, 1040px);
     margin: 4px auto 24px;
 }
+
+/* DICCIONARIO_AVATAR_A_LA_DERECHA_MOVIL_V2_20261119
+   En celular (≤ 767.98 px) el avatar del Diccionario va a la derecha del título, como un cuadro
+   integrado al texto (misma idea que Vocabulario), y la introducción, la tarjeta del creador y el
+   buscador siguen debajo a todo el ancho. Antes el avatar quedaba solo y centrado con huecos a los lados.
+   Para ubicarlo junto al título, la columna del título y su bloque pasan a «display: contents» y
+   todo se coloca en una sola cuadrícula. Las ocultaciones de la app (d-none, style.display) siguen mandando. */
+@media (max-width: 767.98px) {
+    html.lsp-en-diccionario #contenidoPrincipalApp #filaHeroPrincipal {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) clamp(104px, 31vw, 150px) !important;
+        grid-template-areas: none !important;
+        row-gap: 0 !important;
+        column-gap: 10px !important;
+        align-items: start !important;
+    }
+    html.lsp-en-diccionario #contenidoPrincipalApp #filaHeroPrincipal > .col-lg-6,
+    html.lsp-en-diccionario #contenidoPrincipalApp #bloqueTituloPrincipal {
+        display: contents;
+    }
+    html.lsp-en-diccionario #contenidoPrincipalApp #filaHeroPrincipal > .col-lg-6 > * {
+        grid-column: 1 / -1;
+        order: 20;
+    }
+    html.lsp-en-diccionario #contenidoPrincipalApp #tituloPrincipal {
+        grid-column: 1;
+        grid-row: 1;
+        align-self: end;
+        order: 1;
+        margin: 0 !important;
+        text-align: left !important;
+        font-size: clamp(1.02rem, 5.2vw, 1.45rem) !important;
+        line-height: 1.18 !important;
+    }
+    html.lsp-en-diccionario #contenidoPrincipalApp #bloqueTituloPrincipal > .titulo-raya {
+        grid-column: 1;
+        grid-row: 2;
+        align-self: start;
+        justify-self: start;
+        order: 2;
+        margin: 10px 0 8px !important;
+    }
+    html.lsp-en-diccionario #contenidoPrincipalApp #filaHeroPrincipal > #colAvatarHero:not(.oculto-por-seccion) {
+        grid-column: 2 !important;
+        grid-row: 1 / span 2 !important;
+        grid-area: auto / 2 / span 2 / auto !important;
+        order: 3 !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-self: center !important;
+        justify-self: stretch !important;
+        width: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    html.lsp-en-diccionario #contenidoPrincipalApp #filaHeroPrincipal #colAvatarHero .avatar-hero-img {
+        width: auto !important;
+        height: clamp(104px, 31vw, 150px) !important;
+        max-width: 100% !important;
+    }
+    html.lsp-en-diccionario #contenidoPrincipalApp #subtituloPrincipal { grid-column: 1 / -1; order: 4; }
+    html.lsp-en-diccionario #contenidoPrincipalApp #filaHeroPrincipal > .col-lg-6 > #lspCreador { order: 5; }
+    html.lsp-en-diccionario #contenidoPrincipalApp #filaHeroPrincipal > .col-lg-6 > #bloqueBuscador { order: 6; }
+}
+
+/* DICCIONARIO_ESCRITORIO_ANCHO_COMPLETO_V1_20261119
+   En escritorio (≥ 992 px) el encabezado del Diccionario usa todo el ancho del contenido, igual que la
+   cuadrícula de categorías de abajo: el texto, la tarjeta del creador y el buscador ocupan la columna
+   izquierda y el avatar queda a la derecha, con los mismos márgenes laterales que las categorías.
+   No toca Vocabulario, el celular ni las tablets reales (esas tienen su propio diseño). */
+@media (min-width: 992px) {
+    html.lsp-en-diccionario:not(.modo-movil-real) #contenidoPrincipalApp #filaHeroPrincipal {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) clamp(230px, 23%, 330px) !important;
+        column-gap: clamp(24px, 3vw, 48px) !important;
+        row-gap: 0 !important;
+        align-items: center !important;
+        width: 100% !important;
+        margin: 0 0 1.5rem !important;
+        padding: 0 !important;
+        --bs-gutter-x: 0;
+        --bs-gutter-y: 0;
+    }
+    html.lsp-en-diccionario:not(.modo-movil-real) #contenidoPrincipalApp #filaHeroPrincipal > .col-lg-6 {
+        grid-column: 1 !important;
+        grid-row: 1 !important;
+        width: auto !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    html.lsp-en-diccionario:not(.modo-movil-real) #contenidoPrincipalApp #filaHeroPrincipal > #colAvatarHero:not(.oculto-por-seccion) {
+        grid-column: 2 !important;
+        grid-row: 1 !important;
+        order: 0 !important;
+        display: flex !important;
+        justify-content: center !important;
+        width: auto !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+}
