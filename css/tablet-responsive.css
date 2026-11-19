@@ -565,81 +565,150 @@ html.modo-movil-real body.lsp-inicio-oculto:not(.vista-temas-movil):not(.senal-c
     order: 0 !important;
   }
 
-  /* DICCIONARIO (tablet horizontal): sin columna fantasma izquierda */
+  /* =====================================================================
+     DICCIONARIO EN TABLET HORIZONTAL:
+     - Usa html.lsp-en-diccionario + body.senal-cerrada para ganar siempre
+     - Elimina el espacio vacío de la izquierda (sin columna fantasma de Descubre)
+     - Alinea título, subtítulo, ficha del creador y buscador pegados a la izquierda
+     ===================================================================== */
+  html.modo-movil-real.lsp-en-diccionario body:not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal,
   html.modo-movil-real body.senal-cerrada:not(.vista-temas-movil):not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal {
     display: grid !important;
-    grid-template-columns: minmax(0, 1fr) clamp(150px, 18vw, 210px) !important;
+    grid-template-columns: minmax(0, 1fr) clamp(160px, 18vw, 220px) !important;
     grid-template-areas: "titulo avatar" !important;
     column-gap: 24px !important;
-    align-items: start !important;
+    row-gap: 0 !important;
+    align-items: center !important;
+    justify-items: stretch !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 0 22px 0 !important;
+    padding: 0 !important;
   }
-  html.modo-movil-real body.senal-cerrada:not(.vista-temas-movil):not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal > .col-lg-6 {
+  html.modo-movil-real.lsp-en-diccionario body #contenidoPrincipalApp #filaHeroPrincipal > #senalDelDia,
+  html.modo-movil-real body.senal-cerrada:not(.vista-temas-movil) #contenidoPrincipalApp #filaHeroPrincipal > #senalDelDia {
+    display: none !important;
+  }
+  html.modo-movil-real.lsp-en-diccionario body #contenidoPrincipalApp #filaHeroPrincipal > .col-lg-6,
+  html.modo-movil-real body.senal-cerrada:not(.vista-temas-movil) #contenidoPrincipalApp #filaHeroPrincipal > .col-lg-6 {
     grid-area: titulo !important;
     grid-column: 1 !important;
     grid-row: 1 !important;
-    max-width: 100% !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
     justify-self: stretch !important;
   }
+  html.modo-movil-real.lsp-en-diccionario body:not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal > #colAvatarHero:not(.oculto-por-seccion),
   html.modo-movil-real body.senal-cerrada:not(.vista-temas-movil):not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal > #colAvatarHero:not(.oculto-por-seccion) {
     grid-area: avatar !important;
     grid-column: 2 !important;
     grid-row: 1 !important;
     display: flex !important;
-    align-items: flex-start !important;
+    align-items: center !important;
     justify-content: center !important;
-    align-self: start !important;
-    margin-top: 8px !important;
+    align-self: center !important;
+    justify-self: center !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
-  /* VOCABULARIO (tablet horizontal): Descubre + Título + Avatar en fila 1, Intro en fila 2 */
+  /* =====================================================================
+     VOCABULARIO EN TABLET HORIZONTAL:
+     - Tarjeta Descubre compacta a la izquierda (ocupa 2 filas de alto)
+     - Título arriba y subtemas (#vocabularioIntroLista) justo debajo, sin hueco
+     - Avatar alineado a la derecha
+     ===================================================================== */
   html.modo-movil-real body.vista-temas-movil:not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal {
     display: grid !important;
-    grid-template-columns: clamp(210px, 26%, 280px) minmax(0, 1fr) clamp(130px, 15vw, 180px) !important;
+    grid-template-columns: 205px minmax(0, 1fr) clamp(130px, 14vw, 170px) !important;
     grid-template-areas:
       "carta titulo avatar"
-      "intro intro intro" !important;
-    column-gap: 20px !important;
-    row-gap: 16px !important;
+      "carta intro avatar" !important;
+    column-gap: 18px !important;
+    row-gap: 10px !important;
     align-items: center !important;
+    margin: 0 0 18px 0 !important;
   }
   html.modo-movil-real body.vista-temas-movil:not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal > #senalDelDia {
     display: block !important;
     grid-area: carta !important;
     grid-column: 1 !important;
-    grid-row: 1 !important;
-    width: 100% !important;
+    grid-row: 1 / span 2 !important;
+    width: 205px !important;
+    max-width: 205px !important;
+    margin: 0 !important;
+    align-self: center !important;
   }
+  /* Reducir la altura de la tarjeta Descubre en tablet horizontal */
+  html.modo-movil-real body.vista-temas-movil #contenidoPrincipalApp #senalDelDia .dia-rect-card {
+    max-width: 205px !important;
+    min-height: 0 !important;
+  }
+  html.modo-movil-real body.vista-temas-movil #contenidoPrincipalApp #senalDelDia .dia-rect-media {
+    height: 92px !important;
+    min-height: 92px !important;
+    max-height: 92px !important;
+  }
+  html.modo-movil-real body.vista-temas-movil #contenidoPrincipalApp #senalDelDia .dia-rect-body {
+    padding: 8px 10px !important;
+  }
+  html.modo-movil-real body.vista-temas-movil #contenidoPrincipalApp #senalDelDia .dia-rect-titulo {
+    font-size: 0.95rem !important;
+    margin-bottom: 4px !important;
+  }
+  html.modo-movil-real body.vista-temas-movil #contenidoPrincipalApp #senalDelDia .dia-rect-desc {
+    display: none !important;
+  }
+  html.modo-movil-real body.vista-temas-movil #contenidoPrincipalApp #senalDelDia .dia-rect-btn {
+    padding: 5px 14px !important;
+    font-size: 0.8rem !important;
+  }
+
   html.modo-movil-real body.vista-temas-movil:not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal > .col-lg-6 {
     grid-area: titulo !important;
     grid-column: 2 !important;
     grid-row: 1 !important;
+    align-self: end !important;
     max-width: 100% !important;
+    margin: 0 !important;
+  }
+  html.modo-movil-real body.vista-temas-movil:not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal > #vocabularioIntroLista {
+    grid-area: intro !important;
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    align-self: start !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 10px 14px !important;
+    gap: 5px !important;
   }
   html.modo-movil-real body.vista-temas-movil:not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal > #colAvatarHero:not(.oculto-por-seccion) {
     grid-area: avatar !important;
     grid-column: 3 !important;
-    grid-row: 1 !important;
+    grid-row: 1 / span 2 !important;
     align-self: center !important;
-  }
-  html.modo-movil-real body.vista-temas-movil:not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal > #vocabularioIntroLista {
-    grid-area: intro !important;
-    grid-column: 1 / -1 !important;
-    grid-row: 2 !important;
-    width: 100% !important;
+    justify-self: center !important;
+    margin: 0 !important;
   }
 
   html.modo-movil-real body #contenidoPrincipalApp #filaHeroPrincipal > #colAvatarHero:not(.oculto-por-seccion) .avatar-hero-img {
-    max-width: 180px !important;
-    max-height: 190px !important;
+    max-width: 165px !important;
+    max-height: 175px !important;
     height: auto !important;
   }
 
   html.modo-movil-real body.vista-temas-movil #contenidoPrincipalApp #bloqueTituloPrincipal,
-  html.modo-movil-real body.senal-cerrada #contenidoPrincipalApp #bloqueTituloPrincipal {
+  html.modo-movil-real body.senal-cerrada #contenidoPrincipalApp #bloqueTituloPrincipal,
+  html.modo-movil-real.lsp-en-diccionario body #contenidoPrincipalApp #bloqueTituloPrincipal {
     text-align: left !important;
+    margin: 0 0 8px 0 !important;
   }
   html.modo-movil-real body.vista-temas-movil #contenidoPrincipalApp #bloqueTituloPrincipal .titulo-raya,
-  html.modo-movil-real body.senal-cerrada #contenidoPrincipalApp #bloqueTituloPrincipal .titulo-raya {
+  html.modo-movil-real body.senal-cerrada #contenidoPrincipalApp #bloqueTituloPrincipal .titulo-raya,
+  html.modo-movil-real.lsp-en-diccionario body #contenidoPrincipalApp #bloqueTituloPrincipal .titulo-raya {
     margin-left: 0 !important;
     margin-right: auto !important;
   }
