@@ -172,13 +172,7 @@
 
   /* En Vocabulario no existe la tarjeta Descubre. Reutilizar el ancho completo
      evita una columna fantasma vacía y conserva los controles existentes. */
-  html.modo-movil-real body.vista-temas-movil #filaHeroPrincipal,
-  html.modo-movil-real body.senal-cerrada #filaHeroPrincipal {
-    grid-template-columns: minmax(0, 1fr) !important;
-    grid-template-areas: "titulo" !important;
-  }
-  html.modo-movil-real body.vista-temas-movil #filaHeroPrincipal > #senalDelDia,
-  html.modo-movil-real body.senal-cerrada #filaHeroPrincipal > #senalDelDia {
+  html.modo-movil-real body.senal-cerrada:not(.vista-temas-movil) #filaHeroPrincipal > #senalDelDia {
     display: none !important;
   }
   html.modo-movil-real body.vista-temas-movil #filaHeroPrincipal > .col-lg-6,
@@ -361,16 +355,14 @@ html.modo-movil-real body.lsp-inicio-oculto #filaHeroPrincipal {
     max-width: 100% !important;
   }
 
-  /* Vocabulario: solo titulo + avatar. Nunca mostrar Descubre. */
-  html.modo-movil-real body.vista-temas-movil #filaHeroPrincipal,
-  html.modo-movil-real body.senal-cerrada #filaHeroPrincipal {
+  /* Diccionario: solo titulo + avatar (sin Descubre). */
+  html.modo-movil-real body.senal-cerrada:not(.vista-temas-movil) #filaHeroPrincipal {
     grid-template-columns: minmax(0, 1fr) clamp(140px, 20vw, 192px) !important;
     grid-template-areas: "titulo avatar" !important;
     row-gap: 0 !important;
     margin: 0 0 18px !important;
   }
-  html.modo-movil-real body.vista-temas-movil #filaHeroPrincipal > #senalDelDia,
-  html.modo-movil-real body.senal-cerrada #filaHeroPrincipal > #senalDelDia {
+  html.modo-movil-real body.senal-cerrada:not(.vista-temas-movil) #filaHeroPrincipal > #senalDelDia {
     display: none !important;
   }
   html.modo-movil-real body.vista-temas-movil #filaHeroPrincipal > .col-lg-6,
@@ -456,115 +448,198 @@ html.modo-movil-real body.lsp-inicio-oculto:not(.vista-temas-movil):not(.senal-c
   }
 }
 
-/* En tablet vertical y horizontal (Diccionario y Vocabulario), integrar el avatar
-   a la mano derecha del título y subtítulo, alineado y sin duplicarse */
+/* En tablet vertical y horizontal (con #contenidoPrincipalApp para ganar en especificidad a vocabulario-descubre.css):
+   - Vocabulario (vista-temas-movil): SÍ muestra Descubre (#senalDelDia) + Avatar + Título
+   - Diccionario (senal-cerrada:not(.vista-temas-movil)): Título/subtítulo a la izquierda, Avatar a la derecha a la altura del título/texto */
 @media (min-width: 768px) and (min-height: 480px) and (orientation: portrait) {
-  /* Anular order-first de Bootstrap en < 992px para que el avatar nunca salte arriba */
-  html.modo-movil-real body #filaHeroPrincipal > #colAvatarHero {
-    order: 0 !important;
-  }
-  html.modo-movil-real body #filaHeroPrincipal > .col-lg-6 {
+  html.modo-movil-real body #contenidoPrincipalApp #filaHeroPrincipal > #colAvatarHero,
+  html.modo-movil-real body #contenidoPrincipalApp #filaHeroPrincipal > .col-lg-6,
+  html.modo-movil-real body #contenidoPrincipalApp #filaHeroPrincipal > #senalDelDia {
     order: 0 !important;
   }
 
-  /* VOCABULARIO (tablet vertical): título a la izquierda, avatar a la derecha, lista intro abajo */
-  html.modo-movil-real body.vista-temas-movil #filaHeroPrincipal {
+  /* VOCABULARIO (tablet vertical): Descubre a la izquierda, Avatar a la derecha; Título e Intro abajo */
+  html.modo-movil-real body.vista-temas-movil:not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal {
     display: grid !important;
-    grid-template-columns: minmax(0, 1fr) clamp(128px, 21vw, 175px) !important;
+    grid-template-columns: minmax(0, 1fr) clamp(135px, 22vw, 185px) !important;
     grid-template-areas:
-      "titulo avatar"
+      "carta avatar"
+      "titulo titulo"
       "intro intro" !important;
     column-gap: 18px !important;
     row-gap: 14px !important;
     align-items: center !important;
     margin: 0 0 18px !important;
   }
-  html.modo-movil-real body.vista-temas-movil #filaHeroPrincipal > #vocabularioIntroLista {
+  html.modo-movil-real body.vista-temas-movil:not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal > #senalDelDia {
+    display: block !important;
+    grid-area: carta !important;
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+    max-width: 460px !important;
+    justify-self: start !important;
+  }
+  html.modo-movil-real body.vista-temas-movil:not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal > .col-lg-6 {
+    grid-area: titulo !important;
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+    max-width: 100% !important;
+    justify-self: stretch !important;
+  }
+  html.modo-movil-real body.vista-temas-movil:not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal > #vocabularioIntroLista {
     grid-area: intro !important;
+    grid-column: 1 / -1 !important;
+    grid-row: 3 !important;
     width: 100% !important;
     margin: 0 !important;
   }
 
-  /* DICCIONARIO (tablet vertical): bloque de título + subtítulo a la izquierda, avatar a la derecha */
-  html.modo-movil-real body.senal-cerrada:not(.vista-temas-movil) #filaHeroPrincipal {
+  /* DICCIONARIO (tablet vertical): bloque título/subtítulo a la izquierda, avatar a la derecha */
+  html.modo-movil-real body.senal-cerrada:not(.vista-temas-movil):not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal {
     display: grid !important;
-    grid-template-columns: minmax(0, 1fr) clamp(128px, 21vw, 175px) !important;
+    grid-template-columns: minmax(0, 1fr) clamp(130px, 22vw, 180px) !important;
     grid-template-areas: "titulo avatar" !important;
     column-gap: 18px !important;
     row-gap: 0 !important;
     align-items: start !important;
     margin: 0 0 22px !important;
   }
+  html.modo-movil-real body.senal-cerrada:not(.vista-temas-movil):not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal > .col-lg-6 {
+    grid-area: titulo !important;
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    max-width: 100% !important;
+    justify-self: stretch !important;
+  }
 
-  /* Avatar integrado a la derecha del título/subtítulo */
-  html.modo-movil-real body.vista-temas-movil:not(.lsp-inicio-oculto) #filaHeroPrincipal > #colAvatarHero:not(.oculto-por-seccion),
-  html.modo-movil-real body.senal-cerrada:not(.lsp-inicio-oculto) #filaHeroPrincipal > #colAvatarHero:not(.oculto-por-seccion) {
+  /* Avatar integrado en fila 1 columna 2 */
+  html.modo-movil-real body.vista-temas-movil:not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal > #colAvatarHero:not(.oculto-por-seccion),
+  html.modo-movil-real body.senal-cerrada:not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal > #colAvatarHero:not(.oculto-por-seccion) {
     grid-area: avatar !important;
+    grid-column: 2 !important;
+    grid-row: 1 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     align-self: start !important;
     justify-self: center !important;
     width: 100% !important;
-    max-width: 175px !important;
-    margin: 4px 0 0 0 !important;
+    max-width: 180px !important;
+    margin: 6px 0 0 0 !important;
     padding: 0 !important;
     overflow: hidden !important;
   }
-  html.modo-movil-real body.vista-temas-movil:not(.lsp-inicio-oculto) #filaHeroPrincipal > #colAvatarHero:not(.oculto-por-seccion) {
+  html.modo-movil-real body.vista-temas-movil:not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal > #colAvatarHero:not(.oculto-por-seccion) {
     align-self: center !important;
     margin-top: 0 !important;
   }
-  html.modo-movil-real body #filaHeroPrincipal > #colAvatarHero .avatar-hero-img {
+  html.modo-movil-real body #contenidoPrincipalApp #filaHeroPrincipal > #colAvatarHero .avatar-hero-img {
     width: 100% !important;
-    max-width: 165px !important;
+    max-width: 170px !important;
     height: auto !important;
-    max-height: 175px !important;
+    max-height: 180px !important;
     object-fit: contain !important;
   }
 
-  /* Título y rayita amarilla alineados a la izquierda junto al avatar */
-  html.modo-movil-real body.vista-temas-movil #bloqueTituloPrincipal,
-  html.modo-movil-real body.senal-cerrada #bloqueTituloPrincipal {
+  html.modo-movil-real body.vista-temas-movil #contenidoPrincipalApp #bloqueTituloPrincipal,
+  html.modo-movil-real body.senal-cerrada #contenidoPrincipalApp #bloqueTituloPrincipal {
     text-align: left !important;
     margin: 0 0 12px !important;
   }
-  html.modo-movil-real body.vista-temas-movil #tituloPrincipal,
-  html.modo-movil-real body.senal-cerrada #tituloPrincipal {
+  html.modo-movil-real body.vista-temas-movil #contenidoPrincipalApp #tituloPrincipal,
+  html.modo-movil-real body.senal-cerrada #contenidoPrincipalApp #tituloPrincipal {
     text-align: left !important;
   }
-  html.modo-movil-real body.vista-temas-movil #bloqueTituloPrincipal .titulo-raya,
-  html.modo-movil-real body.senal-cerrada #bloqueTituloPrincipal .titulo-raya {
+  html.modo-movil-real body.vista-temas-movil #contenidoPrincipalApp #bloqueTituloPrincipal .titulo-raya,
+  html.modo-movil-real body.senal-cerrada #contenidoPrincipalApp #bloqueTituloPrincipal .titulo-raya {
     margin-left: 0 !important;
     margin-right: auto !important;
   }
 }
 
-/* Tablet horizontal (landscape): también mantener el avatar integrado a la derecha */
 @media (min-width: 768px) and (min-height: 480px) and (orientation: landscape) {
-  html.modo-movil-real body #filaHeroPrincipal > #colAvatarHero,
-  html.modo-movil-real body #filaHeroPrincipal > .col-lg-6 {
+  html.modo-movil-real body #contenidoPrincipalApp #filaHeroPrincipal > #colAvatarHero,
+  html.modo-movil-real body #contenidoPrincipalApp #filaHeroPrincipal > .col-lg-6,
+  html.modo-movil-real body #contenidoPrincipalApp #filaHeroPrincipal > #senalDelDia {
     order: 0 !important;
   }
-  html.modo-movil-real body.vista-temas-movil #filaHeroPrincipal {
-    grid-template-columns: minmax(0, 1fr) clamp(130px, 14vw, 180px) !important;
+
+  /* DICCIONARIO (tablet horizontal): sin columna fantasma izquierda */
+  html.modo-movil-real body.senal-cerrada:not(.vista-temas-movil):not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) clamp(150px, 18vw, 210px) !important;
+    grid-template-areas: "titulo avatar" !important;
+    column-gap: 24px !important;
+    align-items: start !important;
+  }
+  html.modo-movil-real body.senal-cerrada:not(.vista-temas-movil):not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal > .col-lg-6 {
+    grid-area: titulo !important;
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    max-width: 100% !important;
+    justify-self: stretch !important;
+  }
+  html.modo-movil-real body.senal-cerrada:not(.vista-temas-movil):not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal > #colAvatarHero:not(.oculto-por-seccion) {
+    grid-area: avatar !important;
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+    align-self: start !important;
+    margin-top: 8px !important;
+  }
+
+  /* VOCABULARIO (tablet horizontal): Descubre + Título + Avatar en fila 1, Intro en fila 2 */
+  html.modo-movil-real body.vista-temas-movil:not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal {
+    display: grid !important;
+    grid-template-columns: clamp(210px, 26%, 280px) minmax(0, 1fr) clamp(130px, 15vw, 180px) !important;
     grid-template-areas:
-      "titulo avatar"
-      "intro intro" !important;
-    column-gap: 22px !important;
-    row-gap: 14px !important;
+      "carta titulo avatar"
+      "intro intro intro" !important;
+    column-gap: 20px !important;
+    row-gap: 16px !important;
     align-items: center !important;
   }
-  html.modo-movil-real body.vista-temas-movil #filaHeroPrincipal > #vocabularioIntroLista {
-    grid-area: intro !important;
+  html.modo-movil-real body.vista-temas-movil:not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal > #senalDelDia {
+    display: block !important;
+    grid-area: carta !important;
+    grid-column: 1 !important;
+    grid-row: 1 !important;
     width: 100% !important;
   }
-  html.modo-movil-real body.vista-temas-movil #bloqueTituloPrincipal,
-  html.modo-movil-real body.senal-cerrada #bloqueTituloPrincipal {
+  html.modo-movil-real body.vista-temas-movil:not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal > .col-lg-6 {
+    grid-area: titulo !important;
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    max-width: 100% !important;
+  }
+  html.modo-movil-real body.vista-temas-movil:not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal > #colAvatarHero:not(.oculto-por-seccion) {
+    grid-area: avatar !important;
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    align-self: center !important;
+  }
+  html.modo-movil-real body.vista-temas-movil:not(.lsp-inicio-oculto) #contenidoPrincipalApp #filaHeroPrincipal > #vocabularioIntroLista {
+    grid-area: intro !important;
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+    width: 100% !important;
+  }
+
+  html.modo-movil-real body #contenidoPrincipalApp #filaHeroPrincipal > #colAvatarHero:not(.oculto-por-seccion) .avatar-hero-img {
+    max-width: 180px !important;
+    max-height: 190px !important;
+    height: auto !important;
+  }
+
+  html.modo-movil-real body.vista-temas-movil #contenidoPrincipalApp #bloqueTituloPrincipal,
+  html.modo-movil-real body.senal-cerrada #contenidoPrincipalApp #bloqueTituloPrincipal {
     text-align: left !important;
   }
-  html.modo-movil-real body.vista-temas-movil #bloqueTituloPrincipal .titulo-raya,
-  html.modo-movil-real body.senal-cerrada #bloqueTituloPrincipal .titulo-raya {
+  html.modo-movil-real body.vista-temas-movil #contenidoPrincipalApp #bloqueTituloPrincipal .titulo-raya,
+  html.modo-movil-real body.senal-cerrada #contenidoPrincipalApp #bloqueTituloPrincipal .titulo-raya {
     margin-left: 0 !important;
     margin-right: auto !important;
   }

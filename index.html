@@ -169,7 +169,7 @@
     <link rel="stylesheet" href="css/recursos-grid.css?v=20261119-3">
     <link rel="stylesheet" href="css/fab-redes.css?v=20261119-1">
     <link rel="stylesheet" href="css/vocabulario-descubre.css?v=20261119-15">
-    <link rel="stylesheet" href="css/tablet-responsive.css?v=20261119-tablet-ios-2">
+    <link rel="stylesheet" href="css/tablet-responsive.css?v=20261119-tablet-ios-5">
 
     <!-- Preconnect: adelanta la conexión a Google para que el Quiz cargue más rápido -->
     <link rel="preconnect" href="https://script.google.com">
@@ -531,6 +531,22 @@
 <div class="aviso-mision-texto"><p class="aviso-mision-linea1">🔎 Encuentra una palabra y descubre su significado con el apoyo de videos en Lengua de Señas Peruana (LSP).</p><p class="aviso-mision-publico">🧏🏻‍♂️🧏🏻‍♀️ Un espacio de consulta para personas sordas y oyentes que desean comprender mejor las palabras y comunicarse.</p></div>
 </div>
 
+                <script id="lsp-prerender-vocabulario">
+                    (function () {
+                        try {
+                            var p = new URLSearchParams(window.location.search);
+                            var v = (p.get("vista") || "").toLowerCase();
+                            var sinDestino = !p.get("p") && !v && !p.get("letra") && !p.get("categoriaDiccionario");
+                            if (sinDestino || v === "vocabulario" || v === "temas") {
+                                document.body.classList.add("vista-temas-movil");
+                                var t = document.getElementById("tituloPrincipal");
+                                if (t) t.innerHTML = '<span class="titulo-acento">Vocabulario</span> de Lengua de Señas Peruana (LSP)';
+                                var s = document.getElementById("subtituloPrincipal");
+                                if (s) s.classList.add("d-none");
+                            }
+                        } catch (_e) {}
+                    })();
+                </script>
                 </div>
 
                 <!-- Tarjeta del creador (Nilton Fernández G.): solo en Diccionario, justo encima del buscador.
@@ -731,19 +747,10 @@
                 <p class="lsp-modelo-linguistico-descripcion">Su experiencia y conocimiento de la comunidad sorda enriquecen el contenido de LSPedia.</p>
             </div>
         </section>
-
-        <script id="lsp-prerender-vocabulario">
+        <script id="lsp-prerender-vocabulario-colab">
             (function () {
                 try {
-                    var p = new URLSearchParams(window.location.search);
-                    var v = (p.get("vista") || "").toLowerCase();
-                    var sinDestino = !p.get("p") && !v && !p.get("letra") && !p.get("categoriaDiccionario");
-                    if (sinDestino || v === "vocabulario" || v === "temas") {
-                        document.body.classList.add("vista-temas-movil");
-                        var t = document.getElementById("tituloPrincipal");
-                        if (t) t.innerHTML = '<span class="titulo-acento">Vocabulario</span> de Lengua de Señas Peruana (LSP)';
-                        var s = document.getElementById("subtituloPrincipal");
-                        if (s) s.classList.add("d-none");
+                    if (document.body.classList.contains("vista-temas-movil")) {
                         var l = document.getElementById("vocabularioIntroLista");
                         if (l) l.classList.remove("d-none");
                         var c = document.getElementById("lspModeloLinguistico");
@@ -754,6 +761,7 @@
                 } catch (_e) {}
             })();
         </script>
+
         <!-- Vista "Vocabulario": después de la introducción y el colaborador,
              el buscador exclusivo de esta vista (reemplaza al buscador general
              #bloqueBuscador mientras está activa), luego las tarjetas de
