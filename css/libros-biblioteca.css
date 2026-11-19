@@ -166,3 +166,17 @@ body.biblioteca {
     .bib-tapa, .bib-volver { transition: none; }
     .bib-libro:hover .bib-tapa, .bib-libro:focus-visible .bib-tapa { transform: none; }
 }
+
+/* ---------- Libro no disponible (oculto desde el Panel LSPedia) ---------- */
+.bib-libro-no-disponible { cursor: not-allowed; color: var(--bib-suave); }
+.bib-libro-no-disponible .bib-tapa { filter: grayscale(1); opacity: 0.5; transform: none; box-shadow: 0 1px 3px rgba(20, 40, 75, 0.2); }
+.bib-libro-no-disponible:hover .bib-tapa { transform: none; box-shadow: 0 1px 3px rgba(20, 40, 75, 0.2); }
+.bib-libro-no-disponible .bib-libro-titulo { color: var(--bib-suave); }
+.bib-no-disponible {
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: #e8ecf2;
+    color: #5b6b83;
+    font-weight: 700;
+    font-size: 0.78rem;
+}

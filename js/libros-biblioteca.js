@@ -32,7 +32,10 @@
                 titulo: titulo,
                 autor: texto(l.autor, 120),
                 paginas: Math.max(0, Math.round(Number(l.paginas)) || 0),
-                portada: ARCHIVO_VALIDO.test(String(l.portada || '')) ? String(l.portada) : ''
+                portada: ARCHIVO_VALIDO.test(String(l.portada || '')) ? String(l.portada) : '',
+                // Oculto desde el Panel LSPedia: sigue en la biblioteca, en gris y sin poder abrirse.
+                // Sin el campo, el libro está disponible (así funcionan los libros anteriores).
+                disponible: l.publicado !== false
             });
         });
         return salida;
@@ -42,10 +45,18 @@
         const li = document.createElement('li');
         li.className = 'bib-item';
 
-        const enlace = document.createElement('a');
+        // Disponible: enlace al visor. No disponible: tarjeta en gris, sin enlace.
+        const enlace = document.createElement(libro.disponible ? 'a' : 'div');
         enlace.className = 'bib-libro';
-        enlace.href = 'libro-digital.html?libro=' + encodeURIComponent(libro.id);
-        enlace.setAttribute('aria-label', 'Leer «' + libro.titulo + '»' + (libro.autor ? ', de ' + libro.autor : ''));
+        if (libro.disponible) {
+            enlace.href = 'libro-digital.html?libro=' + encodeURIComponent(libro.id);
+            enlace.setAttribute('aria-label', 'Leer «' + libro.titulo + '»' + (libro.autor ? ', de ' + libro.autor : ''));
+        } else {
+            enlace.classList.add('bib-libro-no-disponible');
+            enlace.setAttribute('aria-disabled', 'true');
+            enlace.setAttribute('role', 'group');
+            enlace.setAttribute('aria-label', '«' + libro.titulo + '»' + (libro.autor ? ', de ' + libro.autor : '') + '. No disponible por ahora.');
+        }
 
         const tapa = document.createElement('span');
         tapa.className = 'bib-tapa';
@@ -80,8 +91,8 @@
         const paginas = document.createElement('span');
         paginas.textContent = libro.paginas ? libro.paginas + ' páginas' : 'Libro digital';
         const leer = document.createElement('span');
-        leer.className = 'bib-leer';
-        leer.textContent = 'Leer';
+        leer.className = libro.disponible ? 'bib-leer' : 'bib-no-disponible';
+        leer.textContent = libro.disponible ? 'Leer' : 'No disponible por ahora';
         pie.appendChild(paginas);
         pie.appendChild(leer);
         datos.appendChild(pie);

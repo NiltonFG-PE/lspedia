@@ -246,9 +246,33 @@
         return libro.miniaturas ? BASE + libro.miniaturas + encodeURIComponent(libro.paginas[i]) : urlPagina(i);
     }
 
+    // Un libro oculto desde el Panel no se abre ni escribiendo su enlace. Si el catálogo no
+    // responde (sin conexión, por ejemplo) se sigue como antes para no romper la lectura.
+    function libroDisponible() {
+        return fetch('../libros/catalogo.json', { cache: 'no-cache' })
+            .then((r) => (r.ok ? r.json() : null))
+            .then((c) => {
+                const lista = c && Array.isArray(c.libros) ? c.libros : [];
+                const entrada = lista.filter((l) => l && String(l.id || '').toLowerCase() === ID_LIBRO)[0];
+                return !(entrada && entrada.publicado === false);
+            })
+            .catch(() => true);
+    }
+
     function cargarLibro() {
         mostrarEstado('Cargando libro…', false);
-        fetch(BASE + 'libro.json', { cache: 'no-cache' })
+        libroDisponible().then((disponible) => {
+            if (!disponible) {
+                mostrarEstado('Este libro no está disponible por ahora. Mira los demás en Libros digitales.', true);
+                $('btnReintentar').hidden = true;
+                return null;
+            }
+            return cargarDatosLibro();
+        });
+    }
+
+    function cargarDatosLibro() {
+        return fetch(BASE + 'libro.json', { cache: 'no-cache' })
             .then((r) => {
                 if (!r.ok) throw new Error('HTTP ' + r.status);
                 return r.json();

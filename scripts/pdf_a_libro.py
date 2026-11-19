@@ -182,6 +182,7 @@ def main():
     ap.add_argument("--sin-enlaces", action="store_true", help="no copiar los botones/enlaces del PDF")
     ap.add_argument("--sin-texto", action="store_true", help="no generar texto.json (sin búsqueda)")
     ap.add_argument("--id", default="", help="identificador del libro: carpeta y enlace (por defecto, sale del título)")
+    ap.add_argument("--oculto", action="store_true", help="registrar el libro como oculto; se publica después desde el Panel LSPedia")
     args = ap.parse_args()
 
     ruta_pdf = Path(args.pdf)
@@ -279,9 +280,13 @@ def main():
             catalogo = json.loads(ruta_catalogo.read_text(encoding="utf-8"))
         except ValueError:
             sys.exit(f"{ruta_catalogo} no es un JSON válido; corrígelo o bórralo y vuelve a ejecutar.")
+    previo = next((l for l in catalogo.get("libros", []) if l.get("id") == id_libro), None)
     libros = [l for l in catalogo.get("libros", []) if l.get("id") != id_libro]
     entrada = {"id": id_libro, "carpeta": salida.name, "titulo": titulo, "autor": autor,
                "paginas": len(nombres), "portada": "portada.webp"}
+    # Volver a convertir un libro no debe volver a publicarlo si estaba oculto.
+    if args.oculto or (previo and previo.get("publicado") is False):
+        entrada["publicado"] = False
     libros.append(entrada)
     catalogo["libros"] = libros
     ruta_catalogo.write_text(json.dumps(catalogo, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
