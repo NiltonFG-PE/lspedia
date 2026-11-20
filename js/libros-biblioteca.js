@@ -55,7 +55,7 @@
             enlace.classList.add('bib-libro-no-disponible');
             enlace.setAttribute('aria-disabled', 'true');
             enlace.setAttribute('role', 'group');
-            enlace.setAttribute('aria-label', '«' + libro.titulo + '»' + (libro.autor ? ', de ' + libro.autor : '') + '. No disponible por ahora.');
+            enlace.setAttribute('aria-label', '«' + libro.titulo + '»' + (libro.autor ? ', de ' + libro.autor : '') + '. Próximamente.');
         }
 
         const tapa = document.createElement('span');
@@ -92,7 +92,7 @@
         paginas.textContent = libro.paginas ? libro.paginas + ' páginas' : 'Libro digital';
         const leer = document.createElement('span');
         leer.className = libro.disponible ? 'bib-leer' : 'bib-no-disponible';
-        leer.textContent = libro.disponible ? 'Leer' : 'No disponible por ahora';
+        leer.textContent = libro.disponible ? 'Leer' : 'Próximamente';
         pie.appendChild(paginas);
         pie.appendChild(leer);
         datos.appendChild(pie);

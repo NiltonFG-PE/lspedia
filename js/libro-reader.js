@@ -263,7 +263,7 @@
         mostrarEstado('Cargando libro…', false);
         libroDisponible().then((disponible) => {
             if (!disponible) {
-                mostrarEstado('Este libro no está disponible por ahora. Mira los demás en Libros digitales.', true);
+                mostrarEstado('Este libro estará disponible próximamente. Mira los demás en Libros digitales.', true);
                 $('btnReintentar').hidden = true;
                 return null;
             }
