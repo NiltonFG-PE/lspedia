@@ -170,3 +170,100 @@ button{transition:background .16s,transform .16s}button:active:not(:disabled){tr
 .wb-actions .action-primary{min-height:44px}
 .wb-actions .action-primary:disabled{opacity:.45}
 @media(max-width:480px){.wb-chip{min-width:48px;padding:6px 10px}.wb-actions{flex-direction:column-reverse;align-items:stretch}.wb-actions .action-primary{width:100%}}
+
+/* v4 · Opciones rápidas de respuesta, foco gramatical y corrección detallada para español L2 */
+.smart-actions{display:flex;align-items:center;gap:8px;flex:none}
+.options-toggle-btn.active{background:#e2f3e8;border-color:var(--blue);color:var(--blue-dark)}
+.focus-pill{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;background:#e2f3e8;color:var(--blue-dark);font-size:.72rem;font-weight:750;margin-bottom:4px;border:1px solid #b9dcc7}
+.quick-options-bar{background:#f7fbf8;border-top:1px solid #d8e6dd;padding:10px 24px 10px}
+.quick-opt-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;font-size:.78rem;font-weight:700;color:var(--blue-dark)}
+.quick-opt-head small{font-weight:400;color:var(--muted)}
+.quick-opt-hide{background:transparent;color:var(--muted);font-size:.75rem;font-weight:650;padding:4px 8px;border-radius:8px;min-height:32px}
+.quick-opt-hide:hover{background:#e6f1ea;color:var(--blue-dark)}
+.quick-opt-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.quick-opt-chip{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;padding:10px 12px;border-radius:14px;border:1.5px solid #c5ddd0;background:#fff;color:var(--ink);line-height:1.4;min-height:64px;transition:border-color .15s,background .15s,transform .12s}
+.quick-opt-chip:hover{border-color:var(--blue);background:#eff8f2}
+.quick-opt-chip:active{transform:scale(.98)}
+.quick-opt-tag{display:inline-block;font-size:.66rem;font-weight:750;color:var(--blue-dark);background:#e6f4eb;padding:2px 7px;border-radius:999px}
+.quick-opt-text{font-size:.86rem;color:var(--ink);overflow-wrap:anywhere}
+.hl-grammar{background:#fff0b3;color:#173d38;padding:0 3px;border-radius:4px;font-weight:700}
+.praise-pill{background:#e7f7ec;border:1px solid #b6e0c3;color:#14532d;border-radius:11px;padding:9px 12px;font-size:.85rem;line-height:1.45;margin-bottom:10px}
+.grammar-list{list-style:none;margin:12px 0 4px;padding:0;display:grid;gap:8px}
+.grammar-item{display:flex;align-items:flex-start;gap:9px;padding:9px 11px;border-radius:10px;background:#f7faf8;border:1px solid #dbe7e0;font-size:.84rem;line-height:1.5;color:#27443d}
+.grammar-badge{flex:none;font-size:.68rem;font-weight:750;padding:3px 8px;border-radius:999px;background:#e3f1e9;color:var(--blue-dark);white-space:nowrap;margin-top:1px}
+@media(max-width:760px){
+  .quick-options-bar{padding:8px 12px}
+  .quick-opt-head{font-size:.73rem;margin-bottom:6px}
+  .quick-opt-head small{display:none}
+  .quick-opt-list{display:flex;overflow-x:auto;gap:8px;padding-bottom:4px;scroll-snap-type:x proximity;scrollbar-width:thin}
+  .quick-opt-chip{flex:0 0 78%;max-width:290px;scroll-snap-align:start;padding:9px 11px;min-height:56px}
+  .quick-opt-text{font-size:.82rem}
+  .smart-actions{gap:6px}
+  .wildcard-btn{padding:7px 11px;font-size:.76rem}
+  .grammar-item{flex-direction:column;gap:4px}
+}
+@media(max-height:560px){
+  .quick-options-bar{padding:6px 12px}
+  .quick-opt-head{display:none}
+  .quick-opt-chip{padding:7px 10px;min-height:46px}
+}
+
+/* v5 · 3 niveles claros + barra de conectores rápidos tocables */
+.level-card-3{min-height:84px;padding:8px 10px;justify-content:center}
+.level-card-3 .level-title{display:block;font-size:.73rem;line-height:1.25;color:var(--ink);margin-top:2px}
+.level-card-3 .level-sub{display:inline-block;margin-top:4px;font-size:.66rem;font-weight:700;color:var(--blue-dark);background:#e8f3ec;padding:1px 7px;border-radius:999px}
+.level-card-3.active .level-sub{background:#fff}
+.connector-bar{display:flex;align-items:center;gap:6px;overflow-x:auto;padding:0 2px 7px;scrollbar-width:none}
+.connector-bar::-webkit-scrollbar{display:none}
+.conn-label{flex:none;font-size:.7rem;font-weight:750;color:var(--muted)}
+.conn-chip{flex:none;min-height:30px;padding:4px 10px;border-radius:999px;border:1px solid #bcd7c8;background:#fff;color:var(--blue-dark);font-size:.75rem;font-weight:700;line-height:1.2;white-space:nowrap}
+.conn-chip:hover{background:#e2f3e8;border-color:var(--blue)}
+.conn-chip:active{transform:scale(.95)}
+@media(max-width:760px){
+  .level-card-3{min-height:78px;padding:7px 6px}
+  .level-card-3 .level-title{font-size:.69rem}
+  .conn-label{display:none}
+  .connector-bar{padding:0 0 6px}
+}
+@media(max-height:560px){
+  .connector-bar{display:none}
+}
+
+/* v6 · Diseño visual para aprendices visuales (personas sordas): símbolos, fórmulas, diff y guía visual */
+.home-guide-btn{font-size:.84rem;min-height:42px;padding:8px 16px}
+.msg-cue{display:inline-flex;align-items:center;gap:5px;margin-top:6px;padding:3px 9px;border-radius:999px;background:#eef6f1;border:1px solid #cde2d6;color:#14532d;font-size:.73rem;font-weight:700;line-height:1.2}
+.visual-formula{display:inline-flex;flex-wrap:wrap;align-items:center;gap:4px;margin-top:5px;padding:5px 10px;border-radius:10px;background:#fff9e6;border:1px solid #f0d78c;color:#4a3700;font-size:.78rem;font-weight:700;line-height:1.35}
+.inline-formula{display:flex;margin:8px 0}
+.guide-pill-btn{background:#fff9e6;border-color:#e6cd7c;color:#5c4200}
+.guide-pill-btn:hover{background:#fff2c6}
+.coach-before{background:#fff5f5;border:1px solid #f5c6c6}
+.coach-before small{color:#9b1c1c}
+.diff-del{background:#fde2e2;color:#991b1b;padding:0 4px;border-radius:5px;text-decoration:line-through;font-weight:700}
+.diff-add{background:#d1fae5;color:#065f46;padding:0 4px;border-radius:5px;text-decoration:none;font-weight:800}
+.grammar-body{min-width:0;flex:1}
+.grammar-formula{display:inline-block;padding:2px 8px;margin-bottom:4px;border-radius:7px;background:#fff;border:1px solid #cfe0d6;font-size:.8rem;font-weight:750;color:#173d38}
+.grammar-desc{font-size:.82rem;color:#35524b;line-height:1.45}
+.vg-grid{display:grid;gap:12px;margin-top:6px}
+.vg-card{border-radius:14px;padding:12px 14px;border:1.5px solid #d5e3db;background:#fafdfb}
+.vg-card h3{margin:0 0 8px;font-size:.92rem;color:var(--ink)}
+.vg-amber{background:#fffdf4;border-color:#eed993}
+.vg-green{background:#f4fbf6;border-color:#b9e1c4}
+.vg-blue{background:#f3f8ff;border-color:#bdd6f7}
+.vg-purple{background:#faf5ff;border-color:#dcc4f5}
+.vg-row{display:flex;align-items:flex-start;gap:9px;padding:6px 0;border-top:1px solid #0000000d}
+.vg-row:first-of-type{border-top:0;padding-top:2px}
+.vg-tag{flex:none;min-width:92px;text-align:center;font-size:.7rem;font-weight:800;padding:3px 7px;border-radius:999px;background:#fff;border:1px solid #d2ddd7;color:var(--ink)}
+.vg-row b{display:block;font-size:.84rem;color:var(--ink)}
+.vg-row small{display:block;font-size:.78rem;color:#476059;margin-top:1px}
+@media(max-width:760px){
+  .home-guide-btn{grid-column:1/-1;width:100%;justify-content:center}
+  .visual-formula{font-size:.72rem;padding:4px 8px}
+  .smart-tip span#smartTipText{display:none}
+  .vg-row{flex-direction:column;gap:4px}
+  .vg-tag{min-width:0}
+}
+
+/* Botón rojo Salir consistente con el resto de Recursos */
+.btn-salir-rojo{display:inline-flex;align-items:center;gap:6px;background:#dc2626!important;color:#fff!important;padding:8px 16px!important;border-radius:999px;font-weight:750;min-height:42px;box-shadow:0 3px 10px rgba(220,38,38,.22)}
+.btn-salir-rojo:hover{background:#b91c1c!important}
+.btn-salir-rojo>span{font-size:1.1rem!important;margin-right:0!important;vertical-align:0!important}
