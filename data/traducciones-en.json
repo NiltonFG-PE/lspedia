@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-11-21T23:15:25Z",
+  "actualizado": "2026-11-22T03:14:01Z",
   "traducciones": [
     {
       "fuente": "diccionario",
@@ -376,7 +376,7 @@
       "categoria": "Salud",
       "ingles": "Anemia",
       "aliases": [],
-      "definicionIngles": "A health problem in which the blood has low hemoglobin or few healthy red blood cells."
+      "definicionIngles": "A health problem in which the blood has little hemoglobin or few healthy red blood cells."
     },
     {
       "fuente": "diccionario",
@@ -2144,7 +2144,7 @@
       "categoria": "Política",
       "ingles": "Civil code",
       "aliases": [],
-      "definicionIngles": "Set of rules on people, family, contracts, property and other civil matters."
+      "definicionIngles": "A set of rules concerning people, family, contracts, property, and other civil matters."
     },
     {
       "fuente": "diccionario",
@@ -2558,7 +2558,7 @@
       "fuente": "diccionario",
       "palabra": "Dirección IP",
       "categoria": "Tecnología",
-      "ingles": "IP Address",
+      "ingles": "IP address",
       "aliases": [],
       "definicionIngles": "A number that identifies a device or connection within a network."
     },
@@ -6032,7 +6032,7 @@
       "categoria": "Psicología",
       "ingles": "Vocational guidance",
       "aliases": [],
-      "definicionIngles": "A process that helps a person understand their interests and abilities in order to choose their studies or occupation."
+      "definicionIngles": "A process that helps a person understand their interests and abilities in order to choose studies or an occupation."
     },
     {
       "fuente": "diccionario",
@@ -6358,7 +6358,7 @@
       "fuente": "diccionario",
       "palabra": "Plan contable",
       "categoria": "Economía",
-      "ingles": "Accounting plan",
+      "ingles": "accounting plan",
       "aliases": [],
       "definicionIngles": "Organized list of accounts used to record economic transactions."
     },
@@ -6504,7 +6504,7 @@
       "categoria": "Cortesía",
       "ingles": "Please",
       "aliases": [],
-      "definicionIngles": "Basic formula for requesting something respectfully and without imposing your will."
+      "definicionIngles": "Basic formula for requesting something respectfully and without imposing."
     },
     {
       "fuente": "diccionario",
@@ -6568,7 +6568,7 @@
       "categoria": "Comunicación",
       "ingles": "Ask",
       "aliases": [],
-      "definicionIngles": "It's asking someone for information about something you don't know.\n\nExample: I asked the teacher about the homework."
+      "definicionIngles": "It's asking someone else for information about something you don't know.\n\nExample: I asked the teacher about the homework."
     },
     {
       "fuente": "diccionario",
@@ -7504,7 +7504,7 @@
       "categoria": "Universidad",
       "ingles": "Semester",
       "aliases": [],
-      "definicionIngles": "It's one of the two parts into which a university academic year is divided.\n\nExample: This semester I'm taking five courses."
+      "definicionIngles": "It's one of the two parts into which a university year is divided.\n\nExample: This semester I'm taking five courses."
     },
     {
       "fuente": "diccionario",
