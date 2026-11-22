@@ -561,8 +561,8 @@
                         <span class="lsp-creador-etiqueta">Creador de LSPedia</span>
                         <h3 class="lsp-creador-nombre">Nilton Fernández G.</h3>
                         <p class="lsp-creador-roles" aria-label="Intérprete y traductor de LSP, creador audiovisual y de web no-code">
-                            <span class="lsp-creador-rol lsp-creador-rol-interprete" title="Intérprete y traductor de LSP"><span class="lsp-creador-largo">Intérprete y traductor de LSP</span><span class="lsp-creador-corto" aria-hidden="true">Intérprete de LSP</span></span>
-                            <span class="lsp-creador-rol lsp-creador-rol-creador" title="Creador audiovisual y de web no-code"><span class="lsp-creador-largo">Creador audiovisual y de web no-code</span><span class="lsp-creador-corto" aria-hidden="true">Creador audiovisual y no-code</span></span>
+                            <span class="lsp-creador-rol lsp-creador-rol-interprete" title="Intérprete y traductor de LSP"><span class="lsp-creador-largo">Intérprete y traductor de LSP</span><span class="lsp-creador-corto" aria-hidden="true">Intérprete y traductor de LSP</span></span>
+                            <span class="lsp-creador-rol lsp-creador-rol-creador" title="Creador audiovisual y de web no-code"><span class="lsp-creador-largo">Creador audiovisual y de web no-code</span><span class="lsp-creador-corto" aria-hidden="true">Creador audiovisual y de web no-code</span></span>
                         </p>
                     </div>
                 </section>
@@ -2362,7 +2362,7 @@
     }
 
     function asegurarTransicion() {
-        nav.style.setProperty('transition', 'transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.22s ease', 'important');
+        nav.style.setProperty('transition', 'transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.15s ease', 'important');
         nav.style.setProperty('will-change', 'transform, opacity', 'important');
     }
 
@@ -2388,7 +2388,7 @@
 
     function programarMostrar(ms) {
         clearTimeout(timerMostrar);
-        timerMostrar = setTimeout(mostrarNav, ms || 380);
+        timerMostrar = setTimeout(mostrarNav, ms || 140);
     }
 
     function alHacerScroll() {
@@ -2411,7 +2411,7 @@
         if (delta > 2) {
             ocultarNav();
         }
-        programarMostrar(420);
+        programarMostrar(150);
     }
 
     // Respaldo táctil directo (funciona incluso si el navegador no dispara scroll continuo)
@@ -2425,17 +2425,18 @@
         var dy = toqueY - e.touches[0].clientY; // positivo = dedo desliza hacia arriba
         if (dy > 14 && obtenerScrollY() > 10) {
             ocultarNav();
-            programarMostrar(420);
+            programarMostrar(150);
         }
         toqueY = e.touches[0].clientY;
     }, { passive: true });
 
     document.addEventListener('touchend', function () {
         toqueY = null;
-        if (oculta) programarMostrar(380);
+        if (oculta) programarMostrar(120);
     }, { passive: true });
 
     window.addEventListener('scroll', alHacerScroll, { passive: true });
+    window.addEventListener('scrollend', function () { if (esSoloMovil() && oculta) { clearTimeout(timerMostrar); mostrarNav(); } }, { passive: true });
     document.addEventListener('scroll', alHacerScroll, { passive: true, capture: true });
     window.addEventListener('resize', function () {
         if (!esSoloMovil()) {
