@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-11-25T22:32:03Z",
+  "actualizado": "2026-11-26T05:03:37Z",
   "traducciones": [
     {
       "fuente": "diccionario",
@@ -848,7 +848,7 @@
       "categoria": "Ciudad",
       "ingles": "Neighborhood",
       "aliases": [],
-      "definicionIngles": "It's the part of the city where a person lives, along with their neighbors.\n\nExample: Everyone knows each other in my neighborhood."
+      "definicionIngles": "It's the part of the city where a person lives, along with their neighbors.\n\nExample: In my neighborhood, everyone knows each other."
     },
     {
       "fuente": "diccionario",
@@ -896,7 +896,7 @@
       "categoria": "Educación",
       "ingles": "Literature",
       "aliases": [],
-      "definicionIngles": "List of books and sources you used to do a project or research."
+      "definicionIngles": "List of books and sources you used to do a paper or research."
     },
     {
       "fuente": "diccionario",
@@ -2144,7 +2144,7 @@
       "categoria": "Política",
       "ingles": "Civil code",
       "aliases": [],
-      "definicionIngles": "Set of rules on people, family, contracts, property and other civil matters."
+      "definicionIngles": "A set of rules concerning people, family, contracts, property, and other civil matters."
     },
     {
       "fuente": "diccionario",
@@ -3000,7 +3000,7 @@
       "categoria": "Trabajo",
       "ingles": "Sales funnel",
       "aliases": [],
-      "definicionIngles": "Representation of the stages a person goes through from learning about an offer until they make a purchase."
+      "definicionIngles": "Representation of the stages a person goes through from the moment they learn about an offer until they make a purchase."
     },
     {
       "fuente": "diccionario",
@@ -4576,7 +4576,7 @@
       "categoria": "Salud",
       "ingles": "Hospital",
       "aliases": [],
-      "definicionIngles": "It's a large place where doctors treat and care for sick or injured people.\n\nExample: They took my grandfather to the hospital because he wasn't feeling well."
+      "definicionIngles": "It's a large place where doctors treat and heal sick or injured people.\n\nExample: They took my grandfather to the hospital because he wasn't feeling well."
     },
     {
       "fuente": "diccionario",
@@ -6222,7 +6222,7 @@
       "fuente": "diccionario",
       "palabra": "Percepción tributaria",
       "categoria": "Economía",
-      "ingles": "Tax perception",
+      "ingles": "Tax collection",
       "aliases": [],
       "definicionIngles": "Additional amount that is charged in advance in some transactions with respect to taxes."
     },
@@ -6304,7 +6304,7 @@
       "categoria": "Comida",
       "ingles": "Fish",
       "aliases": [],
-      "definicionIngles": "It's fish that comes from the sea or river, and is widely used in Peruvian cuisine.\n\nFor example: Ceviche is made with fresh fish."
+      "definicionIngles": "It's fish that comes from the sea or rivers, and is widely used in Peruvian cuisine.\n\nFor example: Ceviche is made with fresh fish."
     },
     {
       "fuente": "diccionario",
@@ -6358,7 +6358,7 @@
       "fuente": "diccionario",
       "palabra": "Plan contable",
       "categoria": "Economía",
-      "ingles": "accounting plan",
+      "ingles": "Accounting plan",
       "aliases": [],
       "definicionIngles": "Organized list of accounts used to record economic transactions."
     },
@@ -7504,7 +7504,7 @@
       "categoria": "Universidad",
       "ingles": "Semester",
       "aliases": [],
-      "definicionIngles": "It's one of the two parts into which a university year is divided.\n\nExample: This semester I'm taking five courses."
+      "definicionIngles": "It's one of the two parts into which a university academic year is divided.\n\nExample: This semester I'm taking five courses."
     },
     {
       "fuente": "diccionario",
@@ -7928,7 +7928,7 @@
       "categoria": "Psicología",
       "ingles": "Therapist",
       "aliases": [],
-      "definicionIngles": "Professional who accompanies a person in a treatment or therapeutic support process."
+      "definicionIngles": "Professional who accompanies a person in a process of treatment or therapeutic support."
     },
     {
       "fuente": "diccionario",
