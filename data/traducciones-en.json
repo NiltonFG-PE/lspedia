@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "actualizado": "2026-11-22T11:27:51Z",
+  "actualizado": "2026-11-28T01:59:14Z",
   "traducciones": [
     {
       "fuente": "diccionario",
@@ -848,7 +848,7 @@
       "categoria": "Ciudad",
       "ingles": "Neighborhood",
       "aliases": [],
-      "definicionIngles": "It's the part of the city where a person lives, along with their neighbors.\n\nExample: In my neighborhood, everyone knows each other."
+      "definicionIngles": "It's the part of the city where a person lives, along with their neighbors.\n\nExample: Everyone knows each other in my neighborhood."
     },
     {
       "fuente": "diccionario",
@@ -2144,7 +2144,7 @@
       "categoria": "Política",
       "ingles": "Civil code",
       "aliases": [],
-      "definicionIngles": "Set of rules on people, family, contracts, property and other civil matters."
+      "definicionIngles": "A set of rules concerning people, family, contracts, property, and other civil matters."
     },
     {
       "fuente": "diccionario",
@@ -4576,7 +4576,7 @@
       "categoria": "Salud",
       "ingles": "Hospital",
       "aliases": [],
-      "definicionIngles": "It's a large place where doctors treat and care for sick or injured people.\n\nExample: They took my grandfather to the hospital because he wasn't feeling well."
+      "definicionIngles": "It's a large place where doctors treat and heal sick or injured people.\n\nExample: They took my grandfather to the hospital because he wasn't feeling well."
     },
     {
       "fuente": "diccionario",
@@ -6158,7 +6158,7 @@
       "fuente": "diccionario",
       "palabra": "Patrimonio contable",
       "categoria": "Economía",
-      "ingles": "Accounting equity",
+      "ingles": "accounting equity",
       "aliases": [],
       "definicionIngles": "Economic value resulting from assets less liabilities."
     },
@@ -6358,7 +6358,7 @@
       "fuente": "diccionario",
       "palabra": "Plan contable",
       "categoria": "Economía",
-      "ingles": "Accounting plan",
+      "ingles": "accounting plan",
       "aliases": [],
       "definicionIngles": "Organized list of accounts used to record economic transactions."
     },
@@ -7504,7 +7504,7 @@
       "categoria": "Universidad",
       "ingles": "Semester",
       "aliases": [],
-      "definicionIngles": "It's one of the two parts into which a university academic year is divided.\n\nExample: This semester I'm taking five courses."
+      "definicionIngles": "It's one of the two parts into which a university year is divided.\n\nExample: This semester I'm taking five courses."
     },
     {
       "fuente": "diccionario",
